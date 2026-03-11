@@ -41,6 +41,13 @@ struct SettingsView: View {
         var id: String { rawValue }
     }
 
+    // Storage states
+    @State private var audioStorageBytes: Int64 = 0
+    @State private var photoStorageBytes: Int64 = 0
+    @State private var databaseStorageBytes: Int64 = 0
+    @State private var isCalculatingStorage = false
+    @State private var showDeleteAudioConfirm = false
+
     var body: some View {
         Form {
             exportSection
@@ -48,11 +55,13 @@ struct SettingsView: View {
             journalingGoalSection
             securitySection
             dailyReminderSection
+            storageSection
             iCloudSection
             privacySection
             backupSection
             aboutSection
         }
+        .onAppear { calculateStorage() }
         .navigationTitle("Settings")
         .alert("Notifications Disabled", isPresented: $showPermissionDeniedAlert) {
             #if os(iOS)
@@ -423,6 +432,100 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
+    private var storageSection: some View {
+        Section {
+            if isCalculatingStorage {
+                HStack {
+                    Text("Calculating...")
+                    Spacer()
+                    ProgressView()
+                }
+            } else {
+                StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: .blue)
+                StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: .pink)
+                StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: .orange)
+
+                HStack {
+                    Text("Total")
+                        .fontWeight(.semibold)
+                    Spacer()
+                    Text(formatBytes(audioStorageBytes + photoStorageBytes + databaseStorageBytes))
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                }
+            }
+        } header: {
+            HStack {
+                Text("Storage")
+                Spacer()
+                Button {
+                    calculateStorage()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                }
+            }
+        } footer: {
+            Text("Audio and photos are stored on-device only. iCloud syncs text entries only.")
+        }
+    }
+
+    private func calculateStorage() {
+        isCalculatingStorage = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            let audioBytes = Self.directorySize(name: "Recordings")
+            let photoBytes = Self.directorySize(name: "Photos")
+            let dbBytes = Self.databaseSize()
+
+            DispatchQueue.main.async {
+                audioStorageBytes = audioBytes
+                photoStorageBytes = photoBytes
+                databaseStorageBytes = dbBytes
+                isCalculatingStorage = false
+            }
+        }
+    }
+
+    private static func directorySize(name: String) -> Int64 {
+        let fm = FileManager.default
+        guard let base = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return 0 }
+        let dir = base.appendingPathComponent(name)
+        guard let files = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.fileSizeKey]) else { return 0 }
+        return files.reduce(Int64(0)) { total, url in
+            let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            return total + Int64(size)
+        }
+    }
+
+    private static func databaseSize() -> Int64 {
+        let fm = FileManager.default
+        let possiblePaths: [URL] = [
+            fm.containerURL(forSecurityApplicationGroupIdentifier: PersistenceController.appGroupIdentifier)?
+                .appendingPathComponent("solyn.sqlite"),
+            NSPersistentCloudKitContainer.defaultDirectoryURL()
+                .appendingPathComponent("solyn.sqlite")
+        ].compactMap { $0 }
+
+        for path in possiblePaths {
+            // sqlite has companion -wal and -shm files
+            let extensions = ["", "-wal", "-shm"]
+            let total = extensions.reduce(Int64(0)) { sum, ext in
+                let file = URL(fileURLWithPath: path.path + ext)
+                let size = (try? file.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+                return sum + Int64(size)
+            }
+            if total > 0 { return total }
+        }
+        return 0
+    }
+
+    private func formatBytes(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
+
+    @ViewBuilder
     private var aboutSection: some View {
         Section(header: Text("About")) {
             HStack {
@@ -587,6 +690,38 @@ struct ThemeButton: View {
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Storage Row
+
+struct StorageRow: View {
+    let label: String
+    let bytes: Int64
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 32, height: 32)
+                Image(systemName: icon)
+                    .font(.caption)
+                    .foregroundColor(color)
+            }
+            Text(label)
+            Spacer()
+            Text(formattedSize)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private var formattedSize: String {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
     }
 }
 
