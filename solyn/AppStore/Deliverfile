@@ -1,0 +1,51 @@
+# Fastlane Deliver Configuration for DailyVox
+# Run: fastlane deliver from the project root
+
+app_identifier "com.dailyvox.app"
+username "" # Your Apple ID
+
+# App Store Metadata
+name({
+  "en-US" => "DailyVox - AI Voice Diary"
+})
+
+subtitle({
+  "en-US" => "Your Private Digital Twin"
+})
+
+keywords({
+  "en-US" => "diary,journal,voice,AI,digital twin,mood,mindfulness,private,mental health,companion,recording"
+})
+
+promotional_text({
+  "en-US" => "NEW: Digital Twin technology builds a private mirror of your mind. See your personality, emotions, and thought patterns evolve - all 100% on-device."
+})
+
+release_notes({
+  "en-US" => "Welcome to DailyVox - your private AI voice diary with Digital Twin technology.\n\n- Record diary entries with your voice\n- AI-powered insights and mood trends\n- Watch your Digital Twin evolve as it learns about you\n- Track moods, streaks, and emotional patterns\n- 8 beautiful themes\n- Face ID security\n- Lock Screen & Home Screen widgets\n- Export your journal in multiple formats\n- 100% privacy-first: everything stays on your device"
+})
+
+privacy_url "https://dailyvox.app/privacy"
+support_url "https://dailyvox.app/support"
+marketing_url "https://dailyvox.app"
+
+copyright "2026 DailyVox"
+
+primary_category "HEALTH_AND_FITNESS"
+secondary_category "LIFESTYLE"
+
+# Pricing
+price_tier 0  # Free
+
+# Rating
+app_rating_config_path "./AppStore/rating_config.json"
+
+# Auto-release after approval
+automatic_release true
+
+# Screenshots path
+screenshots_path "./AppStore/screenshots"
+
+# Skip if no metadata changes
+skip_metadata false
+skip_screenshots false
