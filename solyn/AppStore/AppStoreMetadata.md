@@ -7,7 +7,7 @@ DailyVox - AI Voice Diary
 Your Private Digital Twin
 
 ## Promotional Text (170 characters max)
-NEW: Digital Twin technology builds a private mirror of your mind. See your personality, emotions, and thought patterns evolve - all 100% on-device.
+NEW: Your Digital Twin tracks the people, places, and themes in your life. See your mood trends and journaling patterns evolve - all 100% on-device.
 
 ## Description (4000 characters max)
 
@@ -17,24 +17,22 @@ YOUR VOICE, YOUR DIARY
 Record your thoughts naturally with voice. DailyVox transcribes everything on-device using Apple's speech recognition - no servers, no uploads, no compromises. Your voice literally never leaves your phone.
 
 YOUR DIGITAL TWIN
-This is what makes DailyVox different. As you journal, DailyVox builds a comprehensive model of who you are:
+This is what makes DailyVox different. As you journal, DailyVox tracks and visualizes patterns in your life:
 
-- Personality Profile: Communication style, thinking patterns, expressiveness
-- Emotional Signature: Your baseline mood, emotional range, time-based patterns
-- Personal World Map: People, places, topics, and how they connect in your life
-- Thought Patterns: Whether you're analytical or intuitive, future-oriented or reflective
-- Behavioral Insights: When you write, how you write, what matters most to you
+- Personal World Map: People, places, and topics you mention — and how they connect
+- Mood Trends: See how your mood shifts across mornings, evenings, weekdays, and weekends
+- Writing Patterns: When you journal, how much you write, your streaks and consistency
+- Top Themes: The subjects that come up most in your entries, ranked by importance
 
-Your twin gets smarter with every entry. It's like watching yourself in a mirror that sees beneath the surface.
+Your twin grows with every entry, giving you a clearer picture of your journaling journey over time.
 
-AN AI THAT ACTUALLY KNOWS YOU
-DailyVox's AI is built on cognitive science - not generic algorithms:
+SMART INSIGHTS
+DailyVox uses Apple's on-device NLP to surface patterns you might not notice:
 
-- Plutchik's Wheel of Emotions for nuanced emotional understanding
-- Bayesian personality modeling that learns your Big Five traits
-- Three-tier memory (episodic, semantic, working) that remembers your story
-- AI-powered insights that surface meaningful patterns over time
-- Relationship deepening - your Digital Twin becomes more accurate with every entry
+- Sentiment analysis that tracks your emotional trends over weeks and months
+- Named entity recognition to build your personal knowledge graph
+- Smart search suggestions powered by the people and topics in your entries
+- All processing happens on your device — nothing is sent to any server
 
 BEAUTIFUL INSIGHTS
 Track your emotional journey with:
@@ -74,17 +72,17 @@ SECURITY & PRIVACY
 8 BEAUTIFUL THEMES
 System, Light, Sage, Lavender, Rose, Ocean, Warm, and Dark themes to match your style.
 
-BUILT FOR YOUR WELL-BEING
-DailyVox isn't just a journal - it's a companion that grows with you. Daily reminder notifications, personalized prompts based on your patterns, and proactive check-ins when it senses you might need support.
+BUILT FOR CONSISTENCY
+DailyVox helps you build a journaling habit. Daily reminder notifications, writing prompts to get you started, and journaling goals with weekly targets and milestone celebrations.
 
 Your thoughts deserve a home. DailyVox is that home.
 
 ## Keywords (100 characters max, comma-separated)
-diary,journal,voice,AI,digital twin,mood,mindfulness,private,mental health,photo,encrypted,goals
+diary,journal,voice,AI,digital twin,mood,mindfulness,private,personal,photo,encrypted,goals
 
 ## Category
-Primary: Health & Fitness
-Secondary: Lifestyle
+Primary: Lifestyle
+Secondary: Productivity
 
 ## Age Rating
 4+ (No objectionable material)
