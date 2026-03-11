@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>DailyVox needs microphone access to record your voice diary entries.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>DailyVox uses speech recognition to transcribe your voice recordings into text.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>NSFaceIDUsageDescription</key>
+	<string>DailyVox uses Face ID to lock and unlock access to your private diary entries.</string>
+	<key>CFBundleDisplayName</key>
+	<string>DailyVox Diary</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
+</dict>
+</plist>

@@ -1,0 +1,66 @@
+{
+  "app_store_connect": {
+    "app_name": "DailyVox - Voice Diary & Digital Twin",
+    "subtitle": "Your Private Digital Twin",
+    "bundle_id": "com.dailyvox.app",
+    "primary_category": "HEALTH_AND_FITNESS",
+    "secondary_category": "LIFESTYLE",
+    "age_rating": "FOUR_PLUS",
+    "copyright": "2026 DailyVox",
+    "privacy_policy_url": "https://dailyvox.app/privacy",
+    "support_url": "https://dailyvox.app/support",
+    "marketing_url": "https://dailyvox.app"
+  },
+  "localization": {
+    "en-US": {
+      "name": "DailyVox - Voice Diary & Digital Twin",
+      "subtitle": "Your Private Digital Twin",
+      "keywords": "diary,journal,voice,AI,digital twin,mood,mindfulness,private,mental health,photo,encrypted,goals",
+      "promotional_text": "NEW: Photo attachments, encrypted backups, journaling goals, smart search, and enhanced audio playback. Your Digital Twin keeps getting smarter - all 100% on-device.",
+      "whats_new": "New in this release:\n\n- Photo Attachments: Add up to 5 photos per entry, stored on-device only\n- Encrypted Backup: Password-protected AES-256 encrypted exports (.dvx)\n- Enhanced Audio Player: Scrubbing, progress bar, and speed control (0.5x-2x)\n- Journaling Goals: Set weekly targets with milestone celebrations\n- Smart Search: Knowledge graph-powered suggestions as you type\n- Quick Filter Chips: Tap people and topics from your Digital Twin to filter\n- Refreshed Colors: Theme-aware accent colors across the Digital Twin tab\n- 100% privacy-first: everything stays on your device"
+    }
+  },
+  "app_privacy": {
+    "data_types": [],
+    "data_not_collected": true,
+    "data_linked_to_you": false,
+    "data_used_to_track_you": false,
+    "privacy_practices": {
+      "data_collection": "NONE",
+      "third_party_sharing": "NONE",
+      "tracking": "NONE"
+    }
+  },
+  "review_information": {
+    "demo_account_required": false,
+    "notes_for_reviewer": "DailyVox is a privacy-first voice diary app. All AI processing happens on-device using Apple's NaturalLanguage framework. The app requires microphone access for voice recording, Speech Recognition for transcription, and optionally Photo Library access for attaching photos to entries. Encrypted backups use CryptoKit (AES-256-GCM). No data is sent to external servers. The app does not require an account or internet connection to function."
+  },
+  "screenshots": {
+    "iphone_67": {
+      "resolution": "1290x2796",
+      "count": 8,
+      "captions": [
+        "Speak your mind. DailyVox listens.",
+        "Meet your Digital Twin",
+        "Insights that matter",
+        "Understand your emotional landscape",
+        "Your story, beautifully organized",
+        "Private by design. Always.",
+        "Make it yours",
+        "Your world, mapped"
+      ]
+    },
+    "iphone_65": {
+      "resolution": "1284x2778",
+      "count": 8
+    },
+    "iphone_55": {
+      "resolution": "1242x2208",
+      "count": 8
+    },
+    "ipad_129": {
+      "resolution": "2048x2732",
+      "count": 8
+    }
+  }
+}
