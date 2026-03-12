@@ -16,5 +16,7 @@
 	<string>DailyVox Diary</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
