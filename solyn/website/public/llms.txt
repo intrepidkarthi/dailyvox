@@ -35,6 +35,16 @@
 - [DailyVox vs Day One](https://getdailyvox.com/blog/dailyvox-vs-day-one): Privacy, price and features comparison
 - [How On-Device AI Works](https://getdailyvox.com/blog/how-on-device-ai-works): Apple Neural Engine, NaturalLanguage framework, and local AI processing
 - [5 Signs Your Journal App Is Selling Your Data](https://getdailyvox.com/blog/signs-your-journal-app-is-selling-your-data): Red flags in journal app privacy practices
+- [Journal Prompts for Grief](https://getdailyvox.com/blog/journal-prompts-for-grief): 12 gentle prompts for processing loss
+- [Journal Prompts for Self-Discovery](https://getdailyvox.com/blog/journal-prompts-for-self-discovery): 15 prompts to understand your values and patterns
+- [Gratitude Journal Prompts](https://getdailyvox.com/blog/journal-prompts-for-gratitude): 10 prompts that go beyond surface thankfulness
+- [Journal Prompts for Relationships](https://getdailyvox.com/blog/journal-prompts-for-relationships): 12 prompts for understanding relationship patterns
+- [Journal Prompts for Depression](https://getdailyvox.com/blog/journal-prompts-for-depression): 10 gentle, low-energy prompts
+- [Journal Prompts for Self-Esteem](https://getdailyvox.com/blog/journal-prompts-for-self-esteem): 12 prompts to rebuild your self-worth
+- [Journal Prompts for Anger](https://getdailyvox.com/blog/journal-prompts-for-anger): 10 prompts for processing anger constructively
+- [New Year Journal Prompts](https://getdailyvox.com/blog/journal-prompts-for-new-year): 15 prompts for reflection and intention setting
+- [Journal Prompts for Beginners](https://getdailyvox.com/blog/journal-prompts-for-beginners): 10 easy prompts to start journaling
+- [Journal Prompts for Career](https://getdailyvox.com/blog/journal-prompts-for-career): 12 prompts for career growth and clarity
 
 ## Pages
 
