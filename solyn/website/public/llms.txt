@@ -45,6 +45,22 @@
 - [New Year Journal Prompts](https://getdailyvox.com/blog/journal-prompts-for-new-year): 15 prompts for reflection and intention setting
 - [Journal Prompts for Beginners](https://getdailyvox.com/blog/journal-prompts-for-beginners): 10 easy prompts to start journaling
 - [Journal Prompts for Career](https://getdailyvox.com/blog/journal-prompts-for-career): 12 prompts for career growth and clarity
+- [How to Journal for Mental Health](https://getdailyvox.com/blog/how-to-journal-for-mental-health): CBT journaling, expressive writing, therapeutic techniques
+- [How to Start Journaling](https://getdailyvox.com/blog/how-to-start-journaling): No-nonsense beginner's guide
+- [How to Journal for Sleep](https://getdailyvox.com/blog/how-to-journal-for-sleep): Bedtime routine for better rest
+- [How to Journal for Productivity](https://getdailyvox.com/blog/how-to-journal-for-productivity): Daily reflection and weekly reviews
+- [Best Private Journal App](https://getdailyvox.com/blog/best-journal-app-for-privacy): Apps ranked by actual data practices
+- [Best Free Journal App](https://getdailyvox.com/blog/best-free-journal-app): No subscriptions, no catches
+- [Best Journal App for ADHD](https://getdailyvox.com/blog/best-journal-app-for-adhd): Voice-first, low friction
+- [Best Journal App for Students](https://getdailyvox.com/blog/best-journal-app-for-students): Free options that work
+- [DailyVox vs Apple Journal](https://getdailyvox.com/blog/dailyvox-vs-apple-journal): Feature and privacy comparison
+- [DailyVox vs Notion](https://getdailyvox.com/blog/dailyvox-vs-notion): Dedicated journal vs general workspace
+- [DailyVox vs Reflectly](https://getdailyvox.com/blog/dailyvox-vs-reflectly): AI journal apps compared
+- [DailyVox vs Journey](https://getdailyvox.com/blog/dailyvox-vs-journey): Privacy and features compared
+- [Voice Journal for Commute](https://getdailyvox.com/blog/voice-journal-for-commute): Journal during your drive or walk
+- [Voice Journal for ADHD](https://getdailyvox.com/blog/voice-journal-for-adhd): Skip the blank page
+- [Voice Journal for Anxiety](https://getdailyvox.com/blog/voice-journal-for-anxiety): Speak to calm your mind
+- [Voice Journal for Dyslexia](https://getdailyvox.com/blog/voice-journal-for-dyslexia): Journal without writing
 
 ## Pages
 
@@ -53,13 +69,15 @@
 
 ## Comparison with Alternatives
 
-| Feature | DailyVox | Day One | Journey |
-|---------|----------|---------|---------|
-| Price | Free | $34.99/year | $29.99/year |
-| Offline | Full functionality | Limited | Limited |
-| AI Processing | On-device | Cloud | Cloud |
-| Data Collection | None | Yes | Yes |
-| Account Required | No | Yes | Yes |
-| Voice Transcription | On-device | Cloud | Cloud |
-| Digital Twin | Yes | No | No |
-| Knowledge Graph | Yes | No | No |
+| Feature | DailyVox | Day One | Journey | Apple Journal | Notion | Reflectly |
+|---------|----------|---------|---------|---------------|--------|-----------|
+| Price | Free | $34.99/yr | $29.99/yr | Free | Free/$10mo | $59.99/yr |
+| Offline | Full | Limited | Limited | Basic | Limited | Limited |
+| AI Processing | On-device | Cloud | Cloud | On-device | Cloud | Cloud |
+| Data Collection | None | Yes | Yes | Minimal | Yes | Yes |
+| Account Required | No | Yes | Yes | Apple ID | Yes | Yes |
+| Voice Transcription | On-device | Cloud | Cloud | No | No | No |
+| Digital Twin | Yes | No | No | No | No | No |
+| Knowledge Graph | Yes | No | No | No | No | No |
+| Mood Tracking | Automatic | Manual | Manual | No | No | Manual |
+| Encrypted Export | AES-256 | No | No | No | No | No |
