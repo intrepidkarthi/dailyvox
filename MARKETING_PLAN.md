@@ -65,7 +65,7 @@ DailyVox is the anti-cloud journal. In a world where every app uploads your most
 
 ### 2.2 Website Content Engine (Autopilot Blog)
 
-Create a `/blog` section on `dailyvox.app` with evergreen content that ranks for long-tail keywords.
+Create a `/blog` section on `getdailyvox.com` with evergreen content that ranks for long-tail keywords.
 
 #### Content Calendar — Publish 2x/week, batch-write monthly
 
@@ -333,7 +333,7 @@ Blog Post (long-form)
 
 ### 6.1 Build an Email List
 
-- Add email capture to `dailyvox.app` ("Get journaling tips + privacy news")
+- Add email capture to `getdailyvox.com` ("Get journaling tips + privacy news")
 - Offer a free PDF: "30 Voice Journaling Prompts for Self-Discovery"
 - Add opt-in to app's Settings (link to website signup)
 
