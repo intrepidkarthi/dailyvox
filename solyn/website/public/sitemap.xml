@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dailyvox.app/</loc>
+    <loc>https://getdailyvox.com/</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/privacy</loc>
+    <loc>https://getdailyvox.com/privacy</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/support</loc>
+    <loc>https://getdailyvox.com/support</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/blog</loc>
+    <loc>https://getdailyvox.com/blog</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/blog/why-your-journal-app-shouldnt-need-internet</loc>
+    <loc>https://getdailyvox.com/blog/why-your-journal-app-shouldnt-need-internet</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/blog/complete-guide-to-private-journaling</loc>
+    <loc>https://getdailyvox.com/blog/complete-guide-to-private-journaling</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/blog/voice-journaling-why-speaking-beats-typing</loc>
+    <loc>https://getdailyvox.com/blog/voice-journaling-why-speaking-beats-typing</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dailyvox.app/blog/what-is-a-digital-twin</loc>
+    <loc>https://getdailyvox.com/blog/what-is-a-digital-twin</loc>
     <lastmod>2026-03-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
