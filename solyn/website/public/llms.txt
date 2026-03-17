@@ -1,0 +1,55 @@
+# DailyVox
+
+> DailyVox is a free, privacy-first AI voice diary app for iPhone. It runs 100% offline with on-device AI — no internet, no accounts, no cloud, no data collection. It builds a Digital Twin of your personality using Apple's NaturalLanguage framework entirely on your device.
+
+## Key Facts
+
+- **Price:** Free (no in-app purchases, no subscriptions, no ads)
+- **Platform:** iPhone (iOS 17.0+)
+- **Privacy:** Zero data collection. No servers. No accounts. No tracking. App Store label: "Data Not Collected"
+- **Offline:** Fully functional without internet — voice recording, transcription, AI analysis, Digital Twin
+- **AI:** On-device sentiment analysis, named entity recognition, personality modeling, mood tracking via Apple's NaturalLanguage and Speech frameworks
+- **Website:** [https://getdailyvox.com](https://getdailyvox.com)
+- **App Store:** [Download DailyVox](https://apps.apple.com/app/id6760454642)
+
+## Features
+
+- [Voice Journaling](https://getdailyvox.com): Speak naturally, on-device transcription using Apple Speech framework
+- [Digital Twin AI](https://getdailyvox.com/blog/what-is-a-digital-twin): AI model that learns your personality, emotions, communication style, and builds a personal knowledge graph
+- [Mood Tracking](https://getdailyvox.com/blog/journaling-prompts-for-anxiety): Sentiment analysis, mood trends, emotional baseline tracking, trigger detection
+- [Smart Insights](https://getdailyvox.com): Writing streaks, mood rhythms, emotional arc summaries, interactive charts
+- [Photo Attachments](https://getdailyvox.com): Up to 5 photos per entry, stored locally only
+- [Face ID Lock](https://getdailyvox.com): Biometric security with Face ID or Touch ID
+- [Encrypted Exports](https://getdailyvox.com): AES-256-GCM encrypted backups, export to PDF/JSON/Markdown/CSV
+- [8 Themes](https://getdailyvox.com): System, Light, Sage, Lavender, Rose, Ocean, Warm, Dark
+- [Widgets](https://getdailyvox.com): Lock Screen and Home Screen quick access widgets
+- [iCloud Sync](https://getdailyvox.com): Optional encrypted sync via Apple CloudKit
+
+## Blog
+
+- [Why Your Journal App Shouldn't Need Internet](https://getdailyvox.com/blog/why-your-journal-app-shouldnt-need-internet): Why offline-first journaling matters for privacy
+- [The Complete Guide to Private Journaling in 2026](https://getdailyvox.com/blog/complete-guide-to-private-journaling): 5 levels of journal privacy and what to look for
+- [Voice Journaling: Why Speaking Beats Typing](https://getdailyvox.com/blog/voice-journaling-why-speaking-beats-typing): Research on why voice journaling is more effective
+- [What Is a Digital Twin?](https://getdailyvox.com/blog/what-is-a-digital-twin): How on-device AI learns your personality
+- [10 Journaling Prompts for Anxiety](https://getdailyvox.com/blog/journaling-prompts-for-anxiety): Science-backed prompts for managing anxiety
+- [DailyVox vs Day One](https://getdailyvox.com/blog/dailyvox-vs-day-one): Privacy, price and features comparison
+- [How On-Device AI Works](https://getdailyvox.com/blog/how-on-device-ai-works): Apple Neural Engine, NaturalLanguage framework, and local AI processing
+- [5 Signs Your Journal App Is Selling Your Data](https://getdailyvox.com/blog/signs-your-journal-app-is-selling-your-data): Red flags in journal app privacy practices
+
+## Pages
+
+- [Privacy Policy](https://getdailyvox.com/privacy): DailyVox collects zero data
+- [Support & FAQ](https://getdailyvox.com/support): Common questions about the app
+
+## Comparison with Alternatives
+
+| Feature | DailyVox | Day One | Journey |
+|---------|----------|---------|---------|
+| Price | Free | $34.99/year | $29.99/year |
+| Offline | Full functionality | Limited | Limited |
+| AI Processing | On-device | Cloud | Cloud |
+| Data Collection | None | Yes | Yes |
+| Account Required | No | Yes | Yes |
+| Voice Transcription | On-device | Cloud | Cloud |
+| Digital Twin | Yes | No | No |
+| Knowledge Graph | Yes | No | No |

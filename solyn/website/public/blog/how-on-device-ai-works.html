@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How On-Device AI Works (No Cloud Required) - DailyVox Blog</title>
+  <meta name="description" content="Learn how modern iPhones run AI models locally using Apple's Neural Engine. Understand on-device NLP, sentiment analysis, and why it matters for privacy.">
+  <meta name="keywords" content="on-device AI, local AI processing, Apple Neural Engine, NaturalLanguage framework, on-device machine learning, private AI">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/how-on-device-ai-works">
+  <meta property="og:title" content="How On-Device AI Works (No Cloud Required)">
+  <meta property="og:description" content="How modern iPhones run sophisticated AI locally — and why it matters for your privacy.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/how-on-device-ai-works">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "How On-Device AI Works (No Cloud Required)",
+    "description": "Learn how modern iPhones run AI models locally using Apple's Neural Engine, and why it matters for privacy.",
+    "url": "https://getdailyvox.com/blog/how-on-device-ai-works",
+    "datePublished": "2026-03-17",
+    "dateModified": "2026-03-17",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/how-on-device-ai-works" }
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+        <li><a href="/support.html">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Technology</span>
+        <h1>How On-Device AI Works (No Cloud Required)</h1>
+        <p class="article-meta">March 17, 2026 &middot; 7 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>When most people hear "AI-powered app," they assume their data is being sent to a server somewhere — OpenAI, Google, or some cloud API that processes their information and sends results back. That's how most AI apps work. But it's not the only way.</p>
+
+        <p>DailyVox runs all of its AI features — voice transcription, sentiment analysis, personality modeling, knowledge graph construction, and mood tracking — entirely on your iPhone. No servers. No API calls. No internet connection required. Here's how that's possible.</p>
+
+        <h2>The Hardware: Apple's Neural Engine</h2>
+
+        <p>Every iPhone since the iPhone 8 (2017) includes a dedicated chip called the Neural Engine, designed specifically for machine learning tasks. The latest iPhones pack a Neural Engine capable of performing up to 17 trillion operations per second.</p>
+
+        <p>To put that in perspective: the sentiment analysis of a journal entry — determining whether it's positive, negative, or neutral, identifying emotional nuances, extracting entities — requires roughly a few billion operations. Your iPhone can do that thousands of times per second. The hardware isn't the bottleneck. It hasn't been for years.</p>
+
+        <p>The Neural Engine sits alongside the CPU and GPU on Apple's A-series and M-series chips, but it's optimized specifically for the matrix multiplication and parallel computation that machine learning models require. This means AI tasks run faster and use less battery than if they ran on the main CPU.</p>
+
+        <h2>The Software: Apple's AI Frameworks</h2>
+
+        <p>Apple provides several frameworks that let apps run AI models directly on-device:</p>
+
+        <h3>NaturalLanguage Framework</h3>
+        <p>This is the backbone of DailyVox's text analysis. It provides:</p>
+        <ul>
+          <li><strong>Sentiment Analysis</strong> — Determines the emotional tone of text on a continuous scale from -1.0 (very negative) to 1.0 (very positive), rather than simple categories</li>
+          <li><strong>Named Entity Recognition (NER)</strong> — Identifies people, places, organizations, and dates mentioned in your journal entries</li>
+          <li><strong>Language Detection</strong> — Identifies what language you're writing or speaking in</li>
+          <li><strong>Tokenization</strong> — Breaks text into words, sentences, and paragraphs for analysis</li>
+          <li><strong>Part-of-Speech Tagging</strong> — Identifies nouns, verbs, adjectives, and other word types to understand sentence structure</li>
+          <li><strong>Text Embedding</strong> — Converts text into numerical vectors that capture meaning, enabling semantic similarity comparisons between entries</li>
+        </ul>
+
+        <p>All of these run on the Neural Engine without any network call. The models are bundled with iOS itself, meaning they're already on your phone.</p>
+
+        <h3>Speech Framework</h3>
+        <p>This converts spoken words to text. While Apple's Speech framework can use cloud processing for enhanced accuracy when online, it also supports fully offline transcription using on-device models. DailyVox uses the on-device mode, meaning your voice never leaves your phone.</p>
+
+        <h3>Core ML</h3>
+        <p>Apple's machine learning framework that lets apps run custom-trained models on-device. It automatically uses the Neural Engine, GPU, or CPU depending on the model architecture and what will be most efficient. Core ML models are compiled for the specific device, maximizing performance.</p>
+
+        <h2>How DailyVox Uses On-Device AI</h2>
+
+        <p>Here's what happens when you record a voice journal entry in DailyVox — all on your phone:</p>
+
+        <h3>Step 1: Voice to Text</h3>
+        <p>The Speech framework transcribes your spoken words into text in real-time. The audio is processed locally by the on-device speech model. No audio data is transmitted.</p>
+
+        <h3>Step 2: Sentiment Analysis</h3>
+        <p>The NaturalLanguage framework analyzes the emotional tone of your entry. Rather than a simple "happy" or "sad" classification, it generates a nuanced score that captures the intensity and direction of emotion. DailyVox tracks these scores over time to build your mood profile.</p>
+
+        <h3>Step 3: Entity Extraction</h3>
+        <p>Named Entity Recognition identifies the people, places, and organizations you mention. "Had coffee with Sarah at Blue Bottle" generates three entities: Sarah (person), Blue Bottle (organization/place). These are added to your personal knowledge graph.</p>
+
+        <h3>Step 4: Digital Twin Update</h3>
+        <p>Each entry feeds into your Digital Twin model, which tracks your personality traits, emotional baseline, communication patterns, and how all of these evolve over time. The model becomes more accurate with every entry — and it never leaves your device.</p>
+
+        <h3>Step 5: Pattern Recognition</h3>
+        <p>DailyVox's AI looks for correlations across your entries. Does your mood dip on certain days? Are specific people associated with specific emotions? Do your emotional patterns follow weekly or seasonal cycles? These insights emerge from local analysis of your accumulated entries.</p>
+
+        <h2>Cloud AI vs. On-Device AI: The Tradeoffs</h2>
+
+        <h3>What Cloud AI Does Better</h3>
+        <ul>
+          <li><strong>Larger models.</strong> Cloud services can run models with hundreds of billions of parameters. On-device models are smaller and more specialized.</li>
+          <li><strong>Generative text.</strong> Writing full paragraphs of human-like text (like ChatGPT does) requires model sizes that don't yet fit comfortably on a phone.</li>
+          <li><strong>Broad knowledge.</strong> Cloud models are trained on internet-scale datasets and can answer general knowledge questions.</li>
+        </ul>
+
+        <h3>What On-Device AI Does Better</h3>
+        <ul>
+          <li><strong>Privacy.</strong> Your data never leaves your device. This isn't a policy promise — it's an architectural guarantee.</li>
+          <li><strong>Speed.</strong> No network latency. Results are instant.</li>
+          <li><strong>Reliability.</strong> Works in airplane mode, underground, in remote areas, during internet outages. Always.</li>
+          <li><strong>Personalization.</strong> A model that runs locally can be continuously updated with your personal data without sharing that data.</li>
+          <li><strong>Cost.</strong> No API fees. No per-request charges. No usage limits.</li>
+        </ul>
+
+        <h2>The Future of On-Device AI</h2>
+
+        <p>Every year, the Neural Engine gets more powerful. Every year, model compression techniques make it possible to run more sophisticated models on-device. Apple's own direction is clear: with Apple Intelligence, they're pushing as much AI processing onto the device as possible.</p>
+
+        <p>For journaling specifically, on-device AI is already more than sufficient. The tasks — sentiment analysis, entity recognition, pattern detection, personality modeling — are well within the capability of modern phones. The idea that you need a cloud server to analyze a journal entry is increasingly outdated.</p>
+
+        <p>The apps that will win the next decade are the ones that figured out how to deliver AI-powered experiences without ever touching your data. That's not a limitation. It's the future.</p>
+
+        <div class="article-cta">
+          <h3>Experience On-Device AI in DailyVox</h3>
+          <p>Voice journaling, Digital Twin, mood tracking — all running on your iPhone. Free, private, no internet.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/support.html">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
