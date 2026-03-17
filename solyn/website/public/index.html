@@ -3,11 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox - AI Voice Diary & Digital Twin</title>
-  <meta name="description" content="A privacy-first AI voice diary that builds your digital twin. 100% on-device. Your thoughts never leave your phone.">
+  <title>DailyVox - Free Private AI Voice Diary | No Internet Required</title>
+  <meta name="description" content="DailyVox is a free, 100% offline AI voice diary that builds your Digital Twin. No accounts, no cloud, no tracking. Your thoughts never leave your iPhone.">
+  <meta name="keywords" content="private journal app, offline diary app, voice journal app iPhone, AI diary app, digital twin app, free journal app, voice to text diary, mood tracker offline, encrypted diary, no cloud journal">
+  <meta name="author" content="DailyVox">
   <meta name="theme-color" content="#05081a">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dailyvox.app/">
+  <meta property="og:title" content="DailyVox - Free Private AI Voice Diary | No Internet Required">
+  <meta property="og:description" content="The only AI diary that never phones home. 100% on-device voice journaling with Digital Twin AI. Free forever, no accounts, no cloud.">
+  <meta property="og:image" content="https://dailyvox.app/og-image.png">
+  <meta property="og:site_name" content="DailyVox">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DailyVox - Free Private AI Voice Diary">
+  <meta name="twitter:description" content="The only AI diary that never phones home. 100% on-device voice journaling with Digital Twin AI. Free forever.">
+  <meta name="twitter:image" content="https://dailyvox.app/og-image.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://dailyvox.app/">
+
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="/app-icon.png">
+  <link rel="apple-touch-icon" href="/app-icon.png">
+
+  <!-- Structured Data - SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "DailyVox",
+    "description": "A free, privacy-first AI voice diary that builds your Digital Twin. 100% on-device processing, no internet required.",
+    "url": "https://dailyvox.app",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "iOS 17.0+",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "1"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "DailyVox"
+    },
+    "downloadUrl": "https://apps.apple.com/app/id6760454642",
+    "screenshot": "https://dailyvox.app/og-image.png",
+    "softwareVersion": "1.0.0",
+    "datePublished": "2026-03-01"
+  }
+  </script>
+
+  <!-- Structured Data - FAQPage (for search rich results) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does DailyVox work offline?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. DailyVox works 100% offline. Voice recording, transcription, AI insights, and your Digital Twin all run on-device without any internet connection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is DailyVox really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. DailyVox is completely free with no in-app purchases, no subscriptions, and no ads."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does DailyVox collect my data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. DailyVox collects zero data. There are no servers, no accounts, no tracking, and no third-party SDKs. Everything stays on your iPhone."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <nav>
@@ -17,6 +103,7 @@
         <span>DailyVox</span>
       </a>
       <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
         <li><a href="/privacy.html">Privacy</a></li>
         <li><a href="/support.html">Support</a></li>
       </ul>
@@ -84,6 +171,34 @@
       </div>
     </section>
 
+    <section class="blog-preview">
+      <p class="section-label">From the Blog</p>
+      <h2 class="section-title">Journaling, privacy &amp; on-device AI</h2>
+      <div class="blog-grid">
+        <a href="/blog/why-your-journal-app-shouldnt-need-internet" class="blog-card">
+          <span class="blog-tag tag-privacy">Privacy</span>
+          <h3>Why Your Journal App Shouldn't Need Internet</h3>
+          <p>Your most private thoughts are being uploaded to servers you don't control. Here's why offline-first journaling matters.</p>
+          <span class="blog-date">March 17, 2026</span>
+        </a>
+        <a href="/blog/complete-guide-to-private-journaling" class="blog-card">
+          <span class="blog-tag tag-guide">Guide</span>
+          <h3>The Complete Guide to Private Journaling in 2026</h3>
+          <p>Everything you need to know about keeping your journal truly private in an age of cloud-everything.</p>
+          <span class="blog-date">March 17, 2026</span>
+        </a>
+        <a href="/blog/voice-journaling-why-speaking-beats-typing" class="blog-card">
+          <span class="blog-tag tag-wellness">Wellness</span>
+          <h3>Voice Journaling: Why Speaking Beats Typing</h3>
+          <p>Research shows speaking your thoughts activates different brain regions than writing. Here's why that matters.</p>
+          <span class="blog-date">March 17, 2026</span>
+        </a>
+      </div>
+      <div style="text-align:center; margin-top:32px;">
+        <a href="/blog" class="blog-view-all">View all articles &rarr;</a>
+      </div>
+    </section>
+
     <section class="privacy-banner">
       <div class="shield"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6dd5b0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
       <h3>Privacy is not a feature. It's the foundation.</h3>
@@ -94,6 +209,7 @@
   <footer>
     <div class="container">
       <div class="footer-links">
+        <a href="/blog">Blog</a>
         <a href="/privacy.html">Privacy Policy</a>
         <a href="/support.html">Support</a>
       </div>
