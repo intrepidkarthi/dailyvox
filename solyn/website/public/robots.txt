@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dailyvox.app/sitemap.xml
