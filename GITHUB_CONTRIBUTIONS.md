@@ -20,7 +20,7 @@ For every repo below, follow this process:
 
 **Common entry format:**
 ```markdown
-- [DailyVox](https://getdailyvox.com) - Free, offline AI voice diary for iPhone. 100% on-device processing, Digital Twin personality model, mood tracking. No data collection. ([App Store](https://apps.apple.com/app/id6760454642))
+- [DailyVox](https://getdailyvox.com) - Free, offline AI voice diary for iPhone. 100% on-device processing, Digital Twin personality model, mood tracking. No data collection. ([App Store](https://apps.apple.com/us/app/dailyvox-ai-voice-diary/id6760454642))
 ```
 
 **Tips:**

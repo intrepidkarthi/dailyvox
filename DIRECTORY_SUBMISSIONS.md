@@ -46,9 +46,9 @@
 Name: DailyVox
 Tagline: Free Private AI Voice Diary — No Internet Required
 Website: https://getdailyvox.com
-App Store: https://apps.apple.com/app/id6760454642
+App Store: https://apps.apple.com/us/app/dailyvox-ai-voice-diary/id6760454642
 Category: Health & Fitness / Lifestyle
-Platform: iPhone (iOS 17.0+)
+Platform: iPhone & iPad (iOS 17.0+)
 Price: Free (no IAP, no subscriptions, no ads)
 Developer Email: intrepidkarthi@gmail.com
 
