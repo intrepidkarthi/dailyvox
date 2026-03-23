@@ -5,7 +5,7 @@
 ## Key Facts
 
 - **Price:** Free (no in-app purchases, no subscriptions, no ads)
-- **Platform:** iPhone (iOS 17.0+)
+- **Platform:** iPhone & iPad (iOS 17.0+)
 - **Privacy:** Zero data collection. No servers. No accounts. No tracking. App Store label: "Data Not Collected"
 - **Offline:** Fully functional without internet — voice recording, transcription, AI analysis, Digital Twin
 - **AI:** On-device sentiment analysis, named entity recognition, personality modeling, mood tracking via Apple's NaturalLanguage and Speech frameworks
@@ -61,6 +61,21 @@
 - [Voice Journal for ADHD](https://getdailyvox.com/blog/voice-journal-for-adhd): Skip the blank page
 - [Voice Journal for Anxiety](https://getdailyvox.com/blog/voice-journal-for-anxiety): Speak to calm your mind
 - [Voice Journal for Dyslexia](https://getdailyvox.com/blog/voice-journal-for-dyslexia): Journal without writing
+- [Best Journal App for iPhone (2026)](https://getdailyvox.com/blog/best-journal-app-iphone): Honest comparison of top iPhone diary apps
+- [Best Diary App for iPad (2026)](https://getdailyvox.com/blog/best-diary-app-ipad): Apps that actually use the iPad screen
+- [Best Offline Journal App](https://getdailyvox.com/blog/best-offline-journal-app): 7 apps that work without internet
+- [Journal Apps With AI](https://getdailyvox.com/blog/journal-app-with-ai): What AI journal apps do with your data
+- [Best Free Mood Tracker App](https://getdailyvox.com/blog/free-mood-tracker-app): No subscriptions required
+- [DailyVox vs Daylio](https://getdailyvox.com/blog/dailyvox-vs-daylio): Voice diary vs micro-diary
+- [DailyVox vs Diarium](https://getdailyvox.com/blog/dailyvox-vs-diarium): Privacy and features compared
+- [DailyVox vs Momento](https://getdailyvox.com/blog/dailyvox-vs-momento): Which journal app is more private
+- [DailyVox vs Penzu](https://getdailyvox.com/blog/dailyvox-vs-penzu): Free vs subscription journal
+- [Apple Journal vs DailyVox](https://getdailyvox.com/blog/apple-journal-vs-dailyvox): Which iPhone diary app is better
+- [AI Journaling in 2026](https://getdailyvox.com/blog/ai-journaling-2026): What's real, what's hype, what's dangerous
+- [Your Digital Clone](https://getdailyvox.com/blog/digital-clone-personal-use): How AI can mirror your personality privately
+- [Journal App Privacy Comparison](https://getdailyvox.com/blog/journal-app-privacy-comparison): Who can read your diary — comparison table
+- [How to Export Day One](https://getdailyvox.com/blog/how-to-export-day-one): Export your data and where to move it
+- [Best Voice Recorder Diary App](https://getdailyvox.com/blog/voice-recorder-diary-app): Speak your journal, skip the typing
 
 ## Pages
 
