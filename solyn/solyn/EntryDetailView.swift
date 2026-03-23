@@ -419,11 +419,22 @@ struct EntryDetailView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(Array(photoImages.enumerated()), id: \.offset) { index, image in
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: isIPad ? 120 : 80, height: isIPad ? 120 : 80)
-                                .clipShape(RoundedRectangle(cornerRadius: isIPad ? 12 : 8))
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: isIPad ? 120 : 80, height: isIPad ? 120 : 80)
+                                    .clipShape(RoundedRectangle(cornerRadius: isIPad ? 12 : 8))
+
+                                Button {
+                                    removePhoto(at: index)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.white, .red)
+                                }
+                                .offset(x: 6, y: -6)
+                            }
                         }
                     }
                 }
@@ -482,6 +493,20 @@ struct EntryDetailView: View {
         }
         selectedPhotos = []
         #endif
+    }
+
+    private func removePhoto(at index: Int) {
+        guard index < photoFileNames.count else { return }
+        let fileName = photoFileNames[index]
+        PhotoStorageManager.shared.deletePhoto(fileName: fileName)
+        photoFileNames.remove(at: index)
+        #if canImport(UIKit)
+        if index < photoImages.count {
+            photoImages.remove(at: index)
+        }
+        #endif
+        savePhotoFileNames()
+        HapticManager.shared.entryDeleted()
     }
 
     private func savePhotoFileNames() {
@@ -568,7 +593,8 @@ struct EntryDetailView: View {
     private func saveIfNeeded() {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let currentMood = entry.value(forKey: "mood") as? String ?? ""
-        let needsSave = trimmed != (entry.text ?? "") || selectedMood.rawValue != currentMood
+        let oldText = entry.text ?? ""
+        let needsSave = trimmed != oldText || selectedMood.rawValue != currentMood
 
         if needsSave {
             entry.text = trimmed
@@ -577,14 +603,25 @@ struct EntryDetailView: View {
             do {
                 try viewContext.save()
 
-                // Feed into Digital Twin
+                // Feed into Digital Twin — use reprocess if text was edited
                 if !trimmed.isEmpty {
-                    DigitalTwinEngine.shared.processEntry(
-                        text: trimmed,
-                        mood: selectedMood.rawValue,
-                        date: entry.date ?? Date(),
-                        duration: entry.duration
-                    )
+                    if !oldText.isEmpty && trimmed != oldText {
+                        // Text was edited — re-process to update entity names
+                        DigitalTwinEngine.shared.reprocessEditedEntry(
+                            oldText: oldText,
+                            newText: trimmed,
+                            mood: selectedMood.rawValue,
+                            date: entry.date ?? Date(),
+                            duration: entry.duration
+                        )
+                    } else {
+                        DigitalTwinEngine.shared.processEntry(
+                            text: trimmed,
+                            mood: selectedMood.rawValue,
+                            date: entry.date ?? Date(),
+                            duration: entry.duration
+                        )
+                    }
                 }
             } catch {
                 // ignore

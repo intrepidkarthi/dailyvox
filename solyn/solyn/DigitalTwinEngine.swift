@@ -340,6 +340,93 @@ final class DigitalTwinEngine: ObservableObject {
         save()
     }
 
+    /// Re-process an edited entry — updates entity labels in the knowledge graph
+    func reprocessEditedEntry(oldText: String, newText: String, mood: String?, date: Date, duration: Double) {
+        guard !newText.isEmpty else { return }
+
+        // Extract entities from old and new text to detect name changes
+        let oldEntities = extractNamedEntities(from: oldText)
+        let newEntities = extractNamedEntities(from: newText)
+
+        // Find entities that were renamed (same position/context, different text)
+        // Simple heuristic: if old had "Jhon" and new has "John", update the label
+        for oldEntity in oldEntities {
+            let oldKey = oldEntity.lowercased()
+            if knowledgeGraph.nodes[oldKey] != nil {
+                // Check if this entity is missing from new text
+                let stillPresent = newEntities.contains { $0.lowercased() == oldKey }
+                if !stillPresent {
+                    // Look for a similar new entity that could be a correction
+                    for newEntity in newEntities {
+                        let newKey = newEntity.lowercased()
+                        if knowledgeGraph.nodes[newKey] == nil && levenshteinSimilar(oldKey, newKey) {
+                            // Transfer the old node data to the new key
+                            if var node = knowledgeGraph.nodes[oldKey] {
+                                node.label = newEntity
+                                knowledgeGraph.nodes[newKey] = PersonalKnowledgeGraph.KnowledgeNode(
+                                    id: newKey,
+                                    label: newEntity,
+                                    type: node.type,
+                                    mentions: node.mentions,
+                                    firstSeen: node.firstSeen,
+                                    lastSeen: Date(),
+                                    sentimentAssociation: node.sentimentAssociation,
+                                    importance: node.importance
+                                )
+                                knowledgeGraph.nodes.removeValue(forKey: oldKey)
+                                // Update edges too
+                                for i in 0..<knowledgeGraph.edges.count {
+                                    if knowledgeGraph.edges[i].from == oldKey {
+                                        knowledgeGraph.edges[i].from = newKey
+                                    }
+                                    if knowledgeGraph.edges[i].to == oldKey {
+                                        knowledgeGraph.edges[i].to = newKey
+                                    }
+                                }
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        // Now do the standard processing with new text
+        processEntry(text: newText, mood: mood, date: date, duration: duration)
+    }
+
+    /// Extract named entities from text
+    private func extractNamedEntities(from text: String) -> [String] {
+        guard !text.isEmpty else { return [] }
+        var entities: [String] = []
+        entityTagger.string = text
+        entityTagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .nameType, options: [.omitWhitespace, .joinNames]) { tag, range in
+            let entity = String(text[range])
+            if entity.count > 1, tag == .personalName || tag == .placeName || tag == .organizationName {
+                entities.append(entity)
+            }
+            return true
+        }
+        return entities
+    }
+
+    /// Check if two strings are similar enough to be a typo correction (Levenshtein distance <= 2)
+    private func levenshteinSimilar(_ a: String, _ b: String) -> Bool {
+        let aChars = Array(a)
+        let bChars = Array(b)
+        let m = aChars.count, n = bChars.count
+        guard abs(m - n) <= 2 else { return false }
+        var dp = Array(repeating: Array(repeating: 0, count: n + 1), count: m + 1)
+        for i in 0...m { dp[i][0] = i }
+        for j in 0...n { dp[0][j] = j }
+        for i in 1...m {
+            for j in 1...n {
+                dp[i][j] = aChars[i-1] == bChars[j-1] ? dp[i-1][j-1] : min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]) + 1
+            }
+        }
+        return dp[m][n] <= 2 && dp[m][n] > 0
+    }
+
     /// Process a chat message (lighter analysis)
     func processChatMessage(_ text: String) {
         guard !text.isEmpty else { return }
@@ -561,6 +648,42 @@ final class DigitalTwinEngine: ObservableObject {
 
     // MARK: - Knowledge Graph Update
 
+    // Words/suffixes that indicate an entity is NOT a person
+    private static let nonPersonSuffixes = Set([
+        "festival", "fest", "day", "week", "month", "park", "museum", "temple",
+        "church", "mosque", "building", "tower", "bridge", "street", "road",
+        "avenue", "square", "station", "airport", "school", "university",
+        "hospital", "market", "mall", "store", "restaurant", "cafe", "hotel",
+        "lake", "river", "mountain", "beach", "island", "ocean", "sea",
+        "city", "town", "village", "country", "state", "county",
+        "christmas", "easter", "diwali", "eid", "hanukkah", "thanksgiving",
+        "ramadan", "halloween", "valentine", "pongal", "holi", "navratri",
+        "onam", "vishu", "bihu", "lohri", "makar", "sankranti", "deepavali"
+    ])
+
+    private static let nonPersonExact = Set([
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+        "january", "february", "march", "april", "may", "june", "july",
+        "august", "september", "october", "november", "december",
+        "iphone", "ipad", "mac", "apple", "google", "amazon", "netflix",
+        "instagram", "whatsapp", "facebook", "twitter", "youtube",
+        "covid", "corona", "birthday", "anniversary", "wedding", "funeral",
+        "new year", "new years"
+    ])
+
+    /// Check if an entity tagged as personalName is likely not a person
+    private func isLikelyNotPerson(_ entity: String) -> Bool {
+        let lower = entity.lowercased()
+        // Check exact match
+        if Self.nonPersonExact.contains(lower) { return true }
+        // Check if any word in the entity is a non-person suffix
+        let words = lower.split(separator: " ").map { String($0) }
+        for word in words {
+            if Self.nonPersonSuffixes.contains(word) { return true }
+        }
+        return false
+    }
+
     private func updateKnowledgeGraph(_ text: String, date: Date) {
         let sentiment = getSentiment(text)
 
@@ -576,8 +699,23 @@ final class DigitalTwinEngine: ObservableObject {
 
             switch tag {
             case .personalName:
-                extractedPeople.append(entity)
-                knowledgeGraph.addOrUpdate(id: entity, label: entity, type: .person, sentiment: sentiment)
+                // Validate: filter out places, festivals, objects mis-tagged as people
+                if isLikelyNotPerson(entity) {
+                    // Re-classify as place or topic based on suffix
+                    let lower = entity.lowercased()
+                    let words = lower.split(separator: " ").map { String($0) }
+                    let hasPlaceSuffix = words.contains { Self.nonPersonSuffixes.intersection(["park", "museum", "temple", "church", "mosque", "building", "tower", "bridge", "street", "road", "avenue", "square", "station", "airport", "lake", "river", "mountain", "beach", "island", "city", "town", "village", "country"]).contains($0) }
+                    if hasPlaceSuffix {
+                        extractedPlaces.append(entity)
+                        knowledgeGraph.addOrUpdate(id: entity, label: entity, type: .place, sentiment: sentiment)
+                    } else {
+                        extractedTopics.append(entity)
+                        knowledgeGraph.addOrUpdate(id: entity, label: entity, type: .topic, sentiment: sentiment)
+                    }
+                } else {
+                    extractedPeople.append(entity)
+                    knowledgeGraph.addOrUpdate(id: entity, label: entity, type: .person, sentiment: sentiment)
+                }
             case .placeName:
                 extractedPlaces.append(entity)
                 knowledgeGraph.addOrUpdate(id: entity, label: entity, type: .place, sentiment: sentiment)

@@ -217,7 +217,7 @@ struct TodayView: View {
                                 .font(.body)
                                 .foregroundColor(.primary)
                                 .multilineTextAlignment(.leading)
-                                .lineLimit(6)
+                                .lineLimit(nil)
 
                             // Meta info
                             HStack(spacing: 16) {
