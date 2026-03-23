@@ -30,6 +30,7 @@ enum RecordingState {
 /// Provides voice recording with real-time audio level visualization.
 struct TodayView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @StateObject private var recorder = AudioRecorder()
     @State private var recordingState: RecordingState = .idle
@@ -42,6 +43,8 @@ struct TodayView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
         animation: .default)
     private var allEntries: FetchedResults<DiaryEntry>
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     init() {
         let calendar = Calendar.current
@@ -78,6 +81,8 @@ struct TodayView: View {
                         }
                     }
                     .padding()
+                    .frame(maxWidth: isIPad ? 700 : .infinity)
+                    .frame(maxWidth: .infinity)
                 }
 
                 Spacer(minLength: 0)
@@ -333,14 +338,14 @@ struct TodayView: View {
                         .foregroundColor(.red)
 
                     // Waveform-style level indicator
-                    HStack(spacing: 3) {
-                        ForEach(0..<20, id: \.self) { i in
+                    HStack(spacing: isIPad ? 5 : 3) {
+                        ForEach(0..<(isIPad ? 30 : 20), id: \.self) { i in
                             RoundedRectangle(cornerRadius: 2)
                                 .fill(barColor(for: i))
-                                .frame(width: 4, height: barHeight(for: i))
+                                .frame(width: isIPad ? 6 : 4, height: barHeight(for: i))
                         }
                     }
-                    .frame(height: 30)
+                    .frame(height: isIPad ? 40 : 30)
 
                     Text("Recording... Tap to stop")
                         .font(.caption)
@@ -363,9 +368,9 @@ struct TodayView: View {
                         ZStack {
                             Circle()
                                 .fill(Color(.tertiarySystemFill))
-                                .frame(width: 48, height: 48)
+                                .frame(width: isIPad ? 56 : 48, height: isIPad ? 56 : 48)
                             Image(systemName: "photo.badge.plus")
-                                .font(.system(size: 18))
+                                .font(.system(size: isIPad ? 22 : 18))
                                 .foregroundColor(.accentColor)
                         }
                     }
@@ -405,6 +410,9 @@ struct TodayView: View {
         .animation(.spring(response: 0.4), value: recordingState)
     }
 
+    private var recordButtonSize: CGFloat { isIPad ? 88 : 72 }
+    private var recordButtonOuterSize: CGFloat { isIPad ? 108 : 88 }
+
     private var recordButton: some View {
         Button {
             if recordingState != .processing {
@@ -415,26 +423,26 @@ struct TodayView: View {
                 // Main circle
                 Circle()
                     .fill(buttonColor)
-                    .frame(width: 72, height: 72)
-                
+                    .frame(width: recordButtonSize, height: recordButtonSize)
+
                 // Outer ring (subtle)
                 Circle()
                     .stroke(buttonColor.opacity(0.3), lineWidth: 4)
-                    .frame(width: 88, height: 88)
-                
+                    .frame(width: recordButtonOuterSize, height: recordButtonOuterSize)
+
                 // Icon
                 if recordingState == .recording {
                     // Stop square
                     RoundedRectangle(cornerRadius: 6)
                         .fill(.white)
-                        .frame(width: 24, height: 24)
+                        .frame(width: isIPad ? 30 : 24, height: isIPad ? 30 : 24)
                 } else if recordingState == .processing {
                     ProgressView()
                         .tint(.white)
                 } else {
                     // Mic icon
                     Image(systemName: "mic.fill")
-                        .font(.system(size: 28))
+                        .font(.system(size: isIPad ? 34 : 28))
                         .foregroundColor(.white)
                 }
             }
@@ -471,10 +479,13 @@ struct TodayView: View {
 
     private func barColor(for index: Int) -> Color {
         let normalizedLevel = CGFloat(max(0, min(1, recorder.level)))
-        let threshold = CGFloat(index) / 20.0
+        let barCount = CGFloat(isIPad ? 30 : 20)
+        let threshold = CGFloat(index) / barCount
 
         if normalizedLevel > threshold {
-            return index > 14 ? .red : (index > 10 ? .orange : .accentColor)
+            let highThreshold = Int(barCount * 0.7)
+            let midThreshold = Int(barCount * 0.5)
+            return index > highThreshold ? .red : (index > midThreshold ? .orange : .accentColor)
         }
         return Color.secondary.opacity(0.2)
     }
@@ -795,9 +806,9 @@ struct PromptChip: View {
                     .foregroundColor(.secondary)
                     .lineLimit(2)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .frame(maxWidth: 220, alignment: .leading)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .frame(maxWidth: 280, alignment: .leading)
             .background(isSelected ? Color.accentColor.opacity(0.15) : Color(.secondarySystemGroupedBackground))
             .foregroundColor(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 12))

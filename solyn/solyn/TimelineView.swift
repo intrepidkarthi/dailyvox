@@ -16,6 +16,7 @@ import Speech
 /// Supports search, starred filter, mood filter, date range, and pull-to-refresh.
 struct TimelineView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: false)],

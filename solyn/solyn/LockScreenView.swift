@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LockScreenView: View {
     @ObservedObject private var lockManager = AppLockManager.shared
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var authFailed = false
 
     var body: some View {
@@ -11,7 +12,7 @@ struct LockScreenView: View {
 
             VStack(spacing: 32) {
                 Image(systemName: "lock.shield.fill")
-                    .font(.system(size: 64))
+                    .font(.system(size: horizontalSizeClass == .regular ? 80 : 64))
                     .foregroundColor(.accentColor)
 
                 Text("DailyVox is Locked")
@@ -29,7 +30,7 @@ struct LockScreenView: View {
                     }
                     .font(.headline)
                     .padding()
-                    .frame(maxWidth: 280)
+                    .frame(maxWidth: 320)
                     .background(Color.accentColor)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -41,6 +42,7 @@ struct LockScreenView: View {
                         .foregroundColor(.red)
                 }
             }
+            .frame(maxWidth: 500)
             .padding()
         }
         .onAppear {

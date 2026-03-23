@@ -46,6 +46,7 @@ struct EmptyStateView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
+                    .frame(maxWidth: 400)
                     .padding(.horizontal, 40)
             }
 

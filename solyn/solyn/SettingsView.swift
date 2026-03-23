@@ -6,6 +6,7 @@ import UIKit
 
 struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var reminderManager = ReminderManager.shared
     @ObservedObject private var lockManager = AppLockManager.shared
     @ObservedObject private var themeManager = ThemeManager.shared
@@ -178,12 +179,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var appearanceSection: some View {
         Section {
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 12) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: horizontalSizeClass == .regular ? 6 : 4), spacing: 12) {
                 ForEach(AppTheme.allCases) { theme in
                     ThemeButton(
                         theme: theme,
@@ -327,7 +323,7 @@ struct SettingsView: View {
         } footer: {
             Text(PersistenceController.isCloudAvailable
                  ? "Your data syncs securely through your personal iCloud account. Only you can access it."
-                 : "Enable iCloud to sync your diary across iPhone, iPad, and Mac.")
+                 : "Enable iCloud to back up and sync your diary securely.")
         }
     }
 

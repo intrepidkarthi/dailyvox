@@ -11,9 +11,12 @@ import SwiftUI
 struct DigitalTwinView: View {
     @ObservedObject private var twin = DigitalTwinEngine.shared
     @ObservedObject private var themeManager = ThemeManager.shared
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selectedSection: TwinSection = .overview
     @State private var showingDetail = false
     @State private var animateOrb = false
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     enum TwinSection: String, CaseIterable {
         case overview = "Overview"
@@ -53,6 +56,8 @@ struct DigitalTwinView: View {
                 privacyBadge
             }
             .padding()
+            .frame(maxWidth: isIPad ? 700 : .infinity)
+            .frame(maxWidth: .infinity)
         }
         .navigationTitle("Your Digital Twin")
         .background(themeManager.backgroundColor.ignoresSafeArea())
@@ -609,23 +614,25 @@ struct DigitalTwinView: View {
     }
 
     private func emotionMeter(label: String, value: Double, color: Color) -> some View {
-        VStack(spacing: 6) {
+        let meterSize: CGFloat = isIPad ? 70 : 50
+        let lineWidth: CGFloat = isIPad ? 6 : 4
+        return VStack(spacing: 6) {
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 4)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: lineWidth)
                 Circle()
                     .trim(from: 0, to: max(0.05, value))
-                    .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
                 Text(String(format: "%.0f%%", value * 100))
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: isIPad ? 14 : 11, weight: .bold))
                     .foregroundColor(themeManager.textColor)
             }
-            .frame(width: 50, height: 50)
+            .frame(width: meterSize, height: meterSize)
 
             Text(label)
-                .font(.system(size: 10))
+                .font(.system(size: isIPad ? 12 : 10))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
     }
@@ -731,7 +738,7 @@ struct DigitalTwinView: View {
         HStack(spacing: 8) {
             Image(systemName: "lock.shield.fill")
                 .foregroundColor(.green)
-            Text("100% on-device. Your twin never leaves your phone.")
+            Text("100% on-device. Your twin never leaves your device.")
                 .font(.caption)
                 .foregroundColor(themeManager.secondaryTextColor)
         }

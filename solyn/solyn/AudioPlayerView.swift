@@ -131,25 +131,27 @@ struct AudioPlayerView: View {
             }
 
             // Speed selector
-            HStack(spacing: 6) {
-                Text("Speed")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    Text("Speed")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
 
-                ForEach(AudioPlaybackController.speedOptions, id: \.self) { speed in
-                    Button {
-                        controller.setSpeed(speed)
-                        HapticManager.shared.selectionChanged()
-                    } label: {
-                        Text(speedLabel(speed))
-                            .font(.caption2.weight(controller.playbackRate == speed ? .bold : .regular))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(controller.playbackRate == speed ? Color.accentColor.opacity(0.15) : Color(.tertiarySystemFill))
-                            .foregroundColor(controller.playbackRate == speed ? .accentColor : .secondary)
-                            .clipShape(Capsule())
+                    ForEach(AudioPlaybackController.speedOptions, id: \.self) { speed in
+                        Button {
+                            controller.setSpeed(speed)
+                            HapticManager.shared.selectionChanged()
+                        } label: {
+                            Text(speedLabel(speed))
+                                .font(.caption2.weight(controller.playbackRate == speed ? .bold : .regular))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(controller.playbackRate == speed ? Color.accentColor.opacity(0.15) : Color(.tertiarySystemFill))
+                                .foregroundColor(controller.playbackRate == speed ? .accentColor : .secondary)
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }

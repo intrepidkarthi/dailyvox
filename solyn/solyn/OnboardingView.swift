@@ -9,7 +9,10 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var currentPage = 0
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     private let pages: [OnboardingPage] = [
         OnboardingPage(
@@ -137,7 +140,8 @@ struct OnboardingView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .shadow(color: pages[currentPage].iconColor.opacity(0.3), radius: 10, y: 5)
                 }
-                .padding(.horizontal, 30)
+                .frame(maxWidth: isIPad ? 500 : .infinity)
+                .padding(.horizontal, isIPad ? 60 : 30)
                 .padding(.bottom, 50)
             }
         }
@@ -162,23 +166,26 @@ struct OnboardingPage {
 
 struct OnboardingPageView: View {
     let page: OnboardingPage
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: isIPad ? 40 : 30) {
             Spacer()
 
             // Icon
             ZStack {
                 Circle()
                     .fill(page.iconColor.opacity(0.15))
-                    .frame(width: 140, height: 140)
+                    .frame(width: isIPad ? 180 : 140, height: isIPad ? 180 : 140)
 
                 Circle()
                     .fill(page.iconColor.opacity(0.1))
-                    .frame(width: 180, height: 180)
+                    .frame(width: isIPad ? 220 : 180, height: isIPad ? 220 : 180)
 
                 Image(systemName: page.icon)
-                    .font(.system(size: 60))
+                    .font(.system(size: isIPad ? 80 : 60))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [page.iconColor, page.iconColor.opacity(0.7)],
@@ -192,23 +199,24 @@ struct OnboardingPageView: View {
             // Text content
             VStack(spacing: 16) {
                 Text(page.title)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.system(size: isIPad ? 40 : 32, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
 
                 Text(page.subtitle)
-                    .font(.title3.weight(.medium))
+                    .font(isIPad ? .title2.weight(.medium) : .title3.weight(.medium))
                     .foregroundColor(.white.opacity(0.8))
                     .multilineTextAlignment(.center)
 
                 Text(page.description)
-                    .font(.body)
+                    .font(isIPad ? .title3 : .body)
                     .foregroundColor(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
                     .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 30)
+            .padding(.horizontal, isIPad ? 80 : 30)
+            .frame(maxWidth: isIPad ? 600 : .infinity)
 
             Spacer()
             Spacer()

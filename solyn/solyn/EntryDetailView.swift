@@ -15,6 +15,7 @@ import PhotosUI
 struct EntryDetailView: View {
     @ObservedObject var entry: DiaryEntry
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState private var isTextFocused: Bool
 
     @State private var text: String
@@ -30,6 +31,8 @@ struct EntryDetailView: View {
     #if canImport(UIKit)
     @State private var photoImages: [UIImage] = []
     #endif
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     init(entry: DiaryEntry) {
         self.entry = entry
@@ -72,6 +75,8 @@ struct EntryDetailView: View {
                     }
                 }
             }
+            .frame(maxWidth: isIPad ? 700 : .infinity)
+            .frame(maxWidth: .infinity)
         }
         .navigationTitle(formattedShortDate)
         .navigationBarTitleDisplayMode(.inline)
@@ -417,8 +422,8 @@ struct EntryDetailView: View {
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 80, height: 80)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .frame(width: isIPad ? 120 : 80, height: isIPad ? 120 : 80)
+                                .clipShape(RoundedRectangle(cornerRadius: isIPad ? 12 : 8))
                         }
                     }
                 }

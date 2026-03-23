@@ -11,7 +11,7 @@ import SwiftUI
 import CoreData
 
 /// Main content view with tab-based navigation.
-/// Contains Today, Timeline, Insights, and Settings tabs.
+/// Uses TabView on all devices. On iPadOS 18+, the tab bar adapts to a sidebar.
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -58,7 +58,6 @@ struct ContentView: View {
             }
         }
     }
-
 }
 
 private let itemFormatter: DateFormatter = {

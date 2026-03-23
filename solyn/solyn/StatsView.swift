@@ -11,6 +11,7 @@ import Charts
 
 struct StatsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var goalManager = GoalManager.shared
 
     @FetchRequest(
@@ -19,6 +20,8 @@ struct StatsView: View {
     private var entries: FetchedResults<DiaryEntry>
 
     @State private var showMilestone: Int? = nil
+
+    private var isIPad: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
         ScrollView {
@@ -51,6 +54,8 @@ struct StatsView: View {
                 }
             }
             .padding()
+            .frame(maxWidth: isIPad ? 700 : .infinity)
+            .frame(maxWidth: .infinity)
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("Insights")
@@ -174,7 +179,7 @@ struct StatsView: View {
                     VStack(spacing: 6) {
                         Circle()
                             .fill(hasEntry ? Color.accentColor : Color.secondary.opacity(0.2))
-                            .frame(width: 32, height: 32)
+                            .frame(width: isIPad ? 44 : 32, height: isIPad ? 44 : 32)
                             .overlay {
                                 if hasEntry {
                                     Image(systemName: "checkmark")
@@ -278,7 +283,7 @@ struct StatsView: View {
             Text("Writing Stats")
                 .font(.headline)
 
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
                 StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: .blue)
                 StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: .green)
                 StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: .yellow)
