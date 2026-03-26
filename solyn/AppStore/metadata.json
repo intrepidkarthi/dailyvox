@@ -1,10 +1,10 @@
 {
   "app_store_connect": {
-    "app_name": "DailyVox - Voice Diary & Digital Twin",
-    "subtitle": "Your Private Digital Twin",
+    "app_name": "DailyVox - AI Voice Journal & Diary",
+    "subtitle": "Private Voice Journal & Mood Tracker",
     "bundle_id": "com.dailyvox.app",
     "primary_category": "HEALTH_AND_FITNESS",
-    "secondary_category": "LIFESTYLE",
+    "secondary_category": "PRODUCTIVITY",
     "age_rating": "FOUR_PLUS",
     "copyright": "2026 DailyVox",
     "privacy_policy_url": "https://dailyvox.app/privacy",
@@ -13,10 +13,10 @@
   },
   "localization": {
     "en-US": {
-      "name": "DailyVox - Voice Diary & Digital Twin",
-      "subtitle": "Your Private Digital Twin",
-      "keywords": "diary,journal,voice,AI,digital twin,mood,mindfulness,private,mental health,photo,encrypted,goals",
-      "promotional_text": "NEW: Photo attachments, encrypted backups, journaling goals, smart search, and enhanced audio playback. Your Digital Twin keeps getting smarter - all 100% on-device.",
+      "name": "DailyVox - AI Voice Journal & Diary",
+      "subtitle": "Private Voice Journal & Mood Tracker",
+      "keywords": "diary,journal,voice,mood tracker,digital twin,private,speech to text,mindfulness,encrypted,anxiety",
+      "promotional_text": "NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight summaries. All AI runs 100% on your iPhone.",
       "whats_new": "New in v1.1:\n\n- Twin Predictions: Your Digital Twin now predicts your likely mood, topics, and best journaling times based on your patterns\n- Shareable Personality Card: Share a beautiful snapshot of your Digital Twin profile\n- Weekly Insight Cards: Shareable visual summaries of your weekly emotional journey\n- Improved NLP: Better keyword extraction with refined text processing\n- 100% privacy-first: all new features run entirely on-device"
     }
   },
@@ -40,14 +40,14 @@
       "resolution": "1290x2796",
       "count": 8,
       "captions": [
-        "Speak your mind. DailyVox listens.",
-        "Meet your Digital Twin",
-        "Insights that matter",
-        "Understand your emotional landscape",
-        "Your story, beautifully organized",
-        "Private by design. Always.",
-        "Make it yours",
-        "Your world, mapped"
+        "Voice Journal — Just Talk, We Transcribe",
+        "Your AI Digital Twin Learns Your Patterns",
+        "Automatic Mood Tracking from Your Words",
+        "9 Emotions Tracked. Zero Manual Input.",
+        "Search Across All Your Entries Instantly",
+        "100% On-Device. Your Diary Never Leaves Your Phone.",
+        "8 Themes. Face ID Lock. Encrypted Backups.",
+        "People, Places & Topics — Your Knowledge Graph"
       ]
     },
     "iphone_65": {

@@ -1,17 +1,17 @@
 # DailyVox - App Store Metadata
 
 ## App Name
-DailyVox - AI Voice Diary
+DailyVox - AI Voice Journal & Diary
 
 ## Subtitle (30 characters max)
-Your Private Digital Twin
+Private Voice Journal & Mood Tracker
 
 ## Promotional Text (170 characters max)
-NEW: Your Digital Twin tracks the people, places, and themes in your life. See your mood trends and journaling patterns evolve - all 100% on-device.
+NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight summaries. All AI runs 100% on your iPhone.
 
 ## Description (4000 characters max)
 
-DailyVox is your private AI companion that listens, understands, and remembers. Speak your thoughts, and DailyVox transforms them into a living journal - while building a digital twin that reflects your inner world.
+DailyVox is a private voice journal that turns your spoken thoughts into a searchable diary with AI mood tracking — all 100% on-device. Speak your thoughts, and DailyVox transforms them into a living journal while building a digital twin that reflects your inner world.
 
 YOUR VOICE, YOUR DIARY
 Record your thoughts naturally with voice. DailyVox transcribes everything on-device using Apple's speech recognition - no servers, no uploads, no compromises. Your voice literally never leaves your phone.
@@ -78,10 +78,10 @@ DailyVox helps you build a journaling habit. Daily reminder notifications, writi
 Your thoughts deserve a home. DailyVox is that home.
 
 ## Keywords (100 characters max, comma-separated)
-diary,journal,voice,AI,digital twin,mood,mindfulness,private,personal,photo,encrypted,goals
+diary,journal,voice,mood tracker,digital twin,private,speech to text,mindfulness,encrypted,anxiety
 
 ## Category
-Primary: Lifestyle
+Primary: Health & Fitness
 Secondary: Productivity
 
 ## Age Rating
@@ -96,20 +96,11 @@ https://dailyvox.app/support
 ## Privacy Policy URL
 https://dailyvox.app/privacy
 
-## What's New (Version 1.0)
-Welcome to DailyVox - your private AI voice diary with Digital Twin technology.
+## What's New (Version 1.1)
+New in v1.1:
 
-- Record diary entries with your voice
-- AI-powered insights and mood trends
-- Watch your Digital Twin evolve as it learns about you
-- Photo attachments (up to 5 per entry, on-device only)
-- Enhanced audio player with scrubbing and speed control
-- Encrypted backup exports (AES-256, password-protected)
-- Journaling goals with weekly targets and milestone celebrations
-- Smart search with knowledge graph suggestions
-- Track moods, streaks, and emotional patterns
-- 8 beautiful themes
-- Face ID security
-- Lock Screen & Home Screen widgets
-- Export your journal in multiple formats
-- 100% privacy-first: everything stays on your device
+- Twin Predictions: Your Digital Twin now predicts your likely mood, topics, and best journaling times based on your patterns
+- Shareable Personality Card: Share a beautiful snapshot of your Digital Twin profile
+- Weekly Insight Cards: Shareable visual summaries of your weekly emotional journey
+- Improved NLP: Better keyword extraction with refined text processing
+- 100% privacy-first: all new features run entirely on-device
