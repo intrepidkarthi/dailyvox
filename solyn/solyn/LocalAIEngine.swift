@@ -590,7 +590,7 @@ final class LocalAIEngine: ObservableObject {
         return formatter
     }()
     
-    private static let stopWords: Set<String> = [
+    static let stopWords: Set<String> = [
         "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
         "of", "with", "by", "from", "as", "is", "was", "are", "were", "been",
         "be", "have", "has", "had", "do", "does", "did", "will", "would",

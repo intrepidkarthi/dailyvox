@@ -17,7 +17,7 @@
       "subtitle": "Your Private Digital Twin",
       "keywords": "diary,journal,voice,AI,digital twin,mood,mindfulness,private,mental health,photo,encrypted,goals",
       "promotional_text": "NEW: Photo attachments, encrypted backups, journaling goals, smart search, and enhanced audio playback. Your Digital Twin keeps getting smarter - all 100% on-device.",
-      "whats_new": "New in this release:\n\n- Photo Attachments: Add up to 5 photos per entry, stored on-device only\n- Encrypted Backup: Password-protected AES-256 encrypted exports (.dvx)\n- Enhanced Audio Player: Scrubbing, progress bar, and speed control (0.5x-2x)\n- Journaling Goals: Set weekly targets with milestone celebrations\n- Smart Search: Knowledge graph-powered suggestions as you type\n- Quick Filter Chips: Tap people and topics from your Digital Twin to filter\n- Refreshed Colors: Theme-aware accent colors across the Digital Twin tab\n- 100% privacy-first: everything stays on your device"
+      "whats_new": "New in v1.1:\n\n- Twin Predictions: Your Digital Twin now predicts your likely mood, topics, and best journaling times based on your patterns\n- Shareable Personality Card: Share a beautiful snapshot of your Digital Twin profile\n- Weekly Insight Cards: Shareable visual summaries of your weekly emotional journey\n- Improved NLP: Better keyword extraction with refined text processing\n- 100% privacy-first: all new features run entirely on-device"
     }
   },
   "app_privacy": {

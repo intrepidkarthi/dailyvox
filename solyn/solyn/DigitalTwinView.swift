@@ -12,9 +12,15 @@ struct DigitalTwinView: View {
     @ObservedObject private var twin = DigitalTwinEngine.shared
     @ObservedObject private var themeManager = ThemeManager.shared
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.managedObjectContext) private var viewContext
     @State private var selectedSection: TwinSection = .overview
     @State private var showingDetail = false
     @State private var animateOrb = false
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: false)],
+        animation: .default)
+    private var entries: FetchedResults<DiaryEntry>
 
     private var isIPad: Bool { horizontalSizeClass == .regular }
 
@@ -202,6 +208,12 @@ struct DigitalTwinView: View {
 
     private var overviewSection: some View {
         VStack(spacing: 16) {
+            // Twin Predictions — "Your Twin Thinks..."
+            TwinPredictionsSection(entries: Array(entries))
+
+            // Shareable Personality Card
+            TwinProfileCardSection()
+
             if !twin.summary.personalitySnapshot.isEmpty {
                 twinCard(title: "Who You Are", icon: "person.fill", content: twin.summary.personalitySnapshot)
             }

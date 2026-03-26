@@ -29,6 +29,9 @@ struct StatsView: View {
                 if entries.isEmpty {
                     emptyStateCard
                 } else {
+                    // Shareable Weekly Insights
+                    WeeklyInsightsSection(entries: Array(entries))
+
                     // AI Insights
                     aiInsightsCard
 
