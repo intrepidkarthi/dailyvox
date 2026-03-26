@@ -18,7 +18,7 @@
 ---
 
 ## Screenshot 1: Hero / Voice Recording
-**Caption**: "Speak your mind. DailyVox listens."
+**Caption**: "Voice Journal — Just Talk, We Transcribe"
 **Layout**:
 - Show TodayView with active recording animation
 - Waveform visualization prominently displayed
@@ -31,90 +31,59 @@
 
 ---
 
-## Screenshot 2: Digital Twin
-**Caption**: "Meet your Digital Twin"
+## Screenshot 2: Digital Twin (NEW — shows Predictions + Profile Card)
+**Caption**: "Your AI Digital Twin Learns Your Patterns"
 **Layout**:
-- Show DigitalTwinView with the animated orb
-- Personality trait bars visible (Expressive, Direct, Analytical)
-- Maturity badge showing progress
-- Knowledge graph section partially visible
+- Show DigitalTwinView overview section
+- **NEW: Twin Predictions section visible** ("Your Twin Thinks..." with mood, topic, timing predictions)
+- **NEW: Shareable Personality Card** visible below predictions
+- Personality trait bars (Expressive, Direct, Analytical)
 - Background: dark with purple glow around orb
 
-**Feature callout**: AI-powered self-understanding
+**Feature callout**: AI-powered predictions and self-understanding
 
 ---
 
-## Screenshot 3: AI Insights
-**Caption**: "See your patterns, track your growth"
+## Screenshot 3: AI Insights (NEW — shows Weekly Insight Cards)
+**Caption**: "Automatic Mood Tracking from Your Words"
 **Layout**:
 - Show StatsView with streaks, mood trends, and charts
-- Writing streak counter prominently displayed
+- **NEW: Weekly Insight Card** prominently displayed at top (shareable visual summary)
+- Writing streak counter
 - Mood trend line chart showing weekly patterns
-- AI-generated insights cards below charts
-- Background gradient: purple to dark
+- AI-generated insights cards below
 
-**Feature callout**: AI-powered insights and mood trends
+**Feature callout**: Shareable weekly insights + mood trends
 
 ---
 
 ## Screenshot 4: Emotional Insights
-**Caption**: "Understand your emotional landscape"
+**Caption**: "9 Emotions Tracked. Zero Manual Input."
 **Layout**:
 - Show Digital Twin emotions section
 - Emotional baseline meters (Valence, Arousal, Range)
 - Mood rhythms showing morning/evening/weekday/weekend
 - Emotional triggers section (positive in green, negative in orange)
 
-**Feature callout**: Emotional intelligence that grows
+**Feature callout**: Automatic emotion detection across 9 types
 
 ---
 
-## Screenshot 5: Timeline & Entries
-**Caption**: "Your story, beautifully organized"
+## Screenshot 5: Timeline & Search
+**Caption**: "Search Across All Your Entries Instantly"
 **Layout**:
 - Show TimelineView with several entries
-- Search bar at top
+- Search bar at top with smart suggestions
 - Month grouping headers
 - Entry rows showing mood emojis, text previews, timestamps
 - One starred entry visible
 
-**Feature callout**: Full journal with search & filters
+**Feature callout**: Knowledge graph-powered search
 
 ---
 
-## Screenshot 6: Privacy & Security
-**Caption**: "Private by design. Always."
-**Layout**:
-- Split design showing:
-  - Top: Face ID lock screen
-  - Bottom: Privacy features list with green checkmarks
-    - 100% on-device processing
-    - No accounts required
-    - No tracking or analytics
-    - Optional encrypted iCloud sync
-    - Face ID / Touch ID protection
-- Green shield icon prominently placed
-
-**Feature callout**: Zero data collection
-
----
-
-## Screenshot 7: Themes & Widgets
-**Caption**: "Make it yours"
-**Layout**:
-- Show theme picker with 8 theme previews
-- Below: Lock Screen and Home Screen widget examples
-  - Streak widget
-  - Mood widget
-  - Quick record widget
-- Multiple device frames showing different themes
-
-**Feature callout**: 8 themes + widgets
-
----
-
-## Screenshot 8: Knowledge Graph / My World
-**Caption**: "Your world, mapped"
+## Screenshot 6: Knowledge Graph / My World
+**Caption**: "People, Places & Topics — Your Knowledge Graph"
 **Layout**:
 - Show Digital Twin "My World" section
 - People In Your Life with mention counts
@@ -124,6 +93,35 @@
 - Connection lines between entities (overlay graphic)
 
 **Feature callout**: Personal knowledge graph
+
+---
+
+## Screenshot 7: Entry Detail
+**Caption**: "8 Themes. Face ID Lock. Encrypted Backups."
+**Layout**:
+- Show EntryDetailView with a rich entry
+- Photo thumbnails visible
+- Mood tag and sentiment indicator
+- Audio playback controls
+- Theme showcased
+
+**Feature callout**: Rich entries with photos, audio, and themes
+
+---
+
+## Screenshot 8: Privacy & Settings
+**Caption**: "100% On-Device. Your Diary Never Leaves Your Phone."
+**Layout**:
+- Show Settings page highlighting privacy features
+- Privacy section with green checkmarks:
+  - 100% on-device AI processing
+  - No accounts required
+  - No tracking or analytics
+  - Face ID / Touch ID protection
+  - AES-256 encrypted backups
+- Green shield icon or privacy badge
+
+**Feature callout**: Zero data collection, architectural privacy
 
 ---
 
