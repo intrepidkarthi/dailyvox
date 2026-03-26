@@ -7,7 +7,7 @@ DailyVox - AI Voice Journal
 Private Journal & Mood Tracker
 
 ## Promotional Text (170 characters max)
-NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight summaries. All AI runs 100% on your iPhone.
+NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight cards. All AI runs on your iPhone.
 
 ## Description (4000 characters max)
 
