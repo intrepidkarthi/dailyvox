@@ -1,10 +1,10 @@
 # DailyVox - App Store Metadata
 
 ## App Name
-DailyVox - AI Voice Journal & Diary
+DailyVox - AI Voice Journal
 
 ## Subtitle (30 characters max)
-Private Voice Journal & Mood Tracker
+Private Journal & Mood Tracker
 
 ## Promotional Text (170 characters max)
 NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight summaries. All AI runs 100% on your iPhone.
