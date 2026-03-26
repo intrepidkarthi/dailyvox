@@ -46,32 +46,34 @@ struct EntryDetailView: View {
             Color(.systemGroupedBackground)
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // Header card with metadata
-                headerCard
-                    .padding(.horizontal)
-                    .padding(.top, 8)
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Header card with metadata
+                    headerCard
+                        .padding(.horizontal)
+                        .padding(.top, 8)
 
-                // Audio player (when audio exists locally)
-                if hasAudio, let url = audioURL() {
-                    AudioPlayerView(audioURL: url)
+                    // Audio player (when audio exists locally)
+                    if hasAudio, let url = audioURL() {
+                        AudioPlayerView(audioURL: url)
+                            .padding(.horizontal)
+                            .padding(.top, 4)
+                    }
+
+                    // Photo section
+                    photoSection
                         .padding(.horizontal)
                         .padding(.top, 4)
-                }
 
-                // Photo section
-                photoSection
-                    .padding(.horizontal)
-                    .padding(.top, 4)
+                    // Main content area
+                    if isEditing {
+                        editingView
+                    } else {
+                        readingView
 
-                // Main content area
-                if isEditing {
-                    editingView
-                } else {
-                    readingView
-
-                    if !text.isEmpty {
-                        aiInsightsSection
+                        if !text.isEmpty {
+                            aiInsightsSection
+                        }
                     }
                 }
             }
@@ -194,48 +196,44 @@ struct EntryDetailView: View {
     }
 
     private var readingView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                if text.isEmpty {
-                    if isTranscribing {
-                        // Transcription in progress
-                        VStack(spacing: 12) {
-                            ProgressView()
-                                .scaleEffect(1.2)
-                            Text("Transcribing your recording...")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 60)
-                    } else {
-                        // No text and no audio
-                        VStack(spacing: 12) {
-                            Image(systemName: "text.cursor")
-                                .font(.system(size: 32))
-                                .foregroundColor(.secondary.opacity(0.5))
-                            Text("No text yet")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Button("Add text") {
-                                isEditing = true
-                            }
-                            .font(.subheadline.weight(.medium))
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 60)
+        VStack(alignment: .leading, spacing: 0) {
+            if text.isEmpty {
+                if isTranscribing {
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                        Text("Transcribing your recording...")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 60)
                 } else {
-                    Text(text)
-                        .font(.body)
-                        .lineSpacing(6)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .textSelection(.enabled)
+                    VStack(spacing: 12) {
+                        Image(systemName: "text.cursor")
+                            .font(.system(size: 32))
+                            .foregroundColor(.secondary.opacity(0.5))
+                        Text("No text yet")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Button("Add text") {
+                            isEditing = true
+                        }
+                        .font(.subheadline.weight(.medium))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 60)
                 }
+            } else {
+                Text(text)
+                    .font(.body)
+                    .lineSpacing(6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .textSelection(.enabled)
             }
-            .frame(maxWidth: .infinity)
         }
+        .frame(maxWidth: .infinity)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal)
@@ -378,6 +376,7 @@ struct EntryDetailView: View {
                 .lineSpacing(6)
                 .focused($isTextFocused)
                 .scrollContentBackground(.hidden)
+                .frame(minHeight: 300)
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12))

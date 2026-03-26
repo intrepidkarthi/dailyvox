@@ -112,9 +112,10 @@ struct PersistenceController {
         }
     }
 
-    /// Check if CloudKit should be enabled
+    /// Check if CloudKit should be enabled (requires both iCloud availability and user preference)
     private static var shouldEnableCloudKit: Bool {
-        return FileManager.default.ubiquityIdentityToken != nil
+        let userEnabled = UserDefaults.standard.object(forKey: "iCloudSyncEnabled") as? Bool ?? true
+        return userEnabled && FileManager.default.ubiquityIdentityToken != nil
     }
 
     /// CloudKit container identifier based on bundle ID
@@ -123,10 +124,51 @@ struct PersistenceController {
         return "iCloud.\(bundleId)"
     }
 
-    // MARK: - Sync Status
+    // MARK: - Sync Control
 
     /// Check if iCloud is available
     static var isCloudAvailable: Bool {
         FileManager.default.ubiquityIdentityToken != nil
+    }
+
+    /// Enable or disable CloudKit sync at runtime
+    func setCloudSyncEnabled(_ enabled: Bool) {
+        guard let store = container.persistentStoreCoordinator.persistentStores.first,
+              let storeURL = store.url else { return }
+
+        do {
+            if enabled && PersistenceController.isCloudAvailable {
+                // Re-enable CloudKit sync
+                let options = NSPersistentCloudKitContainerOptions(
+                    containerIdentifier: PersistenceController.cloudKitContainerIdentifier
+                )
+                let description = NSPersistentStoreDescription(url: storeURL)
+                description.cloudKitContainerOptions = options
+                try container.persistentStoreCoordinator.remove(store)
+                description.setOption(FileProtectionType.complete as NSObject,
+                                      forKey: NSPersistentStoreFileProtectionKey)
+                description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+                description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+                container.persistentStoreDescriptions = [description]
+                container.loadPersistentStores { _, _ in }
+            } else {
+                // Disable CloudKit sync — remove and re-add store without CloudKit options
+                try container.persistentStoreCoordinator.remove(store)
+                let description = NSPersistentStoreDescription(url: storeURL)
+                description.cloudKitContainerOptions = nil
+                description.setOption(FileProtectionType.complete as NSObject,
+                                      forKey: NSPersistentStoreFileProtectionKey)
+                description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+                description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+                container.persistentStoreDescriptions = [description]
+                container.loadPersistentStores { _, _ in }
+            }
+            container.viewContext.automaticallyMergesChangesFromParent = true
+            container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        } catch {
+            #if DEBUG
+            print("Failed to toggle CloudKit sync: \(error)")
+            #endif
+        }
     }
 }

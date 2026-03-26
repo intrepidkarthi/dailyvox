@@ -33,6 +33,7 @@ struct SettingsView: View {
     // Author info for PDF export
     @AppStorage("authorName") private var authorName: String = ""
     @AppStorage("authorDescription") private var authorDescription: String = ""
+    @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled: Bool = true
 
     enum ExportPeriod: String, CaseIterable, Identifiable {
         case monthly = "Monthly"
@@ -276,28 +277,30 @@ struct SettingsView: View {
     @ViewBuilder
     private var iCloudSection: some View {
         Section {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(PersistenceController.isCloudAvailable ? Color.blue.opacity(0.15) : Color.gray.opacity(0.15))
-                        .frame(width: 44, height: 44)
-                    Image(systemName: PersistenceController.isCloudAvailable ? "icloud.fill" : "icloud.slash")
-                        .font(.title3)
-                        .foregroundColor(PersistenceController.isCloudAvailable ? .blue : .gray)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(PersistenceController.isCloudAvailable ? "iCloud Sync Active" : "iCloud Not Available")
-                        .font(.subheadline.weight(.semibold))
-                    Text(PersistenceController.isCloudAvailable
-                         ? "Your entries sync across all your devices"
-                         : "Sign in to iCloud in Settings to enable sync")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+            Toggle(isOn: $iCloudSyncEnabled) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? Color.blue.opacity(0.15) : Color.gray.opacity(0.15))
+                            .frame(width: 36, height: 36)
+                        Image(systemName: iCloudSyncEnabled && PersistenceController.isCloudAvailable ? "icloud.fill" : "icloud.slash")
+                            .font(.body)
+                            .foregroundColor(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? .blue : .gray)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("iCloud Sync")
+                            .font(.subheadline.weight(.semibold))
+                        Text(syncStatusText)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
-            .padding(.vertical, 4)
+            .onChange(of: iCloudSyncEnabled) { _, newValue in
+                PersistenceController.shared.setCloudSyncEnabled(newValue)
+            }
 
-            if PersistenceController.isCloudAvailable {
+            if iCloudSyncEnabled && PersistenceController.isCloudAvailable {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
@@ -321,10 +324,22 @@ struct SettingsView: View {
         } header: {
             Text("iCloud Sync")
         } footer: {
-            Text(PersistenceController.isCloudAvailable
-                 ? "Your data syncs securely through your personal iCloud account. Only you can access it."
-                 : "Enable iCloud to back up and sync your diary securely.")
+            Text(iCloudSyncEnabled
+                 ? (PersistenceController.isCloudAvailable
+                    ? "Your data syncs securely through your personal iCloud account. Only you can access it."
+                    : "Sign in to iCloud in iOS Settings to enable sync.")
+                 : "Sync is off. Your entries are stored only on this device.")
         }
+    }
+
+    private var syncStatusText: String {
+        if !iCloudSyncEnabled {
+            return "Off — entries stay on this device only"
+        }
+        if PersistenceController.isCloudAvailable {
+            return "Syncing across your devices"
+        }
+        return "iCloud not available — sign in to enable"
     }
 
     @ViewBuilder

@@ -179,7 +179,7 @@ struct TwinProfileCardSection: View {
 
     var body: some View {
         Group {
-            if let profile = profile, profile.totalEntries >= 5 {
+            if let profile = profile, profile.totalEntries >= 3 {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "person.text.rectangle")
