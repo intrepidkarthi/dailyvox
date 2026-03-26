@@ -28,12 +28,40 @@ class ScreenshotTests: XCTestCase {
         app.launch()
     }
 
+    // MARK: - Navigation Helper
+
+    /// Navigate to a tab by name. Handles both iPhone (bottom tab bar) and iPad (top tab bar / sidebar) layouts.
+    /// Uses .firstMatch to handle iPadOS where tab buttons appear as nested duplicates.
+    private func navigateToTab(_ name: String) {
+        // Try iPhone bottom tab bar first
+        let tabButton = app.tabBars.buttons[name]
+        if tabButton.waitForExistence(timeout: 3) {
+            tabButton.tap()
+            return
+        }
+
+        // iPad: buttons may exist outside tabBars (top tab bar or sidebar).
+        // Use .firstMatch to avoid "multiple matches" error from nested button elements.
+        let button = app.buttons[name].firstMatch
+        if button.waitForExistence(timeout: 3) {
+            button.tap()
+            return
+        }
+
+        // Fallback: look for a static text and tap it
+        let text = app.staticTexts[name].firstMatch
+        if text.waitForExistence(timeout: 3) {
+            text.tap()
+            return
+        }
+
+        XCTFail("Could not find tab: \(name)")
+    }
+
     // MARK: - Screenshot 1: Today View
 
     func test01_TodayView() throws {
-        let todayTab = app.tabBars.buttons["Today"]
-        XCTAssertTrue(todayTab.waitForExistence(timeout: 5))
-        todayTab.tap()
+        navigateToTab("Today")
         sleep(2)
         takeScreenshot(named: "01_TodayView")
     }
@@ -41,9 +69,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 2: Timeline
 
     func test02_Timeline() throws {
-        let timelineTab = app.tabBars.buttons["Timeline"]
-        XCTAssertTrue(timelineTab.waitForExistence(timeout: 5))
-        timelineTab.tap()
+        navigateToTab("Timeline")
         sleep(2)
         takeScreenshot(named: "02_Timeline")
     }
@@ -51,9 +77,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 3: Insights
 
     func test03_Insights() throws {
-        let insightsTab = app.tabBars.buttons["Insights"]
-        XCTAssertTrue(insightsTab.waitForExistence(timeout: 5))
-        insightsTab.tap()
+        navigateToTab("Insights")
         sleep(2)
 
         // Dismiss the milestone overlay if it appears
@@ -69,9 +93,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 4: Digital Twin Overview
 
     func test04_DigitalTwin() throws {
-        let twinTab = app.tabBars.buttons["Twin"]
-        XCTAssertTrue(twinTab.waitForExistence(timeout: 5))
-        twinTab.tap()
+        navigateToTab("Twin")
         sleep(2)
         takeScreenshot(named: "04_DigitalTwin")
     }
@@ -79,9 +101,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 5: Digital Twin Emotions
 
     func test05_DigitalTwinEmotions() throws {
-        let twinTab = app.tabBars.buttons["Twin"]
-        XCTAssertTrue(twinTab.waitForExistence(timeout: 5))
-        twinTab.tap()
+        navigateToTab("Twin")
         sleep(1)
 
         let emotionsButton = app.buttons["Emotions"]
@@ -95,9 +115,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 6: Digital Twin My World
 
     func test06_DigitalTwinWorld() throws {
-        let twinTab = app.tabBars.buttons["Twin"]
-        XCTAssertTrue(twinTab.waitForExistence(timeout: 5))
-        twinTab.tap()
+        navigateToTab("Twin")
         sleep(1)
 
         // "My World" is the 4th button in a horizontal ScrollView — swipe left to reveal it
@@ -118,9 +136,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 7: Entry Detail
 
     func test07_EntryDetail() throws {
-        let timelineTab = app.tabBars.buttons["Timeline"]
-        XCTAssertTrue(timelineTab.waitForExistence(timeout: 5))
-        timelineTab.tap()
+        navigateToTab("Timeline")
         sleep(2)
 
         // Tap the first NavigationLink row containing entry text
@@ -141,9 +157,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 8: Settings
 
     func test08_Settings() throws {
-        let settingsTab = app.tabBars.buttons["Settings"]
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
-        settingsTab.tap()
+        navigateToTab("Settings")
         sleep(2)
         takeScreenshot(named: "08_Settings")
     }

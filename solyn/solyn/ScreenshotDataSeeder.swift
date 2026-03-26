@@ -117,6 +117,68 @@ struct ScreenshotDataSeeder {
                 "Perfect day for a bike ride along the waterfront. The breeze was cool and the sun warm. Stopped at a little bookshop I'd never noticed before and found a first edition poetry collection. Life has a way of surprising you when you slow down enough to notice.",
                 "happy", 30, true, 140
             ),
+
+            // Additional entries to populate Twin features (knowledge graph, predictions, personality card)
+            (
+                "Lunch with Sarah again today. She's been going through a rough patch at her new job and I'm glad she feels comfortable opening up to me. We talked about boundaries and how hard it is to say no. I gave her the same advice James once gave me — protect your energy first.",
+                "calm", 7, false, 85
+            ),
+            (
+                "Took my camera to the botanical gardens. Golden hour photography is becoming my favorite creative outlet. Captured some incredible macro shots of dew on rose petals. Sarah texted later saying my Instagram story inspired her to start painting again.",
+                "happy", 8, false, 95
+            ),
+            (
+                "Work meeting ran two hours over. The product launch deadline got moved up by a week and I can feel the pressure mounting. Mike pulled me aside after and said I handled the pushback really well. Small wins matter even on hard days.",
+                "anxious", 10, false, 70
+            ),
+            (
+                "Evening run along the river cleared my head. Been thinking about what Mom said last weekend — that I'm always chasing the next thing instead of appreciating where I am. She's right. Gratitude isn't passive, it takes practice. Hit a new 5K personal best though.",
+                "grateful", 12, false, 55
+            ),
+            (
+                "James and I finally booked the mountain hiking trip for next month. Three days, two peaks, zero cell service. Emma wants to join too which would make it even better. I've been researching trails and gear all evening. Adventure planning is its own kind of joy.",
+                "excited", 14, false, 120
+            ),
+            (
+                "Deep conversation with Lisa over video call tonight. She's starting therapy and was brave enough to share that with me. It made me reflect on my own mental health journey. Writing in this journal every day has been more therapeutic than I expected. The patterns I notice in my own words surprise me.",
+                "calm", 16, false, 100
+            ),
+            (
+                "Tried a new Mediterranean cooking class downtown. Made shakshuka and fresh pita from scratch. The instructor was from Tel Aviv and told the most vivid stories about food markets there. Brought leftovers to James and he said it was the best meal he'd had all month.",
+                "happy", 18, false, 130
+            ),
+            (
+                "Woke up at 5am and couldn't fall back asleep. Work deadlines keep invading my dreams. Decided to be productive about it — made a priority list and knocked out three tasks before the team was even online. Felt powerful turning anxiety into momentum.",
+                "anxious", 20, false, 50
+            ),
+            (
+                "Photography walk with Emma through the old town district. She has such a different eye than me — she captures people and emotions while I gravitate toward architecture and light. We're planning a joint exhibition at the community center. The creative energy between us is electric.",
+                "excited", 22, false, 110
+            ),
+            (
+                "Mom and Dad visited for the weekend. Dad helped me fix the leaky faucet he's been worried about for months. Mom reorganized my entire kitchen and cooked enough food for two weeks. The house feels warmer when they're here. Already miss them.",
+                "grateful", 24, true, 160
+            ),
+            (
+                "Sarah recommended a book about stoic philosophy and I devoured half of it today. The idea that we can't control events but can control our response to them really resonates. Applied it during a frustrating work call this afternoon and it genuinely helped. Growth feels tangible right now.",
+                "calm", 26, false, 90
+            ),
+            (
+                "Yoga and meditation combo this morning followed by journaling at the park. Lisa says I seem more centered lately and I think she's right. My relationship with stress is changing. I'm not running from it anymore, I'm learning to sit with it. Even my photography reflects this — more stillness, less chaos.",
+                "calm", 31, false, 75
+            ),
+            (
+                "Hosted a small dinner party. Sarah, James, Emma, and Lisa all came. Made grandma's pasta recipe and the Thai curry. Everyone brought wine and stories. James gave a toast about friendship that made Emma cry. These are the people who make life rich. Grateful doesn't even begin to cover it.",
+                "grateful", 33, true, 170
+            ),
+            (
+                "Work project finally launched. Three months of late nights and weekend sessions and it's live. Mike sent a company-wide email praising the team. I'm proud but also exhausted. Taking tomorrow off to recharge. Sarah says I earned it — and for once I believe her.",
+                "excited", 35, true, 80
+            ),
+            (
+                "Solo hike to the waterfall trail. No music, no podcasts, just birdsong and my own thoughts. Realized I've been more present this month than any time I can remember. The combination of journaling, exercise, and intentional friendship is working. Future me will thank present me for building these habits.",
+                "happy", 37, false, 140
+            ),
         ]
 
         for entry in entries {
