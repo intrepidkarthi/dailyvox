@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Digital Twin Explained: How AI Learns Your Personality From Your Voice - DailyVox Blog</title>
+  <meta name="description" content="A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.">
+  <meta name="keywords" content="digital twin personality AI, how digital twin works, AI personality model, personal AI journal, on-device personality AI">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/how-digital-twin-learns-personality">
+  <meta property="og:title" content="Your Digital Twin Explained: How AI Learns Your Personality From Your Voice">
+  <meta property="og:description" content="A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/how-digital-twin-learns-personality">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Your Digital Twin Explained: How AI Learns Your Personality From Your Voice",
+    "description": "A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.",
+    "url": "https://getdailyvox.com/blog/how-digital-twin-learns-personality",
+    "datePublished": "2026-04-01",
+    "dateModified": "2026-04-01",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/how-digital-twin-learns-personality" }
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+        <li><a href="/support.html">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Technology</span>
+        <h1>Your Digital Twin Explained: How AI Learns Your Personality From Your Voice</h1>
+        <p class="article-meta">April 1, 2026 &middot; 7 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>DailyVox's Digital Twin is the feature that surprises people most. After a month of voice journaling, the app generates a personality card that describes your communication style, emotional patterns, and the themes that define your inner life. People's first reaction is usually: "How does it know this about me?"</p>
+
+        <p>The answer involves natural language processing, knowledge graphs, and temporal pattern analysis — all running on the chip inside your phone. Here's how it actually works.</p>
+
+        <h2>Layer 1: Sentiment and Emotion Detection</h2>
+
+        <p>Every journal entry passes through Apple's NaturalLanguage framework, which analyzes text at multiple levels simultaneously.</p>
+
+        <p><strong>Sentiment analysis</strong> measures the overall emotional valence of your entry on a spectrum from negative to positive. But DailyVox goes beyond simple positive/negative by detecting nine distinct mood categories: happy, sad, anxious, angry, calm, excited, grateful, reflective, and stressed.</p>
+
+        <p>How does it determine which mood? Through a combination of:</p>
+        <ul>
+          <li><strong>Lexical analysis:</strong> Which emotion-associated words appear? "Worried," "tense," "can't stop thinking" correlate with anxiety. "Frustrated," "unfair," "annoyed" correlate with anger.</li>
+          <li><strong>Syntactic patterns:</strong> Short, fragmented sentences often indicate stress or agitation. Longer, flowing sentences suggest calm or reflective states.</li>
+          <li><strong>Contextual modeling:</strong> The same word means different things in different contexts. "I can't believe it" could be excitement or distress — the surrounding language disambiguates.</li>
+        </ul>
+
+        <p>Over time, the sentiment data forms a mood timeline — your emotional history across days, weeks, and months. This is the foundation of everything the Digital Twin learns.</p>
+
+        <h2>Layer 2: Named Entity Recognition</h2>
+
+        <p>Named entity recognition (NER) identifies the people, places, organizations, and topics in your entries. When you say "I had lunch with Sarah downtown after the meeting with the marketing team," the NLP extracts four entities: Sarah (person), downtown (location), the meeting (event), and the marketing team (organization).</p>
+
+        <p>Each entity gets tracked across all your entries. The system learns:</p>
+        <ul>
+          <li>How often you mention each person, place, or topic</li>
+          <li>The emotional context surrounding each entity — is Sarah usually mentioned in positive or negative entries?</li>
+          <li>Temporal patterns — do you talk about work more on weekdays and family more on weekends?</li>
+          <li>Co-occurrence — which entities appear together? If "Sarah" and "happy" frequently co-occur, that's a meaningful pattern.</li>
+        </ul>
+
+        <h2>Layer 3: The Knowledge Graph</h2>
+
+        <p>Individual entities become powerful when connected. The knowledge graph maps relationships between the people, places, and topics in your life.</p>
+
+        <p>Imagine a web where "Work" connects to "stress," "Monday," "the marketing team," and "the commute." "Sarah" connects to "happy," "weekend," "hiking," and "downtown." Over dozens of entries, this web becomes a map of your world — not the objective world, but <em>your</em> world as experienced through your emotions and attention.</p>
+
+        <p>The knowledge graph reveals things like:</p>
+        <ul>
+          <li>Which relationships are emotionally positive vs. draining</li>
+          <li>Which activities correlate with which moods</li>
+          <li>Which parts of your life dominate your thoughts (and which are absent)</li>
+          <li>How your attention and emotional associations shift over time</li>
+        </ul>
+
+        <h2>Layer 4: Communication Style Analysis</h2>
+
+        <p>Beyond what you say, the Digital Twin learns <em>how</em> you say it. Communication style analysis examines:</p>
+
+        <ul>
+          <li><strong>Vocabulary complexity:</strong> Do you use simple, direct language or elaborate, nuanced phrasing? This reflects cognitive style.</li>
+          <li><strong>Emotional expression range:</strong> Do you use many different emotion words or cycle through a narrow set? Broader range indicates higher emotional granularity.</li>
+          <li><strong>Self-reference patterns:</strong> How often do you use "I" vs. "we" vs. "they"? High first-person usage can indicate introspection or self-focus. High "we" usage suggests relational thinking.</li>
+          <li><strong>Certainty language:</strong> Do you use hedging words ("maybe," "probably," "I think") or definitive language ("definitely," "absolutely," "I know")? This reflects cognitive style and confidence patterns.</li>
+          <li><strong>Temporal orientation:</strong> Do your entries focus on the past, present, or future? People who are predominantly past-focused often process differently than future-focused individuals.</li>
+        </ul>
+
+        <h2>Layer 5: Temporal Pattern Recognition</h2>
+
+        <p>The Digital Twin doesn't just analyze individual entries — it analyzes how entries change over time. This temporal dimension is where the deepest insights emerge.</p>
+
+        <p>Patterns the system identifies:</p>
+        <ul>
+          <li><strong>Weekly cycles:</strong> Your mood on Mondays vs. Fridays, your topics on weekdays vs. weekends</li>
+          <li><strong>Monthly patterns:</strong> Some people have distinct monthly emotional rhythms tied to work cycles, hormonal cycles, or social patterns</li>
+          <li><strong>Trend detection:</strong> Gradual shifts in mood baseline, entity prominence, or communication style that indicate life changes</li>
+          <li><strong>Anomaly detection:</strong> Entries that deviate significantly from your established patterns — these often mark important events or turning points</li>
+        </ul>
+
+        <h2>The Personality Card: Making It Visible</h2>
+
+        <p>All of this analysis feeds into the personality card — a shareable snapshot of what the Digital Twin has learned. Think of it as "Spotify Wrapped for your personality."</p>
+
+        <p>A personality card might include:</p>
+        <ul>
+          <li>Your dominant emotional signature (e.g., "Reflective with occasional anxiety spikes")</li>
+          <li>Your communication style description (e.g., "Detailed and analytical, with high emotional vocabulary")</li>
+          <li>Your top themes and entities (the people and topics that dominate your inner world)</li>
+          <li>Your temporal patterns (when you're most reflective, most stressed, most creative)</li>
+          <li>Your growth indicators (how your patterns have shifted since you started journaling)</li>
+        </ul>
+
+        <p>The personality card is generated entirely on-device. It's not sent to a server for processing. You can share it if you choose — or keep it entirely private.</p>
+
+        <h2>What Makes On-Device Different</h2>
+
+        <p>Cloud-based personality modeling (like feeding your journal into ChatGPT) can produce similar insights. But there are critical differences:</p>
+
+        <ul>
+          <li><strong>Privacy:</strong> On-device means your personality model never leaves your phone. There's no psychological profile of you sitting on a corporate server.</li>
+          <li><strong>Continuity:</strong> The model accumulates over time without requiring you to re-upload data. It grows with each entry automatically.</li>
+          <li><strong>Speed:</strong> Analysis happens in real-time as you finish speaking. No waiting for cloud processing.</li>
+          <li><strong>Offline access:</strong> Your Digital Twin works without internet. Your personality insights are always available.</li>
+          <li><strong>Data ownership:</strong> You can delete your Digital Twin data at any time. There's no residual model on a remote server.</li>
+        </ul>
+
+        <h2>The 30/60/90 Day Journey</h2>
+
+        <p>The Digital Twin's accuracy and depth improve with data:</p>
+
+        <p><strong>30 days:</strong> Basic mood patterns emerge. You'll see weekly cycles and your most-mentioned entities. The personality card is a rough sketch — recognizable but not yet nuanced.</p>
+
+        <p><strong>60 days:</strong> Deeper correlations appear. The knowledge graph becomes rich enough to reveal non-obvious connections. Mood predictions start becoming accurate. Your communication style profile stabilizes.</p>
+
+        <p><strong>90 days:</strong> The Digital Twin becomes a genuine mirror. Personality cards are detailed and accurate. Predictions are reliable. Temporal patterns reveal long-term trends. You can compare your personality snapshot from month 1 to month 3 and see concrete evidence of personal growth.</p>
+
+        <p>Your Digital Twin is built from your own words, processed on your own device, and accessible only to you. It's the most private self-portrait you can create.</p>
+
+        <div class="article-cta">
+          <h3>Meet Your Digital Twin</h3>
+          <p>DailyVox builds an on-device AI model of your personality from your voice entries. See your patterns, share personality cards, predict your moods. Free and private.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/support.html">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
