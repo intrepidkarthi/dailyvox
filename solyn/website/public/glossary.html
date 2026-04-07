@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Journaling Glossary: Terms & Concepts Explained</title>
+  <meta name="description" content="A glossary of 27 key terms related to voice journaling, on-device AI, mood tracking, digital twins, and personal data privacy. Clear definitions for each concept.">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/glossary">
+  <meta property="og:title" content="Voice Journaling Glossary: Terms & Concepts Explained">
+  <meta property="og:description" content="Glossary of key terms in voice journaling, on-device AI, mood tracking, digital twins, and privacy. Clear definitions for each concept.">
+  <link rel="canonical" href="https://getdailyvox.com/glossary">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/app-icon.png">
+
+  <style>
+    .glossary-list {
+      margin-top: 16px;
+    }
+    .glossary-list dt {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+    .glossary-list dt:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .glossary-list dd {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin: 8px 0 0 0;
+    }
+    .glossary-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .glossary-nav a {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .glossary-nav a:hover {
+      color: var(--text);
+      background: var(--bg-card-hover);
+      border-color: rgba(255,255,255,0.1);
+    }
+  </style>
+
+  <!-- DefinedTermSet Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": "Voice Journaling Glossary",
+    "description": "Key terms and concepts related to voice journaling, on-device AI, mood tracking, and digital twins.",
+    "url": "https://getdailyvox.com/glossary",
+    "hasDefinedTerm": [
+      {
+        "@type": "DefinedTerm",
+        "name": "AES-256 Encryption",
+        "description": "A symmetric encryption standard that uses a 256-bit key to protect data. It is considered practically unbreakable and is used by governments, banks, and security-focused apps. DailyVox uses AES-256-GCM for encrypted journal backups."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Affect Labeling",
+        "description": "The psychological act of putting emotions into words. Research by UCLA's Matthew Lieberman shows that affect labeling reduces amygdala activation, effectively calming the brain's threat response. Voice journaling is a natural form of affect labeling."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "CloudKit",
+        "description": "Apple's cloud database framework that enables apps to sync data across devices via iCloud. CloudKit data is encrypted with the user's Apple ID and does not require the developer to maintain servers. DailyVox uses CloudKit for optional iCloud sync."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Cognitive Offloading",
+        "description": "The process of transferring mental information to an external medium to free up working memory. Journaling is a classic form of cognitive offloading — by writing or speaking your thoughts, you reduce the mental load of holding them in your head."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Core Data",
+        "description": "Apple's framework for managing and persisting structured data on-device. It provides an object graph manager and persistent store that works without any network connection. DailyVox uses Core Data to store journal entries locally on the device."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Default Mode Network",
+        "description": "A network of brain regions that activates during introspection, daydreaming, and self-referential thinking. Journaling engages the default mode network, which is associated with self-awareness, autobiographical memory, and making meaning from experiences."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Digital Twin",
+        "description": "In the context of personal AI, a digital twin is a computational model that mirrors aspects of an individual — personality traits, emotional patterns, values, and knowledge. DailyVox builds a private digital twin on-device that learns from journal entries and can predict moods and generate personality insights."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Emotional Granularity",
+        "description": "The ability to distinguish between closely related emotions with precision. People with high emotional granularity can tell the difference between feeling anxious, frustrated, and disappointed rather than just 'bad.' Journaling and mood tracking help develop emotional granularity over time."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Expressive Writing",
+        "description": "A therapeutic writing technique developed by psychologist James Pennebaker in which a person writes continuously about their deepest thoughts and feelings. Research shows that expressive writing for 15-20 minutes over several days improves immune function, reduces anxiety, and lowers stress."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Interoception",
+        "description": "The sense of the internal state of the body, including signals like heart rate, hunger, and emotional feelings. Interoceptive awareness is closely linked to emotional intelligence. Journaling helps people develop interoceptive awareness by encouraging them to notice and describe internal states."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Knowledge Graph",
+        "description": "A structured representation of entities and their relationships. In DailyVox, the Digital Twin builds a personal knowledge graph from journal entries — tracking people, places, events, and topics you mention and how they relate to each other and to your emotional states."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Mood Tracking",
+        "description": "The practice of recording emotional states over time to identify patterns and triggers. DailyVox tracks mood automatically using AI sentiment analysis across 9 categories, while many other apps rely on manual selection. Consistent mood tracking can reveal correlations between activities, people, and emotional well-being."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Named Entity Recognition",
+        "description": "An NLP technique that identifies and classifies named entities in text — such as people, places, organizations, and dates. DailyVox uses Apple's NaturalLanguage framework for NER to populate the Digital Twin's knowledge graph from journal entries."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "NaturalLanguage Framework",
+        "description": "Apple's framework for natural language processing tasks including tokenization, language identification, sentiment analysis, named entity recognition, and text embedding. It runs entirely on-device and powers DailyVox's mood detection and text analysis features."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Neural Engine",
+        "description": "A dedicated hardware component in Apple's chips (A-series and M-series) designed specifically for machine learning inference. The Neural Engine in the A17 Pro performs up to 35 trillion operations per second, enabling complex AI tasks to run on-device without cloud processing."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Neuroplasticity",
+        "description": "The brain's ability to reorganize itself by forming new neural connections throughout life. Regular journaling promotes neuroplasticity by engaging circuits related to self-reflection, emotional regulation, and narrative construction. Over time, this can literally reshape how the brain processes emotions."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "On-Device AI",
+        "description": "Artificial intelligence that runs entirely on a local device (phone, tablet, or computer) without sending data to cloud servers. On-device AI provides stronger privacy because personal data never leaves the device, and it works without an internet connection. DailyVox uses on-device AI for all its features."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Personality Card",
+        "description": "A feature in DailyVox where the Digital Twin generates cards describing aspects of your personality that it has identified from your journal entries. Cards cover traits like communication style, values, emotional patterns, and interests, and become more detailed as you journal more."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Polyvagal Theory",
+        "description": "A theory developed by Stephen Porges that describes how the vagus nerve mediates the body's stress response through three states: social engagement, fight-or-flight, and shutdown. Voice journaling may activate the ventral vagal complex (social engagement system) through the physical act of speaking."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Private Speech",
+        "description": "Talking to oneself, either aloud or internally. Psychologist Lev Vygotsky identified private speech as a tool for self-regulation and problem-solving. Voice journaling is a structured form of private speech that provides the cognitive benefits of talking through problems while creating a permanent record."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Sentiment Analysis",
+        "description": "An NLP technique that determines the emotional tone of text — whether it is positive, negative, neutral, or mixed. DailyVox uses on-device sentiment analysis via Apple's NaturalLanguage framework to automatically detect the mood of each journal entry."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Speech Framework",
+        "description": "Apple's framework for speech recognition that converts spoken audio to text. It supports on-device recognition for privacy-sensitive applications and works in over 60 languages. DailyVox uses the Speech framework for real-time voice-to-text transcription."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Vagus Nerve",
+        "description": "The longest cranial nerve in the body, running from the brainstem to the abdomen. It plays a central role in the parasympathetic nervous system, regulating heart rate, digestion, and stress response. Speaking activates the vagus nerve, which is one reason voice journaling can feel calming."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Voice Journaling",
+        "description": "The practice of recording spoken journal entries rather than writing them. Voice journaling is typically 3-4 times faster than typing, engages different cognitive processes, and activates the vagus nerve. Modern apps like DailyVox transcribe voice to text on-device for easy searching and AI analysis."
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "Working Memory",
+        "description": "The cognitive system responsible for temporarily holding and manipulating information. Working memory has limited capacity — typically 4-7 items. Journaling helps by offloading information from working memory to an external medium, freeing up mental resources for problem-solving and creative thinking."
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/privacy.html">Privacy</a></li>
+        <li><a href="/support.html">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>Voice Journaling Glossary</h1>
+      <p class="updated">Terms & Concepts Explained</p>
+    </div>
+
+    <div class="page-content">
+      <p>A reference guide to key terms in voice journaling, on-device AI, mood tracking, neuroscience, and digital privacy. Definitions are written to be accessible to everyone, not just technical audiences.</p>
+
+      <div class="glossary-nav">
+        <a href="#a">A</a>
+        <a href="#c">C</a>
+        <a href="#d">D</a>
+        <a href="#e">E</a>
+        <a href="#i">I</a>
+        <a href="#k">K</a>
+        <a href="#m">M</a>
+        <a href="#n">N</a>
+        <a href="#o">O</a>
+        <a href="#p">P</a>
+        <a href="#s">S</a>
+        <a href="#v">V</a>
+        <a href="#w">W</a>
+      </div>
+
+      <dl class="glossary-list">
+
+        <dt id="a">AES-256 Encryption</dt>
+        <dd>A symmetric encryption standard that uses a 256-bit key to protect data. It is considered practically unbreakable and is used by governments, banks, and security-focused applications. DailyVox uses AES-256-GCM for encrypted journal backups, ensuring that even if a backup file is intercepted, the contents remain unreadable without the password.</dd>
+
+        <dt>Affect Labeling</dt>
+        <dd>The psychological act of putting emotions into words. Research by UCLA's Matthew Lieberman shows that affect labeling reduces activation in the amygdala, the brain's threat-detection center, effectively calming the stress response. Voice journaling is a natural form of affect labeling because you are speaking your emotions aloud.</dd>
+
+        <dt id="c">CloudKit</dt>
+        <dd>Apple's cloud database framework that enables apps to sync data across devices via iCloud. CloudKit data is encrypted with the user's Apple ID and does not require the app developer to maintain their own servers. DailyVox uses CloudKit for optional iCloud sync between iPhone and iPad.</dd>
+
+        <dt>Cognitive Offloading</dt>
+        <dd>The process of transferring mental information to an external medium to free up working memory. Journaling is one of the most effective forms of cognitive offloading — by writing or speaking your thoughts, you reduce the mental burden of holding them in your head, which frees up cognitive resources for problem-solving and decision-making.</dd>
+
+        <dt>Core Data</dt>
+        <dd>Apple's framework for managing and persisting structured data on-device. It provides an object graph manager and persistent store that works entirely without a network connection. DailyVox uses Core Data to store all journal entries, mood data, and Digital Twin information locally on the device.</dd>
+
+        <dt id="d">Default Mode Network</dt>
+        <dd>A network of brain regions that becomes active during introspection, daydreaming, and self-referential thinking. Journaling engages the default mode network, which is associated with self-awareness, autobiographical memory, and constructing personal narratives. This is why journaling often leads to unexpected insights.</dd>
+
+        <dt>Digital Twin</dt>
+        <dd>In the context of personal AI, a digital twin is a computational model that mirrors aspects of an individual — personality traits, emotional patterns, values, and accumulated knowledge. DailyVox builds a private digital twin entirely on-device that learns from your journal entries over time and can predict moods, generate personality insights, and identify patterns you might not notice yourself.</dd>
+
+        <dt id="e">Emotional Granularity</dt>
+        <dd>The ability to distinguish between closely related emotions with precision. A person with high emotional granularity can tell the difference between feeling anxious, frustrated, and disappointed, rather than just "bad." Research shows that developing emotional granularity improves emotional regulation. Journaling and mood tracking help build this skill over time.</dd>
+
+        <dt>Expressive Writing</dt>
+        <dd>A therapeutic writing technique developed by psychologist James Pennebaker in which a person writes continuously about their deepest thoughts and feelings for 15-20 minutes. Decades of research show that expressive writing improves immune function, reduces anxiety, lowers blood pressure, and decreases doctor visits. Voice journaling applies the same principle through speech.</dd>
+
+        <dt id="i">Interoception</dt>
+        <dd>The sense of the internal state of the body, including signals like heart rate, hunger, fatigue, and emotional feelings. Interoceptive awareness is closely linked to emotional intelligence. Journaling helps develop interoception by encouraging you to notice and articulate internal states that might otherwise go unexamined.</dd>
+
+        <dt id="k">Knowledge Graph</dt>
+        <dd>A structured representation of entities (people, places, things, concepts) and the relationships between them. In DailyVox, the Digital Twin builds a personal knowledge graph from your journal entries, tracking who you mention, where you go, what events matter to you, and how these things connect to your emotional states.</dd>
+
+        <dt id="m">Mood Tracking</dt>
+        <dd>The practice of recording emotional states over time to identify patterns and triggers. DailyVox tracks mood automatically using AI-powered sentiment analysis across 9 categories, eliminating the need for manual input. Consistent mood tracking can reveal surprising correlations between activities, social interactions, and emotional well-being.</dd>
+
+        <dt id="n">Named Entity Recognition</dt>
+        <dd>A natural language processing (NLP) technique that identifies and classifies named entities in text, such as people, locations, organizations, dates, and quantities. DailyVox uses Apple's NaturalLanguage framework for on-device NER to populate the Digital Twin's knowledge graph from journal entries without sending any text to a server.</dd>
+
+        <dt>NaturalLanguage Framework</dt>
+        <dd>Apple's built-in framework for natural language processing tasks including tokenization, language identification, sentiment analysis, named entity recognition, and text embedding. It runs entirely on-device using the Neural Engine and powers DailyVox's mood detection and text analysis features.</dd>
+
+        <dt>Neural Engine</dt>
+        <dd>A dedicated hardware component in Apple's A-series and M-series chips designed specifically for machine learning inference. The Neural Engine in the A17 Pro chip performs up to 35 trillion operations per second, enabling sophisticated AI tasks to run directly on your iPhone or iPad without requiring cloud processing or an internet connection.</dd>
+
+        <dt>Neuroplasticity</dt>
+        <dd>The brain's ability to reorganize itself by forming new neural connections throughout life. Regular journaling promotes neuroplasticity by repeatedly engaging circuits related to self-reflection, emotional regulation, and narrative construction. Over time, this can measurably change how the brain processes emotions and experiences.</dd>
+
+        <dt id="o">On-Device AI</dt>
+        <dd>Artificial intelligence that runs entirely on a local device — phone, tablet, or computer — without sending data to cloud servers for processing. On-device AI provides stronger privacy because personal data never leaves the device, and it works without an internet connection. DailyVox uses on-device AI exclusively for all its features.</dd>
+
+        <dt id="p">Personality Card</dt>
+        <dd>A feature in DailyVox where the Digital Twin generates cards describing aspects of your personality that it has identified from analyzing your journal entries. Cards cover traits like communication style, core values, emotional patterns, and recurring interests. They become more specific and accurate as you journal more frequently.</dd>
+
+        <dt>Polyvagal Theory</dt>
+        <dd>A theory developed by neuroscientist Stephen Porges describing how the vagus nerve mediates the body's autonomic stress response through three states: social engagement (safe), fight-or-flight (mobilized), and shutdown (immobilized). Voice journaling may activate the ventral vagal complex — the social engagement system — through the physical act of speaking, which helps regulate the nervous system.</dd>
+
+        <dt>Private Speech</dt>
+        <dd>Talking to oneself, either aloud or internally. Psychologist Lev Vygotsky identified private speech as a critical tool for self-regulation, planning, and problem-solving. Voice journaling is a structured form of private speech that provides all these cognitive benefits while also creating a searchable, analyzable record of your thoughts.</dd>
+
+        <dt id="s">Sentiment Analysis</dt>
+        <dd>A natural language processing technique that determines the emotional tone of text — whether it is positive, negative, neutral, or mixed, and to what degree. DailyVox uses on-device sentiment analysis via Apple's NaturalLanguage framework to automatically detect the mood of each journal entry without any data leaving the device.</dd>
+
+        <dt>Speech Framework</dt>
+        <dd>Apple's framework for speech recognition that converts spoken audio into text. It supports on-device recognition for privacy-sensitive applications and works with over 60 languages. DailyVox uses the Speech framework for real-time, on-device voice-to-text transcription during journal recording.</dd>
+
+        <dt id="v">Vagus Nerve</dt>
+        <dd>The longest cranial nerve in the body, running from the brainstem through the neck to the abdomen. It plays a central role in the parasympathetic (rest-and-digest) nervous system, regulating heart rate, digestion, and stress response. Speaking activates the vagus nerve through the muscles of the larynx and pharynx, which is one physiological reason why voice journaling can feel calming.</dd>
+
+        <dt>Voice Journaling</dt>
+        <dd>The practice of recording spoken journal entries rather than writing them. Voice journaling is typically 3-4 times faster than typing on a phone, engages different cognitive and emotional processes (including affect labeling and vagus nerve activation), and captures natural speech patterns. Modern apps like DailyVox transcribe voice to text on-device for easy searching and AI analysis.</dd>
+
+        <dt id="w">Working Memory</dt>
+        <dd>The cognitive system responsible for temporarily holding and manipulating information during conscious tasks. Working memory has a limited capacity of roughly 4-7 items at a time. Journaling helps by offloading information from working memory to an external medium, freeing up mental resources for higher-order thinking, creativity, and problem-solving.</dd>
+
+      </dl>
+
+      <div class="article-cta" style="margin-top: 48px;">
+        <h3>Try DailyVox</h3>
+        <p>Free voice journaling with on-device AI. No subscription, no data collection, no account required.</p>
+        <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/faq">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/support.html">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
