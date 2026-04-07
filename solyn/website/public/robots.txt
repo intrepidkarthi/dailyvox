@@ -27,3 +27,8 @@ User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://getdailyvox.com/sitemap.xml
+
+# LLM-readable structured content
+# See https://llmstxt.org for the convention
+LLMs-Txt: https://getdailyvox.com/llms.txt
+LLMs-Full-Txt: https://getdailyvox.com/llms-full.txt
