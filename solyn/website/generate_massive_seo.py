@@ -349,10 +349,71 @@ CITIES = [
     "Sao Paulo", "Buenos Aires", "Bogota", "Lima", "Santiago", "Mexico City",
     # East Asia
     "Tokyo", "Seoul", "Taipei", "Hong Kong",
+    # More US cities
+    "Boise", "Des Moines", "Little Rock", "Anchorage", "Spokane",
+    "Knoxville", "Chattanooga", "Savannah", "Charleston", "Greenville",
+    "Lexington", "Dayton", "Akron", "Syracuse", "Rochester",
+    "Worcester", "Providence", "Hartford", "New Haven", "Stamford",
+    "Jersey City", "Newark", "Trenton", "Wilmington", "Norfolk",
+    "Durham", "Winston Salem", "Greensboro", "Columbia", "Augusta",
+    "Tallahassee", "Gainesville", "Sarasota", "Fort Lauderdale", "West Palm Beach",
+    "Baton Rouge", "Shreveport", "Jackson", "Birmingham Alabama", "Montgomery",
+    "Mobile", "Huntsville", "Fayetteville", "Bentonville", "Springfield",
+    "Wichita", "Topeka", "Lincoln", "Sioux Falls", "Fargo",
+    "Bismarck", "Billings", "Bozeman", "Missoula", "Cheyenne",
+    "Santa Fe", "Provo", "Ogden", "Reno", "Henderson",
+    "Scottsdale", "Tempe", "Chandler", "Gilbert", "Glendale Arizona",
+    "Irvine", "Pasadena", "Santa Monica", "Burbank", "Torrance",
+    "Anaheim", "Santa Ana", "Riverside", "Ontario California", "Bakersfield",
+    "Stockton", "Modesto", "Santa Cruz", "Santa Barbara", "San Luis Obispo",
+    "Monterey", "Redding", "Eugene", "Salem Oregon", "Bend",
+    "Olympia", "Tacoma", "Bellevue", "Kirkland", "Redmond",
+    # More UK
+    "Nottingham", "Leicester", "Coventry", "Newcastle", "Brighton",
+    "Southampton", "Plymouth", "York", "Bath", "Exeter",
+    "Norwich", "Ipswich", "Aberdeen", "Dundee", "Inverness",
+    # More Europe
+    "Hamburg", "Frankfurt", "Cologne", "Stuttgart", "Dusseldorf",
+    "Leipzig", "Dresden", "Lyon", "Marseille", "Toulouse",
+    "Nice", "Bordeaux", "Lille", "Strasbourg", "Nantes",
+    "Rotterdam", "The Hague", "Utrecht", "Antwerp", "Brussels",
+    "Gothenburg", "Malmo", "Aarhus", "Turku", "Tampere",
+    "Geneva", "Basel", "Bern", "Lausanne", "Graz",
+    "Salzburg", "Innsbruck", "Krakow", "Wroclaw", "Gdansk",
+    "Brno", "Bratislava", "Budapest", "Bucharest", "Sofia",
+    "Zagreb", "Ljubljana", "Belgrade", "Thessaloniki", "Athens",
+    "Porto", "Valencia", "Seville", "Bilbao", "Malaga",
+    "Florence", "Naples", "Turin", "Bologna", "Palermo",
+    # More India
+    "Nagpur", "Visakhapatnam", "Patna", "Vadodara", "Surat",
+    "Rajkot", "Ludhiana", "Agra", "Varanasi", "Kanpur",
+    "Nashik", "Aurangabad", "Mangalore", "Mysore", "Hubli",
+    "Madurai", "Tiruchirappalli", "Salem Tamil Nadu", "Noida", "Gurgaon",
+    "Guwahati", "Ranchi", "Dehradun", "Raipur", "Jodhpur",
+    # More Asia Pacific
+    "Osaka", "Kyoto", "Yokohama", "Nagoya", "Sapporo", "Fukuoka",
+    "Busan", "Incheon", "Daegu", "Taichung", "Kaohsiung",
+    "Shenzhen", "Guangzhou", "Shanghai", "Beijing", "Chengdu",
+    "Hanoi", "Ho Chi Minh City", "Phnom Penh", "Colombo",
+    "Dhaka", "Kathmandu", "Islamabad", "Lahore", "Karachi",
+    # More Australia/NZ
+    "Canberra", "Gold Coast", "Hobart", "Darwin", "Cairns",
+    "Wellington", "Christchurch", "Hamilton New Zealand", "Dunedin",
+    # More Middle East
+    "Muscat", "Kuwait City", "Bahrain", "Amman", "Beirut",
+    "Tel Aviv", "Jerusalem", "Ankara", "Istanbul",
+    # More Africa
+    "Accra", "Dar es Salaam", "Addis Ababa", "Kampala", "Kigali",
+    "Casablanca", "Tunis", "Algiers", "Durban", "Pretoria",
+    # More Americas
+    "Guadalajara", "Monterrey", "Medellin", "Cali", "Quito",
+    "Guayaquil", "La Paz", "Montevideo", "Asuncion", "Caracas",
+    "San Juan", "Havana", "Panama City", "San Jose Costa Rica",
+    "Guatemala City", "Tegucigalpa", "Kingston", "Port of Spain",
 ]
 
 # ============================================================
-# CROSS COMBINATIONS: Profession × Use Case (top 10 use cases)
+# CROSS COMBINATIONS: ALL professions × top 15 use cases
 # ============================================================
 TOP_USE_CASES = [
     ("morning-routine", "Morning Routine"),
@@ -365,20 +426,15 @@ TOP_USE_CASES = [
     ("career-change", "Career Change"),
     ("goal-setting", "Goal Setting"),
     ("creative-block", "Creative Block"),
+    ("grief-processing", "Grief Processing"),
+    ("sobriety-journal", "Sobriety & Recovery"),
+    ("meditation-alternative", "Meditation Alternative"),
+    ("job-search", "Job Search"),
+    ("health-diagnosis", "Health Diagnosis"),
 ]
 
-TOP_PROFESSIONS = [
-    ("teachers", "Teachers"),
-    ("nurses", "Nurses"),
-    ("developers", "Developers"),
-    ("therapists", "Therapists"),
-    ("lawyers", "Lawyers"),
-    ("executives", "Executives"),
-    ("freelancers", "Freelancers"),
-    ("college-students", "College Students"),
-    ("remote-workers", "Remote Workers"),
-    ("new-moms", "New Moms"),
-]
+# ALL professions get cross-combined
+TOP_PROFESSIONS = [(slug, data[0]) for slug, data in PROFESSIONS.items()]
 
 # ============================================================
 # GENERATION
