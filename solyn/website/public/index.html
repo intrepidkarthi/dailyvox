@@ -497,6 +497,110 @@
     }
     .final-cta > p { color: var(--text-dim); font-size: 17px; margin-bottom: 36px; max-width: 420px; margin-left: auto; margin-right: auto; position: relative; line-height: 1.7; }
 
+    /* ═══ MARQUEE ═══ */
+    .marquee-strip {
+      padding: 20px 0; overflow: hidden; position: relative;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .marquee-track {
+      display: flex; gap: 48px; width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-track span {
+      font-size: 13px; font-weight: 600; color: var(--text-dim);
+      white-space: nowrap; display: inline-flex; align-items: center; gap: 8px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .marquee-track .mx-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.5; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ═══ STATS ═══ */
+    .stats-section { padding: 100px 0; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .stat-card {
+      text-align: center; padding: 40px 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r);
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .stat-card:hover { border-color: var(--border-light); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.25); }
+    .stat-num {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 48px; font-weight: 400; letter-spacing: -0.03em;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .stat-card:nth-child(1) .stat-num { color: var(--accent); }
+    .stat-card:nth-child(2) .stat-num { color: var(--accent2); }
+    .stat-card:nth-child(3) .stat-num { color: var(--mint); }
+    .stat-card:nth-child(4) .stat-num { color: var(--pink); }
+    .stat-label { font-size: 13px; color: var(--text-dim); font-weight: 500; line-height: 1.4; }
+
+    /* ═══ TWIN SHOWCASE ═══ */
+    .twin-section { padding: 0 0 120px; }
+    .twin-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .twin-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 40px 32px;
+      position: relative; overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .twin-card:hover { border-color: var(--border-light); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.25); }
+    .twin-card.twin-big { grid-column: span 2; }
+    .twin-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .twin-card:nth-child(1)::after { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .twin-card:nth-child(2)::after { background: linear-gradient(90deg, transparent, var(--accent2), transparent); }
+    .twin-card:nth-child(3)::after { background: linear-gradient(90deg, transparent, var(--pink), var(--accent), transparent); }
+    .twin-card:hover::after { opacity: 1; }
+
+    .twin-card .twin-eyebrow {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.15em; margin-bottom: 14px;
+    }
+    .twin-card:nth-child(1) .twin-eyebrow { color: var(--accent); }
+    .twin-card:nth-child(2) .twin-eyebrow { color: var(--accent2); }
+    .twin-card:nth-child(3) .twin-eyebrow { color: var(--pink); }
+
+    .twin-card h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 24px; font-weight: 400; margin-bottom: 10px;
+    }
+    .twin-card p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+
+    .twin-card .twin-visual {
+      margin-top: 24px; padding: 20px; border-radius: var(--r-sm);
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    }
+    .twin-traits {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .twin-trait {
+      padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600;
+      border: 1px solid var(--border);
+    }
+    .twin-trait:nth-child(odd) { color: var(--accent); border-color: rgba(139,108,223,0.2); background: rgba(139,108,223,0.06); }
+    .twin-trait:nth-child(even) { color: var(--accent2); border-color: rgba(90,200,200,0.2); background: rgba(90,200,200,0.06); }
+
+    .twin-mood-bar { display: flex; gap: 4px; align-items: flex-end; height: 60px; }
+    .twin-mood-bar span {
+      flex: 1; border-radius: 4px 4px 0 0; min-width: 20px;
+      animation: moodGrow 2s ease-out both;
+    }
+    @keyframes moodGrow { from { height: 0; } }
+    .twin-mood-bar span:nth-child(1) { height: 30%; background: rgba(139,108,223,0.4); animation-delay: 0.1s; }
+    .twin-mood-bar span:nth-child(2) { height: 55%; background: rgba(90,200,200,0.4); animation-delay: 0.2s; }
+    .twin-mood-bar span:nth-child(3) { height: 40%; background: rgba(232,125,160,0.4); animation-delay: 0.3s; }
+    .twin-mood-bar span:nth-child(4) { height: 70%; background: rgba(94,234,189,0.5); animation-delay: 0.4s; }
+    .twin-mood-bar span:nth-child(5) { height: 45%; background: rgba(139,108,223,0.4); animation-delay: 0.5s; }
+    .twin-mood-bar span:nth-child(6) { height: 80%; background: rgba(90,200,200,0.5); animation-delay: 0.6s; }
+    .twin-mood-bar span:nth-child(7) { height: 50%; background: rgba(232,163,90,0.4); animation-delay: 0.7s; }
+
     /* ═══ FOOTER ═══ */
     .site-footer {
       padding: 36px 0;
@@ -518,6 +622,10 @@
       .privacy-section { padding: 48px 24px; }
       .nav-links { gap: 0; }
       .nav-links a { padding: 8px 10px; font-size: 12px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .twin-grid { grid-template-columns: 1fr; }
+      .twin-card.twin-big { grid-column: span 1; }
+      .stat-num { font-size: 36px; }
     }
   </style>
 </head>
@@ -579,7 +687,36 @@
       </div>
     </section>
 
-    <div class="divider"></div>
+    <!-- ═══ MARQUEE ═══ -->
+    <div class="marquee-strip">
+      <div class="marquee-track">
+        <span><span class="mx-dot"></span> Voice-First Journaling</span>
+        <span><span class="mx-dot"></span> 100% On-Device AI</span>
+        <span><span class="mx-dot"></span> Digital Twin Technology</span>
+        <span><span class="mx-dot"></span> 9 Mood Categories</span>
+        <span><span class="mx-dot"></span> AES-256 Encrypted</span>
+        <span><span class="mx-dot"></span> No Cloud Processing</span>
+        <span><span class="mx-dot"></span> Free Forever</span>
+        <span><span class="mx-dot"></span> Face ID Protected</span>
+        <span><span class="mx-dot"></span> Works Offline</span>
+        <span><span class="mx-dot"></span> Apple Speech Framework</span>
+        <span><span class="mx-dot"></span> Personality Cards</span>
+        <span><span class="mx-dot"></span> Mood Predictions</span>
+        <!-- duplicate for seamless loop -->
+        <span><span class="mx-dot"></span> Voice-First Journaling</span>
+        <span><span class="mx-dot"></span> 100% On-Device AI</span>
+        <span><span class="mx-dot"></span> Digital Twin Technology</span>
+        <span><span class="mx-dot"></span> 9 Mood Categories</span>
+        <span><span class="mx-dot"></span> AES-256 Encrypted</span>
+        <span><span class="mx-dot"></span> No Cloud Processing</span>
+        <span><span class="mx-dot"></span> Free Forever</span>
+        <span><span class="mx-dot"></span> Face ID Protected</span>
+        <span><span class="mx-dot"></span> Works Offline</span>
+        <span><span class="mx-dot"></span> Apple Speech Framework</span>
+        <span><span class="mx-dot"></span> Personality Cards</span>
+        <span><span class="mx-dot"></span> Mood Predictions</span>
+      </div>
+    </div>
 
     <!-- ═══ HOW IT WORKS ═══ -->
     <section class="how-section wrap">
@@ -648,6 +785,70 @@
       </div>
     </section>
 
+    <!-- ═══ STATS ═══ -->
+    <section class="stats-section wrap">
+      <div class="stats-grid">
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-num">150</div>
+          <div class="stat-label">Words per minute<br>speaking vs 40 typing</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-num">2m</div>
+          <div class="stat-label">Average voice entry<br>captures a full diary page</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-num">9</div>
+          <div class="stat-label">Mood categories<br>detected automatically</div>
+        </div>
+        <div class="stat-card reveal reveal-delay-4">
+          <div class="stat-num">$0</div>
+          <div class="stat-label">Forever. No subscription.<br>No in-app purchases.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider wrap"></div>
+
+    <!-- ═══ DIGITAL TWIN SHOWCASE ═══ -->
+    <section class="twin-section wrap">
+      <div class="reveal" style="padding-top:120px;">
+        <p class="section-eyebrow">Digital Twin</p>
+        <h2 class="section-h2">An AI that becomes<br><em style="font-style:italic;opacity:0.4;">you.</em></h2>
+      </div>
+      <div class="twin-grid">
+        <div class="twin-card reveal reveal-delay-1">
+          <div class="twin-eyebrow">Personality Model</div>
+          <h3>Your personality, quantified</h3>
+          <p>After 30 days of entries, your Digital Twin generates a personality card — communication style, emotional range, thinking patterns. Spotify Wrapped for your inner world.</p>
+          <div class="twin-visual">
+            <div class="twin-traits">
+              <span class="twin-trait">Reflective</span>
+              <span class="twin-trait">Analytical</span>
+              <span class="twin-trait">Empathetic</span>
+              <span class="twin-trait">Direct</span>
+              <span class="twin-trait">Creative</span>
+              <span class="twin-trait">Introverted</span>
+            </div>
+          </div>
+        </div>
+        <div class="twin-card reveal reveal-delay-2">
+          <div class="twin-eyebrow">Mood Prediction</div>
+          <h3>See tomorrow's mood today</h3>
+          <p>Your Twin learns your emotional rhythms — weekly cycles, seasonal patterns, trigger correlations. It predicts how you'll feel before you feel it.</p>
+          <div class="twin-visual">
+            <div class="twin-mood-bar">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <div class="twin-card twin-big reveal reveal-delay-3">
+          <div class="twin-eyebrow">The Vision</div>
+          <h3>A digital version of yourself — private, on-device, yours</h3>
+          <p>Every voice entry teaches your Digital Twin more about how you think, feel, and react. The long-term goal: an AI that can act like you, speak like you, respond like you. Not on a server. Not in the cloud. On your phone, for your eyes only. This is what personal AI should be.</p>
+        </div>
+      </div>
+    </section>
+
     <div class="divider wrap"></div>
 
     <!-- ═══ STORY ═══ -->
@@ -687,7 +888,7 @@
     </section>
 
     <!-- ═══ PRIVACY ═══ -->
-    <section class="privacy-section wrap-narrow reveal">
+    <section class="privacy-section wrap reveal">
       <div class="shield-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5eeabd" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
       <h3>Privacy is the foundation.</h3>
       <p>No servers. No accounts. No tracking. No ads. No third-party SDKs. Your voice, your entries, and your Digital Twin never leave your device.</p>
