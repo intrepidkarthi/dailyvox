@@ -38,6 +38,10 @@
   <link rel="icon" href="/app-icon.png">
   <link rel="apple-touch-icon" href="/app-icon.png">
 
+  <!-- Display font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
   <!-- Structured Data - SoftwareApplication -->
   <script type="application/ld+json">
   {
@@ -69,7 +73,7 @@
   }
   </script>
 
-  <!-- Structured Data - FAQPage (for search rich results) -->
+  <!-- Structured Data - FAQPage -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -115,6 +119,600 @@
     "sameAs": []
   }
   </script>
+
+  <style>
+    /* Landing page enhancements */
+    .lp-hero {
+      text-align: center;
+      padding: 80px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lp-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(ellipse, rgba(155,125,216,0.12) 0%, rgba(90,200,200,0.04) 40%, transparent 70%);
+      pointer-events: none;
+      animation: heroPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroPulse {
+      0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+    }
+
+    .lp-hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .lp-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(155,125,216,0.1);
+      border: 1px solid rgba(155,125,216,0.15);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple);
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .lp-hero-eyebrow .pulse-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 8px var(--mint);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .lp-hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 72px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .lp-hero h1 .gradient-text {
+      background: linear-gradient(135deg, #f0eef5 10%, var(--purple) 50%, var(--teal) 90%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
+    .lp-hero h1 em {
+      font-style: italic;
+      -webkit-text-fill-color: var(--text);
+      opacity: 0.4;
+    }
+
+    .lp-hero .subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .lp-cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    .lp-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--purple), rgba(90,200,200,0.8));
+      color: #fff;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 24px rgba(155,125,216,0.3);
+    }
+
+    .lp-cta-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(155,125,216,0.4);
+    }
+
+    .lp-cta-primary svg { flex-shrink: 0; }
+
+    .lp-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    .lp-cta-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255,255,255,0.12);
+      color: var(--text);
+    }
+
+    .lp-badge-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+
+    /* Phone mockup */
+    .lp-phone-wrap {
+      margin: 56px auto 0;
+      max-width: 280px;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .lp-phone {
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 36px;
+      padding: 12px;
+      position: relative;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 120px rgba(155,125,216,0.08);
+    }
+
+    .lp-phone-inner {
+      background: linear-gradient(180deg, #0d1130 0%, #05081a 100%);
+      border-radius: 26px;
+      padding: 32px 20px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lp-phone-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 28px;
+      background: #05081a;
+      border-radius: 0 0 16px 16px;
+    }
+
+    .lp-phone-wave {
+      width: 100px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .lp-phone-wave span {
+      display: block;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--purple);
+      animation: waveBar 1.2s ease-in-out infinite;
+    }
+
+    .lp-phone-wave span:nth-child(1) { height: 12px; animation-delay: 0s; }
+    .lp-phone-wave span:nth-child(2) { height: 24px; animation-delay: 0.1s; }
+    .lp-phone-wave span:nth-child(3) { height: 36px; animation-delay: 0.2s; }
+    .lp-phone-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+    .lp-phone-wave span:nth-child(5) { height: 28px; animation-delay: 0.4s; }
+    .lp-phone-wave span:nth-child(6) { height: 16px; animation-delay: 0.5s; }
+    .lp-phone-wave span:nth-child(7) { height: 32px; animation-delay: 0.6s; }
+
+    @keyframes waveBar {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.4); }
+    }
+
+    .lp-phone-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .lp-phone-mood {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(109,213,176,0.12);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mint);
+    }
+
+    .lp-phone-transcript {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding: 0 8px;
+    }
+
+    /* How it works */
+    .lp-how {
+      padding: 80px 0;
+      position: relative;
+    }
+
+    .lp-how::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .lp-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .lp-step {
+      text-align: center;
+      padding: 32px 20px;
+      position: relative;
+    }
+
+    .lp-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .lp-step:nth-child(1) .lp-step-num { background: rgba(155,125,216,0.15); color: var(--purple); }
+    .lp-step:nth-child(2) .lp-step-num { background: rgba(90,200,200,0.15); color: var(--teal); }
+    .lp-step:nth-child(3) .lp-step-num { background: rgba(232,125,160,0.15); color: var(--pink); }
+
+    .lp-step h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .lp-step p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .lp-step-arrow {
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      opacity: 0.3;
+      font-size: 20px;
+    }
+
+    /* Features enhanced */
+    .lp-features {
+      padding: 40px 0 80px;
+    }
+
+    .lp-features .features-grid {
+      gap: 12px;
+    }
+
+    .lp-features .feature-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .lp-features .feature-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(155,125,216,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .lp-features .feature-card:hover::after { opacity: 1; }
+
+    .lp-features .feature-card:hover {
+      border-color: rgba(155,125,216,0.15);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+
+    .lp-features .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+    }
+
+    /* Story / social proof */
+    .lp-story {
+      padding: 60px 0;
+      position: relative;
+    }
+
+    .lp-story::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .lp-story-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .lp-story-icon {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(155,125,216,0.15), rgba(90,200,200,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .lp-story-body h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+
+    .lp-story-body p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .lp-story-body a {
+      color: var(--purple);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .lp-story-body a:hover { color: var(--text); }
+
+    /* Comparison table */
+    .lp-compare {
+      padding: 60px 0 80px;
+    }
+
+    .lp-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 40px;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .lp-compare-table thead th {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    .lp-compare-table thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+    .lp-compare-table thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+
+    .lp-compare-table tbody td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .lp-compare-table tbody tr:last-child td { border-bottom: none; }
+
+    .lp-compare-table .highlight-col {
+      background: rgba(155,125,216,0.04);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .lp-compare-table .check { color: var(--mint); }
+    .lp-compare-table .cross { color: rgba(240,238,245,0.25); }
+
+    /* Enhanced privacy */
+    .lp-privacy {
+      margin: 0 0 80px;
+      padding: 56px 40px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(109,213,176,0.06), rgba(90,200,200,0.03));
+      border: 1px solid rgba(109,213,176,0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lp-privacy::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(109,213,176,0.08), transparent 70%);
+      pointer-events: none;
+      animation: privacyGlow 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes privacyGlow {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .lp-privacy .shield { margin-bottom: 20px; position: relative; }
+
+    .lp-privacy h3 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 28px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .lp-privacy p {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .lp-privacy-badges {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      position: relative;
+    }
+
+    .lp-privacy-badge {
+      padding: 6px 14px;
+      border: 1px solid rgba(109,213,176,0.15);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Final CTA */
+    .lp-final-cta {
+      text-align: center;
+      padding: 60px 0 80px;
+      position: relative;
+    }
+
+    .lp-final-cta::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .lp-final-cta h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 44px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .lp-final-cta p {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 32px;
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .lp-free-tag {
+      display: inline-block;
+      background: rgba(109,213,176,0.12);
+      color: var(--mint);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    /* Responsive overrides */
+    @media (max-width: 640px) {
+      .lp-hero h1 { font-size: 44px; }
+      .lp-steps { grid-template-columns: 1fr; gap: 8px; }
+      .lp-step-arrow { display: none; }
+      .lp-story-card { flex-direction: column; padding: 32px 24px; }
+      .lp-compare-table { font-size: 12px; }
+      .lp-compare-table thead th,
+      .lp-compare-table tbody td { padding: 10px 12px; }
+      .lp-final-cta h2 { font-size: 32px; }
+      .lp-privacy { padding: 40px 24px; }
+      .lp-phone-wrap { max-width: 240px; }
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -125,6 +723,7 @@
       </a>
       <ul class="nav-links">
         <li><a href="/blog">Blog</a></li>
+        <li><a href="/faq">FAQ</a></li>
         <li><a href="/privacy">Privacy</a></li>
         <li><a href="/support">Support</a></li>
       </ul>
@@ -132,30 +731,83 @@
   </nav>
 
   <main class="container">
-    <section class="hero">
-      <div class="hero-icon-wrap">
-        <img src="/app-icon.png" alt="DailyVox" class="hero-icon">
+    <!-- HERO -->
+    <section class="lp-hero">
+      <div class="lp-hero-content">
+        <div class="lp-hero-eyebrow">
+          <span class="pulse-dot"></span>
+          100% On-Device AI &middot; Free Forever
+        </div>
+
+        <h1>
+          <span class="gradient-text">Your voice.</span><br>
+          <em>Your</em> <span class="gradient-text">twin.</span>
+        </h1>
+
+        <p class="subtitle">A private AI voice diary that listens, understands, and builds a digital version of your personality. Everything stays on your device. Nothing leaves. Ever.</p>
+
+        <div class="lp-cta-row">
+          <a href="https://apps.apple.com/app/id6760454642" class="lp-cta-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+            Download Free
+          </a>
+          <a href="/blog/what-is-voice-journaling" class="lp-cta-secondary">
+            How it works &rarr;
+          </a>
+        </div>
+
+        <div class="lp-badge-row">
+          <span class="badge"><span class="dot dot-green"></span> No Internet Required</span>
+          <span class="badge"><span class="dot dot-purple"></span> Digital Twin AI</span>
+          <span class="badge"><span class="dot dot-teal"></span> AES-256 Encrypted</span>
+        </div>
+
+        <!-- Phone mockup -->
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-inner">
+              <div class="lp-phone-wave">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div class="lp-phone-label">Recording&hellip;</div>
+              <div class="lp-phone-mood">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                Mood: Reflective
+              </div>
+              <div class="lp-phone-transcript">"I've been thinking about that conversation with Sarah. I realize I wasn't really listening&hellip;"</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <h1>Your voice.<br>Your twin.</h1>
-      <p class="subtitle">A private AI voice diary that listens, understands, and builds a digital twin of your inner world. Everything stays on your device.</p>
-      <div class="badge-row">
-        <span class="badge"><span class="dot dot-green"></span> 100% On-Device</span>
-        <span class="badge"><span class="dot dot-purple"></span> Digital Twin AI</span>
-        <span class="badge"><span class="dot dot-teal"></span> AES-256 Encrypted</span>
-      </div>
-      <a href="https://apps.apple.com/app/id6760454642" class="app-store-btn" aria-label="Download on the App Store">
-        <svg width="180" height="52" viewBox="0 0 180 52" xmlns="http://www.w3.org/2000/svg">
-          <rect width="180" height="52" rx="10" fill="#fff"/>
-          <text x="67" y="18" font-family="-apple-system, SF Pro Display, sans-serif" font-size="9" fill="#000" letter-spacing="0.5">Download on the</text>
-          <text x="67" y="36" font-family="-apple-system, SF Pro Display, sans-serif" font-size="18" font-weight="600" fill="#000">App Store</text>
-          <g transform="translate(18, 8) scale(0.75)" fill="#000">
-            <path d="M24.769 20.3a4.949 4.949 0 0 1 2.356-4.152 5.066 5.066 0 0 0-3.99-2.158c-1.68-.176-3.308 1.005-4.164 1.005-.872 0-2.19-.988-3.608-.958a5.315 5.315 0 0 0-4.473 2.728c-1.934 3.348-.491 8.269 1.361 10.976.927 1.325 2.01 2.805 3.428 2.753 1.387-.058 1.905-.885 3.58-.885 1.658 0 2.144.885 3.59.852 1.489-.025 2.426-1.332 3.32-2.67a10.962 10.962 0 0 0 1.52-3.092 4.782 4.782 0 0 1-2.92-4.4zM22.037 12.21a4.872 4.872 0 0 0 1.115-3.49 4.957 4.957 0 0 0-3.208 1.66 4.636 4.636 0 0 0-1.144 3.36 4.1 4.1 0 0 0 3.237-1.53z"/>
-          </g>
-        </svg>
-      </a>
     </section>
 
-    <section class="features">
+    <!-- HOW IT WORKS -->
+    <section class="lp-how">
+      <p class="section-label">How It Works</p>
+      <h2 class="section-title">Three steps. Two minutes. Zero typing.</h2>
+      <div class="lp-steps">
+        <div class="lp-step">
+          <div class="lp-step-num">1</div>
+          <h3>Speak</h3>
+          <p>Press record and talk about your day. No prompts, no rules. Just say what's on your mind.</p>
+          <span class="lp-step-arrow">&rarr;</span>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">2</div>
+          <h3>AI Analyzes</h3>
+          <p>On-device AI transcribes your voice, detects your mood, and extracts the people and topics you mention.</p>
+          <span class="lp-step-arrow">&rarr;</span>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">3</div>
+          <h3>Twin Learns</h3>
+          <p>Your Digital Twin builds a personality model over time — predicting moods and surfacing patterns you didn't see.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="lp-features">
       <p class="section-label">Features</p>
       <h2 class="section-title">Everything you need to journal privately</h2>
       <div class="features-grid">
@@ -167,17 +819,17 @@
         <div class="feature-card">
           <div class="feature-icon fi-purple"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9b7dd8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.5V20h6v-2.5c2.9-1.2 5-4.1 5-7.5a8 8 0 0 0-8-8Z"/><path d="M10 22h4"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/></svg></div>
           <h3>Digital Twin + Predictions</h3>
-          <p>A living model of your inner world. Your Twin predicts your mood, surfaces patterns, and learns your emotional rhythms over time.</p>
+          <p>A living model of your inner world. Your Twin predicts your mood, surfaces patterns, and learns your emotional rhythms.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon fi-orange"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8a35a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg></div>
           <h3>Smart Insights</h3>
-          <p>Mood trends, writing streaks, sentiment analysis, shareable weekly insight cards, and AI-generated pattern detection.</p>
+          <p>Mood trends, sentiment analysis, shareable weekly insight cards, and AI-generated pattern detection.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon fi-pink"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e87da0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
           <h3>Personality Card</h3>
-          <p>A shareable snapshot of who you are — communication style, thinking patterns, emotional range. Spotify Wrapped for your personality.</p>
+          <p>A shareable snapshot of who you are — communication style, thinking patterns, emotional range. Spotify Wrapped for your mind.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon fi-mint"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6dd5b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
@@ -185,13 +837,113 @@
           <p>Biometric security with Face ID or Touch ID. Your diary stays yours.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon fi-blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6ba3d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg></div>
-          <h3>8 Themes</h3>
-          <p>Sage, Lavender, Rose, Ocean, Warm, Dark, and more to match your personal style.</p>
+          <div class="feature-icon fi-blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6ba3d6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg></div>
+          <h3>Works Offline</h3>
+          <p>No internet needed. Voice transcription, AI, and your Digital Twin all run locally on your iPhone's Neural Engine.</p>
         </div>
       </div>
     </section>
 
+    <!-- STORY -->
+    <section class="lp-story">
+      <div class="lp-story-card">
+        <div class="lp-story-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="lp-story-body">
+          <h3>"I wrote a diary for 20 years. Then I couldn't anymore."</h3>
+          <p>I started missing days. Then weeks. Writing every day had become a chore. Then I tried speaking instead of writing — and it worked. So I built DailyVox. An app where you just talk, and AI handles the rest. Everything stays on your phone. No servers. No cloud. No catch.</p>
+          <p>I built this because I needed it. Turns out other people need it too.</p>
+          <p style="margin:0;">— Karthikeyan, creator of DailyVox</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON -->
+    <section class="lp-compare">
+      <p class="section-label">Compare</p>
+      <h2 class="section-title">How DailyVox stacks up</h2>
+      <table class="lp-compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="highlight-col">DailyVox</th>
+            <th>Day One</th>
+            <th>Reflectly</th>
+            <th>Apple Journal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Price</td>
+            <td class="highlight-col"><span class="lp-free-tag">Free</span></td>
+            <td>$34.99/yr</td>
+            <td>$59.99/yr</td>
+            <td>Free</td>
+          </tr>
+          <tr>
+            <td>Voice Journaling</td>
+            <td class="highlight-col"><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>AI Mood Detection</td>
+            <td class="highlight-col"><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>Digital Twin</td>
+            <td class="highlight-col"><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>Works Offline</td>
+            <td class="highlight-col"><span class="check">&#10003;</span></td>
+            <td>Partial</td>
+            <td><span class="cross">&#10005;</span></td>
+            <td><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Data Collected</td>
+            <td class="highlight-col">None</td>
+            <td>Yes</td>
+            <td>Yes</td>
+            <td>Minimal</td>
+          </tr>
+          <tr>
+            <td>Account Required</td>
+            <td class="highlight-col"><span class="cross">&#10005;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="cross">&#10005;</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="text-align:center; margin-top:16px;">
+        <a href="/journal-app-comparison" class="blog-view-all">Full comparison of 7 apps &rarr;</a>
+      </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="lp-privacy">
+      <div class="shield"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#6dd5b0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <h3>Privacy is not a feature. It's the foundation.</h3>
+      <p>No servers. No accounts. No tracking. No ads. No third-party SDKs. Your voice recordings, journal entries, and Digital Twin model never leave your device.</p>
+      <div class="lp-privacy-badges">
+        <span class="lp-privacy-badge">Apple "Data Not Collected"</span>
+        <span class="lp-privacy-badge">AES-256 Encryption</span>
+        <span class="lp-privacy-badge">Zero Cloud Processing</span>
+        <span class="lp-privacy-badge">No Account Required</span>
+      </div>
+    </section>
+
+    <!-- BLOG -->
     <section class="blog-preview">
       <p class="section-label">From the Blog</p>
       <h2 class="section-title">Journaling, privacy &amp; on-device AI</h2>
@@ -202,33 +954,32 @@
           <p>DailyVox v1.1 introduces Twin Predictions, shareable personality cards, and weekly insight cards — all on-device.</p>
           <span class="blog-date">March 26, 2026</span>
         </a>
-        <a href="/blog/why-your-ai-journal-shouldnt-send-data-to-cloud" class="blog-card">
-          <span class="blog-tag tag-privacy">Privacy</span>
-          <h3>Why AI Journals Shouldn't Touch the Cloud</h3>
-          <p>Most AI journal apps send your private thoughts to cloud servers. Here's why on-device AI is the only safe choice.</p>
-          <span class="blog-date">March 26, 2026</span>
+        <a href="/blog/adhd-voice-journaling-protocol" class="blog-card">
+          <span class="blog-tag tag-wellness">Wellness</span>
+          <h3>The ADHD Voice Journaling Protocol</h3>
+          <p>Voice journaling eliminates the blank-page problem for ADHD brains. Speaking is 3x faster than writing.</p>
+          <span class="blog-date">April 1, 2026</span>
         </a>
-        <a href="/blog/best-journal-app-for-privacy" class="blog-card">
-          <span class="blog-tag tag-privacy">Privacy</span>
-          <h3>Best Private Journal App (2026)</h3>
-          <p>Journal apps ranked by actual data practices — not marketing claims. Who really keeps your data safe?</p>
-          <span class="blog-date">March 17, 2026</span>
+        <a href="/blog/science-of-talking-to-yourself" class="blog-card">
+          <span class="blog-tag tag-wellness">Wellness</span>
+          <h3>The Science of Talking to Yourself</h3>
+          <p>Affect labeling, vagus nerve activation, and verbal processing — the neuroscience behind voice journaling.</p>
+          <span class="blog-date">April 1, 2026</span>
         </a>
       </div>
       <div style="text-align:center; margin-top:24px;">
-        <a href="/blog/how-to-start-journaling" class="blog-view-all">How to Start Journaling</a> &nbsp;&middot;&nbsp;
-        <a href="/blog/how-to-journal-for-mental-health" class="blog-view-all">Journaling for Mental Health</a> &nbsp;&middot;&nbsp;
-        <a href="/blog/dailyvox-vs-day-one" class="blog-view-all">DailyVox vs Day One</a>
-      </div>
-      <div style="text-align:center; margin-top:20px;">
         <a href="/blog" class="blog-view-all">View all articles &rarr;</a>
       </div>
     </section>
 
-    <section class="privacy-banner">
-      <div class="shield"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6dd5b0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
-      <h3>Privacy is not a feature. It's the foundation.</h3>
-      <p>No servers. No accounts. No tracking. No ads. No third-party SDKs. Your voice recordings, journal entries, and Digital Twin model never leave your device.</p>
+    <!-- FINAL CTA -->
+    <section class="lp-final-cta">
+      <h2>Start talking.<br>Stop typing.</h2>
+      <p>Two minutes a day. No writing. No subscription. No data collection. Just you and your voice.</p>
+      <a href="https://apps.apple.com/app/id6760454642" class="lp-cta-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+        Download Free on the App Store
+      </a>
     </section>
   </main>
 
@@ -236,6 +987,8 @@
     <div class="container">
       <div class="footer-links">
         <a href="/blog">Blog</a>
+        <a href="/faq">FAQ</a>
+        <a href="/journal-app-comparison">Compare</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/support">Support</a>
       </div>
