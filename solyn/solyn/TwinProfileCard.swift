@@ -176,6 +176,7 @@ struct TwinProfileCardSection: View {
     @State private var profile: TwinProfile?
     @State private var showShareSheet = false
     @State private var shareImage: UIImage?
+    @State private var showFormatPicker = false
 
     var body: some View {
         Group {
@@ -188,7 +189,7 @@ struct TwinProfileCardSection: View {
                             .font(.headline)
                         Spacer()
                         Button {
-                            shareProfile(profile)
+                            shareProfile(profile, format: .story)
                         } label: {
                             HStack(spacing: 4) {
                                 Image(systemName: "square.and.arrow.up")
@@ -203,7 +204,10 @@ struct TwinProfileCardSection: View {
                 }
                 .sheet(isPresented: $showShareSheet) {
                     if let image = shareImage {
-                        ShareSheet(activityItems: [image])
+                        ShareSheet(activityItems: [
+                            image,
+                            PersonalityCardRenderer.shareText
+                        ])
                     }
                 }
             }
@@ -211,13 +215,9 @@ struct TwinProfileCardSection: View {
         .onAppear { profile = TwinProfileGenerator.generate() }
     }
 
-    private func shareProfile(_ profile: TwinProfile) {
+    private func shareProfile(_ profile: TwinProfile, format: PersonalityCardFormat) {
         Task { @MainActor in
-            let exportView = TwinProfileCardExport(profile: profile)
-                .frame(width: 380, height: 560)
-            let renderer = ImageRenderer(content: exportView)
-            renderer.scale = 3.0
-            if let image = renderer.uiImage {
+            if let image = PersonalityCardRenderer.renderCard(profile: profile, format: format) {
                 shareImage = image
                 showShareSheet = true
             }

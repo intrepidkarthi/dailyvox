@@ -635,6 +635,7 @@ struct TodayView: View {
                     do {
                         try viewContext.save()
                         HapticManager.shared.entrySaved()
+                        ReviewManager.shared.recordEntry()
 
                         // Feed into Digital Twin for learning
                         DigitalTwinEngine.shared.processEntry(

@@ -16,6 +16,8 @@ struct DigitalTwinView: View {
     @State private var selectedSection: TwinSection = .overview
     @State private var showingDetail = false
     @State private var animateOrb = false
+    @State private var showTwinShareSheet = false
+    @State private var twinShareImage: UIImage?
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: false)],
@@ -37,6 +39,9 @@ struct DigitalTwinView: View {
             VStack(spacing: 24) {
                 // Digital Twin Orb Header
                 twinOrbHeader
+
+                // Ask Your Twin
+                askTwinButton
 
                 // Maturity indicator
                 maturityBadge
@@ -127,6 +132,52 @@ struct DigitalTwinView: View {
             Text(twin.summary.maturityLevel.description)
                 .font(.subheadline)
                 .foregroundColor(themeManager.secondaryTextColor)
+        }
+    }
+
+    // MARK: - Ask Your Twin Button
+
+    private var askTwinButton: some View {
+        NavigationLink(destination: TwinChatView()) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [
+                                    themeManager.accentColor.opacity(0.7),
+                                    themeManager.accentColor.opacity(0.3)
+                                ],
+                                center: .center,
+                                startRadius: 2,
+                                endRadius: 16
+                            )
+                        )
+                        .frame(width: 32, height: 32)
+
+                    Image(systemName: "bubble.left.and.bubble.right.fill")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.white)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ask Your Twin")
+                        .font(.subheadline.bold())
+                        .foregroundColor(themeManager.textColor)
+                    Text("Get insights from your journal data")
+                        .font(.caption)
+                        .foregroundColor(themeManager.secondaryTextColor)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(themeManager.secondaryTextColor)
+            }
+            .padding()
+            .background(themeManager.cardBackgroundColor)
+            .cornerRadius(16)
         }
     }
 
@@ -301,6 +352,69 @@ struct DigitalTwinView: View {
                 .padding()
                 .background(themeManager.cardBackgroundColor)
                 .cornerRadius(16)
+            }
+
+            // Share Your Twin — only show with enough data
+            if twin.behavioralPatterns.totalEntries >= 10 {
+                shareYourTwinButton
+            }
+        }
+        .sheet(isPresented: $showTwinShareSheet) {
+            if let image = twinShareImage {
+                ShareSheet(activityItems: [
+                    image,
+                    PersonalityCardRenderer.shareText
+                ])
+            }
+        }
+    }
+
+    // MARK: - Share Your Twin Button
+
+    private var shareYourTwinButton: some View {
+        Button {
+            shareTwinCard()
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 16, weight: .semibold))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Share Your Twin")
+                        .font(.system(size: 15, weight: .bold))
+                    Text("Show the world your personality card")
+                        .font(.system(size: 11, weight: .regular))
+                        .opacity(0.6)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .opacity(0.4)
+            }
+            .foregroundColor(.white)
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [.teal.opacity(0.4), .purple.opacity(0.3)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.teal.opacity(0.3), lineWidth: 1)
+                    )
+            )
+        }
+    }
+
+    private func shareTwinCard() {
+        Task { @MainActor in
+            let profile = TwinProfileGenerator.generate()
+            if let image = PersonalityCardRenderer.renderCard(profile: profile, format: .story) {
+                twinShareImage = image
+                showTwinShareSheet = true
             }
         }
     }

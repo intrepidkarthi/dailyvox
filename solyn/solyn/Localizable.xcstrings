@@ -1,0 +1,354 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "Today": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Hoy" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आज" } }
+      }
+    },
+    "Timeline": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Cronología" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "समयरेखा" } }
+      }
+    },
+    "Insights": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Perspectivas" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अंतर्दृष्टि" } }
+      }
+    },
+    "Twin": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Gemelo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "जुड़वां" } }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Ajustes" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सेटिंग्स" } }
+      }
+    },
+    "Record": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Grabar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "रिकॉर्ड" } }
+      }
+    },
+    "Recording...": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Grabando..." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "रिकॉर्डिंग..." } }
+      }
+    },
+    "Processing...": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Procesando..." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "प्रोसेसिंग..." } }
+      }
+    },
+    "Today's Entry": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Entrada de hoy" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आज की प्रविष्टि" } }
+      }
+    },
+    "No entry yet": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Sin entrada aún" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अभी तक कोई प्रविष्टि नहीं" } }
+      }
+    },
+    "Tap to record your thoughts": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Toca para grabar tus pensamientos" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अपने विचार रिकॉर्ड करने के लिए टैप करें" } }
+      }
+    },
+    "Theme": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Tema" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "थीम" } }
+      }
+    },
+    "App Lock": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Bloqueo de app" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "ऐप लॉक" } }
+      }
+    },
+    "iCloud Sync": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Sincronización iCloud" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "iCloud सिंक" } }
+      }
+    },
+    "Daily Reminder": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Recordatorio diario" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "दैनिक अनुस्मारक" } }
+      }
+    },
+    "Export Data": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Exportar datos" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "डेटा निर्यात" } }
+      }
+    },
+    "About": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Acerca de" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "बारे में" } }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Cancelar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "रद्द करें" } }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Guardar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सहेजें" } }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Eliminar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "हटाएं" } }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Compartir" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "साझा करें" } }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Listo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "पूर्ण" } }
+      }
+    },
+    "Your Digital Twin": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Tu Gemelo Digital" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आपका डिजिटल ट्विन" } }
+      }
+    },
+    "Ask Your Twin": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Pregunta a tu Gemelo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अपने ट्विन से पूछें" } }
+      }
+    },
+    "Personality": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Personalidad" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "व्यक्तित्व" } }
+      }
+    },
+    "Emotions": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Emociones" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "भावनाएं" } }
+      }
+    },
+    "Patterns": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Patrones" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "पैटर्न" } }
+      }
+    },
+    "Your voice stays on your device": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Tu voz se queda en tu dispositivo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आपकी आवाज़ आपके डिवाइस पर रहती है" } }
+      }
+    },
+    "No cloud. No servers. No tracking.": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Sin nube. Sin servidores. Sin rastreo." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "कोई क्लाउड नहीं। कोई सर्वर नहीं। कोई ट्रैकिंग नहीं।" } }
+      }
+    },
+    "Recording Error": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Error de grabación" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "रिकॉर्डिंग त्रुटि" } }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Aceptar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "ठीक है" } }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Omitir" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "छोड़ें" } }
+      }
+    },
+    "Export": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Exportar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "निर्यात" } }
+      }
+    },
+    "Export as PDF": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Exportar como PDF" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "PDF के रूप में निर्यात करें" } }
+      }
+    },
+    "Your name": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Tu nombre" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आपका नाम" } }
+      }
+    },
+    "Description (optional)": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Descripción (opcional)" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "विवरण (वैकल्पिक)" } }
+      }
+    },
+    "No entries to export yet.": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Aún no hay entradas para exportar." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अभी तक निर्यात करने के लिए कोई प्रविष्टि नहीं।" } }
+      }
+    },
+    "Only starred entries": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Solo entradas destacadas" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "केवल तारांकित प्रविष्टियां" } }
+      }
+    },
+    "Appearance": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Apariencia" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "दिखावट" } }
+      }
+    },
+    "Journaling Goal": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Meta de diario" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "जर्नलिंग लक्ष्य" } }
+      }
+    },
+    "Enable weekly goal": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Activar meta semanal" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "साप्ताहिक लक्ष्य सक्षम करें" } }
+      }
+    },
+    "Notify when goal reached": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Notificar al alcanzar la meta" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "लक्ष्य पूरा होने पर सूचित करें" } }
+      }
+    },
+    "Security": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Seguridad" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सुरक्षा" } }
+      }
+    },
+    "Enable Face ID": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Activar Face ID" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Face ID सक्षम करें" } }
+      }
+    },
+    "Remind me to record": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Recordarme grabar" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "मुझे रिकॉर्ड करने की याद दिलाएं" } }
+      }
+    },
+    "Reminder time": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Hora del recordatorio" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अनुस्मारक समय" } }
+      }
+    },
+    "Privacy & Security": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Privacidad y seguridad" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "गोपनीयता और सुरक्षा" } }
+      }
+    },
+    "Privacy First": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Privacidad ante todo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "पहले गोपनीयता" } }
+      }
+    },
+    "Your data is encrypted and private": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Tus datos están cifrados y son privados" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "आपका डेटा एन्क्रिप्टेड और निजी है" } }
+      }
+    },
+    "On-Device Transcription": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Transcripción en el dispositivo" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "डिवाइस पर ट्रांसक्रिप्शन" } }
+      }
+    },
+    "No Third-Party Servers": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Sin servidores de terceros" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "कोई तृतीय-पक्ष सर्वर नहीं" } }
+      }
+    },
+    "No Account Required": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "No se requiere cuenta" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "कोई खाता आवश्यक नहीं" } }
+      }
+    },
+    "Meet DailyVox Diary": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Conoce DailyVox Diary" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "DailyVox Diary से मिलें" } }
+      }
+    },
+    "Meet Your Digital Twin": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Conoce a tu Gemelo Digital" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "अपने डिजिटल ट्विन से मिलें" } }
+      }
+    },
+    "Insights That Matter": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Perspectivas que importan" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "महत्वपूर्ण अंतर्दृष्टि" } }
+      }
+    },
+    "100% Private. Always.": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "100% Privado. Siempre." } },
+        "hi": { "stringUnit": { "state": "translated", "value": "100% निजी। हमेशा।" } }
+      }
+    },
+    "Notifications Disabled": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Notificaciones desactivadas" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सूचनाएं अक्षम" } }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "es": { "stringUnit": { "state": "translated", "value": "Abrir Ajustes" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "सेटिंग्स खोलें" } }
+      }
+    }
+  }
+}
