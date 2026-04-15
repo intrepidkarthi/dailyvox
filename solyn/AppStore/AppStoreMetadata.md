@@ -7,7 +7,7 @@ DailyVox - AI Voice Journal
 Private Journal & Mood Tracker
 
 ## Promotional Text (170 characters max)
-NEW: Your Digital Twin now predicts your mood, topics, and best journaling times. Plus shareable personality cards and weekly insight cards. All AI runs on your iPhone.
+NEW: Ask your Digital Twin questions about your mood patterns and personality. Share personality cards on social media. Now in Hindi & Spanish. All AI on your iPhone.
 
 ## Description (4000 characters max)
 
@@ -91,10 +91,19 @@ Secondary: Productivity
 2026 DailyVox
 
 ## Support URL
-https://dailyvox.app/support
+https://getdailyvox.com/support
 
 ## Privacy Policy URL
-https://dailyvox.app/privacy
+https://getdailyvox.com/privacy
+
+## What's New (Version 1.2)
+New in v1.2:
+
+- Ask Your Twin: Chat with your Digital Twin. Ask questions about your mood patterns, personality, and journaling habits — all answered from your on-device data.
+- Share Personality Cards: Beautiful shareable cards optimized for Instagram Stories and Twitter/X. Show the world your Digital Twin.
+- Hindi & Spanish: DailyVox now speaks your language. Full UI localization for Hindi and Spanish.
+- Smarter Review Prompts: We'll gently ask for a rating at the right moment — never annoyingly.
+- All AI stays on-device. Always.
 
 ## What's New (Version 1.1)
 New in v1.1:
