@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		CFEB85CE2F8D1A6900995CF0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CFEB85CD2F8D1A6900995CF0 /* Localizable.xcstrings */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		CFF97C052EDE056900ED7317 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -28,7 +24,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		CFEB85CD2F8D1A6900995CF0 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CFF97BEE2EDE056600ED7317 /* solyn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = solyn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF97C042EDE056900ED7317 /* solynTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF97C0E2EDE056900ED7317 /* solynUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,7 +88,6 @@
 		CFF97BE52EDE056600ED7317 = {
 			isa = PBXGroup;
 			children = (
-				CFEB85CD2F8D1A6900995CF0 /* Localizable.xcstrings */,
 				CFF97BF02EDE056600ED7317 /* solyn */,
 				CFF97C072EDE056900ED7317 /* solynTests */,
 				CFF97C112EDE056900ED7317 /* solynUITests */,
@@ -233,7 +227,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CFEB85CE2F8D1A6900995CF0 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
