@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About DailyVox — Why I Built a Free AI Voice Journal After 20 Years of Writing Diaries</title>
+  <meta name="description" content="The story behind DailyVox. Built by Karthikeyan, a 20-year diary writer who couldn't write anymore — so he started talking instead. The vision: a Digital Twin that becomes you, privately.">
+  <meta name="theme-color" content="#030614">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/about">
+  <meta property="og:title" content="About DailyVox — Why I Built This App">
+  <meta property="og:description" content="20 years of diary writing. Then I couldn't anymore. So I built an app where you just talk. Here's why.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/about">
+  <link rel="icon" href="/app-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About DailyVox",
+    "description": "The story behind DailyVox — built by a 20-year diary writer who switched from writing to speaking.",
+    "url": "https://getdailyvox.com/about",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Karthikeyan NG",
+      "jobTitle": "Creator of DailyVox",
+      "url": "https://getdailyvox.com",
+      "sameAs": [
+        "https://github.com/intrepidkarthi"
+      ]
+    }
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg: #030614;
+      --surface: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.06);
+      --border-light: rgba(255,255,255,0.1);
+      --text: #e8e6f0;
+      --text-dim: rgba(232,230,240,0.5);
+      --text-mid: rgba(232,230,240,0.7);
+      --accent: #8b6cdf;
+      --accent2: #5ac8c8;
+      --mint: #5eeabd;
+      --pink: #e87da0;
+      --r: 24px;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Nav */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      padding: 16px 0;
+      background: rgba(3,6,20,0.6);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+    .site-nav .wrap { display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .nav-brand img { width: 32px; height: 32px; border-radius: 22%; }
+    .nav-brand span { font-weight: 700; font-size: 16px; }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+    /* Hero */
+    .about-hero {
+      padding: 160px 0 80px;
+      position: relative; text-align: center;
+    }
+    .about-hero::before {
+      content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(139,108,223,0.1) 0%, rgba(90,200,200,0.03) 50%, transparent 70%);
+      pointer-events: none;
+    }
+    .about-hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(40px, 6vw, 64px); font-weight: 400;
+      letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 20px; position: relative;
+    }
+    .about-hero h1 em { font-style: italic; color: var(--accent); }
+    .about-hero .subtitle {
+      font-size: 18px; color: var(--text-dim); max-width: 520px;
+      margin: 0 auto; line-height: 1.7; position: relative;
+    }
+
+    /* Content */
+    .about-content {
+      max-width: 700px; margin: 0 auto; padding: 0 28px 120px;
+    }
+
+    .about-content h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 32px; font-weight: 400;
+      margin: 72px 0 20px; letter-spacing: -0.02em;
+      position: relative; padding-left: 20px;
+    }
+    .about-content h2::before {
+      content: ''; position: absolute; left: 0; top: 6px;
+      width: 4px; height: 28px; border-radius: 4px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+    }
+
+    .about-content p {
+      font-size: 17px; color: var(--text-mid);
+      line-height: 1.8; margin-bottom: 24px;
+    }
+
+    .about-content strong { color: var(--text); font-weight: 600; }
+
+    .about-content a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .about-content a:hover { text-decoration: underline; }
+
+    /* Quote block */
+    .about-quote {
+      margin: 48px 0;
+      padding: 36px 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--r);
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 24px; font-style: italic;
+      color: var(--text); line-height: 1.5;
+    }
+
+    /* Timeline */
+    .roadmap {
+      margin: 48px 0;
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .roadmap::before {
+      content: ''; position: absolute; left: 18px; top: 24px; bottom: 24px;
+      width: 2px; background: var(--border);
+    }
+    .roadmap-item {
+      display: flex; gap: 20px; padding: 20px 0;
+      position: relative;
+    }
+    .roadmap-dot {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; position: relative; z-index: 1;
+    }
+    .rd-done { background: rgba(94,234,189,0.12); border: 1px solid rgba(94,234,189,0.2); }
+    .rd-now { background: rgba(139,108,223,0.15); border: 1px solid rgba(139,108,223,0.25); box-shadow: 0 0 20px rgba(139,108,223,0.15); }
+    .rd-future { background: var(--surface); border: 1px solid var(--border); }
+
+    .roadmap-body h3 {
+      font-size: 16px; font-weight: 700; margin-bottom: 4px;
+    }
+    .roadmap-body .rd-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 6px;
+    }
+    .rd-done .rd-label-text { color: var(--mint); }
+    .rd-now .rd-label-text { color: var(--accent); }
+    .rd-future .rd-label-text { color: var(--text-dim); }
+    .roadmap-body p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+
+    /* Values */
+    .values-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 40px 0;
+    }
+    .value-card {
+      padding: 28px 24px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r);
+    }
+    .value-card .value-icon { font-size: 28px; margin-bottom: 14px; }
+    .value-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .value-card p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+
+    /* CTA */
+    .about-cta {
+      text-align: center; padding: 80px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .about-cta h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 36px; font-weight: 400; margin-bottom: 16px;
+      padding: 0;
+    }
+    .about-cta h2::before { display: none; }
+    .about-cta p { color: var(--text-dim); font-size: 16px; margin-bottom: 32px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--accent), rgba(90,200,200,0.9));
+      color: #fff; font-weight: 700; font-size: 15px;
+      border-radius: 14px; text-decoration: none;
+      box-shadow: 0 4px 32px rgba(139,108,223,0.25);
+      transition: all 0.3s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 48px rgba(139,108,223,0.35); }
+
+    /* Footer */
+    .site-footer { padding: 36px 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; }
+    .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 13px; }
+    .footer-links a:hover { color: var(--text); }
+    .site-footer p { color: var(--text-dim); font-size: 12px; opacity: 0.6; }
+
+    @media (max-width: 640px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .about-quote { padding: 28px 24px; font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section class="about-hero wrap">
+      <h1>I wrote a diary for <em>20 years.</em><br>Then I couldn't anymore.</h1>
+      <p class="subtitle">So I stopped writing — and started talking. That's how DailyVox was born.</p>
+    </section>
+
+    <div class="about-content">
+
+      <h2>The Problem</h2>
+
+      <p>I kept a diary for over 20 years. Almost every day, I sat down and wrote about my life. It wasn't discipline — it was just something I did. Like brushing my teeth.</p>
+
+      <p>Then, in recent years, I started missing days. One day missed. Then a week. Then I'd look back and realize I hadn't written anything in a month. The habit that had been part of my life for two decades was disappearing, and I could feel it happening but couldn't stop it.</p>
+
+      <p>I tried different apps. Different formats. Different routines. Nothing stuck. Writing every day had become a chore. And when something becomes a chore, you stop doing it.</p>
+
+      <h2>The Moment</h2>
+
+      <p>Then I tried speaking instead of writing. And everything changed.</p>
+
+      <p>When you speak, you don't worry about grammar. You don't edit yourself. You don't stare at a blank page wondering what to say. You just talk. About your day. About what's on your mind. It flows — naturally, honestly, quickly.</p>
+
+      <p>Two minutes of talking captures more than ten minutes of typing. And it feels nothing like a chore.</p>
+
+      <div class="about-quote">
+        "Twenty years of writing in diaries, and the solution to keeping the habit alive was to stop writing."
+      </div>
+
+      <h2>Building DailyVox</h2>
+
+      <p>The problem was: there was no good tool for voice journaling that I could trust with my most private thoughts. Every app I found either sent my audio to cloud servers for processing, or charged a subscription, or both.</p>
+
+      <p>I'm a developer. So I built my own.</p>
+
+      <p><strong>DailyVox is simple at its core:</strong> you open the app, press record, talk about your day, and the AI transcribes everything on your device. No cloud. No servers. No account. No subscription. Your voice literally never leaves your phone.</p>
+
+      <p>AI tools made this possible as a solo developer. What would have taken a team and months a few years ago, I shipped from idea to the App Store in a fraction of the time. That's the power of this moment in technology — one person with the right tools can build something real.</p>
+
+      <h2>The Digital Twin Vision</h2>
+
+      <p>After I started building DailyVox, I realized it could go far beyond just recording voice entries.</p>
+
+      <p>If you talk to this app every day — about your thoughts, your decisions, how you react to things, what makes you happy, what frustrates you — it builds a picture. A detailed, honest picture of who you are.</p>
+
+      <p>That's when I built the <strong>Digital Twin</strong>.</p>
+
+      <p>The Digital Twin learns your personality from your entries. It understands how you think, predicts your moods, identifies your triggers. And here's where my real ambition comes in:</p>
+
+      <div class="about-quote">
+        "I want the Digital Twin to eventually act like you. Speak like you. Respond like you. A true digital version of yourself — private, on-device, yours."
+      </div>
+
+      <p>We already leave digital traces everywhere — social media, messages, emails. But all of that is scattered across platforms owned by other companies. None of it is organized. None of it is truly yours.</p>
+
+      <p>What if you had one place where you deliberately stored the most honest version of yourself? Not the curated version you put on social media. The real version.</p>
+
+      <p>I believe keeping a digital version of yourself will be an important part of the near future. Not science fiction — practical. And DailyVox is built to make that happen.</p>
+
+      <p><strong>But not by sending your data to a server.</strong> Everything works on-device. Your Digital Twin lives on your phone. Nobody else has access to it. I won't compromise on that.</p>
+
+      <h2>Why iOS Only</h2>
+
+      <p>DailyVox is on iPhone and iPad only. There's no Android version — yet.</p>
+
+      <p>That's a deliberate choice. Apple gives me strong security guarantees — the Secure Enclave, the Neural Engine, the privacy frameworks. The whole promise of DailyVox is that your data never leaves your device. I need to be absolutely sure I can keep that promise before putting it on another platform.</p>
+
+      <p>I'd rather be on one platform and keep your data safe than be on two platforms and compromise.</p>
+
+      <p>Android will come — after iOS is solid, after the user base grows, and after I'm confident the same privacy guarantees can hold.</p>
+
+      <h2>What I Believe</h2>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">🔒</div>
+          <h3>Privacy Is the Foundation</h3>
+          <p>Not a feature. Not a toggle. The entire architecture is built so your data physically cannot leave your device.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🆓</div>
+          <h3>Mental Health Tools Should Be Free</h3>
+          <p>A diary shouldn't have a paywall. DailyVox is free because no one should have to choose between their wallet and their mental health.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🧠</div>
+          <h3>AI Should Work for You, Not on You</h3>
+          <p>AI that processes your thoughts should run on your device, under your control. Not on a server training someone else's model.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">🗣️</div>
+          <h3>Speaking Is More Honest Than Writing</h3>
+          <p>When you write, you edit. When you speak, you're real. The best insights come from unfiltered expression.</p>
+        </div>
+      </div>
+
+      <h2>The Roadmap</h2>
+
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-done">✓</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-done">Shipped — v1.0</span></div>
+            <h3>Voice Journaling + On-Device AI</h3>
+            <p>Voice-to-text transcription, automatic mood detection, Face ID lock, encrypted backups, 8 themes, widgets, Siri Shortcuts.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-done">✓</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-done">Shipped — v1.1</span></div>
+            <h3>Digital Twin + Predictions</h3>
+            <p>Personality modeling, mood predictions, shareable personality cards, weekly insight cards, knowledge graph.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-now">→</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-now">Building Now — v1.2</span></div>
+            <h3>Ask Your Twin + Social Sharing</h3>
+            <p>Chat with your Digital Twin — ask questions about your mood patterns, personality, and habits. Share personality cards on social media.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">◯</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">Next</span></div>
+            <h3>Smarter Twin + Proactive Insights</h3>
+            <p>Twin generates insights proactively. "You seem more stressed than usual this week." Pattern-based notifications. Entry embedding for semantic search.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">◯</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">Future</span></div>
+            <h3>Conversational Digital Twin</h3>
+            <p>Using on-device language models (Apple Foundation Models), your Twin will hold actual conversations — answering questions about your life, your patterns, your history. All on-device.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">◯</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">The Vision</span></div>
+            <h3>A True Digital Version of You</h3>
+            <p>An AI that acts like you, speaks like you, responds like you. Built from years of your own journal entries. Entirely on your device. Entirely yours.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Get in Touch</h2>
+
+      <p>I'm Karthikeyan. I built DailyVox because I needed it. Turns out other people need it too.</p>
+
+      <p>If you have questions, feedback, or just want to say hi:</p>
+      <p>
+        Email: <a href="mailto:intrepidkarthi@gmail.com">intrepidkarthi@gmail.com</a><br>
+        GitHub: <a href="https://github.com/intrepidkarthi">github.com/intrepidkarthi</a>
+      </p>
+
+      <div class="about-cta">
+        <h2>Try DailyVox</h2>
+        <p>Free. Private. No account needed. Just open and talk.</p>
+        <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+          Download Free
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/faq">FAQ</a>
+        <a href="/about">About</a>
+        <a href="/journal-app-comparison">Compare</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
