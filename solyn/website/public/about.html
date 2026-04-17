@@ -357,7 +357,7 @@
           <div class="roadmap-body">
             <div class="rd-label"><span class="rd-label-text rd-done">Shipped — v1.0</span></div>
             <h3>Voice Journaling + On-Device AI</h3>
-            <p>Voice-to-text transcription, automatic mood detection, Face ID lock, encrypted backups, 8 themes, widgets, Siri Shortcuts.</p>
+            <p><strong>Tech:</strong> Apple Speech framework for on-device transcription (SFSpeechRecognizer with requiresOnDeviceRecognition). NaturalLanguage framework for sentiment analysis via NLTagger. Core Data + NSPersistentCloudKitContainer for local storage with optional encrypted iCloud sync. AVFoundation for audio recording at AAC 44.1kHz. CryptoKit for AES-256-GCM encrypted backups. LocalAuthentication for Face ID/Touch ID. WidgetKit for Home Screen and Lock Screen widgets. AppIntents for Siri Shortcuts.</p>
           </div>
         </div>
         <div class="roadmap-item">
@@ -365,7 +365,7 @@
           <div class="roadmap-body">
             <div class="rd-label"><span class="rd-label-text rd-done">Shipped — v1.1</span></div>
             <h3>Digital Twin + Predictions</h3>
-            <p>Personality modeling, mood predictions, shareable personality cards, weekly insight cards, knowledge graph.</p>
+            <p><strong>Tech:</strong> Custom DigitalTwinEngine that builds a personality model from accumulated NLP data. Tracks CommunicationStyle (vocabulary richness via Type-Token Ratio, expressiveness, directness, formality scoring). EmotionalSignature with baseline valence/arousal/dominance and time-based mood patterns. PersonalKnowledgeGraph using NLTagger's named entity recognition to map people, places, and topics with emotional associations. TwinPredictions using temporal pattern analysis for mood forecasting. All models serialized as JSON in Core Data's AIState entity — zero network calls.</p>
           </div>
         </div>
         <div class="roadmap-item">
@@ -373,31 +373,39 @@
           <div class="roadmap-body">
             <div class="rd-label"><span class="rd-label-text rd-now">Building Now — v1.2</span></div>
             <h3>Ask Your Twin + Social Sharing</h3>
-            <p>Chat with your Digital Twin — ask questions about your mood patterns, personality, and habits. Share personality cards on social media.</p>
+            <p><strong>Tech:</strong> TwinChatView with pattern-matched query system — 10 predefined question types mapped to DigitalTwinEngine data queries. TwinResponseGenerator builds natural-language responses from emotionalSignature, knowledgeGraph, communicationStyle, and behavioralPatterns data. ShareablePersonalityCardView renders personality cards to UIImage via ImageRenderer at 3x scale in two formats: Instagram Stories (1080x1920) and Twitter/X (1200x675). UIActivityViewController for native sharing. SKStoreReviewController triggered at entry milestones (5, 15, 40) with 90-day cooldown.</p>
           </div>
         </div>
         <div class="roadmap-item">
           <div class="roadmap-dot rd-future">◯</div>
           <div class="roadmap-body">
-            <div class="rd-label"><span class="rd-label-text rd-future">Next</span></div>
-            <h3>Smarter Twin + Proactive Insights</h3>
-            <p>Twin generates insights proactively. "You seem more stressed than usual this week." Pattern-based notifications. Entry embedding for semantic search.</p>
+            <div class="rd-label"><span class="rd-label-text rd-future">v1.3 — Semantic Search + Proactive Insights</span></div>
+            <h3>Entry Embeddings + Local Vector Search</h3>
+            <p><strong>Tech:</strong> NLEmbedding to generate 512-dimensional word/sentence embeddings for every journal entry, stored locally. Custom vector similarity search index (cosine distance) enabling semantic queries like "entries where I felt conflicted about work." Proactive insight engine that detects anomalies — significant deviations from your emotional baseline trigger notifications. Entry clustering using k-means on embedding space to discover hidden thematic groupings across months of data. All computation on Neural Engine — no API calls.</p>
           </div>
         </div>
         <div class="roadmap-item">
           <div class="roadmap-dot rd-future">◯</div>
           <div class="roadmap-body">
-            <div class="rd-label"><span class="rd-label-text rd-future">Future</span></div>
-            <h3>Conversational Digital Twin</h3>
-            <p>Using on-device language models (Apple Foundation Models), your Twin will hold actual conversations — answering questions about your life, your patterns, your history. All on-device.</p>
+            <div class="rd-label"><span class="rd-label-text rd-future">v1.4 — Localization + Apple Watch</span></div>
+            <h3>Multi-Language Support + Wrist Capture</h3>
+            <p><strong>Tech:</strong> Xcode String Catalogs (Localizable.xcstrings) for UI localization — Hindi, Spanish, Japanese, German as first wave. Apple Speech framework already supports 60+ languages for transcription. WatchKit companion app for quick voice capture from wrist — entries sync to iPhone via WatchConnectivity framework. Complication for Watch face showing mood or streak.</p>
           </div>
         </div>
         <div class="roadmap-item">
           <div class="roadmap-dot rd-future">◯</div>
           <div class="roadmap-body">
-            <div class="rd-label"><span class="rd-label-text rd-future">The Vision</span></div>
+            <div class="rd-label"><span class="rd-label-text rd-future">v2.0 — Conversational Digital Twin</span></div>
+            <h3>On-Device LLM + RAG Architecture</h3>
+            <p><strong>Tech:</strong> Apple Foundation Models (expected iOS 19) running on Neural Engine for on-device language generation. Retrieval-Augmented Generation (RAG) pipeline: user question → vector search on local embedding index to find relevant past entries → retrieved context + question fed to on-device LLM → personalized response generated. No cloud dependency. The Twin goes from pattern-matching to genuine conversation — answering novel questions about your life, habits, and emotional history using your own data as context.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">◯</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">v3.0 — The Vision</span></div>
             <h3>A True Digital Version of You</h3>
-            <p>An AI that acts like you, speaks like you, responds like you. Built from years of your own journal entries. Entirely on your device. Entirely yours.</p>
+            <p><strong>Tech:</strong> On-device fine-tuning of a personal language model using your journal corpus. The model doesn't just answer from your data — it learns your writing style, your speech patterns, your reasoning approach, your emotional responses. It can extrapolate: "What would I think about this?" Personal model weights stored in the Secure Enclave, inaccessible to any process outside the app. Optional encrypted export for device migration. The end state: an AI that acts like you, speaks like you, responds like you — running entirely on silicon you hold in your hand. Your data never touches a server. Your digital self is yours alone.</p>
           </div>
         </div>
       </div>
