@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox Technology: On-Device AI Architecture for Private Voice Journaling</title>
+  <meta name="description" content="Deep technical breakdown of DailyVox's on-device AI architecture. SFSpeechRecognizer, NLTagger, Foundation Models, Digital Twin Engine, privacy-first design, and the roadmap to a true personal AI — all running locally on iPhone.">
+  <meta name="theme-color" content="#030614">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/technology">
+  <meta property="og:title" content="DailyVox Technology: On-Device AI Architecture for Private Voice Journaling">
+  <meta property="og:description" content="How DailyVox processes voice journals entirely on-device using Apple's Speech, NaturalLanguage, and Foundation Models frameworks. Full architecture deep-dive and technical roadmap.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DailyVox Technology: On-Device AI Architecture">
+  <meta name="twitter:description" content="Full technical deep-dive into DailyVox's on-device AI stack: Speech recognition, NLP, Digital Twin, privacy architecture, and the roadmap to Foundation Models.">
+  <link rel="canonical" href="https://getdailyvox.com/technology">
+  <link rel="icon" href="/app-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "DailyVox Technology: On-Device AI Architecture for Private Voice Journaling",
+    "description": "Deep technical breakdown of DailyVox's on-device AI architecture, from speech recognition to Digital Twin personality modeling to Foundation Models.",
+    "url": "https://getdailyvox.com/technology",
+    "datePublished": "2026-04-17",
+    "dateModified": "2026-04-17",
+    "author": {
+      "@type": "Person",
+      "name": "Karthikeyan NG",
+      "url": "https://github.com/intrepidkarthi"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "DailyVox",
+      "url": "https://getdailyvox.com"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://getdailyvox.com/technology"
+    },
+    "image": "https://getdailyvox.com/og-image.png",
+    "keywords": ["on-device AI", "voice journaling", "digital twin", "Apple Foundation Models", "NLTagger", "SFSpeechRecognizer", "privacy", "iOS development"]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg: #030614;
+      --surface: rgba(255,255,255,0.03);
+      --surface-2: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.06);
+      --border-light: rgba(255,255,255,0.1);
+      --text: #e8e6f0;
+      --text-dim: rgba(232,230,240,0.5);
+      --text-mid: rgba(232,230,240,0.7);
+      --accent: #8b6cdf;
+      --accent2: #5ac8c8;
+      --mint: #5eeabd;
+      --pink: #e87da0;
+      --amber: #f0b55a;
+      --r: 24px;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Nav */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      padding: 16px 0;
+      background: rgba(3,6,20,0.6);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+    .site-nav .wrap { display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .nav-brand img { width: 32px; height: 32px; border-radius: 22%; }
+    .nav-brand span { font-weight: 700; font-size: 16px; }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-links .nav-cta {
+      background: linear-gradient(135deg, var(--accent), rgba(90,200,200,0.9));
+      color: #fff; font-weight: 700;
+    }
+    .nav-links .nav-cta:hover { opacity: 0.9; background: linear-gradient(135deg, var(--accent), rgba(90,200,200,0.9)); }
+
+    /* Hero */
+    .tech-hero {
+      padding: 160px 0 80px;
+      position: relative; text-align: center;
+    }
+    .tech-hero::before {
+      content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(ellipse, rgba(139,108,223,0.1) 0%, rgba(90,200,200,0.03) 50%, transparent 70%);
+      pointer-events: none;
+    }
+    .tech-hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: clamp(36px, 5.5vw, 60px); font-weight: 400;
+      letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 20px; position: relative;
+    }
+    .tech-hero h1 em { font-style: italic; color: var(--accent); }
+    .tech-hero .subtitle {
+      font-size: 18px; color: var(--text-dim); max-width: 600px;
+      margin: 0 auto; line-height: 1.7; position: relative;
+    }
+
+    /* Content */
+    .tech-content {
+      max-width: 800px; margin: 0 auto; padding: 0 28px 120px;
+    }
+
+    .tech-content h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 32px; font-weight: 400;
+      margin: 80px 0 20px; letter-spacing: -0.02em;
+      position: relative; padding-left: 20px;
+    }
+    .tech-content h2::before {
+      content: ''; position: absolute; left: 0; top: 6px;
+      width: 4px; height: 28px; border-radius: 4px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+    }
+
+    .tech-content h3 {
+      font-size: 20px; font-weight: 700;
+      margin: 40px 0 12px; color: var(--text);
+    }
+
+    .tech-content p {
+      font-size: 16px; color: var(--text-mid);
+      line-height: 1.8; margin-bottom: 20px;
+    }
+
+    .tech-content strong { color: var(--text); font-weight: 600; }
+    .tech-content a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .tech-content a:hover { text-decoration: underline; }
+
+    .tech-content code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+      background: rgba(139,108,223,0.1);
+      border: 1px solid rgba(139,108,223,0.15);
+      padding: 2px 7px; border-radius: 6px;
+      color: var(--accent);
+    }
+
+    /* Architecture Diagram */
+    .arch-diagram {
+      margin: 40px 0;
+      padding: 40px 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 2;
+      color: var(--text-mid);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .arch-diagram .node {
+      display: inline;
+      color: var(--text);
+      background: rgba(139,108,223,0.1);
+      border: 1px solid rgba(139,108,223,0.2);
+      padding: 2px 10px;
+      border-radius: 8px;
+    }
+    .arch-diagram .arrow { color: var(--accent2); }
+    .arch-diagram .label { color: var(--text-dim); font-size: 11px; }
+
+    /* Stack Cards */
+    .stack-grid {
+      display: grid; grid-template-columns: 1fr; gap: 16px;
+      margin: 32px 0;
+    }
+    .stack-card {
+      padding: 28px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      transition: border-color 0.2s;
+    }
+    .stack-card:hover { border-color: var(--border-light); }
+    .stack-card .card-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 12px;
+    }
+    .stack-card .card-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .icon-speech { background: rgba(90,200,200,0.12); border: 1px solid rgba(90,200,200,0.2); }
+    .icon-analyzer { background: rgba(240,181,90,0.12); border: 1px solid rgba(240,181,90,0.2); }
+    .icon-nltag { background: rgba(139,108,223,0.12); border: 1px solid rgba(139,108,223,0.2); }
+    .icon-embed { background: rgba(94,234,189,0.12); border: 1px solid rgba(94,234,189,0.2); }
+    .icon-fm { background: rgba(232,125,160,0.12); border: 1px solid rgba(232,125,160,0.2); }
+    .icon-data { background: rgba(90,200,200,0.12); border: 1px solid rgba(90,200,200,0.2); }
+    .icon-crypto { background: rgba(139,108,223,0.12); border: 1px solid rgba(139,108,223,0.2); }
+    .icon-auth { background: rgba(94,234,189,0.12); border: 1px solid rgba(94,234,189,0.2); }
+
+    .stack-card h4 { font-size: 16px; font-weight: 700; }
+    .stack-card .card-framework { font-size: 12px; color: var(--text-dim); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+    .stack-card p { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin: 0; }
+    .stack-card .detail-list {
+      list-style: none; margin-top: 10px;
+    }
+    .stack-card .detail-list li {
+      font-size: 13px; color: var(--text-dim); line-height: 1.7;
+      padding-left: 16px; position: relative;
+    }
+    .stack-card .detail-list li::before {
+      content: '>'; position: absolute; left: 0; color: var(--accent2);
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    }
+
+    /* Twin Model */
+    .twin-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 32px 0;
+    }
+    .twin-card {
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+    }
+    .twin-card h4 {
+      font-size: 15px; font-weight: 700; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .twin-card .twin-tag {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 2px 8px; border-radius: 6px;
+    }
+    .tag-style { background: rgba(90,200,200,0.12); color: var(--accent2); }
+    .tag-emotion { background: rgba(232,125,160,0.12); color: var(--pink); }
+    .tag-graph { background: rgba(139,108,223,0.12); color: var(--accent); }
+    .tag-predict { background: rgba(94,234,189,0.12); color: var(--mint); }
+    .twin-card p { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin: 0 0 8px; }
+    .twin-card .metric-list {
+      list-style: none;
+    }
+    .twin-card .metric-list li {
+      font-size: 12px; color: var(--text-dim); line-height: 1.8;
+      padding-left: 14px; position: relative;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .twin-card .metric-list li::before {
+      content: '-'; position: absolute; left: 0; color: var(--accent);
+    }
+
+    /* Privacy Comparison */
+    .privacy-compare {
+      margin: 36px 0;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .privacy-compare table {
+      width: 100%; border-collapse: collapse;
+    }
+    .privacy-compare th {
+      font-size: 13px; font-weight: 700; text-align: left;
+      padding: 16px 20px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .privacy-compare td {
+      font-size: 13px; padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .privacy-compare tr:last-child td { border-bottom: none; }
+    .privacy-compare .col-feature { width: 40%; color: var(--text-mid); font-weight: 500; }
+    .privacy-compare .col-cloud { width: 30%; }
+    .privacy-compare .col-dvox { width: 30%; color: var(--mint); font-weight: 500; }
+
+    /* Roadmap Timeline */
+    .roadmap {
+      margin: 48px 0;
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .roadmap::before {
+      content: ''; position: absolute; left: 18px; top: 24px; bottom: 24px;
+      width: 2px; background: var(--border);
+    }
+    .roadmap-item {
+      display: flex; gap: 20px; padding: 20px 0;
+      position: relative;
+    }
+    .roadmap-dot {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; position: relative; z-index: 1;
+    }
+    .rd-done { background: rgba(94,234,189,0.12); border: 1px solid rgba(94,234,189,0.2); }
+    .rd-now { background: rgba(139,108,223,0.15); border: 1px solid rgba(139,108,223,0.25); box-shadow: 0 0 20px rgba(139,108,223,0.15); }
+    .rd-future { background: var(--surface); border: 1px solid var(--border); }
+
+    .roadmap-body h4 {
+      font-size: 16px; font-weight: 700; margin-bottom: 4px;
+    }
+    .roadmap-body .rd-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 6px;
+    }
+    .rd-done .rd-label-text { color: var(--mint); }
+    .rd-now .rd-label-text { color: var(--accent); }
+    .rd-future .rd-label-text { color: var(--text-dim); }
+    .roadmap-body p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+    .roadmap-body .tech-tags {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+    }
+    .roadmap-body .tech-tag {
+      font-size: 11px; font-weight: 500; padding: 3px 10px;
+      border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    /* Research Papers */
+    .papers-list {
+      margin: 32px 0;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .paper-item {
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+    }
+    .paper-item .paper-title {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .paper-item .paper-meta {
+      font-size: 12px; color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Callout */
+    .callout {
+      margin: 36px 0;
+      padding: 28px 28px;
+      background: rgba(139,108,223,0.06);
+      border: 1px solid rgba(139,108,223,0.15);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--r);
+    }
+    .callout p { font-size: 15px; margin: 0; color: var(--text-mid); line-height: 1.7; }
+    .callout strong { color: var(--text); }
+
+    /* Open Source */
+    .oss-card {
+      margin: 36px 0;
+      padding: 36px 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      text-align: center;
+    }
+    .oss-card h3 { font-family: 'Instrument Serif', Georgia, serif; font-size: 28px; font-weight: 400; margin-bottom: 12px; }
+    .oss-card p { font-size: 15px; color: var(--text-dim); line-height: 1.7; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .btn-github {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 28px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-light);
+      color: var(--text); font-weight: 700; font-size: 14px;
+      border-radius: 14px; text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-github:hover { border-color: var(--accent); background: rgba(139,108,223,0.08); transform: translateY(-2px); text-decoration: none; }
+
+    /* CTA */
+    .tech-cta {
+      text-align: center; padding: 80px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+    .tech-cta h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 36px; font-weight: 400; margin-bottom: 16px;
+      padding: 0;
+    }
+    .tech-cta h2::before { display: none; }
+    .tech-cta p { color: var(--text-dim); font-size: 16px; margin-bottom: 32px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--accent), rgba(90,200,200,0.9));
+      color: #fff; font-weight: 700; font-size: 15px;
+      border-radius: 14px; text-decoration: none;
+      box-shadow: 0 4px 32px rgba(139,108,223,0.25);
+      transition: all 0.3s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 48px rgba(139,108,223,0.35); }
+
+    /* Footer */
+    .site-footer { padding: 36px 0; border-top: 1px solid var(--border); text-align: center; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 13px; }
+    .footer-links a:hover { color: var(--text); }
+    .site-footer p { color: var(--text-dim); font-size: 12px; opacity: 0.6; }
+
+    @media (max-width: 640px) {
+      .twin-grid { grid-template-columns: 1fr; }
+      .arch-diagram { font-size: 11px; padding: 24px 16px; }
+      .privacy-compare th, .privacy-compare td { padding: 10px 12px; font-size: 12px; }
+      .stack-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="wrap">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="https://apps.apple.com/app/id6760454642" class="nav-cta">Download</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section class="tech-hero wrap">
+      <h1>How DailyVox <em>actually works</em></h1>
+      <p class="subtitle">A deep technical breakdown of the on-device AI architecture behind private voice journaling. No cloud. No APIs. No compromises.</p>
+    </section>
+
+    <div class="tech-content">
+
+      <!-- ==================== 1. Architecture Overview ==================== -->
+
+      <h2>Architecture Overview</h2>
+
+      <p>Every piece of data in DailyVox flows through a pipeline that runs entirely on the device. There are zero network calls for AI processing. Here is the full system architecture.</p>
+
+      <div class="arch-diagram"><span class="label">INPUT</span>
+<span class="node">Microphone</span> <span class="arrow">--></span> <span class="node">AVAudioEngine (AAC 44.1kHz)</span>
+   <span class="arrow">|</span>
+   <span class="arrow">v</span>
+<span class="label">TRANSCRIPTION</span>
+<span class="node">SFSpeechRecognizer</span>  <span class="label">(requiresOnDeviceRecognition = true)</span>
+   <span class="arrow">|</span>  <span class="label">iOS 26: SpeechAnalyzer replaces this</span>
+   <span class="arrow">v</span>
+<span class="label">NLP ANALYSIS</span>
+<span class="node">NLTagger</span> <span class="arrow">--></span> Sentiment  <span class="arrow">|</span>  NER  <span class="arrow">|</span>  POS  <span class="arrow">|</span>  Language ID
+   <span class="arrow">|</span>
+   <span class="arrow">v</span>
+<span class="label">PERSONALITY MODEL</span>
+<span class="node">DigitalTwinEngine</span>
+   <span class="arrow">|--></span> CommunicationStyle   <span class="label">(TTR, formality, directness)</span>
+   <span class="arrow">|--></span> EmotionalSignature   <span class="label">(valence, arousal, dominance)</span>
+   <span class="arrow">|--></span> PersonalKnowledgeGraph <span class="label">(entities + emotional weights)</span>
+   <span class="arrow">|--></span> TwinPredictions      <span class="label">(temporal patterns, forecasts)</span>
+   <span class="arrow">|</span>
+   <span class="arrow">v</span>
+<span class="label">STORAGE</span>
+<span class="node">Core Data</span> <span class="arrow">--></span> <span class="node">NSPersistentCloudKitContainer</span>
+   <span class="arrow">|</span>                         <span class="arrow">|</span>
+   <span class="arrow">v</span>                         <span class="arrow">v</span>
+<span class="node">Local SQLite</span>         <span class="node">iCloud (optional, encrypted)</span>
+   <span class="arrow">|</span>
+   <span class="arrow">v</span>
+<span class="label">PRESENTATION</span>
+<span class="node">SwiftUI Views</span> <span class="arrow">--></span> <span class="node">WidgetKit</span> <span class="arrow">|</span> <span class="node">AppIntents (Siri)</span></div>
+
+      <p>The key constraint: <strong>data never leaves the device for processing.</strong> Transcription happens on the Neural Engine. NLP runs locally. The Digital Twin model is computed and stored in Core Data. The only optional network path is Apple's encrypted iCloud sync, which the user can disable.</p>
+
+
+      <!-- ==================== 2. On-Device AI Stack ==================== -->
+
+      <h2>On-Device AI Stack</h2>
+
+      <p>DailyVox uses eight Apple frameworks to build a full AI pipeline without any third-party dependencies or server-side processing.</p>
+
+      <div class="stack-grid">
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-speech">S</div>
+            <div>
+              <h4>Speech Framework</h4>
+              <span class="card-framework">SFSpeechRecognizer</span>
+            </div>
+          </div>
+          <p>The primary transcription engine in v1.0-1.x. Converts spoken audio to text entirely on-device.</p>
+          <ul class="detail-list">
+            <li><code>requiresOnDeviceRecognition = true</code> ensures zero network transmission</li>
+            <li>Input: AAC audio at 44.1kHz sample rate via AVAudioEngine</li>
+            <li>Supports 60+ languages with on-device models</li>
+            <li>Real-time partial results during recording for live feedback</li>
+            <li>Runs on Apple Neural Engine for efficient battery usage</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-analyzer">A</div>
+            <div>
+              <h4>SpeechAnalyzer</h4>
+              <span class="card-framework">iOS 26+ — next-gen transcription</span>
+            </div>
+          </div>
+          <p>Apple's next-generation speech recognition framework, replacing SFSpeechRecognizer in v2.0.</p>
+          <ul class="detail-list">
+            <li>Significantly faster recognition with lower latency</li>
+            <li>Native long-form audio support without session timeouts</li>
+            <li>No user setup required (no permission prompts for on-device)</li>
+            <li>Volatile results for instant partial transcription feedback</li>
+            <li>Built for sustained recording sessions — ideal for voice journaling</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-nltag">T</div>
+            <div>
+              <h4>NaturalLanguage Framework</h4>
+              <span class="card-framework">NLTagger</span>
+            </div>
+          </div>
+          <p>The core NLP engine that extracts meaning from transcribed text. Runs multiple analysis passes per entry.</p>
+          <ul class="detail-list">
+            <li><strong>Sentiment scoring:</strong> sentence-level valence from -1.0 to +1.0</li>
+            <li><strong>Named Entity Recognition:</strong> people, places, organizations, dates</li>
+            <li><strong>Part-of-Speech tagging:</strong> verb density, adjective richness, pronoun patterns</li>
+            <li><strong>Language identification:</strong> auto-detect entry language for multilingual users</li>
+            <li>All tag schemes run locally using on-device CoreML models</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-embed">E</div>
+            <div>
+              <h4>NLEmbedding</h4>
+              <span class="card-framework">512-dim word/sentence vectors</span>
+            </div>
+          </div>
+          <p>Generates dense vector representations of journal entries for semantic search and clustering (v1.3+).</p>
+          <ul class="detail-list">
+            <li>512-dimensional sentence embeddings per journal entry</li>
+            <li>Cosine similarity for semantic search ("entries where I felt conflicted")</li>
+            <li>K-means clustering to discover hidden thematic groupings</li>
+            <li>Foundation for RAG retrieval layer in v2.0</li>
+            <li>Vectors persisted in Core Data alongside entry text</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-fm">F</div>
+            <div>
+              <h4>Foundation Models</h4>
+              <span class="card-framework">iOS 26 — 3B on-device LLM</span>
+            </div>
+          </div>
+          <p>Apple's on-device large language model, enabling conversational Digital Twin interactions in v2.0.</p>
+          <ul class="detail-list">
+            <li><code>LanguageModelSession</code> for multi-turn conversation with transcript memory</li>
+            <li><strong>Tool calling:</strong> Twin autonomously queries Core Data via custom Tool protocol</li>
+            <li><code>@Generable</code> macro for type-safe structured outputs (mood reports as Swift structs)</li>
+            <li><code>streamResponse()</code> for real-time streaming chat UI</li>
+            <li>Dynamic instructions from DigitalTwinEngine for personality-matched responses</li>
+            <li>Requires iPhone 15 Pro or later. Entire pipeline on-device.</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-data">D</div>
+            <div>
+              <h4>Core Data + CloudKit</h4>
+              <span class="card-framework">NSPersistentCloudKitContainer</span>
+            </div>
+          </div>
+          <p>Local-first persistence with optional encrypted cloud sync across devices.</p>
+          <ul class="detail-list">
+            <li>NSPersistentCloudKitContainer wraps SQLite with CloudKit sync</li>
+            <li>Local-first: app works fully offline, syncs when available</li>
+            <li>AIState entity stores all Digital Twin models as Codable JSON</li>
+            <li>iCloud sync is optional and uses Apple's encrypted infrastructure</li>
+            <li>User can disable sync entirely — data stays on-device only</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-crypto">C</div>
+            <div>
+              <h4>CryptoKit</h4>
+              <span class="card-framework">AES-256-GCM encryption</span>
+            </div>
+          </div>
+          <p>Military-grade encryption for backup exports and sensitive data at rest.</p>
+          <ul class="detail-list">
+            <li>AES-256-GCM authenticated encryption for backup files</li>
+            <li>User-provided passphrase for backup key derivation</li>
+            <li>Encrypted JSON export format for device migration</li>
+          </ul>
+        </div>
+
+        <div class="stack-card">
+          <div class="card-header">
+            <div class="card-icon icon-auth">L</div>
+            <div>
+              <h4>LocalAuthentication</h4>
+              <span class="card-framework">Face ID / Touch ID</span>
+            </div>
+          </div>
+          <p>Biometric authentication to protect access to journal entries.</p>
+          <ul class="detail-list">
+            <li>Face ID and Touch ID support via LAContext</li>
+            <li>Biometric keys stored in Secure Enclave</li>
+            <li>App lock with configurable auto-lock timeout</li>
+            <li>Fallback to device passcode when biometrics unavailable</li>
+          </ul>
+        </div>
+
+      </div>
+
+
+      <!-- ==================== 3. Digital Twin Engine ==================== -->
+
+      <h2>Digital Twin Engine</h2>
+
+      <p>The DigitalTwinEngine is a custom personality modeling system that builds a multi-dimensional profile of the user from their voice journal entries. It does not use any external models or APIs. The entire model is computed from NLTagger output and stored as serialized JSON in Core Data's <code>AIState</code> entity.</p>
+
+      <p>The engine consists of four interconnected models.</p>
+
+      <div class="twin-grid">
+
+        <div class="twin-card">
+          <h4>CommunicationStyle <span class="twin-tag tag-style">STYLE</span></h4>
+          <p>How the user expresses themselves. Updated with each entry.</p>
+          <ul class="metric-list">
+            <li>Type-Token Ratio (vocabulary richness)</li>
+            <li>Expressiveness score (0.0 - 1.0)</li>
+            <li>Directness score (0.0 - 1.0)</li>
+            <li>Formality score (0.0 - 1.0)</li>
+            <li>Signature words + frequency map</li>
+            <li>Average sentence length</li>
+            <li>Pronoun usage patterns (I vs we)</li>
+          </ul>
+        </div>
+
+        <div class="twin-card">
+          <h4>EmotionalSignature <span class="twin-tag tag-emotion">EMOTION</span></h4>
+          <p>The user's emotional baseline and patterns over time.</p>
+          <ul class="metric-list">
+            <li>Valence baseline (positive/negative)</li>
+            <li>Arousal baseline (energy level)</li>
+            <li>Dominance baseline (control feeling)</li>
+            <li>Morning vs evening mood patterns</li>
+            <li>Weekday vs weekend patterns</li>
+            <li>Trigger topics with correlation scores</li>
+            <li>Emotional volatility index</li>
+          </ul>
+        </div>
+
+        <div class="twin-card">
+          <h4>PersonalKnowledgeGraph <span class="twin-tag tag-graph">GRAPH</span></h4>
+          <p>A network of people, places, and topics with emotional weights.</p>
+          <ul class="metric-list">
+            <li>NER-extracted entities (person, place, org)</li>
+            <li>Emotional weight per entity (-1.0 to +1.0)</li>
+            <li>Mention frequency over time</li>
+            <li>Co-occurrence relationships</li>
+            <li>Entity-mood correlation tracking</li>
+            <li>Topic clusters from entity groupings</li>
+          </ul>
+        </div>
+
+        <div class="twin-card">
+          <h4>TwinPredictions <span class="twin-tag tag-predict">PREDICT</span></h4>
+          <p>Forecasts based on temporal pattern analysis.</p>
+          <ul class="metric-list">
+            <li>Day-of-week mood forecasting</li>
+            <li>Time-of-day emotional patterns</li>
+            <li>Trend direction (improving/declining)</li>
+            <li>Seasonal pattern detection</li>
+            <li>Trigger anticipation from schedule</li>
+            <li>Confidence scores per prediction</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="callout">
+        <p><strong>Storage model:</strong> All four models are Swift <code>Codable</code> structs serialized to JSON and stored in a single Core Data entity called <code>AIState</code>. This means the entire personality model can be loaded in a single fetch, updated incrementally, and synced across devices as a single atomic object. No external database. No vector store (until v1.3). Just Core Data.</p>
+      </div>
+
+
+      <!-- ==================== 4. Privacy Architecture ==================== -->
+
+      <h2>Privacy Architecture</h2>
+
+      <p>Privacy is not a feature of DailyVox. It is the architectural constraint that every technical decision is built around. The system is designed so that private data <strong>physically cannot</strong> leave the device for processing.</p>
+
+      <h3>Zero Network Processing</h3>
+
+      <p>Every AI operation runs on the device's Neural Engine. Speech transcription uses <code>requiresOnDeviceRecognition = true</code>. NLTagger runs locally. The Digital Twin model is computed and stored in Core Data. There are no API calls, no cloud functions, no telemetry on journal content.</p>
+
+      <h3>No Third-Party SDKs</h3>
+
+      <p>DailyVox contains zero third-party dependencies for core functionality. No analytics SDKs. No crash reporting that sends journal content. No ad networks. The only external code is Google Analytics on the website (not in the app) and Apple's own frameworks.</p>
+
+      <h3>Apple's Privacy Nutrition Label</h3>
+
+      <p>DailyVox carries Apple's <strong>"Data Not Collected"</strong> privacy label on the App Store. This is the strictest category — it means the app does not collect any data linked or unlinked to the user's identity.</p>
+
+      <h3>Encryption and Authentication</h3>
+
+      <p><strong>CryptoKit AES-256-GCM</strong> encrypts all backup exports. <strong>Secure Enclave</strong> stores biometric authentication keys. <strong>LocalAuthentication</strong> gates app access behind Face ID or Touch ID. iCloud sync, when enabled, uses Apple's encrypted CloudKit infrastructure with end-to-end encryption.</p>
+
+      <h3>Cloud AI Journal vs DailyVox</h3>
+
+      <div class="privacy-compare">
+        <table>
+          <tr>
+            <th class="col-feature"></th>
+            <th class="col-cloud">Typical Cloud AI Journal</th>
+            <th class="col-dvox">DailyVox</th>
+          </tr>
+          <tr>
+            <td class="col-feature">Audio processing</td>
+            <td class="col-cloud">Sent to cloud servers</td>
+            <td class="col-dvox">On-device Neural Engine</td>
+          </tr>
+          <tr>
+            <td class="col-feature">AI model location</td>
+            <td class="col-cloud">Remote API (OpenAI, etc.)</td>
+            <td class="col-dvox">Apple on-device models</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Text analysis</td>
+            <td class="col-cloud">Cloud NLP service</td>
+            <td class="col-dvox">NLTagger (local)</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Data storage</td>
+            <td class="col-cloud">Company servers</td>
+            <td class="col-dvox">Core Data (SQLite on device)</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Account required</td>
+            <td class="col-cloud">Yes (email, password)</td>
+            <td class="col-dvox">No</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Third-party SDKs</td>
+            <td class="col-cloud">Analytics, crash, ads</td>
+            <td class="col-dvox">None</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Privacy label</td>
+            <td class="col-cloud">"Data Linked to You"</td>
+            <td class="col-dvox">"Data Not Collected"</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Works offline</td>
+            <td class="col-cloud">No</td>
+            <td class="col-dvox">Yes, fully</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Subscription</td>
+            <td class="col-cloud">$5-15/month</td>
+            <td class="col-dvox">Free</td>
+          </tr>
+          <tr>
+            <td class="col-feature">Who can read your journal</td>
+            <td class="col-cloud">Company, employees, subprocessors</td>
+            <td class="col-dvox">Only you</td>
+          </tr>
+        </table>
+      </div>
+
+
+      <!-- ==================== 5. Technical Roadmap ==================== -->
+
+      <h2>Technical Roadmap</h2>
+
+      <p>Where DailyVox has been, what's being built now, and where it's going. Each version adds a layer to the on-device AI stack.</p>
+
+      <div class="roadmap">
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-done">&#10003;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-done">Shipped &mdash; v1.0</span></div>
+            <h4>Voice Journaling + On-Device AI</h4>
+            <p>Core voice journaling with fully on-device transcription, NLP analysis, encrypted storage, biometric lock, widgets, and Siri Shortcuts.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">SFSpeechRecognizer</span>
+              <span class="tech-tag">NLTagger</span>
+              <span class="tech-tag">Core Data</span>
+              <span class="tech-tag">CryptoKit</span>
+              <span class="tech-tag">WidgetKit</span>
+              <span class="tech-tag">AppIntents</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-done">&#10003;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-done">Shipped &mdash; v1.1</span></div>
+            <h4>Digital Twin + Personality Model</h4>
+            <p>Custom DigitalTwinEngine building a multi-dimensional personality model. Communication style tracking, emotional baseline with time patterns, entity knowledge graph with emotional weights, and temporal mood forecasting.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">DigitalTwinEngine</span>
+              <span class="tech-tag">CommunicationStyle</span>
+              <span class="tech-tag">EmotionalSignature</span>
+              <span class="tech-tag">PersonalKnowledgeGraph</span>
+              <span class="tech-tag">TwinPredictions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-now">&rarr;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-now">Building Now &mdash; v1.2</span></div>
+            <h4>Ask Your Twin + Social Sharing</h4>
+            <p>TwinChatView with pattern-matched query system. ShareablePersonalityCardView renders cards at 3x for Instagram Stories and Twitter/X. Review prompts via SKStoreReviewController at milestone entries.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">TwinChatView</span>
+              <span class="tech-tag">ShareablePersonalityCardView</span>
+              <span class="tech-tag">SKStoreReviewController</span>
+              <span class="tech-tag">UIActivityViewController</span>
+              <span class="tech-tag">ImageRenderer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">&#9675;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">Next &mdash; v1.3</span></div>
+            <h4>Semantic Search + Proactive Insights</h4>
+            <p>NLEmbedding for 512-dim sentence embeddings. Custom cosine similarity vector search index. Statistical anomaly detection (z-score deviations from emotional baseline). K-means clustering on embedding space. Foundation for v2.0 RAG architecture.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">NLEmbedding</span>
+              <span class="tech-tag">Cosine Similarity</span>
+              <span class="tech-tag">Anomaly Detection</span>
+              <span class="tech-tag">K-Means Clustering</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">&#9675;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">v1.4 &mdash; Localization + Apple Watch</span></div>
+            <h4>Multi-Language + Wrist Capture</h4>
+            <p>String Catalogs for UI localization (Hindi, Spanish, Japanese, German). WatchKit companion app with WatchConnectivity for iPhone sync. Quick voice entry from wrist with complications.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">String Catalogs</span>
+              <span class="tech-tag">WatchKit</span>
+              <span class="tech-tag">WatchConnectivity</span>
+              <span class="tech-tag">Complications</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">&#9675;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">v2.0 &mdash; Conversational Twin (iOS 26)</span></div>
+            <h4>Apple Foundation Models + Tool Calling + SpeechAnalyzer</h4>
+            <p>Apple's on-device 3B-parameter Foundation Model. Twin becomes a real chatbot with multi-turn <code>LanguageModelSession</code>. Tool calling protocol lets the Twin autonomously query Core Data — fetch entries by topic/date/mood, retrieve personality data, surface mood patterns. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time chat. DigitalTwinEngine feeds user's communication style into session instructions for tone matching (~75% accuracy). SpeechAnalyzer replaces SFSpeechRecognizer. Requires iPhone 15 Pro+. Zero network calls, zero API costs.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Foundation Models</span>
+              <span class="tech-tag">LanguageModelSession</span>
+              <span class="tech-tag">Tool Calling</span>
+              <span class="tech-tag">@Generable</span>
+              <span class="tech-tag">streamResponse()</span>
+              <span class="tech-tag">SpeechAnalyzer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">&#9675;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">v2.5 &mdash; Train Your Twin</span></div>
+            <h4>LoRA Fine-Tuning &mdash; Twin Learns to Sound Like You</h4>
+            <p>Apple's Foundation Models Adapter Training toolkit for Low-Rank Adaptation. Export 100-1,000 entries as JSONL training data. Train a personal adapter on Mac (32GB+ Apple Silicon) — original model weights stay frozen, only small adapter matrices trained. ~160MB adapter delivered via Background Assets. Loaded via <code>SystemLanguageModel(adapter:)</code>. The Twin doesn't just know your data — it <em>sounds like you</em>. Learns sentence structure, emotional vocabulary, punctuation habits, hesitation patterns. ~95% tone accuracy vs ~60% with instructions alone. Training data never leaves user's Mac.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">LoRA Adapters</span>
+              <span class="tech-tag">Adapter Training</span>
+              <span class="tech-tag">JSONL Export</span>
+              <span class="tech-tag">Background Assets</span>
+              <span class="tech-tag">~160MB Adapter</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot rd-future">&#9675;</div>
+          <div class="roadmap-body">
+            <div class="rd-label"><span class="rd-label-text rd-future">v3.0 &mdash; The Vision</span></div>
+            <h4>A True Digital Version of You</h4>
+            <p>The end state: an on-device AI that acts like you, speaks like you, responds like you — built from years of journal entries. Full RAG architecture: NLEmbedding vector retrieval + Foundation Model generation. Personal LoRA adapter for your voice. Tool calling for autonomous data access. Session transcript management with context condensation. The Twin understands what you said, when, how you felt, who you were talking about, and what patterns repeat. Encrypted. On your device. Exportable only by you. Digital self-preservation.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Full RAG</span>
+              <span class="tech-tag">Personal LoRA</span>
+              <span class="tech-tag">Vector Retrieval</span>
+              <span class="tech-tag">Context Condensation</span>
+              <span class="tech-tag">Secure Enclave</span>
+              <span class="tech-tag">Digital Self-Preservation</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ==================== 6. Research Context ==================== -->
+
+      <h2>Research Context</h2>
+
+      <p>DailyVox exists at the intersection of on-device LLMs, personal AI, and mental health technology. Several recent research papers explore adjacent ideas.</p>
+
+      <div class="papers-list">
+        <div class="paper-item">
+          <div class="paper-title">"Memory-Efficient Structured Backpropagation for On-Device LLM Fine-Tuning"</div>
+          <div class="paper-meta">2026 &mdash; Efficient fine-tuning under mobile memory constraints</div>
+        </div>
+        <div class="paper-item">
+          <div class="paper-title">"MoPHES: On-device LLMs for Mobile Psychological Health"</div>
+          <div class="paper-meta">2025 &mdash; Using on-device LLMs for psychological health applications</div>
+        </div>
+        <div class="paper-item">
+          <div class="paper-title">"PocketLLM: On-Device Fine-Tuning for Personalized LLMs"</div>
+          <div class="paper-meta">2024 &mdash; Personal model adaptation on mobile hardware</div>
+        </div>
+        <div class="paper-item">
+          <div class="paper-title">"PLMM: Personal Large Language Models on Mobile Devices"</div>
+          <div class="paper-meta">2023 &mdash; Architecture for personal LLMs running on phones</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <p><strong>What makes DailyVox different:</strong> No existing paper covers DailyVox's specific approach — building a private Digital Twin from voice journal data using on-device NLP (NLTagger, NLEmbedding) combined with Apple's Foundation Models framework. The combination of voice-first input, personality modeling from NER/sentiment analysis, and on-device LLM generation with tool calling for autonomous data retrieval is a novel architecture. DailyVox is, to our knowledge, the first app to attempt this full pipeline privately on-device.</p>
+      </div>
+
+
+      <!-- ==================== 7. Open Source ==================== -->
+
+      <h2>Open Source</h2>
+
+      <p>DailyVox is open source. The full codebase — including the DigitalTwinEngine, all NLP processing, the Core Data stack, and the SwiftUI interface — is available on GitHub.</p>
+
+      <p>We believe that privacy-critical software should be auditable. If you claim data never leaves the device, people should be able to verify that claim by reading the code.</p>
+
+      <div class="oss-card">
+        <h3>Build with us</h3>
+        <p>DailyVox is open source and contributions are welcome. Whether it's improving the Digital Twin engine, adding language support, or building the Foundation Models integration — there's room to shape the future of private AI journaling.</p>
+        <a href="https://github.com/intrepidkarthi/dailyvox" class="btn-github">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+
+
+      <!-- ==================== CTA ==================== -->
+
+      <div class="tech-cta">
+        <h2>Try DailyVox</h2>
+        <p>Free. Private. No account needed. All AI runs on your device.</p>
+        <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11"/></svg>
+          Download Free
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/about">About</a>
+        <a href="/faq">FAQ</a>
+        <a href="/technology">Technology</a>
+        <a href="/journal-app-comparison">Compare</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
