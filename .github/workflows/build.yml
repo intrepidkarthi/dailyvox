@@ -1,0 +1,45 @@
+name: Build & Test
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'solyn/**'
+  push:
+    branches: [main]
+    paths:
+      - 'solyn/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & Test (iOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project solyn/solyn.xcodeproj \
+            -scheme solyn \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty
+
+      - name: Run Unit Tests
+        run: |
+          xcodebuild test \
+            -project solyn/solyn.xcodeproj \
+            -scheme solyn \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -only-testing:solynTests \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty

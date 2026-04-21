@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/intrepidkarthi/dailyvox/discussions
+    about: Ask questions, share ideas, or discuss DailyVox
+  - name: Security Vulnerability
+    url: https://github.com/intrepidkarthi/dailyvox/blob/main/SECURITY.md
+    about: Report security vulnerabilities privately via email (do NOT open a public issue)
