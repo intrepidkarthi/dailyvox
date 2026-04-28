@@ -33,7 +33,8 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Semantic search via cosine similarity
 - K-means clustering for thematic discovery
 - Z-score anomaly detection for unusual entries
-- Foundation for v2.0 RAG pipeline
+- Graph-based semantic indexing (text chunks + knowledge graph entities unified)
+- Foundation for on-device RAG pipeline (inspired by [MiniRAG](https://github.com/HKUDS/MiniRAG) architecture)
 
 ### v1.4 — Multi-Language & Apple Watch
 - Multi-language UI via String Catalogs
@@ -46,6 +47,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - LanguageModelSession for multi-turn conversations
 - Tool calling for autonomous Core Data queries
 - @Generable for type-safe structured outputs
+- Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
 
@@ -54,6 +56,8 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - ~160 MB adapter delivered via Background Assets
 - Train the Twin to sound and think like you
 - Export entries as JSONL for training
+- Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
+- Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
 
 ### v3.0 — True Digital Self *(vision)*
 - Full RAG implementation with personal knowledge base
