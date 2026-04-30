@@ -35,6 +35,8 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Z-score anomaly detection for unusual entries
 - Graph-based semantic indexing (text chunks + knowledge graph entities unified)
 - Foundation for on-device RAG pipeline (inspired by [MiniRAG](https://github.com/HKUDS/MiniRAG) architecture)
+- Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
+- Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
 
 ### v1.4 — Multi-Language & Apple Watch
 - Multi-language UI via String Catalogs
@@ -48,6 +50,9 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Tool calling for autonomous Core Data queries
 - @Generable for type-safe structured outputs
 - Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
+- "How would I react?" — Twin predicts your response to situations based on past patterns and personality
+- Twin replies in your voice using Apple Personal Voice API (AVSpeechSynthesizer)
+- Autobiographical memory consolidation: monthly distillation of journal entries into semantic self-knowledge ("I tend to...", "I always...")
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
 
@@ -58,13 +63,38 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Export entries as JSONL for training
 - Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
 - Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
+- Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
 
 ### v3.0 — True Digital Self *(vision)*
+
+The goal of v3.0 is the most accurate mirror of yourself that has ever existed — one that remembers everything you've shared, sees patterns you can't, and speaks in your voice. Entirely on-device, entirely yours.
+
+**What the Twin can do at v3.0:**
+
+- Talk like you — your vocabulary, phrasing, tone, and reasoning patterns
+- Sound like you — replies spoken in your cloned voice (Personal Voice)
+- Know what you care about — values, people, topics, ranked by emotional weight
+- Know how you've felt across years — full emotional history with temporal patterns
+- Predict your likely reaction to familiar situations — grounded in your actual past decisions
+- Explain why you feel the way you do — causal reasoning citing specific past entries
+- Show how you've changed over time — personality evolution across months and years
+
+**What the Twin cannot do (and why):**
+
+- Replace you in a conversation — it knows your narrated self, not your complete self. The thoughts you don't journal are invisible to it
+- Handle truly novel situations — it extrapolates from personality traits, but humans are inconsistent and surprise even themselves
+- Feel what you feel — no embodied experience (fatigue, hunger, physical state) or subconscious drives
+
+**The honest framing:** This is not a clone. It's a mirror that deepens every day you journal. After years of daily entries, it becomes something no one else has — a private, evolving, on-device record of who you are and who you've been.
+
+**Technical capabilities:**
+
 - Full RAG implementation with personal knowledge base
 - Personal LoRA adapter loaded at runtime
 - Autonomous tool calling for data access
 - Context condensation for long conversations
-- Exportable digital self-preservation
+- Full causal reasoning: "Why did I feel this way?" with cited evidence from past entries
+- Exportable digital self-preservation — your Twin's personality model, knowledge graph, emotional history, and voice in an open format
 
 ---
 
