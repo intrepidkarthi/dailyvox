@@ -38,11 +38,12 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
 - Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
 
-### v1.4 — Multi-Language & Apple Watch
-- Multi-language UI via String Catalogs
-- Apple Watch companion app (WatchKit)
+### v1.4 — Apple Watch, macOS & Multi-Language
+- Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
+- Apple Watch companion app (WatchKit) for voice mood check-ins
 - WatchConnectivity for iPhone-Watch sync
 - Watch Complications for quick access
+- Multi-language UI via String Catalogs
 
 ### v2.0 — Foundation Models *(iOS 26, iPhone 15 Pro+)*
 - Apple Foundation Models integration (on-device 3B LLM)
@@ -57,7 +58,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Zero network calls — entire pipeline on-device
 
 ### v2.5 — LoRA Fine-Tuning
-- Personal LoRA adapter training on Mac
+- Personal LoRA adapter training on Mac (macOS app becomes the training environment)
 - ~160 MB adapter delivered via Background Assets
 - Train the Twin to sound and think like you
 - Export entries as JSONL for training
