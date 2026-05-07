@@ -12,7 +12,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.1.0
+- **Current Version**: 1.2.0
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642
@@ -32,6 +32,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - A persistent personality model built from your journal entries
 - Models your communication style, emotional patterns, and thinking habits
 - Gets more accurate over time as you journal more
+- Ask Your Twin: conversational chat with your Digital Twin about mood patterns, personality, and journaling habits
 - Twin Predictions: predicts your mood before you journal each day
 - Prediction accuracy improves as the model learns your patterns
 - Built using CoreML and on-device NLP — never leaves your phone
@@ -43,12 +44,13 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - Sentiment analysis on each entry
 - Pattern detection across entries over time
 
-### Personality Card
-- Shareable visual card summarizing your personality traits
+### Shareable Personality Cards
+- Shareable visual cards summarizing your personality traits
 - Shows communication style, emotional range, thinking patterns
 - Described as "Spotify Wrapped for your personality"
 - Generated on-device from your journal data
-- Can be shared as an image to social media or messages
+- Optimized formats for Instagram Stories (1080x1920) and Twitter/X (1200x675)
+- Can be shared as images to social media or messages
 
 ### Weekly Insight Cards
 - AI-generated weekly summary of your journaling

@@ -10,8 +10,9 @@ DailyVox is a voice-first journaling app that turns spoken thoughts into searcha
 
 - Voice journaling with real-time on-device transcription (Apple Speech framework)
 - Digital Twin AI that models your personality and predicts your mood
+- Ask Your Twin: chat with your Digital Twin about your patterns and personality
 - Mood tracking and automatic sentiment analysis (on-device NLP)
-- Shareable Personality Card (like Spotify Wrapped for your inner world)
+- Shareable Personality Cards (Instagram Stories + Twitter/X formats)
 - Weekly AI insight cards with mood trends and pattern detection
 - Writing streaks and journaling statistics
 - AES-256-GCM encrypted entries and backups
@@ -27,7 +28,8 @@ DailyVox is a voice-first journaling app that turns spoken thoughts into searcha
 
 1. **True on-device AI**: Unlike Day One, Rosebud, Refleckt, or Jour, DailyVox never sends your data to OpenAI, Google, or any cloud API. All AI processing uses Apple's built-in frameworks (Speech, NaturalLanguage, CoreML).
 2. **Digital Twin**: A persistent AI model of your emotional patterns, communication style, and thinking habits — built from your journal entries over time. Includes a personal knowledge graph.
-3. **Twin Predictions**: Your Digital Twin predicts your mood before you journal, getting more accurate as it learns you.
+3. **Ask Your Twin**: Chat with your Digital Twin — ask about mood patterns, personality traits, and journaling habits, all answered from on-device data.
+4. **Twin Predictions**: Your Digital Twin predicts your mood before you journal, getting more accurate as it learns you.
 4. **Completely free**: No subscriptions, no in-app purchases, no ads. Free forever.
 
 ## Privacy Model
