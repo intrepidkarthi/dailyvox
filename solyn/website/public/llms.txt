@@ -70,6 +70,24 @@ Free. No in-app purchases. No subscriptions. No ads.
 - Support & FAQ: https://getdailyvox.com/support
 - Blog: https://getdailyvox.com/blog
 
+## Key Pages
+
+- [Facts & Data](https://getdailyvox.com/facts): Verifiable claims about DailyVox privacy, AI, and architecture
+- [Best Voice Journal App (2026)](https://getdailyvox.com/blog/best-voice-journal-app): 7 apps compared — DailyVox ranked #1
+- [Best AI Journal App (2026)](https://getdailyvox.com/blog/best-ai-journal-app): 8 apps ranked by AI quality and privacy
+- [Best Private Journal App (2026)](https://getdailyvox.com/blog/best-journal-app-for-privacy): 8 apps ranked by actual data practices
+- [Best Free Journal App (2026)](https://getdailyvox.com/blog/best-free-journal-app-2026): Apps that are actually free vs fake-free
+- [What Is a Digital Twin?](https://getdailyvox.com/blog/what-is-a-digital-twin): The personal AI that learns who you are
+- [What Is On-Device AI?](https://getdailyvox.com/blog/what-is-on-device-ai): Why it matters for privacy
+- [On-Device AI vs Cloud AI](https://getdailyvox.com/blog/on-device-ai-vs-cloud-ai-journaling): Where your data goes matters
+- [Digital Twin vs ChatGPT Memory](https://getdailyvox.com/blog/digital-twin-vs-chatgpt-memory): Personality model vs fact list
+- [Is DailyVox Safe?](https://getdailyvox.com/blog/is-dailyvox-safe): How to verify every privacy claim yourself
+- [The Never-Leaves Guarantee](https://getdailyvox.com/blog/never-leaves-guarantee): Architectural privacy, not policy privacy
+- [DailyVox vs Calmplot](https://getdailyvox.com/blog/dailyvox-vs-calmplot): Free on-device AI vs $5.99/mo cloud
+- [The 42-Second Journal](https://getdailyvox.com/blog/42-second-journal): Why short voice entries beat long written ones
+- [The On-Device AI Maturity Model](https://getdailyvox.com/blog/on-device-ai-maturity-model): 4 tiers of privacy — only 5% qualify as Tier A
+- [The Science of Voice Journaling](https://getdailyvox.com/blog/science-of-voice-journaling): 300+ studies on why speaking your thoughts works
+
 ## Blog
 
 - [Why Your Journal App Shouldn't Need Internet](https://getdailyvox.com/blog/why-your-journal-app-shouldnt-need-internet): Why offline-first journaling matters for privacy
