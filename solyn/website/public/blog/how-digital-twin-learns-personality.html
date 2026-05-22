@@ -11,14 +11,14 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Digital Twin Explained: How AI Learns Your Personality From Your Voice - DailyVox Blog</title>
-  <meta name="description" content="A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.">
-  <meta name="keywords" content="digital twin personality AI, how digital twin works, AI personality model, personal AI journal, on-device personality AI">
+  <title>How DailyVox's Digital Twin Learns Your Personality — On Your Phone</title>
+  <meta name="description" content="DailyVox's Digital Twin uses 4 on-device AI models to learn your personality from voice entries. Here's exactly how it works — no cloud, no servers.">
+  <meta name="keywords" content="digital twin personality AI, how digital twin works, AI personality model, personal AI journal, on-device personality AI, NLTagger, knowledge graph, mood prediction">
   <meta name="theme-color" content="#05081a">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://getdailyvox.com/blog/how-digital-twin-learns-personality">
-  <meta property="og:title" content="Your Digital Twin Explained: How AI Learns Your Personality From Your Voice">
-  <meta property="og:description" content="A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.">
+  <meta property="og:title" content="How DailyVox's Digital Twin Learns Your Personality — On Your Phone">
+  <meta property="og:description" content="DailyVox's Digital Twin uses 4 on-device AI models to learn your personality from voice entries. Here's exactly how it works — no cloud, no servers.">
   <meta property="og:image" content="https://getdailyvox.com/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://getdailyvox.com/blog/how-digital-twin-learns-personality">
@@ -28,11 +28,11 @@
   {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    "headline": "Your Digital Twin Explained: How AI Learns Your Personality From Your Voice",
-    "description": "A deep dive into how on-device AI builds a personality model from your journal entries — the NLP, the knowledge graph, and what emerges after 90 days.",
+    "headline": "How DailyVox's Digital Twin Learns Your Personality — On Your Phone",
+    "description": "DailyVox's Digital Twin uses 4 on-device AI models to learn your personality from voice entries. Here's exactly how it works — no cloud, no servers.",
     "url": "https://getdailyvox.com/blog/how-digital-twin-learns-personality",
     "datePublished": "2026-04-01",
-    "dateModified": "2026-04-01",
+    "dateModified": "2026-05-22",
     "author": { "@type": "Organization", "name": "DailyVox" },
     "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/how-digital-twin-learns-personality" }
@@ -45,7 +45,63 @@
     "itemListElement": [
       {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
       {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
-      {"@type": "ListItem", "position": 3, "name": "Your Digital Twin Explained: How AI Learns Your Personality From Your Voice"}
+      {"@type": "ListItem", "position": 3, "name": "How DailyVox's Digital Twin Learns Your Personality — On Your Phone"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does DailyVox's Digital Twin learn my personality?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DailyVox's Digital Twin uses four on-device AI sub-models — Communication Style, Emotional Signature, Personal Knowledge Graph, and Twin Predictions — to analyze every voice journal entry you record. Each model extracts different personality dimensions from your transcribed speech using Apple's NaturalLanguage framework, and the results are stored locally in Core Data on your iPhone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does DailyVox send my journal entries to the cloud?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Every step of the Digital Twin pipeline — voice transcription, NLP analysis, personality modeling, and data storage — runs entirely on your iPhone. No audio, text, or personality data ever leaves your device. There are no cloud servers involved."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What AI models does the Digital Twin use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Digital Twin uses four sub-models: Communication Style (powered by NLTagger for formality, reflection, and openness scoring), Emotional Signature (sentiment tracking over time using Apple's NaturalLanguage framework), Personal Knowledge Graph (entity extraction and relationship mapping via Named Entity Recognition), and Twin Predictions (mood forecasting using temporal, linguistic, and topic-based patterns)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many journal entries does the Digital Twin need to be accurate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Digital Twin starts learning from your very first entry, but accuracy improves with data. After about 15-20 entries, communication style patterns stabilize. After 30-40 entries, emotional signatures become reliable. The knowledge graph and predictions continue to improve the more you journal, with the richest insights emerging after 60-90 days of regular use."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I ask questions to my Digital Twin?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. DailyVox lets you query your Digital Twin with natural-language questions like 'What makes me happy?' or 'How do I handle stress?' The Twin draws on your accumulated personality data — your emotional patterns, knowledge graph relationships, and communication tendencies — to generate answers grounded in what you've actually said over time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I delete my Digital Twin data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Since all Digital Twin data is stored locally on your iPhone in Core Data, you have complete control. You can delete your entire Twin profile, individual entries, or specific personality dimensions at any time. Because nothing is stored on external servers, deletion is immediate and permanent — there's no residual copy anywhere."
+        }
+      }
     ]
   }
   </script>
@@ -70,129 +126,190 @@
       <div class="article-header">
         <a href="/blog" class="back-link">&larr; Back to Blog</a>
         <span class="blog-tag tag-tech">Technology</span>
-        <h1>Your Digital Twin Explained: How AI Learns Your Personality From Your Voice</h1>
-        <p class="article-meta">April 1, 2026 &middot; 7 min read</p>
+        <h1>How DailyVox's Digital Twin Learns Your Personality — On Your Phone</h1>
+        <p class="article-meta">April 1, 2026 &middot; Updated May 22, 2026 &middot; 14 min read</p>
       </div>
 
       <div class="article-body">
-        <p>DailyVox's Digital Twin is the feature that surprises people most. After a month of voice journaling, the app generates a personality card that describes your communication style, emotional patterns, and the themes that define your inner life. People's first reaction is usually: "How does it know this about me?"</p>
+        <p>DailyVox's Digital Twin learns your personality entirely on your iPhone — using four AI sub-models that analyze every voice journal entry you make. It tracks how you think (Communication Style), how you feel (Emotional Signature), who and what you talk about (Personal Knowledge Graph), and where your mood is headed (Twin Predictions). No data ever leaves your device. Here's exactly how it works.</p>
 
-        <p>The answer involves natural language processing, knowledge graphs, and temporal pattern analysis — all running on the chip inside your phone. Here's how it actually works.</p>
+        <p>Most personality AI tools require you to upload your data to a cloud server, where a large language model processes it and sends back a summary. DailyVox takes the opposite approach. The entire pipeline — from the moment you speak into your phone to the moment your Digital Twin updates — runs locally on Apple's Neural Engine. That means your deepest reflections, most vulnerable moments, and most private thoughts stay on hardware you physically control.</p>
 
-        <h2>Layer 1: Sentiment and Emotion Detection</h2>
+        <p>This article breaks down the four sub-models that power the Digital Twin, walks through the five-step pipeline from voice to personality update, explains how you can query your Twin, and honestly addresses what the system cannot do.</p>
 
-        <p>Every journal entry passes through Apple's NaturalLanguage framework, which analyzes text at multiple levels simultaneously.</p>
+        <h2>The 4 Sub-Models Explained</h2>
 
-        <p><strong>Sentiment analysis</strong> measures the overall emotional valence of your entry on a spectrum from negative to positive. But DailyVox goes beyond simple positive/negative by detecting nine distinct mood categories: happy, sad, anxious, angry, calm, excited, grateful, reflective, and stressed.</p>
+        <p>The Digital Twin isn't a single monolithic AI. It's four specialized sub-models, each designed to extract a different dimension of your personality from your journal entries. They run in parallel after every transcription, and their outputs feed into a unified personality profile stored in Core Data on your device.</p>
 
-        <p>How does it determine which mood? Through a combination of:</p>
-        <ul>
-          <li><strong>Lexical analysis:</strong> Which emotion-associated words appear? "Worried," "tense," "can't stop thinking" correlate with anxiety. "Frustrated," "unfair," "annoyed" correlate with anger.</li>
-          <li><strong>Syntactic patterns:</strong> Short, fragmented sentences often indicate stress or agitation. Longer, flowing sentences suggest calm or reflective states.</li>
-          <li><strong>Contextual modeling:</strong> The same word means different things in different contexts. "I can't believe it" could be excitement or distress — the surrounding language disambiguates.</li>
-        </ul>
+        <h3>Sub-Model 1: Communication Style</h3>
 
-        <p>Over time, the sentiment data forms a mood timeline — your emotional history across days, weeks, and months. This is the foundation of everything the Digital Twin learns.</p>
+        <p><strong>Plain English:</strong> Communication Style captures <em>how</em> you speak — not what you say, but the way you say it. Are you formal or casual? Do you reflect deeply or skim the surface? Are you open about feelings or guarded? Over time, this sub-model builds a fingerprint of your linguistic personality that's as distinctive as your voice itself.</p>
 
-        <h2>Layer 2: Named Entity Recognition</h2>
-
-        <p>Named entity recognition (NER) identifies the people, places, organizations, and topics in your entries. When you say "I had lunch with Sarah downtown after the meeting with the marketing team," the NLP extracts four entities: Sarah (person), downtown (location), the meeting (event), and the marketing team (organization).</p>
-
-        <p>Each entity gets tracked across all your entries. The system learns:</p>
-        <ul>
-          <li>How often you mention each person, place, or topic</li>
-          <li>The emotional context surrounding each entity — is Sarah usually mentioned in positive or negative entries?</li>
-          <li>Temporal patterns — do you talk about work more on weekdays and family more on weekends?</li>
-          <li>Co-occurrence — which entities appear together? If "Sarah" and "happy" frequently co-occur, that's a meaningful pattern.</li>
-        </ul>
-
-        <h2>Layer 3: The Knowledge Graph</h2>
-
-        <p>Individual entities become powerful when connected. The knowledge graph maps relationships between the people, places, and topics in your life.</p>
-
-        <p>Imagine a web where "Work" connects to "stress," "Monday," "the marketing team," and "the commute." "Sarah" connects to "happy," "weekend," "hiking," and "downtown." Over dozens of entries, this web becomes a map of your world — not the objective world, but <em>your</em> world as experienced through your emotions and attention.</p>
-
-        <p>The knowledge graph reveals things like:</p>
-        <ul>
-          <li>Which relationships are emotionally positive vs. draining</li>
-          <li>Which activities correlate with which moods</li>
-          <li>Which parts of your life dominate your thoughts (and which are absent)</li>
-          <li>How your attention and emotional associations shift over time</li>
-        </ul>
-
-        <h2>Layer 4: Communication Style Analysis</h2>
-
-        <p>Beyond what you say, the Digital Twin learns <em>how</em> you say it. Communication style analysis examines:</p>
+        <p><strong>Technical detail:</strong> This sub-model is powered by Apple's <code>NLTagger</code>, which performs part-of-speech tagging, lemmatization, and lexical classification on your transcribed text. From these raw linguistic features, DailyVox computes three core dimensions:</p>
 
         <ul>
-          <li><strong>Vocabulary complexity:</strong> Do you use simple, direct language or elaborate, nuanced phrasing? This reflects cognitive style.</li>
-          <li><strong>Emotional expression range:</strong> Do you use many different emotion words or cycle through a narrow set? Broader range indicates higher emotional granularity.</li>
-          <li><strong>Self-reference patterns:</strong> How often do you use "I" vs. "we" vs. "they"? High first-person usage can indicate introspection or self-focus. High "we" usage suggests relational thinking.</li>
-          <li><strong>Certainty language:</strong> Do you use hedging words ("maybe," "probably," "I think") or definitive language ("definitely," "absolutely," "I know")? This reflects cognitive style and confidence patterns.</li>
-          <li><strong>Temporal orientation:</strong> Do your entries focus on the past, present, or future? People who are predominantly past-focused often process differently than future-focused individuals.</li>
+          <li><strong>Formality score:</strong> Measured by analyzing sentence structure complexity, vocabulary sophistication, and the ratio of formal to informal lexical items. Someone who says "I was frustrated by the outcome" scores differently from someone who says "that whole thing ticked me off." Neither is better — they're just different communication signatures. The formality score uses average sentence length, subordinate clause frequency, and the proportion of words above a certain frequency threshold in standard English corpora.</li>
+          <li><strong>Reflection depth:</strong> Calculated by detecting introspective markers — words and phrases that signal self-examination. Phrases like "I realized," "looking back," "what I actually meant was," and "I wonder if" all increase the reflection score. The system also measures the ratio of past-tense to present-tense verbs (higher past-tense ratios suggest more reflective processing) and the frequency of causal connectors like "because," "since," and "as a result," which indicate analytical thinking.</li>
+          <li><strong>Openness:</strong> Measured by emotional vocabulary diversity, self-disclosure frequency, and vulnerability markers. Someone who consistently uses a wide range of emotion words ("anxious," "elated," "ambivalent," "uneasy") and directly names their internal states scores higher on openness than someone who describes events without labeling their emotional response. The system tracks how many unique emotion lemmas appear per entry and how often first-person emotional statements occur (e.g., "I feel," "I'm worried," "that made me").</li>
         </ul>
 
-        <h2>Layer 5: Temporal Pattern Recognition</h2>
+        <p>These three dimensions are not static scores. They're rolling averages that update with each new entry, weighted toward recent data. Your communication style from six months ago still influences the model, but your entries from the past two weeks carry more weight. This lets the Twin reflect genuine changes in how you express yourself over time — which can be one of the most revealing signals of personal growth.</p>
 
-        <p>The Digital Twin doesn't just analyze individual entries — it analyzes how entries change over time. This temporal dimension is where the deepest insights emerge.</p>
+        <h3>Sub-Model 2: Emotional Signature</h3>
 
-        <p>Patterns the system identifies:</p>
-        <ul>
-          <li><strong>Weekly cycles:</strong> Your mood on Mondays vs. Fridays, your topics on weekdays vs. weekends</li>
-          <li><strong>Monthly patterns:</strong> Some people have distinct monthly emotional rhythms tied to work cycles, hormonal cycles, or social patterns</li>
-          <li><strong>Trend detection:</strong> Gradual shifts in mood baseline, entity prominence, or communication style that indicate life changes</li>
-          <li><strong>Anomaly detection:</strong> Entries that deviate significantly from your established patterns — these often mark important events or turning points</li>
-        </ul>
+        <p><strong>Plain English:</strong> Your Emotional Signature is the pattern of how you feel over time. Not just "happy" or "sad" on a given day, but the shape of your emotional life — your baseline mood, how much it fluctuates, which emotions dominate, and how quickly you recover from negative states. Think of it as a mood fingerprint that's unique to you.</p>
 
-        <h2>The Personality Card: Making It Visible</h2>
-
-        <p>All of this analysis feeds into the personality card — a shareable snapshot of what the Digital Twin has learned. Think of it as "Spotify Wrapped for your personality."</p>
-
-        <p>A personality card might include:</p>
-        <ul>
-          <li>Your dominant emotional signature (e.g., "Reflective with occasional anxiety spikes")</li>
-          <li>Your communication style description (e.g., "Detailed and analytical, with high emotional vocabulary")</li>
-          <li>Your top themes and entities (the people and topics that dominate your inner world)</li>
-          <li>Your temporal patterns (when you're most reflective, most stressed, most creative)</li>
-          <li>Your growth indicators (how your patterns have shifted since you started journaling)</li>
-        </ul>
-
-        <p>The personality card is generated entirely on-device. It's not sent to a server for processing. You can share it if you choose — or keep it entirely private.</p>
-
-        <h2>What Makes On-Device Different</h2>
-
-        <p>Cloud-based personality modeling (like feeding your journal into ChatGPT) can produce similar insights. But there are critical differences:</p>
+        <p><strong>Technical detail:</strong> The Emotional Signature sub-model uses Apple's <code>NaturalLanguage</code> framework to perform sentiment analysis on each journal entry, producing a valence score that ranges from -1.0 (strongly negative) to +1.0 (strongly positive). But raw sentiment is just the starting point. DailyVox layers several additional analyses on top:</p>
 
         <ul>
-          <li><strong>Privacy:</strong> On-device means your personality model never leaves your phone. There's no psychological profile of you sitting on a corporate server.</li>
-          <li><strong>Continuity:</strong> The model accumulates over time without requiring you to re-upload data. It grows with each entry automatically.</li>
-          <li><strong>Speed:</strong> Analysis happens in real-time as you finish speaking. No waiting for cloud processing.</li>
-          <li><strong>Offline access:</strong> Your Digital Twin works without internet. Your personality insights are always available.</li>
-          <li><strong>Data ownership:</strong> You can delete your Digital Twin data at any time. There's no residual model on a remote server.</li>
+          <li><strong>Mood classification:</strong> Beyond the positive/negative spectrum, each entry is classified into one of nine mood categories — happy, sad, anxious, angry, calm, excited, grateful, reflective, and stressed. Classification uses a combination of lexical matching (emotion-associated word lists), syntactic patterns (short fragmented sentences correlate with stress; longer flowing sentences suggest calm), and contextual disambiguation (the phrase "I can't believe it" means different things depending on surrounding language).</li>
+          <li><strong>Emotional volatility:</strong> The system tracks the standard deviation of your sentiment scores over rolling 7-day, 14-day, and 30-day windows. High volatility means your mood swings significantly between entries. Low volatility means you tend toward emotional stability. Neither is inherently good or bad — the Twin simply reports the pattern.</li>
+          <li><strong>Recovery rate:</strong> When a negative mood event occurs (a significant drop in sentiment), how many entries does it take for your baseline to return? Fast recovery might indicate resilience or emotional suppression. Slow recovery might indicate deep processing or rumination. The Twin tracks this without judgment.</li>
+          <li><strong>Dominant emotional texture:</strong> Over time, the system identifies your most frequent mood states and the transitions between them. Some people oscillate between anxious and grateful. Others cycle between calm and reflective. Your specific pattern of emotional transitions becomes part of your signature.</li>
         </ul>
 
-        <h2>The 30/60/90 Day Journey</h2>
+        <p>All sentiment data is stored as a time series in Core Data, indexed by date and entry. This allows the Twin to compute trends, detect anomalies, and generate the mood timeline that appears in your personality card. The time series is the foundation that the Twin Predictions sub-model builds on.</p>
 
-        <p>The Digital Twin's accuracy and depth improve with data:</p>
+        <h3>Sub-Model 3: Personal Knowledge Graph</h3>
 
-        <p><strong>30 days:</strong> Basic mood patterns emerge. You'll see weekly cycles and your most-mentioned entities. The personality card is a rough sketch — recognizable but not yet nuanced.</p>
+        <p><strong>Plain English:</strong> The Knowledge Graph tracks who and what you talk about — the people, places, activities, and topics that fill your journal entries — and maps the relationships between them. Over time, it builds a picture of your world as <em>you</em> experience it, not as it objectively exists. The people you mention most, the activities tied to your best moods, the topics you keep circling back to — they all become nodes in your personal graph.</p>
 
-        <p><strong>60 days:</strong> Deeper correlations appear. The knowledge graph becomes rich enough to reveal non-obvious connections. Mood predictions start becoming accurate. Your communication style profile stabilizes.</p>
+        <p><strong>Technical detail:</strong> This sub-model uses Named Entity Recognition (NER) through Apple's <code>NLTagger</code> with the <code>.nameType</code> tag scheme to extract entities from each transcribed entry. The NER system identifies several entity categories:</p>
 
-        <p><strong>90 days:</strong> The Digital Twin becomes a genuine mirror. Personality cards are detailed and accurate. Predictions are reliable. Temporal patterns reveal long-term trends. You can compare your personality snapshot from month 1 to month 3 and see concrete evidence of personal growth.</p>
+        <ul>
+          <li><strong>Person names:</strong> "Sarah," "my boss," "Mom" — identified through proper noun detection and contextual role markers.</li>
+          <li><strong>Place names:</strong> "downtown," "the office," "Bali" — identified through geographic and locational noun patterns.</li>
+          <li><strong>Organization names:</strong> "the marketing team," "Apple," "my gym" — identified through organizational noun phrases.</li>
+          <li><strong>Topic clusters:</strong> Beyond named entities, the system identifies recurring thematic clusters using lemma frequency analysis. If you repeatedly mention words related to "career change" — "resume," "interview," "new role," "LinkedIn" — the system creates a topic node even though no single named entity captures the theme.</li>
+        </ul>
 
-        <p>Your Digital Twin is built from your own words, processed on your own device, and accessible only to you. It's the most private self-portrait you can create.</p>
+        <p>Once entities are extracted, the Knowledge Graph sub-model performs three key operations:</p>
+
+        <ol>
+          <li><strong>Frequency tracking:</strong> How often does each entity appear across all your entries? Entities that appear consistently over weeks are weighted more heavily than one-off mentions. This prevents a single unusual entry from distorting your graph.</li>
+          <li><strong>Sentiment association:</strong> Each entity is paired with the sentiment score of the entry (or entries) where it appears. Over time, entities accumulate an emotional valence. If "Sarah" appears mostly in positive-sentiment entries, she gets a positive emotional association. If "Monday meetings" appears mostly in negative-sentiment entries, it gets a negative one. These associations are rolling averages, so they update as your relationship with an entity changes.</li>
+          <li><strong>Co-occurrence mapping:</strong> When two entities appear in the same entry — or within a few entries of each other — the system creates an edge between them. Repeated co-occurrence strengthens the edge. This is how the graph discovers relationships you might not consciously articulate. If "running" and "calm" frequently co-occur, the graph encodes the connection between that activity and that emotional state. If "work deadline" and "insomnia" co-occur, that relationship is captured too.</li>
+        </ol>
+
+        <p>The resulting graph is stored as a set of entity records in Core Data, each with frequency counts, sentiment associations, temporal distributions, and co-occurrence links. When you view your personality card, the top entities and their relationships are rendered as a visual map of your inner world.</p>
+
+        <h3>Sub-Model 4: Twin Predictions</h3>
+
+        <p><strong>Plain English:</strong> Twin Predictions uses everything the other three sub-models have learned to forecast where your mood is headed. It looks at the time of week, your recent emotional trajectory, the topics you've been journaling about, and your communication patterns to estimate how you're likely to feel in your next entry. It's not fortune-telling — it's pattern matching on your own historical data.</p>
+
+        <p><strong>Technical detail:</strong> The predictions sub-model synthesizes three types of patterns to generate forecasts:</p>
+
+        <ul>
+          <li><strong>Temporal patterns:</strong> Your mood history is analyzed for cyclical regularities. The system computes day-of-week averages (are Mondays consistently lower?), time-of-day patterns (are morning entries more positive than evening ones?), and longer-period cycles (monthly or seasonal trends). These temporal baselines form the first layer of prediction — what's your expected mood for a Tuesday evening in late May, based purely on when it is?</li>
+          <li><strong>Linguistic patterns:</strong> Changes in communication style often precede mood shifts. If your formality score drops and your sentence length decreases over several entries, that linguistic shift may predict an upcoming mood change. The system tracks correlations between communication style changes and subsequent sentiment shifts, building a model of your personal leading indicators.</li>
+          <li><strong>Topic-based patterns:</strong> Which Knowledge Graph entities are active in your recent entries? If entities with historically negative sentiment associations are appearing more frequently, the prediction model adjusts its forecast downward. Conversely, if positively-associated entities dominate recent entries, the forecast tilts positive. The system learns which specific topics are predictive for you — for some people, mentioning "exercise" predicts a positive next entry; for others, mentioning "family dinner" does.</li>
+        </ul>
+
+        <p>Predictions are expressed as a probability distribution across the nine mood categories, along with a confidence score that reflects how much historical data supports the forecast. Early in your journaling journey, predictions are low-confidence and broad. After 60+ entries, they narrow and become meaningfully accurate. The system never presents a prediction as certainty — it always shows the confidence level alongside the forecast.</p>
+
+        <h2>The Pipeline: Voice to Twin in 5 Steps</h2>
+
+        <p>Understanding the sub-models is one half of the picture. The other half is understanding how they connect — the pipeline that transforms your spoken words into a Digital Twin update. Here's the complete sequence, from the moment you tap the microphone button to the moment your Twin profile refreshes.</p>
+
+        <h3>Step 1: Microphone Capture</h3>
+
+        <p>When you tap the record button in DailyVox, the app activates your iPhone's microphone through Apple's <code>AVAudioEngine</code>. Audio is captured as a raw waveform in the app's sandboxed memory. It never touches the network stack. The audio buffer is temporary — it exists only long enough to be transcribed in the next step, then it's discarded. No audio file is permanently stored unless you explicitly choose to keep voice recordings in your settings.</p>
+
+        <h3>Step 2: On-Device Transcription</h3>
+
+        <p>The audio buffer is fed into Apple's <code>SFSpeechRecognizer</code>, which runs an on-device speech-to-text model. On modern iPhones (A14 chip and later), this transcription happens on the Neural Engine without any network request. The result is a text string — your journal entry in written form — along with per-word confidence scores and timing information. Transcription typically completes within one to two seconds of you finishing speaking, even for entries several minutes long.</p>
+
+        <h3>Step 3: NLP Analysis</h3>
+
+        <p>The transcribed text is passed simultaneously to all four sub-models. This is where the NaturalLanguage framework does its heavy lifting:</p>
+
+        <ul>
+          <li>The Communication Style sub-model runs <code>NLTagger</code> to perform part-of-speech tagging and computes formality, reflection, and openness scores.</li>
+          <li>The Emotional Signature sub-model runs sentiment analysis and classifies the entry into one of nine mood categories.</li>
+          <li>The Knowledge Graph sub-model runs NER to extract entities, then updates frequency counts, sentiment associations, and co-occurrence edges.</li>
+          <li>The Twin Predictions sub-model ingests the outputs of the other three models alongside your historical data to generate an updated forecast.</li>
+        </ul>
+
+        <p>Because these analyses use Apple's optimized NaturalLanguage framework running on the Neural Engine, the entire NLP step typically completes in under 500 milliseconds. You see your mood classification and entity highlights almost instantly after transcription finishes.</p>
+
+        <h3>Step 4: Twin Profile Update</h3>
+
+        <p>The outputs of all four sub-models are merged into your Digital Twin profile. This involves updating rolling averages for communication style dimensions, appending new data points to the sentiment time series, adding or strengthening Knowledge Graph nodes and edges, and recalculating prediction models with the new data point included. The Twin profile is not regenerated from scratch each time — it's incrementally updated, which keeps the process fast and efficient.</p>
+
+        <h3>Step 5: Core Data Persistence</h3>
+
+        <p>The updated Twin profile, along with the journal entry text, mood classification, entity list, and all associated metadata, is written to Core Data — Apple's local persistence framework. Core Data stores everything in an encrypted SQLite database on your device's flash storage, protected by your device passcode and the Secure Enclave. No sync service, no cloud backup of personality data, no network request. The data exists in one place: your iPhone.</p>
+
+        <p>The entire pipeline — from tapping the microphone to seeing your Twin update — typically completes in under five seconds. For most entries, it feels instantaneous.</p>
+
+        <h2>Ask Your Twin: Querying Your Personality</h2>
+
+        <p>The Digital Twin isn't just a passive model that sits in the background. You can actively query it. DailyVox provides a conversational interface where you ask your Twin questions and receive answers grounded in your accumulated personality data.</p>
+
+        <p>Here's how it works. When you type a question like "What makes me happy?" or "How do I handle stress?" the query is processed against your Twin profile. The system identifies which sub-models are relevant to the question:</p>
+
+        <ul>
+          <li><strong>"What makes me happy?"</strong> pulls from the Knowledge Graph (which entities have the highest positive sentiment associations?) and the Emotional Signature (what mood states precede your happiest entries?).</li>
+          <li><strong>"How do I handle stress?"</strong> pulls from the Emotional Signature (what's your recovery rate after negative entries?), Communication Style (does your language change when stressed?), and the Knowledge Graph (which entities co-occur with stress?).</li>
+          <li><strong>"Am I more anxious than last month?"</strong> pulls from the Emotional Signature time series (comparing anxiety-classified entries between two time windows).</li>
+          <li><strong>"Who do I talk about most?"</strong> pulls directly from the Knowledge Graph's entity frequency rankings.</li>
+          <li><strong>"What's my personality like?"</strong> pulls from all four sub-models to generate a comprehensive summary — your communication tendencies, emotional patterns, key relationships, and predicted trajectories.</li>
+        </ul>
+
+        <p>The answers are generated locally. They draw only on data you've provided through your journal entries. The Twin can't tell you things you haven't expressed — it's a mirror, not an oracle. But for people who have been journaling consistently, the answers can be surprisingly specific and accurate. After 90 days of daily entries, your Twin has processed roughly 45,000 to 90,000 words of your inner monologue. That's enough data to produce answers with genuine depth.</p>
+
+        <p>Querying your Twin is also useful for tracking change. You can ask the same question months apart and compare the answers. "How do I feel about work?" might produce very different responses in January versus June if you've gone through a job change or a shift in your relationship with your career. The Twin reflects your evolution because it's built from your ongoing data, not a one-time snapshot.</p>
+
+        <h2>What the Twin Can't Do</h2>
+
+        <p>Honesty about limitations matters more than marketing claims. Here's what the Digital Twin genuinely cannot do, and why.</p>
+
+        <p><strong>It can't diagnose mental health conditions.</strong> The Twin detects emotional patterns, but pattern detection is not clinical diagnosis. Persistent low mood in your Emotional Signature might indicate depression — or it might indicate a difficult month at work. The system has no training data for clinical classification, and it's not designed to replace professional assessment. If the Twin surfaces a concerning pattern, the right response is to talk to a therapist, not to treat the Twin's output as a diagnosis.</p>
+
+        <p><strong>It can't read between the lines beyond what NLP captures.</strong> If you consistently avoid mentioning a topic — say, a family conflict — the Twin has no data to work with. It can only model what you've expressed. The Knowledge Graph might show an absence (you never mention your sibling), but it can't infer why. Omissions are invisible to the system.</p>
+
+        <p><strong>It can't predict external events.</strong> The predictions sub-model forecasts your mood based on your internal patterns, not the outside world. If an unexpected event happens — a job loss, a surprise vacation, a health scare — the prediction model will be wrong. It's modeling your baseline tendencies, not the full complexity of life.</p>
+
+        <p><strong>It's limited by Apple's NLP capabilities.</strong> The NaturalLanguage framework is powerful but not cutting-edge compared to the latest cloud-based large language models. Sentiment analysis can miss sarcasm, irony, and cultural nuances. NER can fail on unusual names or ambiguous references. The trade-off is intentional: on-device processing with Apple's framework gives you privacy and speed at the cost of some accuracy compared to what a cloud-based GPT-4-class model might achieve.</p>
+
+        <p><strong>It improves slowly, not instantly.</strong> The Twin needs data to learn. If you journal once a week, your model will be sparse and predictions will be low-confidence even after months. The system is designed for daily or near-daily journaling. Users who journal sporadically will see shallower insights — not because the AI is bad, but because there simply isn't enough data to work with.</p>
+
+        <p><strong>It doesn't understand context outside your entries.</strong> If you mention "the presentation" across several entries, the Twin knows it's a recurring topic with certain emotional associations. But it doesn't know what the presentation is about, how important it is in your career, or what the stakes are. It models surface-level linguistic and emotional patterns, not deep semantic understanding of your life situation.</p>
+
+        <p>These limitations are inherent to the approach: local NLP on a phone, working with whatever data you choose to share through your journal. Within those constraints, the Twin is remarkably capable. But it's important to use it as one tool for self-understanding, not as a definitive authority on who you are.</p>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>How does DailyVox's Digital Twin learn my personality?</h3>
+        <p>DailyVox's Digital Twin uses four on-device AI sub-models — Communication Style, Emotional Signature, Personal Knowledge Graph, and Twin Predictions — to analyze every voice journal entry you record. Each model extracts different personality dimensions from your transcribed speech using Apple's NaturalLanguage framework, and the results are stored locally in Core Data on your iPhone. The Twin updates incrementally with each new entry, so it grows more accurate over time without ever sending your data to a server.</p>
+
+        <h3>Does DailyVox send my journal entries to the cloud?</h3>
+        <p>No. Every step of the Digital Twin pipeline — voice transcription, NLP analysis, personality modeling, and data storage — runs entirely on your iPhone. No audio, text, or personality data ever leaves your device. There are no cloud servers involved. Transcription uses Apple's on-device <code>SFSpeechRecognizer</code>, NLP runs through the local NaturalLanguage framework, and all data is persisted in Core Data's encrypted SQLite database protected by your device passcode.</p>
+
+        <h3>What AI models does the Digital Twin use?</h3>
+        <p>The Digital Twin uses four sub-models. Communication Style is powered by <code>NLTagger</code> for part-of-speech tagging and computes formality, reflection depth, and openness scores. Emotional Signature uses Apple's sentiment analysis to track mood over time across nine categories. The Personal Knowledge Graph uses Named Entity Recognition to extract people, places, and topics, then maps their relationships and emotional associations. Twin Predictions synthesizes temporal, linguistic, and topic-based patterns from the other three models to forecast your likely mood in upcoming entries.</p>
+
+        <h3>How many journal entries does the Digital Twin need to be accurate?</h3>
+        <p>The Digital Twin starts learning from your very first entry, but accuracy improves with data. After about 15-20 entries, communication style patterns stabilize and your formality/reflection/openness scores become consistent. After 30-40 entries, emotional signatures become reliable and the Knowledge Graph has enough nodes to reveal meaningful relationships. The predictions sub-model needs the most data — it becomes meaningfully accurate after 60+ entries. The richest insights emerge after 90 days of regular journaling, by which point the Twin has typically processed 45,000-90,000 words of your inner monologue.</p>
+
+        <h3>Can I ask questions to my Digital Twin?</h3>
+        <p>Yes. DailyVox provides a conversational interface where you can query your Digital Twin with natural-language questions. You can ask things like "What makes me happy?", "How do I handle stress?", "Am I more anxious than last month?", or "Who do I talk about most?" The Twin draws on your accumulated personality data — emotional patterns, Knowledge Graph relationships, communication tendencies, and prediction models — to generate answers grounded in what you've actually said over time. The answers are generated entirely on-device.</p>
+
+        <h3>Can I delete my Digital Twin data?</h3>
+        <p>Yes. Since all Digital Twin data is stored locally on your iPhone in Core Data, you have complete control. You can delete your entire Twin profile, individual entries, or specific personality dimensions at any time from within the app. Because nothing is stored on external servers, deletion is immediate and permanent — there's no residual copy sitting on a cloud server, no backup to purge, no retention policy to wait out. When you delete it, it's gone.</p>
 
         <h2>Related Articles</h2>
         <ul>
           <li><a href="/blog/what-is-a-digital-twin">What Is a Digital Twin? How AI Learns Your Personality</a></li>
+          <li><a href="/blog/best-ai-journal-app">Best AI Journal Apps for iPhone in 2026</a></li>
+          <li><a href="/technology">DailyVox Technology: How On-Device AI Works</a></li>
           <li><a href="/blog/talk-to-your-past-self-digital-twin">How to Talk to Your Past Self: Using Your Digital Twin as a Time Machine</a></li>
-          <li><a href="/blog/journal-every-day-90-days">What Happens When You Journal Every Day for 90 Days (Backed by Neuroscience)</a></li>
+          <li><a href="/facts">DailyVox Facts and Statistics</a></li>
         </ul>
 
         <div class="article-cta">
           <h3>Meet Your Digital Twin</h3>
-          <p>DailyVox builds an on-device AI model of your personality from your voice entries. See your patterns, share personality cards, predict your moods. Free and private.</p>
+          <p>DailyVox builds an on-device AI model of your personality from your voice entries. Four sub-models learn how you think, feel, and what matters to you — entirely on your iPhone. Free and private.</p>
           <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
         </div>
       </div>
