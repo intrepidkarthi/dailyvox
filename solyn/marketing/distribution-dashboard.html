@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyVox Distribution Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    line-height: 1.6;
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    color: #f0f6fc;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    color: #8b949e;
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
+
+  /* Progress tracker */
+  .progress-bar {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .progress-bar h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8b949e;
+    margin-bottom: 10px;
+  }
+
+  .progress-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+
+  .progress-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #8b949e;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .progress-item input[type="checkbox"] {
+    accent-color: #238636;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .progress-item.done {
+    color: #3fb950;
+    text-decoration: line-through;
+  }
+
+  .progress-counter {
+    font-size: 0.8rem;
+    color: #58a6ff;
+    margin-top: 8px;
+  }
+
+  /* Cards */
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: #484f58;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-size: 1.15rem;
+    color: #f0f6fc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title .emoji {
+    font-size: 1.3rem;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: #8b949e;
+  }
+
+  .char-count {
+    background: #21262d;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.75rem;
+  }
+
+  .post-link {
+    color: #58a6ff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .post-link:hover {
+    text-decoration: underline;
+  }
+
+  .field-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8b949e;
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #c9d1d9;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    padding: 12px;
+    resize: vertical;
+    outline: none;
+  }
+
+  textarea:focus {
+    border-color: #58a6ff;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy {
+    background: #238636;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+
+  .btn-copy:hover {
+    background: #2ea043;
+  }
+
+  .btn-copy.copied {
+    background: #1a7f37;
+  }
+
+  .btn-open {
+    background: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+
+  .btn-open:hover {
+    background: #30363d;
+  }
+
+  .thread-block {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .thread-block::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #30363d;
+  }
+
+  .tweet-item {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 14px;
+  }
+
+  .tweet-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .tweet-number {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    background: #238636;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    z-index: 1;
+  }
+
+  .tweet-text {
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.83rem;
+    color: #c9d1d9;
+    line-height: 1.5;
+  }
+
+  .tweet-chars {
+    font-size: 0.7rem;
+    color: #8b949e;
+    margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    color: #484f58;
+    font-size: 0.8rem;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #21262d;
+  }
+</style>
+</head>
+<body>
+
+<h1>DailyVox Distribution Dashboard</h1>
+<p class="subtitle">Copy, Paste, Post &mdash; hit every platform in 30 minutes</p>
+
+<!-- Progress Tracker -->
+<div class="progress-bar">
+  <h2>Progress</h2>
+  <div class="progress-items" id="progressItems">
+    <label class="progress-item" data-platform="reddit-journaling"><input type="checkbox" onchange="updateProgress(this)"> r/Journaling</label>
+    <label class="progress-item" data-platform="reddit-privacy"><input type="checkbox" onchange="updateProgress(this)"> r/privacytoolsIO</label>
+    <label class="progress-item" data-platform="reddit-adhd"><input type="checkbox" onchange="updateProgress(this)"> r/ADHD</label>
+    <label class="progress-item" data-platform="reddit-iphone"><input type="checkbox" onchange="updateProgress(this)"> r/iphone</label>
+    <label class="progress-item" data-platform="twitter"><input type="checkbox" onchange="updateProgress(this)"> Twitter/X</label>
+    <label class="progress-item" data-platform="linkedin"><input type="checkbox" onchange="updateProgress(this)"> LinkedIn</label>
+    <label class="progress-item" data-platform="hackernews"><input type="checkbox" onchange="updateProgress(this)"> Hacker News</label>
+    <label class="progress-item" data-platform="producthunt"><input type="checkbox" onchange="updateProgress(this)"> Product Hunt</label>
+    <label class="progress-item" data-platform="alternativeto"><input type="checkbox" onchange="updateProgress(this)"> AlternativeTo</label>
+  </div>
+  <div class="progress-counter" id="progressCounter">0 / 9 done</div>
+</div>
+
+<!-- ============================================ -->
+<!-- 1. Reddit r/Journaling -->
+<!-- ============================================ -->
+<div class="card" id="reddit-journaling">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">📓</span> Reddit r/Journaling</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-rj-title">0 chars</span>
+      <a class="post-link" href="https://www.reddit.com/r/Journaling/submit" target="_blank">Open r/Journaling &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post Title</div>
+  <textarea id="rj-title" rows="1" readonly>I built a free voice journal app after 20 years of writing diaries</textarea>
+
+  <div class="field-label">Post Body</div>
+  <textarea id="rj-body" rows="18" readonly>I started writing a diary when I was 15. Every night, paper notebook, black pen, just getting the day out of my head. I kept that up for over 20 years. Thousands of pages. It was the most consistent habit of my life.
+
+Then one day, I just couldn't write anymore. My hand hurt. My brain was tired. The blank page felt like a wall. I stopped journaling for months and genuinely missed it — that nightly decompression was how I processed everything.
+
+So I tried something different: I started talking. I'd open my phone, hit record, and just talk about my day for a minute or two. It felt natural, almost effortless. I realized I could say in 42 seconds what used to take me 15 minutes to write.
+
+That experiment turned into DailyVox — a voice journal that runs entirely on your phone. You tap the mic, talk, and the app transcribes and analyzes everything on-device. No cloud. No servers. No account needed.
+
+The part I'm most excited about is the Digital Twin. As you journal over time, the app builds a personality model — your speaking patterns, emotional tendencies, recurring themes. You can actually ask your Twin questions like "What stresses me out the most?" or "When am I happiest?" It's like having a conversation with a version of yourself that remembers everything.
+
+A few things that matter to me:
+
+- **Completely free.** Every feature, forever. No premium tier, no subscription.
+- **No data leaves your phone.** Apple's privacy label says "Data Not Collected" — and you can verify this with a network proxy.
+- **No account required.** Open the app and start talking.
+- **Open source.** The Digital Twin engine is at github.com/intrepidkarthi/dailyvox
+
+I've been using it every day for months and it's genuinely changed my relationship with journaling again. 42 seconds before bed, and I feel like I've processed the day.
+
+Happy to answer questions about the architecture, the journaling research behind it, or how the Digital Twin personality model works.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('rj-title')">Copy Title</button>
+    <button class="btn-copy" onclick="copyField('rj-body')">Copy Body</button>
+    <button class="btn-copy" onclick="copyAll('rj-title','rj-body')">Copy All</button>
+    <a class="btn-open" href="https://www.reddit.com/r/Journaling/submit" target="_blank">Open r/Journaling &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 2. Reddit r/privacytoolsIO -->
+<!-- ============================================ -->
+<div class="card" id="reddit-privacy">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🔒</span> Reddit r/privacytoolsIO</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-rp-title">0 chars</span>
+      <a class="post-link" href="https://www.reddit.com/r/privacytoolsIO/submit" target="_blank">Open r/privacytoolsIO &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post Title</div>
+  <textarea id="rp-title" rows="1" readonly>I made a journal app with zero servers — here's the architecture</textarea>
+
+  <div class="field-label">Post Body</div>
+  <textarea id="rp-body" rows="16" readonly>I built a voice journal app for iOS called DailyVox where the entire privacy model is: there are no servers. No backend at all. No analytics SDKs. No crash reporting services. No third-party dependencies whatsoever.
+
+Here's what actually runs on-device:
+
+- **Speech recognition:** Apple's SFSpeechRecognizer — on-device mode, audio never leaves the phone
+- **NLP & sentiment:** NLTagger and Natural Language framework — tokenization, sentiment, entity extraction, all local
+- **AI personality model:** CoreML — the Digital Twin that learns your journaling patterns runs entirely on the Neural Engine
+- **Storage:** Core Data with CryptoKit encryption — your entries are encrypted at rest
+- **Auth:** LocalAuthentication (Face ID / Touch ID) — no passwords, no accounts
+
+That's 9 Apple frameworks, zero third-party dependencies. The app binary includes nothing except Apple's own APIs.
+
+Apple's App Store privacy label for DailyVox reads: **"Data Not Collected."** Not "Data Linked to You" or "Data Not Linked to You" — literally no data is collected, period.
+
+You can verify this yourself: run Charles Proxy or mitmproxy during a full recording + transcription + analysis session. Zero HTTP requests. Zero DNS lookups that aren't Apple system services. Zero bytes leave the device.
+
+The Digital Twin engine is open source at github.com/intrepidkarthi/dailyvox — you can audit the entire NLP pipeline yourself.
+
+The app is completely free. No subscription, no premium tier. The reason is simple: there are no servers, so there are no costs to recoup.
+
+Ask me anything about the on-device architecture, the encryption model, or the privacy audit process.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('rp-title')">Copy Title</button>
+    <button class="btn-copy" onclick="copyField('rp-body')">Copy Body</button>
+    <button class="btn-copy" onclick="copyAll('rp-title','rp-body')">Copy All</button>
+    <a class="btn-open" href="https://www.reddit.com/r/privacytoolsIO/submit" target="_blank">Open r/privacytoolsIO &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 3. Reddit r/ADHD -->
+<!-- ============================================ -->
+<div class="card" id="reddit-adhd">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🧠</span> Reddit r/ADHD</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-ra-title">0 chars</span>
+      <a class="post-link" href="https://www.reddit.com/r/ADHD/submit" target="_blank">Open r/ADHD &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post Title</div>
+  <textarea id="ra-title" rows="1" readonly>Voice journaling changed everything for me — 42 seconds, no writing</textarea>
+
+  <div class="field-label">Post Body</div>
+  <textarea id="ra-body" rows="14" readonly>I tried journaling so many times. Bought the nice notebooks, downloaded the apps, set the reminders. Every time, I'd open to a blank page and just... stare. My brain had plenty to say but the act of organizing thoughts into written sentences felt like pushing a boulder uphill.
+
+Then I tried talking instead of writing. Just opened my phone and rambled about my day for less than a minute. No structure, no prompts, just whatever came out.
+
+It turns out speaking is fundamentally different from writing when it comes to executive function. You talk at about 150 words per minute vs. 40 when typing. There's no blank page. No backspacing. No perfectionism loop. You just... go.
+
+I ended up building an app around this idea called DailyVox. You tap the mic, talk for 42 seconds (or however long you want), and it transcribes and processes everything right on your phone. It tracks your mood over time and finds patterns you might not notice yourself.
+
+The whole thing works offline and it's free — no subscription, no account needed. I just wanted something that removed every possible barrier between "I should journal" and actually doing it.
+
+If writing has never worked for you, maybe talking will. It genuinely surprised me how different it felt.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('ra-title')">Copy Title</button>
+    <button class="btn-copy" onclick="copyField('ra-body')">Copy Body</button>
+    <button class="btn-copy" onclick="copyAll('ra-title','ra-body')">Copy All</button>
+    <a class="btn-open" href="https://www.reddit.com/r/ADHD/submit" target="_blank">Open r/ADHD &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 4. Reddit r/iphone -->
+<!-- ============================================ -->
+<div class="card" id="reddit-iphone">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">📱</span> Reddit r/iphone</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-ri-title">0 chars</span>
+      <a class="post-link" href="https://www.reddit.com/r/iphone/submit" target="_blank">Open r/iphone &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post Title</div>
+  <textarea id="ri-title" rows="1" readonly>Free journal app with on-device AI — no subscription, no catch</textarea>
+
+  <div class="field-label">Post Body</div>
+  <textarea id="ri-body" rows="14" readonly>I built a voice journal app called DailyVox that's genuinely free — every feature, no subscription, no premium tier, no "free trial." I wanted to share it here because it's built to be a proper native iOS app, not a web wrapper.
+
+What's under the hood:
+
+- **Native SwiftUI** — no React Native, no Flutter, no web views
+- **9 Apple frameworks:** SFSpeechRecognizer, NLTagger, CoreML, Core Data, CryptoKit, LocalAuthentication, WidgetKit, SiriKit, and Natural Language
+- **Zero third-party dependencies** — the entire app runs on Apple's own APIs
+- **Home screen widgets** for journaling streaks and mood trends
+- **Siri Shortcuts** — "Hey Siri, start my journal"
+- **Face ID / Touch ID** lock
+
+The app does voice journaling with on-device AI. You talk for 42 seconds, it transcribes and analyzes everything locally. Over time it builds a Digital Twin — a personality model that learns your patterns and can answer questions about your habits and emotions.
+
+Why free? No servers means no costs. Everything runs on your phone. Apple's privacy label says "Data Not Collected."
+
+I've been using it daily for months and it's become part of my routine. If you're looking for a journal app that respects your phone and your wallet, give it a look.
+
+App Store: https://apps.apple.com/app/dailyvox-voice-journal/id6740076612</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('ri-title')">Copy Title</button>
+    <button class="btn-copy" onclick="copyField('ri-body')">Copy Body</button>
+    <button class="btn-copy" onclick="copyAll('ri-title','ri-body')">Copy All</button>
+    <a class="btn-open" href="https://www.reddit.com/r/iphone/submit" target="_blank">Open r/iphone &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 5. Twitter/X Thread -->
+<!-- ============================================ -->
+<div class="card" id="twitter">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🐦</span> Twitter/X Thread</div>
+    <div class="card-meta">
+      <a class="post-link" href="https://twitter.com/compose/tweet" target="_blank">Open Twitter &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Thread (5 tweets) &mdash; copy each individually</div>
+
+  <div class="thread-block">
+    <div class="tweet-item">
+      <div class="tweet-number">1</div>
+      <div class="tweet-text" id="tw1">I wrote a diary for 20 years. Then I couldn't anymore. So I stopped writing — and started talking. That's how @DailyVoxApp was born. 🧵</div>
+      <div class="tweet-chars" id="tw1-chars"></div>
+    </div>
+    <div class="tweet-item">
+      <div class="tweet-number">2</div>
+      <div class="tweet-text" id="tw2">DailyVox is a voice journal with a Digital Twin that lives on your phone. Speak for 42 seconds. Your Twin learns your personality, predicts your mood, and answers questions about your patterns. All on-device. Zero cloud.</div>
+      <div class="tweet-chars" id="tw2-chars"></div>
+    </div>
+    <div class="tweet-item">
+      <div class="tweet-number">3</div>
+      <div class="tweet-text" id="tw3">The privacy model: There are no servers. No accounts. No analytics. Apple's privacy label: "Data Not Collected." You can verify this yourself — run a network proxy during a recording. Zero bytes leave the device.</div>
+      <div class="tweet-chars" id="tw3-chars"></div>
+    </div>
+    <div class="tweet-item">
+      <div class="tweet-number">4</div>
+      <div class="tweet-text" id="tw4">It's free. Not freemium. Not "free trial." Free, every feature, forever. Open source: github.com/intrepidkarthi/dailyvox</div>
+      <div class="tweet-chars" id="tw4-chars"></div>
+    </div>
+    <div class="tweet-item">
+      <div class="tweet-number">5</div>
+      <div class="tweet-text" id="tw5">If you've ever wanted to journal but hate writing — try talking for 42 seconds. That's it. The answer to life, the universe, and everything.
+
+https://apps.apple.com/app/dailyvox-voice-journal/id6740076612</div>
+      <div class="tweet-chars" id="tw5-chars"></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyTweet('tw1')">Copy 1</button>
+    <button class="btn-copy" onclick="copyTweet('tw2')">Copy 2</button>
+    <button class="btn-copy" onclick="copyTweet('tw3')">Copy 3</button>
+    <button class="btn-copy" onclick="copyTweet('tw4')">Copy 4</button>
+    <button class="btn-copy" onclick="copyTweet('tw5')">Copy 5</button>
+    <button class="btn-copy" onclick="copyAllTweets()">Copy Entire Thread</button>
+    <a class="btn-open" href="https://twitter.com/compose/tweet" target="_blank">Open Twitter &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 6. LinkedIn -->
+<!-- ============================================ -->
+<div class="card" id="linkedin">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">💼</span> LinkedIn</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-li-body">0 chars</span>
+      <a class="post-link" href="https://www.linkedin.com/feed/?shareActive=true" target="_blank">Open LinkedIn &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post</div>
+  <textarea id="li-body" rows="26" readonly>20 years ago, I started writing a diary. I was 15. Every night — paper notebook, black pen, just getting the day out of my head. It became the most consistent habit of my life. Thousands of pages across two decades.
+
+Then, gradually, I couldn't do it anymore. The blank page that once felt inviting started feeling like a wall. My hand hurt. My brain was tired. I stopped journaling for months.
+
+But I noticed something: I still processed my day out loud. Talking to myself in the car, narrating my thoughts on a walk. The instinct to reflect was still there — just not in written form.
+
+So I started an experiment: what if I just... talked into my phone for a minute before bed? No structure, no prompts. Just whatever came out.
+
+42 seconds. That's all it took to feel like I'd journaled.
+
+That experiment became DailyVox — a voice journal app with an on-device AI that I've been building for the past year.
+
+Here's what makes it different: everything runs on your phone. There are no servers. No cloud. No account. Apple's privacy label literally says "Data Not Collected." The AI — speech recognition, natural language processing, sentiment analysis, personality modeling — all runs locally using Apple's own frameworks.
+
+The feature I'm most proud of is the Digital Twin. As you journal over time, the app builds a model of your personality — your emotional patterns, your recurring themes, your speaking style. You can ask your Twin questions: "What's been stressing me out?" or "When am I most creative?" It's like having a conversation with a version of yourself that remembers everything.
+
+DailyVox is completely free. Not freemium. Not a free trial. Every feature, forever. The reason is simple: no servers means no infrastructure costs. I built this because I needed it, and I want other people to have it too.
+
+The Digital Twin engine is open source at github.com/intrepidkarthi/dailyvox because I believe your most personal data deserves auditable code.
+
+If you've ever wanted to journal but couldn't stick with writing, try talking. 42 seconds before bed. You might be surprised how natural it feels.
+
+https://apps.apple.com/app/dailyvox-voice-journal/id6740076612
+
+#journaling #voiceai #privacy #ondeviceai #ios #mentalhealth #opensource</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('li-body')">Copy Post</button>
+    <a class="btn-open" href="https://www.linkedin.com/feed/?shareActive=true" target="_blank">Open LinkedIn &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 7. Hacker News -->
+<!-- ============================================ -->
+<div class="card" id="hackernews">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🟧</span> Hacker News — Show HN</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-hn-title">0 chars</span>
+      <a class="post-link" href="https://news.ycombinator.com/submit" target="_blank">Open HN Submit &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Post Title</div>
+  <textarea id="hn-title" rows="1" readonly>Show HN: DailyVox – Free voice journal with on-device Digital Twin (no cloud, open source)</textarea>
+
+  <div class="field-label">Post Body (paste in the "text" field)</div>
+  <textarea id="hn-body" rows="14" readonly>DailyVox is a voice journal for iOS with an on-device AI that builds a "Digital Twin" of your personality. You speak for 42 seconds, the app transcribes, analyzes sentiment, extracts themes, and updates your personality model — all locally.
+
+Technical stack — 9 Apple frameworks, zero third-party dependencies:
+
+- SFSpeechRecognizer (on-device speech-to-text)
+- NLTagger + Natural Language (tokenization, NER, sentiment)
+- CoreML (personality model with 4 sub-models: emotional patterns, topic clustering, temporal rhythms, linguistic style)
+- Core Data + CryptoKit (encrypted local storage)
+- LocalAuthentication (Face ID / Touch ID)
+- WidgetKit, SiriKit
+
+Zero network calls. No backend. No analytics. Apple's privacy label: "Data Not Collected." Verifiable with mitmproxy — zero HTTP requests during a full session.
+
+The Digital Twin personality model uses a rolling window of journal entries to maintain four sub-models that converge into a unified profile. You can ask your Twin questions in natural language and get answers grounded in your actual journal history.
+
+Free (no servers = no costs). MIT-licensed engine: github.com/intrepidkarthi/DailyVoxTwin
+
+App Store: https://apps.apple.com/app/dailyvox-voice-journal/id6740076612
+
+Happy to discuss the NLP pipeline, the personality modeling approach, or the on-device architecture choices.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('hn-title')">Copy Title</button>
+    <button class="btn-copy" onclick="copyField('hn-body')">Copy Body</button>
+    <button class="btn-copy" onclick="copyAll('hn-title','hn-body')">Copy All</button>
+    <a class="btn-open" href="https://news.ycombinator.com/submit" target="_blank">Open HN Submit &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 8. Product Hunt -->
+<!-- ============================================ -->
+<div class="card" id="producthunt">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🚀</span> Product Hunt</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-ph-tagline">0 chars</span>
+      <a class="post-link" href="https://www.producthunt.com/posts/new" target="_blank">Open PH Submit &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Tagline</div>
+  <textarea id="ph-tagline" rows="1" readonly>The AI journal that never sees your data</textarea>
+
+  <div class="field-label">Description</div>
+  <textarea id="ph-body" rows="18" readonly>DailyVox is a voice journal with on-device AI and a Digital Twin that learns your personality — without ever sending a byte of data to the cloud.
+
+How it works: Open the app, tap the mic, and talk about your day. 42 seconds is all it takes. DailyVox transcribes your voice, analyzes your sentiment, extracts key themes, and updates your personal Digital Twin — all running locally on your iPhone.
+
+Your Digital Twin is a personality model that evolves with every journal entry. It tracks your emotional patterns, recurring topics, speaking style, and temporal rhythms. Over time, you can ask your Twin questions like "What makes me happiest?" or "What's been weighing on me?" and get answers grounded in your actual journal history.
+
+Share your personality insights with beautiful, shareable personality cards — a snapshot of who you are, generated from your own words.
+
+The privacy model is simple: there are no servers. No backend. No accounts. No analytics SDKs. No third-party dependencies. Apple's App Store privacy label says "Data Not Collected" — and you can verify this yourself with a network proxy. Zero requests leave the device during a recording session.
+
+DailyVox is 100% free. Not freemium. Not a free trial. Every feature, forever, at no cost. The reason: no servers means no infrastructure costs. This app was built by a 20-year diary writer who couldn't write anymore and discovered that 42 seconds of talking could replace 15 minutes of writing.
+
+Built with 9 Apple frameworks and zero third-party dependencies. The Digital Twin engine is open source at github.com/intrepidkarthi/dailyvox.
+
+If you've ever wanted to journal but couldn't stick with it — try talking. 42 seconds. That's it.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('ph-tagline')">Copy Tagline</button>
+    <button class="btn-copy" onclick="copyField('ph-body')">Copy Description</button>
+    <button class="btn-copy" onclick="copyAll('ph-tagline','ph-body')">Copy All</button>
+    <a class="btn-open" href="https://www.producthunt.com/posts/new" target="_blank">Open PH Submit &rarr;</a>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<!-- 9. AlternativeTo -->
+<!-- ============================================ -->
+<div class="card" id="alternativeto">
+  <div class="card-header">
+    <div class="card-title"><span class="emoji">🔄</span> AlternativeTo</div>
+    <div class="card-meta">
+      <span class="char-count" id="count-at-body">0 chars</span>
+      <a class="post-link" href="https://alternativeto.net/manage-app/" target="_blank">Open AlternativeTo &rarr;</a>
+    </div>
+  </div>
+
+  <div class="field-label">Description (alternative to Day One, Reflectly, Rosebud, Apple Journal)</div>
+  <textarea id="at-body" rows="10" readonly>DailyVox is a free voice journal for iOS with on-device AI and a Digital Twin personality model. Speak for 42 seconds, and the app transcribes, analyzes sentiment, extracts themes, and builds a personality profile — all running locally on your iPhone with zero data collection.
+
+Unlike cloud-based journal apps, DailyVox has no servers, no accounts, and no third-party dependencies. Apple's App Store privacy label reads "Data Not Collected." Everything — speech recognition, NLP, personality modeling — runs on-device using 9 Apple frameworks.
+
+Your Digital Twin learns your emotional patterns and can answer questions about your habits and moods. Features include mood tracking, home screen widgets, Siri Shortcuts, Face ID lock, shareable personality cards, and full offline support.
+
+Completely free forever — no subscription, no premium tier, no in-app purchases. Open source engine at github.com/intrepidkarthi/dailyvox.</textarea>
+
+  <div class="btn-row">
+    <button class="btn-copy" onclick="copyField('at-body')">Copy Description</button>
+    <a class="btn-open" href="https://alternativeto.net/manage-app/" target="_blank">Open AlternativeTo &rarr;</a>
+  </div>
+</div>
+
+<footer>
+  DailyVox Distribution Dashboard &mdash; local tool, not published
+</footer>
+
+<script>
+  // --- Copy functions ---
+  function copyField(id) {
+    const el = document.getElementById(id);
+    const text = el.value || el.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied(event.target);
+    });
+  }
+
+  function copyAll(titleId, bodyId) {
+    const title = document.getElementById(titleId).value;
+    const body = document.getElementById(bodyId).value;
+    const combined = title + '\n\n' + body;
+    navigator.clipboard.writeText(combined).then(() => {
+      showCopied(event.target);
+    });
+  }
+
+  function copyTweet(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied(event.target);
+    });
+  }
+
+  function copyAllTweets() {
+    const tweets = [];
+    for (let i = 1; i <= 5; i++) {
+      tweets.push(document.getElementById('tw' + i).textContent);
+    }
+    const thread = tweets.join('\n\n---\n\n');
+    navigator.clipboard.writeText(thread).then(() => {
+      showCopied(event.target);
+    });
+  }
+
+  function showCopied(btn) {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
+  // --- Character counts ---
+  function updateCharCounts() {
+    const fields = [
+      ['rj-title', 'count-rj-title'],
+      ['rj-body', null],
+      ['rp-title', 'count-rp-title'],
+      ['rp-body', null],
+      ['ra-title', 'count-ra-title'],
+      ['ra-body', null],
+      ['ri-title', 'count-ri-title'],
+      ['ri-body', null],
+      ['li-body', 'count-li-body'],
+      ['hn-title', 'count-hn-title'],
+      ['hn-body', null],
+      ['ph-tagline', 'count-ph-tagline'],
+      ['ph-body', null],
+      ['at-body', 'count-at-body'],
+    ];
+
+    fields.forEach(([fieldId, countId]) => {
+      const el = document.getElementById(fieldId);
+      if (!el) return;
+      const len = el.value.length;
+      if (countId) {
+        document.getElementById(countId).textContent = len + ' chars';
+      }
+    });
+
+    // Tweet char counts
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('tw' + i);
+      const counter = document.getElementById('tw' + i + '-chars');
+      if (el && counter) {
+        const len = el.textContent.length;
+        counter.textContent = len + ' / 280 chars' + (len > 280 ? ' ⚠️ OVER LIMIT' : '');
+        counter.style.color = len > 280 ? '#f85149' : '#8b949e';
+      }
+    }
+  }
+
+  // --- Progress tracker ---
+  function updateProgress(checkbox) {
+    const label = checkbox.closest('.progress-item');
+    if (checkbox.checked) {
+      label.classList.add('done');
+    } else {
+      label.classList.remove('done');
+    }
+    const total = document.querySelectorAll('.progress-item input[type="checkbox"]').length;
+    const checked = document.querySelectorAll('.progress-item input[type="checkbox"]:checked').length;
+    document.getElementById('progressCounter').textContent = checked + ' / ' + total + ' done';
+
+    // Save to localStorage
+    saveProgress();
+  }
+
+  function saveProgress() {
+    const state = {};
+    document.querySelectorAll('.progress-item').forEach(item => {
+      const key = item.dataset.platform;
+      state[key] = item.querySelector('input').checked;
+    });
+    localStorage.setItem('dvox-dist-progress', JSON.stringify(state));
+  }
+
+  function loadProgress() {
+    try {
+      const state = JSON.parse(localStorage.getItem('dvox-dist-progress'));
+      if (!state) return;
+      document.querySelectorAll('.progress-item').forEach(item => {
+        const key = item.dataset.platform;
+        if (state[key]) {
+          item.querySelector('input').checked = true;
+          item.classList.add('done');
+        }
+      });
+      const total = document.querySelectorAll('.progress-item input[type="checkbox"]').length;
+      const checked = document.querySelectorAll('.progress-item input[type="checkbox"]:checked').length;
+      document.getElementById('progressCounter').textContent = checked + ' / ' + total + ' done';
+    } catch (e) {}
+  }
+
+  // Init
+  updateCharCounts();
+  loadProgress();
+</script>
+</body>
+</html>
