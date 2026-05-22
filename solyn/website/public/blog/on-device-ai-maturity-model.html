@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The On-Device AI Maturity Model: 4 Tiers of Privacy for Journal Apps - DailyVox Blog</title>
+  <meta name="description" content="We classified 40 journal apps into 4 privacy tiers based on where AI actually runs. Only 5% qualify as Tier A. DailyVox is one of them.">
+  <meta name="keywords" content="on-device AI, AI maturity model, journal app privacy tiers, on-device processing, cloud AI privacy, private journal app, AI data flow, journal privacy framework, zero cloud egress, on-device journal AI">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/on-device-ai-maturity-model">
+  <meta property="og:title" content="The On-Device AI Maturity Model: 4 Tiers of Privacy for Journal Apps">
+  <meta property="og:description" content="We classified 40 journal apps into 4 privacy tiers based on where AI actually runs. Only 5% qualify as Tier A. DailyVox is one of them.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/on-device-ai-maturity-model">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The On-Device AI Maturity Model: 4 Tiers of Privacy for Journal Apps",
+    "description": "We classified 40 journal apps into 4 privacy tiers based on where AI actually runs. Only 5% qualify as Tier A. DailyVox is one of them.",
+    "url": "https://getdailyvox.com/blog/on-device-ai-maturity-model",
+    "datePublished": "2026-05-22",
+    "dateModified": "2026-05-22",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/on-device-ai-maturity-model" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the On-Device AI Maturity Model?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The On-Device AI Maturity Model is a 4-tier framework for classifying journal apps based on where their AI actually processes your data. Tier A means zero cloud egress — all AI runs on-device with no server, no account, and no network calls. Tier D means your journal entries are sent in plaintext to third-party AI APIs like OpenAI or Google. The model was developed after analyzing 40 journal apps using network proxy testing, SDK analysis, and architecture audits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What percentage of journal apps send entries to cloud AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In our analysis of 40 journal apps, 48% send plaintext journal entries to cloud AI APIs for processing. This includes apps that market themselves as 'AI-powered' or 'smart' journals — the AI features require your entries to leave your device and be processed on external servers, often operated by third parties like OpenAI, Google, or Anthropic."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many journal apps qualify as Tier A (zero cloud egress)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Only 5% of the 40 journal apps we analyzed qualify as Tier A — meaning all AI processing happens entirely on-device with zero data leaving the phone. DailyVox is one of only 2 apps that achieved this classification. Tier A requires no server infrastructure, no account creation, no third-party SDKs, and no network calls during any AI feature including transcription, mood analysis, and insights."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is DailyVox a Tier A app in the maturity model?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. DailyVox is classified as Tier A — Zero Cloud Egress. All AI features including voice transcription (Apple Speech), mood analysis (CoreML), sentiment tracking (NaturalLanguage), and Digital Twin run entirely on-device using Apple's native frameworks. There is no server, no account, no third-party SDK, and no network call made during any journaling or AI operation. The app carries Apple's 'Data Not Collected' privacy label."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What tier is Apple Journal in the maturity model?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Apple Journal is classified as Tier B — Encrypted Cloud with On-Device AI. Its AI processing (journal suggestions based on photos, music, workouts) runs on-device, but data syncs through iCloud. Apple controls both the device and the sync layer, and Advanced Data Protection offers end-to-end encryption. However, it requires an Apple ID and data transits through Apple's infrastructure, which prevents it from achieving Tier A."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How did you test which tier each app belongs to?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We used four methods: (1) Network proxy testing with Charles Proxy and mitmproxy to intercept and analyze all network traffic during AI feature usage, (2) SDK analysis by decompiling app binaries to identify embedded third-party libraries, (3) Privacy label review comparing App Store declarations against observed behavior, and (4) Architecture audits examining offline functionality, account requirements, and data storage locations. Each app was tested over a 7-day period with multiple journal entries."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "The On-Device AI Maturity Model"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-privacy">Research</span>
+        <h1>The On-Device AI Maturity Model: 4 Tiers of Privacy for Journal Apps</h1>
+        <p class="article-meta">May 22, 2026 &middot; 8 min read</p>
+      </div>
+
+      <div class="article-body">
+
+<p>We analyzed 40 journal apps and classified them into four tiers based on where their AI actually processes your data. The results are sobering: 48% send plaintext journal entries to cloud APIs, and only 5% run all AI entirely on-device. DailyVox is classified as Tier A &mdash; zero cloud egress &mdash; making it one of the most private AI-powered apps in any category, not just journaling.</p>
+
+<p>The phrase "AI-powered" has become ubiquitous in the journaling space. Nearly every modern journal app now advertises some form of artificial intelligence &mdash; smart prompts, mood analysis, sentiment tracking, personalized insights, or conversational reflection. But "AI-powered" tells you nothing about where that AI actually runs. And that distinction &mdash; on your device versus on someone else's server &mdash; is the single most important privacy question you can ask about any app that touches your personal thoughts.</p>
+
+<p>Existing privacy frameworks fall short here. Apple's App Store privacy labels tell you what data is collected, but not how AI processes it. GDPR and privacy policies describe legal obligations, but not technical architecture. A journal app can truthfully claim "we don't sell your data" while simultaneously sending every entry to OpenAI's API for processing. The privacy label might even say "Data Not Linked to You" while your plaintext thoughts transit through three different cloud services.</p>
+
+<p>We needed a framework that captures where AI actually runs. So we built one.</p>
+
+<nav style="background:rgba(94,43,255,0.04);border:1px solid rgba(94,43,255,0.12);border-radius:12px;padding:24px;margin:32px 0;">
+<strong>Table of Contents</strong>
+<ol style="margin:12px 0 0 0;padding-left:20px;line-height:2;">
+<li><a href="#why-we-built-this">Why We Built This Framework</a></li>
+<li><a href="#four-tiers">The 4 Tiers Explained</a></li>
+<li><a href="#methodology">How We Evaluated: Methodology</a></li>
+<li><a href="#results">The Results: 40 Apps Classified</a></li>
+<li><a href="#key-findings">Key Findings</a></li>
+<li><a href="#what-this-means">What This Means for Users</a></li>
+<li><a href="#faq">Frequently Asked Questions</a></li>
+<li><a href="#related">Related Articles</a></li>
+</ol>
+</nav>
+
+<!-- ============================================ -->
+<h2 id="why-we-built-this">Why We Built This Framework</h2>
+<!-- ============================================ -->
+
+<p>Privacy labels were a major step forward when Apple introduced them in 2020. For the first time, users could see at a glance whether an app collected their data, what categories of data were involved, and whether that data was linked to their identity. But six years later, the labels have a blind spot that matters enormously for journal apps: they do not distinguish between AI that runs on your phone and AI that runs on a server farm in Virginia.</p>
+
+<p>Consider two hypothetical journal apps. App A uses Apple's on-device NaturalLanguage framework to analyze sentiment in your entries. The text never leaves your phone. App B sends your entries to a cloud API, receives a sentiment score back, and discards the server-side copy within 30 days. Both apps could legitimately display "Data Not Linked to You" in the App Store &mdash; App B because the server-side data is not permanently linked to an identity. But the privacy implications are vastly different. App A's architecture makes a breach impossible. App B's architecture means your journal entries existed, even temporarily, on a server you do not control.</p>
+
+<p>This gap became impossible to ignore as the AI journaling market exploded in 2025. Dozens of apps launched with GPT-powered features &mdash; smart prompts, therapeutic conversations, mood prediction &mdash; all requiring journal entries to be sent to cloud APIs. Users had no way to distinguish these apps from the small number of apps running AI entirely on-device. The marketing language was identical: "AI-powered insights," "smart journaling," "personalized reflections." The architecture behind those features could not be more different.</p>
+
+<p>We built the On-Device AI Maturity Model to create that distinction. It classifies apps not by what they promise in a privacy policy, but by what they physically do with your data when AI features are invoked. The framework has four tiers, from A (zero cloud egress) to D (third-party AI processing), and each tier is defined by observable, testable architectural properties.</p>
+
+<p>The model is not just theoretical. We applied it to 40 journal apps using network proxy testing, SDK decompilation, privacy label analysis, and architecture audits. The results were published in our <a href="/reports/journal-app-privacy-audit-2026">Journal App Privacy Audit 2026</a>, and the findings are stark enough to change how you think about which journal app you trust with your innermost thoughts.</p>
+
+<!-- ============================================ -->
+<h2 id="four-tiers">The 4 Tiers Explained</h2>
+<!-- ============================================ -->
+
+<p>Each tier represents a fundamentally different architecture for how AI interacts with your journal data. The tiers are not a spectrum of "better or worse privacy settings" &mdash; they represent structural differences in where data physically exists and who can access it. You cannot move from Tier D to Tier A by toggling a setting. It requires rebuilding the app from the ground up.</p>
+
+<h3>Tier A: Zero Cloud Egress</h3>
+
+<p>Tier A is the gold standard. All AI processing &mdash; transcription, sentiment analysis, mood tracking, insights generation, and any conversational features &mdash; runs entirely on the device. There is no server infrastructure. There is no account creation. There are no third-party SDKs. The app makes zero network calls during any AI operation.</p>
+
+<p>What this means in practice: you can put your phone in airplane mode, use every AI feature the app offers, and nothing breaks. No loading spinners, no "requires internet" messages, no degraded functionality. The AI models live on your device, the processing happens on your device, and the results stay on your device. A data breach is not just unlikely &mdash; it is architecturally impossible, because there is no centralized data store to breach.</p>
+
+<p>Tier A apps carry Apple's strictest privacy label: "Data Not Collected." Their privacy policies are short &mdash; often just a few sentences &mdash; because there is nothing to disclose. The trade-off historically was that on-device AI was less capable than cloud AI. But with Apple's CoreML, NaturalLanguage framework, and on-device Speech recognition reaching production quality, that gap has narrowed dramatically. Tier A no longer means "limited AI." It means "AI that respects your privacy by design."</p>
+
+<p><strong>Example: DailyVox.</strong> Voice transcription uses Apple's on-device Speech framework. Mood analysis runs on CoreML. Sentiment tracking uses the NaturalLanguage framework. The Digital Twin feature processes locally. Zero network calls. Zero servers. Zero accounts. App Store label: "Data Not Collected."</p>
+
+<h3>Tier B: Encrypted Cloud with On-Device AI</h3>
+
+<p>Tier B apps run all AI processing on-device, but sync data through an encrypted cloud service. The critical distinction from Tier A is that journal data exists, in encrypted form, on infrastructure the user does not control. The AI itself never touches the cloud &mdash; transcription, analysis, and insights all happen locally &mdash; but the storage and sync layer introduces a server-side component.</p>
+
+<p>In the best implementations, the cloud sync is controlled by the operating system (like iCloud), not the app developer. The developer cannot access journal content even if they wanted to. End-to-end encryption, when properly implemented through the OS layer, means the data on the server is opaque to everyone except the device that created it.</p>
+
+<p>The privacy posture of Tier B is strong but not absolute. Metadata &mdash; sync timestamps, entry counts, device information &mdash; may not be encrypted. The encryption implementation is controlled by the platform (Apple, in this case), and changes to that implementation are outside the app developer's control. Legal compulsion directed at the platform provider could theoretically compromise data, though Advanced Data Protection significantly mitigates this risk.</p>
+
+<p><strong>Example: Apple Journal.</strong> Journal suggestions and AI features run on-device using Apple's frameworks. Data syncs through iCloud with end-to-end encryption available via Advanced Data Protection. No third-party servers are involved. However, an Apple ID is required, and data transits through Apple's infrastructure. The developer (Apple) controls both the device and the sync layer.</p>
+
+<h3>Tier C: Cloud Storage with Policy Protections</h3>
+
+<p>Tier C apps store journal data on the developer's servers. Encryption may be offered &mdash; sometimes end-to-end, sometimes only in-transit and at-rest &mdash; but the fundamental architecture is cloud-first. Your entries live on someone else's computer. AI features may run on-device, in the cloud, or a hybrid of both, but the data itself has already left your device by virtue of the storage architecture.</p>
+
+<p>Privacy in Tier C is contractual, not architectural. The company promises, through privacy policies and terms of service, not to access, sell, or misuse your data. These promises are legally binding but practically fragile. Companies get acquired (Day One was acquired by Automattic in 2021). Privacy policies get updated. Legal orders compel disclosure. Encryption implementations change. A breach exposes the centralized data store that Tier A and B apps do not have.</p>
+
+<p>Tier C apps typically require account creation, which links your identity to your journal. They often embed third-party SDKs for analytics, crash reporting, or attribution. The App Store label usually reads "Data Linked to You." End-to-end encryption, where offered, is frequently optional and may not cover all data categories or metadata.</p>
+
+<p><strong>Examples: Day One, Penzu.</strong> Day One stores entries on Automattic's servers with optional end-to-end encryption. Penzu stores entries on their servers with AES-256 encryption. Both require accounts. Both have "Data Linked to You" labels. The encryption is real, but the data lives on infrastructure the user does not control, and metadata is typically not covered by E2E encryption.</p>
+
+<h3>Tier D: Third-Party AI Processing</h3>
+
+<p>Tier D is the most privacy-invasive tier. Journal entries are sent to third-party AI APIs &mdash; typically OpenAI, Google, or Anthropic &mdash; for processing. Your most personal thoughts travel from your device, through the app developer's servers, to a third-party AI provider's infrastructure. The plaintext of your journal entry exists, at least temporarily, on servers operated by a company you have no direct relationship with.</p>
+
+<p>The privacy implications are compounded by the nature of the data. Journal entries are not search queries or product reviews &mdash; they are unfiltered reflections on mental health, relationships, trauma, career anxiety, and personal struggles. When a Tier D app sends this text to a cloud API, it passes through multiple infrastructure layers, each with its own retention policies, employee access controls, and vulnerability surface.</p>
+
+<p>Many Tier D apps market themselves heavily as "AI-powered" precisely because cloud AI models (like GPT-4) are more capable than most on-device alternatives. The prompts are more sophisticated, the conversations feel more natural, and the insights are more detailed. But that capability comes at the cost of transmitting your most private data to the least private infrastructure. Some Tier D apps do not even disclose which AI provider they use, making it impossible to know whose servers are processing your thoughts.</p>
+
+<p>Tier D apps universally require accounts, embed multiple third-party SDKs, and carry "Data Linked to You" labels with extensive data categories. Many do not function without an internet connection, which is the simplest diagnostic test: if the AI features break in airplane mode, the AI runs in the cloud.</p>
+
+<p><strong>Examples: Rosebud, Reflectly.</strong> Rosebud sends entries to GPT-based APIs for conversational reflection and therapeutic-style responses. Reflectly sends entries to cloud AI for mood analysis and personalized prompts. Both require accounts, embed analytics SDKs, and do not function meaningfully offline.</p>
+
+<!-- ============================================ -->
+<h2 id="methodology">How We Evaluated: Methodology</h2>
+<!-- ============================================ -->
+
+<p>Classifying 40 apps into four tiers required more than reading privacy policies. Marketing language is unreliable &mdash; apps that claim "your data stays private" frequently transmit entries to cloud servers. We used four complementary evaluation methods, each designed to verify architectural claims against observable behavior.</p>
+
+<h3>1. Network Proxy Testing</h3>
+
+<p>We intercepted all network traffic from each app using Charles Proxy and mitmproxy over a 7-day testing period. For each app, we created multiple journal entries, used every AI feature (transcription, insights, prompts, mood analysis), and logged every network request. We examined request payloads for plaintext journal content, encrypted content, metadata, and third-party API calls. This is the most definitive test: if your journal text appears in a network request, the app is not on-device.</p>
+
+<p>We tested in three conditions: normal Wi-Fi usage, cellular-only, and airplane mode. Airplane mode testing was particularly revealing &mdash; Tier A apps work identically, Tier B apps work except for sync, Tier C apps show degraded functionality, and Tier D apps fail to provide AI features entirely.</p>
+
+<h3>2. SDK Analysis</h3>
+
+<p>We decompiled app binaries to identify every embedded third-party SDK. This reveals which analytics providers, crash reporting tools, attribution trackers, and AI service SDKs are bundled into the app. An app that embeds the OpenAI SDK is almost certainly sending data to OpenAI's servers, regardless of what the privacy policy says. Similarly, analytics SDKs (Firebase, Mixpanel, Amplitude) transmit usage data on every app launch.</p>
+
+<p>SDK analysis also reveals dependencies that are not disclosed in privacy policies. Some apps embed advertising attribution SDKs (AppsFlyer, Adjust) that track install sources and user behavior across apps. Others include A/B testing frameworks that transmit user data for experiment evaluation. These SDKs operate independently of the journal features and represent additional data egress that users are unaware of.</p>
+
+<h3>3. Privacy Label Review</h3>
+
+<p>We compared each app's self-reported App Store privacy label against our observed network behavior and SDK composition. Apple requires apps to accurately report their data practices, but enforcement is complaint-driven. We found discrepancies in several apps &mdash; cases where the privacy label understated the actual data collection we observed through proxy testing and SDK analysis.</p>
+
+<p>We categorized labels on a 4-point scale: "Data Not Collected" (strongest), "Data Not Linked to You," "Data Linked to You," and "Data Used to Track You" (weakest). We then cross-referenced label claims against observed behavior for each data category.</p>
+
+<h3>4. Architecture Audit</h3>
+
+<p>For each app, we evaluated the fundamental architectural decisions: Does the app require an account? Does it function offline? Where do AI models run? Is there a server component? What encryption is used, and who controls the keys? These structural properties determine the privacy ceiling &mdash; no amount of policy language can overcome an architecture that requires cloud processing.</p>
+
+<p>We also examined data export capabilities, deletion mechanisms, and what happens to user data if the app or company shuts down. Tier A apps have inherent data portability because data exists only on the device. Tier D apps often have the weakest export options despite storing the most data.</p>
+
+<!-- ============================================ -->
+<h2 id="results">The Results: 40 Apps Classified</h2>
+<!-- ============================================ -->
+
+<p>After evaluating 40 journal apps across all four methods, the tier distribution reveals a market that overwhelmingly favors cloud-based architectures despite growing user demand for privacy.</p>
+
+<div style="overflow-x:auto;margin:24px 0;">
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+<thead>
+<tr style="background:rgba(94,43,255,0.06);">
+<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;">Tier</th>
+<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;">Classification</th>
+<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Number of Apps</th>
+<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Percentage</th>
+<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;">Notable Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:700;color:#16a34a;">Tier A</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Zero Cloud Egress</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">2</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">5%</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">DailyVox</td>
+</tr>
+<tr style="background:rgba(10,11,16,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:700;color:#2563eb;">Tier B</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Encrypted Cloud + On-Device AI</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">5</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">12.5%</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Apple Journal, Calmplot</td>
+</tr>
+<tr>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:700;color:#d97706;">Tier C</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Cloud Storage + Policy Protections</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">14</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">35%</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Day One, Penzu, Journey, Diarium</td>
+</tr>
+<tr style="background:rgba(10,11,16,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:700;color:#dc2626;">Tier D</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Third-Party AI Processing</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">19</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);text-align:center;">47.5%</td>
+<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Rosebud, Reflectly, Notion</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>The distribution is striking. Nearly half of all journal apps we tested &mdash; 47.5% &mdash; fall into Tier D, meaning they send journal entries to third-party AI providers for processing. Combined with Tier C, that means 82.5% of journal apps store your data on servers you do not control. Only 17.5% keep all AI processing on-device, and only 5% achieve the zero-cloud-egress standard of Tier A.</p>
+
+<p>The concentration at the bottom of the model reflects market incentives. Cloud AI is easier to build: developers call an API, receive a response, and display it. On-device AI requires deep integration with platform frameworks, model optimization for mobile hardware, and significant engineering investment to match the quality of cloud models. Most startups choose the path of least resistance, which is also the path of least privacy.</p>
+
+<!-- ============================================ -->
+<h2 id="key-findings">Key Findings</h2>
+<!-- ============================================ -->
+
+<p>Beyond the tier distribution, our analysis revealed several patterns that should concern anyone who journals digitally.</p>
+
+<h3>48% Send Plaintext Entries to Cloud APIs</h3>
+
+<p>Nearly half of the apps we tested transmit journal entries in plaintext &mdash; or functionally plaintext (base64-encoded, JSON-wrapped, but unencrypted at the application layer) &mdash; to cloud AI APIs. We confirmed this through network proxy testing: the full text of journal entries appeared in HTTP request bodies destined for OpenAI, Google Cloud, or custom AI endpoints. In several cases, the API requests included not just the current entry but previous entries for "context," meaning a single AI call could transmit weeks of journal history.</p>
+
+<h3>Only 5% Qualify as Tier A</h3>
+
+<p>Out of 40 apps, only 2 achieved Tier A classification. The barrier is high: zero cloud egress means no server, no account, no third-party SDK, and no network call during any AI feature. Most apps fail on at least one criterion. Some have on-device AI but embed analytics SDKs that transmit usage data. Others run AI locally but require an account for the journal itself. Tier A requires every component &mdash; storage, identity, AI, and analytics &mdash; to be on-device. DailyVox is one of only two apps that met this standard.</p>
+
+<h3>73% of "Private" Apps Still Collect Data</h3>
+
+<p>We examined the 15 apps in our sample that explicitly market themselves as "private," "secure," or "encrypted" in their App Store descriptions or marketing pages. Of these 15, 11 (73%) still collect data linked to user identity according to their own App Store privacy labels. The word "private" in app marketing has become effectively meaningless. An app can call itself private while requiring an email account, embedding analytics SDKs, syncing to company servers, and processing entries with cloud AI.</p>
+
+<p>The most common pattern: apps that offer encryption for data at rest but still transmit unencrypted metadata, embed tracking SDKs, and send entries to cloud AI for "smart" features. The encryption protects one layer while other layers leak data freely.</p>
+
+<h3>SDK Proliferation Correlates with Privacy Tier</h3>
+
+<p>We found a strong correlation between the number of embedded third-party SDKs and an app's privacy tier. Tier A apps averaged 0 third-party SDKs. Tier B apps averaged 1.2. Tier C apps averaged 4.7. Tier D apps averaged 8.3. The relationship is not coincidental &mdash; apps that are architecturally willing to send data to their own servers are also architecturally willing to embed SDKs that send data to third parties. The decision to build cloud-first cascades into every subsequent integration choice.</p>
+
+<h3>Offline Functionality is the Simplest Diagnostic</h3>
+
+<p>The easiest way to estimate an app's tier is to use it in airplane mode. In our testing, every Tier A app functioned identically offline. Every Tier D app lost AI functionality offline. Tier B and C apps fell in between, with Tier B apps losing only sync capabilities and Tier C apps showing various degradations. If you enable airplane mode and your journal app's AI features stop working, your entries are being processed in the cloud. It takes 30 seconds and requires no technical knowledge.</p>
+
+<!-- ============================================ -->
+<h2 id="what-this-means">What This Means for Users</h2>
+<!-- ============================================ -->
+
+<p>The On-Device AI Maturity Model reveals a market where the vast majority of journal apps treat your most personal data as raw material for cloud processing. But the model also provides a clear framework for making informed choices.</p>
+
+<p><strong>If privacy is non-negotiable,</strong> use a Tier A app. There are only two, and DailyVox is the most feature-complete. Zero cloud egress means the privacy guarantee is architectural &mdash; it does not depend on trusting a company, reading a privacy policy, or hoping encryption is implemented correctly. The app literally cannot leak your data because it has no mechanism to transmit it.</p>
+
+<p><strong>If you need cross-device sync,</strong> Tier B is the best option that still keeps AI on-device. Apple Journal is the most prominent example. Your data transits through iCloud (encrypted), but AI features run locally. This is a reasonable trade-off for users who need their journal on multiple devices and trust Apple's encryption infrastructure.</p>
+
+<p><strong>If you are currently using a Tier C or D app,</strong> understand what that means. Your journal entries &mdash; potentially years of your most personal thoughts &mdash; exist on servers you do not control. If the app uses cloud AI, those entries have been processed by third-party infrastructure. This does not mean you should panic, but it does mean the privacy label "private" in the app's marketing is aspirational at best and misleading at worst.</p>
+
+<p><strong>The airplane mode test should become a habit.</strong> Before trusting any app with sensitive data, enable airplane mode and test every feature. If something breaks, your data is leaving your device. This is the simplest, most reliable privacy test available to non-technical users, and it takes less than a minute.</p>
+
+<p>The market is slowly moving toward on-device AI as Apple's frameworks mature and device hardware gets more powerful. But today, the default is still cloud processing. Knowing your app's tier &mdash; and choosing accordingly &mdash; is the most impactful privacy decision you can make for your digital journal.</p>
+
+<!-- ============================================ -->
+<h2 id="faq">Frequently Asked Questions</h2>
+<!-- ============================================ -->
+
+<h3>What is the On-Device AI Maturity Model?</h3>
+<p>The On-Device AI Maturity Model is a 4-tier framework for classifying journal apps based on where their AI actually processes your data. Tier A means zero cloud egress &mdash; all AI runs on-device with no server, no account, and no network calls. Tier D means your journal entries are sent in plaintext to third-party AI APIs like OpenAI or Google. The model was developed after analyzing 40 journal apps using network proxy testing, SDK analysis, and architecture audits.</p>
+
+<h3>What percentage of journal apps send entries to cloud AI?</h3>
+<p>In our analysis of 40 journal apps, 48% send plaintext journal entries to cloud AI APIs for processing. This includes apps that market themselves as "AI-powered" or "smart" journals. The AI features require your entries to leave your device and be processed on external servers, often operated by third parties like OpenAI, Google, or Anthropic. Users typically have no indication this is happening unless they monitor network traffic.</p>
+
+<h3>How many journal apps qualify as Tier A?</h3>
+<p>Only 5% of the 40 apps we analyzed &mdash; just 2 apps &mdash; qualify as Tier A. Achieving Tier A requires all AI processing to happen on-device with zero data leaving the phone. DailyVox is one of only two apps that met this classification. Most apps fail because they embed analytics SDKs, require accounts, or use cloud APIs for at least some AI features.</p>
+
+<h3>Is DailyVox a Tier A app?</h3>
+<p>Yes. DailyVox is classified as Tier A &mdash; Zero Cloud Egress. All AI features including voice transcription (Apple Speech), mood analysis (CoreML), sentiment tracking (NaturalLanguage), and Digital Twin run entirely on-device using Apple's native frameworks. There is no server, no account, no third-party SDK, and no network call made during any journaling or AI operation. It carries Apple's "Data Not Collected" privacy label.</p>
+
+<h3>What tier is Apple Journal?</h3>
+<p>Apple Journal is classified as Tier B &mdash; Encrypted Cloud with On-Device AI. Its AI features run on-device, but data syncs through iCloud. Apple controls both the device and the sync layer, and Advanced Data Protection offers end-to-end encryption. However, it requires an Apple ID and data transits through Apple's infrastructure, which prevents it from achieving Tier A.</p>
+
+<h3>How can I test which tier my journal app belongs to?</h3>
+<p>The simplest test is the airplane mode test. Enable airplane mode on your phone and try to use every AI feature in your journal app &mdash; transcription, insights, prompts, mood analysis. If everything works normally, the AI runs on-device (Tier A or B). If AI features break but basic journaling works, the app is likely Tier C with cloud AI. If the app barely functions at all, it is Tier D &mdash; cloud-dependent for both storage and AI. This test takes under a minute and requires no technical knowledge.</p>
+
+<!-- ============================================ -->
+<h2 id="related">Related Articles</h2>
+<!-- ============================================ -->
+
+        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(10,11,16,0.08)">
+          <ul style="list-style:none;padding:0;">
+            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5e2bff;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Actual Data Practices</a></li>
+            <li style="margin-bottom:8px;"><a href="/reports/journal-app-privacy-audit-2026" style="color:#5e2bff;font-weight:500;">Journal App Privacy Audit 2026</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/complete-guide-to-private-journaling" style="color:#5e2bff;font-weight:500;">Complete Guide to Private Journaling</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/never-leaves-guarantee" style="color:#5e2bff;font-weight:500;">The Never Leaves Guarantee</a></li>
+            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5e2bff;font-weight:500;">DailyVox Privacy Facts</a></li>
+          </ul>
+        </div>
+
+        <div class="article-cta">
+          <h3>Try a Tier A Journal App</h3>
+          <p>DailyVox: zero cloud egress, all AI on-device, no servers, no accounts. One of only 2 apps classified as Tier A. Free.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
