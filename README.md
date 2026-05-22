@@ -4,6 +4,8 @@
 [![Platform](https://img.shields.io/badge/Platform-iOS%2017%2B%20%7C%20iPadOS%2017%2B-lightgrey?style=for-the-badge&logo=apple)](https://apps.apple.com/app/id6760454642)
 [![Privacy](https://img.shields.io/badge/Privacy-Data%20Not%20Collected-brightgreen?style=for-the-badge&logo=apple)](https://getdailyvox.com/privacy.html)
 [![Website](https://img.shields.io/badge/Website-getdailyvox.com-blue?style=for-the-badge)](https://getdailyvox.com)
+[![GitHub stars](https://img.shields.io/github/stars/intrepidkarthi/dailyvox?style=for-the-badge&logo=github)](https://github.com/intrepidkarthi/dailyvox/stargazers)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://github.com/intrepidkarthi/dailyvox/blob/main/LICENSE)
 
 DailyVox is a **free voice journal app** for iOS that turns your spoken thoughts into a searchable, AI-powered diary — entirely on your device. No accounts, no cloud servers, no data collection. It is the **private journal app** built for people who value both convenience and privacy.
 
@@ -11,7 +13,7 @@ Speak naturally, and DailyVox transcribes everything offline using Apple's on-de
 
 **Your thoughts never leave your device. Ever.**
 
-[Download DailyVox Free](https://apps.apple.com/app/id6760454642) | [Visit Website](https://getdailyvox.com) | [Read the Blog](https://getdailyvox.com/blog)
+[Download Free](https://apps.apple.com/app/id6760454642) | [Website](https://getdailyvox.com) | [Blog](https://getdailyvox.com/blog) | [Facts & Data](https://getdailyvox.com/facts) | [Press Kit](https://getdailyvox.com/press) | [DailyVoxTwin Engine](https://github.com/intrepidkarthi/DailyVoxTwin)
 
 ---
 
