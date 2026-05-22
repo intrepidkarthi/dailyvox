@@ -28,9 +28,12 @@
   <meta name="twitter:title" content="DailyVox — Your Personal AI, On Your Phone">
   <meta name="twitter:description" content="An on-device voice journal that grows a living model of you.">
   <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://getdailyvox.com/">
   <link rel="icon" href="/app-icon.png">
+  <link rel="icon" type="image/png" sizes="120x120" href="/app-icon.png">
   <link rel="apple-touch-icon" href="/app-icon.png">
+  <link rel="manifest" href="/manifest.json">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2241,7 +2244,7 @@
       line-height: 1.6;
       max-width: 280px;
     }
-    .sf-col h4 {
+    .sf-col h3 {
       font-family: var(--mono); font-size: 10px;
       color: var(--ink-mute); letter-spacing: 0.14em;
       text-transform: uppercase; font-weight: 600;
@@ -2320,6 +2323,174 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
+
+    /* ── How it works — 3-step grid ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      counter-reset: step;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 32px 28px;
+      position: relative;
+      transition: border-color .2s, transform .2s;
+    }
+    .step:hover {
+      border-color: var(--uv-edge);
+      transform: translateY(-2px);
+    }
+    .step-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--uv);
+      letter-spacing: 0.14em;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .step-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r-sm);
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    .step-icon.si-voice { background: var(--uv-wash); color: var(--uv); }
+    .step-icon.si-twin { background: var(--vital-soft); color: var(--vital); }
+    .step-icon.si-insight { background: var(--bio-soft); color: #4c8f1f; }
+    .step h3 {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--ink-dim);
+      line-height: 1.6;
+    }
+    @media (max-width: 768px) {
+      .steps { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    /* ── Why voice — stat cards ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .why-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 32px 28px;
+      transition: border-color .2s, transform .2s;
+    }
+    .why-card:hover {
+      border-color: var(--uv-edge);
+      transform: translateY(-2px);
+    }
+    .why-stat {
+      font-family: var(--display);
+      font-size: clamp(40px, 4vw, 56px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--uv);
+      margin-bottom: 4px;
+    }
+    .why-stat .unit {
+      font-family: var(--mono);
+      font-size: 16px;
+      color: var(--ink-mute);
+      font-weight: 500;
+      margin-left: 4px;
+      letter-spacing: 0;
+    }
+    .why-lbl {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+    .why-card p {
+      font-size: 14px;
+      color: var(--ink-dim);
+      line-height: 1.6;
+    }
+    @media (max-width: 768px) {
+      .why-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* ── FAQ — inline grid ── */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 28px;
+      transition: border-color .2s;
+    }
+    .faq-item:hover {
+      border-color: var(--ink);
+    }
+    .faq-item h3 {
+      font-family: var(--display);
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .faq-item p {
+      font-size: 14px;
+      color: var(--ink-dim);
+      line-height: 1.65;
+    }
+    @media (max-width: 768px) {
+      .faq-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Scroll reveal polish ── */
+    .sec {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .sec.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hero, .privacy, .final { opacity: 1; transform: none; }
+
+    /* Softer section dividers */
+    .sec + .sec::before {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 1px;
+      background: var(--rule-2);
+      margin-bottom: 48px;
+    }
+
   </style>
 </head>
 <body>
@@ -2554,6 +2725,35 @@
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- ═══ HOW IT WORKS — simple 3-step ═══ -->
+    <section class="sec wrap">
+      <div class="sec-head">
+        <div class="sec-tag">how it works</div>
+        <h2 class="sec-title">Three steps. <em>Forty-two</em> seconds.</h2>
+        <p class="sec-sub">No typing. No prompts. No setup. Just speak — and your Twin takes shape.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-icon si-voice">Av</div>
+          <h3>Speak</h3>
+          <p>Tap the mic and talk for 42 seconds. About your day, a feeling, a memory — whatever's on your mind. Your voice is transcribed on-device.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-icon si-twin">Tw</div>
+          <h3>Your Twin learns</h3>
+          <p>Every entry feeds your Digital Twin — a private model of your personality, emotions, and the people and topics in your life. It lives on your phone.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-icon si-insight">In</div>
+          <h3>Patterns emerge</h3>
+          <p>Over days and weeks, your Twin reveals mood trends, predicts emotional shifts, and answers questions about who you are. The longer you journal, the deeper it sees.</p>
+        </div>
       </div>
     </section>
 
@@ -3083,6 +3283,32 @@
       </div>
     </section>
 
+    <!-- ═══ WHY VOICE ═══ -->
+    <section class="sec wrap">
+      <div class="sec-head">
+        <div class="sec-tag">why voice</div>
+        <h2 class="sec-title">Typing <em>filters</em>. Speaking doesn't.</h2>
+        <p class="sec-sub">When you type, you edit. When you speak, you think out loud. Voice journaling captures more of who you actually are — unfiltered, unpolished, real.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-stat">3.8×</div>
+          <div class="why-lbl">faster than typing</div>
+          <p>Speaking at 150 WPM vs typing at 40. More thoughts captured in less time.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-stat">0</div>
+          <div class="why-lbl">blank page anxiety</div>
+          <p>No cursor. No blinking prompt. Just press record and start talking.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-stat">42<span class="unit">sec</span></div>
+          <div class="why-lbl">is all it takes</div>
+          <p>The answer to life, the universe, and everything — and enough for a meaningful entry.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ STACK ═══ -->
     <section class="sec wrap">
       <div class="sec-head">
@@ -3180,17 +3406,18 @@
               <th>Day One</th>
               <th>Reflectly</th>
               <th>Apple Journal</th>
+              <th>Calmplot</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>price</td><td class="us-col"><span class="free-chip">free forever</span></td><td>$34.99/yr</td><td>$59.99/yr</td><td>free</td></tr>
-            <tr><td>voice journaling</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
-            <tr><td>on-device AI</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td>partial</td></tr>
-            <tr><td>Twin · chat + predictions</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
-            <tr><td>works offline</td><td class="us-col"><span class="yes">✓</span></td><td>partial</td><td class="no">—</td><td><span class="yes">✓</span></td></tr>
-            <tr><td>data collected</td><td class="us-col">none</td><td>yes</td><td>yes</td><td>minimal</td></tr>
-            <tr><td>account required</td><td class="us-col">no</td><td>yes</td><td>yes</td><td>no</td></tr>
-            <tr><td>open source</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><td>price</td><td class="us-col"><span class="free-chip">free forever</span></td><td>$34.99/yr</td><td>$59.99/yr</td><td>free</td><td>$5.99/mo</td></tr>
+            <tr><td>voice journaling</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td><span class="yes">✓</span></td></tr>
+            <tr><td>on-device AI</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td>partial</td><td class="no">—</td></tr>
+            <tr><td>Twin · chat + predictions</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+            <tr><td>works offline</td><td class="us-col"><span class="yes">✓</span></td><td>partial</td><td class="no">—</td><td><span class="yes">✓</span></td><td class="no">—</td></tr>
+            <tr><td>data collected</td><td class="us-col">none</td><td>yes</td><td>yes</td><td>minimal</td><td>minimal</td></tr>
+            <tr><td>account required</td><td class="us-col">no</td><td>yes</td><td>yes</td><td>no</td><td>yes</td></tr>
+            <tr><td>open source</td><td class="us-col"><span class="yes">✓</span></td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
           </tbody>
         </table>
       </div>
@@ -3277,6 +3504,40 @@
       </div>
     </section>
 
+    <!-- ═══ FAQ — inline ═══ -->
+    <section class="sec wrap">
+      <div class="sec-head">
+        <div class="sec-tag">common questions</div>
+        <h2 class="sec-title">The <em>honest</em> answers.</h2>
+      </div>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>Is it really free?</h3>
+          <p>Yes. Every feature, forever. No paywall, no premium tier, no "free trial." DailyVox is free and open-source.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Do I need to create an account?</h3>
+          <p>No. No signup, no email, no password. Install and start talking. Your data lives on your device, not on our servers — because we don't have servers.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What happens to my voice recordings?</h3>
+          <p>They're transcribed by Apple's speech engine, on your phone. The audio is stored locally. Nothing is uploaded, ever. Run a network proxy during a recording and see for yourself — zero bytes leave the device.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How is this different from Day One or Apple Journal?</h3>
+          <p>DailyVox is voice-first with an on-device AI that builds a Digital Twin of your personality. Day One is cloud-based and text-focused. Apple Journal has no AI. Neither has a Twin that learns who you are.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What if I miss a day?</h3>
+          <p>Nothing happens. No streaks broken, no guilt trips. Your Twin is patient — it picks up right where you left off.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I export my data?</h3>
+          <p>Yes. PDF, JSON, Markdown, CSV, or AES-256 encrypted backups. Your data is yours — always portable, never locked in.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ FOUNDER ═══ -->
     <section class="sec wrap">
       <div class="sec-head" style="margin-bottom: 32px;">
@@ -3343,7 +3604,7 @@
           install · $0 · no account
         </div>
         <h2>Start <em>talking</em>.<br>Your Twin is listening.</h2>
-        <p>Two minutes a day. No writing. No subscription. No data collection. Your voice, your personality model, your phone.</p>
+        <p>Forty-two seconds a day. No writing. No subscription. No data collection. Your voice, your personality model, your phone.</p>
         <a href="https://apps.apple.com/app/id6760454642" class="btn-primary" style="font-size:14px;padding:16px 26px;">
           Download free on the App Store <span class="arr">→</span>
         </a>
@@ -3362,7 +3623,7 @@
         <p>A personal AI that lives on your phone.<br>Free, open source, private by construction.</p>
       </div>
       <div class="sf-col">
-        <h4>Product</h4>
+        <h3>Product</h3>
         <ul>
           <li><a href="https://apps.apple.com/app/id6760454642">App Store</a></li>
           <li><a href="/technology">Technology</a></li>
@@ -3371,7 +3632,7 @@
         </ul>
       </div>
       <div class="sf-col">
-        <h4>Company</h4>
+        <h3>Company</h3>
         <ul>
           <li><a href="/about">About</a></li>
           <li><a href="/blog">Journal</a></li>
@@ -3380,7 +3641,7 @@
         </ul>
       </div>
       <div class="sf-col">
-        <h4>Legal</h4>
+        <h3>Legal</h3>
         <ul>
           <li><a href="/privacy">Privacy</a></li>
           <li><a href="/glossary">Glossary</a></li>
@@ -3696,6 +3957,20 @@
         }
       }, 6200);
     })();
+  </script>
+
+  <script>
+    // Scroll reveal
+    const secs = document.querySelectorAll('.sec');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    secs.forEach(s => io.observe(s));
   </script>
 </body>
 </html>

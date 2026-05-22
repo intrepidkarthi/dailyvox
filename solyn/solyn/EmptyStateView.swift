@@ -124,7 +124,7 @@ struct WelcomeCard: View {
 
             // Features list
             VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(icon: "mic.fill", color: .blue, text: "Tap to record your voice")
+                FeatureRow(icon: "mic.fill", color: .blue, text: "Just 42 seconds — that's all it takes")
                 FeatureRow(icon: "text.quote", color: .purple, text: "Automatically transcribed to text")
                 FeatureRow(icon: "lock.fill", color: .green, text: "100% private, stored locally")
             }

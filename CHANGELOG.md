@@ -2,7 +2,20 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.2.0] — Unreleased
+## [1.2.1] — 2026-05-21
+
+### Added
+- **Emotional Onboarding**: New 5th onboarding page — "What brings you here?" with selectable intention cards (Track thoughts, Understand emotions, Build a habit, Remember my life, Create my Digital Twin)
+- **Life Area Auto-Tagging**: Entries automatically tagged with life areas (Work, Health, Relationships, Growth, Family, Creativity) shown as colored pills in Timeline
+- **Intent-Based Reminders**: Morning / Midday / Evening presets with purpose-driven descriptions ("Start your day with clarity", "Reset and reflect", "Unwind and look back") plus Custom time option
+- **First Entry Celebration**: Special moment after your very first journal entry — "Your Digital Twin just learned something new about you"
+- **Monthly Summaries**: Timeline section headers now show entry count and total word count per month
+
+### Improved
+- **Warmer Processing State**: Replaced generic spinner with phased messages ("Listening to your words..." → "Understanding your thoughts..." → "Your Twin is learning...") and pulsing animation
+- **"Just 42 seconds" Nudge**: Welcome card and empty state now frame journaling as a 42-second commitment — because 42 is the answer to life, the universe, and everything
+
+## [1.2.0] — 2026-05-21
 
 ### Added
 - **Ask Your Twin**: Chat with your Digital Twin — ask about mood patterns, personality, journaling habits

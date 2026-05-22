@@ -11,8 +11,10 @@ struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var currentPage = 0
+    @State private var selectedIntentions: Set<String> = []
 
     private var isIPad: Bool { horizontalSizeClass == .regular }
+    private var totalPageCount: Int { pages.count + 1 }
 
     private let pages: [OnboardingPage] = [
         OnboardingPage(
@@ -65,7 +67,10 @@ struct OnboardingView: View {
         ZStack {
             // Background
             LinearGradient(
-                colors: pages[currentPage].gradient,
+                colors: currentPage < pages.count ? pages[currentPage].gradient : [
+                    Color(red: 15/255, green: 10/255, blue: 35/255),
+                    Color(red: 50/255, green: 30/255, blue: 80/255)
+                ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -76,10 +81,10 @@ struct OnboardingView: View {
                 // Skip button
                 HStack {
                     Spacer()
-                    if currentPage < pages.count - 1 {
+                    if currentPage < totalPageCount - 1 {
                         Button("Skip") {
                             withAnimation {
-                                currentPage = pages.count - 1
+                                currentPage = totalPageCount - 1
                             }
                         }
                         .font(.subheadline.weight(.medium))
@@ -94,12 +99,15 @@ struct OnboardingView: View {
                         OnboardingPageView(page: pages[index])
                             .tag(index)
                     }
+
+                    IntentionCheckInView(selectedIntentions: $selectedIntentions, isIPad: isIPad)
+                        .tag(pages.count)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
 
                 // Page indicators
                 HStack(spacing: 8) {
-                    ForEach(0..<pages.count, id: \.self) { index in
+                    ForEach(0..<totalPageCount, id: \.self) { index in
                         Circle()
                             .fill(index == currentPage ? Color.white : Color.white.opacity(0.3))
                             .frame(width: 8, height: 8)
@@ -111,7 +119,7 @@ struct OnboardingView: View {
 
                 // Action button
                 Button(action: {
-                    if currentPage < pages.count - 1 {
+                    if currentPage < totalPageCount - 1 {
                         withAnimation(.spring(response: 0.4)) {
                             currentPage += 1
                         }
@@ -120,9 +128,9 @@ struct OnboardingView: View {
                     }
                 }) {
                     HStack {
-                        Text(currentPage == pages.count - 1 ? "Get Started" : "Continue")
+                        Text(currentPage == totalPageCount - 1 ? "Get Started" : "Continue")
                             .font(.headline)
-                        if currentPage == pages.count - 1 {
+                        if currentPage == totalPageCount - 1 {
                             Image(systemName: "arrow.right")
                                 .font(.headline)
                         }
@@ -132,13 +140,15 @@ struct OnboardingView: View {
                     .padding(.vertical, 18)
                     .background(
                         LinearGradient(
-                            colors: [pages[currentPage].iconColor, pages[currentPage].iconColor.opacity(0.8)],
+                            colors: currentPage < pages.count
+                                ? [pages[currentPage].iconColor, pages[currentPage].iconColor.opacity(0.8)]
+                                : [Color.purple, Color.purple.opacity(0.8)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .shadow(color: pages[currentPage].iconColor.opacity(0.3), radius: 10, y: 5)
+                    .shadow(color: (currentPage < pages.count ? pages[currentPage].iconColor : Color.purple).opacity(0.3), radius: 10, y: 5)
                 }
                 .frame(maxWidth: isIPad ? 500 : .infinity)
                 .padding(.horizontal, isIPad ? 60 : 30)
@@ -148,6 +158,7 @@ struct OnboardingView: View {
     }
 
     private func completeOnboarding() {
+        UserDefaults.standard.set(Array(selectedIntentions), forKey: "onboardingIntentions")
         withAnimation(.easeInOut(duration: 0.3)) {
             hasCompletedOnboarding = true
         }
@@ -221,6 +232,106 @@ struct OnboardingPageView: View {
             Spacer()
             Spacer()
         }
+    }
+}
+
+// MARK: - Intention Check-In Page
+
+struct IntentionCheckInView: View {
+    @Binding var selectedIntentions: Set<String>
+    var isIPad: Bool
+
+    private let intentions: [(title: String, icon: String)] = [
+        ("Track my thoughts", "brain.head.profile"),
+        ("Understand my emotions", "heart.text.square"),
+        ("Build a daily habit", "calendar.badge.clock"),
+        ("Remember my life", "book.pages"),
+        ("Create my Digital Twin", "person.crop.circle.badge.plus")
+    ]
+
+    var body: some View {
+        VStack(spacing: isIPad ? 32 : 24) {
+            Spacer()
+
+            VStack(spacing: 12) {
+                Text("What brings you here?")
+                    .font(.system(size: isIPad ? 40 : 32, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+
+                Text("Pick any that resonate. This helps DailyVox meet you where you are.")
+                    .font(isIPad ? .title3 : .body)
+                    .foregroundColor(.white.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+            }
+            .padding(.horizontal, isIPad ? 80 : 30)
+
+            VStack(spacing: 12) {
+                ForEach(intentions, id: \.title) { intention in
+                    IntentionCard(
+                        title: intention.title,
+                        icon: intention.icon,
+                        isSelected: selectedIntentions.contains(intention.title),
+                        isIPad: isIPad
+                    ) {
+                        if selectedIntentions.contains(intention.title) {
+                            selectedIntentions.remove(intention.title)
+                        } else {
+                            selectedIntentions.insert(intention.title)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, isIPad ? 80 : 30)
+            .frame(maxWidth: isIPad ? 600 : .infinity)
+
+            Spacer()
+            Spacer()
+        }
+    }
+}
+
+struct IntentionCard: View {
+    let title: String
+    let icon: String
+    let isSelected: Bool
+    var isIPad: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 14) {
+                Image(systemName: icon)
+                    .font(.system(size: isIPad ? 24 : 20))
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+                    .frame(width: 32)
+
+                Text(title)
+                    .font(isIPad ? .title3.weight(.medium) : .body.weight(.medium))
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.8))
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(.purple)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(isSelected ? Color.white.opacity(0.15) : Color.white.opacity(0.06))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(isSelected ? Color.purple.opacity(0.7) : Color.white.opacity(0.1), lineWidth: 1.5)
+            )
+        }
+        .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }
 

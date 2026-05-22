@@ -12,6 +12,69 @@ import CoreData
 import Speech
 #endif
 
+// MARK: - Life Area Auto-Tagging
+
+enum LifeArea: String, CaseIterable {
+    case work = "Work"
+    case health = "Health"
+    case relationships = "Relationships"
+    case growth = "Growth"
+    case family = "Family"
+    case creativity = "Creativity"
+
+    var color: Color {
+        switch self {
+        case .work: return .blue
+        case .health: return .green
+        case .relationships: return .pink
+        case .growth: return .purple
+        case .family: return .orange
+        case .creativity: return .yellow
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .work: return "briefcase.fill"
+        case .health: return "heart.fill"
+        case .relationships: return "person.2.fill"
+        case .growth: return "arrow.up.right"
+        case .family: return "house.fill"
+        case .creativity: return "paintbrush.fill"
+        }
+    }
+
+    var keywords: [String] {
+        switch self {
+        case .work:
+            return ["work", "job", "meeting", "project", "deadline", "boss", "office", "client", "career", "team", "colleague"]
+        case .health:
+            return ["health", "exercise", "sleep", "tired", "gym", "run", "walk", "sick", "doctor", "yoga", "meditate", "stress", "anxiety"]
+        case .relationships:
+            return ["friend", "date", "love", "relationship", "partner", "girlfriend", "boyfriend", "wife", "husband"]
+        case .growth:
+            return ["learn", "read", "book", "course", "goal", "improve", "habit", "skill", "practice", "study"]
+        case .family:
+            return ["family", "mom", "dad", "parent", "brother", "sister", "child", "kid", "son", "daughter", "home"]
+        case .creativity:
+            return ["write", "create", "art", "music", "design", "build", "idea", "paint", "draw", "photo", "film"]
+        }
+    }
+}
+
+func detectLifeAreas(from text: String) -> [LifeArea] {
+    let words = text.lowercased().split(whereSeparator: { !$0.isLetter }).map(String.init)
+    let wordSet = Set(words)
+
+    var counts: [(LifeArea, Int)] = LifeArea.allCases.compactMap { area in
+        let matchCount = area.keywords.filter { wordSet.contains($0) }.count
+        return matchCount > 0 ? (area, matchCount) : nil
+    }
+
+    counts.sort { $0.1 > $1.1 }
+    return Array(counts.prefix(2).map(\.0))
+}
+
 /// Displays all diary entries grouped by month.
 /// Supports search, starred filter, mood filter, date range, and pull-to-refresh.
 struct TimelineView: View {
@@ -61,7 +124,12 @@ struct TimelineView: View {
             List {
                 ForEach(sectionKeys, id: \.self) { key in
                     if let sectionEntries = groupedEntries[key] {
-                        Section(header: Text(sectionTitle(for: key))) {
+                        Section(header: VStack(alignment: .leading, spacing: 2) {
+                            Text(sectionTitle(for: key))
+                            Text(sectionSummary(for: sectionEntries))
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }) {
                             ForEach(sectionEntries) { entry in
                                 NavigationLink {
                                     EntryDetailView(entry: entry)
@@ -451,6 +519,18 @@ struct TimelineView: View {
         return "Unknown"
     }
 
+    private func sectionSummary(for entries: [DiaryEntry]) -> String {
+        let entryCount = entries.count
+        let totalWords = entries.reduce(0) { total, entry in
+            guard let text = entry.text, !text.isEmpty else { return total }
+            return total + text.split { $0.isWhitespace || $0.isNewline }.count
+        }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        let wordsFormatted = formatter.string(from: NSNumber(value: totalWords)) ?? "\(totalWords)"
+        return "\(entryCount) \(entryCount == 1 ? "entry" : "entries") · \(wordsFormatted) words"
+    }
+
     private func entryDateString(_ entry: DiaryEntry) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -525,6 +605,29 @@ struct EntryRowView: View {
                     Text("Tap to add text")
                         .foregroundColor(.secondary)
                         .italic()
+                }
+
+                // Life area tags
+                if let text = entry.text, !text.isEmpty {
+                    let areas = detectLifeAreas(from: text)
+                    if !areas.isEmpty {
+                        HStack(spacing: 6) {
+                            ForEach(areas, id: \.self) { area in
+                                HStack(spacing: 3) {
+                                    Circle()
+                                        .fill(area.color)
+                                        .frame(width: 6, height: 6)
+                                    Text(area.rawValue)
+                                        .font(.caption2)
+                                        .foregroundColor(area.color)
+                                }
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(area.color.opacity(0.1))
+                                .clipShape(Capsule())
+                            }
+                        }
+                    }
                 }
             }
             Spacer()

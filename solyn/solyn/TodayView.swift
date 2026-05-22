@@ -37,6 +37,10 @@ struct TodayView: View {
     @State private var errorMessage: String?
     @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var processingPhase: Int = 0
+    @State private var processingTimer: Timer?
+    @State private var pulseScale: CGFloat = 1.0
+    @State private var showFirstEntryMoment: Bool = false
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -99,6 +103,62 @@ struct TodayView: View {
         } message: {
             Text(errorMessage ?? "")
         }
+        .overlay {
+            if showFirstEntryMoment {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3)) {
+                                showFirstEntryMoment = false
+                            }
+                        }
+
+                    VStack(spacing: 16) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 56))
+                            .foregroundColor(.accentColor)
+
+                        Text("Your first entry!")
+                            .font(.headline)
+
+                        Text("Your Digital Twin just learned something new about you.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+
+                        Button {
+                            withAnimation(.spring(response: 0.3)) {
+                                showFirstEntryMoment = false
+                            }
+                        } label: {
+                            Text("Continue")
+                                .font(.body.weight(.semibold))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                                .background(Color.accentColor)
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(24)
+                    .frame(maxWidth: 300)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .shadow(color: .black.opacity(0.2), radius: 20, y: 10)
+                    .transition(.scale.combined(with: .opacity))
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                        withAnimation(.spring(response: 0.3)) {
+                            showFirstEntryMoment = false
+                        }
+                    }
+                }
+            }
+        }
+        .animation(.spring(response: 0.4), value: showFirstEntryMoment)
         .onReceive(NotificationCenter.default.publisher(for: .startRecordingFromSiri)) { _ in
             // Auto-start recording when triggered from Siri shortcut
             if recordingState == .idle {
@@ -249,7 +309,7 @@ struct TodayView: View {
                                     HStack(spacing: 10) {
                                         ProgressView()
                                             .scaleEffect(0.8)
-                                        Text("Transcribing your recording...")
+                                        Text("Understanding your words...")
                                             .font(.subheadline)
                                             .foregroundColor(.secondary)
                                     }
@@ -294,7 +354,7 @@ struct TodayView: View {
                         VStack(spacing: 4) {
                             Text("Ready to journal?")
                                 .font(.headline)
-                            Text("Tap the mic to record today's entry")
+                            Text("Just 42 seconds — tap the mic and speak freely")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
@@ -309,24 +369,58 @@ struct TodayView: View {
         }
     }
 
+    // MARK: - Processing Phase Message
+
+    private var processingPhaseMessage: String {
+        switch processingPhase {
+        case 0: return "Listening to your words..."
+        case 1: return "Understanding your thoughts..."
+        case 2: return "Your Twin is learning..."
+        default: return "Listening to your words..."
+        }
+    }
+
     // MARK: - Recording Section
 
     private var recordingSection: some View {
         VStack(spacing: 16) {
-            // Processing indicator
+            // Processing indicator with phased warm messages
             if recordingState == .processing {
                 HStack(spacing: 10) {
-                    ProgressView()
-                        .scaleEffect(0.9)
-                    Text("Transcribing your thoughts...")
+                    Circle()
+                        .fill(Color.accentColor.opacity(0.6))
+                        .frame(width: 10, height: 10)
+                        .scaleEffect(pulseScale)
+                        .animation(
+                            .easeInOut(duration: 0.8).repeatForever(autoreverses: true),
+                            value: pulseScale
+                        )
+                    Text(processingPhaseMessage)
                         .font(.subheadline.weight(.medium))
                         .foregroundColor(.secondary)
+                        .animation(.easeInOut(duration: 0.3), value: processingPhase)
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 20)
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(Capsule())
                 .transition(.scale.combined(with: .opacity))
+                .onAppear {
+                    pulseScale = 1.4
+                    processingPhase = 0
+                    processingTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { _ in
+                        DispatchQueue.main.async {
+                            withAnimation {
+                                processingPhase = (processingPhase + 1) % 3
+                            }
+                        }
+                    }
+                }
+                .onDisappear {
+                    processingTimer?.invalidate()
+                    processingTimer = nil
+                    pulseScale = 1.0
+                }
             }
 
             // Audio level meter (when recording)
@@ -636,6 +730,14 @@ struct TodayView: View {
                         try viewContext.save()
                         HapticManager.shared.entrySaved()
                         ReviewManager.shared.recordEntry()
+
+                        // Show celebration for first-ever entry
+                        if !UserDefaults.standard.bool(forKey: "hasCompletedFirstEntry") {
+                            UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
+                            withAnimation(.spring(response: 0.4)) {
+                                self.showFirstEntryMoment = true
+                            }
+                        }
 
                         // Feed into Digital Twin for learning
                         DigitalTwinEngine.shared.processEntry(

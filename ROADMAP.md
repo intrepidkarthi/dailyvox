@@ -21,10 +21,19 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Weekly Insight Cards
 - Improved NLP keyword extraction
 
-### v1.2 — Ask Your Twin *(current)*
+### v1.2 — Ask Your Twin
 - Ask Your Twin: conversational chat with your Digital Twin
 - Shareable Personality Cards (Instagram Stories + Twitter/X formats)
 - Smarter App Store review prompts
+
+### v1.2.1 — Warmth Update *(current)*
+- Emotional onboarding: "What brings you here?" intention selection (5th onboarding page)
+- Life area auto-tagging: entries auto-classified into Work, Health, Relationships, Growth, Family, Creativity
+- Intent-based reminder presets: Morning / Midday / Evening with purpose framing
+- Warmer processing state: phased messages with pulsing animation replacing generic spinner
+- First-entry celebration moment with Digital Twin callout
+- "Just 42 seconds" low-friction nudge on empty states
+- Monthly summaries in Timeline section headers (entry count + word count)
 
 ## Planned
 

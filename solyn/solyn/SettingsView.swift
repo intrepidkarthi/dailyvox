@@ -18,6 +18,7 @@ struct SettingsView: View {
     private var entries: FetchedResults<DiaryEntry>
 
     @State private var showPermissionDeniedAlert = false
+    @State private var selectedReminderPreset: String = "evening"
 
     // Export states
     @State private var showExportSheet = false
@@ -258,19 +259,74 @@ struct SettingsView: View {
             ))
 
             if reminderManager.isEnabled {
-                DatePicker(
-                    "Reminder time",
-                    selection: Binding(
-                        get: { reminderManager.reminderTime },
-                        set: { reminderManager.reminderTime = $0 }
-                    ),
-                    displayedComponents: .hourAndMinute
-                )
+                ReminderPresetRow(
+                    icon: "sunrise",
+                    title: "Morning",
+                    time: "7:00 AM",
+                    intent: "Start your day with clarity",
+                    isSelected: selectedReminderPreset == "morning"
+                ) {
+                    selectedReminderPreset = "morning"
+                    applyReminderPreset(hour: 7, minute: 0)
+                }
+
+                ReminderPresetRow(
+                    icon: "sun.max",
+                    title: "Midday",
+                    time: "12:30 PM",
+                    intent: "Reset and reflect",
+                    isSelected: selectedReminderPreset == "midday"
+                ) {
+                    selectedReminderPreset = "midday"
+                    applyReminderPreset(hour: 12, minute: 30)
+                }
+
+                ReminderPresetRow(
+                    icon: "moon.stars",
+                    title: "Evening",
+                    time: "8:00 PM",
+                    intent: "Unwind and look back",
+                    isSelected: selectedReminderPreset == "evening"
+                ) {
+                    selectedReminderPreset = "evening"
+                    applyReminderPreset(hour: 20, minute: 0)
+                }
+
+                ReminderPresetRow(
+                    icon: "slider.horizontal.3",
+                    title: "Custom",
+                    time: nil,
+                    intent: "Pick your own time",
+                    isSelected: selectedReminderPreset == "custom"
+                ) {
+                    selectedReminderPreset = "custom"
+                }
+
+                if selectedReminderPreset == "custom" {
+                    DatePicker(
+                        "Reminder time",
+                        selection: Binding(
+                            get: { reminderManager.reminderTime },
+                            set: { reminderManager.reminderTime = $0 }
+                        ),
+                        displayedComponents: .hourAndMinute
+                    )
+                }
             }
         } header: {
             Text("Daily Reminder")
         } footer: {
             Text("DailyVox sends one gentle notification each day at your chosen time.")
+        }
+    }
+
+    private func applyReminderPreset(hour: Int, minute: Int) {
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: reminderManager.reminderTime)
+        components.hour = hour
+        components.minute = minute
+        components.second = 0
+        if let date = Calendar.current.date(from: components) {
+            reminderManager.reminderTime = date
         }
     }
 
@@ -733,6 +789,69 @@ struct StorageRow: View {
         let formatter = ByteCountFormatter()
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
+    }
+}
+
+// MARK: - Reminder Preset Row
+
+struct ReminderPresetRow: View {
+    let icon: String
+    let title: String
+    let time: String?
+    let intent: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(isSelected ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: icon)
+                        .font(.subheadline)
+                        .foregroundColor(isSelected ? .accentColor : .secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(title)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundColor(.primary)
+                        if let time = time {
+                            Text(time)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    Text(intent)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .listRowBackground(
+            isSelected
+                ? Color.accentColor.opacity(0.08)
+                : Color.clear
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(isSelected ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
+                .padding(.horizontal, -16)
+                .padding(.vertical, -4)
+        )
     }
 }
 
