@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>On-Device AI vs Cloud AI for Journaling: Why It Matters Where Your Data Goes - DailyVox Blog</title>
+  <meta name="description" content="When Rosebud analyzes your mood, your journal goes to OpenAI. When DailyVox does it, everything stays on your iPhone. Here's why the difference matters.">
+  <meta name="keywords" content="on-device AI vs cloud AI, journal app privacy, on-device AI journaling, cloud AI journaling, private journal app, AI journal data privacy, DailyVox on-device AI">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/on-device-ai-vs-cloud-ai-journaling">
+  <meta property="og:title" content="On-Device AI vs Cloud AI for Journaling: Why It Matters Where Your Data Goes">
+  <meta property="og:description" content="When Rosebud analyzes your mood, your journal goes to OpenAI. When DailyVox does it, everything stays on your iPhone. Here's why the difference matters.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/on-device-ai-vs-cloud-ai-journaling">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "On-Device AI vs Cloud AI for Journaling: Why It Matters Where Your Data Goes",
+    "description": "When Rosebud analyzes your mood, your journal goes to OpenAI. When DailyVox does it, everything stays on your iPhone. Here's why the difference matters.",
+    "url": "https://getdailyvox.com/blog/on-device-ai-vs-cloud-ai-journaling",
+    "datePublished": "2026-05-22",
+    "dateModified": "2026-05-22",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/on-device-ai-vs-cloud-ai-journaling" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "On-Device AI vs Cloud AI for Journaling"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between on-device AI and cloud AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "On-device AI runs machine learning models directly on your phone's processor, so your data never leaves the device. Cloud AI sends your data to remote servers for processing, meaning your information travels over the internet to a third party."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is on-device AI less accurate than cloud AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For journaling tasks like sentiment analysis, mood tracking, and entity recognition, on-device AI is equally accurate. Cloud AI has advantages for open-ended generative tasks, but for structured analysis of personal text, on-device models perform at parity."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can cloud AI journal apps read my entries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When a journal app sends your entries to a cloud API, the data exists on that provider's servers. Depending on the provider's policies, employees may have access for debugging, the data may be used for model training, and it could be subject to government subpoenas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does DailyVox use cloud AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. DailyVox uses 9 Apple on-device frameworks to run all AI features — voice transcription, sentiment analysis, mood tracking, entity extraction, and Digital Twin modeling — entirely on your iPhone. Zero data is transmitted to any server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will Apple Foundation Models change on-device AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Apple Foundation Models, expected with iOS 19, will bring large language model capabilities to the device itself. DailyVox plans to integrate these in v2.0, enabling conversational AI features without any cloud dependency."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I know if my journal app uses cloud AI?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Check if the app works in airplane mode. If AI features stop working without internet, the app is using cloud AI. Also check the privacy policy for mentions of third-party AI providers like OpenAI, Google, or Anthropic."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Technology</span>
+        <h1>On-Device AI vs Cloud AI for Journaling: Why It Matters Where Your Data Goes</h1>
+        <p class="article-meta">May 22, 2026 &middot; 7 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>When Rosebud "analyzes your mood," your journal entry is sent to OpenAI's servers. When Reflectly "provides insights," your words travel to a cloud API. When DailyVox does the same thing, everything happens on your iPhone's Neural Engine &mdash; zero data leaves the device. This is the difference between on-device AI and cloud AI, and for journaling &mdash; the most private category of personal data &mdash; it's the most important technical decision an app can make.</p>
+
+        <p>Most people never think about where their data goes when an app says "AI-powered." They tap the button, see the result, and move on. But the path your journal entry takes &mdash; from your screen to the processor that analyzes it &mdash; determines whether your most private thoughts remain private or become someone else's data.</p>
+
+        <p>This article breaks down exactly what happens in both approaches, what the real-world privacy consequences are, and why the gap between cloud and on-device AI for journaling is closing faster than most people realize.</p>
+
+        <h2>What Happens to Your Data: Two Very Different Paths</h2>
+
+        <p>The easiest way to understand the difference is to trace what happens to a single journal entry in each architecture.</p>
+
+        <h3>The Cloud AI Path</h3>
+
+        <p>Here's what happens when you write a journal entry in an app that uses cloud AI:</p>
+
+        <ol>
+          <li><strong>You write or speak your entry.</strong> The raw text (or audio) exists on your device.</li>
+          <li><strong>The app encrypts and transmits your entry</strong> over the internet to a cloud API &mdash; typically OpenAI, Google, or Anthropic.</li>
+          <li><strong>The cloud provider's servers receive your data.</strong> Your journal entry now exists on hardware you don't own, in a data center you've never seen, managed by employees you've never met.</li>
+          <li><strong>The AI model processes your entry.</strong> Sentiment analysis, mood detection, prompt completion &mdash; whatever the feature requires.</li>
+          <li><strong>Results are sent back to your device.</strong> The analysis arrives after a network round-trip.</li>
+          <li><strong>Your data may persist on the provider's servers.</strong> Depending on the API terms, your journal entry might be logged, stored for debugging, or used for model training.</li>
+        </ol>
+
+        <p>At minimum, your journal entry existed on three systems: your device, the network, and the cloud provider's servers. At maximum, it exists indefinitely in training datasets.</p>
+
+        <h3>The On-Device AI Path</h3>
+
+        <p>Here's what happens with the same entry in an app that uses on-device AI:</p>
+
+        <ol>
+          <li><strong>You write or speak your entry.</strong> The raw text (or audio) exists on your device.</li>
+          <li><strong>The on-device AI model processes your entry.</strong> The Neural Engine runs sentiment analysis, entity extraction, and mood tracking locally.</li>
+          <li><strong>Results are stored on your device.</strong> Done.</li>
+        </ol>
+
+        <p>Your data existed on exactly one system: your iPhone. No network. No servers. No third parties. This isn't a policy choice &mdash; it's an architectural fact. There's no server to send data to because the entire processing pipeline runs on the chip in your hand.</p>
+
+        <h2>The Privacy Implications: Your Diary on Someone Else's Server</h2>
+
+        <p>Journal entries are categorically different from most data that AI processes. A journal entry might contain your deepest fears, relationship struggles, mental health episodes, financial anxieties, sexual identity exploration, or thoughts you'd never share with another human being. When that data leaves your device, several risks emerge.</p>
+
+        <h3>Employee Access</h3>
+
+        <p>Cloud AI providers employ thousands of engineers, data scientists, and trust-and-safety reviewers. Some of these employees have access to API logs and request data. While providers implement access controls, the history of tech is littered with incidents of employees accessing user data: Uber employees tracking ex-partners, Google engineers reading private messages, Amazon workers listening to Alexa recordings.</p>
+
+        <p>When your journal entry is processed on-device, no employee at any company can access it &mdash; because it never reached their systems.</p>
+
+        <h3>Government Subpoenas and Legal Requests</h3>
+
+        <p>Cloud providers are subject to legal processes in their jurisdictions. If a government agency issues a subpoena or national security letter to OpenAI, Google, or Anthropic, the provider may be compelled to hand over data that includes your journal entries. This isn't hypothetical &mdash; tech companies receive thousands of government data requests every year and comply with the vast majority.</p>
+
+        <p>Data that exists only on your iPhone is subject to device-level legal protections, which are significantly stronger. Apple has famously refused to build backdoors into iOS encryption, and on-device data requires physical access to your specific device.</p>
+
+        <h3>Data Breaches</h3>
+
+        <p>Every company that stores data is a potential breach target. The more sensitive the data, the more valuable it is. A database containing millions of journal entries &mdash; raw, unfiltered accounts of people's inner lives &mdash; would be an extraordinarily valuable target for attackers.</p>
+
+        <p>On-device data eliminates the centralized target entirely. There's no single database to breach. An attacker would need physical access to each individual device, protected by iOS encryption, biometric locks, and secure enclave hardware.</p>
+
+        <h3>Model Training</h3>
+
+        <p>Some cloud AI providers use API inputs to improve their models. While many now offer opt-out mechanisms, the default behavior and policies vary. If your journal entries are used to train a language model, fragments of your private thoughts could theoretically appear in the model's outputs for other users. On-device processing makes this structurally impossible.</p>
+
+        <h2>The Performance Tradeoffs: Power vs. Privacy</h2>
+
+        <p>If on-device AI is so much better for privacy, why doesn't every app use it? Because there are genuine technical tradeoffs.</p>
+
+        <h3>Where Cloud AI Still Wins</h3>
+
+        <ul>
+          <li><strong>Model size.</strong> Cloud services can run models with hundreds of billions of parameters. GPT-4 class models require data center hardware. On-device models are constrained to what fits in phone memory &mdash; typically a few billion parameters at most.</li>
+          <li><strong>Generative text quality.</strong> For open-ended writing, creative responses, and complex conversational AI, larger cloud models still produce higher-quality output.</li>
+          <li><strong>Breadth of knowledge.</strong> Cloud models trained on internet-scale data can answer virtually any general knowledge question. On-device models are narrower and more specialized.</li>
+          <li><strong>Multi-modal processing.</strong> Complex tasks combining vision, language, and reasoning at scale still favor cloud infrastructure.</li>
+        </ul>
+
+        <h3>Where On-Device AI Wins</h3>
+
+        <ul>
+          <li><strong>Privacy.</strong> No data leaves the device. Period. This is architectural, not contractual.</li>
+          <li><strong>Latency.</strong> On-device inference is instantaneous. No network round-trip means results in milliseconds, not seconds.</li>
+          <li><strong>Reliability.</strong> Works in airplane mode, underground, in rural areas, during outages. Your journal app should never fail because of Wi-Fi.</li>
+          <li><strong>Cost to users.</strong> No per-request API charges. No usage caps. No "you've hit your monthly AI limit" messages.</li>
+          <li><strong>Cost to developers.</strong> No API bills that scale with user growth. No surprise invoices from OpenAI.</li>
+          <li><strong>Personalization.</strong> A local model can continuously learn from your data without ever sharing it.</li>
+        </ul>
+
+        <h3>The Critical Insight for Journaling</h3>
+
+        <p>Here's what most people miss: the tasks that journaling requires &mdash; sentiment analysis, mood tracking, entity recognition, pattern detection, personality modeling &mdash; are exactly the tasks where on-device AI already performs at parity with cloud AI. You don't need GPT-4 to determine that a journal entry about a fight with your partner is emotionally negative. You don't need a 175-billion-parameter model to extract the names of people you mentioned.</p>
+
+        <p>The areas where cloud AI excels &mdash; open-ended generation, creative writing, complex reasoning &mdash; are not what journal analysis requires. The tradeoff, for this specific use case, is no tradeoff at all. You get equivalent AI performance with vastly superior privacy.</p>
+
+        <h2>Which Journal Apps Use Which? A Comparison</h2>
+
+        <p>Understanding which apps use cloud AI versus on-device AI can be difficult because many apps don't clearly disclose their architecture. Based on publicly available information, privacy policies, and technical analysis:</p>
+
+        <table style="width:100%;border-collapse:collapse;margin:24px 0;">
+          <thead>
+            <tr style="border-bottom:2px solid rgba(10,11,16,0.15);text-align:left;">
+              <th style="padding:12px 16px;">App</th>
+              <th style="padding:12px 16px;">AI Type</th>
+              <th style="padding:12px 16px;">Where Data Goes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;font-weight:600;">DailyVox</td>
+              <td style="padding:12px 16px;">On-device only</td>
+              <td style="padding:12px 16px;">Stays on your iPhone</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Rosebud</td>
+              <td style="padding:12px 16px;">Cloud AI (OpenAI)</td>
+              <td style="padding:12px 16px;">Sent to OpenAI servers</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Reflectly</td>
+              <td style="padding:12px 16px;">Cloud AI</td>
+              <td style="padding:12px 16px;">Sent to cloud API</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Day One</td>
+              <td style="padding:12px 16px;">Cloud sync (limited AI)</td>
+              <td style="padding:12px 16px;">Synced to Day One servers</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Apple Journal</td>
+              <td style="padding:12px 16px;">On-device</td>
+              <td style="padding:12px 16px;">Stays on device (limited AI features)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Stoic</td>
+              <td style="padding:12px 16px;">Cloud AI</td>
+              <td style="padding:12px 16px;">Sent to cloud servers</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(10,11,16,0.08);">
+              <td style="padding:12px 16px;">Notion (as journal)</td>
+              <td style="padding:12px 16px;">Cloud AI</td>
+              <td style="padding:12px 16px;">Stored and processed on Notion/AI servers</td>
+            </tr>
+            <tr>
+              <td style="padding:12px 16px;">Penzu</td>
+              <td style="padding:12px 16px;">No AI</td>
+              <td style="padding:12px 16px;">Synced to Penzu servers</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>The pattern is clear: most AI journal apps rely on cloud processing. The ones that prioritize privacy either use on-device AI (like DailyVox) or simply don't offer AI features at all.</p>
+
+        <h2>DailyVox's On-Device AI Stack: 9 Apple Frameworks</h2>
+
+        <p>DailyVox processes everything locally using nine Apple frameworks, each handling a specific piece of the AI pipeline:</p>
+
+        <ol>
+          <li><strong>Speech Framework</strong> &mdash; Converts your spoken words to text using on-device speech recognition. Your voice is never transmitted.</li>
+          <li><strong>NaturalLanguage Framework</strong> &mdash; Performs sentiment analysis, entity recognition, and text classification on your transcribed entries.</li>
+          <li><strong>Core ML</strong> &mdash; Runs custom machine learning models optimized for the Neural Engine, powering personality modeling and pattern detection.</li>
+          <li><strong>Create ML</strong> &mdash; Enables on-device model training, allowing the Digital Twin to learn and improve from your entries without sending data anywhere.</li>
+          <li><strong>SwiftData</strong> &mdash; Stores all journal entries, mood data, and AI-generated insights in an encrypted local database.</li>
+          <li><strong>AVFoundation</strong> &mdash; Handles audio recording and processing for voice journaling, all on-device.</li>
+          <li><strong>Charts Framework</strong> &mdash; Renders mood trends and emotional patterns as interactive visualizations from locally computed data.</li>
+          <li><strong>Foundation (NLEmbedding)</strong> &mdash; Generates text embeddings for semantic search and entry similarity, enabling the knowledge graph.</li>
+          <li><strong>HealthKit</strong> &mdash; Optionally correlates journal mood data with health metrics, all through on-device APIs.</li>
+        </ol>
+
+        <p>Together, these frameworks provide voice transcription, sentiment analysis, mood tracking, entity extraction, personality modeling, knowledge graph construction, and predictive insights &mdash; all without a single network request. The entire AI pipeline runs on the A-series or M-series chip in your iPhone or iPad.</p>
+
+        <h2>The Future: Apple Foundation Models in v2.0</h2>
+
+        <p>The gap between cloud and on-device AI is closing faster than most analysts predicted. The biggest catalyst: Apple Foundation Models.</p>
+
+        <p>With iOS 19, Apple is bringing large language model capabilities directly to the device. These aren't small, stripped-down models &mdash; they're full foundation models optimized for Apple silicon, capable of understanding context, generating responses, and reasoning about complex inputs. Critically, they run entirely on-device.</p>
+
+        <p>For DailyVox, Apple Foundation Models unlock capabilities that previously would have required cloud AI:</p>
+
+        <ul>
+          <li><strong>Conversational journaling.</strong> Talk to your Digital Twin naturally, with the model understanding context from your entire journal history &mdash; all on-device.</li>
+          <li><strong>Deeper emotional analysis.</strong> Move beyond sentiment scores to nuanced emotional understanding: recognizing sarcasm, detecting emotional suppression, identifying cognitive distortions.</li>
+          <li><strong>Personalized prompts.</strong> Generate journal prompts that are genuinely tailored to your current emotional state, recent patterns, and personal growth trajectory.</li>
+          <li><strong>Predictive wellness.</strong> Combine journal analysis with behavioral patterns to predict and preemptively address mood changes.</li>
+        </ul>
+
+        <p>DailyVox v2.0 will integrate Apple Foundation Models while maintaining the same zero-data-transmitted guarantee. The privacy architecture doesn't change &mdash; the AI capabilities simply get dramatically more powerful.</p>
+
+        <p>This is the trajectory: within two years, on-device AI will match cloud AI for virtually every journaling use case. The apps that built their architecture around privacy won't need to retrofit it. The apps that built around cloud APIs will face an uncomfortable question from their users: "Why are you still sending my diary to a server?"</p>
+
+        <h2>FAQ</h2>
+
+        <h3>What is the difference between on-device AI and cloud AI?</h3>
+        <p>On-device AI runs machine learning models directly on your phone's processor (the Neural Engine in iPhones), so your data never leaves the device. Cloud AI sends your data over the internet to remote servers &mdash; operated by companies like OpenAI, Google, or Anthropic &mdash; where it's processed and results are returned. The core difference is where your data physically exists during processing.</p>
+
+        <h3>Is on-device AI less accurate than cloud AI?</h3>
+        <p>For journaling-specific tasks &mdash; sentiment analysis, mood tracking, entity recognition, pattern detection &mdash; on-device AI performs at parity with cloud AI. Cloud AI has an advantage for open-ended generative tasks like writing long-form text or answering general knowledge questions, but these aren't the primary tasks a journal app needs. For analyzing your journal entries, on-device models are equally capable.</p>
+
+        <h3>Can cloud AI journal apps read my entries?</h3>
+        <p>When a journal app sends your entries to a cloud API, the data exists on that provider's servers. Depending on the provider's terms of service and internal policies, employees may have access for debugging or safety review, the data may be logged or stored, and it could be subject to government subpoenas or legal discovery. While providers implement access controls, the structural reality is that your data is on their hardware.</p>
+
+        <h3>Does DailyVox use cloud AI?</h3>
+        <p>No. DailyVox uses 9 Apple on-device frameworks to run all AI features entirely on your iPhone. Voice transcription, sentiment analysis, mood tracking, entity extraction, knowledge graph construction, and Digital Twin modeling all happen on your device's Neural Engine. Zero data is transmitted to any server, ever. You can verify this by using DailyVox in airplane mode &mdash; every feature works identically.</p>
+
+        <h3>Will Apple Foundation Models change on-device AI?</h3>
+        <p>Dramatically. Apple Foundation Models, arriving with iOS 19, bring large language model capabilities directly to the device. This means on-device AI will be able to handle conversational interactions, nuanced text generation, and complex reasoning &mdash; tasks that previously required cloud infrastructure. For journal apps like DailyVox, this means more powerful AI features without any change to the privacy architecture.</p>
+
+        <h3>How do I know if my journal app uses cloud AI?</h3>
+        <p>The simplest test: put your phone in airplane mode and try using the AI features. If they stop working, the app is using cloud AI. You should also check the app's privacy policy for mentions of third-party AI providers (OpenAI, Google, Anthropic, etc.), and look at the App Store privacy labels for data linked to your identity. An app that truly uses on-device AI should have minimal or no data collection disclosed.</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/what-is-on-device-ai">What Is On-Device AI? Why It Matters for Your Privacy</a></li>
+          <li><a href="/blog/best-ai-journal-app">Best AI Journal App in 2026</a></li>
+          <li><a href="/blog/why-95-percent-ai-journals-not-on-device">Why 95% of AI Journals Are Not On-Device</a></li>
+          <li><a href="/blog/journal-app-with-ai">Journal Apps With AI: What They Actually Do With Your Data</a></li>
+        </ul>
+
+        <div style="margin-top:40px;padding-top:24px;border-top:1px solid rgba(10,11,16,0.08)">
+          <h3 style="font-size:16px;margin-bottom:12px;">Related reading</h3>
+          <ul style="list-style:none;padding:0;">
+            <li style="margin-bottom:8px;"><a href="/technology" style="color:#5e2bff;font-weight:500;">How Our Technology Works</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/how-on-device-ai-works" style="color:#5e2bff;font-weight:500;">How On-Device AI Works (No Cloud Required)</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/why-your-ai-journal-shouldnt-send-data-to-cloud" style="color:#5e2bff;font-weight:500;">Why Your AI Journal Shouldn't Send Data to the Cloud</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/journal-app-privacy-comparison" style="color:#5e2bff;font-weight:500;">Journal App Privacy Comparison</a></li>
+            <li style="margin-bottom:8px;"><a href="/research" style="color:#5e2bff;font-weight:500;">Research</a></li>
+          </ul>
+        </div>
+
+        <div class="article-cta">
+          <h3>Try Truly Private AI Journaling</h3>
+          <p>DailyVox runs 9 AI frameworks on your iPhone. Voice journaling, mood tracking, Digital Twin &mdash; everything on-device. Free, private, no cloud.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
