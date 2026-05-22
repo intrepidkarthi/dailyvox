@@ -2491,6 +2491,100 @@
       margin-bottom: 48px;
     }
 
+    /* Newsletter */
+    .newsletter-box {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .newsletter-box::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, var(--uv-wash), transparent 60%);
+      pointer-events: none;
+    }
+    .nl-content {
+      position: relative;
+      max-width: 500px;
+      margin-bottom: 28px;
+    }
+    .nl-title {
+      font-family: var(--display);
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+    .nl-desc {
+      font-size: 15px;
+      color: var(--ink-dim);
+      line-height: 1.6;
+    }
+    .nl-form {
+      display: flex;
+      gap: 8px;
+      max-width: 440px;
+      width: 100%;
+      position: relative;
+    }
+    .nl-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1px solid var(--rule-2);
+      border-radius: var(--r-sm);
+      font-family: var(--sans);
+      font-size: 14px;
+      background: var(--paper);
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .nl-input:focus {
+      border-color: var(--uv);
+    }
+    .nl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 20px;
+      border: none;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+      white-space: nowrap;
+    }
+    .nl-btn:hover {
+      background: var(--uv);
+      transform: translateY(-1px);
+    }
+    .nl-privacy {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      margin-top: 14px;
+      letter-spacing: 0.02em;
+    }
+    @media (max-width: 640px) {
+      .newsletter-box { padding: 32px 20px; }
+      .nl-form { flex-direction: column; }
+      .nl-btn { justify-content: center; }
+    }
+
   </style>
 </head>
 <body>
@@ -3593,6 +3687,22 @@
           <p>Speaking at 150 WPM versus typing at 40. A protocol for brains that think faster than their fingers.</p>
           <div class="more">read →</div>
         </a>
+      </div>
+    </section>
+
+    <!-- ═══ NEWSLETTER ═══ -->
+    <section class="sec wrap">
+      <div class="newsletter-box">
+        <div class="nl-content">
+          <div class="sec-tag">stay in the loop</div>
+          <h2 class="nl-title">The DailyVox Letter</h2>
+          <p class="nl-desc">Monthly updates on on-device AI, Digital Twin features, and voice journaling research. No spam. Unsubscribe anytime.</p>
+        </div>
+        <form class="nl-form" action="https://buttondown.com/api/emails/embed-subscribe/dailyvox" method="post" target="_blank">
+          <input type="email" name="email" placeholder="your@email.com" required class="nl-input">
+          <button type="submit" class="nl-btn">Subscribe <span class="arr">→</span></button>
+        </form>
+        <p class="nl-privacy">We don't track opens or clicks. Your email is never shared.</p>
       </div>
     </section>
 

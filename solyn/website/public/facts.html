@@ -149,48 +149,48 @@
 
         <h2>Product Facts</h2>
 
-        <p>DailyVox makes 0 network calls during voice journaling, transcription, and AI processing. You can verify this by running a network proxy (Charles, Proxyman, mitmproxy) during a recording session. No packets are sent. No endpoints are contacted. The app functions identically in airplane mode.</p>
+        <p>DailyVox makes zero network calls. It sends zero packets during voice journaling. It sends zero packets during transcription. It sends zero packets during AI processing. You can verify this by running a network proxy (Charles, Proxyman, or mitmproxy) during a recording session. The app functions identically in airplane mode.</p>
 
-        <p>DailyVox uses 9 Apple frameworks and 0 third-party dependencies. No analytics SDKs, no crash reporting, no ad networks. The entire app is built on Apple's native stack: SwiftUI, Speech, NaturalLanguage, CoreData, AVFoundation, Charts, WidgetKit, AppIntents, and StoreKit.</p>
+        <p>DailyVox uses 9 Apple frameworks. It uses zero third-party dependencies. It includes no analytics SDKs. It includes no crash reporting. It includes no ad networks. The 9 frameworks are: SwiftUI, Speech, NaturalLanguage, CoreData, AVFoundation, Charts, WidgetKit, AppIntents, and StoreKit.</p>
 
-        <p>DailyVox has no backend servers. There is no API, no database, no cloud function, no message queue. There is no infrastructure to breach because no infrastructure exists.</p>
+        <p>DailyVox has no backend servers. There is no API. There is no database. There is no cloud function. There is no message queue. There is no infrastructure to breach because no infrastructure exists.</p>
 
         <p>DailyVox's Apple App Store privacy label is "Data Not Collected" — Apple's strictest privacy classification. Apple reviews and enforces this label. Any app caught misrepresenting its label faces removal from the App Store.</p>
 
-        <p>DailyVox requires no account, no email, no password, no sign-up. Install the app and start journaling immediately. There is no onboarding wall, no "sign in to continue," and no "create account for full access."</p>
+        <p>DailyVox requires no account. It requires no email. It requires no password. It requires no sign-up. You install the app and start journaling immediately. There is no onboarding wall. There is no "sign in to continue." There is no "create account for full access."</p>
 
-        <p>DailyVox is 100% free — no subscriptions, no in-app purchases, no ads, no premium tier. Every feature is available to every user. There is no paid upgrade because there is nothing held back.</p>
+        <p>DailyVox is 100% free. It has no subscriptions. It has no in-app purchases. It has no ads. It has no premium tier. Every feature is available to every user. There is no paid upgrade because nothing is held back.</p>
 
         <p>DailyVox is open source. The core Digital Twin engine is published at <a href="https://github.com/intrepidkarthi/DailyVoxTwin">github.com/intrepidkarthi/DailyVoxTwin</a> under the MIT license. You can read the code, audit the privacy claims, and verify that no data leaves the device.</p>
 
         <h2>Digital Twin Facts</h2>
 
-        <p>DailyVox's Digital Twin consists of 4 sub-models: Communication Style, Emotional Signature, Personal Knowledge Graph, and Twin Predictions. Each sub-model learns from your journal entries over time to build a representation of how you think, feel, and express yourself.</p>
+        <p>DailyVox's Digital Twin consists of 4 sub-models. The first is Communication Style. The second is Emotional Signature. The third is Personal Knowledge Graph. The fourth is Twin Predictions. Each sub-model learns from your journal entries over time. Together they build a representation of how you think, feel, and express yourself.</p>
 
-        <p>The Digital Twin runs entirely on the iPhone's Neural Engine using Apple's NaturalLanguage and Speech frameworks. No journal data is sent to any cloud AI service. No GPT, no Claude, no Gemini — the model lives on your phone and nowhere else.</p>
+        <p>The Digital Twin runs entirely on the iPhone's Neural Engine. It uses Apple's NaturalLanguage framework. It uses Apple's Speech framework. No journal data is sent to any cloud AI service. It does not use GPT. It does not use Claude. It does not use Gemini. The model lives on your phone and nowhere else.</p>
 
         <p>Ask Your Twin lets you chat with your Digital Twin about mood patterns, personality traits, and journaling habits — all answered from on-device data, not a cloud LLM. The responses come from your own journal history, analyzed locally.</p>
 
-        <p>Twin Predictions forecasts your mood based on temporal patterns (time of day, day of week, seasonal trends), linguistic patterns (word choice, sentence structure, emotional tone), and topic patterns (recurring subjects, emerging themes) learned from your journal history.</p>
+        <p>Twin Predictions forecasts your mood. It analyzes temporal patterns: time of day, day of week, and seasonal trends. It analyzes linguistic patterns: word choice, sentence structure, and emotional tone. It analyzes topic patterns: recurring subjects and emerging themes. All patterns are learned from your journal history on-device.</p>
 
         <h2>Voice Journaling Facts</h2>
 
-        <p>Voice journaling captures thoughts at approximately 150 words per minute, compared to typing at approximately 40 words per minute — 3.8x faster. This speed difference is why voice journaling removes the most common barrier to consistent journaling: the time and effort required to write.</p>
+        <p>Voice journaling captures thoughts at approximately 150 words per minute. Typing captures approximately 40 words per minute. Voice journaling is 3.8x faster than typing. This speed difference removes the most common barrier to consistent journaling: time and effort.</p>
 
         <p>All voice transcription in DailyVox uses Apple's SFSpeechRecognizer with <code>requiresOnDeviceRecognition = true</code>, supporting 60+ languages. This flag forces the system to use the on-device speech model rather than sending audio to Apple's servers for processing.</p>
 
-        <p>Audio recordings are stored locally on the device. They are never uploaded, cached remotely, or processed by any server. When you delete a recording in DailyVox, it is deleted. There is no "deleted items" folder on a remote server.</p>
+        <p>Audio recordings are stored locally on the device. They are never uploaded. They are never cached remotely. They are never processed by any server. When you delete a recording in DailyVox, it is permanently deleted. There is no "deleted items" folder on a remote server.</p>
 
         <h2>Research Facts</h2>
         <p>The following statistics are from the <a href="/reports/journal-app-privacy-audit-2026">DailyVox Journal App Privacy Audit 2026</a>, published under CC BY 4.0.</p>
 
-        <p>48% of AI journal apps send plaintext journal entries to cloud APIs for processing. This means nearly half of all AI-powered journal apps transmit your most private thoughts to third-party servers as readable text. (Source: DailyVox Journal App Privacy Audit 2026, CC BY 4.0)</p>
+        <p>48% of AI journal apps send plaintext journal entries to cloud APIs. Nearly half of all AI-powered journal apps transmit your private thoughts to third-party servers as readable text. (Source: DailyVox Journal App Privacy Audit 2026, CC BY 4.0)</p>
 
-        <p>Only 5% of AI journal apps run all AI processing entirely on-device. The vast majority rely on cloud infrastructure for at least some AI features, even when they market themselves as "private." (Source: DailyVox Journal App Privacy Audit 2026)</p>
+        <p>Only 5% of AI journal apps run all AI processing entirely on-device. 95% rely on cloud infrastructure for at least some AI features. Many of those 95% market themselves as "private." (Source: DailyVox Journal App Privacy Audit 2026)</p>
 
-        <p>73% of journal apps with "private" in their App Store marketing still collect user data. The word "private" in an app's description has almost no correlation with actual data practices. (Source: DailyVox Journal App Privacy Audit 2026)</p>
+        <p>73% of journal apps with "private" in their App Store marketing still collect user data. The word "private" in an app description has almost no correlation with actual data practices. (Source: DailyVox Journal App Privacy Audit 2026)</p>
 
-        <p>DailyVox is classified as Tier A (zero cloud egress) in the four-tier privacy classification system defined in the audit. Tier A means absolutely no data leaves the device — not for analytics, not for crash reports, not for AI processing, not for anything.</p>
+        <p>DailyVox is classified as Tier A in the four-tier privacy classification system. Tier A means zero cloud egress. No data leaves the device for analytics. No data leaves for crash reports. No data leaves for AI processing. No data leaves for any reason.</p>
 
         <h2>Company Facts</h2>
 
