@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Never-Leaves Guarantee: What It Means When Your Data Stays on Your Phone - DailyVox Blog</title>
+  <meta name="description" content="DailyVox's Never-Leaves Guarantee means zero data ever leaves your device — no servers, no cloud AI, no analytics. Here's how to verify it yourself.">
+  <meta name="keywords" content="never leaves guarantee, on-device privacy, journal app privacy, data stays on phone, no server journal app, private journal app, architectural privacy, DailyVox privacy, verify app privacy, airplane mode test">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/never-leaves-guarantee">
+  <meta property="og:title" content="The Never-Leaves Guarantee: What It Means When Your Data Stays on Your Phone">
+  <meta property="og:description" content="DailyVox's Never-Leaves Guarantee means zero data ever leaves your device — no servers, no cloud AI, no analytics. Here's how to verify it yourself.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/never-leaves-guarantee">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The Never-Leaves Guarantee: What It Means When Your Data Stays on Your Phone",
+    "description": "DailyVox's Never-Leaves Guarantee means zero data ever leaves your device — no servers, no cloud AI, no analytics. Here's how to verify it yourself.",
+    "url": "https://getdailyvox.com/blog/never-leaves-guarantee",
+    "datePublished": "2026-05-22",
+    "dateModified": "2026-05-22",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/never-leaves-guarantee" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the Never-Leaves Guarantee?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Never-Leaves Guarantee is DailyVox's privacy commitment that your journal entries, voice recordings, AI analysis, and Digital Twin data never leave your device. It is not a policy promise — it is an architectural fact. DailyVox has no backend servers, no cloud APIs, and no network calls during any operation. There is literally no mechanism for your data to leave your phone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I verify that DailyVox doesn't send my data anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can verify it three ways: (1) Enable airplane mode and use every feature — voice recording, transcription, AI insights, Digital Twin — everything works identically because no server is involved. (2) Use a network proxy tool like Charles Proxy or Proxyman to monitor all network traffic while using DailyVox — you will see zero outbound requests. (3) Check the App Store privacy label, which reads 'Data Not Collected' — Apple's strictest possible classification."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between policy privacy and architectural privacy?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Policy privacy means a company promises not to misuse your data through a privacy policy or terms of service. These promises can change with an update, an acquisition, or a legal order. Architectural privacy means the system is physically incapable of accessing your data because no mechanism exists to transmit it. DailyVox uses architectural privacy — there are no servers, no APIs, and no endpoints. The guarantee cannot be broken by a policy change because it is enforced by the absence of infrastructure."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "If DailyVox has no servers, can my data be subpoenaed?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A subpoena requires a party that holds your data. DailyVox has no servers, no databases, and no copies of your journal entries. There is nothing to subpoena. Your data exists in exactly one place — your device — and accessing it would require physical possession of your phone and your passcode. This is fundamentally different from cloud-based apps where a government order can compel the company to hand over stored data."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does DailyVox run AI features without a server?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DailyVox uses Apple's on-device AI frameworks: Speech framework for voice transcription, Natural Language framework for sentiment analysis and text processing, and CoreML for machine learning inference. These frameworks run entirely on your device's neural engine — the same hardware that powers Face ID. No internet connection is needed, and no data is transmitted. This is why DailyVox works identically in airplane mode."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "The Never-Leaves Guarantee"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-privacy">Privacy</span>
+        <h1>The Never-Leaves Guarantee: What It Means When Your Data Stays on Your Phone</h1>
+        <p class="article-meta">May 22, 2026 &middot; 5 min read</p>
+      </div>
+
+      <div class="article-body">
+
+<p>The Never-Leaves Guarantee is DailyVox's privacy commitment: your journal entries, voice recordings, AI analysis, and Digital Twin data never leave your device. There are no servers to send data to &mdash; they don't exist. This isn't a policy promise that could change with a terms-of-service update. It's an architectural fact: DailyVox has no backend infrastructure, no cloud APIs, and no network calls during any operation. You can verify this yourself.</p>
+
+<p>Most apps that claim to protect your privacy are making a promise. They are telling you they <em>choose</em> not to misuse your data &mdash; for now. That promise lives inside a privacy policy that can be rewritten at any time, by any future owner, for any reason. The Never-Leaves Guarantee is different. It is not a choice. It is a constraint built into the architecture of the software itself. The data cannot leave because there is nowhere for it to go.</p>
+
+<p>This article explains what the Never-Leaves Guarantee actually means at a technical level, how you can verify it yourself in under five minutes, why the absence of a server is more powerful than any encryption, and how other journal apps compare when you look at what actually happens to your data.</p>
+
+<nav style="background:rgba(94,43,255,0.04);border:1px solid rgba(94,43,255,0.12);border-radius:12px;padding:24px;margin:32px 0;">
+<strong>Table of Contents</strong>
+<ol style="margin:12px 0 0 0;padding-left:20px;line-height:2;">
+<li><a href="#what-is">What Is the Never-Leaves Guarantee?</a></li>
+<li><a href="#verify">How to Verify It Yourself</a></li>
+<li><a href="#no-server">What "No Server" Actually Means</a></li>
+<li><a href="#comparison">How Other Apps Compare</a></li>
+<li><a href="#policy-vs-architecture">The Difference Between Policy Privacy and Architectural Privacy</a></li>
+<li><a href="#faq">Frequently Asked Questions</a></li>
+<li><a href="#related">Related Articles</a></li>
+</ol>
+</nav>
+
+<!-- ============================================ -->
+<h2 id="what-is">What Is the Never-Leaves Guarantee?</h2>
+<!-- ============================================ -->
+
+<p>The Never-Leaves Guarantee is a statement about architecture, not about policy. It means that DailyVox was designed and built so that no data &mdash; not a single byte &mdash; ever leaves your device during any operation. This applies to every feature in the app:</p>
+
+<ul>
+<li><strong>Voice recordings</strong> are captured using the device microphone, stored in local storage, and never uploaded anywhere.</li>
+<li><strong>Transcription</strong> runs through Apple's on-device Speech framework. The audio is processed by the neural engine on your phone. No audio is transmitted to any server.</li>
+<li><strong>AI analysis</strong> &mdash; mood detection, sentiment analysis, pattern recognition &mdash; uses Apple's Natural Language framework and CoreML, both of which run entirely on-device.</li>
+<li><strong>Digital Twin data</strong> is built from your journal entries using local machine learning models. Your personality profile, conversational patterns, and insights exist only in local storage on your device.</li>
+<li><strong>Search and history</strong> queries your local database. There is no server-side search index.</li>
+</ul>
+
+<p>This is not a feature that can be toggled off. There is no "share with cloud" setting because there is no cloud to share with. The guarantee is enforced by the absence of infrastructure. DailyVox has no backend servers, no API endpoints, no database clusters, no cloud functions, no analytics dashboards, and no data pipelines. The developer cannot access your data because no mechanism exists to do so.</p>
+
+<p>When we say "never leaves," we mean it in the most literal sense. During a journaling session &mdash; from the moment you tap record to the moment you close the app &mdash; zero network requests are made. Not to DailyVox servers (they don't exist), not to Apple's AI servers (on-device frameworks don't need them), not to analytics providers (none are embedded), and not to crash reporting services (none are integrated). The app is a closed system that operates entirely within the boundaries of your device.</p>
+
+<!-- ============================================ -->
+<h2 id="verify">How to Verify It Yourself</h2>
+<!-- ============================================ -->
+
+<p>Privacy claims are only as good as their verifiability. Any app can say "we don't collect data." The question is whether you can independently confirm that claim. With DailyVox, you can. Here are three methods, ranging from simple to thorough.</p>
+
+<h3>Test 1: The Airplane Mode Test (30 seconds)</h3>
+
+<p>This is the simplest and most revealing privacy test you can run on any app:</p>
+
+<ol>
+<li>Enable airplane mode on your iPhone. Make sure Wi-Fi and cellular data are both off.</li>
+<li>Open DailyVox.</li>
+<li>Record a voice entry. Speak for 30 seconds or more.</li>
+<li>Wait for the transcription to complete.</li>
+<li>Check your AI insights and mood analysis.</li>
+<li>Open your Digital Twin and have a conversation.</li>
+<li>Browse your past entries and search your journal.</li>
+</ol>
+
+<p>Everything works. Every feature, every AI capability, every piece of functionality operates identically whether you are online, offline, in airplane mode, or in a concrete bunker with no cell signal. This is because none of these features depend on a network connection. If an app's AI features break in airplane mode, those features are running in the cloud &mdash; and your data is being sent there.</p>
+
+<h3>Test 2: Network Proxy Monitoring (5 minutes)</h3>
+
+<p>For a more thorough verification, use a network proxy tool to monitor every network request your phone makes while using DailyVox. Two excellent options are <a href="https://www.charlesproxy.com/" rel="nofollow">Charles Proxy</a> and <a href="https://proxyman.io/" rel="nofollow">Proxyman</a>. Both are available for macOS and can intercept all HTTP/HTTPS traffic from your iPhone.</p>
+
+<ol>
+<li>Install Charles Proxy or Proxyman on your Mac.</li>
+<li>Configure your iPhone to route traffic through the proxy (both tools provide step-by-step instructions).</li>
+<li>Install the proxy's SSL certificate on your iPhone to decrypt HTTPS traffic.</li>
+<li>Clear all existing traffic in the proxy.</li>
+<li>Open DailyVox and use it normally: record entries, review insights, interact with Digital Twin, browse history.</li>
+<li>Check the proxy log.</li>
+</ol>
+
+<p>The result: zero requests. No outbound connections. No pings. No telemetry. No heartbeat calls. Nothing. Compare this with other apps you use daily &mdash; you will likely see dozens or hundreds of network requests within seconds of opening them, to analytics providers, crash reporting services, ad networks, and cloud APIs.</p>
+
+<h3>Test 3: Check the App Store Privacy Label (1 minute)</h3>
+
+<p>Apple requires every app to disclose its data collection practices through App Store privacy labels. These labels are not self-reported without consequence &mdash; Apple audits them and can remove apps with inaccurate labels. To check DailyVox's label:</p>
+
+<ol>
+<li>Open the App Store and find DailyVox.</li>
+<li>Scroll down to the "App Privacy" section.</li>
+<li>Read the label.</li>
+</ol>
+
+<p>DailyVox's label reads: <strong>"Data Not Collected."</strong> This is Apple's strictest possible privacy classification. It means the developer has declared &mdash; and Apple has accepted &mdash; that the app collects no data whatsoever. Not "Data Not Linked to You" (which means data is collected but not tied to your identity). Not "Data Linked to You" (which means data is collected and associated with your account). The label says the app collects nothing, period.</p>
+
+<p>For comparison, here is what other journal apps report: Day One says "Data Linked to You." Reflectly says "Data Linked to You." Rosebud says "Data Linked to You." The App Store label is an imperfect system, but it is the closest thing to an independent audit that exists for every app on the platform.</p>
+
+<!-- ============================================ -->
+<h2 id="no-server">What "No Server" Actually Means</h2>
+<!-- ============================================ -->
+
+<p>When we say DailyVox has no server, we don't mean the servers are turned off, or that they are there but not collecting data, or that data is encrypted before it reaches them. We mean there are no servers. The infrastructure does not exist. There is no AWS account, no Google Cloud project, no Firebase database, no Heroku dyno, no Vercel deployment, no Lambda function, no API Gateway. Nothing.</p>
+
+<p>This matters more than most people realize. Here is what the absence of a server eliminates:</p>
+
+<h3>Nothing to breach</h3>
+
+<p>Data breaches require a centralized store of data. If a thousand users' journals are stored on a company's servers, a single breach exposes all of them. With DailyVox, there is no centralized store. Each user's data exists only on their own device. To access a user's journal, an attacker would need physical access to that specific phone and the ability to bypass its passcode and biometric authentication. There is no single point of failure that exposes multiple users simultaneously.</p>
+
+<h3>No employee access</h3>
+
+<p>At every company that operates servers, some employees have access to production data. Database administrators, on-call engineers, support staff with elevated permissions &mdash; the list varies, but it is never zero. Insider threats, whether malicious or accidental, are a real and documented risk. With DailyVox, there are zero employees with access to your data because there is no system to access. The developer could not read your journal entries even if they wanted to.</p>
+
+<h3>No government subpoena target</h3>
+
+<p>Governments can compel companies to hand over user data through subpoenas, court orders, and national security letters. Companies that hold your data can be forced to turn it over, regardless of their privacy policy. Some orders even come with gag provisions that prevent the company from telling you. DailyVox cannot comply with a data request because there is no data to provide. A subpoena sent to DailyVox for your journal entries would yield nothing &mdash; not because the developer refuses to comply, but because the data does not exist anywhere the developer can access it.</p>
+
+<h3>No acquisition risk</h3>
+
+<p>When a company is acquired, the acquiring company inherits its data. Privacy policies often include clauses that allow data transfer during acquisitions. Day One was acquired by Automattic in 2021, and all user data on Day One's servers became Automattic's data. Even if the original company had strong privacy values, the new owner may not. With DailyVox, an acquisition transfers the app code and brand &mdash; not user data, because user data was never collected.</p>
+
+<h3>No shutdown risk</h3>
+
+<p>When a cloud-based app shuts down, your data is at the mercy of the shutdown timeline. You might get 30 days to export, or you might get an email after the servers are already offline. With DailyVox, a company shutdown would mean the app stops receiving updates. Your data, sitting on your device, is completely unaffected. Your journal entries will still be there, fully readable, fully functional, long after the company ceases to operate.</p>
+
+<!-- ============================================ -->
+<h2 id="comparison">How Other Apps Compare</h2>
+<!-- ============================================ -->
+
+<p>To understand why the Never-Leaves Guarantee is significant, it helps to see what other journal apps actually do with your data. We examined three popular alternatives and tracked where your data goes when you press "save."</p>
+
+<h3>Day One: Cloud Servers (Automattic)</h3>
+
+<p>Day One stores your journal entries on Automattic's cloud servers. When you write an entry, it is uploaded to their infrastructure. End-to-end encryption is available but optional &mdash; and was not present for years after launch, meaning early entries were stored unencrypted. Even with E2E encryption enabled, metadata (timestamps, entry frequency, device info) is accessible to Automattic. The app requires an account creation, links your identity to your journal, and embeds analytics SDKs that transmit usage data. Day One's App Store label reads "Data Linked to You." If Automattic receives a legal order, your metadata &mdash; and potentially your entries, depending on encryption status &mdash; can be compelled.</p>
+
+<h3>Rosebud: OpenAI API (Cloud AI Processing)</h3>
+
+<p>Rosebud sends your journal entries to cloud AI servers for processing. When you write an entry and receive AI-generated prompts, reflections, or insights, your text has been transmitted to an external API (GPT-based). This means your most intimate thoughts are being processed on servers operated by a third party. The app requires an account, links data to your identity, and does not function without an internet connection &mdash; confirming the cloud dependency. Rosebud's App Store label reads "Data Linked to You." Every AI feature that makes Rosebud appealing is a feature that requires your journal content to leave your device.</p>
+
+<h3>Calmplot: Optional Cloud Storage</h3>
+
+<p>Calmplot takes a better approach than most, storing data on-device by default with optional iCloud sync. However, it still uses some cloud infrastructure: iCloud sync means entries transit through Apple's servers (encrypted by Apple, not by Calmplot). The app has a minimal SDK footprint but does not achieve the complete absence of network calls that defines true on-device-only architecture. Calmplot is a reasonable choice for privacy-conscious users, but it does not meet the standard of the Never-Leaves Guarantee because data <em>can</em> leave the device through the sync layer.</p>
+
+<div style="overflow-x:auto;margin:24px 0;">
+<table style="width:100%;border-collapse:collapse;min-width:600px;font-size:14px;">
+<thead>
+<tr style="background:rgba(94,43,255,0.06);">
+<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;">Criteria</th>
+<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">DailyVox</th>
+<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Day One</th>
+<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Rosebud</th>
+<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Calmplot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Data leaves device</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">Never</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Always</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Always</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#d97706;">Optional sync</td>
+</tr>
+<tr style="background:rgba(10,11,16,0.02);">
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Server infrastructure</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">None exists</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Automattic cloud</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud + OpenAI</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Optional iCloud</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">AI processing location</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">On-device</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud (GPT)</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">None</td>
+</tr>
+<tr style="background:rgba(10,11,16,0.02);">
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Works in airplane mode</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">100%</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Partial</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">No</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Mostly</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">App Store privacy label</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">Data Not Collected</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Linked to You</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Linked to You</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Not Linked to You</td>
+</tr>
+<tr style="background:rgba(10,11,16,0.02);">
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Can be subpoenaed</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">No</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Yes</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Yes</td>
+<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#d97706;">Apple (iCloud only)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============================================ -->
+<h2 id="policy-vs-architecture">The Difference Between Policy Privacy and Architectural Privacy</h2>
+<!-- ============================================ -->
+
+<p>This is the most important distinction in digital privacy, and almost nobody talks about it.</p>
+
+<h3>Policy privacy: "We promise not to"</h3>
+
+<p>Policy privacy means a company collects your data but promises, through a privacy policy or terms of service, to handle it responsibly. They promise not to sell it. They promise to encrypt it. They promise to delete it when you ask. These promises may be genuine, and many companies do honor them. But they are promises, not guarantees. They can change.</p>
+
+<p>A privacy policy is a legal document, and legal documents get rewritten. When a company is acquired, the new owner's privacy policy takes effect. When a company needs revenue, data monetization becomes tempting. When a government issues a national security letter, the promise of privacy yields to the force of law. Every cloud-based journal app, no matter how well-intentioned, operates within this framework. Their privacy is contingent on the continued goodwill and legal independence of the company.</p>
+
+<h3>Architectural privacy: "We literally cannot"</h3>
+
+<p>Architectural privacy means the system is designed so that accessing user data is physically impossible. Not "against policy." Not "encrypted so it's hard." Impossible. The infrastructure to collect, store, or transmit user data does not exist. There is no server to receive data, no database to store it, no API to transmit it, and no analytics pipeline to process it.</p>
+
+<p>This is what the Never-Leaves Guarantee represents. It cannot be revoked by a policy update because it is not a policy. It cannot be undermined by an acquisition because there is no data to acquire. It cannot be circumvented by a court order because there is nothing to compel. The privacy is embedded in the architecture itself &mdash; in the <em>absence</em> of infrastructure, not in the <em>configuration</em> of infrastructure.</p>
+
+<h3>Why the distinction matters for journaling</h3>
+
+<p>A journal is not a social media post or a shopping list. It contains your unfiltered thoughts &mdash; fears, frustrations, relationship conflicts, health concerns, career anxieties, and moments of vulnerability that you would never share publicly. This is arguably the most sensitive data a person generates. The standard for protecting it should not be "we promise to be careful." It should be "it is impossible for anyone other than you to access it."</p>
+
+<p>Policy privacy protects your data from the company's current intentions. Architectural privacy protects your data from every possible future scenario: breaches, acquisitions, government orders, rogue employees, policy changes, and company shutdowns. Only one of these approaches provides a genuine guarantee.</p>
+
+<p>Think of it this way: policy privacy is a lock on a door. Architectural privacy is the absence of a door. You cannot pick a lock that does not exist.</p>
+
+<!-- ============================================ -->
+<h2 id="faq">Frequently Asked Questions</h2>
+<!-- ============================================ -->
+
+<h3>What is the Never-Leaves Guarantee?</h3>
+<p>The Never-Leaves Guarantee is DailyVox's privacy commitment that your journal entries, voice recordings, AI analysis, and Digital Twin data never leave your device. It is not a policy promise &mdash; it is an architectural fact. DailyVox has no backend servers, no cloud APIs, and no network calls during any operation. There is literally no mechanism for your data to leave your phone.</p>
+
+<h3>How can I verify that DailyVox doesn't send my data anywhere?</h3>
+<p>Three ways: (1) Enable airplane mode and use every feature &mdash; voice recording, transcription, AI insights, Digital Twin. Everything works identically because no server is involved. (2) Use a network proxy tool like Charles Proxy or Proxyman to monitor all traffic while using DailyVox &mdash; you will see zero outbound requests. (3) Check the App Store privacy label, which reads "Data Not Collected," Apple's strictest classification.</p>
+
+<h3>If DailyVox has no servers, can my data be subpoenaed?</h3>
+<p>No. A subpoena requires a party that holds your data. DailyVox has no servers, no databases, and no copies of your journal entries. There is nothing to hand over. Your data exists in exactly one place &mdash; your device &mdash; and accessing it would require physical possession of your phone and your passcode.</p>
+
+<h3>How does DailyVox run AI features without a server?</h3>
+<p>DailyVox uses Apple's on-device AI frameworks: Speech framework for voice transcription, Natural Language framework for sentiment analysis and text processing, and CoreML for machine learning inference. These run entirely on your device's neural engine. No internet connection is needed, and no data is transmitted. This is why every feature works in airplane mode.</p>
+
+<h3>What happens to my data if DailyVox shuts down?</h3>
+<p>Nothing. Your data lives on your device, not on DailyVox's servers (which don't exist). If the company shuts down, your journal entries remain exactly where they are &mdash; on your phone, fully accessible and fully functional. A company shutdown would only mean the app stops receiving updates. Your years of journal data are completely unaffected.</p>
+
+<!-- ============================================ -->
+<h2 id="related">Related Articles</h2>
+<!-- ============================================ -->
+
+        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(10,11,16,0.08)">
+          <ul style="list-style:none;padding:0;">
+            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5e2bff;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Actual Data Practices</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/complete-guide-to-private-journaling" style="color:#5e2bff;font-weight:500;">Complete Guide to Private Journaling</a></li>
+            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5e2bff;font-weight:500;">DailyVox Privacy Facts</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/signs-your-journal-app-is-selling-your-data" style="color:#5e2bff;font-weight:500;">5 Signs Your Journal App Is Selling Your Data</a></li>
+          </ul>
+        </div>
+
+        <div class="article-cta">
+          <h3>Try the Most Private Journal App</h3>
+          <p>DailyVox: zero data collection, no servers, no accounts. The Never-Leaves Guarantee. Free.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
