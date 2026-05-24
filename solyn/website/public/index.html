@@ -2272,6 +2272,7 @@
       .hero-grid { grid-template-columns: 1fr; gap: 56px; }
       .specimen-wrap { max-width: 420px; margin: 0 auto; }
       .hero-stats { max-width: 100%; }
+      .hero-ctas { flex-wrap: wrap; }
       .live-body { grid-template-columns: 1fr; }
       .live-transcript { border-right: 0; border-bottom: 1px solid var(--rule); }
       .anatomy { grid-template-columns: 1fr 1fr; }
@@ -2288,10 +2289,40 @@
       .site-footer .wrap { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 640px) {
-      .hero { padding: 40px 0 48px; }
-      .hero-stats { grid-template-columns: 1fr 1fr; gap: 20px; row-gap: 20px; }
-      .hero-stats .st:nth-child(2) { border-right: 0; margin-right: 0; padding-right: 0; }
-      .hero-stats .st { border-right: 0; margin-right: 0; padding-right: 0; }
+      .hero { padding: 40px 0 50px; }
+      .hero h1 { font-size: 28px; line-height: 1.15; }
+      .hero-sub { font-size: 13px; max-width: 100%; line-height: 1.7; }
+      .kicker { font-size: 9px; padding: 4px 10px 4px 6px; }
+      .hero-ctas { flex-direction: column; gap: 8px; }
+      .hero-ctas .btn-primary,
+      .hero-ctas .btn-ghost { width: 100%; justify-content: center; text-align: center; font-size: 12px; padding: 12px 16px; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .hero-stats .st { border-right: none; margin-right: 0; padding: 0; }
+      .hero-stats .st-val { font-size: 18px; }
+      .specimen-wrap { max-width: 100%; aspect-ratio: 1.2; border-radius: 16px; }
+      .live-strip { margin: 24px auto 0; border-radius: 8px; }
+      .live-body { grid-template-columns: 1fr; }
+      .live-text { font-size: 15px; min-height: 60px; }
+      .live-readout { display: none; }
+      .sec-title { font-size: 24px !important; }
+      .sec-sub { font-size: 14px; }
+      .steps { gap: 12px; }
+      .step { padding: 20px 18px; }
+      .step h3 { font-size: 17px; }
+      .step p { font-size: 13px; }
+      .step-icon { width: 40px; height: 40px; font-size: 15px; }
+      .why-grid { gap: 12px; }
+      .why-card { padding: 24px 20px; }
+      .why-stat { font-size: 36px; }
+      .faq-grid { gap: 12px; }
+      .faq-item { padding: 20px; }
+      .faq-item h3 { font-size: 15px; }
+      .newsletter-box { padding: 28px 16px; }
+      .nl-title { font-size: 24px; }
+      .wrap { padding: 0 16px; }
+      .compare table { font-size: 11px; }
+      .compare table th,
+      .compare table td { padding: 8px 6px; }
       .nav { display: none; }
       .anatomy { grid-template-columns: 1fr; }
       .anatomy .organ:first-child { grid-column: 1; }
@@ -2422,6 +2453,47 @@
     }
     @media (max-width: 768px) {
       .why-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    /* ── Digital Twin Vision grid ── */
+    .twin-vision-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+    .tv-card {
+        background: var(--card);
+        border: 1px solid var(--rule);
+        border-radius: var(--r);
+        padding: 28px 24px;
+        transition: border-color .2s, transform .2s;
+    }
+    .tv-card:hover {
+        border-color: var(--uv-edge);
+        transform: translateY(-2px);
+    }
+    .tv-icon {
+        font-size: 24px;
+        margin-bottom: 14px;
+    }
+    .tv-card h3 {
+        font-family: var(--display);
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        margin-bottom: 8px;
+    }
+    .tv-card p {
+        font-size: 13px;
+        color: var(--ink-dim);
+        line-height: 1.6;
+    }
+    @media (max-width: 768px) {
+        .twin-vision-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+        .twin-vision-grid { grid-template-columns: 1fr; gap: 12px; }
+        .tv-card { padding: 20px 18px; }
     }
 
     /* ── FAQ — inline grid ── */
@@ -2606,26 +2678,24 @@
           <div class="hero-copy">
             <div class="kicker">
               <span class="pip"></span>
-              a personal ai
+              your digital twin
               <span class="divider">·</span>
-              lives on your phone
+              42 seconds a day
             </div>
             <h1>
-              Meet your<br>
-              <span class="accent">Twin</span><span class="bio-dot"></span><br>
-              grown from your voice.
+              Your voice builds<br>
+              a <span class="accent">Digital Twin</span><span class="bio-dot"></span><br>
+              that knows you.
             </h1>
             <p class="hero-sub">
-              DailyVox listens, transcribes, and <strong>quietly builds a model of your personality</strong>
-              — every word of it running on-device. No cloud, no accounts, no one watching. Just
-              <em>you</em>, observed by yourself.
+              Speak for 42 seconds a day. DailyVox transcribes your voice on-device and builds a <strong>Digital Twin</strong> — an AI model of your personality, emotions, and inner world. It lives on your phone. It never leaves. It's <em>yours</em>.
             </p>
             <div class="hero-ctas">
               <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
                 Download free on iOS <span class="arr">→</span>
               </a>
               <a href="#specimen" class="btn-ghost">
-                Meet your Twin <span class="arr">↓</span>
+                What is a Digital Twin? <span class="arr">↓</span>
               </a>
             </div>
             <div class="hero-stats">
@@ -2728,6 +2798,48 @@
     </section>
 
     <div style="text-align:center;padding:20px 0;"><span style="color:var(--uv);opacity:0.25;font-size:14px;">· · ✦ · ·</span></div>
+
+    <!-- ═══ DIGITAL TWIN VISION ═══ -->
+    <section class="sec wrap">
+        <div class="sec-head" style="max-width:720px;">
+            <div class="sec-tag">the vision</div>
+            <h2 class="sec-title">
+                Your Digital Twin is the <em>most accurate mirror</em> of yourself that has ever existed.
+            </h2>
+            <p class="sec-sub">
+                It remembers everything you've shared. It sees patterns you can't. Over time, it learns how you think, how you feel, and who you mention. It predicts your mood before you journal. It answers questions about your personality. And it runs entirely on your phone — private, permanent, yours alone.
+            </p>
+        </div>
+
+        <div class="twin-vision-grid">
+            <div class="tv-card">
+                <div class="tv-icon" style="color:var(--bio);">✦</div>
+                <h3>Knows how you think</h3>
+                <p>Communication style, formality, reflection depth — measured across every entry.</p>
+            </div>
+            <div class="tv-card">
+                <div class="tv-icon" style="color:var(--vital);">✦</div>
+                <h3>Knows how you feel</h3>
+                <p>Emotional patterns, mood baselines, triggers — tracked over time with sentiment analysis.</p>
+            </div>
+            <div class="tv-card">
+                <div class="tv-icon" style="color:var(--uv);">✦</div>
+                <h3>Knows your world</h3>
+                <p>People, places, topics — a knowledge graph of everything that matters to you.</p>
+            </div>
+            <div class="tv-card">
+                <div class="tv-icon" style="color:var(--ray);">✦</div>
+                <h3>Predicts your tomorrow</h3>
+                <p>Mood forecasting using temporal, linguistic, and topic patterns from your past entries.</p>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:32px;">
+            <p style="font-family:var(--mono);font-size:12px;color:var(--ink-mute);letter-spacing:0.06em;">
+                Not a chatbot. Not a prompt tool. A <strong style="color:var(--ink);">private, evolving model of who you are</strong>.
+            </p>
+        </div>
+    </section>
 
     <!-- ═══ MEET YOUR TWIN — anatomical stage ═══ -->
     <section class="sec wrap">
@@ -3598,8 +3710,8 @@
           <span class="pip"></span>
           install · $0 · no account
         </div>
-        <h2>Start <em>talking</em>.<br>Your Twin is listening.</h2>
-        <p>Forty-two seconds a day. No writing. No subscription. No data collection. Your voice, your personality model, your phone.</p>
+        <h2>Start <em>talking</em>.<br>Your Twin is waiting to be born.</h2>
+        <p>Forty-two seconds a day. Your voice becomes a Digital Twin — a private AI that knows how you think, how you feel, and who matters to you. Free forever. No data ever leaves your phone.</p>
         <a href="https://apps.apple.com/app/id6760454642" class="btn-primary" style="font-size:14px;padding:16px 26px;">
           Download free on the App Store <span class="arr">→</span>
         </a>
