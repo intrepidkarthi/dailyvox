@@ -26,36 +26,43 @@ struct ContentView: View {
                 TodayView()
             }
             .tabItem {
-                Label("Today", systemImage: "sun.max")
+                Label("Record", systemImage: "mic.circle.fill")
             }
 
             NavigationStack {
                 TimelineView()
             }
             .tabItem {
-                Label("Timeline", systemImage: "list.bullet")
+                Label("Journal", systemImage: "book.closed.fill")
             }
 
             NavigationStack {
                 StatsView()
             }
             .tabItem {
-                Label("Insights", systemImage: "chart.bar")
+                Label("Insights", systemImage: "sparkle.magnifyingglass")
             }
 
             NavigationStack {
                 DigitalTwinView()
             }
             .tabItem {
-                Label("Twin", systemImage: "person.crop.circle.fill")
+                Label("Twin", systemImage: "star.circle.fill")
             }
 
             NavigationStack {
                 SettingsView()
             }
             .tabItem {
-                Label("Settings", systemImage: "gearshape")
+                Label("Settings", systemImage: "gearshape.fill")
             }
+        }
+        .onAppear {
+            // Warm tab bar appearance
+            let appearance = UITabBarAppearance()
+            appearance.configureWithDefaultBackground()
+            UITabBar.appearance().standardAppearance = appearance
+            UITabBar.appearance().scrollEdgeAppearance = appearance
         }
     }
 }

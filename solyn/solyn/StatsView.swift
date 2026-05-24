@@ -287,10 +287,10 @@ struct StatsView: View {
                 .font(.system(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
-                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: .blue)
-                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: .green)
-                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: .yellow)
-                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: .teal)
+                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: Color(red: 0.357, green: 0.486, blue: 0.420))
+                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: Color(red: 0.420, green: 0.620, blue: 0.482))
+                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: Color(red: 0.831, green: 0.647, blue: 0.278))
+                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: Color(red: 0.769, green: 0.584, blue: 0.416))
             }
         }
         .padding()
@@ -308,7 +308,7 @@ struct StatsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "sparkles")
-                            .foregroundColor(.teal)
+                            .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
                         Text("AI Insights")
                             .font(.system(.headline, design: .rounded))
                     }
@@ -346,7 +346,7 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "calendar")
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color(red: 0.357, green: 0.486, blue: 0.420))
                 Text("Weekly reflection")
                     .font(.system(.headline, design: .rounded))
             }
@@ -464,13 +464,13 @@ struct StatsView: View {
 
     private func colorFromName(_ name: String) -> Color {
         switch name {
-        case "orange": return .orange
-        case "green": return .green
-        case "blue": return .blue
-        case "yellow": return .yellow
-        case "pink": return .pink
-        case "purple": return .purple
-        case "indigo": return .indigo
+        case "orange": return Color(red: 0.769, green: 0.584, blue: 0.416)  // terracotta
+        case "green": return Color(red: 0.420, green: 0.620, blue: 0.482)   // forest green
+        case "blue": return Color(red: 0.357, green: 0.486, blue: 0.420)    // sage green
+        case "yellow": return Color(red: 0.831, green: 0.647, blue: 0.278)  // warm gold
+        case "pink": return Color(red: 0.741, green: 0.486, blue: 0.498)    // dusty rose
+        case "purple": return Color(red: 0.557, green: 0.467, blue: 0.592)  // muted plum
+        case "indigo": return Color(red: 0.420, green: 0.451, blue: 0.580)  // twilight blue
         default: return .secondary
         }
     }

@@ -41,6 +41,7 @@ struct TodayView: View {
     @State private var processingTimer: Timer?
     @State private var pulseScale: CGFloat = 1.0
     @State private var showFirstEntryMoment: Bool = false
+    @State private var firstTimePulse: Bool = false
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -211,12 +212,19 @@ struct TodayView: View {
 
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
+        let timeGreeting: String
         switch hour {
-        case 5..<12: return "Good morning"
-        case 12..<17: return "Good afternoon"
-        case 17..<21: return "Good evening"
-        default: return "Good night"
+        case 5..<12: timeGreeting = "Good morning"
+        case 12..<17: timeGreeting = "Good afternoon"
+        case 17..<21: timeGreeting = "Good evening"
+        default: timeGreeting = "Good night"
         }
+
+        // First-time warmth
+        if allEntries.isEmpty {
+            return "Welcome to your sky"
+        }
+        return timeGreeting
     }
 
     // MARK: - Prompts Section
@@ -340,24 +348,40 @@ struct TodayView: View {
             } else {
                 // No entry yet - show welcome card for first-time users
                 if allEntries.isEmpty {
-                    WelcomeCard()
+                    VStack(spacing: 16) {
+                        WelcomeCard()
+
+                        // First-time guided hint
+                        HStack(spacing: 12) {
+                            Image(systemName: "arrow.down")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                            Text("Tap the mic below to plant your first star")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 20)
+                        .background(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.08))
+                        .clipShape(Capsule())
+                    }
                 } else {
                     // Has entries but none today
                     VStack(spacing: 16) {
                         ZStack {
                             Circle()
-                                .fill(Color.accentColor.opacity(0.1))
+                                .fill(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.1))
                                 .frame(width: 80, height: 80)
-                            Image(systemName: "mic.fill")
-                                .font(.system(size: 32))
-                                .foregroundColor(.accentColor)
+                            Image(systemName: "mic.circle.fill")
+                                .font(.system(size: 36))
+                                .foregroundColor(Color(red: 0.357, green: 0.486, blue: 0.420))
                         }
 
                         VStack(spacing: 4) {
-                            Text("Ready to journal?")
+                            Text("Add a star to today's sky")
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            Text("Just 42 seconds — tap the mic and speak freely")
-                                .font(.subheadline)
+                            Text("Just 42 seconds — your constellation grows with every entry")
+                                .font(.system(size: 14, weight: .regular, design: .rounded))
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                         }
@@ -516,6 +540,17 @@ struct TodayView: View {
             }
         } label: {
             ZStack {
+                // First-time attention pulse
+                if allEntries.isEmpty && recordingState == .idle {
+                    Circle()
+                        .stroke(buttonColor.opacity(0.25), lineWidth: 2)
+                        .frame(width: recordButtonOuterSize + 20, height: recordButtonOuterSize + 20)
+                        .scaleEffect(firstTimePulse ? 1.3 : 1.0)
+                        .opacity(firstTimePulse ? 0 : 0.5)
+                        .animation(.easeOut(duration: 2.0).repeatForever(autoreverses: false), value: firstTimePulse)
+                        .onAppear { firstTimePulse = true }
+                }
+
                 // Warm ambient glow
                 Circle()
                     .fill(buttonColor.opacity(recordingState == .idle ? 0.12 : 0.06))
