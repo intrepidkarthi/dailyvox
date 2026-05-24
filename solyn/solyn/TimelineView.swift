@@ -126,6 +126,7 @@ struct TimelineView: View {
                     if let sectionEntries = groupedEntries[key] {
                         Section(header: VStack(alignment: .leading, spacing: 2) {
                             Text(sectionTitle(for: key))
+                                .font(.system(.headline, design: .rounded))
                             Text(sectionSummary(for: sectionEntries))
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
@@ -637,7 +638,7 @@ struct EntryRowView: View {
                     .font(.caption)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 6)
     }
 
     @ViewBuilder

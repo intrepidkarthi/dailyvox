@@ -65,6 +65,30 @@ struct EntryDetailView: View {
                         .padding(.horizontal)
                         .padding(.top, 4)
 
+                    // Life area tags
+                    if let text = entry.text, !text.isEmpty {
+                        let areas = detectLifeAreas(from: text)
+                        if !areas.isEmpty {
+                            HStack(spacing: 8) {
+                                ForEach(areas, id: \.self) { area in
+                                    HStack(spacing: 4) {
+                                        Image(systemName: area.icon)
+                                            .font(.caption2)
+                                        Text(area.rawValue)
+                                            .font(.caption2.weight(.medium))
+                                    }
+                                    .foregroundColor(area.color)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(area.color.opacity(0.1))
+                                    .clipShape(Capsule())
+                                }
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 4)
+                        }
+                    }
+
                     // Main content area
                     if isEditing {
                         editingView
@@ -121,7 +145,7 @@ struct EntryDetailView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(formattedFullDate)
-                        .font(.subheadline.weight(.medium))
+                        .font(.system(.subheadline, design: .rounded).weight(.medium))
                     if let updatedAt = entry.updatedAt {
                         Text("Updated \(formattedTime(updatedAt))")
                             .font(.caption)
@@ -186,7 +210,7 @@ struct EntryDetailView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Reading View
@@ -227,7 +251,7 @@ struct EntryDetailView: View {
             } else {
                 Text(text)
                     .font(.body)
-                    .lineSpacing(6)
+                    .lineSpacing(5)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .textSelection(.enabled)
@@ -235,7 +259,7 @@ struct EntryDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .padding(.horizontal)
         .padding(.vertical, 8)
         .onTapGesture {
@@ -269,10 +293,10 @@ struct EntryDetailView: View {
                 }
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
             .buttonStyle(.plain)
-            
+
             if showAIInsights, let analysis = aiAnalysis {
                 VStack(alignment: .leading, spacing: 16) {
                     // Emotion & Sentiment
@@ -355,11 +379,11 @@ struct EntryDetailView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.teal.opacity(0.05))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
@@ -379,7 +403,7 @@ struct EntryDetailView: View {
                 .frame(minHeight: 300)
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .padding(.horizontal)
                 .padding(.vertical, 8)
 

@@ -72,7 +72,7 @@ struct TodayView: View {
 
             VStack(spacing: 0) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 24) {
                         // Header
                         headerSection
 
@@ -120,7 +120,7 @@ struct TodayView: View {
                             .foregroundColor(.accentColor)
 
                         Text("Your first entry!")
-                            .font(.headline)
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
 
                         Text("Your Digital Twin just learned something new about you.")
                             .font(.subheadline)
@@ -180,7 +180,7 @@ struct TodayView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     Text(formattedToday)
-                        .font(.title.bold())
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
                 }
                 Spacer()
                 PrivacyBadge(compact: true)
@@ -275,6 +275,7 @@ struct TodayView: View {
                         if let text = entry.text, !text.isEmpty {
                             Text(text)
                                 .font(.body)
+                                .lineSpacing(4)
                                 .foregroundColor(.primary)
                                 .multilineTextAlignment(.leading)
                                 .lineLimit(nil)
@@ -332,7 +333,8 @@ struct TodayView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.04), radius: 12, y: 4)
                 }
                 .buttonStyle(.plain)
             } else {
@@ -353,7 +355,7 @@ struct TodayView: View {
 
                         VStack(spacing: 4) {
                             Text("Ready to journal?")
-                                .font(.headline)
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
                             Text("Just 42 seconds — tap the mic and speak freely")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
@@ -363,7 +365,7 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 32)
                     .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
             }
         }
@@ -485,7 +487,7 @@ struct TodayView: View {
                         .font(.subheadline.weight(.medium))
                         .foregroundColor(.primary)
                     Text("Your voice stays on this device")
-                        .font(.caption)
+                        .font(.caption.weight(.medium))
                         .foregroundColor(.secondary)
 
                     if let prompt = selectedPrompt {
@@ -548,7 +550,7 @@ struct TodayView: View {
     private var buttonColor: Color {
         switch recordingState {
         case .idle: return .accentColor
-        case .recording: return .red
+        case .recording: return ThemeManager.shared.recordingColor
         case .processing: return .orange
         }
     }

@@ -19,13 +19,13 @@ struct OnboardingView: View {
     private let pages: [OnboardingPage] = [
         OnboardingPage(
             icon: "brain.head.profile",
-            iconColor: .teal,
+            iconColor: Color(red: 0.357, green: 0.486, blue: 0.420),
             title: "Meet DailyVox Diary",
             subtitle: "The only AI that truly knows you",
             description: "Not just another diary. DailyVox Diary remembers your life — your dreams, struggles, the people you love, and what makes you, you.",
             gradient: [
-                Color(red: 5/255, green: 8/255, blue: 22/255),
-                Color(red: 34/255, green: 27/255, blue: 72/255)
+                Color(red: 30/255, green: 45/255, blue: 40/255),    // Deep forest
+                Color(red: 60/255, green: 85/255, blue: 70/255)     // Sage dark
             ]
         ),
         OnboardingPage(
@@ -35,30 +35,30 @@ struct OnboardingView: View {
             subtitle: "A mirror of your inner world",
             description: "Your Digital Twin learns your personality, emotional patterns, and the people and topics in your life. Watch it grow as you journal.",
             gradient: [
-                Color(red: 20/255, green: 12/255, blue: 48/255),
-                Color(red: 76/255, green: 36/255, blue: 90/255)
+                Color(red: 45/255, green: 35/255, blue: 55/255),    // Deep purple-brown
+                Color(red: 90/255, green: 65/255, blue: 80/255)     // Warm mauve
             ]
         ),
         OnboardingPage(
             icon: "chart.bar.fill",
-            iconColor: .orange,
+            iconColor: Color(red: 0.769, green: 0.584, blue: 0.416),
             title: "Insights That Matter",
             subtitle: "Understand yourself better",
             description: "Track mood trends, writing streaks, and emotional patterns. See your personal knowledge graph grow with the people, places, and topics in your life.",
             gradient: [
-                Color(red: 43/255, green: 25/255, blue: 33/255),
-                Color(red: 92/255, green: 51/255, blue: 63/255)
+                Color(red: 50/255, green: 38/255, blue: 30/255),    // Deep brown
+                Color(red: 120/255, green: 80/255, blue: 55/255)    // Warm amber
             ]
         ),
         OnboardingPage(
             icon: "lock.shield",
-            iconColor: .mint,
+            iconColor: Color(red: 0.420, green: 0.620, blue: 0.482),
             title: "100% Private. Always.",
             subtitle: "Your innermost thoughts stay yours",
             description: "All AI runs on YOUR device. No third-party servers. No accounts. Optionally sync via your personal iCloud. Your mind belongs only to you.",
             gradient: [
-                Color(red: 8/255, green: 10/255, blue: 24/255),
-                Color(red: 20/255, green: 40/255, blue: 60/255)
+                Color(red: 25/255, green: 40/255, blue: 38/255),    // Deep teal-green
+                Color(red: 50/255, green: 80/255, blue: 70/255)     // Forest green
             ]
         )
     ]
@@ -68,8 +68,8 @@ struct OnboardingView: View {
             // Background
             LinearGradient(
                 colors: currentPage < pages.count ? pages[currentPage].gradient : [
-                    Color(red: 15/255, green: 10/255, blue: 35/255),
-                    Color(red: 50/255, green: 30/255, blue: 80/255)
+                    Color(red: 40/255, green: 35/255, blue: 50/255),    // Deep warm purple
+                    Color(red: 85/255, green: 60/255, blue: 75/255)     // Warm plum
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -316,7 +316,7 @@ struct IntentionCard: View {
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 20))
-                        .foregroundColor(.purple)
+                        .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
                 }
             }
             .padding(.horizontal, 20)
@@ -327,7 +327,7 @@ struct IntentionCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(isSelected ? Color.purple.opacity(0.7) : Color.white.opacity(0.1), lineWidth: 1.5)
+                    .stroke(isSelected ? Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.7) : Color.white.opacity(0.1), lineWidth: 1.5)
             )
         }
         .buttonStyle(.plain)

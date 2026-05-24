@@ -11,6 +11,7 @@ import SwiftUI
 
 enum AppTheme: String, CaseIterable, Identifiable {
     case system = "System"
+    case ivory = "Ivory"    // Warm, premium default
     case light = "Light"
     case sage = "Sage"
     case lavender = "Lavender"
@@ -25,6 +26,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .system: return "circle.lefthalf.filled"
+        case .ivory: return "leaf.fill"
         case .light: return "sun.max"
         case .sage: return "leaf"
         case .lavender: return "sparkles"
@@ -38,6 +40,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     var colorScheme: ColorScheme? {
         switch self {
         case .system: return nil
+        case .ivory: return .light
         case .dark: return .dark
         default: return .light
         }
@@ -47,7 +50,9 @@ enum AppTheme: String, CaseIterable, Identifiable {
     var accentColor: Color {
         switch self {
         case .system, .light:
-            return Color(red: 0.4, green: 0.5, blue: 0.6)  // Soft blue-gray
+            return Color(red: 0.357, green: 0.486, blue: 0.420)  // Sage green (updated from blue-gray)
+        case .ivory:
+            return Color(red: 0.357, green: 0.486, blue: 0.420)  // #5B7C6B sage green
         case .sage:
             return Color(red: 0.45, green: 0.58, blue: 0.5)  // Soft sage green
         case .lavender:
@@ -87,8 +92,8 @@ final class ThemeManager: ObservableObject {
     }
 
     private init() {
-        let saved = defaults.string(forKey: themeKey) ?? AppTheme.system.rawValue
-        self.selectedTheme = AppTheme(rawValue: saved) ?? .system
+        let saved = defaults.string(forKey: themeKey) ?? AppTheme.ivory.rawValue
+        self.selectedTheme = AppTheme(rawValue: saved) ?? .ivory
     }
 
     // MARK: - Semantic Colors
@@ -117,5 +122,53 @@ final class ThemeManager: ObservableObject {
     /// Data visualization color (charts, meters, bars)
     var dataColor: Color {
         Color.teal
+    }
+
+    /// Warm background for Ivory theme, system default for others
+    var warmBackground: Color {
+        if selectedTheme == .ivory {
+            return Color(red: 0.980, green: 0.973, blue: 0.961)  // #FAF8F5 warm ivory
+        }
+        return Color(.systemGroupedBackground)
+    }
+
+    /// Warm card background
+    var warmCardBackground: Color {
+        if selectedTheme == .ivory {
+            return Color.white
+        }
+        return Color(.secondarySystemGroupedBackground)
+    }
+
+    /// Warm subtle fill for sections
+    var warmSubtleFill: Color {
+        if selectedTheme == .ivory {
+            return Color(red: 0.949, green: 0.929, blue: 0.910)  // #F2EDE8 warm beige
+        }
+        return Color(.tertiarySystemGroupedBackground)
+    }
+
+    /// Secondary accent (terracotta for ivory, muted for others)
+    var warmSecondaryAccent: Color {
+        if selectedTheme == .ivory {
+            return Color(red: 0.769, green: 0.584, blue: 0.416)  // #C4956A warm terracotta
+        }
+        return selectedTheme.accentColor.opacity(0.7)
+    }
+
+    /// Recording button color (warm coral for ivory, red for others)
+    var recordingColor: Color {
+        if selectedTheme == .ivory {
+            return Color(red: 0.831, green: 0.388, blue: 0.294)  // #D4634B warm coral
+        }
+        return .red
+    }
+
+    /// Success/confirmation color
+    var successColor: Color {
+        if selectedTheme == .ivory {
+            return Color(red: 0.420, green: 0.620, blue: 0.482)  // #6B9E7B soft forest green
+        }
+        return .green
     }
 }
