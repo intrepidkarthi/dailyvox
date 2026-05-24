@@ -68,32 +68,15 @@ struct TodayView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground)
+            ThemeManager.shared.warmBackground
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        // Header
-                        headerSection
-
-                        // Entry Card
-                        entryCardSection
-
-                        // Show prompts only before today's first entry is recorded
-                        if recordingState == .idle && latestEntry == nil {
-                            promptsSection
-                        }
-                    }
-                    .padding()
-                    .frame(maxWidth: isIPad ? 700 : .infinity)
-                    .frame(maxWidth: .infinity)
-                }
-
-                Spacer(minLength: 0)
-
-                // Recording controls at bottom
-                recordingSection
+            if allEntries.isEmpty && recordingState == .idle && latestEntry == nil {
+                // FIRST-TIME FOCUSED EXPERIENCE
+                firstTimeView
+            } else {
+                // NORMAL VIEW (existing)
+                normalView
             }
         }
         .alert("Recording Error", isPresented: Binding(
@@ -167,6 +150,123 @@ struct TodayView: View {
                     toggleRecording()
                 }
             }
+        }
+    }
+
+    // MARK: - First-Time Focused Experience
+
+    private var firstTimeView: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            // Gentle prompt
+            VStack(spacing: 24) {
+                // Small star icon
+                ZStack {
+                    Circle()
+                        .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.1))
+                        .frame(width: 64, height: 64)
+                    Circle()
+                        .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.2))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                }
+
+                VStack(spacing: 12) {
+                    Text("What's on your mind?")
+                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+
+                    Text("Tap the mic and speak for 42 seconds.\nYour first star will appear.")
+                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
+                }
+            }
+            .padding(.horizontal, 40)
+
+            Spacer()
+
+            // The mic button — large, centered, inviting
+            VStack(spacing: 20) {
+                Button {
+                    toggleRecording()
+                } label: {
+                    ZStack {
+                        // Pulsing ring
+                        Circle()
+                            .stroke(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.2), lineWidth: 2)
+                            .frame(width: 108, height: 108)
+                            .scaleEffect(firstTimePulse ? 1.3 : 1.0)
+                            .opacity(firstTimePulse ? 0 : 0.5)
+                            .animation(.easeOut(duration: 2.0).repeatForever(autoreverses: false), value: firstTimePulse)
+
+                        // Ambient glow
+                        Circle()
+                            .fill(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.08))
+                            .frame(width: 120, height: 120)
+                            .blur(radius: 15)
+
+                        // Outer ring
+                        Circle()
+                            .stroke(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.3), lineWidth: 4)
+                            .frame(width: 96, height: 96)
+
+                        // Main circle
+                        Circle()
+                            .fill(Color(red: 0.357, green: 0.486, blue: 0.420))
+                            .frame(width: 80, height: 80)
+
+                        // Mic icon
+                        Image(systemName: "mic.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.white)
+                    }
+                }
+                .buttonStyle(.plain)
+                .onAppear { firstTimePulse = true }
+
+                Text("Your voice stays on this device")
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundColor(.secondary)
+
+                // Privacy assurance
+                HStack(spacing: 6) {
+                    Image(systemName: "lock.shield.fill")
+                        .font(.caption2)
+                        .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                    Text("No servers. No accounts. 100% private.")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundColor(.secondary.opacity(0.7))
+                }
+            }
+
+            Spacer()
+                .frame(height: 60)
+        }
+    }
+
+    // MARK: - Normal View
+
+    private var normalView: some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerSection
+                    entryCardSection
+                    if recordingState == .idle && latestEntry == nil {
+                        promptsSection
+                    }
+                }
+                .padding()
+                .frame(maxWidth: isIPad ? 700 : .infinity)
+                .frame(maxWidth: .infinity)
+            }
+            Spacer(minLength: 0)
+            recordingSection
         }
     }
 
