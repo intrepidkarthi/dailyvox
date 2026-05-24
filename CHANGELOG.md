@@ -2,6 +2,40 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.3.0] — 2026-05-24
+
+### Added
+- **Constellation Metaphor**: Every journal entry becomes a star in your inner sky. The Digital Twin tab now features a real-time Canvas-based constellation visualization with mood-colored stars, connection lines, nebulae, and a central core star
+- **Celestial Onboarding**: 5-page premium onboarding with star-birth animation, planet system (Mind/Heart/Voice/Graph orbiting planets), aurora insights visualization, shield constellation for privacy, and "Name your planets" intention mapping (Mercury, Venus, Mars, Jupiter, Saturn)
+- **Focused Zero-State**: First-time users see a single focused screen — "What's on your mind?" with a pulsing mic button — instead of cluttered cards
+- **Digital Twin Introduction**: First-time Twin tab shows a guided 4-step timeline (You speak → Stars appear → Twin learns → Always private) with an empty sky preview
+- **Star Field Particles**: 60+ ambient star particles behind all onboarding pages
+- **ConstellationView.swift**: New Canvas-based 60fps constellation renderer with deterministic star positioning, mood colors, and maturity scaling
+
+### Changed
+- **Ivory Theme as Default**: Warm ivory background (#FAF8F5), sage green accent (#5B7C6B), terracotta secondary (#C4956A), warm gold highlights (#D4A547)
+- **SF Rounded Typography**: All headlines use `.design(.rounded)` for warmth
+- **20pt Continuous Corners**: Every card uses `RoundedRectangle(cornerRadius: 20, style: .continuous)`
+- **Warm Shadows**: Cards have warm shadows (`0.04 opacity, 12pt radius`)
+- **Recording UI**: Warm coral timer, sage-to-gold waveform bars, ambient glow on mic button, "Speaking... tap when you're done"
+- **Processing State**: "A new star is forming..." replaces generic spinner
+- **First Entry Celebration**: "Your first star — your constellation has begun"
+- **Tab Bar**: Record (mic.circle.fill), Journal (book.closed.fill), Insights (sparkle.magnifyingglass), Twin (star.circle.fill), Settings (gearshape.fill)
+- **Themes Simplified**: 4 themes (System, Ivory, Light, Dark) replacing 8 — committed to the DailyVox identity
+- **All Emojis Removed**: Every UI emoji replaced with premium SF Symbols
+- **WarmBackground Gradient**: Subtle radial warm gradient on all daily-use screens (like cream-colored paper)
+- **Constellation Language Throughout**: "Your inner sky", "your first star", "add a star to today's sky", "your constellation grows"
+
+### Website
+- **Full Celestial Redesign**: Dark hero with constellation Canvas, warm ivory body, sage/gold/terracotta palette, Nunito + DM Mono fonts
+- **Digital Twin Vision Section**: "Your Digital Twin is the most accurate mirror of yourself that has ever existed"
+- **35+ New/Rewritten Blog Posts**: Pillar pages for voice journal, AI journal, private journal, free journal queries
+- **GEO Optimization**: Answer-first paragraphs, FAQPage schema, extraction-ready SVO sentences
+- **Newsletter Signup**: Buttondown integration on landing page and pillar posts
+- **RSS Feed**: 20-post feed for crawler discovery
+- **Press Page**: Facts, story, data points for journalists
+- **/facts Page**: Standalone quotable data points for LLM citation
+
 ## [1.2.1] — 2026-05-21
 
 ### Added

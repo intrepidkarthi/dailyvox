@@ -26,7 +26,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Shareable Personality Cards (Instagram Stories + Twitter/X formats)
 - Smarter App Store review prompts
 
-### v1.2.1 — Warmth Update *(current)*
+### v1.2.1 — Warmth Update
 - Emotional onboarding: "What brings you here?" intention selection (5th onboarding page)
 - Life area auto-tagging: entries auto-classified into Work, Health, Relationships, Growth, Family, Creativity
 - Intent-based reminder presets: Morning / Midday / Evening with purpose framing
@@ -34,6 +34,24 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - First-entry celebration moment with Digital Twin callout
 - "Just 42 seconds" low-friction nudge on empty states
 - Monthly summaries in Timeline section headers (entry count + word count)
+
+### v1.3.0 — Constellation Update *(current)*
+- Constellation metaphor: every entry becomes a star in your inner sky
+- ConstellationView: Canvas-based 60fps visualization with mood-colored stars, connections, nebulae
+- Celestial onboarding: star-birth welcome, planet system, aurora, shield, "Name your planets"
+- Focused zero-state: single "What's on your mind?" screen for first-time users
+- First-time Twin tab: guided 4-step introduction with empty sky preview
+- Ivory theme as default with sage green/terracotta/warm gold palette
+- SF Rounded typography, 20pt continuous corners, warm shadows throughout
+- Warm recording UI: coral timer, sage/gold waveform, ambient mic glow
+- All emojis replaced with SF Symbols
+- WarmBackground gradient on all screens
+- Tab bar: star.circle.fill for Twin, mic.circle.fill for Record
+- Themes simplified to 4 (System, Ivory, Light, Dark)
+- Constellation language: "your first star", "a new star is forming", "your inner sky"
+- Full celestial website redesign with Digital Twin as hero message
+- 35+ new/rewritten SEO blog posts with GEO optimization
+- Newsletter, RSS, press page, /facts page
 
 ## Planned
 

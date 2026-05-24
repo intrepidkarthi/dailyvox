@@ -7,17 +7,23 @@
 [![GitHub stars](https://img.shields.io/github/stars/intrepidkarthi/dailyvox?style=for-the-badge&logo=github)](https://github.com/intrepidkarthi/dailyvox/stargazers)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://github.com/intrepidkarthi/dailyvox/blob/main/LICENSE)
 
-DailyVox is a **free voice journal app** for iOS that turns your spoken thoughts into a searchable, AI-powered diary — entirely on your device. No accounts, no cloud servers, no data collection. It is the **private journal app** built for people who value both convenience and privacy.
+DailyVox is a **free voice journal app** for iOS that turns your spoken thoughts into a constellation of stars — each entry a point of light in your inner sky. Speak for 42 seconds, and DailyVox transcribes your voice on-device, analyzes your mood, and builds a **Digital Twin** — a private AI model of your personality that lives on your phone.
 
-Speak naturally, and DailyVox transcribes everything offline using Apple's on-device Speech framework. Over time, the app builds a **Digital Twin** — an on-device AI model of your personality, emotional patterns, and the people and topics in your life. Think of it as an **AI diary app** that actually understands you, without ever sending a byte of your data anywhere.
+Your Digital Twin learns how you think, how you feel, and who matters to you. Over time, it predicts your mood, answers questions about your patterns, and reveals constellations of meaning only you can see. No accounts, no cloud servers, no data collection. The **most private AI journal app** available — Apple's "Data Not Collected" privacy label.
 
 **Your thoughts never leave your device. Ever.**
 
 [Download Free](https://apps.apple.com/app/id6760454642) | [Website](https://getdailyvox.com) | [Blog](https://getdailyvox.com/blog) | [Facts & Data](https://getdailyvox.com/facts) | [Press Kit](https://getdailyvox.com/press) | [DailyVoxTwin Engine](https://github.com/intrepidkarthi/DailyVoxTwin)
 
+### What's New: v1.3 Constellation Update
+
+Every journal entry is now a star. Your Digital Twin view features a real-time constellation visualization — mood-colored stars connected by patterns only you can see. The app has been redesigned with a warm celestial identity: ivory backgrounds, sage green accents, rounded typography, and premium animations throughout. [Read the full story →](https://getdailyvox.com/blog/constellation-update)
+
 ---
 
 ## Screenshots
+
+> **Note:** Screenshots below are from v1.2. Updated v1.3 screenshots with the constellation design coming soon.
 
 <p align="center">
   <img src="solyn/AppStore/screenshots/iPhone_67/01_TodayView.png" width="180" alt="DailyVox voice journal app - Today view with daily entries" />
