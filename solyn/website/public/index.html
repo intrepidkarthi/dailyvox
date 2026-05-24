@@ -200,10 +200,10 @@
     .hero-grid {
       position: relative; z-index: 1;
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 48px;
+      grid-template-columns: 1fr 0.85fr;
+      gap: 56px;
       align-items: center;
-      min-height: 540px;
+      min-height: 480px;
     }
 
     .kicker {
@@ -227,12 +227,12 @@
 
     .hero h1 {
       font-family: var(--display);
-      font-size: clamp(44px, 6.2vw, 88px);
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      line-height: 1.0;
+      font-size: clamp(34px, 4.2vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.12;
       color: #F4EEE0;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .hero h1 .accent {
       color: var(--uv);
@@ -251,11 +251,11 @@
     }
 
     .hero-sub {
-      font-size: 18px;
-      line-height: 1.6;
-      color: rgba(244,238,224,0.7);
-      max-width: 520px;
-      margin-bottom: 36px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(244,238,224,0.6);
+      max-width: 460px;
+      margin-bottom: 32px;
     }
     .hero-sub strong { color: #F4EEE0; font-weight: 600; }
     .hero-sub em { color: var(--bio); font-style: normal; font-weight: 500; }
@@ -311,8 +311,8 @@
     .hero-stats .st:last-child { border-right: 0; margin-right: 0; }
     .hero-stats .st-val {
       font-family: var(--display);
-      font-size: 28px; font-weight: 600;
-      letter-spacing: -0.025em;
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.02em;
       color: #F4EEE0;
       line-height: 1;
     }
@@ -330,37 +330,20 @@
     .specimen-wrap {
       position: relative;
       aspect-ratio: 1;
-      max-width: 520px;
+      max-width: 480px;
       margin-left: auto;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(244,238,224,0.08);
+      box-shadow:
+        0 0 80px rgba(91,124,107,0.12),
+        0 0 160px rgba(212,165,71,0.06),
+        inset 0 0 60px rgba(26,26,46,0.5);
     }
 
-    .spec-corner {
-      position: absolute;
-      width: 16px; height: 16px;
-      border: 1px solid rgba(244,238,224,0.25);
-    }
-    .spec-corner.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-    .spec-corner.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
-    .spec-corner.bl { bottom: 0; left: 0; border-right: 0; border-top: 0; }
-    .spec-corner.br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+    .spec-corner { display: none; }
 
-    .spec-label {
-      position: absolute;
-      font-family: var(--mono); font-size: 10px;
-      color: rgba(244,238,224,0.45); letter-spacing: 0.1em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .spec-label.sl-tl { top: -18px; left: 0; }
-    .spec-label.sl-tr { top: -18px; right: 0; }
-    .spec-label.sl-bl { bottom: -18px; left: 0; }
-    .spec-label.sl-br { bottom: -18px; right: 0; }
-    .spec-label .dot-bio {
-      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--bio); box-shadow: 0 0 0 3px var(--bio-soft);
-      margin-right: 6px; vertical-align: 1px;
-      animation: breathe 2s ease-in-out infinite;
-    }
+    .spec-label { display: none; }
 
     svg.specimen {
       width: 100%; height: 100%;
@@ -1478,13 +1461,13 @@
        LIVE TRANSCRIPT STRIP
        ═════════════════════════════════════════════ */
     .live-strip {
-      background: var(--card);
-      border: 1px solid var(--rule);
+      background: rgba(244,238,224,0.06);
+      border: 1px solid rgba(244,238,224,0.1);
       border-radius: var(--r);
       margin: 40px auto 0;
       max-width: 1100px;
       overflow: hidden;
-      box-shadow: 0 40px 80px -48px rgba(26,26,46,0.15);
+      box-shadow: 0 40px 80px -48px rgba(0,0,0,0.3);
       position: relative;
     }
     .live-strip::before {
@@ -1499,10 +1482,10 @@
     .live-head {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 18px;
-      background: var(--paper);
-      border-bottom: 1px solid var(--rule);
+      background: rgba(244,238,224,0.04);
+      border-bottom: 1px solid rgba(244,238,224,0.08);
       font-family: var(--mono); font-size: 10px;
-      color: var(--ink-mute);
+      color: rgba(244,238,224,0.5);
       letter-spacing: 0.1em; text-transform: uppercase;
     }
     .live-head .lh-title {
@@ -1522,7 +1505,7 @@
     }
     .live-transcript {
       padding: 28px;
-      border-right: 1px solid var(--rule);
+      border-right: 1px solid rgba(244,238,224,0.08);
       min-height: 220px;
     }
     .live-wave {
@@ -1539,10 +1522,10 @@
 
     .live-text {
       font-family: var(--display);
-      font-size: 22px;
-      line-height: 1.45;
-      letter-spacing: -0.015em;
-      color: var(--ink);
+      font-size: 19px;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      color: #F4EEE0;
       font-weight: 500;
       min-height: 96px;
     }
@@ -1555,7 +1538,7 @@
     @keyframes caret { 50% { opacity: 0; } }
 
     .live-readout {
-      background: var(--paper);
+      background: rgba(244,238,224,0.03);
       padding: 20px 24px;
       display: flex; flex-direction: column; gap: 10px;
     }
@@ -1570,12 +1553,12 @@
     .rout-row:last-child { border-bottom: 0; }
     .rout-lbl {
       font-family: var(--mono); font-size: 10px;
-      color: var(--ink-mute); letter-spacing: 0.1em;
+      color: rgba(244,238,224,0.4); letter-spacing: 0.1em;
       text-transform: uppercase;
     }
     .rout-val {
       font-family: var(--mono); font-size: 12px;
-      color: var(--ink); font-weight: 500;
+      color: rgba(244,238,224,0.8); font-weight: 500;
       letter-spacing: -0.01em;
     }
     .rout-val .chip {
@@ -2665,18 +2648,9 @@
             </div>
           </div>
 
-          <!-- ═ SPECIMEN ═ -->
+          <!-- ═ CONSTELLATION ═ -->
           <div class="specimen-wrap" id="specimen">
-            <span class="spec-corner tl" aria-hidden="true"></span>
-            <span class="spec-corner tr" aria-hidden="true"></span>
-            <span class="spec-corner bl" aria-hidden="true"></span>
-            <span class="spec-corner br" aria-hidden="true"></span>
-
-            <canvas id="heroConstellation" style="width:100%;height:100%;display:block;cursor:crosshair;"></canvas>
-            <div class="spec-label sl-tl"><span class="dot-bio"></span> on-device</div>
-            <div class="spec-label sl-tr">twin_v1.2</div>
-            <div class="spec-label sl-bl">captured</div>
-            <div class="spec-label sl-br">entries &middot; &infin;</div>
+            <canvas id="heroConstellation" style="width:100%;height:100%;display:block;"></canvas>
           </div>
         </div>
 
