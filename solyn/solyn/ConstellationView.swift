@@ -36,8 +36,9 @@ struct ConstellationView: View {
     var showLabels: Bool = false
     var clusterLabels: [String] = []
 
-    @State private var animationTime: Double = 0
+    @State private var animationTime: Double = Date().timeIntervalSinceReferenceDate
     @State private var appeared = false
+    private let timer = Timer.publish(every: 1.0 / 30.0, on: .main, in: .common).autoconnect()
 
     // Palette
     private let warmGold   = Color(red: 0.831, green: 0.647, blue: 0.278)  // #D4A547
@@ -56,27 +57,28 @@ struct ConstellationView: View {
             let stars = generateStars(in: size)
             let conns = buildConnections(stars: stars)
 
-            TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
-                let t = timeline.date.timeIntervalSinceReferenceDate
+            Canvas { context, canvasSize in
+                let t = animationTime
 
-                Canvas { context, canvasSize in
-                    // Layer 1: Deep background
-                    drawBackground(context: context, size: canvasSize, time: t)
+                // Layer 1: Deep background
+                drawBackground(context: context, size: canvasSize, time: t)
 
-                    // Layer 2: Nebula clouds
-                    drawNebulae(context: context, size: canvasSize, stars: stars, time: t)
+                // Layer 2: Nebula clouds
+                drawNebulae(context: context, size: canvasSize, stars: stars, time: t)
 
-                    // Layer 3: Connection lines
-                    drawConnections(context: context, size: canvasSize, stars: stars, connections: conns, time: t)
+                // Layer 3: Connection lines
+                drawConnections(context: context, size: canvasSize, stars: stars, connections: conns, time: t)
 
-                    // Layer 4: Stars
-                    drawStars(context: context, size: canvasSize, stars: stars, time: t)
+                // Layer 4: Stars
+                drawStars(context: context, size: canvasSize, stars: stars, time: t)
 
-                    // Layer 5: Core star (Digital Twin center)
-                    if starCount > 0 {
-                        drawCoreStar(context: context, size: canvasSize, time: t)
-                    }
+                // Layer 5: Core star (Digital Twin center)
+                if starCount > 0 {
+                    drawCoreStar(context: context, size: canvasSize, time: t)
                 }
+            }
+            .onReceive(timer) { _ in
+                animationTime = Date().timeIntervalSinceReferenceDate
             }
             .overlay {
                 // Label overlays (SwiftUI text on top of Canvas)
