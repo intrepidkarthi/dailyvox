@@ -187,13 +187,14 @@
       position: relative;
       padding: 60px 0 80px;
       overflow: hidden;
+      background: linear-gradient(160deg, #1A1A2E 0%, #16213E 50%, #241E2E 100%);
     }
     .hero::before {
       content: '';
       position: absolute; inset: -40px 0 0;
       background:
-        radial-gradient(700px 500px at 75% 20%, var(--uv-wash), transparent 60%),
-        radial-gradient(500px 400px at 20% 80%, rgba(212,165,71,0.05), transparent 60%);
+        radial-gradient(700px 500px at 75% 20%, rgba(91,124,107,0.12), transparent 60%),
+        radial-gradient(500px 400px at 20% 80%, rgba(212,165,71,0.08), transparent 60%);
       pointer-events: none; z-index: 0;
     }
     .hero-grid {
@@ -208,11 +209,11 @@
     .kicker {
       display: inline-flex; align-items: center; gap: 8px;
       font-family: var(--mono); font-size: 11px;
-      color: var(--ink-dim); letter-spacing: 0.06em;
+      color: rgba(244,238,224,0.7); letter-spacing: 0.06em;
       text-transform: uppercase; font-weight: 500;
       padding: 5px 12px 5px 8px;
-      background: var(--card);
-      border: 1px solid var(--rule);
+      background: rgba(244,238,224,0.08);
+      border: 1px solid rgba(244,238,224,0.12);
       border-radius: 100px;
       margin-bottom: 28px;
     }
@@ -230,7 +231,7 @@
       font-weight: 600;
       letter-spacing: -0.035em;
       line-height: 1.0;
-      color: var(--ink);
+      color: #F4EEE0;
       margin-bottom: 24px;
     }
     .hero h1 .accent {
@@ -252,12 +253,12 @@
     .hero-sub {
       font-size: 18px;
       line-height: 1.6;
-      color: var(--ink-dim);
+      color: rgba(244,238,224,0.7);
       max-width: 520px;
       margin-bottom: 36px;
     }
-    .hero-sub strong { color: var(--ink); font-weight: 600; }
-    .hero-sub em { color: var(--uv); font-style: normal; font-weight: 500; }
+    .hero-sub strong { color: #F4EEE0; font-weight: 600; }
+    .hero-sub em { color: var(--bio); font-style: normal; font-weight: 500; }
 
     .hero-ctas {
       display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
@@ -265,7 +266,7 @@
     }
     .btn-primary {
       display: inline-flex; align-items: center; gap: 10px;
-      background: var(--ink); color: var(--paper);
+      background: var(--uv); color: #F4EEE0;
       font-family: var(--mono); font-size: 13px; font-weight: 600;
       padding: 14px 22px;
       border-radius: var(--r-sm);
@@ -281,29 +282,29 @@
       transition: transform .7s;
     }
     .btn-primary:hover::before { transform: translateX(120%); }
-    .btn-primary:hover { background: var(--uv); transform: translateY(-1px); }
+    .btn-primary:hover { background: var(--bio); transform: translateY(-1px); }
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 10px;
       font-family: var(--mono); font-size: 13px; font-weight: 500;
-      color: var(--ink);
+      color: #F4EEE0;
       padding: 14px 20px;
-      border: 1px solid var(--rule-2);
+      border: 1px solid rgba(244,238,224,0.25);
       border-radius: var(--r-sm);
       letter-spacing: -0.01em;
       transition: border-color .15s, background .15s;
     }
-    .btn-ghost:hover { border-color: var(--ink); background: var(--card); }
+    .btn-ghost:hover { border-color: #F4EEE0; background: rgba(244,238,224,0.08); }
 
     .hero-stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
-      border-top: 1px solid var(--rule);
+      border-top: 1px solid rgba(244,238,224,0.12);
       padding-top: 24px;
       max-width: 540px;
     }
     .hero-stats .st {
-      border-right: 1px solid var(--rule);
+      border-right: 1px solid rgba(244,238,224,0.12);
       padding: 0 16px 0 0;
       margin-right: 16px;
     }
@@ -312,14 +313,14 @@
       font-family: var(--display);
       font-size: 28px; font-weight: 600;
       letter-spacing: -0.025em;
-      color: var(--ink);
+      color: #F4EEE0;
       line-height: 1;
     }
-    .hero-stats .st-val .unit { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); font-weight: 500; margin-left: 2px; }
+    .hero-stats .st-val .unit { font-family: var(--mono); font-size: 12px; color: rgba(244,238,224,0.5); font-weight: 500; margin-left: 2px; }
     .hero-stats .st-lbl {
       margin-top: 6px;
       font-family: var(--mono); font-size: 10px;
-      color: var(--ink-mute); letter-spacing: 0.08em;
+      color: rgba(244,238,224,0.45); letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
@@ -336,7 +337,7 @@
     .spec-corner {
       position: absolute;
       width: 16px; height: 16px;
-      border: 1px solid var(--ink);
+      border: 1px solid rgba(244,238,224,0.25);
     }
     .spec-corner.tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
     .spec-corner.tr { top: 0; right: 0; border-left: 0; border-bottom: 0; }
@@ -346,7 +347,7 @@
     .spec-label {
       position: absolute;
       font-family: var(--mono); font-size: 10px;
-      color: var(--ink-mute); letter-spacing: 0.1em;
+      color: rgba(244,238,224,0.45); letter-spacing: 0.1em;
       text-transform: uppercase;
       white-space: nowrap;
     }
@@ -1289,7 +1290,7 @@
       pointer-events: none;
     }
     .forecast::after {
-      content: 'organ · 05';
+      content: 'constellation · 05';
       position: absolute;
       top: 16px; right: 22px;
       font-family: var(--mono); font-size: 10px;
@@ -2191,6 +2192,7 @@
     .final {
       padding: 120px 0 100px;
       text-align: center;
+      background: linear-gradient(160deg, #1A1A2E 0%, #16213E 50%, #241E2E 100%);
       position: relative;
       overflow: hidden;
     }
@@ -2198,11 +2200,11 @@
       content: ''; position: absolute;
       inset: -40px 0 0;
       background:
-        radial-gradient(600px 400px at 50% 30%, var(--uv-wash), transparent 60%),
-        radial-gradient(400px 300px at 50% 70%, rgba(212,165,71,0.05), transparent 60%);
+        radial-gradient(600px 400px at 50% 30%, rgba(91,124,107,0.12), transparent 60%),
+        radial-gradient(400px 300px at 50% 70%, rgba(212,165,71,0.08), transparent 60%);
       pointer-events: none;
     }
-    .final .wrap { position: relative; }
+    .final .wrap { position: relative; z-index: 1; }
     .final h2 {
       font-family: var(--display);
       font-size: clamp(48px, 7vw, 104px);
@@ -2210,14 +2212,16 @@
       letter-spacing: -0.045em;
       line-height: 0.94;
       margin-bottom: 24px;
+      color: #F4EEE0;
     }
-    .final h2 em { color: var(--uv); font-style: italic; font-weight: 500; }
+    .final h2 em { color: var(--bio); font-style: italic; font-weight: 500; }
     .final p {
       font-size: 18px; line-height: 1.55;
-      color: var(--ink-dim);
+      color: rgba(244,238,224,0.65);
       max-width: 520px; margin: 0 auto 36px;
     }
-    .final .kicker { margin: 0 auto 28px; }
+    .final .kicker { margin: 0 auto 28px; background: rgba(244,238,224,0.08); border-color: rgba(244,238,224,0.12); color: rgba(244,238,224,0.7); }
+    .final .kicker .pip { background: var(--bio); box-shadow: 0 0 0 3px var(--bio-soft); }
 
     /* ═════════════════════════════════════════════
        FOOTER
@@ -2668,116 +2672,11 @@
             <span class="spec-corner bl" aria-hidden="true"></span>
             <span class="spec-corner br" aria-hidden="true"></span>
 
-            <span class="spec-label sl-tl"><span class="dot-bio"></span>subject · self</span>
-            <span class="spec-label sl-tr">id · twin_v1.2</span>
-            <span class="spec-label sl-bl">captured · on-device</span>
-            <span class="spec-label sl-br">entries · 142</span>
-
-            <svg class="specimen mind-portrait" viewBox="-180 -180 360 360" aria-label="Portrait of the Twin — the mind" id="specimenSvg">
-              <defs>
-                <radialGradient id="auraP" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#5B7C6B" stop-opacity="0.38"/>
-                  <stop offset="40%" stop-color="#5B7C6B" stop-opacity="0.14"/>
-                  <stop offset="100%" stop-color="#5B7C6B" stop-opacity="0"/>
-                </radialGradient>
-                <radialGradient id="mindOrb" cx="38%" cy="34%" r="62%">
-                  <stop offset="0%" stop-color="#f2ecff"/>
-                  <stop offset="30%" stop-color="#7A9B8A"/>
-                  <stop offset="65%" stop-color="#5B7C6B"/>
-                  <stop offset="100%" stop-color="#1a0560"/>
-                </radialGradient>
-                <radialGradient id="innerGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-                  <stop offset="35%" stop-color="#ffffff" stop-opacity="0.3"/>
-                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-                </radialGradient>
-              </defs>
-
-              <!-- deep ambient aura -->
-              <circle class="aura-p" r="160" fill="url(#auraP)"/>
-
-              <!-- scientific viewport rings -->
-              <circle class="ring-p ring-outer" r="155" fill="none"/>
-              <circle class="ring-p ring-mid"   r="115" fill="none" stroke-dasharray="2 5"/>
-              <circle class="ring-p ring-core"  r="75"  fill="none"/>
-
-              <!-- cross axes -->
-              <line class="axis-p" x1="-155" y1="0" x2="155" y2="0"/>
-              <line class="axis-p" x1="0" y1="-155" x2="0" y2="155"/>
-
-              <!-- perimeter ticks -->
-              <g id="ticks"></g>
-
-              <!-- radiating energy spokes from center (faint) -->
-              <g class="spokes">
-                <line class="spoke" x1="0" y1="0" x2="0" y2="-130"/>
-                <line class="spoke" x1="0" y1="0" x2="92" y2="-92"/>
-                <line class="spoke" x1="0" y1="0" x2="130" y2="0"/>
-                <line class="spoke" x1="0" y1="0" x2="92" y2="92"/>
-                <line class="spoke" x1="0" y1="0" x2="0" y2="130"/>
-                <line class="spoke" x1="0" y1="0" x2="-92" y2="92"/>
-                <line class="spoke" x1="0" y1="0" x2="-130" y2="0"/>
-                <line class="spoke" x1="0" y1="0" x2="-92" y2="-92"/>
-              </g>
-
-              <!-- orbit rings (decorative paths) -->
-              <ellipse class="orbit-ring" rx="95" ry="58" fill="none" transform="rotate(-22)"/>
-              <ellipse class="orbit-ring" rx="110" ry="78" fill="none" transform="rotate(38)"/>
-              <circle  class="orbit-ring" r="132" fill="none"/>
-
-              <!-- orbital particles (CSS-rotated groups) -->
-              <g class="orbit-g orbit-1">
-                <circle cx="0" cy="-95" r="3.5" class="orbit-p p-bio"/>
-              </g>
-              <g class="orbit-g orbit-2">
-                <circle cx="0" cy="-75" r="2.8" class="orbit-p p-vital"/>
-              </g>
-              <g class="orbit-g orbit-3">
-                <circle cx="0" cy="-110" r="2.2" class="orbit-p p-ray"/>
-              </g>
-              <g class="orbit-g orbit-4">
-                <circle cx="0" cy="-132" r="3" class="orbit-p p-uv"/>
-              </g>
-              <g class="orbit-g orbit-5">
-                <circle cx="0" cy="-88" r="2" class="orbit-p p-ink"/>
-              </g>
-              <g class="orbit-g orbit-6">
-                <circle cx="0" cy="-125" r="2.5" class="orbit-p p-bio"/>
-              </g>
-
-              <!-- central mind orb — the essence -->
-              <g class="mind-group">
-                <circle class="mind-halo" r="64" fill="url(#auraP)"/>
-                <circle class="mind-orb" r="54" fill="url(#mindOrb)"/>
-                <!-- inner highlight -->
-                <circle class="mind-inner-glow" cx="-14" cy="-16" r="32" fill="url(#innerGlow)"/>
-              </g>
-
-              <!-- neural activity cluster inside the core (pulsing nodes) -->
-              <g class="neural-cluster">
-                <circle class="node n-bio" cx="-16" cy="-10" r="1.8" data-lbl="reflection" data-val="0.91"/>
-                <circle class="node n-bio" cx="18" cy="-12" r="1.8" data-lbl="reflection" data-val="0.91"/>
-                <circle class="node n-ink" cx="-24" cy="8" r="1.6" data-lbl="formality" data-val="0.30"/>
-                <circle class="node n-ink" cx="24" cy="10" r="1.6" data-lbl="openness" data-val="0.76"/>
-                <circle class="node n-vital" cx="0" cy="20" r="1.8" data-lbl="expressive" data-val="0.68"/>
-                <circle class="node n-vital" cx="-10" cy="-24" r="1.4" data-lbl="curiosity" data-val="0.84"/>
-                <circle class="node n-vital" cx="10" cy="-22" r="1.4" data-lbl="clarity" data-val="0.72"/>
-              </g>
-
-              <!-- scanning line (vertical sweep) -->
-              <line class="scan-line" x1="-155" x2="155" y1="-160" y2="-160">
-                <animate attributeName="y1" values="-160;160;-160" dur="7s" repeatCount="indefinite"/>
-                <animate attributeName="y2" values="-160;160;-160" dur="7s" repeatCount="indefinite"/>
-              </line>
-
-              <!-- perimeter readouts — state, not anatomy -->
-              <text class="readout" x="0" y="-165" text-anchor="middle">MIND · AWAKE</text>
-              <text class="readout" x="0" y="170" text-anchor="middle">LEARNING</text>
-              <text class="readout" x="-160" y="4" text-anchor="start">LISTENING</text>
-              <text class="readout" x="160" y="4" text-anchor="end">LIVE</text>
-            </svg>
-
-            <div class="hover-readout" id="hoverReadout"></div>
+            <canvas id="heroConstellation" style="width:100%;height:100%;display:block;cursor:crosshair;"></canvas>
+            <div class="spec-label sl-tl"><span class="dot-bio"></span> on-device</div>
+            <div class="spec-label sl-tr">twin_v1.2</div>
+            <div class="spec-label sl-bl">captured</div>
+            <div class="spec-label sl-br">entries &middot; &infin;</div>
           </div>
         </div>
 
@@ -2823,6 +2722,8 @@
       </div>
     </section>
 
+    <div style="text-align:center;padding:20px 0;"><span style="color:var(--bio);opacity:0.3;font-size:18px;">✦</span></div>
+
     <!-- ═══ HOW IT WORKS — simple 3-step ═══ -->
     <section class="sec wrap">
       <div class="sec-head">
@@ -2852,19 +2753,19 @@
       </div>
     </section>
 
+    <div style="text-align:center;padding:20px 0;"><span style="color:var(--uv);opacity:0.25;font-size:14px;">· · ✦ · ·</span></div>
+
     <!-- ═══ MEET YOUR TWIN — anatomical stage ═══ -->
     <section class="sec wrap">
       <div class="sec-head">
         <div class="sec-tag">meet your Twin</div>
-        <h2 class="sec-title">
-          An <em>anatomy</em> of your Twin.
-        </h2>
+        <h2 class="sec-title">The <em>constellations</em> within your Twin.</h2>
         <p class="sec-sub">
-          Your Twin isn't one model — it's four, each one reading a different region. <strong>Mind</strong>
-          for how you think, <strong>voice</strong> for how you speak, <strong>heart</strong> for how you
-          feel, and a <strong>graph</strong> of who and what you mention. Below it all, a <strong>forecast</strong> of
-          where you're headed.
-        </p>
+    Your Twin isn't one model — it's four constellations, each mapping a different dimension. <strong>Mind</strong>
+    for how you think, <strong>Voice</strong> for how you speak, <strong>Heart</strong> for how you
+    feel, and a <strong>Graph</strong> of who and what you mention. Below it all, a <strong>forecast</strong> of
+    where you're headed.
+</p>
       </div>
 
       <div class="twin-stage">
@@ -2873,8 +2774,8 @@
         <div class="twin-stage-col">
           <article class="annot-card annot-left" data-region="mind">
             <div class="annot-head">
-              <span class="annot-id">organ · 01</span>
-              <span class="annot-part">● head → mind</span>
+              <span class="annot-id">constellation · 01</span>
+              <span class="annot-part">✦ mind</span>
             </div>
             <h3>Mind.</h3>
             <p class="annot-desc">How you think — reflection, openness, formality — traced across cognitive bands.</p>
@@ -2917,8 +2818,8 @@
 
           <article class="annot-card annot-left" data-region="voice">
             <div class="annot-head">
-              <span class="annot-id">organ · 02</span>
-              <span class="annot-part">● throat → voice</span>
+              <span class="annot-id">constellation · 02</span>
+              <span class="annot-part">✦ voice</span>
             </div>
             <h3>Voice signature.</h3>
             <p class="annot-desc">How you speak — rhythm, tone, pace — measured as a live acoustic fingerprint.</p>
@@ -3122,8 +3023,8 @@
         <div class="twin-stage-col">
           <article class="annot-card annot-right" data-region="heart">
             <div class="annot-head">
-              <span class="annot-id">organ · 03</span>
-              <span class="annot-part">heart → emotion ●</span>
+              <span class="annot-id">constellation · 03</span>
+              <span class="annot-part">✦ heart</span>
             </div>
             <h3>Emotional signature.</h3>
             <p class="annot-desc">How you feel — valence, arousal, dominance — as a breathing field of colour.</p>
@@ -3138,8 +3039,8 @@
 
           <article class="annot-card annot-right" data-region="graph">
             <div class="annot-head">
-              <span class="annot-id">organ · 04</span>
-              <span class="annot-part">body → graph ●</span>
+              <span class="annot-id">constellation · 04</span>
+              <span class="annot-part">✦ graph</span>
             </div>
             <h3>Knowledge graph.</h3>
             <p class="annot-desc">Who and what you mention — weighted by how you feel when you mention them.</p>
@@ -3175,7 +3076,7 @@
       <div class="forecast">
         <div class="forecast-head">
           <div class="fh-left">
-            <span class="fh-id">organ · 05 · forecast</span>
+            <span class="fh-id">constellation · 05 · forecast</span>
             <h3>Tomorrow's mood.</h3>
           </div>
           <div class="fh-tomorrow">
@@ -3338,11 +3239,13 @@
       </div>
     </section>
 
+    <div style="text-align:center;padding:20px 0;"><span style="color:var(--bio);opacity:0.25;font-size:14px;">✦ · · ✦ · · ✦</span></div>
+
     <!-- ═══ PRIVACY — stark dark block ═══ -->
     <section class="privacy">
       <div class="wrap">
         <div class="sec-head">
-          <div class="sec-tag">what leaves your phone</div>
+          <div class="sec-tag">your data shield</div>
           <h2 class="sec-title">
             <em>Nothing</em>. On purpose.
           </h2>
@@ -3373,6 +3276,11 @@
             <div class="pn-val is-signal">—</div>
             <div class="pn-lbl">account required</div>
             <div class="pn-desc">Data Not Collected — Apple's strictest privacy label.</div>
+          </div>
+          <div style="grid-column: 1 / -1; text-align: center; padding-top: 24px; border-top: 1px solid rgba(244,238,224,0.08);">
+            <span style="font-family: var(--mono); font-size: 11px; color: rgba(244,238,224,0.35); letter-spacing: 0.12em; text-transform: uppercase;">
+                ✦ your constellation is shielded ✦
+            </span>
           </div>
         </div>
       </div>
@@ -3633,6 +3541,8 @@
       </div>
     </section>
 
+    <div style="text-align:center;padding:20px 0;"><span style="color:var(--uv);opacity:0.2;font-size:14px;">· ✦ ·</span></div>
+
     <!-- ═══ FOUNDER ═══ -->
     <section class="sec wrap">
       <div class="sec-head" style="margin-bottom: 32px;">
@@ -3720,6 +3630,7 @@
           Download free on the App Store <span class="arr">→</span>
         </a>
       </div>
+      <canvas id="ctaStars" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
     </section>
 
   </main>
@@ -3761,80 +3672,13 @@
         </ul>
       </div>
       <div class="sf-bottom">
-        <span>© 2026 DailyVox · built on-device, by hand · Space Grotesk / Inter / JetBrains Mono</span>
-        <span class="live-tag"><span class="dot"></span> systems.ok · network 0 rpc</span>
+        <span>© 2026 DailyVox · built on-device, by hand · Nunito / Inter / DM Mono</span>
+        <span class="live-tag"><span class="dot"></span> ✦ constellation.ok · data on-device</span>
       </div>
     </div>
   </footer>
 
   <script>
-    // ──────────────────────────────────────────────
-    // Perimeter tick marks on the specimen
-    // ──────────────────────────────────────────────
-    (function(){
-      const ticks = document.getElementById('ticks');
-      if (!ticks) return;
-      const R = 180;
-      const inner = 172;
-      for (let i = 0; i < 72; i++) {
-        const a = (i/72) * Math.PI * 2;
-        const major = i % 6 === 0;
-        const rIn = major ? 166 : 170;
-        const x1 = Math.cos(a)*R, y1 = Math.sin(a)*R;
-        const x2 = Math.cos(a)*rIn, y2 = Math.sin(a)*rIn;
-        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-        line.setAttribute('class','tick');
-        line.setAttribute('x1',x1.toFixed(2));
-        line.setAttribute('y1',y1.toFixed(2));
-        line.setAttribute('x2',x2.toFixed(2));
-        line.setAttribute('y2',y2.toFixed(2));
-        line.setAttribute('stroke-width', major ? 1.2 : 0.7);
-        line.setAttribute('opacity', major ? 0.7 : 0.35);
-        ticks.appendChild(line);
-      }
-    })();
-
-    // ──────────────────────────────────────────────
-    // Specimen interaction — parallax + hover readout
-    // ──────────────────────────────────────────────
-    (function(){
-      const wrap = document.querySelector('.specimen-wrap');
-      const svg = document.getElementById('specimenSvg');
-      const readout = document.getElementById('hoverReadout');
-      if (!wrap || !svg) return;
-
-      // gentle parallax on pointer move
-      wrap.addEventListener('pointermove', (e) => {
-        const r = wrap.getBoundingClientRect();
-        const dx = (e.clientX - r.left - r.width/2) / r.width;
-        const dy = (e.clientY - r.top - r.height/2) / r.height;
-        svg.style.transform = `translate(${dx*6}px, ${dy*6}px)`;
-      });
-      wrap.addEventListener('pointerleave', () => {
-        svg.style.transform = 'translate(0,0)';
-        readout.classList.remove('is-visible');
-      });
-      svg.style.transition = 'transform .18s cubic-bezier(.2,.8,.2,1)';
-
-      // node hover
-      svg.querySelectorAll('.node').forEach(n => {
-        n.addEventListener('pointerenter', (e) => {
-          const rect = wrap.getBoundingClientRect();
-          const cx = e.clientX - rect.left;
-          const cy = e.clientY - rect.top;
-          readout.textContent = n.dataset.lbl + ' · ' + n.dataset.val;
-          readout.style.left = cx + 'px';
-          readout.style.top = cy + 'px';
-          readout.classList.add('is-visible');
-          n.setAttribute('r', (parseFloat(n.getAttribute('r'))+2).toFixed(1));
-        });
-        n.addEventListener('pointerleave', () => {
-          readout.classList.remove('is-visible');
-          n.setAttribute('r', (parseFloat(n.getAttribute('r'))-2).toFixed(1));
-        });
-      });
-    })();
-
     // ──────────────────────────────────────────────
     // Live streaming transcript + readout
     // ──────────────────────────────────────────────
@@ -3928,7 +3772,7 @@
           v:`<div class="viz-chips">
                <span style="color:var(--uv);border-color:var(--uv-edge);background:var(--uv-wash);font-weight:600;">Sarah · person</span>
                <span style="color:var(--ray);border-color:rgba(212,99,75,0.3);background:var(--ray-soft);font-weight:600;">project deadline · topic</span>
-               <span style="color:#5B7C6B;border-color:var(--bio-edge);background:var(--bio-soft);font-weight:600;">sentiment +0.62</span>
+               <span style="color:var(--uv);border-color:var(--bio-edge);background:var(--bio-soft);font-weight:600;">sentiment +0.62</span>
                <span>noun · verb · adverb</span>
              </div>`,
         },
@@ -3936,12 +3780,12 @@
           k:'stage 04 · model',
           t:'Update your <em>Twin</em>.',
           b:"<code>TwinEngine</code> ingests NLTagger signals and incrementally updates four sub-models — <code>CommunicationStyle</code>, <code>EmotionalSignature</code>, <code>PersonalKnowledgeGraph</code>, <code>TwinPredictions</code>. Every entry refines the personality vector.",
-          s:[['models','4 organs'],['style','TTR · expressive · direct'],['emotion','valence / arousal / dominance'],['update','per-entry · online']],
+          s:[['models','4 constellations'],['style','TTR · expressive · direct'],['emotion','valence / arousal / dominance'],['update','per-entry · online']],
           v:`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);">
                <div style="padding:9px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;"><div style="color:var(--uv);font-weight:600;margin-bottom:3px">expressive</div>0.62 → <strong style="color:var(--ink)">0.68</strong></div>
                <div style="padding:9px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;"><div style="color:var(--vital);font-weight:600;margin-bottom:3px">valence</div>+0.30 → <strong style="color:var(--ink)">+0.42</strong></div>
                <div style="padding:9px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;"><div style="color:var(--ray);font-weight:600;margin-bottom:3px">directness</div>0.55 → <strong style="color:var(--ink)">0.59</strong></div>
-               <div style="padding:9px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;"><div style="color:#5B7C6B;font-weight:600;margin-bottom:3px">graph</div>nodes 42 → <strong style="color:var(--ink)">44</strong></div>
+               <div style="padding:9px 11px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;"><div style="color:var(--uv);font-weight:600;margin-bottom:3px">graph</div>nodes 42 → <strong style="color:var(--ink)">44</strong></div>
              </div>`,
         },
         5:{
@@ -4082,6 +3926,262 @@
       });
     }, { threshold: 0.08 });
     secs.forEach(s => io.observe(s));
+  </script>
+
+  <script>
+// ════════════════════════════════════════
+// CONSTELLATION CANVAS — Hero visualization
+// ════════════════════════════════════════
+(function() {
+    const canvas = document.getElementById('heroConstellation');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const GOLD = '#D4A547';
+    const SAGE = '#5B7C6B';
+    const IVORY = '#F4EEE0';
+    const CORAL = '#D4634B';
+    const TERRA = '#C4956A';
+
+    let W, H, stars = [], connections = [], frame = 0;
+
+    function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+    }
+
+    // Deterministic pseudo-random
+    function hash(n) {
+        let s = BigInt(n) * 6364136223846793005n + 1442695040888963407n;
+        s = (s >> 33n) ^ s;
+        return Number((s < 0n ? -s : s) % 10000n) / 10000;
+    }
+
+    function initStars() {
+        stars = [];
+        const count = 35;
+        for (let i = 0; i < count; i++) {
+            const angle = hash(i) * Math.PI * 2;
+            const radius = 0.12 + Math.pow(hash(i + 1000), 0.7) * 0.35;
+            const x = 0.5 + Math.cos(angle) * radius;
+            const y = 0.5 + Math.sin(angle) * radius;
+            const colors = [GOLD, SAGE, IVORY, CORAL, TERRA];
+            stars.push({
+                x: Math.max(0.06, Math.min(0.94, x)),
+                y: Math.max(0.06, Math.min(0.94, y)),
+                size: 1.5 + hash(i + 2000) * 3.5,
+                color: colors[i % 5],
+                phase: hash(i + 3000) * Math.PI * 2,
+                brightness: 0.4 + hash(i + 4000) * 0.6,
+                depth: hash(i + 5000)
+            });
+        }
+        // Connections between nearby stars
+        connections = [];
+        for (let i = 0; i < stars.length; i++) {
+            for (let j = i + 1; j < stars.length; j++) {
+                const dx = stars[i].x - stars[j].x;
+                const dy = stars[i].y - stars[j].y;
+                const d = Math.sqrt(dx*dx + dy*dy);
+                if (d < 0.18) {
+                    connections.push({from: i, to: j, strength: 1 - d / 0.18});
+                }
+            }
+        }
+    }
+
+    function draw() {
+        frame++;
+        const t = frame / 30;
+        ctx.clearRect(0, 0, W, H);
+
+        // Background gradient
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#1A1A2E');
+        bg.addColorStop(0.5, '#16213E');
+        bg.addColorStop(1, '#241E2E');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // Dust particles
+        for (let i = 0; i < 50; i++) {
+            const x = hash(i + 8000) * W;
+            const y = hash(i + 9000) * H;
+            const twinkle = Math.sin(t * 0.5 + hash(i + 7000) * 10) * 0.3 + 0.3;
+            ctx.beginPath();
+            ctx.arc(x, y, 0.6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(244,238,224,' + (twinkle * 0.2) + ')';
+            ctx.fill();
+        }
+
+        // Nebula clouds
+        for (let i = 0; i < 3; i++) {
+            const cx = stars[i * 8] ? stars[i * 8].x * W : W * 0.5;
+            const cy = stars[i * 8] ? stars[i * 8].y * H : H * 0.5;
+            const breathe = Math.sin(t * 0.15 + i * 2) * 0.08 + 1;
+            const r = W * 0.2 * breathe;
+            const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+            const colors = [GOLD, SAGE, TERRA];
+            const nc = colors[i];
+            // Parse hex to rgba
+            const hr = parseInt(nc.slice(1,3),16);
+            const hg = parseInt(nc.slice(3,5),16);
+            const hb = parseInt(nc.slice(5,7),16);
+            grad.addColorStop(0, 'rgba(' + hr + ',' + hg + ',' + hb + ',0.06)');
+            grad.addColorStop(1, 'rgba(' + hr + ',' + hg + ',' + hb + ',0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Connection lines
+        connections.forEach(function(c) {
+            const s1 = stars[c.from], s2 = stars[c.to];
+            ctx.beginPath();
+            ctx.moveTo(s1.x * W, s1.y * H);
+            ctx.lineTo(s2.x * W, s2.y * H);
+            ctx.strokeStyle = 'rgba(244,238,224,' + (c.strength * 0.15) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.setLineDash([3, 6]);
+            ctx.lineDashOffset = -t * 8;
+            ctx.stroke();
+            ctx.setLineDash([]);
+        });
+
+        // Stars
+        stars.forEach(function(s) {
+            const pulse = Math.sin(t * 0.8 + s.phase) * 0.25 + 0.75;
+            const sz = s.size * pulse;
+            const cx = s.x * W, cy = s.y * H;
+
+            // Glow
+            const hr = parseInt(s.color.slice(1,3),16);
+            const hg = parseInt(s.color.slice(3,5),16);
+            const hb = parseInt(s.color.slice(5,7),16);
+            const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 4);
+            glow.addColorStop(0, 'rgba(' + hr + ',' + hg + ',' + hb + ',' + (s.brightness * 0.12) + ')');
+            glow.addColorStop(1, 'rgba(' + hr + ',' + hg + ',' + hb + ',0)');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(cx, cy, sz * 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core
+            ctx.beginPath();
+            ctx.arc(cx, cy, sz, 0, Math.PI * 2);
+            ctx.fillStyle = s.color;
+            ctx.globalAlpha = s.brightness * pulse;
+            ctx.fill();
+
+            // Hot center
+            ctx.beginPath();
+            ctx.arc(cx, cy, sz * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = IVORY;
+            ctx.globalAlpha = s.brightness * 0.7;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        });
+
+        // Core star (center)
+        const breathe = Math.sin(t * 0.4) * 0.12 + 1;
+        const ccx = W * 0.5, ccy = H * 0.48;
+
+        // Aura
+        const aura = ctx.createRadialGradient(ccx, ccy, 0, ccx, ccy, 50 * breathe);
+        aura.addColorStop(0, 'rgba(91,124,107,0.08)');
+        aura.addColorStop(1, 'rgba(91,124,107,0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(ccx, ccy, 50 * breathe, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core
+        ctx.beginPath();
+        ctx.arc(ccx, ccy, 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(91,124,107,0.9)';
+        ctx.fill();
+
+        // Hot
+        ctx.beginPath();
+        ctx.arc(ccx, ccy, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(244,238,224,0.85)';
+        ctx.fill();
+
+        // Cross flare
+        ctx.strokeStyle = 'rgba(244,238,224,0.1)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(ccx - 16 * breathe, ccy);
+        ctx.lineTo(ccx + 16 * breathe, ccy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(ccx, ccy - 12 * breathe);
+        ctx.lineTo(ccx, ccy + 12 * breathe);
+        ctx.stroke();
+
+        requestAnimationFrame(draw);
+    }
+
+    // Init
+    resize();
+    initStars();
+    draw();
+    window.addEventListener('resize', function() { resize(); initStars(); });
+})();
+  </script>
+
+  <script>
+// CTA star particles
+(function() {
+    const c = document.getElementById('ctaStars');
+    if (!c) return;
+    const x = c.getContext('2d');
+    function resize() {
+        const r = c.parentElement.getBoundingClientRect();
+        const d = window.devicePixelRatio || 1;
+        c.width = r.width * d;
+        c.height = r.height * d;
+        x.scale(d, d);
+        c.style.width = r.width + 'px';
+        c.style.height = r.height + 'px';
+    }
+    let f = 0;
+    const pts = [];
+    for (let i = 0; i < 40; i++) {
+        pts.push({
+            x: Math.random(),
+            y: Math.random(),
+            s: 0.5 + Math.random() * 1.5,
+            p: Math.random() * Math.PI * 2
+        });
+    }
+    function draw() {
+        f++;
+        const t = f / 30;
+        const W = c.width / (window.devicePixelRatio || 1);
+        const H = c.height / (window.devicePixelRatio || 1);
+        x.clearRect(0, 0, W, H);
+        pts.forEach(function(p) {
+            const tw = Math.sin(t * 0.6 + p.p) * 0.3 + 0.4;
+            x.beginPath();
+            x.arc(p.x * W, p.y * H, p.s, 0, Math.PI * 2);
+            x.fillStyle = 'rgba(244,238,224,' + (tw * 0.25) + ')';
+            x.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+})();
   </script>
 </body>
 </html>
