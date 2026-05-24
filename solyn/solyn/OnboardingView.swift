@@ -21,8 +21,8 @@ struct OnboardingView: View {
             icon: "person.crop.circle.fill",
             iconColor: .pink,
             title: "Meet Your Digital Twin",
-            subtitle: "A mirror of your inner world",
-            description: "Your Digital Twin learns your personality, emotional patterns, and the people and topics in your life. Watch it grow as you journal.",
+            subtitle: "The sun at the center of your sky",
+            description: "Your Digital Twin orbits your inner world — learning your personality, emotional patterns, and the people in your life. Four planets emerge: Mind, Heart, Voice, and Graph.",
             gradient: [
                 Color(red: 45/255, green: 35/255, blue: 55/255),    // Deep purple-brown
                 Color(red: 90/255, green: 65/255, blue: 80/255)     // Warm mauve
@@ -32,8 +32,8 @@ struct OnboardingView: View {
             icon: "chart.bar.fill",
             iconColor: Color(red: 0.769, green: 0.584, blue: 0.416),
             title: "Insights That Matter",
-            subtitle: "Understand yourself better",
-            description: "Track mood trends, writing streaks, and emotional patterns. See your personal knowledge graph grow with the people, places, and topics in your life.",
+            subtitle: "Patterns written in light",
+            description: "Like an aurora forming in your night sky, insights emerge from your journal entries. Mood trends, streaks, and emotional patterns — visible only when you look up.",
             gradient: [
                 Color(red: 50/255, green: 38/255, blue: 30/255),    // Deep brown
                 Color(red: 120/255, green: 80/255, blue: 55/255)    // Warm amber
@@ -43,8 +43,8 @@ struct OnboardingView: View {
             icon: "lock.shield",
             iconColor: Color(red: 0.420, green: 0.620, blue: 0.482),
             title: "100% Private. Always.",
-            subtitle: "Your innermost thoughts stay yours",
-            description: "All AI runs on YOUR device. No third-party servers. No accounts. Optionally sync via your personal iCloud. Your mind belongs only to you.",
+            subtitle: "A constellation no one else can see",
+            description: "Your stars are protected by an unbreakable shield. All AI runs on your device. No servers. No accounts. No one watches your sky but you.",
             gradient: [
                 Color(red: 25/255, green: 40/255, blue: 38/255),    // Deep teal-green
                 Color(red: 50/255, green: 80/255, blue: 70/255)     // Forest green
@@ -293,209 +293,342 @@ struct OnboardingPage {
 struct OnboardingPageView: View {
     let page: OnboardingPage
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var iconVisible = false
-    @State private var titleVisible = false
-    @State private var subtitleVisible = false
-    @State private var descVisible = false
-    @State private var decorVisible = false
+    @State private var animate1 = false
+    @State private var animate2 = false
+    @State private var animate3 = false
+    @State private var textOpacity: Double = 0
 
     private var isIPad: Bool { horizontalSizeClass == .regular }
 
+    // Warm palette
+    private let warmGold = Color(red: 0.831, green: 0.647, blue: 0.278)
+    private let sageGreen = Color(red: 0.357, green: 0.486, blue: 0.420)
+    private let softCoral = Color(red: 0.769, green: 0.451, blue: 0.420)
+    private let forestGreen = Color(red: 0.420, green: 0.620, blue: 0.482)
+    private let ivory = Color(red: 0.957, green: 0.933, blue: 0.878)
+
     var body: some View {
-        VStack(spacing: isIPad ? 36 : 28) {
+        VStack(spacing: 0) {
             Spacer()
 
-            // Unique visual per page (not just a circle with an icon)
-            pageVisual
-                .opacity(iconVisible ? 1 : 0)
-                .scaleEffect(iconVisible ? 1 : 0.8)
-                .padding(.bottom, 16)
+            // Each page gets a unique celestial visual
+            Group {
+                switch page.icon {
+                case "person.crop.circle.fill":
+                    twinPlanetSystem
+                case "chart.bar.fill":
+                    auroraInsights
+                case "lock.shield":
+                    shieldConstellation
+                default:
+                    twinPlanetSystem
+                }
+            }
+            .frame(height: isIPad ? 280 : 220)
+            .padding(.bottom, 24)
 
+            // Text with staggered fade
             VStack(spacing: 14) {
                 Text(page.title)
-                    .font(.system(size: isIPad ? 38 : 30, weight: .bold, design: .rounded))
+                    .font(.system(size: isIPad ? 36 : 28, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
-                    .opacity(titleVisible ? 1 : 0)
-                    .offset(y: titleVisible ? 0 : 16)
 
                 Text(page.subtitle)
-                    .font(.system(size: isIPad ? 18 : 16, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.75))
+                    .font(.system(size: isIPad ? 17 : 15, weight: .medium, design: .rounded))
+                    .foregroundColor(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
-                    .opacity(subtitleVisible ? 1 : 0)
-                    .offset(y: subtitleVisible ? 0 : 12)
 
                 Text(page.description)
-                    .font(.system(size: isIPad ? 16 : 14, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.55))
+                    .font(.system(size: isIPad ? 15 : 13, weight: .regular, design: .rounded))
+                    .foregroundColor(.white.opacity(0.5))
                     .multilineTextAlignment(.center)
                     .lineSpacing(5)
-                    .padding(.horizontal, 10)
-                    .opacity(descVisible ? 1 : 0)
-                    .offset(y: descVisible ? 0 : 8)
+                    .padding(.horizontal, 8)
             }
             .padding(.horizontal, isIPad ? 60 : 28)
             .frame(maxWidth: isIPad ? 600 : .infinity)
+            .opacity(textOpacity)
+            .offset(y: textOpacity > 0 ? 0 : 20)
 
             Spacer()
             Spacer()
         }
-        .onAppear { animateIn() }
-        .onDisappear { resetAnimation() }
-    }
-
-    @ViewBuilder
-    private var pageVisual: some View {
-        switch page.icon {
-        case "person.crop.circle.fill":
-            // Digital Twin: Mini constellation with orbiting dots
-            twinConstellation
-        case "chart.bar.fill":
-            // Insights: Animated rising bars
-            insightsBars
-        case "lock.shield":
-            // Privacy: Shield with pulsing rings
-            privacyShield
-        default:
-            genericIcon
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.8)) {
+                animate1 = true
+            }
+            withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
+                animate2 = true
+            }
+            withAnimation(.easeOut(duration: 1.0).delay(0.4)) {
+                animate3 = true
+            }
+            withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
+                textOpacity = 1
+            }
+        }
+        .onDisappear {
+            animate1 = false
+            animate2 = false
+            animate3 = false
+            textOpacity = 0
         }
     }
 
-    // --- Digital Twin: Mini constellation ---
-    private var twinConstellation: some View {
+    // MARK: - Page 1: Digital Twin = Your Personal Star System
+    // Central sun with 4 orbiting planets (Mind, Heart, Voice, Graph)
+
+    private var twinPlanetSystem: some View {
         ZStack {
-            // Outer orbit ring
+            // Outer orbit path
             Circle()
-                .stroke(page.iconColor.opacity(0.15), lineWidth: 1)
-                .frame(width: isIPad ? 200 : 160, height: isIPad ? 200 : 160)
-                .rotationEffect(.degrees(decorVisible ? 360 : 0))
-                .animation(.linear(duration: 30).repeatForever(autoreverses: false), value: decorVisible)
+                .stroke(ivory.opacity(0.08), lineWidth: 1)
+                .frame(width: isIPad ? 240 : 190, height: isIPad ? 240 : 190)
 
-            // Middle orbit ring
+            // Middle orbit path
             Circle()
-                .stroke(page.iconColor.opacity(0.2), lineWidth: 1)
-                .frame(width: isIPad ? 140 : 110, height: isIPad ? 140 : 110)
+                .stroke(ivory.opacity(0.12), lineWidth: 1)
+                .frame(width: isIPad ? 170 : 130, height: isIPad ? 170 : 130)
 
-            // Orbiting dots
-            ForEach(0..<5, id: \.self) { i in
+            // Inner orbit path
+            Circle()
+                .stroke(ivory.opacity(0.06), lineWidth: 0.5)
+                .frame(width: isIPad ? 260 : 210, height: isIPad ? 260 : 210)
+
+            // Planet: Mind (outer orbit, top)
+            planetDot(color: page.iconColor, size: 10, label: "Mind")
+                .offset(x: 0, y: isIPad ? -120 : -95)
+                .rotationEffect(.degrees(animate2 ? 360 : 0))
+                .animation(.linear(duration: 40).repeatForever(autoreverses: false), value: animate2)
+
+            // Planet: Heart (middle orbit, right)
+            planetDot(color: softCoral, size: 8, label: "Heart")
+                .offset(x: isIPad ? 85 : 65, y: 0)
+                .rotationEffect(.degrees(animate2 ? -360 : 0))
+                .animation(.linear(duration: 28).repeatForever(autoreverses: false), value: animate2)
+
+            // Planet: Voice (middle orbit, left)
+            planetDot(color: forestGreen, size: 9, label: "Voice")
+                .offset(x: isIPad ? -85 : -65, y: isIPad ? 30 : 20)
+                .rotationEffect(.degrees(animate2 ? 360 : 0))
+                .animation(.linear(duration: 34).repeatForever(autoreverses: false), value: animate2)
+
+            // Planet: Graph (outer orbit, bottom-right)
+            planetDot(color: warmGold, size: 7, label: "Graph")
+                .offset(x: isIPad ? 70 : 55, y: isIPad ? 90 : 70)
+                .rotationEffect(.degrees(animate2 ? -360 : 0))
+                .animation(.linear(duration: 50).repeatForever(autoreverses: false), value: animate2)
+
+            // Central sun (your Twin)
+            ZStack {
                 Circle()
-                    .fill(i % 2 == 0 ? Color(red: 0.831, green: 0.647, blue: 0.278) : page.iconColor)
-                    .frame(width: 6, height: 6)
-                    .offset(x: CGFloat(isIPad ? 70 : 55))
-                    .rotationEffect(.degrees(Double(i) * 72 + (decorVisible ? 360 : 0)))
-                    .animation(.linear(duration: 20 + Double(i) * 4).repeatForever(autoreverses: false), value: decorVisible)
-                    .shadow(color: page.iconColor.opacity(0.5), radius: 4)
+                    .fill(page.iconColor.opacity(animate1 ? 0.15 : 0))
+                    .frame(width: isIPad ? 100 : 80, height: isIPad ? 100 : 80)
+
+                Circle()
+                    .fill(page.iconColor.opacity(animate1 ? 0.3 : 0))
+                    .frame(width: isIPad ? 60 : 48, height: isIPad ? 60 : 48)
+                    .shadow(color: page.iconColor.opacity(0.5), radius: 16)
+
+                Circle()
+                    .fill(page.iconColor.opacity(0.7))
+                    .frame(width: isIPad ? 32 : 24, height: isIPad ? 32 : 24)
+
+                Circle()
+                    .fill(ivory.opacity(0.8))
+                    .frame(width: isIPad ? 14 : 10, height: isIPad ? 14 : 10)
+            }
+            .scaleEffect(animate1 ? 1.0 : 0.5)
+        }
+    }
+
+    // MARK: - Page 2: Insights = Aurora / Nebula Waves
+
+    private var auroraColors: [Color] {
+        [warmGold, page.iconColor, sageGreen, softCoral, forestGreen]
+    }
+
+    private var auroraOffsets: [CGFloat] { [-15, 10, -8, 12, -5] }
+
+    private var auroraInsights: some View {
+        ZStack {
+            // Aurora bands
+            ForEach(0..<5, id: \.self) { i in
+                let bandColor = auroraColors[i]
+                let bandWidth: CGFloat = isIPad ? CGFloat(220 - i * 25) : CGFloat(180 - i * 20)
+                let bandHeight: CGFloat = isIPad ? 6 : 4
+                let xOffset: CGFloat = animate2 ? auroraOffsets[i] : 0
+                let yOffset: CGFloat = CGFloat(i * (isIPad ? 28 : 22) - 50)
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: [bandColor.opacity(0.3), bandColor.opacity(0.05)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(width: bandWidth, height: bandHeight)
+                    .offset(x: xOffset, y: yOffset)
+                    .scaleEffect(x: animate1 ? 1.0 : 0.3, anchor: .center)
+                    .opacity(animate1 ? 1 : 0)
+                    .animation(
+                        .easeInOut(duration: 3.0 + Double(i) * 0.5)
+                        .repeatForever(autoreverses: true),
+                        value: animate2
+                    )
             }
 
-            // Core glow
+            // Data point stars emerging from aurora
+            auroraDataPoints
+
+            // Central insight orb
+            auroraOrb
+        }
+    }
+
+    private var auroraDataPoints: some View {
+        ForEach(0..<8, id: \.self) { i in
+            let angle = Double(i) * (.pi * 2 / 8) + 0.3
+            let radius: CGFloat = isIPad ? 80 : 65
+            let dotSize: CGFloat = CGFloat(2 + i % 3)
             Circle()
-                .fill(page.iconColor.opacity(0.2))
+                .fill(ivory.opacity(animate3 ? 0.6 : 0))
+                .frame(width: dotSize, height: dotSize)
+                .offset(
+                    x: cos(angle) * radius,
+                    y: sin(angle) * radius * 0.5
+                )
+                .animation(.easeOut(duration: 0.8).delay(Double(i) * 0.1), value: animate3)
+        }
+    }
+
+    private var auroraOrb: some View {
+        ZStack {
+            Circle()
+                .fill(page.iconColor.opacity(animate1 ? 0.12 : 0))
                 .frame(width: isIPad ? 80 : 64, height: isIPad ? 80 : 64)
 
             Circle()
                 .fill(page.iconColor.opacity(0.4))
-                .frame(width: isIPad ? 48 : 36, height: isIPad ? 48 : 36)
-                .shadow(color: page.iconColor.opacity(0.6), radius: 16)
+                .frame(width: isIPad ? 36 : 28, height: isIPad ? 36 : 28)
+                .shadow(color: page.iconColor.opacity(0.6), radius: 12)
 
-            Image(systemName: "person.crop.circle.fill")
-                .font(.system(size: isIPad ? 28 : 22))
-                .foregroundStyle(.white)
+            Image(systemName: "sparkle")
+                .font(.system(size: isIPad ? 18 : 14, weight: .semibold))
+                .foregroundColor(ivory)
+        }
+        .scaleEffect(animate1 ? 1.0 : 0.6)
+    }
+
+    // MARK: - Page 3: Privacy = Protective Star Shield
+
+    private var shieldConstellation: some View {
+        ZStack {
+            // Outer protective ring of stars
+            shieldStarRing
+
+            // Connection lines forming the shield
+            shieldConnectionLines
+
+            // Pulsing protection rings
+            shieldPulsingRings
+
+            // Central shield
+            shieldCenter
         }
     }
 
-    // --- Insights: Animated bars ---
-    private var insightsBars: some View {
+    private var shieldStarRing: some View {
+        ForEach(0..<12, id: \.self) { i in
+            let angle = Double(i) * (.pi * 2 / 12)
+            let radius: CGFloat = isIPad ? 100 : 80
+            Circle()
+                .fill(forestGreen.opacity(animate1 ? 0.7 : 0))
+                .frame(width: 4, height: 4)
+                .offset(
+                    x: cos(angle) * radius,
+                    y: sin(angle) * radius
+                )
+                .shadow(color: forestGreen.opacity(0.4), radius: 4)
+                .animation(.easeOut(duration: 0.5).delay(Double(i) * 0.05), value: animate1)
+        }
+    }
+
+    private var shieldConnectionLines: some View {
+        let r: CGFloat = isIPad ? 100 : 80
+        let frameSize: CGFloat = (r + 10) * 2
+        return ForEach(0..<12, id: \.self) { i in
+            let angle1 = Double(i) * (.pi * 2 / 12)
+            let angle2 = Double((i + 1) % 12) * (.pi * 2 / 12)
+            let startX = cos(angle1) * r + r + 10
+            let startY = sin(angle1) * r + r + 10
+            let endX = cos(angle2) * r + r + 10
+            let endY = sin(angle2) * r + r + 10
+            Path { path in
+                path.move(to: CGPoint(x: startX, y: startY))
+                path.addLine(to: CGPoint(x: endX, y: endY))
+            }
+            .stroke(forestGreen.opacity(animate2 ? 0.2 : 0), lineWidth: 0.8)
+            .frame(width: frameSize, height: frameSize)
+            .offset(x: -(r + 10), y: -(r + 10))
+            .animation(.easeOut(duration: 0.8).delay(0.6 + Double(i) * 0.04), value: animate2)
+        }
+    }
+
+    private var shieldPulsingRings: some View {
+        ForEach(0..<3, id: \.self) { i in
+            let ringSize: CGFloat = isIPad ? CGFloat(110 + i * 30) : CGFloat(90 + i * 24)
+            Circle()
+                .stroke(forestGreen.opacity(animate3 ? 0 : 0.2), lineWidth: 1)
+                .frame(width: ringSize, height: ringSize)
+                .scaleEffect(animate3 ? 1.4 : 1.0)
+                .animation(
+                    .easeOut(duration: 2.5)
+                    .repeatForever(autoreverses: false)
+                    .delay(Double(i) * 0.8),
+                    value: animate3
+                )
+        }
+    }
+
+    private var shieldCenter: some View {
         ZStack {
             Circle()
-                .fill(page.iconColor.opacity(0.1))
-                .frame(width: isIPad ? 180 : 140, height: isIPad ? 180 : 140)
+                .fill(forestGreen.opacity(animate1 ? 0.15 : 0))
+                .frame(width: isIPad ? 70 : 56, height: isIPad ? 70 : 56)
 
-            HStack(alignment: .bottom, spacing: isIPad ? 8 : 6) {
-                ForEach(0..<7, id: \.self) { i in
-                    let heights: [CGFloat] = [0.4, 0.65, 0.5, 0.85, 0.6, 0.75, 0.55]
-                    let maxH: CGFloat = isIPad ? 80 : 60
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(
-                            LinearGradient(
-                                colors: [page.iconColor, page.iconColor.opacity(0.5)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .frame(width: isIPad ? 12 : 9, height: decorVisible ? maxH * heights[i] : 4)
-                        .animation(.spring(response: 0.6, dampingFraction: 0.6).delay(Double(i) * 0.08), value: decorVisible)
-                }
-            }
+            Circle()
+                .fill(forestGreen.opacity(0.35))
+                .frame(width: isIPad ? 44 : 34, height: isIPad ? 44 : 34)
+                .shadow(color: forestGreen.opacity(0.5), radius: 12)
+
+            Image(systemName: "lock.fill")
+                .font(.system(size: isIPad ? 20 : 16, weight: .semibold))
+                .foregroundColor(ivory)
         }
+        .scaleEffect(animate1 ? 1.0 : 0.5)
     }
 
-    // --- Privacy: Shield with rings ---
-    private var privacyShield: some View {
-        ZStack {
-            // Pulsing rings
-            ForEach(0..<3, id: \.self) { i in
+    // MARK: - Planet Dot Helper
+
+    private func planetDot(color: Color, size: CGFloat, label: String) -> some View {
+        VStack(spacing: 3) {
+            ZStack {
                 Circle()
-                    .stroke(page.iconColor.opacity(decorVisible ? 0 : 0.3), lineWidth: 1.5)
-                    .frame(width: CGFloat(isIPad ? 100 : 80) + CGFloat(i) * 40,
-                           height: CGFloat(isIPad ? 100 : 80) + CGFloat(i) * 40)
-                    .scaleEffect(decorVisible ? 1.3 : 1.0)
-                    .animation(
-                        .easeOut(duration: 2.0)
-                        .repeatForever(autoreverses: false)
-                        .delay(Double(i) * 0.6),
-                        value: decorVisible
-                    )
+                    .fill(color.opacity(0.3))
+                    .frame(width: size + 8, height: size + 8)
+                Circle()
+                    .fill(color)
+                    .frame(width: size, height: size)
+                    .shadow(color: color.opacity(0.6), radius: 4)
             }
-
-            Circle()
-                .fill(page.iconColor.opacity(0.15))
-                .frame(width: isIPad ? 100 : 80, height: isIPad ? 100 : 80)
-
-            Image(systemName: "lock.shield.fill")
-                .font(.system(size: isIPad ? 40 : 32))
-                .foregroundStyle(.white)
-                .shadow(color: page.iconColor.opacity(0.5), radius: 12)
+            Text(label.uppercased())
+                .font(.system(size: 7, weight: .bold, design: .rounded))
+                .tracking(1.5)
+                .foregroundColor(ivory.opacity(0.4))
         }
-    }
-
-    // --- Fallback ---
-    private var genericIcon: some View {
-        ZStack {
-            Circle()
-                .fill(page.iconColor.opacity(0.15))
-                .frame(width: isIPad ? 140 : 110, height: isIPad ? 140 : 110)
-            Image(systemName: page.icon)
-                .font(.system(size: isIPad ? 50 : 40))
-                .foregroundColor(page.iconColor)
-        }
-    }
-
-    private func animateIn() {
-        // Staggered entrance
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-            iconVisible = true
-        }
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15)) {
-            titleVisible = true
-        }
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.3)) {
-            subtitleVisible = true
-        }
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.45)) {
-            descVisible = true
-        }
-        withAnimation(.easeOut(duration: 0.6).delay(0.3)) {
-            decorVisible = true
-        }
-    }
-
-    private func resetAnimation() {
-        iconVisible = false
-        titleVisible = false
-        subtitleVisible = false
-        descVisible = false
-        decorVisible = false
+        .opacity(animate1 ? 1 : 0)
     }
 }
 
@@ -505,12 +638,12 @@ struct IntentionCheckInView: View {
     @Binding var selectedIntentions: Set<String>
     var isIPad: Bool
 
-    private let intentions: [(title: String, icon: String)] = [
-        ("Track my thoughts", "brain.head.profile"),
-        ("Understand my emotions", "heart.text.square"),
-        ("Build a daily habit", "calendar.badge.clock"),
-        ("Remember my life", "book.pages"),
-        ("Create my Digital Twin", "person.crop.circle.badge.plus")
+    private let intentions: [(title: String, icon: String, planet: String)] = [
+        ("Track my thoughts", "brain.head.profile", "Mercury"),
+        ("Understand my emotions", "heart.text.square", "Venus"),
+        ("Build a daily habit", "calendar.badge.clock", "Mars"),
+        ("Remember my life", "book.pages", "Jupiter"),
+        ("Create my Digital Twin", "person.crop.circle.badge.plus", "Saturn")
     ]
 
     var body: some View {
@@ -518,12 +651,12 @@ struct IntentionCheckInView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                Text("What brings you here?")
+                Text("Name your planets")
                     .font(.system(size: isIPad ? 40 : 32, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
 
-                Text("Pick any that resonate. This helps DailyVox meet you where you are.")
+                Text("Each intention becomes a planet in your constellation. Pick the ones that matter.")
                     .font(isIPad ? .title3 : .body)
                     .foregroundColor(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
@@ -536,6 +669,7 @@ struct IntentionCheckInView: View {
                     IntentionCard(
                         title: intention.title,
                         icon: intention.icon,
+                        planet: intention.planet,
                         isSelected: selectedIntentions.contains(intention.title),
                         isIPad: isIPad
                     ) {
@@ -559,6 +693,7 @@ struct IntentionCheckInView: View {
 struct IntentionCard: View {
     let title: String
     let icon: String
+    let planet: String
     let isSelected: Bool
     var isIPad: Bool
     let onTap: () -> Void
@@ -576,6 +711,11 @@ struct IntentionCard: View {
                     .foregroundColor(isSelected ? .white : .white.opacity(0.8))
 
                 Spacer()
+
+                Text(planet)
+                    .font(.system(size: 9, weight: .bold, design: .rounded))
+                    .tracking(1.5)
+                    .foregroundColor(isSelected ? Color(red: 0.831, green: 0.647, blue: 0.278) : .white.opacity(0.25))
 
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
