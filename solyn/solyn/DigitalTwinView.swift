@@ -79,60 +79,58 @@ struct DigitalTwinView: View {
         }
     }
 
-    // MARK: - Twin Orb Header
+    // MARK: - Twin Constellation Header
 
     private var twinOrbHeader: some View {
         VStack(spacing: 16) {
-            ZStack {
-                // Outer glow
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                orbColor.opacity(0.3),
-                                orbColor.opacity(0.1),
-                                .clear
-                            ],
-                            center: .center,
-                            startRadius: 40,
-                            endRadius: 100
-                        )
-                    )
-                    .frame(width: 200, height: 200)
-                    .scaleEffect(animateOrb ? 1.1 : 0.95)
-
-                // Inner orb
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                orbColor.opacity(0.8),
-                                orbColor.opacity(0.4),
-                                orbColor.opacity(0.2)
-                            ],
-                            center: .center,
-                            startRadius: 10,
-                            endRadius: 60
-                        )
-                    )
-                    .frame(width: 120, height: 120)
-                    .shadow(color: orbColor.opacity(0.5), radius: 20)
-                    .scaleEffect(animateOrb ? 1.05 : 0.98)
-
-                // Center icon
-                Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.white)
-            }
+            // Constellation visualization
+            ConstellationView.fromTwin(
+                entryCount: twin.behavioralPatterns.totalEntries,
+                moods: recentMoods,
+                knowledgeNodes: topKnowledgeNodes
+            )
+            .frame(height: isIPad ? 360 : 280)
 
             Text("Your Digital Twin")
-                .font(.title2.bold())
+                .font(.system(size: 22, weight: .bold, design: .rounded))
                 .foregroundColor(themeManager.textColor)
 
-            Text(twin.summary.maturityLevel.description)
-                .font(.subheadline)
+            Text(constellationSubtitle)
+                .font(.system(size: 14, weight: .regular, design: .rounded))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
+    }
+
+    private var recentMoods: [Double] {
+        entries.prefix(50).map { entry in
+            let moodString = entry.value(forKey: "mood") as? String ?? ""
+            switch moodString.lowercased() {
+            case "happy": return 0.8
+            case "excited": return 0.9
+            case "grateful": return 0.7
+            case "calm": return 0.4
+            case "tired": return -0.1
+            case "anxious": return -0.4
+            case "sad": return -0.6
+            case "angry": return -0.8
+            default: return 0.0
+            }
+        }
+    }
+
+    private var topKnowledgeNodes: [(String, Int)] {
+        let people = twin.knowledgeGraph.topNodes(ofType: .person, limit: 2)
+        let topics = twin.knowledgeGraph.topNodes(ofType: .topic, limit: 2)
+        return (people + topics).map { ($0.label, $0.mentions) }
+    }
+
+    private var constellationSubtitle: String {
+        let count = twin.behavioralPatterns.totalEntries
+        if count == 0 { return "Speak to plant your first star" }
+        if count < 5 { return "\(count) stars · your constellation is forming" }
+        if count < 15 { return "\(count) stars · patterns emerging" }
+        if count < 30 { return "\(count) stars · your inner sky deepens" }
+        return "\(count) stars · \(twin.summary.maturityLevel.rawValue.lowercased())"
     }
 
     // MARK: - Ask Your Twin Button
@@ -837,16 +835,17 @@ struct DigitalTwinView: View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
                 .font(.system(size: 40))
-                .foregroundColor(themeManager.accentColor.opacity(0.5))
+                .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.6))
 
-            Text("Your Digital Twin is being born")
-                .font(.headline)
+            Text("Your constellation awaits")
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(themeManager.textColor)
 
-            Text("Keep journaling with DailyVox. Your twin learns from every entry, building a private mirror of your inner world.")
-                .font(.subheadline)
+            Text("Every journal entry becomes a star. Speak for 42 seconds and watch your inner sky take shape.")
+                .font(.system(size: 14, weight: .regular, design: .rounded))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
+                .lineSpacing(3)
 
             HStack(spacing: 16) {
                 Label("Voice entries", systemImage: "mic.fill")

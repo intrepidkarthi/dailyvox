@@ -115,14 +115,14 @@ struct TodayView: View {
                         }
 
                     VStack(spacing: 16) {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(systemName: "sparkles")
                             .font(.system(size: 56))
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
 
-                        Text("Your first entry!")
+                        Text("Your first star")
                             .font(.system(size: 22, weight: .bold, design: .rounded))
 
-                        Text("Your Digital Twin just learned something new about you.")
+                        Text("Your constellation has begun. Every entry adds a new star to your inner sky.")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
@@ -377,7 +377,7 @@ struct TodayView: View {
         switch processingPhase {
         case 0: return "Listening to your words..."
         case 1: return "Understanding your thoughts..."
-        case 2: return "Your Twin is learning..."
+        case 2: return "A new star is forming..."
         default: return "Listening to your words..."
         }
     }
