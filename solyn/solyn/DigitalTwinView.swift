@@ -36,39 +36,43 @@ struct DigitalTwinView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                // Digital Twin Orb Header
-                twinOrbHeader
+            if entries.isEmpty {
+                firstTimeTwinView
+            } else {
+                VStack(spacing: 24) {
+                    // Digital Twin Orb Header
+                    twinOrbHeader
 
-                // Ask Your Twin
-                askTwinButton
+                    // Ask Your Twin
+                    askTwinButton
 
-                // Maturity indicator
-                maturityBadge
+                    // Maturity indicator
+                    maturityBadge
 
-                // Section Picker
-                sectionPicker
+                    // Section Picker
+                    sectionPicker
 
-                // Content based on selection
-                switch selectedSection {
-                case .overview:
-                    overviewSection
-                case .personality:
-                    personalitySection
-                case .emotions:
-                    emotionsSection
-                case .world:
-                    worldSection
-                case .patterns:
-                    patternsSection
+                    // Content based on selection
+                    switch selectedSection {
+                    case .overview:
+                        overviewSection
+                    case .personality:
+                        personalitySection
+                    case .emotions:
+                        emotionsSection
+                    case .world:
+                        worldSection
+                    case .patterns:
+                        patternsSection
+                    }
+
+                    // Privacy badge
+                    privacyBadge
                 }
-
-                // Privacy badge
-                privacyBadge
+                .padding()
+                .frame(maxWidth: isIPad ? 700 : .infinity)
+                .frame(maxWidth: .infinity)
             }
-            .padding()
-            .frame(maxWidth: isIPad ? 700 : .infinity)
-            .frame(maxWidth: .infinity)
         }
         .navigationTitle("Your Digital Twin")
         .background(themeManager.backgroundColor.ignoresSafeArea())
@@ -76,6 +80,175 @@ struct DigitalTwinView: View {
             withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
                 animateOrb = true
             }
+        }
+    }
+
+    // MARK: - First-Time Twin Introduction
+
+    private var firstTimeTwinView: some View {
+        VStack(spacing: 32) {
+            Spacer()
+                .frame(height: 20)
+
+            // Mini constellation (empty sky with core star)
+            ZStack {
+                // Dark celestial background
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.075, green: 0.075, blue: 0.175),
+                                Color(red: 0.10, green: 0.08, blue: 0.20)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(height: isIPad ? 260 : 200)
+
+                // Scattered dim stars
+                ForEach(0..<15, id: \.self) { i in
+                    let seed = UInt64(i) &* 6364136223846793005 &+ 1442695040888963407
+                    let x = CGFloat(Double((seed >> 16) % 10000) / 10000.0) * (isIPad ? 600 : 340) - (isIPad ? 300 : 170)
+                    let y = CGFloat(Double((seed >> 32) % 10000) / 10000.0) * (isIPad ? 220 : 160) - (isIPad ? 110 : 80)
+                    Circle()
+                        .fill(Color.white.opacity(0.15))
+                        .frame(width: 2, height: 2)
+                        .offset(x: x, y: y)
+                }
+
+                // Central core star (waiting)
+                VStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(animateOrb ? 0.12 : 0.06))
+                            .frame(width: 60, height: 60)
+                        Circle()
+                            .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.3))
+                            .frame(width: 24, height: 24)
+                        Circle()
+                            .fill(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.7))
+                            .frame(width: 8, height: 8)
+                    }
+
+                    Text("Your sky is empty — for now")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundColor(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.5))
+                }
+            }
+            .padding(.horizontal)
+
+            // Introduction steps
+            VStack(spacing: 20) {
+                Text("Meet your Digital Twin")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundColor(themeManager.textColor)
+
+                Text("A private AI that learns who you are — entirely on your device.")
+                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                    .foregroundColor(themeManager.secondaryTextColor)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+            }
+            .padding(.horizontal, 24)
+
+            // How it works — 4 steps
+            VStack(spacing: 0) {
+                twinIntroStep(
+                    number: "1",
+                    icon: "mic.circle.fill",
+                    title: "You speak",
+                    description: "Record a voice entry on the Record tab. Just 42 seconds.",
+                    color: Color(red: 0.357, green: 0.486, blue: 0.420),
+                    isLast: false
+                )
+                twinIntroStep(
+                    number: "2",
+                    icon: "sparkle",
+                    title: "Stars appear",
+                    description: "Each entry becomes a star in your constellation, colored by mood.",
+                    color: Color(red: 0.831, green: 0.647, blue: 0.278),
+                    isLast: false
+                )
+                twinIntroStep(
+                    number: "3",
+                    icon: "brain.head.profile",
+                    title: "Your Twin learns",
+                    description: "Four models — Mind, Heart, Voice, Graph — build your personality profile.",
+                    color: Color(red: 0.769, green: 0.451, blue: 0.420),
+                    isLast: false
+                )
+                twinIntroStep(
+                    number: "4",
+                    icon: "lock.shield.fill",
+                    title: "Always private",
+                    description: "Everything stays on your device. No servers. No cloud AI. No accounts.",
+                    color: Color(red: 0.420, green: 0.620, blue: 0.482),
+                    isLast: true
+                )
+            }
+            .padding(.horizontal, 20)
+
+            // CTA hint
+            HStack(spacing: 10) {
+                Image(systemName: "hand.point.left.fill")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                Text("Switch to the Record tab to begin")
+                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .foregroundColor(themeManager.textColor)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .padding(.horizontal, 20)
+
+            // Privacy assurance
+            HStack(spacing: 6) {
+                Image(systemName: "lock.shield.fill")
+                    .font(.caption2)
+                    .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                Text("Your Twin never leaves your device")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
+            }
+            .padding(.bottom, 20)
+        }
+    }
+
+    private func twinIntroStep(number: String, icon: String, title: String, description: String, color: Color, isLast: Bool) -> some View {
+        HStack(alignment: .top, spacing: 16) {
+            // Vertical line + dot
+            VStack(spacing: 0) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: icon)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(color)
+                }
+                if !isLast {
+                    Rectangle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 2, height: 32)
+                }
+            }
+
+            // Content
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundColor(themeManager.textColor)
+                Text(description)
+                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                    .foregroundColor(themeManager.secondaryTextColor)
+                    .lineSpacing(3)
+            }
+            .padding(.top, 6)
+
+            Spacer()
         }
     }
 
