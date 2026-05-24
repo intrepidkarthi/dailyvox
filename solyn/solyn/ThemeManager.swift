@@ -151,3 +151,59 @@ final class ThemeManager: ObservableObject {
         return .green
     }
 }
+
+// MARK: - Premium Warm Background
+
+struct WarmBackground: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+
+    var body: some View {
+        if themeManager.selectedTheme == .ivory {
+            ZStack {
+                // Base warm ivory
+                Color(red: 0.980, green: 0.973, blue: 0.961)
+
+                // Subtle radial warmth at top-right (like sunlight)
+                RadialGradient(
+                    colors: [
+                        Color(red: 0.957, green: 0.929, blue: 0.878).opacity(0.4),
+                        Color.clear
+                    ],
+                    center: UnitPoint(x: 0.85, y: 0.05),
+                    startRadius: 20,
+                    endRadius: 400
+                )
+
+                // Very subtle warm wash at bottom-left
+                RadialGradient(
+                    colors: [
+                        Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.03),
+                        Color.clear
+                    ],
+                    center: UnitPoint(x: 0.1, y: 0.95),
+                    startRadius: 10,
+                    endRadius: 300
+                )
+            }
+            .ignoresSafeArea()
+        } else if themeManager.selectedTheme == .dark {
+            // Dark mode gets a subtle deep warmth instead of pure black
+            ZStack {
+                Color(.systemBackground)
+                RadialGradient(
+                    colors: [
+                        Color(red: 0.12, green: 0.10, blue: 0.16).opacity(0.5),
+                        Color.clear
+                    ],
+                    center: UnitPoint(x: 0.5, y: 0.3),
+                    startRadius: 50,
+                    endRadius: 500
+                )
+            }
+            .ignoresSafeArea()
+        } else {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+        }
+    }
+}

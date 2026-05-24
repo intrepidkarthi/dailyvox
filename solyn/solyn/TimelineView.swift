@@ -200,7 +200,7 @@ struct TimelineView: View {
                 .accessibilityLabel("Show starred only")
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background { WarmBackground() }
         .navigationTitle("Timeline")
         #if os(iOS)
         .onChange(of: voiceSearch.transcribedText) { _, newValue in

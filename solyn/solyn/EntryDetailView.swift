@@ -43,8 +43,7 @@ struct EntryDetailView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGroupedBackground)
-                .ignoresSafeArea()
+            WarmBackground()
 
             ScrollView {
                 VStack(spacing: 0) {

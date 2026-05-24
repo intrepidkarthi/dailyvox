@@ -68,8 +68,7 @@ struct TodayView: View {
 
     var body: some View {
         ZStack {
-            ThemeManager.shared.warmBackground
-                .ignoresSafeArea()
+            WarmBackground()
 
             if allEntries.isEmpty && recordingState == .idle && latestEntry == nil {
                 // FIRST-TIME FOCUSED EXPERIENCE
@@ -626,7 +625,11 @@ struct TodayView: View {
         }
         .padding(.vertical, 20)
         .padding(.horizontal)
-        .background(ThemeManager.shared.warmBackground)
+        .background(
+            ThemeManager.shared.selectedTheme == .ivory
+                ? Color(red: 0.980, green: 0.973, blue: 0.961)
+                : Color(.systemGroupedBackground)
+        )
         .animation(.spring(response: 0.4), value: recordingState)
     }
 

@@ -60,7 +60,7 @@ struct StatsView: View {
             .frame(maxWidth: isIPad ? 700 : .infinity)
             .frame(maxWidth: .infinity)
         }
-        .background(Color(.systemGroupedBackground))
+        .background { WarmBackground() }
         .navigationTitle("Insights")
         .overlay {
             if let milestone = showMilestone {

@@ -75,7 +75,7 @@ struct DigitalTwinView: View {
             }
         }
         .navigationTitle("Your Digital Twin")
-        .background(themeManager.backgroundColor.ignoresSafeArea())
+        .background { WarmBackground() }
         .onAppear {
             withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
                 animateOrb = true
