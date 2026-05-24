@@ -470,7 +470,8 @@ struct DigitalTwinView: View {
 
                     ForEach(sorted.prefix(6), id: \.key) { mood, count in
                         HStack {
-                            Text(moodEmoji(mood))
+                            Image(systemName: moodEmoji(mood))
+                                .font(.caption)
                             Text(mood.capitalized)
                                 .font(.caption)
                                 .frame(width: 60, alignment: .leading)
@@ -893,15 +894,15 @@ struct DigitalTwinView: View {
 
     private func moodEmoji(_ mood: String) -> String {
         switch mood.lowercased() {
-        case "happy": return "😊"
-        case "calm": return "😌"
-        case "grateful": return "🙏"
-        case "excited": return "🤩"
-        case "tired": return "😴"
-        case "anxious": return "😰"
-        case "sad": return "😢"
-        case "angry": return "😤"
-        default: return "😐"
+        case "happy": return "sun.max.fill"
+        case "calm": return "leaf.fill"
+        case "grateful": return "heart.fill"
+        case "excited": return "star.fill"
+        case "tired": return "moon.zzz.fill"
+        case "anxious": return "wind"
+        case "sad": return "cloud.rain.fill"
+        case "angry": return "flame.fill"
+        default: return "circle.fill"
         }
     }
 

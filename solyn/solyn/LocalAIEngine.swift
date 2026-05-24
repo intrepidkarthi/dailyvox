@@ -152,15 +152,15 @@ enum DetectedEmotion: String, CaseIterable {
     
     var emoji: String {
         switch self {
-        case .joy: return "😊"
-        case .sadness: return "😢"
-        case .anger: return "😤"
-        case .fear: return "😰"
-        case .surprise: return "😮"
-        case .disgust: return "😒"
-        case .anticipation: return "🤔"
-        case .trust: return "🤝"
-        case .neutral: return "😐"
+        case .joy: return "sun.max.fill"
+        case .sadness: return "cloud.rain.fill"
+        case .anger: return "flame.fill"
+        case .fear: return "wind"
+        case .surprise: return "sparkles"
+        case .disgust: return "xmark.circle.fill"
+        case .anticipation: return "eye.fill"
+        case .trust: return "hand.thumbsup.fill"
+        case .neutral: return "circle.fill"
         }
     }
     

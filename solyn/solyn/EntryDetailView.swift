@@ -302,7 +302,7 @@ struct EntryDetailView: View {
                     // Emotion & Sentiment
                     HStack(spacing: 16) {
                         VStack(spacing: 4) {
-                            Text(analysis.dominantEmotion.emoji)
+                            Image(systemName: analysis.dominantEmotion.emoji)
                                 .font(.title)
                             Text(analysis.dominantEmotion.rawValue.capitalized)
                                 .font(.caption)
@@ -368,7 +368,11 @@ struct EntryDetailView: View {
                     
                     // AI Response
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("💭 Reflection")
+                        HStack(spacing: 4) {
+                            Image(systemName: "bubble.left.fill")
+                                .font(.caption)
+                            Text("Reflection")
+                        }
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text(analysis.suggestedResponse)

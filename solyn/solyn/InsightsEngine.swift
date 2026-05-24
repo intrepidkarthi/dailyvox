@@ -106,7 +106,7 @@ struct InsightsEngine {
         if streak >= 7 {
             return Insight(
                 type: .streak,
-                title: "🔥 You're on fire!",
+                title: "You're on fire!",
                 description: "You've written for \(streak) days in a row. Keep the momentum going!",
                 icon: "flame.fill",
                 color: "orange"

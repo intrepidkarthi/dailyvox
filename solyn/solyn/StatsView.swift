@@ -266,8 +266,9 @@ struct StatsView: View {
             AxisMarks(values: [1, 3, 5]) { value in
                 AxisValueLabel {
                     if let v = value.as(Int.self) {
-                        Text(v == 1 ? "😔" : v == 3 ? "😐" : "😊")
-                            .font(.caption)
+                        Image(systemName: v == 1 ? "cloud.rain.fill" : v == 3 ? "circle.fill" : "sun.max.fill")
+                            .font(.caption2)
+                            .foregroundColor(v == 1 ? Color(red: 0.769, green: 0.451, blue: 0.420) : v == 3 ? .secondary : Color(red: 0.831, green: 0.647, blue: 0.278))
                     }
                 }
             }
