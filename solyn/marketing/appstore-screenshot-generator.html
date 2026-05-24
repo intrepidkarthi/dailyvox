@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyVox - App Store Screenshot Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --celestial-deep: #0C0C1C;
+    --warm-gold: #D4A547;
+    --sage: #5B7C6B;
+    --coral: #C4736B;
+    --forest: #6B9E7B;
+    --terracotta: #C4956A;
+    --ivory: #FAF8F5;
+    --ivory-text: #F4EEE0;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: var(--celestial-deep);
+    color: var(--ivory-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .page-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--warm-gold), var(--ivory-text));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    opacity: 0.5;
+    font-weight: 400;
+  }
+
+  .controls {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .btn-download-all {
+    background: linear-gradient(135deg, var(--warm-gold), #B8893A);
+    color: var(--celestial-deep);
+    border: none;
+    padding: 14px 36px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-download-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(212, 165, 71, 0.35);
+  }
+
+  .btn-download-all:active {
+    transform: translateY(0);
+  }
+
+  .btn-download-all:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  .progress-bar {
+    display: none;
+    margin: 16px auto 0;
+    max-width: 300px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar.active { display: block; }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--warm-gold);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: 1fr; max-width: 380px; }
+  }
+
+  /* ---------- screenshot card (wrapper for preview) ---------- */
+  .card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-preview {
+    width: 100%;
+    aspect-ratio: 1290 / 2796;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+
+  /* ---------- the actual exportable card ---------- */
+  .card {
+    width: 1290px;
+    height: 2796px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 140px 100px 80px;
+    transform-origin: top left;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  /* card backgrounds */
+  .card[data-idx="0"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #1A1040 30%, #2D1854 55%, #3A1F5C 70%, #0C0C1C 100%);
+  }
+  .card[data-idx="0"]::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60%;
+    height: 50%;
+    background: radial-gradient(ellipse at top right, rgba(212,165,71,0.12) 0%, transparent 70%);
+    z-index: 0;
+  }
+
+  .card[data-idx="1"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #0F1A22 30%, #13252B 55%, #0C0C1C 100%);
+  }
+  .card[data-idx="1"]::after {
+    content: '';
+    position: absolute;
+    bottom: 10%; left: 0;
+    width: 50%;
+    height: 40%;
+    background: radial-gradient(ellipse at bottom left, rgba(91,124,107,0.15) 0%, transparent 70%);
+    z-index: 0;
+  }
+
+  .card[data-idx="2"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #1C1035 30%, #261448 55%, #1A1040 75%, #0C0C1C 100%);
+  }
+  .card[data-idx="2"]::after {
+    content: '';
+    position: absolute;
+    top: 20%; left: 10%;
+    width: 80%;
+    height: 60%;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(196,115,107,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(91,124,107,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(212,165,71,0.08) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  .card[data-idx="3"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #0D1A16 30%, #10231C 55%, #0C0C1C 100%);
+  }
+  .card[data-idx="3"]::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(107,158,123,0.08) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  .card[data-idx="4"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #1E150F 30%, #2A1C14 55%, #1A1210 75%, #0C0C1C 100%);
+  }
+  .card[data-idx="4"]::after {
+    content: '';
+    position: absolute;
+    top: 30%; right: 0;
+    width: 60%;
+    height: 50%;
+    background: radial-gradient(ellipse at top right, rgba(196,149,106,0.12) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  .card[data-idx="5"]::before {
+    background: linear-gradient(165deg, #0C0C1C 0%, #1A1830 30%, #1E1A38 55%, #0C0C1C 100%);
+  }
+  .card[data-idx="5"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 40%;
+    background: radial-gradient(ellipse at bottom center, rgba(244,238,224,0.06) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* subtle star dots on all cards */
+  .star-field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+  }
+
+  /* ---------- text area ---------- */
+  .card-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin-bottom: 60px;
+    flex-shrink: 0;
+  }
+
+  .card-headline {
+    font-size: 88px;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -2px;
+    color: #fff;
+    margin-bottom: 32px;
+    max-width: 1050px;
+  }
+
+  .card-subtext {
+    font-size: 44px;
+    font-weight: 400;
+    line-height: 1.35;
+    opacity: 0.65;
+    color: var(--ivory-text);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ---------- phone frame ---------- */
+  .phone-frame {
+    position: relative;
+    z-index: 1;
+    width: 620px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .phone-bezel {
+    background: #1A1A1E;
+    border-radius: 50px;
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.05) inset,
+      0 -1px 0 rgba(0,0,0,0.3) inset,
+      0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .phone-bezel::before {
+    /* side button right */
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 220px;
+    width: 4px;
+    height: 90px;
+    background: #2A2A2E;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .phone-bezel::after {
+    /* volume buttons left */
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 190px;
+    width: 4px;
+    height: 60px;
+    background: #2A2A2E;
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 80px 0 #2A2A2E;
+  }
+
+  .phone-screen {
+    background: var(--ivory);
+    border-radius: 40px;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dynamic Island */
+  .dynamic-island {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 44px;
+    background: #000;
+    border-radius: 22px;
+    z-index: 5;
+  }
+
+  .phone-screen .placeholder-text {
+    font-size: 32px;
+    font-weight: 600;
+    color: #888;
+    text-align: center;
+    padding: 20px;
+    line-height: 1.4;
+    pointer-events: none;
+  }
+
+  .phone-screen img.uploaded-screenshot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+  }
+
+  /* ---------- controls per card ---------- */
+  .card-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-replace {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--ivory-text);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-replace:hover {
+    background: rgba(255,255,255,0.14);
+  }
+
+  .btn-replace input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 0;
+  }
+
+  .btn-single-download {
+    background: rgba(212,165,71,0.15);
+    border: 1px solid rgba(212,165,71,0.25);
+    color: var(--warm-gold);
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-single-download:hover {
+    background: rgba(212,165,71,0.25);
+  }
+
+  /* accent line under headline */
+  .accent-line {
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    margin: 0 auto 28px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>DailyVox Screenshot Generator</h1>
+  <p>App Store 6.7" format &middot; 1290 &times; 2796px &middot; Upload screenshots, then export</p>
+</div>
+
+<div class="controls">
+  <button class="btn-download-all" onclick="downloadAll()">Download All (6 PNGs)</button>
+  <div class="progress-bar" id="progressBar"><div class="progress-bar-fill" id="progressFill"></div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const SCREENSHOTS = [
+  {
+    headline: "Your inner sky\nis waiting",
+    subtext: "Every thought becomes a star",
+    accent: "#D4A547",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 1\nHome / Constellation View"
+  },
+  {
+    headline: "Speak.\nYour Twin listens.",
+    subtext: "42 seconds is all it takes",
+    accent: "#5B7C6B",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 2\nRecording Flow"
+  },
+  {
+    headline: "Your constellation\ngrows",
+    subtext: "Mood-colored stars.\nPatterns only you can see.",
+    accent: "#C4736B",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 3\nConstellation Growth"
+  },
+  {
+    headline: "A constellation\nno one else can see",
+    subtext: "100% on-device. Zero servers.",
+    accent: "#6B9E7B",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 4\nPrivacy / On-Device"
+  },
+  {
+    headline: "Insights written\nin light",
+    subtext: "Mood trends. Streaks.\nPatterns emerge.",
+    accent: "#C4956A",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 5\nInsights / Analytics"
+  },
+  {
+    headline: "Free. Forever.\nOpen source.",
+    subtext: "No subscription. No paywall.\nNo catch.",
+    accent: "#F4EEE0",
+    placeholderBg: "#FAF8F5",
+    placeholderLabel: "Screenshot 6\nOpen Source / Free"
+  }
+];
+
+function createStars(container, count) {
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.opacity = Math.random() * 0.4 + 0.1;
+    container.appendChild(s);
+  }
+}
+
+function buildCards() {
+  const grid = document.getElementById('grid');
+
+  SCREENSHOTS.forEach((cfg, idx) => {
+    // wrapper (not exported)
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card-wrapper';
+
+    // preview container (scales the card)
+    const preview = document.createElement('div');
+    preview.className = 'card-preview';
+
+    // the real card at full resolution
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + idx;
+    card.setAttribute('data-idx', idx);
+
+    // star field
+    const sf = document.createElement('div');
+    sf.className = 'star-field';
+    createStars(sf, 40);
+    card.appendChild(sf);
+
+    // text
+    const textDiv = document.createElement('div');
+    textDiv.className = 'card-text';
+
+    const h = document.createElement('div');
+    h.className = 'card-headline';
+    h.textContent = cfg.headline;
+    textDiv.appendChild(h);
+
+    const accentLine = document.createElement('div');
+    accentLine.className = 'accent-line';
+    accentLine.style.background = cfg.accent;
+    textDiv.appendChild(accentLine);
+
+    const sub = document.createElement('div');
+    sub.className = 'card-subtext';
+    sub.textContent = cfg.subtext;
+    textDiv.appendChild(sub);
+
+    card.appendChild(textDiv);
+
+    // phone frame
+    const phoneFrame = document.createElement('div');
+    phoneFrame.className = 'phone-frame';
+
+    const bezel = document.createElement('div');
+    bezel.className = 'phone-bezel';
+
+    const screen = document.createElement('div');
+    screen.className = 'phone-screen';
+
+    const di = document.createElement('div');
+    di.className = 'dynamic-island';
+    screen.appendChild(di);
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'placeholder-text';
+    placeholder.textContent = cfg.placeholderLabel;
+    placeholder.id = 'placeholder-' + idx;
+    screen.appendChild(placeholder);
+
+    screen.id = 'screen-' + idx;
+    bezel.appendChild(screen);
+    phoneFrame.appendChild(bezel);
+    card.appendChild(phoneFrame);
+
+    preview.appendChild(card);
+    wrapper.appendChild(preview);
+
+    // controls
+    const controls = document.createElement('div');
+    controls.className = 'card-controls';
+
+    const replaceBtn = document.createElement('label');
+    replaceBtn.className = 'btn-replace';
+    replaceBtn.textContent = 'Replace Screenshot';
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.addEventListener('change', (e) => handleFileUpload(e, idx));
+    replaceBtn.appendChild(fileInput);
+    controls.appendChild(replaceBtn);
+
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'btn-single-download';
+    dlBtn.textContent = 'Download';
+    dlBtn.addEventListener('click', () => downloadSingle(idx));
+    controls.appendChild(dlBtn);
+
+    wrapper.appendChild(controls);
+    grid.appendChild(wrapper);
+
+    // scale the card to fit preview
+    requestAnimationFrame(() => scaleCard(card, preview));
+  });
+
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.card').forEach((card) => {
+      const preview = card.parentElement;
+      scaleCard(card, preview);
+    });
+  });
+}
+
+function scaleCard(card, preview) {
+  const pw = preview.clientWidth;
+  const scale = pw / 1290;
+  card.style.transform = `scale(${scale})`;
+  // set preview height to match scaled card
+  preview.style.height = (2796 * scale) + 'px';
+}
+
+function handleFileUpload(e, idx) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const screen = document.getElementById('screen-' + idx);
+    const placeholder = document.getElementById('placeholder-' + idx);
+
+    // remove existing uploaded image if any
+    const existing = screen.querySelector('img.uploaded-screenshot');
+    if (existing) existing.remove();
+
+    // hide placeholder
+    if (placeholder) placeholder.style.display = 'none';
+
+    const img = document.createElement('img');
+    img.className = 'uploaded-screenshot';
+    img.src = ev.target.result;
+    screen.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function exportCard(idx) {
+  const card = document.getElementById('card-' + idx);
+  // temporarily reset transform for full-res export
+  const origTransform = card.style.transform;
+  card.style.transform = 'none';
+
+  const canvas = await html2canvas(card, {
+    width: 1290,
+    height: 2796,
+    scale: 1,
+    useCORS: true,
+    backgroundColor: null,
+    logging: false
+  });
+
+  card.style.transform = origTransform;
+  return canvas;
+}
+
+async function downloadSingle(idx) {
+  const canvas = await exportCard(idx);
+  const link = document.createElement('a');
+  link.download = `dailyvox-screenshot-${idx + 1}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function downloadAll() {
+  const btn = document.querySelector('.btn-download-all');
+  const bar = document.getElementById('progressBar');
+  const fill = document.getElementById('progressFill');
+
+  btn.disabled = true;
+  btn.textContent = 'Exporting...';
+  bar.classList.add('active');
+  fill.style.width = '0%';
+
+  for (let i = 0; i < 6; i++) {
+    const canvas = await exportCard(i);
+    const link = document.createElement('a');
+    link.download = `dailyvox-screenshot-${i + 1}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    fill.style.width = ((i + 1) / 6 * 100) + '%';
+    // small delay so browser can process the download
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Download All (6 PNGs)';
+  setTimeout(() => {
+    bar.classList.remove('active');
+    fill.style.width = '0%';
+  }, 1000);
+}
+
+buildCards();
+</script>
+</body>
+</html>
