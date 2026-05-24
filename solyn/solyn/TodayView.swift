@@ -430,21 +430,21 @@ struct TodayView: View {
                 VStack(spacing: 12) {
                     // Recording time
                     Text(formatTime(recorder.currentTime))
-                        .font(.system(size: 42, weight: .light, design: .monospaced))
-                        .foregroundColor(.red)
+                        .font(.system(size: 42, weight: .light, design: .rounded))
+                        .foregroundColor(ThemeManager.shared.recordingColor)
 
                     // Waveform-style level indicator
                     HStack(spacing: isIPad ? 5 : 3) {
                         ForEach(0..<(isIPad ? 30 : 20), id: \.self) { i in
-                            RoundedRectangle(cornerRadius: 2)
+                            RoundedRectangle(cornerRadius: 3)
                                 .fill(barColor(for: i))
                                 .frame(width: isIPad ? 6 : 4, height: barHeight(for: i))
                         }
                     }
                     .frame(height: isIPad ? 40 : 30)
 
-                    Text("Recording... Tap to stop")
-                        .font(.caption)
+                    Text("Speaking... tap when you're done")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundColor(.secondary)
                 }
                 .transition(.scale.combined(with: .opacity))
@@ -463,7 +463,7 @@ struct TodayView: View {
                     ) {
                         ZStack {
                             Circle()
-                                .fill(Color(.tertiarySystemFill))
+                                .fill(ThemeManager.shared.warmSubtleFill)
                                 .frame(width: isIPad ? 56 : 48, height: isIPad ? 56 : 48)
                             Image(systemName: "photo.badge.plus")
                                 .font(.system(size: isIPad ? 22 : 18))
@@ -484,7 +484,7 @@ struct TodayView: View {
             if recordingState == .idle {
                 VStack(spacing: 6) {
                     Text(statusText)
-                        .font(.subheadline.weight(.medium))
+                        .font(.system(size: 15, weight: .medium, design: .rounded))
                         .foregroundColor(.primary)
                     Text("Your voice stays on this device")
                         .font(.caption.weight(.medium))
@@ -502,7 +502,7 @@ struct TodayView: View {
         }
         .padding(.vertical, 20)
         .padding(.horizontal)
-        .background(Color(.systemGroupedBackground))
+        .background(ThemeManager.shared.warmBackground)
         .animation(.spring(response: 0.4), value: recordingState)
     }
 
@@ -516,6 +516,12 @@ struct TodayView: View {
             }
         } label: {
             ZStack {
+                // Warm ambient glow
+                Circle()
+                    .fill(buttonColor.opacity(recordingState == .idle ? 0.12 : 0.06))
+                    .frame(width: recordButtonOuterSize + 30, height: recordButtonOuterSize + 30)
+                    .blur(radius: 15)
+
                 // Main circle
                 Circle()
                     .fill(buttonColor)
@@ -579,11 +585,13 @@ struct TodayView: View {
         let threshold = CGFloat(index) / barCount
 
         if normalizedLevel > threshold {
-            let highThreshold = Int(barCount * 0.7)
-            let midThreshold = Int(barCount * 0.5)
-            return index > highThreshold ? .red : (index > midThreshold ? .orange : .accentColor)
+            // Warm gradient from sage to gold — NOT traffic light colors
+            let t = CGFloat(index) / barCount
+            let sage = Color(red: 0.357, green: 0.486, blue: 0.420)
+            let gold = Color(red: 0.831, green: 0.647, blue: 0.278)
+            return t < 0.6 ? sage : gold
         }
-        return Color.secondary.opacity(0.2)
+        return Color.secondary.opacity(0.12)
     }
 
     // MARK: - Photo Handling

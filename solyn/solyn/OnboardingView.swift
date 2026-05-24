@@ -14,20 +14,9 @@ struct OnboardingView: View {
     @State private var selectedIntentions: Set<String> = []
 
     private var isIPad: Bool { horizontalSizeClass == .regular }
-    private var totalPageCount: Int { pages.count + 1 }
+    private var totalPageCount: Int { pages.count + 2 } // welcome + feature pages + intention
 
     private let pages: [OnboardingPage] = [
-        OnboardingPage(
-            icon: "brain.head.profile",
-            iconColor: Color(red: 0.357, green: 0.486, blue: 0.420),
-            title: "Meet DailyVox Diary",
-            subtitle: "The only AI that truly knows you",
-            description: "Not just another diary. DailyVox Diary remembers your life — your dreams, struggles, the people you love, and what makes you, you.",
-            gradient: [
-                Color(red: 30/255, green: 45/255, blue: 40/255),    // Deep forest
-                Color(red: 60/255, green: 85/255, blue: 70/255)     // Sage dark
-            ]
-        ),
         OnboardingPage(
             icon: "person.crop.circle.fill",
             iconColor: .pink,
@@ -63,14 +52,52 @@ struct OnboardingView: View {
         )
     ]
 
+    private var backgroundGradient: [Color] {
+        if currentPage == 0 {
+            // Celestial gradient for welcome star
+            return [
+                Color(red: 12/255, green: 12/255, blue: 28/255),   // Deep night
+                Color(red: 20/255, green: 18/255, blue: 40/255)    // Warm night
+            ]
+        } else if currentPage <= pages.count {
+            // Feature pages (1-based index, so subtract 1 for array)
+            return pages[currentPage - 1].gradient
+        } else {
+            // Intention check-in page
+            return [
+                Color(red: 40/255, green: 35/255, blue: 50/255),    // Deep warm purple
+                Color(red: 85/255, green: 60/255, blue: 75/255)     // Warm plum
+            ]
+        }
+    }
+
+    private var buttonGradientColors: [Color] {
+        if currentPage == 0 {
+            return [Color(red: 0.831, green: 0.647, blue: 0.278), Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.8)]
+        } else if currentPage <= pages.count {
+            let page = pages[currentPage - 1]
+            return [page.iconColor, page.iconColor.opacity(0.8)]
+        } else {
+            // Last page: sage green
+            return [Color(red: 0.357, green: 0.486, blue: 0.420), Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.8)]
+        }
+    }
+
+    private var buttonShadowColor: Color {
+        if currentPage == 0 {
+            return Color(red: 0.831, green: 0.647, blue: 0.278)
+        } else if currentPage <= pages.count {
+            return pages[currentPage - 1].iconColor
+        } else {
+            return Color(red: 0.357, green: 0.486, blue: 0.420)
+        }
+    }
+
     var body: some View {
         ZStack {
             // Background
             LinearGradient(
-                colors: currentPage < pages.count ? pages[currentPage].gradient : [
-                    Color(red: 40/255, green: 35/255, blue: 50/255),    // Deep warm purple
-                    Color(red: 85/255, green: 60/255, blue: 75/255)     // Warm plum
-                ],
+                colors: backgroundGradient,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -95,23 +122,28 @@ struct OnboardingView: View {
 
                 // Page content
                 TabView(selection: $currentPage) {
+                    // Page 0: Welcome star moment
+                    OnboardingWelcomeView()
+                        .tag(0)
+
+                    // Pages 1-3: Feature pages
                     ForEach(0..<pages.count, id: \.self) { index in
                         OnboardingPageView(page: pages[index])
-                            .tag(index)
+                            .tag(index + 1)
                     }
 
+                    // Last page: Intention check-in
                     IntentionCheckInView(selectedIntentions: $selectedIntentions, isIPad: isIPad)
-                        .tag(pages.count)
+                        .tag(pages.count + 1)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
 
-                // Page indicators
-                HStack(spacing: 8) {
+                // Constellation-themed progress indicator
+                HStack(spacing: 12) {
                     ForEach(0..<totalPageCount, id: \.self) { index in
-                        Circle()
-                            .fill(index == currentPage ? Color.white : Color.white.opacity(0.3))
-                            .frame(width: 8, height: 8)
-                            .scaleEffect(index == currentPage ? 1.2 : 1)
+                        Image(systemName: index <= currentPage ? "star.fill" : "star")
+                            .font(.system(size: index == currentPage ? 10 : 8))
+                            .foregroundColor(index <= currentPage ? Color(red: 0.831, green: 0.647, blue: 0.278) : .white.opacity(0.25))
                             .animation(.spring(response: 0.3), value: currentPage)
                     }
                 }
@@ -128,10 +160,10 @@ struct OnboardingView: View {
                     }
                 }) {
                     HStack {
-                        Text(currentPage == totalPageCount - 1 ? "Get Started" : "Continue")
+                        Text(currentPage == totalPageCount - 1 ? "Begin my journey" : "Next")
                             .font(.headline)
                         if currentPage == totalPageCount - 1 {
-                            Image(systemName: "arrow.right")
+                            Image(systemName: "sparkles")
                                 .font(.headline)
                         }
                     }
@@ -140,15 +172,13 @@ struct OnboardingView: View {
                     .padding(.vertical, 18)
                     .background(
                         LinearGradient(
-                            colors: currentPage < pages.count
-                                ? [pages[currentPage].iconColor, pages[currentPage].iconColor.opacity(0.8)]
-                                : [Color.purple, Color.purple.opacity(0.8)],
+                            colors: buttonGradientColors,
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .shadow(color: (currentPage < pages.count ? pages[currentPage].iconColor : Color.purple).opacity(0.3), radius: 10, y: 5)
+                    .shadow(color: buttonShadowColor.opacity(0.3), radius: 10, y: 5)
                 }
                 .frame(maxWidth: isIPad ? 500 : .infinity)
                 .padding(.horizontal, isIPad ? 60 : 30)
@@ -163,6 +193,76 @@ struct OnboardingView: View {
             hasCompletedOnboarding = true
         }
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+    }
+}
+
+// MARK: - Welcome Star Moment
+
+struct OnboardingWelcomeView: View {
+    @State private var starScale: CGFloat = 0.3
+    @State private var glowOpacity: Double = 0
+    @State private var textOpacity: Double = 0
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            // Constellation star animation
+            ZStack {
+                // Outer glow
+                Circle()
+                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.15))
+                    .frame(width: 200, height: 200)
+
+                Circle()
+                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.25))
+                    .frame(width: 120, height: 120)
+
+                // Core star
+                Circle()
+                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.8))
+                    .frame(width: 20, height: 20)
+                    .scaleEffect(starScale)
+                    .shadow(color: Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.6), radius: 20)
+
+                // White hot center
+                Circle()
+                    .fill(Color(red: 0.957, green: 0.933, blue: 0.878))
+                    .frame(width: 8, height: 8)
+                    .scaleEffect(starScale)
+            }
+
+            Spacer()
+                .frame(height: 60)
+
+            VStack(spacing: 16) {
+                Text("Your inner sky\nis waiting")
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .opacity(textOpacity)
+
+                Text("Every thought you speak becomes a star.\nOver time, constellations form — patterns\nonly you can see.")
+                    .font(.system(size: 16, weight: .regular, design: .rounded))
+                    .foregroundColor(.white.opacity(0.6))
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
+                    .opacity(textOpacity)
+            }
+            .padding(.horizontal, 30)
+
+            Spacer()
+            Spacer()
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 1.5)) {
+                starScale = 1.0
+                glowOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 1.0).delay(0.8)) {
+                textOpacity = 1.0
+            }
+        }
     }
 }
 
