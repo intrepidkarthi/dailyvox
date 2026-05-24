@@ -175,7 +175,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
     }
 
@@ -203,7 +203,7 @@ struct DigitalTwinView: View {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(
                             LinearGradient(
-                                colors: [themeManager.accentColor, .teal, themeManager.accentColor.opacity(0.6)],
+                                colors: [themeManager.accentColor, Color(red: 0.831, green: 0.647, blue: 0.278), themeManager.accentColor.opacity(0.6)],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -299,7 +299,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Thinking Style
             VStack(alignment: .leading, spacing: 12) {
@@ -312,7 +312,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Growth Indicators
             VStack(alignment: .leading, spacing: 12) {
@@ -324,7 +324,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Signature Words
             if !twin.communicationStyle.signatureWords.isEmpty {
@@ -349,7 +349,7 @@ struct DigitalTwinView: View {
                 }
                 .padding()
                 .background(themeManager.cardBackgroundColor)
-                .cornerRadius(16)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
 
             // Share Your Twin — only show with enough data
@@ -443,7 +443,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Time-Based Mood
             VStack(alignment: .leading, spacing: 12) {
@@ -458,7 +458,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Mood Frequency
             if !twin.emotionalSignature.emotionFrequency.isEmpty {
@@ -488,7 +488,7 @@ struct DigitalTwinView: View {
                 }
                 .padding()
                 .background(themeManager.cardBackgroundColor)
-                .cornerRadius(16)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
 
             // Positive & Negative Triggers
@@ -533,7 +533,7 @@ struct DigitalTwinView: View {
                 }
                 .padding()
                 .background(themeManager.cardBackgroundColor)
-                .cornerRadius(16)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
         }
     }
@@ -569,7 +569,7 @@ struct DigitalTwinView: View {
                 .frame(maxWidth: .infinity)
                 .padding(40)
                 .background(themeManager.cardBackgroundColor)
-                .cornerRadius(16)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
         }
     }
@@ -611,7 +611,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Day of Week
             VStack(alignment: .leading, spacing: 12) {
@@ -638,7 +638,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Writing Stats
             VStack(alignment: .leading, spacing: 12) {
@@ -653,7 +653,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 
             // Preferences
             VStack(alignment: .leading, spacing: 12) {
@@ -664,7 +664,7 @@ struct DigitalTwinView: View {
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
-            .cornerRadius(16)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
     }
 
@@ -687,7 +687,7 @@ struct DigitalTwinView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(themeManager.cardBackgroundColor)
-        .cornerRadius(16)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private func sectionHeader(_ title: String, icon: String) -> some View {
@@ -716,7 +716,7 @@ struct DigitalTwinView: View {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(
                             LinearGradient(
-                                colors: [themeManager.accentColor, .teal],
+                                colors: [themeManager.accentColor, Color(red: 0.831, green: 0.647, blue: 0.278)],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -814,7 +814,7 @@ struct DigitalTwinView: View {
                 }
                 .padding()
                 .background(themeManager.cardBackgroundColor)
-                .cornerRadius(16)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
         }
     }
@@ -856,20 +856,20 @@ struct DigitalTwinView: View {
         }
         .padding(24)
         .background(themeManager.cardBackgroundColor)
-        .cornerRadius(16)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private var privacyBadge: some View {
         HStack(spacing: 8) {
             Image(systemName: "lock.shield.fill")
-                .foregroundColor(.green)
+                .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
             Text("100% on-device. Your twin never leaves your device.")
                 .font(.caption)
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color.green.opacity(0.1))
+        .background(Color(red: 0.420, green: 0.620, blue: 0.482).opacity(0.1))
         .cornerRadius(12)
     }
 

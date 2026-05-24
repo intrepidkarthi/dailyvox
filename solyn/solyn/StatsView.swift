@@ -90,8 +90,8 @@ struct StatsView: View {
                     .foregroundColor(.accentColor)
             }
 
-            Text("Insights will appear here")
-                .font(.headline)
+            Text("Your patterns will appear here")
+                .font(.system(.headline, design: .rounded))
 
             Text("Record a few entries and DailyVox will show streaks, mood trends, and gentle summaries of your writing.")
                 .font(.subheadline)
@@ -102,7 +102,7 @@ struct StatsView: View {
         .padding(.vertical, 32)
         .padding(.horizontal, 16)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Streak Card
@@ -112,16 +112,16 @@ struct StatsView: View {
             HStack {
                 Image(systemName: "flame.fill")
                     .font(.title2)
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
                 Text("Writing Streak")
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
                 Spacer()
             }
 
             HStack(alignment: .bottom, spacing: 4) {
                 Text("\(currentStreak)")
                     .font(.system(size: 48, weight: .bold, design: .rounded))
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
                 Text(currentStreak == 1 ? "day" : "days")
                     .font(.title3)
                     .foregroundColor(.secondary)
@@ -166,7 +166,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Week Activity Card
@@ -174,7 +174,7 @@ struct StatsView: View {
     private var weekActivityCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("This Week")
-                .font(.headline)
+                .font(.system(.headline, design: .rounded))
 
             HStack(spacing: 8) {
                 ForEach(last7Days, id: \.self) { date in
@@ -200,7 +200,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Mood Trends Card
@@ -208,7 +208,7 @@ struct StatsView: View {
     private var moodTrendsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Mood Trends")
-                .font(.headline)
+                .font(.system(.headline, design: .rounded))
 
             if moodData.isEmpty {
                 Text("Record entries with moods to see trends")
@@ -244,7 +244,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     @available(iOS 16.0, *)
@@ -284,7 +284,7 @@ struct StatsView: View {
     private var statsSummaryCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Writing Stats")
-                .font(.headline)
+                .font(.system(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
                 StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: .blue)
@@ -295,7 +295,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - AI Insights Card
@@ -310,7 +310,7 @@ struct StatsView: View {
                         Image(systemName: "sparkles")
                             .foregroundColor(.teal)
                         Text("AI Insights")
-                            .font(.headline)
+                            .font(.system(.headline, design: .rounded))
                     }
 
                     ForEach(insights.prefix(3)) { insight in
@@ -333,7 +333,7 @@ struct StatsView: View {
                 }
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             }
         }
     }
@@ -348,7 +348,7 @@ struct StatsView: View {
                 Image(systemName: "calendar")
                     .foregroundColor(.blue)
                 Text("Weekly reflection")
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
             }
 
             Text(summary)
@@ -357,7 +357,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Goal Progress Card
@@ -373,7 +373,7 @@ struct StatsView: View {
                     .font(.title2)
                     .foregroundColor(.teal)
                 Text("Weekly Goal")
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded))
                 Spacer()
                 Text("\(count)/\(goalManager.weeklyTarget)")
                     .font(.subheadline.weight(.medium))
@@ -408,7 +408,7 @@ struct StatsView: View {
         }
         .padding()
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     // MARK: - Milestone Overlay

@@ -177,7 +177,7 @@ struct TodayView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(greeting)
-                        .font(.subheadline)
+                        .font(.system(.subheadline, design: .rounded))
                         .foregroundColor(.secondary)
                     Text(formattedToday)
                         .font(.system(size: 28, weight: .bold, design: .rounded))
@@ -192,7 +192,7 @@ struct TodayView: View {
                     StatBadge(
                         icon: "flame.fill",
                         value: "\(streakCount) day streak",
-                        color: .orange
+                        color: Color(red: 0.769, green: 0.584, blue: 0.416)
                     )
                 }
 
@@ -200,7 +200,7 @@ struct TodayView: View {
                     StatBadge(
                         icon: "calendar",
                         value: "\(daysRecordedThisYear) this year",
-                        color: .blue
+                        color: Color(red: 0.357, green: 0.486, blue: 0.420)
                     )
                 }
 
@@ -224,7 +224,7 @@ struct TodayView: View {
     private var promptsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Need a nudge?")
+                Text("A starting thought")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
             }
@@ -922,7 +922,7 @@ struct PromptChip: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
             .frame(maxWidth: 280, alignment: .leading)
-            .background(isSelected ? Color.accentColor.opacity(0.15) : Color(.secondarySystemGroupedBackground))
+            .background(isSelected ? Color.accentColor.opacity(0.15) : ThemeManager.shared.warmCardBackground)
             .foregroundColor(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }

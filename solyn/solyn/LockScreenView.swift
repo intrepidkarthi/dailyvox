@@ -7,8 +7,15 @@ struct LockScreenView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [
+                    Color(red: 0.980, green: 0.973, blue: 0.961),  // Warm ivory
+                    Color(red: 0.949, green: 0.929, blue: 0.910)   // Warm beige
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
 
             VStack(spacing: 32) {
                 Image(systemName: "lock.shield.fill")
@@ -16,7 +23,7 @@ struct LockScreenView: View {
                     .foregroundColor(.accentColor)
 
                 Text("DailyVox is Locked")
-                    .font(.title2.bold())
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
 
                 Text("Only you can unlock and see your entries.")
                     .font(.subheadline)
@@ -33,13 +40,13 @@ struct LockScreenView: View {
                     .frame(maxWidth: 320)
                     .background(Color.accentColor)
                     .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
 
                 if authFailed {
                     Text("Authentication failed. Please try again.")
                         .font(.caption)
-                        .foregroundColor(.red)
+                        .foregroundColor(Color(red: 0.769, green: 0.451, blue: 0.420))
                 }
             }
             .frame(maxWidth: 500)

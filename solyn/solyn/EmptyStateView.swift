@@ -39,7 +39,7 @@ struct EmptyStateView: View {
 
             VStack(spacing: 8) {
                 Text(title)
-                    .font(.title2.weight(.semibold))
+                    .font(.system(size: 22, weight: .semibold, design: .rounded))
                     .multilineTextAlignment(.center)
 
                 Text(subtitle)
@@ -111,12 +111,12 @@ struct WelcomeCard: View {
             PrivacyBadge()
 
             VStack(spacing: 12) {
-                Text("Welcome to Your Private Diary")
-                    .font(.title2.weight(.bold))
+                Text("Your constellation begins here")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
 
-                Text("Speak your thoughts freely. All AI runs on your device — private by design, with optional iCloud sync.")
-                    .font(.subheadline)
+                Text("Speak your thoughts. Every word becomes a star in your inner sky. All AI runs on your device — private by design.")
+                    .font(.system(size: 15, weight: .regular, design: .rounded))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -124,15 +124,16 @@ struct WelcomeCard: View {
 
             // Features list
             VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(icon: "mic.fill", color: .blue, text: "Just 42 seconds — that's all it takes")
-                FeatureRow(icon: "text.quote", color: .purple, text: "Automatically transcribed to text")
-                FeatureRow(icon: "lock.fill", color: .green, text: "100% private, stored locally")
+                FeatureRow(icon: "mic.fill", color: Color(red: 0.831, green: 0.647, blue: 0.278), text: "Just 42 seconds — that's all it takes")
+                FeatureRow(icon: "text.quote", color: Color(red: 0.357, green: 0.486, blue: 0.420), text: "Transcribed and understood on-device")
+                FeatureRow(icon: "lock.fill", color: Color(red: 0.420, green: 0.620, blue: 0.482), text: "100% private, stored locally")
             }
             .padding(.top, 8)
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .shadow(color: Color.black.opacity(0.04), radius: 12, y: 4)
     }
 }
 

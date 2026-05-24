@@ -13,11 +13,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
     case system = "System"
     case ivory = "Ivory"    // Warm, premium default
     case light = "Light"
-    case sage = "Sage"
-    case lavender = "Lavender"
-    case rose = "Rose"
-    case ocean = "Ocean"
-    case warm = "Warm"
     case dark = "Dark"
 
     var id: String { rawValue }
@@ -28,11 +23,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
         case .system: return "circle.lefthalf.filled"
         case .ivory: return "leaf.fill"
         case .light: return "sun.max"
-        case .sage: return "leaf"
-        case .lavender: return "sparkles"
-        case .rose: return "heart"
-        case .ocean: return "drop"
-        case .warm: return "flame"
         case .dark: return "moon.stars"
         }
     }
@@ -40,9 +30,8 @@ enum AppTheme: String, CaseIterable, Identifiable {
     var colorScheme: ColorScheme? {
         switch self {
         case .system: return nil
-        case .ivory: return .light
+        case .ivory, .light: return .light
         case .dark: return .dark
-        default: return .light
         }
     }
 
@@ -53,16 +42,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
             return Color(red: 0.357, green: 0.486, blue: 0.420)  // Sage green (updated from blue-gray)
         case .ivory:
             return Color(red: 0.357, green: 0.486, blue: 0.420)  // #5B7C6B sage green
-        case .sage:
-            return Color(red: 0.45, green: 0.58, blue: 0.5)  // Soft sage green
-        case .lavender:
-            return Color(red: 0.6, green: 0.5, blue: 0.7)  // Soft lavender
-        case .rose:
-            return Color(red: 0.75, green: 0.5, blue: 0.55)  // Soft rose
-        case .ocean:
-            return Color(red: 0.4, green: 0.6, blue: 0.7)  // Soft ocean blue
-        case .warm:
-            return Color(red: 0.75, green: 0.55, blue: 0.4)  // Soft terracotta
         case .dark:
             return Color(red: 0.6, green: 0.7, blue: 0.8)  // Soft blue for dark mode
         }
