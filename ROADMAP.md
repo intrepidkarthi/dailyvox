@@ -77,7 +77,9 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Watch Complications for quick access
 - Multi-language UI via String Catalogs
 
-### v2.0 — Foundation Models *(iOS 26, iPhone 15 Pro+)*
+### v2.0 — Foundation Models + Android *(iOS 26, iPhone 15 Pro+)*
+
+**iOS — Apple Foundation Models:**
 - Apple Foundation Models integration (on-device 3B LLM)
 - LanguageModelSession for multi-turn conversations
 - Tool calling for autonomous Core Data queries
@@ -88,6 +90,16 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Autobiographical memory consolidation: monthly distillation of journal entries into semantic self-knowledge ("I tend to...", "I always...")
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
+
+**Android — Native Kotlin:**
+- Native Kotlin + Jetpack Compose (not KMP — platform-specific AI APIs need native access)
+- Tiered AI: Gemini Nano (Pixel/Samsung flagships) → MediaPipe + TFLite fallback → core journal for older devices
+- On-device speech: SpeechRecognizer (API 33+) + Vosk fallback
+- Room + SQLCipher for encrypted local storage
+- Zero INTERNET permission in AndroidManifest.xml (hard OS-level block)
+- Google Play "No data collected" Data Safety label
+- Constellation UI in Jetpack Compose Canvas
+- BiometricPrompt + Android Keystore for security
 
 ### v2.1 — LoRA Fine-Tuning
 - Personal LoRA adapter training on Mac (macOS app becomes the training environment)
@@ -128,6 +140,33 @@ The goal of v3.0 is the most accurate mirror of yourself that has ever existed �
 - Context condensation for long conversations
 - Full causal reasoning: "Why did I feel this way?" with cited evidence from past entries
 - Exportable digital self-preservation — your Twin's personality model, knowledge graph, emotional history, and voice in an open format
+
+### v4.0 — DailyVox Mirror *(hardware device — vision)*
+
+A physical tabletop device that IS your Digital Twin — speaks in your voice, thinks like you, answers like you. No internet. No cloud. Your most personal AI, embodied.
+
+**Hardware:**
+- Holographic display (Pepper's ghost + high-brightness LCD in dark enclosure)
+- On-device LLM (Phi-3 Mini 3.8B + LoRA personality adapter, ~2.3GB)
+- Voice cloning (XTTS-v2, needs only 6 seconds of reference audio)
+- Speech recognition (whisper.cpp, fully offline)
+- Microphone array + speaker
+- No WiFi/Bluetooth chip — physically impossible to connect to the internet
+- Data import only via USB-C from DailyVox app
+
+**How it works:**
+- You journal daily in DailyVox (phone app)
+- Periodically sync journal archive to the device via USB-C cable
+- Device fine-tunes its personality model from your entries
+- Anyone can walk up and ask "you" a question — it answers in your voice, your tone, your reasoning
+- The more you journal, the more accurate the mirror becomes
+
+**Target specs:**
+- SoC: NVIDIA Jetson Orin Nano (67 TOPS, 8GB) or equivalent edge AI chip
+- Storage: 32-64GB (LLM + voice model + journal archive)
+- Power: 10-30W, USB-C powered
+- BOM target: $300-400 (retail $499-699)
+- Privacy: no wireless silicon, encrypted storage, tamper-evident enclosure
 
 ---
 
