@@ -1,0 +1,21 @@
+{
+  "name": "DailyVox",
+  "short_name": "DailyVox",
+  "description": "A personal AI voice journal with an on-device Digital Twin.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#5B7C6B",
+  "theme_color": "#5B7C6B",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/press/dailyvox-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
