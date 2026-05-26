@@ -1,0 +1,153 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=1320,height=2868">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1320px;height:2868px;overflow:hidden;font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;background:#0B0B1E}
+
+/* Full-bleed dark background with gradient */
+.bg{position:absolute;inset:0;background:linear-gradient(165deg,#0B0B1E 0%,#121228 30%,#1A1A2E 60%,#0F1A24 100%)}
+
+/* Decorative orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.35}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,#5B7C6B,transparent 70%);top:-100px;right:-100px}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,#D4A547,transparent 70%);bottom:800px;left:-150px}
+.orb3{width:400px;height:400px;background:radial-gradient(circle,#C4956A,transparent 70%);bottom:200px;right:-80px}
+
+/* Stars scattered */
+.star{position:absolute;border-radius:50%;background:#fff}
+.star::after{content:'';position:absolute;inset:-200%;border-radius:50%;background:radial-gradient(circle,currentColor,transparent 60%);opacity:.3}
+
+/* Content */
+.content{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;z-index:2}
+
+/* Top text area - 25% */
+.top-text{padding:160px 100px 0;text-align:center;width:100%}
+h1{color:#fff;font-size:128px;font-weight:800;letter-spacing:-5px;line-height:.92}
+h1 span{background:linear-gradient(135deg,#D4A547,#E8C86A);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{margin-top:36px;color:rgba(255,255,255,.5);font-size:44px;font-weight:400;line-height:1.4}
+
+/* Phone mockup - starts at 35%, tall enough to bleed off bottom */
+.phone-wrap{position:absolute;top:980px;left:50%;transform:translateX(-50%);width:840px}
+.phone{width:100%;background:#FAF8F5;border-radius:60px 60px 0 0;overflow:hidden;box-shadow:0 -20px 80px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08);padding:48px 0 0;min-height:2000px}
+.phone-notch{width:200px;height:36px;background:#0B0B1E;border-radius:0 0 20px 20px;margin:0 auto 48px}
+.phone-inner{padding:0 56px 0}
+
+/* App UI inside phone */
+.app-greeting{font-size:32px;color:rgba(26,26,46,.4);font-weight:500;margin-bottom:16px}
+.app-title{font-size:60px;font-weight:700;color:#1A1A2E;margin-bottom:48px}
+.app-mic-wrap{display:flex;justify-content:center;margin-bottom:36px}
+.app-mic-outer{width:200px;height:200px;border:2px solid rgba(91,124,107,.15);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.app-mic{width:160px;height:160px;background:linear-gradient(135deg,#5B7C6B,#4A6B5A);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(91,124,107,.4)}
+.app-mic svg{width:56px;height:56px;fill:#fff}
+.app-hint{text-align:center;font-size:30px;color:rgba(26,26,46,.35);margin-bottom:56px}
+
+/* Stats inside phone */
+.app-stats{display:flex;gap:20px;margin-bottom:48px}
+.app-stat{flex:1;background:#fff;border-radius:28px;padding:44px 20px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+.app-stat-val{font-size:56px;font-weight:800;color:#D4A547}
+.app-stat-lbl{font-size:26px;color:rgba(26,26,46,.4);font-weight:600;margin-top:8px}
+
+/* Tags inside phone */
+.app-tags{display:flex;gap:16px;justify-content:center;margin-bottom:60px}
+.app-tag{padding:22px 36px;background:#fff;border-radius:100px;font-size:30px;font-weight:700;color:#5B7C6B;box-shadow:0 2px 8px rgba(0,0,0,.03);display:flex;align-items:center;gap:10px}
+.tag-dot{width:12px;height:12px;border-radius:50%;background:#5B7C6B}
+
+/* Privacy notice at bottom of phone */
+.app-priv{text-align:center;font-size:28px;color:rgba(26,26,46,.3);font-weight:500;margin-bottom:48px}
+.app-priv-badge{display:inline-flex;align-items:center;gap:10px;padding:18px 36px;background:rgba(91,124,107,.06);border-radius:100px;margin-top:24px}
+.app-priv-badge span{font-size:26px;font-weight:700;color:#5B7C6B}
+
+/* iOS Tab Bar - fixed to bottom of visible frame */
+.tab-bar{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:840px;height:110px;background:rgba(250,248,245,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.06);display:flex;align-items:flex-start;justify-content:space-around;padding:16px 24px 0;z-index:20}
+.tab{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
+.tab svg{width:30px;height:30px;fill:rgba(26,26,46,.25)}
+.tab span{font-size:18px;font-weight:600;color:rgba(26,26,46,.25)}
+.tab.active svg{fill:#5B7C6B}
+.tab.active span{color:#5B7C6B}
+
+/* Floating feature badges around phone */
+.badge{position:absolute;z-index:3;padding:24px 40px;border-radius:24px;font-size:32px;font-weight:700;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.badge-left{background:rgba(91,124,107,.15);color:#8FBFA3;left:40px;top:680px;border:1px solid rgba(91,124,107,.2)}
+.badge-right{background:rgba(212,165,71,.15);color:#E8C86A;right:40px;top:800px;border:1px solid rgba(212,165,71,.2)}
+.badge-left2{background:rgba(107,158,123,.15);color:#8FBFA3;left:40px;top:940px;border:1px solid rgba(107,158,123,.2)}
+
+/* App Store badge at very top */
+.rating{position:absolute;top:80px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:5}
+.rating-stars{color:#D4A547;font-size:36px;letter-spacing:4px}
+.rating-text{color:rgba(255,255,255,.4);font-size:28px;font-weight:500}
+</style></head><body>
+
+<div class="bg"></div>
+
+<!-- Decorative orbs -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- Scattered stars -->
+<div class="star" style="top:120px;left:180px;width:4px;height:4px;color:rgba(212,165,71,.6)"></div>
+<div class="star" style="top:200px;right:200px;width:3px;height:3px;color:rgba(255,255,255,.5)"></div>
+<div class="star" style="top:350px;left:100px;width:5px;height:5px;color:rgba(91,124,107,.6)"></div>
+<div class="star" style="top:450px;right:120px;width:3px;height:3px;color:rgba(255,255,255,.4)"></div>
+<div class="star" style="top:600px;left:250px;width:4px;height:4px;color:rgba(212,165,71,.5)"></div>
+<div class="star" style="top:300px;left:600px;width:6px;height:6px;color:rgba(196,149,106,.5)"></div>
+<div class="star" style="top:500px;right:300px;width:3px;height:3px;color:rgba(255,255,255,.3)"></div>
+
+<div class="content">
+    <!-- Rating bar -->
+    <div class="rating">
+        <span class="rating-stars">★★★★★</span>
+        <span class="rating-text">Voice Journal + AI Twin</span>
+    </div>
+
+    <!-- Hero text -->
+    <div class="top-text">
+        <h1>Your inner sky<br>is <span>waiting</span></h1>
+        <div class="subtitle">Every thought you speak becomes a star<br>in your private constellation</div>
+    </div>
+
+    <!-- Floating badges -->
+    <div class="badge badge-left">On-Device AI</div>
+    <div class="badge badge-right">Digital Twin</div>
+    <div class="badge badge-left2">100% Private</div>
+
+    <!-- Phone mockup -->
+    <div class="phone-wrap">
+        <div class="phone" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-inner">
+                <div class="app-greeting">Good morning</div>
+                <div class="app-title">What's on your mind?</div>
+                <div class="app-mic-wrap">
+                    <div class="app-mic-outer">
+                        <div class="app-mic">
+                            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-hint">Speak for 42 seconds. Your first star appears.</div>
+                <div class="app-stats">
+                    <div class="app-stat"><div class="app-stat-val">0</div><div class="app-stat-lbl">Network calls</div></div>
+                    <div class="app-stat"><div class="app-stat-val">42s</div><div class="app-stat-lbl">Per entry</div></div>
+                    <div class="app-stat"><div class="app-stat-val">$0</div><div class="app-stat-lbl">Forever</div></div>
+                </div>
+                <div class="app-tags">
+                    <div class="app-tag"><div class="tag-dot"></div>Voice-first</div>
+                    <div class="app-tag"><div class="tag-dot" style="background:#D4A547"></div>Digital Twin</div>
+                    <div class="app-tag"><div class="tag-dot" style="background:#6B9E7B"></div>On-device AI</div>
+                </div>
+                <div class="app-priv">Your voice stays on this device<div class="app-priv-badge"><span>Apple Privacy Verified</span></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab bar overlaid at bottom of frame -->
+    <div class="tab-bar">
+        <div class="tab active"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg><span>Record</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg><span>Journal</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span>Insights</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg><span>Twin</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg><span>Settings</span></div>
+    </div>
+</div>
+
+</body></html>

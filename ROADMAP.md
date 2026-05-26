@@ -55,7 +55,12 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 
 ## Planned
 
-### v1.3 — Semantic Search & Proactive Insights
+### v1.4 — Dynamic Island, Semantic Search & Proactive Insights
+- **Dynamic Island / Live Activities** (ActivityKit + WidgetKit extension):
+  - Recording timer: 42-second countdown in compact pill, waveform in expanded view
+  - Streak tracker: star icon + "Day 12" in compact, constellation preview in expanded
+  - Star birth animation: brief Live Activity after entry completion ("A new star appeared")
+  - Lock Screen widget: constellation progress visible on all iOS 16+ devices
 - NLEmbedding for 512-dimensional sentence embeddings
 - Semantic search via cosine similarity
 - K-means clustering for thematic discovery
@@ -65,7 +70,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
 - Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
 
-### v1.4 — Apple Watch, macOS & Multi-Language
+### v1.5 — Apple Watch, macOS & Multi-Language
 - Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
 - Apple Watch companion app (WatchKit) for voice mood check-ins
 - WatchConnectivity for iPhone-Watch sync
@@ -84,7 +89,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
 
-### v2.5 — LoRA Fine-Tuning
+### v2.1 — LoRA Fine-Tuning
 - Personal LoRA adapter training on Mac (macOS app becomes the training environment)
 - ~160 MB adapter delivered via Background Assets
 - Train the Twin to sound and think like you
