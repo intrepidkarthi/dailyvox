@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox v1.3.5: The Constellation Leaves the App - DailyVox Blog</title>
+  <meta name="description" content="DailyVox v1.3.5 brings the constellation metaphor out of the app and into the Dynamic Island and Lock Screen. A live recording timer, a 'new star' celebration, an opt-in streak — and the truth about the 42-second cap that never existed.">
+  <meta name="keywords" content="dailyvox dynamic island, voice journal live activity, lock screen widget journaling, dailyvox v1.3.5, activitykit journal, journal app dynamic island, ios 18 journal app, dailyvox update">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/v1-3-5-dynamic-island">
+  <meta property="og:title" content="DailyVox v1.3.5: The Constellation Leaves the App">
+  <meta property="og:description" content="A live recording timer in the Dynamic Island. A 'new star' celebration when your entry saves. An opt-in streak on the Lock Screen. Here's what shipped — and why we finally retired the 42-second cap framing.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/v1-3-5-dynamic-island">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "DailyVox v1.3.5: The Constellation Leaves the App",
+    "description": "DailyVox v1.3.5 brings the constellation metaphor out of the app and into the Dynamic Island and Lock Screen. A live recording timer, a 'new star' celebration, an opt-in streak — and the truth about the 42-second cap that never existed.",
+    "url": "https://getdailyvox.com/blog/v1-3-5-dynamic-island",
+    "datePublished": "2026-05-27",
+    "dateModified": "2026-05-27",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/v1-3-5-dynamic-island" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What does the DailyVox Dynamic Island show while you record?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When you tap the mic, the Dynamic Island shows a live recording timer. The compact pill displays a red mic glyph on the left and elapsed time on the right, counting up from 0:00. Expanded view shows a larger timer, a live waveform that responds to your voice, and a progress line that counts down to the 42-second soft target. After 42 seconds, the message switches to 'Past your daily 42 — keep going as long as you like.' The activity ends the moment you stop recording."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the 42-second limit gone in DailyVox v1.3.5?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It was never a hard cap in the code. DailyVox has always recorded for as long as you keep talking — but earlier copy framed 42 seconds as a fixed duration, which set the wrong expectation. In v1.3.5 we softened the framing throughout the app and built the Live Activity recording timer to count up past 42 seconds, so the interface honestly reflects what the recorder actually does. 42 seconds is the recommended sweet spot for a daily voice entry, not a stop sign."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the DailyVox streak Live Activity drain my battery?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The streak Live Activity is opt-in via Settings, off by default, and updated at most once per app foreground. There is no background polling. The recording timer Live Activity is throttled to ~2 updates per second while recording and ends the moment you stop. Neither uses push notifications, network, or background tasks — all updates are driven by code that's already running in the app. Battery impact is comparable to other Live Activities like timers and music players."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need an iPhone 14 Pro or newer for these features?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Dynamic Island specifically requires an iPhone 14 Pro or newer (iPhone 14 Pro, 15 Pro, 16 Pro, and successors). On other iPhones running iOS 16.1 or later, the same Live Activities appear as Lock Screen and notification banners instead — the recording timer, the 'new star' celebration, and the streak display all still work, they just render in a different place. The new Constellation Lock Screen widget works on every iPhone running iOS 16."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are Live Activities private? Where does the data go?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Live Activities in DailyVox carry only the data needed to render them: elapsed time, audio level for the waveform, current streak number, and one mood string for the star color. Nothing leaves your device. There is no push token registered with our servers because we don't have servers. The activity payload is generated on-device by ActivityKit and rendered by the DailyVox Widget Extension running in your iPhone's own process. The same 'Data Not Collected' privacy label applies."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "DailyVox v1.3.5: The Constellation Leaves the App"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-technology">Release</span>
+        <h1>DailyVox v1.3.5: The Constellation Leaves the App</h1>
+        <p class="article-meta">May 27, 2026 &middot; 6 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>In v1.3, every journal entry became a star in your inner sky. In v1.3.5, that sky comes out of the app. The Dynamic Island shows a live recording timer while you speak. A brief "a new star appeared" pop celebrates each saved entry. An opt-in streak indicator can ride along on your Lock Screen. And a new Canvas-rendered constellation widget puts a tiny piece of your inner sky on the lock screen itself, one star per recent entry.</p>
+
+        <p>This is a small release in scope, but a meaningful one in how the app feels. The point of a journal is to be there in the moments you'd otherwise scroll past. With v1.3.5, the journal answers back in those same moments — when you glance at your phone, when you record at the kitchen table, when you finish an entry and put the phone down. Here's what shipped, and why.</p>
+
+        <h2>What's New</h2>
+
+        <h3>A live recording timer in the Dynamic Island</h3>
+
+        <p>When you tap the mic, the Dynamic Island fills with a red mic glyph and a digital timer that counts up from 0:00. Expand the island with a long press and you'll see a larger timer, a live waveform driven by your voice, and a progress line that counts down to 42 seconds. After 42, the line switches to a gentle "past your daily 42 — keep going as long as you like."</p>
+
+        <p>This is the moment we most wanted Live Activities for. Voice journaling has one anxious question buried inside it: <em>how long have I been talking?</em> Before the Dynamic Island, you had to either look at the timer on the recording screen (breaking the spell of speaking) or just trust your instincts (often miscalibrated). Now the timer lives outside the app. You can lock your phone, look away, walk to the window, and still see at a glance whether you're at 0:18 or 1:47.</p>
+
+        <p>The Live Activity ends the moment you stop recording. There is no countdown that forces you to stop. There never has been — see the section below.</p>
+
+        <h3>A "new star" celebration when your entry saves</h3>
+
+        <p>Right after transcription completes, a short Live Activity appears: a star glyph in the colour of your detected mood, with the line "A new star appeared in your sky." It dismisses itself after about eight seconds. No notification sound. No badge. No interaction required.</p>
+
+        <p>We considered using a regular push notification for this and decided against it. Notifications interrupt. Live Activities settle in next to whatever you're already doing — the lock screen banner, the Dynamic Island, the notification centre — and quietly leave when they're done. For a moment of celebration that should feel personal and weightless, that's the right surface. You see the star, you understand the entry was saved, the moment passes.</p>
+
+        <h3>An opt-in streak in your Dynamic Island</h3>
+
+        <p>If you turn on <strong>Settings → Live Activities → Show streak in Dynamic Island</strong>, your current streak pins to the Dynamic Island and the Lock Screen as a persistent Live Activity: a star icon, "Day 12", and a small checkmark indicating whether today's entry is in. It refreshes whenever you open the app. It ends automatically when the streak breaks or when you turn the setting off.</p>
+
+        <p>This is off by default for a reason. A persistent Live Activity is a strong signal — it sits on your phone constantly. Some users will love that as motivation. Others will find it intrusive. We don't want to make that call for you, so we made the toggle prominent and the default off. If you opt in and change your mind, one tap ends it.</p>
+
+        <h3>A constellation widget for the Lock Screen</h3>
+
+        <p>The new <strong>Constellation</strong> widget renders a tiny version of your inner sky directly on your Lock Screen. It uses the same Canvas drawing as the in-app Twin tab, scaled down to fit the accessory rectangular and circular slots. Each recent entry shows as a star coloured by mood, with faint lines connecting nearby ones.</p>
+
+        <p>It's not interactive — Lock Screen widgets can't be — but it's a quiet reminder of what you've built. After a few weeks of journaling, you'll have a small unique pattern that nobody else on Earth has on their lock screen.</p>
+
+        <h2>The Truth About the 42-Second Cap</h2>
+
+        <p>While we were building the recording timer, we ran into a copy issue. Every onboarding screen, every empty state, every Twin tab message had some variation of "speak for 42 seconds." Users would reasonably read that as "you have 42 seconds, then the app cuts you off."</p>
+
+        <p>Here's the truth: <strong>that cap was never in the code.</strong> The recorder has always run until you tap stop. There was no AVAudioRecorder timer, no auto-cutoff, no maximum duration. If you talked for ten minutes, you got a ten-minute recording. The "42 seconds" was a recommendation that read like a limit.</p>
+
+        <p>In v1.3.5 we did two things. First, we softened the copy across <code>TodayView</code>, <code>DigitalTwinView</code>, and <code>ConstellationView</code> — "speak for 42 seconds" became "42 seconds — or longer" and "as long as you need." Second, we built the recording Live Activity to count up past 42, with a copy change at the boundary that reframes the moment from "limit reached" to "you're past your sweet spot, keep going."</p>
+
+        <p>42 seconds is still the recommended target — it's the sweet spot we landed on based on what feels like a complete daily reflection without feeling like a chore. But the recorder doesn't care. Talk for as long as you need to talk.</p>
+
+        <h2>A New Icon and Two Variants</h2>
+
+        <p>The new app icon — golden mic on warm sage — actually shipped a few weeks ago on the website and press kit. v1.3.5 is the first release where it appears on the App Store and on your home screen. We also added the two iOS 18 appearance variants Apple introduced last year:</p>
+
+        <ul>
+          <li><strong>Dark mode icon</strong> — the same golden mic on a warm charcoal background, so it doesn't glow harshly against a dark home screen. Subtle warmth in the near-black so it doesn't feel sterile.</li>
+          <li><strong>Tinted icon</strong> — a monochrome silhouette of the mic on transparent background, so iOS can multiply your system tint colour across it. Useful for users who run a tinted home screen.</li>
+        </ul>
+
+        <p>The mic shape includes a small detail: four lines on the left of the grille and two on the right. 4 + 2 = 42. It's a tiny easter egg for the people who notice. If you didn't notice, you weren't supposed to.</p>
+
+        <h2>Why Live Activities, and Why Not More</h2>
+
+        <p>Live Activities are easy to abuse. The same surface that can quietly show a recording timer can also pin a "you should journal today" banner to a user's lock screen for hours. We thought hard about what to ship and what to leave on the cutting room floor.</p>
+
+        <p>The rule we settled on: <strong>Live Activities should reflect something that is actively happening or just happened, not nag you to do something.</strong></p>
+
+        <ul>
+          <li>The recording timer is showing a thing that is happening right now (you're recording). It ends when the thing ends. ✓</li>
+          <li>The "new star" pop is showing a thing that just happened (your entry saved). It dismisses itself. ✓</li>
+          <li>The streak indicator is showing a state you opted into seeing. You can end it any time. ✓</li>
+        </ul>
+
+        <p>Things we considered and didn't ship: a "you haven't journaled today" Live Activity (nag), a Live Activity that prompts you to add a mood tag (nag), a Live Activity celebrating milestone streaks every single day (nag). The journal exists to serve your attention, not consume it.</p>
+
+        <h2>What's Coming in v1.4</h2>
+
+        <p>v1.3.5 clears the decks for the next big release. v1.4 is focused on a single theme: <strong>making the Digital Twin actually understand your entries semantically</strong>. The pieces:</p>
+
+        <ul>
+          <li><strong>NLEmbedding</strong> — 512-dimensional sentence embeddings for every entry, all generated on-device using Apple's NaturalLanguage framework.</li>
+          <li><strong>Semantic search</strong> — find entries by meaning, not keywords. Search for "the night I felt stuck" and pull up the right entry even if those exact words never appear.</li>
+          <li><strong>K-means thematic clustering</strong> — entries automatically group by theme, surfacing patterns you wouldn't have noticed.</li>
+          <li><strong>Anomaly detection</strong> — z-score analysis flags entries that are unusual for you, so reflection on "weird" moments is easier.</li>
+          <li><strong>Foundation for on-device RAG</strong> — laying the groundwork for v2.0's Apple Foundation Models integration, where the Twin will reason about your entries with a 3B-parameter LLM running entirely on your phone.</li>
+        </ul>
+
+        <p>If v1.3 was about giving your journal a visual identity and v1.3.5 was about extending that identity outside the app, v1.4 is about giving the Twin a real sense of meaning. Less surface area, more depth.</p>
+
+        <h2>How to Get It</h2>
+
+        <p>v1.3.5 is rolling out on the App Store this week. If you have automatic updates on, it'll just appear. Otherwise, open the App Store, tap your profile, scroll to DailyVox, tap Update.</p>
+
+        <p>Live Activities require iOS 16.1 or later. The Dynamic Island specifically needs an iPhone 14 Pro or newer — on other iPhones, the same activities appear as Lock Screen banners. The new Lock Screen constellation widget works on every iPhone running iOS 16 or later.</p>
+
+        <p>As always: nothing leaves your device. No accounts. No servers. No analytics. Just you, the mic, and an inner sky that's now visible from anywhere on your phone.</p>
+
+        <p>—</p>
+
+        <p><a href="https://apps.apple.com/app/dailyvox">Download DailyVox on the App Store</a> · <a href="/blog/constellation-update">Read about the v1.3 Constellation Update</a> · <a href="/">getdailyvox.com</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 DailyVox. Voice diary that respects your privacy.</p>
+      <p><a href="/privacy">Privacy</a> &middot; <a href="/support">Support</a> &middot; <a href="/blog">Blog</a></p>
+    </div>
+  </footer>
+</body>
+</html>

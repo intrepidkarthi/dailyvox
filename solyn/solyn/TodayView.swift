@@ -178,7 +178,7 @@ struct TodayView: View {
                         .font(.system(size: 26, weight: .bold, design: .rounded))
                         .foregroundColor(.primary)
 
-                    Text("Tap the mic and speak for 42 seconds.\nYour first star will appear.")
+                    Text("Tap the mic and speak for 42 seconds — or longer.\nYour first star will appear.")
                         .font(.system(size: 15, weight: .regular, design: .rounded))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -894,6 +894,23 @@ struct TodayView: View {
                             date: entry.date ?? Date(),
                             duration: entry.duration
                         )
+
+                        // Fire the "a new star appeared" Live Activity and
+                        // refresh the persistent streak Live Activity (if opted in).
+                        Task { @MainActor in
+                            let streak = currentStreak(in: viewContext)
+                            let total = totalEntryCount(in: viewContext)
+                            LiveActivityManager.shared.fireStarBirthActivity(
+                                streak: streak,
+                                totalStars: total,
+                                moodRaw: entry.mood ?? ""
+                            )
+                            LiveActivityManager.shared.refreshStreakActivity(
+                                streak: streak,
+                                hasEntryToday: true,
+                                totalEntries: total
+                            )
+                        }
                     } catch {
                         logger.error("Failed to update entry with transcription: \(error.localizedDescription)")
                     }
@@ -1066,4 +1083,54 @@ struct PromptChip: View {
         }
         .buttonStyle(.plain)
     }
+}
+
+// MARK: - Streak / Count helpers (shared with LiveActivityManager)
+
+/// Counts consecutive days (ending today, or yesterday if no entry yet today)
+/// that contain at least one diary entry. Returns 0 if none.
+func currentStreak(in context: NSManagedObjectContext) -> Int {
+    let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
+    request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+    guard let entries = try? context.fetch(request) else { return 0 }
+
+    let calendar = Calendar.current
+    var checkDate = calendar.startOfDay(for: Date())
+    let todayHasEntry = entries.contains { entry in
+        guard let date = entry.date else { return false }
+        return calendar.isDate(date, inSameDayAs: checkDate)
+    }
+    if !todayHasEntry {
+        checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
+    }
+
+    var streak = 0
+    while true {
+        let hasEntry = entries.contains { entry in
+            guard let date = entry.date else { return false }
+            return calendar.isDate(date, inSameDayAs: checkDate)
+        }
+        if hasEntry {
+            streak += 1
+            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
+        } else {
+            break
+        }
+    }
+    return streak
+}
+
+func totalEntryCount(in context: NSManagedObjectContext) -> Int {
+    let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
+    return (try? context.count(for: request)) ?? 0
+}
+
+func hasEntryToday(in context: NSManagedObjectContext) -> Bool {
+    let calendar = Calendar.current
+    let startOfDay = calendar.startOfDay(for: Date())
+    let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
+    let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
+    request.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
+    request.fetchLimit = 1
+    return ((try? context.count(for: request)) ?? 0) > 0
 }

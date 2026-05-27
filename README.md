@@ -112,16 +112,14 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 ---
 
-## What's New: v1.3 — Constellation Update
+## What's New: v1.3.5 — Dynamic Island & New Icon
 
-- Every entry becomes a mood-colored star in your private constellation
-- Real-time Canvas-based constellation with 60fps rendering
-- Celestial onboarding with star-birth animations
-- Warm ivory theme with sage green, gold, and terracotta accents
-- Focused first-time experience — just tap the mic and speak
-- Digital Twin introduction with guided 4-step flow
-- Premium UI: SF Symbols throughout, rounded typography, warm gradients
-- Themes simplified to 4 (System, Ivory, Light, Dark)
+- **Dynamic Island recording timer** — live elapsed time and waveform while you record, counting up past 42 seconds so you can speak as long as you need
+- **"A new star appeared" Live Activity** — a brief celebratory pop the moment your entry is saved
+- **Streak in the Dynamic Island** (opt-in) — pin `★ Day N` to the Dynamic Island and Lock Screen
+- **Constellation Lock Screen widget** — Canvas-rendered mini constellation, one star per recent entry, coloured by mood
+- **iOS 18 icon variants** — proper dark-mode (golden mic on warm charcoal) and tinted (monochrome silhouette)
+- Built on top of v1.3.0's Constellation Update (Canvas visualisation, Ivory theme, celestial onboarding)
 
 [Full changelog](CHANGELOG.md) | [Read the constellation story](https://getdailyvox.com/blog/constellation-update)
 
@@ -134,10 +132,11 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.0 | Core voice journal + Digital Twin | Shipped |
 | v1.1 | Twin Predictions + Shareable Cards | Shipped |
 | v1.2 | Ask Your Twin (chat) | Shipped |
-| v1.3 | Constellation Update | **Current** |
-| v1.4 | Dynamic Island + Semantic Search | Planned |
+| v1.3 | Constellation Update | Shipped |
+| v1.3.5 | Dynamic Island + New Icon | **Current** |
+| v1.4 | Semantic Search + Proactive Insights | Planned |
 | v1.5 | Apple Watch + macOS | Planned |
-| v2.0 | Apple Foundation Models (on-device LLM) | Planned |
+| v2.0 | Apple Foundation Models (on-device LLM) + Android | Planned |
 
 [Full roadmap](ROADMAP.md)
 

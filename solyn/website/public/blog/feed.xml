@@ -5,8 +5,16 @@
   <link>https://getdailyvox.com/blog</link>
   <description>Research, comparisons, and guides about voice journaling, on-device AI, and private journaling. By DailyVox — the free AI voice journal with a Digital Twin.</description>
   <language>en-us</language>
-  <lastBuildDate>Wed, 21 May 2026 12:00:00 +0000</lastBuildDate>
+  <lastBuildDate>Wed, 27 May 2026 12:00:00 +0000</lastBuildDate>
   <atom:link href="https://getdailyvox.com/blog/feed.xml" rel="self" type="application/rss+xml"/>
+
+  <item>
+    <title>DailyVox v1.3.5: The Constellation Leaves the App</title>
+    <link>https://getdailyvox.com/blog/v1-3-5-dynamic-island</link>
+    <description>A live recording timer in the Dynamic Island. A "new star" celebration when your entry saves. An opt-in streak on the Lock Screen. Plus the truth about the 42-second cap that never existed.</description>
+    <pubDate>Wed, 27 May 2026 12:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/v1-3-5-dynamic-island</guid>
+  </item>
 
   <item>
     <title>Best Voice Journal App (2026): 7 Apps Compared for Privacy, AI, and Ease of Use</title>

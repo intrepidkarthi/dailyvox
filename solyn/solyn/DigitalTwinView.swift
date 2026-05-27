@@ -158,7 +158,7 @@ struct DigitalTwinView: View {
                     number: "1",
                     icon: "mic.circle.fill",
                     title: "You speak",
-                    description: "Record a voice entry on the Record tab. Just 42 seconds.",
+                    description: "Record a voice entry on the Record tab. 42 seconds is the sweet spot — take as long as you need.",
                     color: Color(red: 0.357, green: 0.486, blue: 0.420),
                     isLast: false
                 )
@@ -1015,7 +1015,7 @@ struct DigitalTwinView: View {
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(themeManager.textColor)
 
-            Text("Every journal entry becomes a star. Speak for 42 seconds and watch your inner sky take shape.")
+            Text("Every journal entry becomes a star. Speak for 42 seconds — or longer — and watch your inner sky take shape.")
                 .font(.system(size: 14, weight: .regular, design: .rounded))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)

@@ -96,6 +96,26 @@ https://getdailyvox.com/support
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
 
+## What's New (Version 1.3.5)
+New in v1.3.5:
+
+- Brand new app icon — a golden mic on warm sage — plus iOS 18 dark mode and tinted variants
+- Dynamic Island: a live recording timer with waveform, so you can see how long you've been speaking at a glance
+- A celebratory "new star" Live Activity appears the moment your entry is saved
+- Opt-in: pin your current streak to the Dynamic Island and Lock Screen (Settings → Live Activities)
+- New Constellation Lock Screen widget — your inner sky, one star per recent entry
+- 42 seconds is still the sweet spot, but you can now speak for as long as you need
+
+## What's New (Version 1.3)
+New in v1.3:
+
+- Constellation metaphor: every entry becomes a star in your inner sky, with a real-time Canvas visualisation
+- Celestial onboarding: star-birth welcome, planet system, "Name your planets" intention mapping
+- New Ivory theme as default: warm sage, terracotta, and gold palette
+- Focused first-time experience — single mic prompt instead of cluttered cards
+- Digital Twin introduction with guided 4-step flow
+- All AI continues to run on-device. Always.
+
 ## What's New (Version 1.2)
 New in v1.2:
 

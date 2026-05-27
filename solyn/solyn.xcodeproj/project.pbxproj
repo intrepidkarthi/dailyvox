@@ -6,7 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5D943EF500EDD134343315F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CAC25CC7DD69AACADCF1BD5 /* Foundation.framework */; };
+		75DE459501509DE910BB3865 /* ConstellationLockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */; };
+		831B65A52B5BE386B4795110 /* StarBirthLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */; };
+		AECC8CE3F0CB6D7010555F79 /* RecordingLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */; };
+		AF0EBC2FED7AFC90BDA6654C /* StreakLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */; };
+		B7EDDB5B7F09E36FFA05C0D9 /* SolynWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0987F76F9C9410B7407713F /* SolynWidget.swift */; };
+		C57AB08B73E27F7100545751 /* DailyVoxWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C636FC9C3F1928B91DA5C868 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		871843FE4D84589A7921ED5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CFF97BE62EDE056600ED7317 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FD8D5118AB594947E3082E3B;
+			remoteInfo = DailyVoxWidgets;
+		};
 		CFF97C052EDE056900ED7317 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CFF97BE62EDE056600ED7317 /* Project object */;
@@ -23,10 +41,32 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9A63926B45ED52E41227F172 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C57AB08B73E27F7100545751 /* DailyVoxWidgets.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingLiveActivity.swift; sourceTree = "<group>"; };
+		6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StreakLiveActivity.swift; sourceTree = "<group>"; };
+		6CAC25CC7DD69AACADCF1BD5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LiveActivityAttributes.swift; path = solyn/LiveActivityAttributes.swift; sourceTree = SOURCE_ROOT; };
+		9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConstellationLockScreenWidget.swift; sourceTree = "<group>"; };
+		B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DailyVoxWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0987F76F9C9410B7407713F /* SolynWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SolynWidget.swift; sourceTree = "<group>"; };
 		CFF97BEE2EDE056600ED7317 /* solyn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = solyn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF97C042EDE056900ED7317 /* solynTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF97C0E2EDE056900ED7317 /* solynUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StarBirthLiveActivity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,17 +90,29 @@
 		};
 		CFF97C072EDE056900ED7317 /* solynTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = solynTests;
 			sourceTree = "<group>";
 		};
 		CFF97C112EDE056900ED7317 /* solynUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = solynUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5ABD4232A3C28B802FE9320A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D943EF500EDD134343315F3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFF97BEB2EDE056600ED7317 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -85,6 +137,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7F33B15B0B2C3F5F143DE0EE /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				6CAC25CC7DD69AACADCF1BD5 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		B8A00D1E20AE1CED475E2EEE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F33B15B0B2C3F5F143DE0EE /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BFA09B76F887900D5132BC24 /* SolynWidget */ = {
+			isa = PBXGroup;
+			children = (
+				C0987F76F9C9410B7407713F /* SolynWidget.swift */,
+				281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */,
+				F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */,
+				6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */,
+				9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */,
+				8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */,
+			);
+			name = SolynWidget;
+			path = SolynWidget;
+			sourceTree = "<group>";
+		};
 		CFF97BE52EDE056600ED7317 = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +174,8 @@
 				CFF97C072EDE056900ED7317 /* solynTests */,
 				CFF97C112EDE056900ED7317 /* solynUITests */,
 				CFF97BEF2EDE056600ED7317 /* Products */,
+				B8A00D1E20AE1CED475E2EEE /* Frameworks */,
+				BFA09B76F887900D5132BC24 /* SolynWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +185,7 @@
 				CFF97BEE2EDE056600ED7317 /* solyn.app */,
 				CFF97C042EDE056900ED7317 /* solynTests.xctest */,
 				CFF97C0E2EDE056900ED7317 /* solynUITests.xctest */,
+				B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,17 +200,17 @@
 				CFF97BEA2EDE056600ED7317 /* Sources */,
 				CFF97BEB2EDE056600ED7317 /* Frameworks */,
 				CFF97BEC2EDE056600ED7317 /* Resources */,
+				9A63926B45ED52E41227F172 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A2DA8599A37DB5C76C52C7C2 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CFF97BF02EDE056600ED7317 /* solyn */,
 			);
 			name = solyn;
-			packageProductDependencies = (
-			);
 			productName = solyn;
 			productReference = CFF97BEE2EDE056600ED7317 /* solyn.app */;
 			productType = "com.apple.product-type.application";
@@ -147,8 +232,6 @@
 				CFF97C072EDE056900ED7317 /* solynTests */,
 			);
 			name = solynTests;
-			packageProductDependencies = (
-			);
 			productName = solynTests;
 			productReference = CFF97C042EDE056900ED7317 /* solynTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -170,11 +253,26 @@
 				CFF97C112EDE056900ED7317 /* solynUITests */,
 			);
 			name = solynUITests;
-			packageProductDependencies = (
-			);
 			productName = solynUITests;
 			productReference = CFF97C0E2EDE056900ED7317 /* solynUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		FD8D5118AB594947E3082E3B /* DailyVoxWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8DFCE2E53D2F1266B77D2EE /* Build configuration list for PBXNativeTarget "DailyVoxWidgets" */;
+			buildPhases = (
+				80365740DED442F0AFF76585 /* Sources */,
+				5ABD4232A3C28B802FE9320A /* Frameworks */,
+				36A49965E7B989D23DA4CB09 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DailyVoxWidgets;
+			productName = DailyVoxWidgets;
+			productReference = B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -218,11 +316,19 @@
 				CFF97BED2EDE056600ED7317 /* solyn */,
 				CFF97C032EDE056900ED7317 /* solynTests */,
 				CFF97C0D2EDE056900ED7317 /* solynUITests */,
+				FD8D5118AB594947E3082E3B /* DailyVoxWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		36A49965E7B989D23DA4CB09 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFF97BEC2EDE056600ED7317 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,6 +353,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		80365740DED442F0AFF76585 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7EDDB5B7F09E36FFA05C0D9 /* SolynWidget.swift in Sources */,
+				AECC8CE3F0CB6D7010555F79 /* RecordingLiveActivity.swift in Sources */,
+				831B65A52B5BE386B4795110 /* StarBirthLiveActivity.swift in Sources */,
+				AF0EBC2FED7AFC90BDA6654C /* StreakLiveActivity.swift in Sources */,
+				75DE459501509DE910BB3865 /* ConstellationLockScreenWidget.swift in Sources */,
+				C636FC9C3F1928B91DA5C868 /* LiveActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFF97BEA2EDE056600ED7317 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -271,6 +390,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A2DA8599A37DB5C76C52C7C2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = DailyVoxWidgets;
+			target = FD8D5118AB594947E3082E3B /* DailyVoxWidgets */;
+			targetProxy = 871843FE4D84589A7921ED5F /* PBXContainerItemProxy */;
+		};
 		CFF97C062EDE056900ED7317 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CFF97BED2EDE056600ED7317 /* solyn */;
@@ -284,6 +409,68 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5B2CA8058ACC0EFB587DF0F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = SolynWidget/SolynWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 15;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SolynWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "DailyVox Widgets";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.app.DailyVoxWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C4DD617FC0C15B6BD7491504 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = SolynWidget/SolynWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 15;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SolynWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "DailyVox Widgets";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.app.DailyVoxWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		CFF97C162EDE056900ED7317 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -416,7 +603,7 @@
 				CODE_SIGN_ENTITLEMENTS = solyn/solyn.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"solyn/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -439,7 +626,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -460,7 +647,7 @@
 				CODE_SIGN_ENTITLEMENTS = solyn/solyn.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"solyn/Preview Content\"";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -483,7 +670,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -501,10 +688,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.appTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -521,10 +708,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.appTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -540,10 +727,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.appUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -559,10 +746,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dailyvox.appUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -609,6 +796,15 @@
 			buildConfigurations = (
 				CFF97C1F2EDE056900ED7317 /* Debug */,
 				CFF97C202EDE056900ED7317 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D8DFCE2E53D2F1266B77D2EE /* Build configuration list for PBXNativeTarget "DailyVoxWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4DD617FC0C15B6BD7491504 /* Release */,
+				5B2CA8058ACC0EFB587DF0F4 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

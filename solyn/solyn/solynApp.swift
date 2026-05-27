@@ -62,10 +62,26 @@ struct DailyVoxApp: App {
                 case .active:
                     // Check if launched from Siri shortcut to record
                     checkForSiriRecordingIntent()
+                    // Refresh the persistent streak Live Activity (if opted in)
+                    refreshStreakLiveActivity()
                 default:
                     break
                 }
             }
+        }
+    }
+
+    private func refreshStreakLiveActivity() {
+        let context = persistenceController.container.viewContext
+        Task { @MainActor in
+            let streak = currentStreak(in: context)
+            let total = totalEntryCount(in: context)
+            let hasToday = hasEntryToday(in: context)
+            LiveActivityManager.shared.refreshStreakActivity(
+                streak: streak,
+                hasEntryToday: hasToday,
+                totalEntries: total
+            )
         }
     }
 

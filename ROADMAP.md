@@ -55,12 +55,17 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 
 ## Planned
 
-### v1.4 — Dynamic Island, Semantic Search & Proactive Insights
+### v1.3.5 — New Icon & Dynamic Island *(next)*
+- **New app icon**: golden mic on sage green with 4+2 notch easter egg (matches landing page refresh)
+  - Full AppIcon set across all iOS sizes (iPhone, iPad, App Store 1024×1024)
+  - iOS 18 dark + tinted icon variants (warm charcoal background, monochrome silhouette)
 - **Dynamic Island / Live Activities** (ActivityKit + WidgetKit extension):
-  - Recording timer: 42-second countdown in compact pill, waveform in expanded view
-  - Streak tracker: star icon + "Day 12" in compact, constellation preview in expanded
-  - Star birth animation: brief Live Activity after entry completion ("A new star appeared")
-  - Lock Screen widget: constellation progress visible on all iOS 16+ devices
+  - Recording timer: elapsed time + live waveform in compact pill and expanded view; counts up past the 42-second soft target so users can speak as long as they need
+  - Star birth: brief celebratory Live Activity after entry completion ("A new star appeared in your sky"), auto-dismisses
+  - Streak tracker (opt-in via Settings): star icon + "Day N" in compact, today-done status in expanded; persists until disabled or streak breaks
+  - Constellation Lock Screen widget: Canvas-rendered mini constellation, one star per recent entry, coloured by mood
+
+### v1.4 — Semantic Search & Proactive Insights
 - NLEmbedding for 512-dimensional sentence embeddings
 - Semantic search via cosine similarity
 - K-means clustering for thematic discovery

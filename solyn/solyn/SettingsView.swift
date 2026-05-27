@@ -56,6 +56,7 @@ struct SettingsView: View {
             exportSection
             appearanceSection
             journalingGoalSection
+            liveActivitiesSection
             securitySection
             dailyReminderSection
             storageSection
@@ -216,6 +217,36 @@ struct SettingsView: View {
             Text("Journaling Goal")
         } footer: {
             Text("Set a weekly journaling target to build a consistent habit.")
+        }
+    }
+
+    @ViewBuilder
+    private var liveActivitiesSection: some View {
+        Section {
+            Toggle("Show streak in Dynamic Island", isOn: Binding(
+                get: { UserDefaults.standard.bool(forKey: kStreakLiveActivityEnabledKey) },
+                set: { newValue in
+                    UserDefaults.standard.set(newValue, forKey: kStreakLiveActivityEnabledKey)
+                    Task { @MainActor in
+                        if newValue {
+                            let streak = currentStreak(in: viewContext)
+                            let total = totalEntryCount(in: viewContext)
+                            let hasToday = streak > 0 && hasEntryToday(in: viewContext)
+                            LiveActivityManager.shared.refreshStreakActivity(
+                                streak: streak,
+                                hasEntryToday: hasToday,
+                                totalEntries: total
+                            )
+                        } else {
+                            LiveActivityManager.shared.endStreakActivity()
+                        }
+                    }
+                }
+            ))
+        } header: {
+            Text("Live Activities")
+        } footer: {
+            Text("Pin your current journaling streak to the Dynamic Island and Lock Screen. The recording timer and new-star celebration appear automatically when you record.")
         }
     }
 

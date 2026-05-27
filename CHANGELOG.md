@@ -2,6 +2,26 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.3.5] — 2026-05-27
+
+### Added
+- **New app icon variants**: iOS 18 dark-mode icon (golden mic on warm charcoal) and tinted (monochrome) silhouette to complement the sage-green default
+- **Dynamic Island — Recording timer**: live elapsed time and waveform render in the compact pill, expanded view, and Lock Screen banner while you record. Counts up past the 42-second soft target so you can speak as long as you need
+- **Dynamic Island — Star birth**: a brief celebratory Live Activity ("A new star appeared in your sky") fires the moment an entry saves, then auto-dismisses
+- **Dynamic Island — Streak tracker (opt-in)**: pin your current `★ Day N` streak to the Dynamic Island and Lock Screen. Enable from Settings → Live Activities; ends automatically if the streak breaks or you toggle off
+- **Constellation Lock Screen widget**: Canvas-rendered mini constellation, one star per recent entry, coloured by mood. Available as accessoryRectangular, accessoryCircular, and accessoryInline
+- New `LiveActivityManager` centralises all ActivityKit lifecycle (start / throttled updates at 2 Hz / end / auth checks)
+- New shared `LiveActivityAttributes.swift` defining `RecordingActivityAttributes`, `StarBirthActivityAttributes`, `StreakActivityAttributes`
+
+### Changed
+- Recording copy softened from "Speak for 42 seconds" to "42 seconds — or longer" / "as long as you need" in TodayView, DigitalTwinView, and ConstellationView. The recording timer never had a hard cap; this aligns the framing with reality
+- `Info.plist` now declares `NSSupportsLiveActivities` and `NSSupportsLiveActivitiesFrequentUpdates`
+
+### Build
+- `MARKETING_VERSION` 1.3.0 → 1.3.5
+- `CURRENT_PROJECT_VERSION` 14 → 15
+- Widget Extension target (`DailyVoxWidgets`) added — the existing `SolynWidget/` code finally compiles into a shipping binary
+
 ## [1.3.0] — 2026-05-24
 
 ### Added

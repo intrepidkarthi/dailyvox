@@ -713,6 +713,13 @@ struct DailyVoxWidgetBundle: WidgetBundle {
         StreakWidget()
         MoodWidget()
         QuickRecordWidget()
+        ConstellationLockScreenWidget()
+
+        if #available(iOS 16.2, *) {
+            RecordingLiveActivityWidget()
+            StarBirthLiveActivityWidget()
+            StreakLiveActivityWidget()
+        }
     }
 }
 

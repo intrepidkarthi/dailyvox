@@ -53,7 +53,12 @@ final class AudioRecorder: NSObject, ObservableObject {
         currentTime = 0
         level = 0
 
+        Task { @MainActor in
+            LiveActivityManager.shared.startRecordingActivity()
+        }
+
         timer?.invalidate()
+        var lastActivityPush: TimeInterval = 0
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self, let recorder = self.recorder else { return }
             recorder.updateMeters()
@@ -61,6 +66,16 @@ final class AudioRecorder: NSObject, ObservableObject {
             let normalized = max(0, min(1, (power + 60) / 60))
             self.level = normalized
             self.currentTime = recorder.currentTime
+
+            // Throttle Live Activity updates to ~2 Hz to stay under ActivityKit
+            // budget while still feeling responsive.
+            if recorder.currentTime - lastActivityPush >= 0.5 {
+                lastActivityPush = recorder.currentTime
+                let elapsed = recorder.currentTime
+                Task { @MainActor in
+                    LiveActivityManager.shared.updateRecordingActivity(elapsed: elapsed, level: normalized)
+                }
+            }
         }
         #else
         throw NSError(domain: "AudioRecorder", code: -1, userInfo: [NSLocalizedDescriptionKey: "Recording is only available on iOS."])
@@ -78,6 +93,11 @@ final class AudioRecorder: NSObject, ObservableObject {
         let url = recorder.url
         let duration = recorder.currentTime
         self.recorder = nil
+
+        Task { @MainActor in
+            LiveActivityManager.shared.endRecordingActivity()
+        }
+
         return (url, duration)
     }
 

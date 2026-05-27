@@ -403,7 +403,7 @@ struct ConstellationView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     .foregroundColor(ivoryGlow.opacity(0.8))
 
-                Text("Every journal entry adds a star to your constellation.\nSpeak for 42 seconds to begin.")
+                Text("Every journal entry adds a star to your constellation.\nSpeak for 42 seconds — or as long as you need.")
                     .font(.system(size: 14, weight: .regular, design: .rounded))
                     .foregroundColor(ivoryGlow.opacity(0.4))
                     .multilineTextAlignment(.center)
