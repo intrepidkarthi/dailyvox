@@ -33,6 +33,30 @@
     <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-otter</guid>
   </item>
   <item>
+    <title>DailyVox vs Bear: Voice Journal vs Markdown Notes</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-bear</link>
+    <description>One is a beautifully-built Markdown notes app. The other is a voice journal with a Digital Twin.</description>
+    <pubDate>Wed, 28 May 2026 13:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-bear</guid>
+  </item>
+
+  <item>
+    <title>DailyVox vs Obsidian: Voice Journal vs PKM Daily Notes</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-obsidian</link>
+    <description>Obsidian rewards effort with a curated knowledge graph. DailyVox builds the graph for you, automatically, from voice.</description>
+    <pubDate>Wed, 28 May 2026 13:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-obsidian</guid>
+  </item>
+
+  <item>
+    <title>DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-mem</link>
+    <description>Both apps build a model from your text. One runs on the cloud and remembers facts. The other runs on your phone and learns who you are.</description>
+    <pubDate>Wed, 28 May 2026 13:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-mem</guid>
+  </item>
+
+  <item>
     <title>DailyVox v1.3.5: The Constellation Leaves the App</title>
     <link>https://getdailyvox.com/blog/v1-3-5-dynamic-island</link>
     <description>A live recording timer in the Dynamic Island. A "new star" celebration when your entry saves. An opt-in streak on the Lock Screen. Plus the truth about the 42-second cap that never existed.</description>

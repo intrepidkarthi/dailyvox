@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory - DailyVox Blog</title>
+  <meta name="description" content="DailyVox vs Mem.ai compared. Personal voice journal with on-device Digital Twin vs cloud-based AI memory for notes. Privacy, architecture, and the philosophical difference.">
+  <meta name="keywords" content="DailyVox vs Mem, Mem.ai alternative, AI memory app, private AI notes, on-device AI vs cloud AI memory">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/dailyvox-vs-mem">
+  <meta property="og:title" content="DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory">
+  <meta property="og:description" content="Both apps build a model from your text. One runs on the cloud and remembers facts. The other runs on your phone and learns who you are.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/dailyvox-vs-mem">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory",
+    "description": "DailyVox vs Mem.ai compared. Personal voice journal with on-device Digital Twin vs cloud-based AI memory for notes. Privacy, architecture, and the philosophical difference.",
+    "url": "https://getdailyvox.com/blog/dailyvox-vs-mem",
+    "datePublished": "2026-05-28",
+    "dateModified": "2026-05-28",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/dailyvox-vs-mem" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},
+    {"@type":"ListItem","position":2,"name":"Blog","item":"https://getdailyvox.com/blog"},
+    {"@type":"ListItem","position":3,"name":"DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory"}
+  ]}
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand"><img src="/app-icon.png" alt="DailyVox"><span>DailyVox</span></a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-guide">Comparison</span>
+        <h1>DailyVox vs Mem.ai: On-Device Digital Twin vs Cloud AI Memory</h1>
+        <p class="article-meta">May 28, 2026 &middot; 6 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>Mem.ai (now part of Glean) was one of the earliest "AI memory" tools — a notes app whose pitch was that AI would surface relevant context from your past notes when you were writing new ones. It made waves in 2022-2024 and has since evolved. DailyVox approaches the same problem from a completely different angle: instead of cloud LLMs reading your text to surface facts, DailyVox builds an on-device model of <em>you</em> from your voice entries.</p>
+
+        <p>The architectural gap between these two products tells you almost everything you need to know.</p>
+
+        <h2>What Each App Remembers</h2>
+
+        <p><strong>Mem.ai:</strong> Facts. The names of people you've mentioned, decisions you've made, things you've written down. The AI surfaces past notes when you start writing new ones, acting like a "smart auto-complete" for your knowledge.</p>
+
+        <p><strong>DailyVox:</strong> Patterns. Your emotional baseline, mood trends, communication style, recurring themes, the people and topics that show up most in your inner life. The AI builds a model of your personality across four dimensions (Mind, Heart, Voice, Graph).</p>
+
+        <p><strong>Bottom line:</strong> Mem.ai is a memory aid for facts. DailyVox is a self-awareness tool for patterns. Different problems, different solutions.</p>
+
+        <h2>Where the AI Runs</h2>
+
+        <p><strong>Mem.ai:</strong> Cloud. Your notes are sent to Mem's servers, processed by large language models (typically GPT-class), and the AI features depend on this server round-trip. As Glean acquired Mem, the architecture is enterprise-cloud-first.</p>
+
+        <p><strong>DailyVox:</strong> Your iPhone. Apple's NaturalLanguage framework, on-device Core ML models, SFSpeechRecognizer — all run on the Neural Engine inside your phone. Zero network calls during AI processing. Verifiable in airplane mode.</p>
+
+        <p><strong>Bottom line:</strong> Mem.ai's cloud architecture enables more elaborate LLM-style responses. DailyVox's on-device architecture enables diary-grade privacy. The choice depends on whether what you're capturing is professional knowledge (cloud OK) or personal reflection (cloud not OK).</p>
+
+        <h2>Privacy</h2>
+
+        <p><strong>Mem.ai:</strong> Account required. Notes stored on Mem's (now Glean's) servers. AI processing depends on cloud LLMs. The company has technical access to your notes as part of providing the AI service. Privacy policy governs handling.</p>
+
+        <p><strong>DailyVox:</strong> No account. No servers. No analytics SDKs. Apple's "Data Not Collected" privacy label. Your entries never leave your device. Optional iCloud sync uses your own iCloud (Apple CloudKit), not a vendor's cloud.</p>
+
+        <p><strong>Bottom line:</strong> If you're capturing professional notes that are already meant to be shared with a team, Mem.ai's privacy posture is reasonable. If you're capturing personal reflection, only DailyVox's architecture provides the privacy guarantee.</p>
+
+        <h2>Input Method</h2>
+
+        <p><strong>Mem.ai:</strong> Typed notes. Web-first, with mobile companions.</p>
+
+        <p><strong>DailyVox:</strong> Voice-first. Speak for 42 seconds (or longer). On-device transcription.</p>
+
+        <p><strong>Bottom line:</strong> Mem.ai is keyboard-native. DailyVox is voice-native. Pick based on which mode you actually use.</p>
+
+        <h2>What the Output Looks Like</h2>
+
+        <p><strong>Mem.ai:</strong> Note-by-note suggestions. "You wrote about X last month — relevant here?" Cross-references between notes. AI-generated summaries on demand.</p>
+
+        <p><strong>DailyVox:</strong> A Digital Twin (private AI personality model). A constellation visualisation. Personality cards. Mood predictions. Weekly insights. The output is a portrait of your inner life, not a knowledge base.</p>
+
+        <h2>Pricing</h2>
+
+        <p><strong>Mem.ai:</strong> Free tier limited. Paid plans were ~$10–20/month historically; now subsumed into Glean's enterprise pricing.</p>
+
+        <p><strong>DailyVox:</strong> Free on the App Store. No subscriptions, no tiers.</p>
+
+        <h2>Platform</h2>
+
+        <p><strong>Mem.ai:</strong> Web, iOS, macOS, Android (varies by Glean's roadmap).</p>
+
+        <p><strong>DailyVox:</strong> iOS and iPadOS. macOS and Apple Watch planned for v1.5. Android planned for v2.0.</p>
+
+        <h2>Who Should Choose What</h2>
+
+        <h3>Choose Mem.ai if:</h3>
+        <ul>
+          <li>You're managing professional knowledge across many notes</li>
+          <li>You want AI surfacing related context as you write</li>
+          <li>Your notes are meant to be shared (with a team or future self in a professional context)</li>
+          <li>You're comfortable with cloud AI processing of your notes</li>
+        </ul>
+
+        <h3>Choose DailyVox if:</h3>
+        <ul>
+          <li>Your "notes" are private reflection, not professional knowledge</li>
+          <li>You want voice as primary input</li>
+          <li>You want AI to model <em>you</em>, not just your facts</li>
+          <li>Privacy is non-negotiable for personal content</li>
+          <li>You don't want a subscription</li>
+        </ul>
+
+        <h2>The Bottom Line</h2>
+
+        <p>Mem.ai and DailyVox illustrate a fundamental divide in the "AI memory" space. One philosophy says: send everything to powerful cloud LLMs for elaborate analysis. The other says: run everything on the user's device because some content shouldn't leave it. Both are technically valid. The question is which content you're putting in — and whether that content deserves to stay on the device that captured it.</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/dailyvox-vs-rosebud">DailyVox vs Rosebud Journal: On-Device vs Cloud AI</a></li>
+          <li><a href="/blog/digital-twin-vs-chatgpt-memory">Digital Twin vs ChatGPT Memory: What's the Difference?</a></li>
+          <li><a href="/blog/what-is-on-device-ai">What Is On-Device AI? Why It Matters for Privacy</a></li>
+          <li><a href="/blog/never-leaves-guarantee">The Never-Leaves Guarantee: Architectural Privacy</a></li>
+        </ul>
+
+        <div class="article-cta">
+          <h3>Try DailyVox — AI Memory That Lives on Your Phone</h3>
+          <p>Your patterns, modeled by your device, never seen by a server.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <p class="footer-social-row" style="margin:18px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:18px 26px; flex-wrap:wrap; font-family:monospace; font-size:12px;">
+        <a href="https://x.com/getDailyVox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">X · @getDailyVox</a>
+        <a href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Instagram · @getdailyvox</a>
+        <a href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Reddit · u/getDailyVox</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">GitHub · intrepidkarthi/dailyvox</a>
+        <a href="mailto:hello@getdailyvox.com" style="color:inherit; opacity:.7;">hello@getdailyvox.com</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
