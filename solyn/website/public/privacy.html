@@ -11,178 +11,285 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacy Policy - DailyVox | Zero Data Collection Journal App</title>
-  <meta name="description" content="DailyVox collects zero data. No servers, no accounts, no tracking. Read our privacy policy — it's short because there's nothing to disclose.">
-  <meta name="theme-color" content="#05081a">
+  <title>DailyVox Privacy Policy — Privacy by Architecture</title>
+  <meta name="description" content="DailyVox processes everything on your device. No servers. No accounts. No data collection. Apple's 'Data Not Collected' privacy label. The full policy.">
+  <meta name="theme-color" content="#f7f7f2">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/privacy">
-  <meta property="og:title" content="Privacy Policy - DailyVox">
-  <meta property="og:description" content="DailyVox collects zero data. No servers, no accounts, no tracking.">
+  <meta property="og:title" content="DailyVox Privacy Policy">
+  <meta property="og:description" content="DailyVox processes everything on your device. No servers. No accounts. No data collection. Apple's 'Data Not Collected' privacy label. The full policy.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DailyVox v1.3.5 — Your inner sky, now on the Dynamic Island.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:image:alt" content="DailyVox — Voice journal on iPhone.">
   <link rel="canonical" href="https://getdailyvox.com/privacy">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/app-icon.png">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
+      --uv: #5e2bff; --bio: #7fe82d;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover;
+      box-shadow: 0 1px 2px rgba(10,11,16,0.08); }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); position: relative; }
+    .hero::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 30%, rgba(94,43,255,0.04) 0%, transparent 40%);
+      pointer-events: none; }
+    .hero .marker { font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 18px; }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 { font-family: var(--display);
+      font-size: clamp(44px, 6vw, 72px); font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.035em; margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--uv); }
+    .hero .lede { font-size: 18px; line-height: 1.5; color: var(--ink-dim); max-width: 640px; }
+    .hero .lede strong { color: var(--ink); }
+
+    .content { padding: 48px 0 64px; }
+    .content h2 {
+      font-family: var(--display);
+      font-size: 28px; font-weight: 600; letter-spacing: -0.018em;
+      margin: 40px 0 14px;
+      position: relative; padding-left: 18px;
+    }
+    .content h2::before {
+      content: '◆'; position: absolute; left: 0; top: 12px;
+      color: var(--uv); font-size: 10px;
+    }
+    .content h3 {
+      font-family: var(--display);
+      font-size: 19px; font-weight: 600;
+      margin: 28px 0 8px;
+    }
+    .content p { margin-bottom: 14px; color: var(--ink-dim); }
+    .content p strong { color: var(--ink); font-weight: 600; }
+    .content ul, .content ol { margin: 0 0 16px 24px; }
+    .content li { margin-bottom: 8px; color: var(--ink-dim); }
+    .content a { color: var(--uv); text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .content code { font-family: var(--mono); font-size: 13px;
+      background: var(--paper-2); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+    .content table { width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: 14px; }
+    .content th, .content td { padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--rule); }
+    .content th { font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-mute); font-weight: 600; }
+    .content td { color: var(--ink); }
+    .content td strong { color: var(--ink); font-weight: 600; }
+    .content blockquote {
+      border-left: 3px solid var(--uv);
+      padding: 4px 18px;
+      margin: 18px 0;
+      color: var(--ink-dim);
+      font-style: italic;
+    }
+
+    .cta-card { margin: 56px 0 24px; padding: 36px 40px;
+      background: var(--ink); color: var(--paper); border-radius: 12px; }
+    .cta-card h3 { font-family: var(--display); font-size: 24px; font-weight: 600;
+      margin-bottom: 10px; color: var(--paper); }
+    .cta-card p { color: rgba(247,247,242,0.7); margin-bottom: 22px; }
+    .cta-card a { display: inline-block; padding: 12px 22px;
+      background: var(--paper); color: var(--ink); border-radius: 7px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .cta-card a:hover { background: var(--bio); }
+
+    .footer { padding: 48px 0; border-top: 1px solid var(--rule); background: var(--paper-2); }
+    .footer .wrap { display: flex; flex-direction: column; gap: 18px; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 18px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+    .footer-social { display: flex; gap: 18px 26px; flex-wrap: wrap;
+      padding-top: 22px; border-top: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 12px; }
+    .footer-social a { color: var(--ink-dim);
+      display: inline-flex; align-items: center; gap: 6px; }
+    .footer-social a:hover { color: var(--ink); }
+    .footer-social a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); }
+    .footer-social a.x::before { background: #fff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .footer-social a.ig::before { background: #e1306c; }
+    .footer-social a.reddit::before { background: #ff4500; }
+    .footer-social a.gh::before { background: var(--ink); }
+    .footer-social a.email::before { background: var(--uv); }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="container">
-      <a href="/" class="nav-brand">
-        <img src="/app-icon.png" alt="DailyVox">
-        <span>DailyVox</span>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/support">Support</a></li>
-      </ul>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <div class="page-header">
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last Updated: March 10, 2026</p>
-    </div>
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>PRIVACY POLICY · UPDATED 2026-05-28</div>
+    <h1>Privacy by <em>architecture</em>, not by policy.</h1>
+    <p class="lede">Your private thoughts <strong>never leave your phone</strong>. There is no server, no cloud, no account. We don't collect data because there is no infrastructure to collect it with. The full policy below.</p>
+  </section>
 
-    <div class="page-content">
-      <h2>Our Promise</h2>
-      <p>DailyVox is built on one fundamental principle: <strong>your data is yours alone</strong>. We don't collect it, we don't store it, we don't sell it, and we don't have access to it. Period.</p>
+  <main class="content wrap">
 
-      <h2>What Data DailyVox Processes</h2>
-      <p>DailyVox processes the following types of data <strong>entirely on your device</strong>:</p>
-      <ul>
-        <li><strong>Voice Recordings</strong> &mdash; Audio files recorded through the app</li>
-        <li><strong>Transcriptions</strong> &mdash; Text converted from your voice using Apple's Speech framework</li>
-        <li><strong>Journal Entries</strong> &mdash; Text you write or dictate</li>
-        <li><strong>Mood Data</strong> &mdash; Mood selections you make for your entries</li>
-        <li><strong>AI Analysis</strong> &mdash; Emotional patterns, personality insights, and your Digital Twin model</li>
-        <li><strong>Digital Twin Data</strong> &mdash; Personality model, emotional signature, and knowledge graph</li>
-        <li><strong>Photos</strong> &mdash; Images attached to diary entries, stored on-device only</li>
-      </ul>
+        <h2>Our Promise</h2>
+        <p>DailyVox is built so your private thoughts <strong>never leave your phone</strong>. There is no server. There is no cloud. There is no account. We don't collect data because there is no infrastructure to collect it with. This is privacy by architecture, not by policy.</p>
 
-      <h2>Where Your Data Lives</h2>
-      <p><strong>On your device. Only on your device.</strong></p>
-      <p>All data is stored locally on your iPhone using:</p>
-      <ul>
-        <li><strong>Core Data</strong> &mdash; For diary entries and metadata</li>
-        <li><strong>UserDefaults</strong> &mdash; For settings, preferences, and AI model data</li>
-        <li><strong>Application Support Directory</strong> &mdash; For audio files</li>
-      </ul>
+        <h2>What data DailyVox processes</h2>
+        <ul>
+          <li><strong>Voice recordings</strong> — captured when you tap the record button, stored locally in your app's sandboxed storage.</li>
+          <li><strong>Transcriptions</strong> — generated on-device by Apple's <code>SFSpeechRecognizer</code> framework. Stored in Core Data on your device.</li>
+          <li><strong>Mood &amp; sentiment</strong> — detected on-device by Apple's <code>NaturalLanguage</code> framework. Stored alongside the entry.</li>
+          <li><strong>Digital Twin model</strong> — a personality model built locally from your entries. Lives in Core Data, encrypted at rest.</li>
+          <li><strong>Photos (optional)</strong> — up to 5 per entry, stored locally if you attach them.</li>
+        </ul>
 
-      <h2>Optional iCloud Sync</h2>
-      <p>If you choose to enable iCloud sync, your diary entries are synced through <strong>Apple's CloudKit</strong> infrastructure:</p>
-      <ul>
-        <li>Data is encrypted using your Apple ID</li>
-        <li>We have zero access to your iCloud data</li>
-        <li>Apple's privacy protections apply</li>
-        <li>You can disable this at any time</li>
-      </ul>
+        <h2>Where your data lives</h2>
+        <p>All data lives <strong>on your iPhone or iPad</strong>, in the app's sandboxed storage protected by iOS. The app's database is encrypted at rest with iOS Data Protection. When the device is locked, the data is mathematically inaccessible without your passcode or biometric.</p>
 
-      <h2>What We Do NOT Do</h2>
-      <ul>
-        <li>We do <strong>NOT</strong> collect any personal information</li>
-        <li>We do <strong>NOT</strong> send data to our servers</li>
-        <li>We do <strong>NOT</strong> use third-party analytics or tracking</li>
-        <li>We do <strong>NOT</strong> use third-party advertising</li>
-        <li>We do <strong>NOT</strong> share, sell, or transfer your data to anyone</li>
-        <li>We do <strong>NOT</strong> require an account or login</li>
-        <li>We do <strong>NOT</strong> use cookies or web tracking</li>
-        <li>We do <strong>NOT</strong> access your contacts or other personal data</li>
-      </ul>
+        <h2>Optional iCloud sync</h2>
+        <p>If you enable iCloud sync in <strong>Settings → iCloud Sync</strong>, your entries sync between your own Apple devices via Apple's CloudKit. Your data is encrypted with your Apple ID — DailyVox cannot read it, and neither can Apple. This is end-to-end encrypted between your devices. iCloud sync is <strong>optional</strong> and disabled by default. The app works without it.</p>
 
-      <h2>AI Processing</h2>
-      <p>All AI processing in DailyVox happens <strong>100% on-device</strong>:</p>
-      <ul>
-        <li><strong>Speech Recognition</strong> &mdash; Uses Apple's built-in Speech framework. When online, Apple may process audio for better accuracy per their privacy policy. When offline, processing is entirely on-device.</li>
-        <li><strong>Emotion Detection</strong> &mdash; On-device using Apple's NaturalLanguage framework</li>
-        <li><strong>Digital Twin Engine</strong> &mdash; On-device machine learning that builds your personal model</li>
-      </ul>
-      <p><strong>No AI processing is sent to external servers.</strong></p>
+        <h2>What we do NOT do</h2>
+        <ul>
+          <li>We do <strong>not</strong> have servers that receive your data.</li>
+          <li>We do <strong>not</strong> have user accounts.</li>
+          <li>We do <strong>not</strong> include analytics SDKs (no Firebase, no Mixpanel, no Amplitude, no Segment).</li>
+          <li>We do <strong>not</strong> include crash reporting SDKs (no Crashlytics, no Sentry).</li>
+          <li>We do <strong>not</strong> include advertising SDKs (no IDFA collection, no attribution).</li>
+          <li>We do <strong>not</strong> sell, share, or monetise your data — there's no mechanism to do so.</li>
+          <li>We do <strong>not</strong> send your entries to OpenAI, Google, Anthropic, or any other cloud AI vendor.</li>
+        </ul>
 
-      <h2>Permissions We Request</h2>
-      <table>
-        <thead>
-          <tr><th>Permission</th><th>Purpose</th><th>When Used</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Microphone</td><td>Record voice diary entries</td><td>Only while recording</td></tr>
-          <tr><td>Speech Recognition</td><td>Transcribe voice to text</td><td>Processing a recording</td></tr>
-          <tr><td>Face ID / Touch ID</td><td>Lock the app for privacy</td><td>When app lock is enabled</td></tr>
-          <tr><td>Notifications</td><td>Daily journal reminders</td><td>If you enable reminders</td></tr>
-          <tr><td>Photo Library</td><td>Attach photos to entries</td><td>When using photo picker</td></tr>
-        </tbody>
-      </table>
-      <p>All permissions are optional. The app functions without them in text-only mode.</p>
+        <h2>AI processing</h2>
+        <p>All AI features (speech recognition, sentiment analysis, named entity recognition, personality modelling) use <strong>Apple's built-in frameworks running on your device's Neural Engine</strong>. Specifically: <code>SFSpeechRecognizer</code> for transcription, <code>NaturalLanguage</code> for sentiment + named entities, <code>Core ML</code> for the Digital Twin model. None of this involves a network call. You can verify this with a packet capture tool (Charles, Proxyman, or mitmproxy) or by using DailyVox in airplane mode — all features work identically.</p>
 
-      <h2>Photo Storage</h2>
-      <p>Photos attached to diary entries are:</p>
-      <ul>
-        <li>Stored locally in the app's sandboxed directory</li>
-        <li>Compressed as JPEG files</li>
-        <li><strong>Never uploaded</strong> to any server or cloud service</li>
-        <li>Not included in iCloud sync</li>
-        <li>Deleted when you uninstall the app</li>
-      </ul>
+        <h2>Permissions we request</h2>
+        <ul>
+          <li><strong>Microphone</strong> — required to record your voice. Used only while you're actively recording.</li>
+          <li><strong>Speech Recognition</strong> — required for on-device transcription.</li>
+          <li><strong>Face ID / Touch ID</strong> — optional, used only if you enable the App Lock feature.</li>
+          <li><strong>Photo Library</strong> — optional, requested only when you tap "Attach Photo."</li>
+          <li><strong>Notifications</strong> — optional, used for the daily reminder if you enable it.</li>
+        </ul>
+        <p>None of these permissions cause data to leave your device.</p>
 
-      <h2>Data Retention</h2>
-      <ul>
-        <li>Your data stays on your device until <strong>you</strong> delete it</li>
-        <li>Uninstalling the app removes all local data</li>
-        <li>iCloud data can be managed through your iCloud settings</li>
-      </ul>
+        <h2>Photo storage</h2>
+        <p>Photos you attach to entries are stored in your app's sandboxed storage with the rest of your journal data. They are never uploaded to a server. If you enable iCloud sync, photo attachments sync via Apple CloudKit alongside your text entries.</p>
 
-      <h2>Children's Privacy</h2>
-      <p>DailyVox does not knowingly collect data from children under 13. Since we don't collect any data at all, there is no age-specific data collection concern.</p>
+        <h2>Data retention</h2>
+        <p>Your data stays on your device until you delete it. There is no automatic retention policy — entries from your first day are kept identically to entries from yesterday. Delete individual entries via swipe-left in the Timeline view. To remove all data, uninstall the app. For iCloud data, manage it through your device's iCloud settings.</p>
 
-      <h2>Third-Party Services</h2>
-      <p>DailyVox uses only Apple frameworks (subject to Apple's privacy policy):</p>
-      <ul>
-        <li>Apple Speech Framework</li>
-        <li>Apple NaturalLanguage Framework</li>
-        <li>Apple CloudKit (optional)</li>
-        <li>Apple WidgetKit</li>
-      </ul>
-      <p>We do not integrate any third-party SDKs, analytics tools, or advertising networks.</p>
+        <h2>Encrypted backups</h2>
+        <p>You can export password-protected encrypted backups of all your data via <strong>Settings → Export Data → Encrypted Backup</strong>. These use <code>AES-256-GCM</code> encryption with a key derived from your password via PBKDF2. The backup file is yours to store wherever you choose (we recommend a physical device you control).</p>
 
-      <h2>App Store Privacy Labels</h2>
-      <ul>
-        <li><strong>Data Not Collected</strong> &mdash; DailyVox does not collect any data that leaves your device</li>
-        <li><strong>Data Linked to You</strong> &mdash; None</li>
-        <li><strong>Data Used to Track You</strong> &mdash; None</li>
-      </ul>
+        <h2>Open source</h2>
+        <p>The entire DailyVox codebase is published on GitHub under the MIT License: <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a>. Privacy claims should be verifiable, not just stated — anyone can read the source and confirm there are no network calls in the AI pipeline.</p>
 
-      <h2>Your Rights</h2>
-      <p>Since we don't collect your data, you're already in full control:</p>
-      <ul>
-        <li>Export all data at any time via Settings &gt; Export</li>
-        <li>Delete individual entries or all data</li>
-        <li>Uninstall to remove all local data</li>
-        <li>Manage iCloud data through Apple's iCloud settings</li>
-      </ul>
+        <h2>App Store privacy label</h2>
+        <p>Apple's App Store privacy nutrition label for DailyVox reads <strong>"Data Not Collected."</strong> This is verified by Apple as part of the App Store review process and matches the architectural reality described above.</p>
 
-      <h2>Changes to This Policy</h2>
-      <p>We may update this privacy policy from time to time. Changes are reflected by the "Last Updated" date above.</p>
+        <h2>Changes to this policy</h2>
+        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-05-28.</p>
 
-      <h2>Contact</h2>
-      <p>Questions about this privacy policy? Email us at <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></p>
-    </div>
+        <h2>Contact</h2>
+        <p>Questions about privacy? Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> — Karthikeyan reads every message personally.</p>
+
+        <div class="cta-card">
+          <h3>Verify it yourself</h3>
+          <p>Don't trust the privacy claims — verify them. Use DailyVox in airplane mode. Run a packet capture. Read the open-source code. Privacy claims should be testable.</p>
+          <a href="https://github.com/intrepidkarthi/dailyvox">View source on GitHub</a>
+        </div>
+
   </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-links">
-        <a href="/blog">Blog</a>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/support">Support</a>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-row">
+        <div class="footer-links">
+          <a href="/about">About</a>
+          <a href="/technology">Technology</a>
+          <a href="/blog">Journal</a>
+          <a href="/faq">FAQ</a>
+          <a href="/changelog">Changelog</a>
+          <a href="/press">Press</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+        </div>
+        <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
       </div>
-      <p class="footer-social-row" style="margin:18px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:18px 26px; flex-wrap:wrap; font-family:monospace; font-size:12px;">
-        <a href="https://x.com/getDailyVox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">X · @getDailyVox</a>
-        <a href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Instagram · @getdailyvox</a>
-        <a href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Reddit · u/getDailyVox</a>
-        <a href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">GitHub · intrepidkarthi/dailyvox</a>
-        <a href="mailto:hello@getdailyvox.com" style="color:inherit; opacity:.7;">hello@getdailyvox.com</a>
-      </p>
-      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <div class="footer-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
     </div>
   </footer>
+
 </body>
 </html>

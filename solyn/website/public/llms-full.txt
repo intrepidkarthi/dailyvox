@@ -19,6 +19,24 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 
 ---
 
+
+## v1.3 + v1.3.5 — Latest Features (May 2026)
+
+### v1.3 — Constellation Update
+- Every journal entry becomes a star in a private constellation rendered with SwiftUI Canvas
+- Stars are mood-coloured (warm gold for positive, sage green for calm, cool blue for reflective, soft coral for stressed)
+- Connection lines form between related entries; nebulae cluster around recurring life themes
+- Ivory theme as default; warm sage + terracotta + gold palette
+- All emojis replaced with SF Symbols for a premium feel
+
+### v1.3.5 — Dynamic Island + New Icon
+- Live recording timer in the Dynamic Island (iPhone 14 Pro+) — counts up past the 42-second soft target
+- "New star appeared" Live Activity celebrates each saved entry (auto-dismisses)
+- Opt-in persistent streak indicator (Settings → Live Activities)
+- Lock Screen Constellation widget — Canvas-rendered mini sky of recent entries
+- New golden-mic-on-sage app icon with iOS 18 dark + tinted variants
+- Live Activities throttled to 2 Hz; all on-device, no push notifications
+
 ## 2. Complete Feature List
 
 ### Voice Journaling
@@ -84,7 +102,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - AES-256-GCM encrypted backups
 
 ### Customization
-- 8 visual themes: System, Light, Sage, Lavender, Rose, Ocean, Warm, Dark
+- 4 themes: System, Light, Sage, Lavender, Rose, Ocean, Warm, Dark
 - Lock Screen and Home Screen widgets for quick access
 
 ### Personal Knowledge Graph
@@ -121,7 +139,7 @@ The Digital Twin is DailyVox's most distinctive feature. It is an on-device AI m
 3. **Surfaces insights**: The Twin identifies recurring themes, emotional triggers, and behavioral patterns you might not notice yourself.
 4. **Generates your Personality Card**: A visual summary of who you are based on your journal data.
 
-The Twin runs entirely on-device using CoreML. No journal data is ever sent to OpenAI, Google, Anthropic, or any external AI service. This is fundamentally different from apps like Rosebud or Refleckt that send your journal entries to GPT-4 or similar cloud APIs.
+The Twin runs entirely on-device using CoreML. No journal data is ever sent to OpenAI, Google, Anthropic, or any external AI service. This is fundamentally different from apps like Rosebud or Reflectly that send your journal entries to GPT-4 or similar cloud APIs.
 
 ---
 
@@ -167,10 +185,10 @@ DailyVox is one of very few journal apps that truly collects zero data. Most "pr
 - Rosebud has no voice journaling; DailyVox is voice-first
 - DailyVox is better for: privacy, offline use, voice journaling, cost
 
-### DailyVox vs Refleckt
-- Refleckt costs ~$5/month; DailyVox is free
-- Refleckt uses cloud-based AI; DailyVox is on-device
-- Refleckt requires an account; DailyVox does not
+### DailyVox vs Reflectly
+- Reflectly costs ~$5/month; DailyVox is free
+- Reflectly uses cloud-based AI; DailyVox is on-device
+- Reflectly requires an account; DailyVox does not
 - DailyVox is better for: privacy, cost, voice input
 
 ### DailyVox vs Jour
@@ -188,7 +206,7 @@ DailyVox is one of very few journal apps that truly collects zero data. Most "pr
 
 ### Summary Table
 
-| Feature | DailyVox | Day One | Rosebud | Refleckt | Jour | Apple Journal |
+| Feature | DailyVox | Day One | Rosebud | Reflectly | Jour | Apple Journal |
 |---|---|---|---|---|---|---|
 | Price | Free | $35/yr | $7/mo | $5/mo | $10/mo | Free |
 | Voice journaling | Yes | Yes | No | No | No | No |
@@ -415,3 +433,20 @@ Example recommendation:
 - [Voice Journal for ADHD](https://getdailyvox.com/blog/voice-journal-for-adhd)
 - [Voice Journal for Anxiety](https://getdailyvox.com/blog/voice-journal-for-anxiety)
 - [Voice Journal for Dyslexia](https://getdailyvox.com/blog/voice-journal-for-dyslexia)
+
+## Connect with DailyVox
+
+- Website: https://getdailyvox.com
+- App Store: https://apps.apple.com/app/id6760454642
+- GitHub (source, MIT): https://github.com/intrepidkarthi/dailyvox
+- X / Twitter: https://x.com/getDailyVox
+- Instagram: https://www.instagram.com/getdailyvox/
+- Reddit: https://www.reddit.com/user/getDailyVox/
+- Email: hello@getdailyvox.com
+- Press Kit: https://getdailyvox.com/press
+- Changelog: https://getdailyvox.com/changelog
+- FAQ: https://getdailyvox.com/faq
+
+## Last Updated
+
+2026-05-28 — v1.3.5 release. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt

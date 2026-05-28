@@ -11,170 +11,261 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Support & FAQ - DailyVox | Private AI Voice Diary</title>
-  <meta name="description" content="Get help with DailyVox. Find answers about offline voice journaling, Digital Twin AI, privacy, iCloud sync, encrypted backups, and more.">
-  <meta name="theme-color" content="#05081a">
+  <title>DailyVox Support — Get Help With the Voice Journal</title>
+  <meta name="description" content="Help, troubleshooting, and contact for DailyVox — the free voice journal for iPhone with on-device AI.">
+  <meta name="theme-color" content="#f7f7f2">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/support">
-  <meta property="og:title" content="Support & FAQ - DailyVox">
-  <meta property="og:description" content="Find answers about DailyVox's offline voice journaling, Digital Twin AI, privacy, and more.">
+  <meta property="og:title" content="DailyVox Support — Help & Common Questions">
+  <meta property="og:description" content="Help, troubleshooting, and contact for DailyVox — the free voice journal for iPhone with on-device AI.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DailyVox v1.3.5 — Your inner sky, now on the Dynamic Island.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:image:alt" content="DailyVox — Voice journal on iPhone.">
   <link rel="canonical" href="https://getdailyvox.com/support">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/app-icon.png">
 
-  <!-- FAQ Schema for rich results -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is my data private in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. DailyVox processes everything on your device. We don't have servers that receive your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does DailyVox work offline?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Recording, journaling, and all AI features work fully offline. Speech transcription also works offline, though accuracy may be slightly better with an internet connection."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do I back up my DailyVox data?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Go to Settings > Export Data. You can export in JSON, Markdown, CSV, plain text, or password-protected encrypted format (AES-256-GCM). You can also enable iCloud sync for automatic backup."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What is the Digital Twin in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Your Digital Twin is a private AI model that learns your personality, emotional patterns, communication style, and personal knowledge graph from your journal entries. It grows more accurate with every entry and stays 100% on your device."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is DailyVox really free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. DailyVox is completely free with no in-app purchases, no subscriptions, and no ads. All features are included."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What iOS version does DailyVox require?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox requires iOS 17.0 or later."
-        }
-      }
-    ]
-  }
-  </script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
+      --uv: #5e2bff; --bio: #7fe82d;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover;
+      box-shadow: 0 1px 2px rgba(10,11,16,0.08); }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); position: relative; }
+    .hero::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 30%, rgba(94,43,255,0.04) 0%, transparent 40%);
+      pointer-events: none; }
+    .hero .marker { font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 18px; }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 { font-family: var(--display);
+      font-size: clamp(44px, 6vw, 72px); font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.035em; margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--uv); }
+    .hero .lede { font-size: 18px; line-height: 1.5; color: var(--ink-dim); max-width: 640px; }
+    .hero .lede strong { color: var(--ink); }
+
+    .content { padding: 48px 0 64px; }
+    .content h2 {
+      font-family: var(--display);
+      font-size: 28px; font-weight: 600; letter-spacing: -0.018em;
+      margin: 40px 0 14px;
+      position: relative; padding-left: 18px;
+    }
+    .content h2::before {
+      content: '◆'; position: absolute; left: 0; top: 12px;
+      color: var(--uv); font-size: 10px;
+    }
+    .content h3 {
+      font-family: var(--display);
+      font-size: 19px; font-weight: 600;
+      margin: 28px 0 8px;
+    }
+    .content p { margin-bottom: 14px; color: var(--ink-dim); }
+    .content p strong { color: var(--ink); font-weight: 600; }
+    .content ul, .content ol { margin: 0 0 16px 24px; }
+    .content li { margin-bottom: 8px; color: var(--ink-dim); }
+    .content a { color: var(--uv); text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .content code { font-family: var(--mono); font-size: 13px;
+      background: var(--paper-2); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+    .content table { width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: 14px; }
+    .content th, .content td { padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--rule); }
+    .content th { font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-mute); font-weight: 600; }
+    .content td { color: var(--ink); }
+    .content td strong { color: var(--ink); font-weight: 600; }
+    .content blockquote {
+      border-left: 3px solid var(--uv);
+      padding: 4px 18px;
+      margin: 18px 0;
+      color: var(--ink-dim);
+      font-style: italic;
+    }
+
+    .cta-card { margin: 56px 0 24px; padding: 36px 40px;
+      background: var(--ink); color: var(--paper); border-radius: 12px; }
+    .cta-card h3 { font-family: var(--display); font-size: 24px; font-weight: 600;
+      margin-bottom: 10px; color: var(--paper); }
+    .cta-card p { color: rgba(247,247,242,0.7); margin-bottom: 22px; }
+    .cta-card a { display: inline-block; padding: 12px 22px;
+      background: var(--paper); color: var(--ink); border-radius: 7px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .cta-card a:hover { background: var(--bio); }
+
+    .footer { padding: 48px 0; border-top: 1px solid var(--rule); background: var(--paper-2); }
+    .footer .wrap { display: flex; flex-direction: column; gap: 18px; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 18px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+    .footer-social { display: flex; gap: 18px 26px; flex-wrap: wrap;
+      padding-top: 22px; border-top: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 12px; }
+    .footer-social a { color: var(--ink-dim);
+      display: inline-flex; align-items: center; gap: 6px; }
+    .footer-social a:hover { color: var(--ink); }
+    .footer-social a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); }
+    .footer-social a.x::before { background: #fff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .footer-social a.ig::before { background: #e1306c; }
+    .footer-social a.reddit::before { background: #ff4500; }
+    .footer-social a.gh::before { background: var(--ink); }
+    .footer-social a.email::before { background: var(--uv); }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="container">
-      <a href="/" class="nav-brand">
-        <img src="/app-icon.png" alt="DailyVox">
-        <span>DailyVox</span>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/support">Support</a></li>
-      </ul>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <div class="page-header">
-      <h1>Support</h1>
-    </div>
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>SUPPORT · GET HELP</div>
+    <h1>How can we <em>help?</em></h1>
+    <p class="lede">DailyVox is built and maintained by one person. Email <strong>hello@getdailyvox.com</strong> and you'll get a real reply from Karthikeyan. Most common questions are answered below.</p>
+  </section>
 
-    <div class="page-content">
-      <div class="support-card">
-        <div class="icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9b7dd8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
-        <h3>Get in Touch</h3>
-        <p>Have a question, found a bug, or want to suggest a feature? We'd love to hear from you.</p>
-        <a href="mailto:hello@getdailyvox.com" class="email-link">hello@getdailyvox.com</a>
-      </div>
+  <main class="content wrap">
 
-      <div class="faq">
-        <h2>Common Questions</h2>
+        <h2>Get in touch</h2>
+        <p>Have a question, found a bug, or want to suggest a feature? Email us at <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> — you'll get a real reply from Karthikeyan, the developer.</p>
+        <p>For technical issues, mentioning your iPhone model + iOS version helps a lot.</p>
 
-        <div class="faq-item">
-          <h3>Is my data private?</h3>
-          <p>Yes. DailyVox processes everything on your device. We don't have servers that receive your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. See our <a href="/privacy">Privacy Policy</a> for details.</p>
+        <h2>Common questions</h2>
+
+        <h3>Is my data private?</h3>
+        <p>Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. See our <a href="/privacy">Privacy Policy</a> for the full details.</p>
+
+        <h3>Does the app work offline?</h3>
+        <p>Yes. Recording, journaling, transcription, mood detection, and all AI features work fully offline. Verifiable in airplane mode.</p>
+
+        <h3>How do I back up my data?</h3>
+        <p>Go to <strong>Settings → Export Data</strong>. You can export in JSON, Markdown, CSV, plain text, or password-protected encrypted format (<code>AES-256-GCM</code>). You can also enable iCloud sync for automatic backup.</p>
+
+        <h3>Can I sync across devices?</h3>
+        <p>Yes. Enable iCloud sync in Settings to sync diary entries across your Apple devices via CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default.</p>
+
+        <h3>What is the Digital Twin?</h3>
+        <p>Your Digital Twin is a private AI model that learns your personality, emotional patterns, communication style, and personal knowledge graph from your journal entries. It grows more accurate with every entry and stays 100% on your device.</p>
+
+        <h3>How do I lock the app?</h3>
+        <p>Go to <strong>Settings → App Lock</strong> and enable Face ID or Touch ID protection. The app locks automatically when you leave it and requires authentication to re-enter.</p>
+
+        <h3>Can I attach photos?</h3>
+        <p>Yes. You can attach up to 5 photos per diary entry. Photos are stored locally on your device and are never uploaded to any server.</p>
+
+        <h3>How do I delete my data?</h3>
+        <p>Swipe left on any entry in the Timeline view to delete it. To remove all data, uninstall the app. For iCloud data, manage it through your device's iCloud settings.</p>
+
+        <h3>What iOS version is required?</h3>
+        <p>DailyVox requires iOS 17.0 or later. The Dynamic Island recording timer requires an iPhone 14 Pro or newer.</p>
+
+        <h3>How do the Live Activities work?</h3>
+        <p>When you start recording, a Live Activity appears in the Dynamic Island (or as a Lock Screen banner on non-Pro iPhones) showing your elapsed time and waveform. After your entry saves, a brief "new star appeared" Live Activity celebrates the entry and auto-dismisses. The streak Live Activity is opt-in — enable in <strong>Settings → Live Activities</strong>.</p>
+
+        <h2>Still stuck?</h2>
+        <p>Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> and we'll respond within a couple of days. For non-urgent feature requests, you can also <a href="https://github.com/intrepidkarthi/dailyvox/issues">open a GitHub issue</a>.</p>
+
+        <div class="cta-card">
+          <h3>Haven't tried DailyVox yet?</h3>
+          <p>Free on iOS. No account required. Speak your first 42 seconds tonight.</p>
+          <a href="https://apps.apple.com/app/id6760454642">Download on the App Store</a>
         </div>
 
-        <div class="faq-item">
-          <h3>Does the app work offline?</h3>
-          <p>Yes. Recording, journaling, and all AI features work fully offline. Speech transcription also works offline, though accuracy may be slightly better with an internet connection.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How do I back up my data?</h3>
-          <p>Go to Settings &gt; Export Data. You can export in JSON, Markdown, CSV, plain text, or password-protected encrypted format (AES-256-GCM). You can also enable iCloud sync for automatic backup.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Can I sync across devices?</h3>
-          <p>Yes. Enable iCloud sync in Settings to sync diary entries across your Apple devices via CloudKit. Your data is encrypted with your Apple ID.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What is the Digital Twin?</h3>
-          <p>Your Digital Twin is a private AI model that learns your personality, emotional patterns, communication style, and personal knowledge graph from your journal entries. It grows more accurate with every entry and stays 100% on your device.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How do I lock the app?</h3>
-          <p>Go to Settings &gt; App Lock and enable Face ID or Touch ID protection. The app locks automatically when you leave it and requires authentication to re-enter.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Can I attach photos?</h3>
-          <p>Yes. You can attach up to 5 photos per diary entry. Photos are stored locally on your device and are never uploaded to any server.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How do I delete my data?</h3>
-          <p>Swipe left on any entry in the Timeline view to delete it. To remove all data, uninstall the app. For iCloud data, manage it through your device's iCloud settings.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What iOS version is required?</h3>
-          <p>DailyVox requires iOS 17.0 or later.</p>
-        </div>
-      </div>
-    </div>
   </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-links">
-        <a href="/blog">Blog</a>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/support">Support</a>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-row">
+        <div class="footer-links">
+          <a href="/about">About</a>
+          <a href="/technology">Technology</a>
+          <a href="/blog">Journal</a>
+          <a href="/faq">FAQ</a>
+          <a href="/changelog">Changelog</a>
+          <a href="/press">Press</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+        </div>
+        <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
       </div>
-      <p class="footer-social-row" style="margin:18px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:18px 26px; flex-wrap:wrap; font-family:monospace; font-size:12px;">
-        <a href="https://x.com/getDailyVox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">X · @getDailyVox</a>
-        <a href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Instagram · @getdailyvox</a>
-        <a href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Reddit · u/getDailyVox</a>
-        <a href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">GitHub · intrepidkarthi/dailyvox</a>
-        <a href="mailto:hello@getdailyvox.com" style="color:inherit; opacity:.7;">hello@getdailyvox.com</a>
-      </p>
-      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <div class="footer-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
     </div>
   </footer>
+
 </body>
 </html>

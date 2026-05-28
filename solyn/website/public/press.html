@@ -13,8 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyVox Press Kit — Facts, Assets, and Story</title>
   <meta name="description" content="Everything journalists, bloggers, and reviewers need to write about DailyVox. Product facts, founder story, downloadable assets, and key data points.">
-  <meta name="keywords" content="dailyvox press kit, dailyvox newsroom, dailyvox media, voice journal app press, dailyvox founder, dailyvox story">
-  <meta name="theme-color" content="#05081a">
+  <meta name="theme-color" content="#f7f7f2">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/press">
   <meta property="og:title" content="DailyVox Press Kit — Facts, Assets, and Story">
@@ -22,214 +21,282 @@
   <meta property="og:image" content="https://getdailyvox.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="DailyVox v1.3.5 — Your inner sky, now on the Dynamic Island. Voice journal on iPhone.">
+  <meta property="og:image:alt" content="DailyVox v1.3.5 — Your inner sky, now on the Dynamic Island.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:image:alt" content="DailyVox — Voice journal on iPhone.">
   <link rel="canonical" href="https://getdailyvox.com/press">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/app-icon.png">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "DailyVox Press Kit",
-    "description": "Everything journalists, bloggers, and reviewers need to write about DailyVox. Product facts, founder story, downloadable assets, and key data points.",
-    "url": "https://getdailyvox.com/press",
-    "author": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
-    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
-    "datePublished": "2026-05-21",
-    "dateModified": "2026-05-21"
-  }
+  {"@context":"https://schema.org","@type":"WebPage","name":"DailyVox Press Kit","url":"https://getdailyvox.com/press","author":{"@type":"Organization","name":"DailyVox"}}
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
-      {"@type": "ListItem", "position": 2, "name": "Press Kit"}
-    ]
-  }
-  </script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
+      --uv: #5e2bff; --bio: #7fe82d;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover;
+      box-shadow: 0 1px 2px rgba(10,11,16,0.08); }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); position: relative; }
+    .hero::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 30%, rgba(94,43,255,0.04) 0%, transparent 40%);
+      pointer-events: none; }
+    .hero .marker { font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 18px; }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 { font-family: var(--display);
+      font-size: clamp(44px, 6vw, 72px); font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.035em; margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--uv); }
+    .hero .lede { font-size: 18px; line-height: 1.5; color: var(--ink-dim); max-width: 640px; }
+    .hero .lede strong { color: var(--ink); }
+
+    .content { padding: 48px 0 64px; }
+    .content h2 {
+      font-family: var(--display);
+      font-size: 28px; font-weight: 600; letter-spacing: -0.018em;
+      margin: 40px 0 14px;
+      position: relative; padding-left: 18px;
+    }
+    .content h2::before {
+      content: '◆'; position: absolute; left: 0; top: 12px;
+      color: var(--uv); font-size: 10px;
+    }
+    .content h3 {
+      font-family: var(--display);
+      font-size: 19px; font-weight: 600;
+      margin: 28px 0 8px;
+    }
+    .content p { margin-bottom: 14px; color: var(--ink-dim); }
+    .content p strong { color: var(--ink); font-weight: 600; }
+    .content ul, .content ol { margin: 0 0 16px 24px; }
+    .content li { margin-bottom: 8px; color: var(--ink-dim); }
+    .content a { color: var(--uv); text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .content code { font-family: var(--mono); font-size: 13px;
+      background: var(--paper-2); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+    .content table { width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: 14px; }
+    .content th, .content td { padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--rule); }
+    .content th { font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-mute); font-weight: 600; }
+    .content td { color: var(--ink); }
+    .content td strong { color: var(--ink); font-weight: 600; }
+    .content blockquote {
+      border-left: 3px solid var(--uv);
+      padding: 4px 18px;
+      margin: 18px 0;
+      color: var(--ink-dim);
+      font-style: italic;
+    }
+
+    .cta-card { margin: 56px 0 24px; padding: 36px 40px;
+      background: var(--ink); color: var(--paper); border-radius: 12px; }
+    .cta-card h3 { font-family: var(--display); font-size: 24px; font-weight: 600;
+      margin-bottom: 10px; color: var(--paper); }
+    .cta-card p { color: rgba(247,247,242,0.7); margin-bottom: 22px; }
+    .cta-card a { display: inline-block; padding: 12px 22px;
+      background: var(--paper); color: var(--ink); border-radius: 7px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .cta-card a:hover { background: var(--bio); }
+
+    .footer { padding: 48px 0; border-top: 1px solid var(--rule); background: var(--paper-2); }
+    .footer .wrap { display: flex; flex-direction: column; gap: 18px; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 18px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+    .footer-social { display: flex; gap: 18px 26px; flex-wrap: wrap;
+      padding-top: 22px; border-top: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 12px; }
+    .footer-social a { color: var(--ink-dim);
+      display: inline-flex; align-items: center; gap: 6px; }
+    .footer-social a:hover { color: var(--ink); }
+    .footer-social a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); }
+    .footer-social a.x::before { background: #fff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .footer-social a.ig::before { background: #e1306c; }
+    .footer-social a.reddit::before { background: #ff4500; }
+    .footer-social a.gh::before { background: var(--ink); }
+    .footer-social a.email::before { background: var(--uv); }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="container">
-      <a href="/" class="nav-brand">
-        <img src="/app-icon.png" alt="DailyVox">
-        <span>DailyVox</span>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/support">Support</a></li>
-      </ul>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+<a href="/press" class="active">Press</a>
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <article class="blog-article">
-      <div class="article-header">
-        <a href="/" class="back-link">&larr; Home</a>
-        <span class="blog-tag tag-guide">Press Kit</span>
-        <h1>DailyVox Press Kit — Facts, Assets, and Story</h1>
-        <p class="article-meta">Everything you need to write about DailyVox &middot; Last updated May 2026</p>
-      </div>
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>PRESS KIT · UPDATED MAY 2026</div>
+    <h1>Facts, assets, and the <em>story.</em></h1>
+    <p class="lede">Everything you need to write about <strong>DailyVox</strong> — a free open-source voice journal for iOS with on-device AI. Founder story, downloadable brand assets, and key data points sourced from our privacy audit research.</p>
+  </section>
 
-      <div class="article-body">
-        <p>DailyVox is a free AI voice journal with an on-device Digital Twin. It runs 100% on iPhone with zero data collection. Here's everything you need to write about it.</p>
+  <main class="content wrap">
 
         <h2>Quick Facts</h2>
         <ul>
           <li>Free voice journal app for iPhone and iPad</li>
           <li>100% on-device AI — zero network calls, zero servers</li>
-          <li>Digital Twin: AI personality model with 4 sub-models</li>
-          <li>Apple App Store privacy label: "Data Not Collected"</li>
-          <li>No subscription, no in-app purchases, no ads</li>
-          <li>Open source: <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a></li>
+          <li>Digital Twin: AI personality model with 4 sub-models (Mind, Heart, Voice, Graph)</li>
+          <li>Apple App Store privacy label: <strong>"Data Not Collected"</strong></li>
+          <li>No subscription, no in-app purchases, no ads at launch</li>
+          <li>Open source: <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a> (MIT)</li>
           <li>Created by Karthikeyan NG, a 20-year diary writer</li>
-          <li>First released: March 2026 | Current version: 1.3.5 (Dynamic Island + New Icon)</li>
+          <li>First released: March 2026 · Current version: 1.3.5 (Dynamic Island + New Icon)</li>
           <li>Built with 9 Apple frameworks, 0 third-party dependencies</li>
         </ul>
 
         <h2>The Story</h2>
-        <p>Karthikeyan NG kept a handwritten diary for 20 years. When he eventually couldn't maintain the writing habit, he started talking instead — and realized that speaking his thoughts was faster, more natural, and captured more nuance than writing ever did.</p>
-
-        <p>He looked for an app that could record voice entries, transcribe them, and analyze patterns with AI — all without sending private thoughts to a cloud server. Nothing like that existed. Every AI journal app he found sent data to external APIs. So he built DailyVox.</p>
-
-        <p>DailyVox is free because it has no servers. There is no infrastructure to pay for. There is no recurring cost to pass on to users. And it is open source because privacy claims should be verifiable, not just marketing copy.</p>
-
-        <p>Read the full founder story at <a href="/about">getdailyvox.com/about</a>.</p>
+        <p>Karthikeyan NG kept a handwritten diary for 20 years. When he eventually couldn't maintain the writing habit, he started talking instead — and realised that speaking his thoughts was faster, more natural, and captured more nuance than writing ever did.</p>
+        <p>He looked for an app that could record voice entries, transcribe them, and analyse patterns with AI — all without sending private thoughts to a cloud server. Nothing like that existed. Every AI journal app he found sent data to external APIs. So he built DailyVox.</p>
+        <p>DailyVox has no servers. It is open source because privacy claims should be verifiable, not just marketing copy. Read the full founder story at <a href="/about">getdailyvox.com/about</a>.</p>
 
         <h2>Key Data Points (for Articles)</h2>
-        <p>The following data points are sourced and ready to use in your writing:</p>
         <ul>
           <li><strong>"DailyVox makes 0 network calls during all operations"</strong> — Verifiable via network proxy (Charles, Proxyman, mitmproxy)</li>
           <li><strong>"48% of AI journal apps send plaintext entries to cloud APIs"</strong> — Source: <a href="/reports/journal-app-privacy-audit-2026">DailyVox Privacy Audit 2026</a></li>
           <li><strong>"Only 5% of AI journal apps run all AI on-device"</strong> — Source: <a href="/reports/journal-app-privacy-audit-2026">DailyVox Privacy Audit 2026</a></li>
-          <li><strong>"Voice journaling is 3.8x faster than typing (150 WPM vs 40 WPM)"</strong></li>
-          <li><strong>"42 seconds of speaking captures ~105 words — more than most 10-minute writing sessions"</strong></li>
+          <li><strong>"Voice journaling captures more thought per second than typing"</strong> — 150 WPM speaking vs ~40 WPM typing on phones</li>
+          <li><strong>"42 seconds of speaking captures ~105 words"</strong> — comparable to a 10-minute written entry</li>
         </ul>
 
         <h2>What Makes It Different</h2>
-        <p>Most AI journal apps rely on cloud servers for AI features — and charge monthly subscriptions to cover those server costs. DailyVox takes a fundamentally different approach.</p>
+        <p>Most AI journal apps rely on cloud servers for AI features. DailyVox takes a fundamentally different approach: it ships the AI to your phone, not your data to a server. The trade-off is clear and intentional — slightly less elaborate AI conversation in exchange for a privacy guarantee that's mathematical, not policy-based.</p>
 
-        <table style="width:100%; border-collapse:collapse; margin:1.5em 0;">
+        <table>
           <thead>
-            <tr style="text-align:left; border-bottom:2px solid rgba(255,255,255,0.2);">
-              <th style="padding:0.75em 1em;">App</th>
-              <th style="padding:0.75em 1em;">AI Processing</th>
-              <th style="padding:0.75em 1em;">Price</th>
-              <th style="padding:0.75em 1em;">Privacy Label</th>
-            </tr>
+            <tr><th>App</th><th>AI Processing</th><th>Privacy Label</th></tr>
           </thead>
           <tbody>
-            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-              <td style="padding:0.75em 1em;"><strong>DailyVox</strong></td>
-              <td style="padding:0.75em 1em;">100% on-device</td>
-              <td style="padding:0.75em 1em;">Free</td>
-              <td style="padding:0.75em 1em;">Data Not Collected</td>
-            </tr>
-            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-              <td style="padding:0.75em 1em;">Day One</td>
-              <td style="padding:0.75em 1em;">Cloud</td>
-              <td style="padding:0.75em 1em;">$35/year</td>
-              <td style="padding:0.75em 1em;">Data Linked to You</td>
-            </tr>
-            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-              <td style="padding:0.75em 1em;">Reflectly</td>
-              <td style="padding:0.75em 1em;">Cloud AI</td>
-              <td style="padding:0.75em 1em;">$60/year</td>
-              <td style="padding:0.75em 1em;">Data Linked to You</td>
-            </tr>
-            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-              <td style="padding:0.75em 1em;">Calmplot</td>
-              <td style="padding:0.75em 1em;">Cloud</td>
-              <td style="padding:0.75em 1em;">$6/month</td>
-              <td style="padding:0.75em 1em;">Data Linked to You</td>
-            </tr>
-            <tr>
-              <td style="padding:0.75em 1em;">Rosebud</td>
-              <td style="padding:0.75em 1em;">OpenAI API</td>
-              <td style="padding:0.75em 1em;">Subscription</td>
-              <td style="padding:0.75em 1em;">Data Linked to You</td>
-            </tr>
+            <tr><td><strong>DailyVox</strong></td><td>100% on-device</td><td>Data Not Collected</td></tr>
+            <tr><td>Day One</td><td>Cloud</td><td>Data Linked to You</td></tr>
+            <tr><td>Reflectly</td><td>Cloud AI</td><td>Data Linked to You</td></tr>
+            <tr><td>Journey</td><td>Cloud</td><td>Data Linked to You</td></tr>
           </tbody>
         </table>
-        <p>DailyVox is free because it has no servers. It is private because all AI runs on the iPhone's Neural Engine. It is the only journal app with a Digital Twin that learns your personality entirely on-device.</p>
 
         <h2>Brand Assets</h2>
-        <p>Download the DailyVox app icon and social card for use in articles, reviews, and features. No permission needed — just link back to <a href="https://getdailyvox.com">getdailyvox.com</a>.</p>
-
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:24px 0 32px;">
-          <div style="text-align:center">
-            <a href="/press/dailyvox-icon-1024.png" download><img src="/press/dailyvox-icon-1024.png" alt="DailyVox Icon 1024px" style="width:100%;border-radius:22%;box-shadow:0 4px 20px rgba(0,0,0,.3)"/></a>
-            <p style="margin-top:8px;font-size:14px;opacity:.6">1024x1024 PNG</p>
-          </div>
-          <div style="text-align:center">
-            <a href="/press/dailyvox-icon-512.png" download><img src="/press/dailyvox-icon-512.png" alt="DailyVox Icon 512px" style="width:100%;border-radius:22%;box-shadow:0 4px 20px rgba(0,0,0,.3)"/></a>
-            <p style="margin-top:8px;font-size:14px;opacity:.6">512x512 PNG</p>
-          </div>
-          <div style="text-align:center">
-            <a href="/press/dailyvox-icon-256.png" download><img src="/press/dailyvox-icon-256.png" alt="DailyVox Icon 256px" style="width:100%;border-radius:22%;box-shadow:0 4px 20px rgba(0,0,0,.3)"/></a>
-            <p style="margin-top:8px;font-size:14px;opacity:.6">256x256 PNG</p>
-          </div>
-          <div style="text-align:center">
-            <a href="/press/dailyvox-icon-180.png" download><img src="/press/dailyvox-icon-180.png" alt="DailyVox Icon 180px" style="width:100%;border-radius:22%;box-shadow:0 4px 20px rgba(0,0,0,.3)"/></a>
-            <p style="margin-top:8px;font-size:14px;opacity:.6">180x180 PNG</p>
-          </div>
-        </div>
-
-        <p><strong>Social card (1200x630):</strong> <a href="/press/dailyvox-og-card.png" download>Download OG card</a></p>
-
-        <h3>Brand Colors</h3>
-        <div style="display:flex;gap:12px;margin:16px 0 24px;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#5B7C6B"></div><span style="font-size:14px">Sage Green #5B7C6B</span></div>
-          <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#D4A547"></div><span style="font-size:14px">Warm Gold #D4A547</span></div>
-          <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#C4956A"></div><span style="font-size:14px">Terracotta #C4956A</span></div>
-          <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#1A1A2E"></div><span style="font-size:14px">Deep Dark #1A1A2E</span></div>
-          <div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:8px;background:#FAF8F5;border:1px solid rgba(0,0,0,.1)"></div><span style="font-size:14px">Ivory #FAF8F5</span></div>
-        </div>
+        <ul>
+          <li><a href="/press/dailyvox-icon-1024.png">App icon (1024×1024 PNG)</a></li>
+          <li><a href="/press/dailyvox-icon-512.png">App icon (512×512 PNG)</a></li>
+          <li><a href="/press/dailyvox-icon-256.png">App icon (256×256 PNG)</a></li>
+          <li><a href="/press/dailyvox-icon-180.png">App icon (180×180 PNG)</a></li>
+          <li><a href="/press/dailyvox-og-card.png">Open Graph card (1200×630 PNG)</a></li>
+        </ul>
+        <p><strong>Brand colors:</strong> Sage <code>#5B7C6B</code> · Gold <code>#D4A547</code> · Ivory <code>#F4EEE0</code> · Dark Navy <code>#0B0B1E</code></p>
 
         <h2>Links</h2>
         <ul>
-          <li><strong>App Store:</strong> <a href="https://apps.apple.com/us/app/dailyvox-ai-voice-diary/id6760454642">Download DailyVox</a></li>
-          <li><strong>Website:</strong> <a href="https://getdailyvox.com">getdailyvox.com</a></li>
-          <li><strong>GitHub:</strong> <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a></li>
-          <li><strong>Blog:</strong> <a href="https://getdailyvox.com/blog">getdailyvox.com/blog</a></li>
-          <li><strong>Facts & Data:</strong> <a href="https://getdailyvox.com/facts">getdailyvox.com/facts</a></li>
-          <li><strong>Privacy Audit Report:</strong> <a href="https://getdailyvox.com/reports/journal-app-privacy-audit-2026">getdailyvox.com/reports/journal-app-privacy-audit-2026</a></li>
-          <li><strong>Technology:</strong> <a href="https://getdailyvox.com/technology">getdailyvox.com/technology</a></li>
+          <li>Website: <a href="https://getdailyvox.com">getdailyvox.com</a></li>
+          <li>App Store: <a href="https://apps.apple.com/app/id6760454642">apps.apple.com/app/id6760454642</a></li>
+          <li>GitHub (source): <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a></li>
+          <li>X / Twitter: <a href="https://x.com/getDailyVox">@getDailyVox</a></li>
+          <li>Instagram: <a href="https://www.instagram.com/getdailyvox/">@getdailyvox</a></li>
+          <li>Reddit: <a href="https://www.reddit.com/user/getDailyVox/">u/getDailyVox</a></li>
+          <li>Privacy: <a href="/privacy">getdailyvox.com/privacy</a></li>
           <li><strong>Contact:</strong> <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></li>
         </ul>
 
-        <h2>For Reviews</h2>
-        <p>We're happy to provide additional context, answer technical questions, or set up a call. Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>.</p>
+        <h2>For Reviewers</h2>
+        <p>We're happy to provide additional context, answer technical questions, or set up a call. Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>. A TestFlight build of the latest version can be provided on request.</p>
 
-        <div class="article-cta">
-          <h3>Try DailyVox Yourself</h3>
-          <p>The best way to understand DailyVox is to use it. Zero network calls. Zero data collection. 100% on-device AI. Free forever.</p>
-          <a href="https://apps.apple.com/us/app/dailyvox-ai-voice-diary/id6760454642" class="cta-button">Download on the App Store</a>
+        <div class="cta-card">
+          <h3>Try DailyVox</h3>
+          <p>The fastest way to write about DailyVox is to use it. Free on iOS — no account required.</p>
+          <a href="https://apps.apple.com/app/id6760454642">Download on the App Store</a>
         </div>
-      </div>
-    </article>
+
   </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-links">
-        <a href="/blog">Blog</a>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/support">Support</a>
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-row">
+        <div class="footer-links">
+          <a href="/about">About</a>
+          <a href="/technology">Technology</a>
+          <a href="/blog">Journal</a>
+          <a href="/faq">FAQ</a>
+          <a href="/changelog">Changelog</a>
+          <a href="/press">Press</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+        </div>
+        <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
       </div>
-      <p class="footer-social-row" style="margin:18px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:18px 26px; flex-wrap:wrap; font-family:monospace; font-size:12px;">
-        <a href="https://x.com/getDailyVox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">X · @getDailyVox</a>
-        <a href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Instagram · @getdailyvox</a>
-        <a href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Reddit · u/getDailyVox</a>
-        <a href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">GitHub · intrepidkarthi/dailyvox</a>
-        <a href="mailto:hello@getdailyvox.com" style="color:inherit; opacity:.7;">hello@getdailyvox.com</a>
-      </p>
-      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <div class="footer-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
     </div>
   </footer>
+
 </body>
 </html>
