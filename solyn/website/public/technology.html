@@ -813,6 +813,32 @@
       transition: color .15s;
     }
     .sf-col a:hover { color: var(--ink); }
+    .sf-social {
+      grid-column: 1 / -1;
+      display: flex; gap: 18px 28px; flex-wrap: wrap;
+      padding-top: 28px;
+      margin-top: 24px;
+      border-top: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    .sf-social a {
+      color: var(--ink-dim);
+      transition: color 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sf-social a:hover { color: var(--ink); }
+    .sf-social a::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ink-mute);
+    }
+    .sf-social a.x::before     { background: #ffffff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .sf-social a.ig::before    { background: #e1306c; }
+    .sf-social a.reddit::before { background: #ff4500; }
+    .sf-social a.gh::before    { background: var(--ink); }
+    .sf-social a.email::before { background: var(--uv); }
+
     .sf-bottom {
       grid-column: 1 / -1;
       margin-top: 32px; padding-top: 20px;
@@ -1489,9 +1515,17 @@
           <li><a href="/privacy">Privacy</a></li>
           <li><a href="/glossary">Glossary</a></li>
           <li><a href="/voice-journaling-statistics">Statistics</a></li>
-          <li><a href="mailto:intrepidkarthi@gmail.com">Contact</a></li>
+          <li><a href="mailto:hello@getdailyvox.com">Contact</a></li>
         </ul>
       </div>
+      <div class="sf-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+
       <div class="sf-bottom">
         <span>© 2026 DailyVox · built on-device, by hand</span>
         <span class="live-tag"><span class="dot"></span> systems.ok · 0 rpc</span>
