@@ -11,306 +11,640 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox FAQ: Everything About the Free AI Voice Journal</title>
-  <meta name="description" content="Answers to common questions about DailyVox, the free AI voice journaling app for iPhone and iPad. Learn about privacy, offline use, the Digital Twin, mood tracking, data export, and more.">
-  <meta name="theme-color" content="#05081a">
+  <title>DailyVox FAQ — Everything About the Voice Journal That Lives on Your iPhone</title>
+  <meta name="description" content="Answers to every question about DailyVox: privacy, on-device AI, the Digital Twin, the constellation, Dynamic Island Live Activities, mood tracking, data export, and more.">
+  <meta name="theme-color" content="#f7f7f2">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/faq">
-  <meta property="og:title" content="DailyVox FAQ: Everything About the Free AI Voice Journal">
-  <meta property="og:description" content="Answers to common questions about DailyVox, the free AI voice journaling app. Privacy, offline use, Digital Twin, mood tracking, and more.">
+  <meta property="og:title" content="DailyVox FAQ — Questions, Answered.">
+  <meta property="og:description" content="Privacy, on-device AI, the Digital Twin, the constellation, Dynamic Island. Every question, answered.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://getdailyvox.com/faq">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="/app-icon.png">
 
-  <!-- FAQPage Schema -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- FAQPage Schema (preserved for Google rich results) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox is a free AI voice journaling app for iPhone and iPad. You speak your thoughts and DailyVox transcribes them on-device using Apple's Speech framework. It also uses on-device AI to detect your mood, build a Digital Twin of your personality, and generate weekly insights — all without sending any data to the cloud."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is DailyVox really free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, completely. DailyVox has no subscriptions, no in-app purchases, no ads, and no premium tier. Every feature — voice journaling, AI mood detection, Digital Twin, personality cards, encrypted backups, and export — is included for free. Compare that to Day One ($34.99/yr), Journey ($29.99/yr), Reflectly ($59.99/yr), or Daylio ($23.99/yr)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does voice journaling work in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Tap the record button and start speaking. DailyVox uses Apple's Speech framework to transcribe your voice into text in real time, entirely on your device. When you finish, the app saves both the audio and the transcription as a journal entry. You can also edit the text afterward or add photos."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is my data private in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. Apple has verified this with a 'Data Not Collected' privacy nutrition label on the App Store."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does DailyVox work offline?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Recording, transcription, mood detection, and all AI features work fully offline. The app uses on-device models that run on Apple's Neural Engine, so no internet connection is needed. Speech transcription accuracy may be slightly better online, but offline accuracy is still very good."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What is the Digital Twin in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Digital Twin stays 100% on your device and grows more accurate the more you journal."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does mood detection work?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox uses Apple's NaturalLanguage framework to analyze the sentiment and emotional content of your journal entries on-device. It classifies entries into 9 mood categories and tracks patterns over time. The mood detection runs automatically after each entry and requires no manual input, though you can adjust the detected mood if you disagree."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I export my journal data?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. DailyVox supports exporting your journal in multiple formats: PDF, JSON, Markdown, CSV, and plain text. You can also create password-protected encrypted backups using AES-256-GCM encryption. Go to Settings > Export Data to choose your format."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Do I need to create an account to use DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. DailyVox requires no account, no sign-up, and no email address. You download it and start journaling immediately. If you want to sync across devices, you can optionally enable iCloud sync, which uses your existing Apple ID — but this is entirely optional."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What devices are supported?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox runs on iPhone and iPad with iOS 17.0 or later. It is optimized for both devices with a native interface that adapts to different screen sizes. There is no Android, web, or Mac version at this time."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How is DailyVox different from Day One?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The main differences are price, privacy, and AI. DailyVox is completely free while Day One costs $34.99/year for premium features. DailyVox processes all data on-device with no cloud servers, while Day One syncs data through their servers. DailyVox includes AI features like a Digital Twin and mood prediction that Day One does not offer. Day One does support more platforms (Mac, Android, web) and has a longer track record."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is it safe to journal private thoughts in DailyVox?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. DailyVox was designed specifically for private journaling. Your data never leaves your device, encrypted backups use AES-256 encryption, and you can lock the app with Face ID or Touch ID. Since there are no servers, there is no risk of a data breach exposing your journal. Apple's privacy label confirms 'Data Not Collected.'"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What happens if I lose my phone?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "If you have iCloud sync enabled, your entries will be available on any other Apple device signed into the same Apple ID. If you have exported encrypted backups, you can restore from those. Without either, your journal data exists only on the device. We recommend enabling iCloud sync or regularly exporting encrypted backups as a safety measure."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does on-device AI work without the cloud?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox uses Apple's built-in machine learning frameworks — NaturalLanguage for sentiment analysis and named entity recognition, Speech for transcription, and Core ML for running models on Apple's Neural Engine chip. These frameworks are optimized to run efficiently on-device without needing an internet connection or cloud processing."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I use DailyVox without speaking (text only)?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. While voice journaling is the primary feature, you can also type entries directly. You can write text-only entries, or record voice and then edit the transcription. DailyVox's AI features work on the text regardless of whether it was typed or spoken."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How many mood categories does DailyVox track?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DailyVox tracks 9 mood categories. The AI automatically detects your mood from each journal entry, and you can view mood trends over time through weekly insights. You can also manually adjust the detected mood if you feel it does not match your actual state."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What are personality cards?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Personality cards are insights generated by your Digital Twin after it has analyzed enough journal entries. They describe aspects of your personality, values, communication style, and emotional patterns that the AI has identified. Cards become more detailed and accurate as you journal more frequently."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does DailyVox support iCloud sync?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. You can enable iCloud sync in Settings to sync your journal entries across your iPhone and iPad via Apple's CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default."
-        }
-      }
+      { "@type": "Question", "name": "What is DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox is a voice journal for iPhone and iPad. You speak your thoughts and DailyVox transcribes them on-device using Apple's Speech framework. It also uses on-device AI to detect your mood, build a Digital Twin of your personality, and visualise your entries as a constellation in your inner sky — all without sending any data to the cloud." } },
+      { "@type": "Question", "name": "Do I need to create an account to use DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "No. DailyVox requires no account, no sign-up, and no email address. You download it and start journaling immediately. If you want to sync across devices, you can optionally enable iCloud sync, which uses your existing Apple ID — but this is entirely optional." } },
+      { "@type": "Question", "name": "What devices are supported?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox runs on iPhone and iPad with iOS 17.0 or later. It is optimised for both devices with a native interface. The Dynamic Island recording timer requires an iPhone 14 Pro or newer. On other iPhones running iOS 16.1+, the same Live Activities appear as Lock Screen banners." } },
+      { "@type": "Question", "name": "Can I use DailyVox without speaking (text only)?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Voice journaling is the primary mode but you can type entries directly, or record voice and then edit the transcription. The AI features work on the text regardless of whether it was typed or spoken." } },
+      { "@type": "Question", "name": "Is my data private in DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. Apple has verified this with a 'Data Not Collected' privacy nutrition label on the App Store." } },
+      { "@type": "Question", "name": "Does DailyVox work offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Recording, transcription, mood detection, and all AI features work fully offline. The app uses on-device models that run on Apple's Neural Engine, so no internet connection is needed at any point." } },
+      { "@type": "Question", "name": "Is it safe to journal private thoughts in DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. DailyVox was designed specifically for private journaling. Your data never leaves your device, encrypted backups use AES-256-GCM, and you can lock the app with Face ID or Touch ID. Since there are no servers, there is no risk of a data breach exposing your journal." } },
+      { "@type": "Question", "name": "What happens if I lose my phone?", "acceptedAnswer": { "@type": "Answer", "text": "If you have iCloud sync enabled, your entries will be available on any other Apple device signed into the same Apple ID. If you have exported encrypted backups, you can restore from those. Without either, your journal data exists only on the device." } },
+      { "@type": "Question", "name": "Can I export my journal data?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. DailyVox supports exporting your journal in multiple formats: PDF, JSON, Markdown, CSV, and plain text. You can also create password-protected encrypted backups using AES-256-GCM encryption. Go to Settings > Export Data to choose your format." } },
+      { "@type": "Question", "name": "Does DailyVox support iCloud sync?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can enable iCloud sync in Settings to sync your journal entries across your iPhone and iPad via Apple's CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default." } },
+      { "@type": "Question", "name": "What is the Digital Twin in DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Twin stays 100% on your device and grows more accurate the more you journal." } },
+      { "@type": "Question", "name": "How does mood detection work?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox uses Apple's NaturalLanguage framework to analyse the sentiment and emotional content of your journal entries on-device. It classifies entries into 9 mood categories and tracks patterns over time. The mood detection runs automatically after each entry; you can adjust the detected mood if you disagree." } },
+      { "@type": "Question", "name": "How does on-device AI work without the cloud?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox uses Apple's built-in machine learning frameworks — NaturalLanguage for sentiment analysis and named entity recognition, Speech for transcription, and Core ML for running models on Apple's Neural Engine chip. These frameworks are optimised to run efficiently on-device without needing an internet connection or cloud processing." } },
+      { "@type": "Question", "name": "How many mood categories does DailyVox track?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox tracks 9 mood categories: happy, calm, grateful, excited, tired, anxious, sad, angry, and no-mood. The AI automatically detects your mood from each journal entry, and you can view mood trends over time through weekly insights." } },
+      { "@type": "Question", "name": "What are personality cards?", "acceptedAnswer": { "@type": "Answer", "text": "Personality cards are insights generated by your Digital Twin after it has analysed enough journal entries. They describe aspects of your personality, values, communication style, and emotional patterns that the AI has identified. Cards become more detailed and accurate as you journal more frequently." } },
+      { "@type": "Question", "name": "What is the constellation?", "acceptedAnswer": { "@type": "Answer", "text": "Every journal entry in DailyVox becomes a star in your private constellation. Stars are coloured by mood (warm gold for positive, sage for calm, cool blue for reflective, soft coral for stressed) and connected by faint lines when entries share themes. Over months of journaling, clusters and nebulae form around the parts of your life that show up most. The constellation exists only on your iPhone — no one else can see it." } },
+      { "@type": "Question", "name": "What's the Dynamic Island recording timer?", "acceptedAnswer": { "@type": "Answer", "text": "When you tap the mic, the Dynamic Island shows a live recording timer — your seconds tick by, your waveform moves with your voice. The timer counts up past 42 seconds (the suggested target) so you can speak as long as you need. After your entry saves, a brief 'a new star appeared in your sky' Live Activity celebrates the entry. Requires iPhone 14 Pro or newer; on other iPhones it appears as a Lock Screen banner." } },
+      { "@type": "Question", "name": "How is DailyVox different from Day One?", "acceptedAnswer": { "@type": "Answer", "text": "The main differences are privacy and AI. DailyVox processes everything on-device with no cloud servers, while Day One syncs data through their servers. DailyVox includes AI features like a Digital Twin, constellation visualisation, and on-device mood prediction that Day One does not offer. Day One supports more platforms (Mac, Android, web) and has a longer track record." } }
     ]
   }
   </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org","@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},
+      {"@type":"ListItem","position":2,"name":"FAQ"}
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea; --paper-3: #e6e5e0;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
+      --uv: #5e2bff; --uv-wash: rgba(94,43,255,0.06); --uv-soft: rgba(94,43,255,0.12); --uv-edge: rgba(94,43,255,0.28);
+      --bio: #7fe82d; --bio-soft: rgba(127,232,45,0.14); --bio-edge: rgba(127,232,45,0.45);
+      --vital: #ff3561; --vital-soft: rgba(255,53,97,0.10);
+      --ray: #13c8d8; --ray-soft: rgba(19,200,216,0.10);
+      --sage: #455945;
+      --display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --r: 10px; --r-sm: 6px; --r-xs: 4px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "ss01","cv02","cv11";
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--uv); color: var(--paper); }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── TOP NAV ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark {
+      width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover no-repeat;
+      box-shadow: 0 1px 2px rgba(10,11,16,0.08), 0 0 0 1px rgba(10,11,16,0.04);
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: var(--display);
+      font-weight: 600; font-size: 17px;
+      letter-spacing: -0.015em;
+    }
+    .nav {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .nav a {
+      padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim);
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav a:hover { color: var(--ink); background: rgba(10,11,16,0.04); }
+    .nav a.active { color: var(--ink); }
+    .cta-btn {
+      background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--uv); transform: translateY(-1px); }
+    @media (max-width: 700px) {
+      .nav { display: none; }
+    }
+
+    /* ── HERO ── */
+    .faq-hero {
+      padding: 88px 0 56px;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+    }
+    .faq-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 12% 22%, rgba(94,43,255,0.05) 0%, transparent 35%),
+        radial-gradient(circle at 88% 78%, rgba(127,232,45,0.06) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .hero-marker {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .hero-marker .diamond { color: var(--uv); font-size: 9px; }
+    .hero-marker .dot { color: var(--ink-mute); }
+    .faq-hero h1 {
+      font-family: var(--display);
+      font-size: clamp(56px, 8vw, 96px);
+      font-weight: 600;
+      line-height: 1.0;
+      letter-spacing: -0.035em;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .faq-hero h1 em {
+      font-style: italic;
+      font-weight: 500;
+      color: var(--uv);
+    }
+    .faq-hero .subtitle {
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--ink-dim);
+      max-width: 640px;
+      position: relative;
+    }
+    .faq-hero .subtitle strong { color: var(--ink); font-weight: 600; }
+
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap;
+      margin-top: 40px;
+      position: relative;
+    }
+    .hero-stats .st {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .hero-stats .st-val {
+      font-family: var(--display);
+      font-size: 36px; font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .hero-stats .st-val .unit {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--ink-mute);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-left: 6px;
+    }
+    .hero-stats .st-lbl {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 700px) {
+      .faq-hero { padding: 56px 0 40px; }
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 72px 0 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .section-marker {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .section-marker .diamond { color: var(--uv); font-size: 9px; }
+    .section-marker .count {
+      color: var(--ink-dim);
+      font-weight: 500;
+    }
+    .section h2 {
+      font-family: var(--display);
+      font-size: clamp(34px, 4.5vw, 52px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      flex: 1; min-width: 280px;
+    }
+    .section h2 em {
+      font-style: italic;
+      font-weight: 500;
+      color: var(--uv);
+    }
+
+    /* ── Q&A CARDS ── */
+    .qa {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .qa-item {
+      background: var(--card);
+      padding: 28px 32px;
+      transition: background 0.15s;
+    }
+    .qa-item:hover { background: #fafaf6; }
+
+    .qa-item .q-tag {
+      font-family: var(--mono);
+      font-size: 10px; font-weight: 600;
+      color: var(--ink-mute);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .qa-item h3 {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+    .qa-item h3 em {
+      font-style: italic;
+      font-weight: 500;
+      color: var(--uv);
+    }
+    .qa-item p {
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: var(--ink-dim);
+    }
+    .qa-item p strong { color: var(--ink); font-weight: 600; }
+    .qa-item p a {
+      color: var(--uv);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+    .qa-item p code {
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--paper-2);
+      padding: 2px 6px;
+      border-radius: var(--r-xs);
+      color: var(--ink);
+    }
+
+    @media (max-width: 700px) {
+      .qa-item { padding: 22px 22px; }
+      .qa-item h3 { font-size: 19px; }
+    }
+
+    /* ── CTA ── */
+    .end-cta {
+      margin: 80px 0 60px;
+      padding: 64px 48px;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: var(--r);
+      position: relative;
+      overflow: hidden;
+    }
+    .end-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 80% 30%, rgba(94,43,255,0.25) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(127,232,45,0.15) 0%, transparent 50%);
+    }
+    .end-cta-inner { position: relative; z-index: 1; max-width: 720px; }
+    .end-cta .marker {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em;
+      color: rgba(247,247,242,0.5);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .end-cta .marker .diamond { color: var(--bio); margin-right: 8px; }
+    .end-cta h2 {
+      font-family: var(--display);
+      font-size: clamp(34px, 4.5vw, 52px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+    .end-cta h2 em {
+      font-style: italic;
+      font-weight: 500;
+      color: var(--bio);
+    }
+    .end-cta p {
+      font-size: 17px;
+      line-height: 1.55;
+      color: rgba(247,247,242,0.72);
+      margin-bottom: 32px;
+      max-width: 540px;
+    }
+    .end-cta .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .end-cta a {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 22px;
+      background: var(--paper); color: var(--ink);
+      border-radius: 8px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .end-cta a:hover { background: var(--bio); transform: translateY(-1px); }
+    .end-cta a.secondary { background: transparent; color: var(--paper); border: 1px solid rgba(247,247,242,0.18); }
+    .end-cta a.secondary:hover { background: rgba(247,247,242,0.08); border-color: rgba(247,247,242,0.35); }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 56px 0 80px;
+      border-top: 1px solid var(--rule);
+      background: var(--paper-2);
+    }
+    .footer .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-links {
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-family: var(--mono); font-size: 12px;
+      color: var(--ink-dim);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.02em;
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <div class="container">
-      <a href="/" class="nav-brand">
-        <img src="/app-icon.png" alt="DailyVox">
-        <span>DailyVox</span>
+
+  <!-- ═══ TOP NAV ═══ -->
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="/blog">Blog</a></li>
-        <li><a href="/faq">FAQ</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/support">Support</a></li>
-      </ul>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq" class="active">FAQ</a>
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
     </div>
-  </nav>
+  </header>
 
-  <main class="container">
-    <div class="page-header">
-      <h1>Frequently Asked Questions</h1>
-      <p class="updated">Everything you need to know about DailyVox</p>
+  <!-- ═══ HERO ═══ -->
+  <section class="faq-hero wrap">
+    <div class="hero-marker">
+      <span class="diamond">◆</span>
+      <span>FAQ</span>
+      <span class="dot">·</span>
+      <span>DAILYVOX HELP</span>
+      <span class="dot">·</span>
+      <span>UPDATED MAY 2026</span>
     </div>
+    <h1>Questions, <em>answered.</em></h1>
+    <p class="subtitle">
+      Privacy, on-device AI, the <strong>Digital Twin</strong>, the constellation, the <strong>Dynamic Island</strong>, your data, your phone, your peace of mind. The honest version of every answer.
+    </p>
+    <div class="hero-stats">
+      <div class="st"><div class="st-val">18<span class="unit">qs</span></div><div class="st-lbl">questions covered</div></div>
+      <div class="st"><div class="st-val">5<span class="unit">sec</span></div><div class="st-lbl">avg read per answer</div></div>
+      <div class="st"><div class="st-val">0<span class="unit">rpc</span></div><div class="st-lbl">cloud calls referenced</div></div>
+      <div class="st"><div class="st-val">100<span class="unit">%</span></div><div class="st-lbl">on-device, always</div></div>
+    </div>
+  </section>
 
-    <div class="page-content">
-      <div class="faq">
-
-        <div class="faq-item">
-          <h3>What is DailyVox?</h3>
-          <p>DailyVox is a free AI voice journaling app for iPhone and iPad. You speak your thoughts and DailyVox transcribes them on-device using Apple's Speech framework. It also uses on-device AI to detect your mood, build a Digital Twin of your personality, and generate weekly insights — all without sending any data to the cloud.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Is DailyVox really free?</h3>
-          <p>Yes, completely. DailyVox has no subscriptions, no in-app purchases, no ads, and no premium tier. Every feature — voice journaling, AI mood detection, Digital Twin, personality cards, encrypted backups, and export — is included for free. Compare that to Day One ($34.99/yr), Journey ($29.99/yr), Reflectly ($59.99/yr), or Daylio ($23.99/yr).</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How does voice journaling work in DailyVox?</h3>
-          <p>Tap the record button and start speaking. DailyVox uses Apple's Speech framework to transcribe your voice into text in real time, entirely on your device. When you finish, the app saves both the audio and the transcription as a journal entry. You can also edit the text afterward or add photos.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Is my data private in DailyVox?</h3>
-          <p>Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. Apple has verified this with a "Data Not Collected" privacy nutrition label on the App Store. See our <a href="/privacy">Privacy Policy</a> for details.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Does DailyVox work offline?</h3>
-          <p>Yes. Recording, transcription, mood detection, and all AI features work fully offline. The app uses on-device models that run on Apple's Neural Engine, so no internet connection is needed. Speech transcription accuracy may be slightly better online, but offline accuracy is still very good.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What is the Digital Twin in DailyVox?</h3>
-          <p>Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Digital Twin stays 100% on your device and grows more accurate the more you journal.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How does mood detection work?</h3>
-          <p>DailyVox uses Apple's NaturalLanguage framework to analyze the sentiment and emotional content of your journal entries on-device. It classifies entries into 9 mood categories and tracks patterns over time. The mood detection runs automatically after each entry and requires no manual input, though you can adjust the detected mood if you disagree.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Can I export my journal data?</h3>
-          <p>Yes. DailyVox supports exporting your journal in multiple formats: PDF, JSON, Markdown, CSV, and plain text. You can also create password-protected encrypted backups using AES-256-GCM encryption. Go to Settings &gt; Export Data to choose your format.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Do I need to create an account to use DailyVox?</h3>
-          <p>No. DailyVox requires no account, no sign-up, and no email address. You download it and start journaling immediately. If you want to sync across devices, you can optionally enable iCloud sync, which uses your existing Apple ID — but this is entirely optional.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What devices are supported?</h3>
-          <p>DailyVox runs on iPhone and iPad with iOS 17.0 or later. It is optimized for both devices with a native interface that adapts to different screen sizes. There is no Android, web, or Mac version at this time.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How is DailyVox different from Day One?</h3>
-          <p>The main differences are price, privacy, and AI. DailyVox is completely free while Day One costs $34.99/year for premium features. DailyVox processes all data on-device with no cloud servers, while Day One syncs data through their servers. DailyVox includes AI features like a Digital Twin and mood prediction that Day One does not offer. Day One does support more platforms (Mac, Android, web) and has a longer track record.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Is it safe to journal private thoughts in DailyVox?</h3>
-          <p>Yes. DailyVox was designed specifically for private journaling. Your data never leaves your device, encrypted backups use AES-256 encryption, and you can lock the app with Face ID or Touch ID. Since there are no servers, there is no risk of a data breach exposing your journal. Apple's privacy label confirms "Data Not Collected."</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What happens if I lose my phone?</h3>
-          <p>If you have iCloud sync enabled, your entries will be available on any other Apple device signed into the same Apple ID. If you have exported encrypted backups, you can restore from those. Without either, your journal data exists only on the device. We recommend enabling iCloud sync or regularly exporting encrypted backups as a safety measure.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How does on-device AI work without the cloud?</h3>
-          <p>DailyVox uses Apple's built-in machine learning frameworks — NaturalLanguage for sentiment analysis and named entity recognition, Speech for transcription, and Core ML for running models on Apple's Neural Engine chip. These frameworks are optimized to run efficiently on-device without needing an internet connection or cloud processing.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Can I use DailyVox without speaking (text only)?</h3>
-          <p>Yes. While voice journaling is the primary feature, you can also type entries directly. You can write text-only entries, or record voice and then edit the transcription. DailyVox's AI features work on the text regardless of whether it was typed or spoken.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>How many mood categories does DailyVox track?</h3>
-          <p>DailyVox tracks 9 mood categories. The AI automatically detects your mood from each journal entry, and you can view mood trends over time through weekly insights. You can also manually adjust the detected mood if you feel it does not match your actual state.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>What are personality cards?</h3>
-          <p>Personality cards are insights generated by your Digital Twin after it has analyzed enough journal entries. They describe aspects of your personality, values, communication style, and emotional patterns that the AI has identified. Cards become more detailed and accurate as you journal more frequently.</p>
-        </div>
-
-        <div class="faq-item">
-          <h3>Does DailyVox support iCloud sync?</h3>
-          <p>Yes. You can enable iCloud sync in Settings to sync your journal entries across your iPhone and iPad via Apple's CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default.</p>
-        </div>
-
+  <!-- ═══ THE BASICS ═══ -->
+  <section class="section wrap">
+    <div class="section-head">
+      <div class="section-marker">
+        <span class="diamond">◆</span><span>SECTION 01</span><span class="count">· 4 questions</span>
       </div>
-
-      <div class="article-cta" style="margin-top: 48px;">
-        <h3>Ready to start voice journaling?</h3>
-        <p>Download DailyVox for free. No account, no subscription, no data collection.</p>
-        <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+      <h2>The <em>basics.</em></h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item">
+        <div class="q-tag">Q · 01</div>
+        <h3>What is <em>DailyVox?</em></h3>
+        <p>DailyVox is a voice journal for iPhone and iPad. You speak your thoughts and DailyVox transcribes them on-device using Apple's Speech framework. It also uses on-device AI to detect your mood, build a <strong>Digital Twin</strong> of your personality, and visualise your entries as a private constellation in your inner sky — all without sending any data to the cloud.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 02</div>
+        <h3>Do I need to create an <em>account?</em></h3>
+        <p>No. DailyVox requires no account, no sign-up, and no email address. You download it and start journaling immediately. If you want to sync across devices, you can optionally enable iCloud sync, which uses your existing Apple ID — but this is entirely optional.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 03</div>
+        <h3>What <em>devices</em> are supported?</h3>
+        <p>DailyVox runs on iPhone and iPad with iOS 17.0 or later. It is optimised for both devices with a native interface that adapts to different screen sizes. The <strong>Dynamic Island recording timer</strong> requires an iPhone 14 Pro or newer. On other iPhones running iOS 16.1+, the same Live Activities appear as Lock Screen banners. No Android, web, or Mac version yet — macOS and Apple Watch are on the v1.5 roadmap.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 04</div>
+        <h3>Can I use it <em>without speaking</em> (text only)?</h3>
+        <p>Yes. While voice journaling is the primary mode, you can type entries directly, or record voice and then edit the transcription. The AI features work on the text regardless of whether it was typed or spoken.</p>
       </div>
     </div>
-  </main>
+  </section>
 
-  <footer>
-    <div class="container">
+  <!-- ═══ PRIVACY & DATA ═══ -->
+  <section class="section wrap">
+    <div class="section-head">
+      <div class="section-marker">
+        <span class="diamond" style="color:var(--bio)">◆</span><span>SECTION 02</span><span class="count">· 6 questions</span>
+      </div>
+      <h2><em>Privacy</em> &amp; your data.</h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item">
+        <div class="q-tag">Q · 05</div>
+        <h3>Is my data <em>private</em>?</h3>
+        <p>Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone. Apple has verified this with a <strong>"Data Not Collected"</strong> privacy nutrition label on the App Store. See our <a href="/privacy">Privacy Policy</a> for the full details.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 06</div>
+        <h3>Does DailyVox work <em>offline</em>?</h3>
+        <p>Yes. Recording, transcription, mood detection, and all AI features work fully offline. The app uses on-device models that run on Apple's Neural Engine, so no internet connection is needed at any point. You can verify this yourself in airplane mode.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 07</div>
+        <h3>Is it <em>safe</em> to journal private thoughts here?</h3>
+        <p>Yes. DailyVox was designed specifically for private journaling. Your data never leaves your device, encrypted backups use <code>AES-256-GCM</code>, and you can lock the app with Face ID or Touch ID. Since there are no servers, there is no risk of a data breach exposing your journal.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 08</div>
+        <h3>What if I <em>lose</em> my phone?</h3>
+        <p>If you have iCloud sync enabled, your entries will be available on any other Apple device signed into the same Apple ID. If you have exported encrypted backups, you can restore from those. Without either, your journal data exists only on the device — so we recommend enabling iCloud sync or regularly exporting encrypted backups.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 09</div>
+        <h3>Can I <em>export</em> my journal data?</h3>
+        <p>Yes. DailyVox supports exporting your journal in multiple formats: PDF, JSON, Markdown, CSV, and plain text. You can also create password-protected encrypted backups using <code>AES-256-GCM</code>. Go to <strong>Settings → Export Data</strong> to choose your format.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 10</div>
+        <h3>Does it support <em>iCloud sync</em>?</h3>
+        <p>Yes. You can enable iCloud sync in Settings to sync your journal entries across your iPhone and iPad via Apple's CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default — DailyVox works perfectly without it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ AI & DIGITAL TWIN ═══ -->
+  <section class="section wrap">
+    <div class="section-head">
+      <div class="section-marker">
+        <span class="diamond" style="color:var(--vital)">◆</span><span>SECTION 03</span><span class="count">· 5 questions</span>
+      </div>
+      <h2>The <em>Digital Twin</em> &amp; AI.</h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item">
+        <div class="q-tag">Q · 11</div>
+        <h3>What is the <em>Digital Twin</em>?</h3>
+        <p>Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Twin stays <strong>100% on your device</strong> and grows more accurate the more you journal.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 12</div>
+        <h3>How does <em>mood detection</em> work?</h3>
+        <p>DailyVox uses Apple's <code>NaturalLanguage</code> framework to analyse the sentiment and emotional content of your journal entries on-device. It classifies entries into 9 mood categories and tracks patterns over time. The mood detection runs automatically after each entry — you can manually adjust it if you disagree.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 13</div>
+        <h3>How does <em>on-device AI</em> work without the cloud?</h3>
+        <p>DailyVox uses Apple's built-in machine learning frameworks: <code>NaturalLanguage</code> for sentiment and named entity recognition, <code>Speech</code> for transcription, and <code>Core ML</code> for running models on Apple's Neural Engine chip. These frameworks are optimised to run efficiently on-device without needing an internet connection. See our <a href="/technology">Technology page</a> for the full architecture.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 14</div>
+        <h3>How many <em>mood categories</em>?</h3>
+        <p>DailyVox tracks 9 moods: <strong>happy, calm, grateful, excited, tired, anxious, sad, angry</strong>, and no-mood (when the AI can't confidently classify). The AI automatically detects your mood from each journal entry, and you can view mood trends over time through weekly insights.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 15</div>
+        <h3>What are <em>personality cards</em>?</h3>
+        <p>Personality cards are insights generated by your Digital Twin after it has analysed enough journal entries. They describe aspects of your personality, values, communication style, and emotional patterns that the AI has identified. Cards become more detailed and accurate as you journal more frequently — usually meaningful after 15–20 entries, rich after 80–100.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ NEW IN v1.3+ ═══ -->
+  <section class="section wrap">
+    <div class="section-head">
+      <div class="section-marker">
+        <span class="diamond" style="color:var(--ray)">◆</span><span>SECTION 04</span><span class="count">· 2 questions</span>
+      </div>
+      <h2>The <em>new stuff.</em></h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item">
+        <div class="q-tag">Q · 16 · NEW v1.3</div>
+        <h3>What is the <em>constellation</em>?</h3>
+        <p>Every journal entry in DailyVox becomes a star in your private constellation. Stars are coloured by mood (warm gold for positive, sage for calm, cool blue for reflective, soft coral for stressed) and connected by faint lines when entries share themes. Over months of journaling, clusters and nebulae form around the parts of your life that show up most. The constellation exists only on your iPhone — no one else can see it. Read the full story on our <a href="/blog/constellation-update">constellation update post</a>.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 17 · NEW v1.3.5</div>
+        <h3>What's the <em>Dynamic Island</em> recording timer?</h3>
+        <p>When you tap the mic, the Dynamic Island shows a live recording timer — your seconds tick by, your waveform moves with your voice. The timer counts up <strong>past 42 seconds</strong> (the suggested target) so you can speak as long as you need. After your entry saves, a brief "a new star appeared in your sky" Live Activity celebrates the entry. Requires iPhone 14 Pro or newer; on other iPhones the activity appears as a Lock Screen banner. There's also an opt-in streak Live Activity (Settings → Live Activities) and a new Constellation Lock Screen widget.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMPARISONS ═══ -->
+  <section class="section wrap">
+    <div class="section-head">
+      <div class="section-marker">
+        <span class="diamond">◆</span><span>SECTION 05</span><span class="count">· 1 question</span>
+      </div>
+      <h2>How it <em>compares.</em></h2>
+    </div>
+    <div class="qa">
+      <div class="qa-item">
+        <div class="q-tag">Q · 18</div>
+        <h3>How is DailyVox different from <em>Day One</em>?</h3>
+        <p>The main differences are <strong>privacy and AI architecture</strong>. DailyVox processes all data on-device with no cloud servers, while Day One syncs your data through their servers. DailyVox includes AI features like a Digital Twin, constellation visualisation, Dynamic Island Live Activities, and on-device mood prediction that Day One does not offer. Day One supports more platforms (Mac, Android, web) and has a longer track record — so if cross-platform sync matters more than on-device privacy to you, that's a real consideration.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ END CTA ═══ -->
+  <div class="wrap">
+    <section class="end-cta">
+      <div class="end-cta-inner">
+        <div class="marker"><span class="diamond">◆</span>READY WHEN YOU ARE</div>
+        <h2>Speak. Watch your <em>stars</em> appear.</h2>
+        <p>A voice journal that lives on your iPhone. Every entry becomes a star in your inner sky. No accounts. No servers. No cloud.</p>
+        <div class="btn-row">
+          <a href="https://apps.apple.com/app/id6760454642">Get DailyVox on iOS &rarr;</a>
+          <a href="/technology" class="secondary">Read the architecture</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="wrap">
       <div class="footer-links">
-        <a href="/blog">Blog</a>
+        <a href="/about">About</a>
+        <a href="/technology">Technology</a>
+        <a href="/blog">Journal</a>
         <a href="/faq">FAQ</a>
-        <a href="/privacy">Privacy Policy</a>
+        <a href="/privacy">Privacy</a>
         <a href="/support">Support</a>
+        <a href="/press">Press</a>
       </div>
-      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
     </div>
   </footer>
+
 </body>
 </html>
