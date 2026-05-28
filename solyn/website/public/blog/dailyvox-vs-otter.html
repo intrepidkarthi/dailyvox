@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription - DailyVox Blog</title>
+  <meta name="description" content="DailyVox vs Otter.ai compared. On-device voice journal vs cloud-based meeting transcription. Privacy, AI architecture, and which tool fits which job.">
+  <meta name="keywords" content="DailyVox vs Otter, Otter.ai alternative, on-device transcription, voice journal privacy, private voice recording app">
+  <meta name="theme-color" content="#05081a">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/dailyvox-vs-otter">
+  <meta property="og:title" content="DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription">
+  <meta property="og:description" content="Both turn voice into text. One sends your audio to a server. The other never does. Here's when each architecture matters.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/dailyvox-vs-otter">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription",
+    "description": "DailyVox vs Otter.ai compared. On-device voice journal vs cloud-based meeting transcription. Privacy, AI architecture, and which tool fits which job.",
+    "url": "https://getdailyvox.com/blog/dailyvox-vs-otter",
+    "datePublished": "2026-05-28",
+    "dateModified": "2026-05-28",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/dailyvox-vs-otter" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-guide">Comparison</span>
+        <h1>DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription</h1>
+        <p class="article-meta">May 28, 2026 &middot; 6 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>Otter.ai built one of the best cloud transcription products for business — meetings, interviews, lectures all get accurate, timestamped, searchable transcripts. It's the right tool for that job. People searching "Otter.ai for personal journaling" usually find out fast that the architecture doesn't quite fit: their voice memos sit on Otter's servers indefinitely, the AI features cost money, and there's no concept of a personal model of <em>you</em>.</p>
+
+        <p>DailyVox does voice transcription too — but for a completely different reason, with completely different architecture. Both apps turn voice into text. One sends every word to a cloud server. The other never does. Here's when each one matters.</p>
+
+        <h2>The Core Use Case</h2>
+
+        <p><strong>Otter.ai:</strong> Business transcription — meetings, calls, interviews, lectures. Multi-speaker. Built for sharing transcripts with teams. Designed for content that's going to be reviewed, edited, or distributed.</p>
+
+        <p><strong>DailyVox:</strong> Personal voice journaling. Single-speaker. Short reflective entries (42 seconds is the suggested target). Designed for content that stays with you and is never shared.</p>
+
+        <p><strong>Bottom line:</strong> If you need to capture meetings, Otter is the right tool. If you need to capture your inner life, DailyVox is the right tool. Don't try to use either for the other's job.</p>
+
+        <h2>Where the Audio Goes</h2>
+
+        <p>This is the fundamental architectural difference, and it cascades into everything else.</p>
+
+        <p><strong>Otter.ai:</strong> Audio is uploaded to Otter's servers. Cloud-based speech recognition (their proprietary models, with some AI features powered by third-party LLMs) generates transcripts. Transcripts persist in your Otter account. The company has technical access to your audio and transcripts as part of providing the service.</p>
+
+        <p><strong>DailyVox:</strong> Audio stays on your iPhone. Apple's <code>SFSpeechRecognizer</code> framework runs entirely on-device — Apple's Neural Engine does the transcription locally. No upload. No cloud. No server-side copy of your voice ever exists. Verifiable in airplane mode.</p>
+
+        <p><strong>Bottom line:</strong> Otter's cloud architecture enables their multi-speaker accuracy, summaries, and team features. DailyVox's on-device architecture enables the privacy guarantee that personal journaling demands.</p>
+
+        <h2>Privacy</h2>
+
+        <p><strong>Otter.ai:</strong> Account required. Voice and transcripts stored in their cloud. Their privacy policy details retention, access, and integrations. There have been industry-wide questions about cloud transcription privacy — even with strong policies, your audio exists on infrastructure you don't own.</p>
+
+        <p><strong>DailyVox:</strong> No account. No servers. No analytics SDKs. Apple's App Store nutrition label reads "Data Not Collected." The architecture makes server-side access technically impossible — there is no server.</p>
+
+        <p><strong>Bottom line:</strong> For business content you're already going to share, Otter's privacy model is appropriate. For personal voice notes — diary content, vulnerable thoughts, things you'd never share with anyone — DailyVox's architecture is the only way to be certain those stay private.</p>
+
+        <h2>What the AI Does</h2>
+
+        <p><strong>Otter.ai:</strong> Speaker diarization (who said what), meeting summaries, action items, keyword search, integrations with Zoom/Teams/Google Meet. Recent versions added LLM-based question-answering over transcripts. Built around multi-party content.</p>
+
+        <p><strong>DailyVox:</strong> Sentiment analysis (Apple NaturalLanguage). Named entity recognition (people, places, topics mentioned). A Digital Twin built from your entries across four sub-models (Mind, Heart, Voice, Graph). Mood prediction. Personality cards. A constellation visualisation. All on-device.</p>
+
+        <p><strong>Bottom line:</strong> Otter's AI extracts structure from meetings. DailyVox's AI builds a model of you from your reflections. Different outputs because the questions being answered are different.</p>
+
+        <h2>Pricing</h2>
+
+        <p><strong>Otter.ai:</strong> Free tier with ~300 minutes/month. Paid plans start around $10–17/user/month for higher quotas and features.</p>
+
+        <p><strong>DailyVox:</strong> Free on the App Store. No subscriptions, no tiers, no in-app purchases. All features included.</p>
+
+        <p><strong>Bottom line:</strong> Otter's pricing reflects cloud transcription costs — running speech-to-text at meeting scale on servers isn't cheap. DailyVox is free because transcription runs on the hardware you already own.</p>
+
+        <h2>Transcription Quality</h2>
+
+        <p><strong>Otter.ai:</strong> Excellent for multi-speaker professional contexts. Strong with proper nouns, technical vocabulary, and accent handling because of large server-side models trained on enormous datasets.</p>
+
+        <p><strong>DailyVox:</strong> Excellent for single-speaker reflective speech because Apple's on-device <code>SFSpeechRecognizer</code> is genuinely good for personal voice. It can occasionally miss niche terms compared to cloud models, but for diary-style entries the accuracy is more than enough.</p>
+
+        <p><strong>Bottom line:</strong> Otter wins for multi-speaker, proper-noun-heavy professional content. DailyVox is at parity for solo reflective speech.</p>
+
+        <h2>Offline Support</h2>
+
+        <p><strong>Otter.ai:</strong> Requires internet for transcription and all AI features. Cloud-first by design.</p>
+
+        <p><strong>DailyVox:</strong> Every feature works offline. Recording, transcription, AI analysis, mood tracking — all run identically in airplane mode.</p>
+
+        <h2>Who Should Choose What</h2>
+
+        <h3>Choose Otter.ai if:</h3>
+        <ul>
+          <li>You're transcribing meetings, calls, interviews, or lectures</li>
+          <li>You need shareable, searchable, multi-speaker transcripts</li>
+          <li>Integration with Zoom/Teams/Meet matters to you</li>
+          <li>You're comfortable with cloud transcription for professional content</li>
+          <li>You need 300+ minutes of transcription per month</li>
+        </ul>
+
+        <h3>Choose DailyVox if:</h3>
+        <ul>
+          <li>You want a personal voice journal, not meeting transcription</li>
+          <li>Privacy is non-negotiable — no cloud, ever, for personal content</li>
+          <li>You want AI that models <em>you</em>, not just your words</li>
+          <li>You journal during commutes, travel, or anywhere offline</li>
+          <li>You don't want to pay for transcription</li>
+        </ul>
+
+        <h2>Can You Use Both?</h2>
+
+        <p>Yes, and many people do. Otter for work meetings. DailyVox for the morning reflection before the work meetings. They aren't competing — they're tools for different parts of your day.</p>
+
+        <h2>The Bottom Line</h2>
+
+        <p>Otter.ai built a great cloud transcription service for content that's already going to be shared. DailyVox built a private voice journal for content that should never be shared. The architectural decisions both companies made are correct for their respective audiences. The mistake is using the wrong tool — putting your diary in Otter, or trying to transcribe a one-hour meeting in DailyVox. Pick the right architecture for the right use case.</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/dailyvox-vs-rosebud">DailyVox vs Rosebud: On-Device vs Cloud AI</a></li>
+          <li><a href="/blog/on-device-ai-vs-cloud-ai-journaling">On-Device AI vs Cloud AI for Journaling</a></li>
+          <li><a href="/blog/voice-recorder-diary-app">Best Voice Recorder Diary App (2026)</a></li>
+          <li><a href="/blog/what-is-on-device-ai">What Is On-Device AI? Why It Matters</a></li>
+        </ul>
+
+        <div class="article-cta">
+          <h3>Try DailyVox — Voice Transcription That Stays on Your Phone</h3>
+          <p>For your inner thoughts, not your meetings.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+      <p class="footer-social-row" style="margin:18px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:18px 26px; flex-wrap:wrap; font-family:monospace; font-size:12px;">
+        <a href="https://x.com/getDailyVox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">X · @getDailyVox</a>
+        <a href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Instagram · @getdailyvox</a>
+        <a href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">Reddit · u/getDailyVox</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener" style="color:inherit; opacity:.7;">GitHub · intrepidkarthi/dailyvox</a>
+        <a href="mailto:hello@getdailyvox.com" style="color:inherit; opacity:.7;">hello@getdailyvox.com</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

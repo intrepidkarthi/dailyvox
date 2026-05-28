@@ -5,9 +5,33 @@
   <link>https://getdailyvox.com/blog</link>
   <description>Research, comparisons, and guides about voice journaling, on-device AI, and private journaling. By DailyVox — the free AI voice journal with a Digital Twin.</description>
   <language>en-us</language>
-  <lastBuildDate>Wed, 27 May 2026 12:00:00 +0000</lastBuildDate>
+  <lastBuildDate>Wed, 28 May 2026 12:00:00 +0000</lastBuildDate>
   <atom:link href="https://getdailyvox.com/blog/feed.xml" rel="self" type="application/rss+xml"/>
 
+
+  <item>
+    <title>DailyVox vs Granola: Personal Journal vs Meeting Notes</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-granola</link>
+    <description>One app captures your meetings. The other captures your inner world. The architectural and philosophical differences matter.</description>
+    <pubDate>Wed, 28 May 2026 12:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-granola</guid>
+  </item>
+
+  <item>
+    <title>DailyVox vs Finch: Voice Journal vs Gamified Self-Care</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-finch</link>
+    <description>One uses a pet to motivate you. The other uses a constellation to mirror you. Different philosophies of habit-building.</description>
+    <pubDate>Wed, 28 May 2026 12:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-finch</guid>
+  </item>
+
+  <item>
+    <title>DailyVox vs Otter.ai: On-Device vs Cloud Voice Transcription</title>
+    <link>https://getdailyvox.com/blog/dailyvox-vs-otter</link>
+    <description>Both turn voice into text. One sends your audio to a server. The other never does. When each architecture matters.</description>
+    <pubDate>Wed, 28 May 2026 12:00:00 +0000</pubDate>
+    <guid isPermaLink="true">https://getdailyvox.com/blog/dailyvox-vs-otter</guid>
+  </item>
   <item>
     <title>DailyVox v1.3.5: The Constellation Leaves the App</title>
     <link>https://getdailyvox.com/blog/v1-3-5-dynamic-island</link>

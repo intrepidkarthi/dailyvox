@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox Changelog — Every Version, Every Change</title>
+  <meta name="description" content="Every release of DailyVox documented. From v1.0 (March 2026) through v1.3.5 (May 2026). What we shipped, why we shipped it, and what's next.">
+  <meta name="theme-color" content="#f7f7f2">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/changelog">
+  <meta property="og:title" content="DailyVox Changelog — Every Version, Every Change">
+  <meta property="og:description" content="Every release of DailyVox documented. What we shipped, why we shipped it, and what's next.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <link rel="canonical" href="https://getdailyvox.com/changelog">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08);
+      --uv: #5e2bff; --bio: #7fe82d;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover; }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero {
+      padding: 80px 0 48px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .hero .marker {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-mute);
+      margin-bottom: 22px;
+    }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(46px, 6vw, 76px);
+      font-weight: 600; line-height: 1.05; letter-spacing: -0.035em;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: italic; color: var(--uv); }
+    .hero .lede {
+      font-size: 18px; color: var(--ink-dim); max-width: 620px;
+    }
+
+    .versions { padding: 56px 0 80px; }
+    .version {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .v-head { margin-bottom: 28px; }
+    .v-tag {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; color: var(--uv);
+      margin-bottom: 10px;
+    }
+    .version h2 {
+      font-family: var(--display);
+      font-size: 36px; font-weight: 600; letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .v-date {
+      font-family: var(--mono); font-size: 12px;
+      color: var(--ink-mute); letter-spacing: 0.04em;
+    }
+    .v-body h3 {
+      font-family: var(--display);
+      font-size: 18px; font-weight: 600;
+      color: var(--ink); margin: 24px 0 10px;
+    }
+    .v-body p { margin-bottom: 12px; }
+    .v-body ul { margin: 0 0 16px 0; padding-left: 24px; }
+    .v-body li { margin-bottom: 6px; color: var(--ink-dim); }
+    .v-body strong { color: var(--ink); }
+    .v-body code {
+      font-family: var(--mono); font-size: 13px;
+      background: var(--paper-2); padding: 1px 6px;
+      border-radius: 4px; color: var(--ink);
+    }
+
+    .footer {
+      padding: 48px 0; border-top: 1px solid var(--rule);
+      background: var(--paper-2);
+    }
+    .footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
+      </a>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog" class="active">Changelog</a>
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-05-28</div>
+    <h1>Every <em>version</em>, every change.</h1>
+    <p class="lede">DailyVox shipped its first version in March 2026. Here is every release since — what we built, what we changed, and (occasionally) what we shouldn't have done. For the developer-facing diff, see the <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/CHANGELOG.md" style="color:var(--uv); text-decoration:underline;">GitHub CHANGELOG</a>.</p>
+  </section>
+
+  <main class="versions wrap">
+    
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.3.5</div>
+          <h2 id="v1-3-5">Version 1.3.5</h2>
+          <time class="v-date">2026-05-27</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li><strong>New app icon variants</strong>: iOS 18 dark-mode icon (golden mic on warm charcoal) and tinted (monochrome) silhouette to complement the sage-green default</li>
+          <li><strong>Dynamic Island — Recording timer</strong>: live elapsed time and waveform render in the compact pill, expanded view, and Lock Screen banner while you record. Counts up past the 42-second soft target so you can speak as long as you need</li>
+          <li><strong>Dynamic Island — Star birth</strong>: a brief celebratory Live Activity ("A new star appeared in your sky") fires the moment an entry saves, then auto-dismisses</li>
+          <li><strong>Dynamic Island — Streak tracker (opt-in)</strong>: pin your current <code>★ Day N</code> streak to the Dynamic Island and Lock Screen. Enable from Settings → Live Activities; ends automatically if the streak breaks or you toggle off</li>
+          <li><strong>Constellation Lock Screen widget</strong>: Canvas-rendered mini constellation, one star per recent entry, coloured by mood. Available as accessoryRectangular, accessoryCircular, and accessoryInline</li>
+          <li>New <code>LiveActivityManager</code> centralises all ActivityKit lifecycle (start / throttled updates at 2 Hz / end / auth checks)</li>
+          <li>New shared <code>LiveActivityAttributes.swift</code> defining <code>RecordingActivityAttributes</code>, <code>StarBirthActivityAttributes</code>, <code>StreakActivityAttributes</code></li>
+        </ul>
+        <h3>Changed</h3>
+        <ul>
+          <li>Recording copy softened from "Speak for 42 seconds" to "42 seconds — or longer" / "as long as you need" in TodayView, DigitalTwinView, and ConstellationView. The recording timer never had a hard cap; this aligns the framing with reality</li>
+          <li><code>Info.plist</code> now declares <code>NSSupportsLiveActivities</code> and <code>NSSupportsLiveActivitiesFrequentUpdates</code></li>
+        </ul>
+        <h3>Build</h3>
+        <ul>
+          <li><code>MARKETING_VERSION</code> 1.3.0 → 1.3.5</li>
+          <li><code>CURRENT_PROJECT_VERSION</code> 14 → 15</li>
+          <li>Widget Extension target (<code>DailyVoxWidgets</code>) added — the existing <code>SolynWidget/</code> code finally compiles into a shipping binary</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.3.0</div>
+          <h2 id="v1-3-0">Version 1.3.0</h2>
+          <time class="v-date">2026-05-24</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Constellation Metaphor</strong>: Every journal entry becomes a star in your inner sky. The Digital Twin tab now features a real-time Canvas-based constellation visualization with mood-colored stars, connection lines, nebulae, and a central core star</li>
+          <li><strong>Celestial Onboarding</strong>: 5-page premium onboarding with star-birth animation, planet system (Mind/Heart/Voice/Graph orbiting planets), aurora insights visualization, shield constellation for privacy, and "Name your planets" intention mapping (Mercury, Venus, Mars, Jupiter, Saturn)</li>
+          <li><strong>Focused Zero-State</strong>: First-time users see a single focused screen — "What's on your mind?" with a pulsing mic button — instead of cluttered cards</li>
+          <li><strong>Digital Twin Introduction</strong>: First-time Twin tab shows a guided 4-step timeline (You speak → Stars appear → Twin learns → Always private) with an empty sky preview</li>
+          <li><strong>Star Field Particles</strong>: 60+ ambient star particles behind all onboarding pages</li>
+          <li><strong>ConstellationView.swift</strong>: New Canvas-based 60fps constellation renderer with deterministic star positioning, mood colors, and maturity scaling</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul>
+          <li><strong>Ivory Theme as Default</strong>: Warm ivory background (#FAF8F5), sage green accent (#5B7C6B), terracotta secondary (#C4956A), warm gold highlights (#D4A547)</li>
+          <li><strong>SF Rounded Typography</strong>: All headlines use <code>.design(.rounded)</code> for warmth</li>
+          <li><strong>20pt Continuous Corners</strong>: Every card uses <code>RoundedRectangle(cornerRadius: 20, style: .continuous)</code></li>
+          <li><strong>Warm Shadows</strong>: Cards have warm shadows (<code>0.04 opacity, 12pt radius</code>)</li>
+          <li><strong>Recording UI</strong>: Warm coral timer, sage-to-gold waveform bars, ambient glow on mic button, "Speaking... tap when you're done"</li>
+          <li><strong>Processing State</strong>: "A new star is forming..." replaces generic spinner</li>
+          <li><strong>First Entry Celebration</strong>: "Your first star — your constellation has begun"</li>
+          <li><strong>Tab Bar</strong>: Record (mic.circle.fill), Journal (book.closed.fill), Insights (sparkle.magnifyingglass), Twin (star.circle.fill), Settings (gearshape.fill)</li>
+          <li><strong>Themes Simplified</strong>: 4 themes (System, Ivory, Light, Dark) replacing 8 — committed to the DailyVox identity</li>
+          <li><strong>All Emojis Removed</strong>: Every UI emoji replaced with premium SF Symbols</li>
+          <li><strong>WarmBackground Gradient</strong>: Subtle radial warm gradient on all daily-use screens (like cream-colored paper)</li>
+          <li><strong>Constellation Language Throughout</strong>: "Your inner sky", "your first star", "add a star to today's sky", "your constellation grows"</li>
+        </ul>
+        <h3>Website</h3>
+        <ul>
+          <li><strong>Full Celestial Redesign</strong>: Dark hero with constellation Canvas, warm ivory body, sage/gold/terracotta palette, Nunito + DM Mono fonts</li>
+          <li><strong>Digital Twin Vision Section</strong>: "Your Digital Twin is the most accurate mirror of yourself that has ever existed"</li>
+          <li><strong>35+ New/Rewritten Blog Posts</strong>: Pillar pages for voice journal, AI journal, private journal, free journal queries</li>
+          <li><strong>GEO Optimization</strong>: Answer-first paragraphs, FAQPage schema, extraction-ready SVO sentences</li>
+          <li><strong>Newsletter Signup</strong>: Buttondown integration on landing page and pillar posts</li>
+          <li><strong>RSS Feed</strong>: 20-post feed for crawler discovery</li>
+          <li><strong>Press Page</strong>: Facts, story, data points for journalists</li>
+          <li><strong>/facts Page</strong>: Standalone quotable data points for LLM citation</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.2.1</div>
+          <h2 id="v1-2-1">Version 1.2.1</h2>
+          <time class="v-date">2026-05-21</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Emotional Onboarding</strong>: New 5th onboarding page — "What brings you here?" with selectable intention cards (Track thoughts, Understand emotions, Build a habit, Remember my life, Create my Digital Twin)</li>
+          <li><strong>Life Area Auto-Tagging</strong>: Entries automatically tagged with life areas (Work, Health, Relationships, Growth, Family, Creativity) shown as colored pills in Timeline</li>
+          <li><strong>Intent-Based Reminders</strong>: Morning / Midday / Evening presets with purpose-driven descriptions ("Start your day with clarity", "Reset and reflect", "Unwind and look back") plus Custom time option</li>
+          <li><strong>First Entry Celebration</strong>: Special moment after your very first journal entry — "Your Digital Twin just learned something new about you"</li>
+          <li><strong>Monthly Summaries</strong>: Timeline section headers now show entry count and total word count per month</li>
+        </ul>
+        <h3>Improved</h3>
+        <ul>
+          <li><strong>Warmer Processing State</strong>: Replaced generic spinner with phased messages ("Listening to your words..." → "Understanding your thoughts..." → "Your Twin is learning...") and pulsing animation</li>
+          <li><strong>"Just 42 seconds" Nudge</strong>: Welcome card and empty state now frame journaling as a 42-second commitment — because 42 is the answer to life, the universe, and everything</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.2.0</div>
+          <h2 id="v1-2-0">Version 1.2.0</h2>
+          <time class="v-date">2026-05-21</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Ask Your Twin</strong>: Chat with your Digital Twin — ask about mood patterns, personality, journaling habits</li>
+          <li><strong>Shareable Personality Cards</strong>: Beautiful cards optimized for Instagram Stories (1080x1920) and Twitter/X (1200x675)</li>
+          <li><strong>Smarter Review Prompts</strong>: Milestone-based App Store rating requests (at 5, 15, 40 entries) with 90-day cooldown</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.1.0</div>
+          <h2 id="v1-1-0">Version 1.1.0</h2>
+          <time class="v-date">2026-03-26</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Twin Predictions</strong>: Mood forecasting, trigger anticipation, temporal pattern detection</li>
+          <li><strong>Shareable Personality Card</strong>: Visual snapshot of your Digital Twin profile</li>
+          <li><strong>Weekly Insight Cards</strong>: Shareable summaries of your weekly emotional journey</li>
+          <li><strong>Improved NLP</strong>: Better keyword extraction with refined text processing</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.0.0</div>
+          <h2 id="v1-0-0">Version 1.0.0</h2>
+          <time class="v-date">2026-03-23</time>
+        </div>
+        <div class="v-body">
+        <h3>Added</h3>
+        <ul>
+          <li>Voice journaling with fully on-device transcription (Apple Speech framework)</li>
+          <li>Digital Twin: on-device personality model (communication style, emotional signature, knowledge graph)</li>
+          <li>Mood tracking with automatic sentiment analysis (NLTagger)</li>
+          <li>Smart insights and pattern detection</li>
+          <li>Biometric security (Face ID / Touch ID)</li>
+          <li>Photo attachments (up to 5 per entry)</li>
+          <li>8 themes (System, Light, Sage, Lavender, Rose, Ocean, Warm, Dark)</li>
+          <li>Encrypted exports (PDF, JSON, Markdown, CSV, AES-256-GCM backup)</li>
+          <li>Optional iCloud sync</li>
+          <li>Home Screen & Lock Screen widgets</li>
+          <li>Siri Shortcuts via AppIntents</li>
+          <li>Journaling goals with weekly targets and milestone celebrations</li>
+          <li>Full iPad support with adaptive layouts</li>
+        </ul>
+        </div>
+      </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/technology">Technology</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/press">Press</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+        <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+      <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
+    </div>
+  </footer>
+
+</body>
+</html>
