@@ -39,9 +39,9 @@ Not sure what to work on? Here are some ways to jump in:
 - Add new export formats in `BackupService.swift`
 
 ### Advanced tasks (check the [Roadmap](ROADMAP.md))
-- **v1.3**: Semantic search with NLEmbedding
-- **v1.4**: Apple Watch companion app
-- **v2.0**: Foundation Models integration
+- **v1.4**: Semantic search with NLEmbedding (cosine similarity, K-means clustering, anomaly detection)
+- **v1.5**: Apple Watch + macOS companion apps
+- **v2.0**: Apple Foundation Models integration (on-device 3B LLM)
 
 ## Prerequisites
 

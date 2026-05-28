@@ -35,7 +35,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - "Just 42 seconds" low-friction nudge on empty states
 - Monthly summaries in Timeline section headers (entry count + word count)
 
-### v1.3.0 — Constellation Update *(current)*
+### v1.3.0 — Constellation Update
 - Constellation metaphor: every entry becomes a star in your inner sky
 - ConstellationView: Canvas-based 60fps visualization with mood-colored stars, connections, nebulae
 - Celestial onboarding: star-birth welcome, planet system, aurora, shield, "Name your planets"
