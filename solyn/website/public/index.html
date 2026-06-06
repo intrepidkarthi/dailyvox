@@ -2879,10 +2879,9 @@
         <div class="sec-tag">meet your Twin</div>
         <h2 class="sec-title">The <em>constellations</em> within your Twin.</h2>
         <p class="sec-sub">
-    Your Twin isn't one model — it's four constellations, each mapping a different dimension. <strong>Mind</strong>
+    Your Twin isn't one model — it's a constellation of dimensions. <strong>Mind</strong>
     for how you think, <strong>Voice</strong> for how you speak, <strong>Heart</strong> for how you
-    feel, and a <strong>Graph</strong> of who and what you mention. Below it all, a <strong>forecast</strong> of
-    where you're headed.
+    feel, and a <strong>Graph</strong> of who and what you mention. In <strong>v1.4</strong> a fifth dimension joins them — <strong><a href="/blog/body-twin-healthkit-watch" style="color:var(--uv); text-decoration:underline;">Body</a></strong>, layering sleep, HRV, and movement context underneath your words. Below it all, a <strong>forecast</strong> of where you're headed.
 </p>
       </div>
 
@@ -3127,6 +3126,11 @@
                 <span class="vital-val" id="mGraph">42</span>
                 <span class="vital-bar"><span style="width:58%; background:var(--ray);"></span></span>
               </div>
+              <div class="vital" data-region="body" style="opacity:0.78;">
+                <span class="vital-lbl">body <span style="font-size:0.7em; color:var(--uv); margin-left:4px;">v1.4</span></span>
+                <span class="vital-val" id="mBody" style="color:#5B7C6B">at_rest</span>
+                <span class="vital-bar"><span style="width:64%; background:#5B7C6B;"></span></span>
+              </div>
             </div>
             <div class="vitals-log" id="vitalsLog" role="log" aria-live="polite">
               <div class="vlog-line"><span class="vl-time">14:22:28</span> <span class="vl-ok">✓</span> <span class="vl-msg">boot · on-device · 0 rpc</span></div>
@@ -3188,6 +3192,36 @@
           </article>
         </div>
 
+      </div>
+
+      <!-- ═ BODY TWIN — coming in v1.4 ═ -->
+      <div class="body-twin-preview" style="margin-top:2.25rem; padding:1.75rem 2rem; border:1px dashed rgba(91,124,107,0.35); border-radius:18px; background:linear-gradient(135deg, rgba(91,124,107,0.04), rgba(212,165,71,0.03));">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.5rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <span class="annot-id">constellation · 05</span>
+            <span class="annot-part">✦ body</span>
+          </div>
+          <span style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--uv); padding:3px 10px; border:1px solid var(--uv); border-radius:999px;">◆ next · v1.4</span>
+        </div>
+        <h3 style="margin:0.25rem 0 0.5rem 0;">Body signature.</h3>
+        <p class="annot-desc">How your body <em>is</em> — sleep last night, morning HRV, resting heart rate, and the activity context around each entry. Pulled from Apple Health on iPhone; sampled live during the recording on Apple Watch — but only when you're at rest, so a jog isn't mistaken for emotional stress. Every entry gets a <code style="font-family:var(--mono, monospace); font-size:0.85em; background:rgba(91,124,107,0.08); padding:1px 6px; border-radius:4px;">body_context</code> tag (<code style="font-family:var(--mono, monospace); font-size:0.85em;">at_rest</code> / <code style="font-family:var(--mono, monospace); font-size:0.85em;">active</code> / <code style="font-family:var(--mono, monospace); font-size:0.85em;">post_workout</code>) so the Twin knows how to read it.</p>
+
+        <div class="annot-readout" style="margin-top:1.25rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:0.5rem 1.25rem;">
+          <div><span class="rk">sleep</span> <span class="rv">7h 12m</span></div>
+          <div><span class="rk">HRV</span> <span class="rv">48 ms</span></div>
+          <div><span class="rk">HR Δ (recording)</span> <span class="rv" style="color:#5B7C6B;">+4 bpm</span></div>
+          <div><span class="rk">context</span> <span class="rv">at_rest</span></div>
+          <div><span class="rk">steps today</span> <span class="rv">6,420</span></div>
+          <div><span class="rk">mindful</span> <span class="rv">12 min</span></div>
+        </div>
+
+        <p style="margin-top:1.5rem; margin-bottom:0; font-size:0.92em; color:rgba(26,26,46,0.65); display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span style="display:inline-flex; align-items:center; gap:0.4rem;"><span style="width:6px; height:6px; background:#5B7C6B; border-radius:50%; display:inline-block;"></span> on-device only</span>
+          <span style="opacity:0.4;">·</span>
+          <span>"Data Not Collected" privacy label preserved</span>
+          <span style="opacity:0.4;">·</span>
+          <a href="/blog/body-twin-healthkit-watch" style="color:var(--uv); text-decoration:underline;">Read the full Body Twin plan →</a>
+        </p>
       </div>
 
       <!-- ═ FULL-WIDTH FORECAST ═ -->
