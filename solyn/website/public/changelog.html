@@ -169,13 +169,26 @@
   </header>
 
   <section class="hero wrap">
-    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-05-28</div>
+    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-06-05</div>
     <h1>Every <em>version</em>, every change.</h1>
     <p class="lede">DailyVox shipped its first version in March 2026. Here is every release since — what we built, what we changed, and (occasionally) what we shouldn't have done. For the developer-facing diff, see the <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/CHANGELOG.md" style="color:var(--uv); text-decoration:underline;">GitHub CHANGELOG</a>.</p>
   </section>
 
   <main class="versions wrap">
-    
+
+      <section class="version" style="border-left:3px solid var(--uv);padding-left:18px;">
+        <div class="v-head">
+          <div class="v-tag" style="color:var(--uv);">◇ next · v1.4</div>
+          <h2 id="v1-4-next">Version 1.4 — Body Twin (in development)</h2>
+          <time class="v-date">coming soon</time>
+        </div>
+        <div class="v-body">
+        <p><strong>The Digital Twin gains a body.</strong> v1.4 brings Apple Health and an Apple Watch companion into DailyVox so the Twin can finally tell the difference between feeling stressed and being stressed. HealthKit reads sleep, HRV, resting heart rate, steps, and mindful minutes as background context for every entry. Apple Watch records from your wrist and samples heart rate during the recording — only when you're at rest, so a workout isn't mistaken for emotional stress. Every entry gets an activity context tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) that tells the Twin how to interpret the body data. HR is stored as delta from your personal hour-of-day baseline, not raw bpm. The "Data Not Collected" privacy label stays intact — all HealthKit reads happen on-device.</p>
+        <p><a href="/blog/body-twin-healthkit-watch" style="color:var(--uv); text-decoration:underline;">Read the full Body Twin plan →</a></p>
+        <p style="margin-top:8px; color:var(--ink-soft); font-size:14px;"><em>After v1.4: v1.5 Semantic Search & Proactive Insights · v1.6 macOS & Multi-Language · v2.0 Apple Foundation Models + Android · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/ROADMAP.md" style="color:var(--uv); text-decoration:underline;">full roadmap</a></em></p>
+        </div>
+      </section>
+
       <section class="version">
         <div class="v-head">
           <div class="v-tag">◆ v1.3.5</div>

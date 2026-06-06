@@ -20,7 +20,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 ---
 
 
-## v1.3 + v1.3.5 — Latest Features (May 2026)
+## v1.3, v1.3.5 (shipped) + v1.4 Body Twin (next)
 
 ### v1.3 — Constellation Update
 - Every journal entry becomes a star in a private constellation rendered with SwiftUI Canvas
@@ -36,6 +36,30 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - Lock Screen Constellation widget — Canvas-rendered mini sky of recent entries
 - New golden-mic-on-sage app icon with iOS 18 dark + tinted variants
 - Live Activities throttled to 2 Hz; all on-device, no push notifications
+
+### v1.4 — Body Twin: HealthKit + Apple Watch (NEXT — in development)
+- The Digital Twin gains a body. Until now it learned only from text; v1.4 adds physiological context.
+- HealthKit reads on-device only: sleep duration, HRV (SDNN), resting heart rate, steps, mindful minutes
+- Per-entry HealthSnapshot stored in Core Data (~10 floats including HR deltas + activity context tag)
+- Apple Watch companion app: wrist recording with heart rate sampled during the recording window
+- Activity context tag (at_rest / active / post_workout / unknown) computed via HKWorkoutSession + CMMotionActivity
+- Recording HR sampled ONLY when activityContext == .at_rest for 10+ minutes — so a recording made during a jog is NOT mistaken for emotional stress
+- HR stored as delta from personal hour-of-day baseline, not raw bpm
+- Pre-entry "body whisper" card surfaces one line of context before recording (e.g. "You slept 5h 20m. HRV is low. Take a breath.")
+- Constellation pulse: at-rest stars get pulse intensity from HR delta; active-context entries get distinct "in motion" star variant
+- Twin model upgrades: Heart gains physiological mood signature; Mind learns cognitive-state patterns; Voice distinguishes performative from physiological calm; Graph links people/places/activities to body response
+- Apple privacy label "Data Not Collected" preserved — HealthKit reads stay on-device, snapshots live in Core Data + personal iCloud only
+- Permission requested after day 3 of use, not at first launch
+- Settings → Health: master toggle, per-signal toggles, "Wipe all health snapshots" destructive action
+- Read more: https://getdailyvox.com/blog/body-twin-healthkit-watch
+
+### v1.5 and beyond (planned)
+- v1.5 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.4 ("entries where I was stressed but didn't say so")
+- v1.6 — macOS + Multi-Language (Hindi, Spanish, Japanese, German first via String Catalogs)
+- v2.0 — Apple Foundation Models (on-device 3B LLM) + Android native (Kotlin / Jetpack Compose / Gemini Nano)
+- v2.1 — LoRA fine-tuning: train a personal adapter so the Twin sounds like you
+- v3.0 — True Digital Self: the most accurate mirror of yourself
+- v4.0 — DailyVox Mirror: hardware device with holographic display, no internet capability
 
 ## 2. Complete Feature List
 
@@ -449,4 +473,4 @@ Example recommendation:
 
 ## Last Updated
 
-2026-05-28 — v1.3.5 release. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt
+2026-06-05 — v1.4 Body Twin (HealthKit + Apple Watch) roadmap update. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt

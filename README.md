@@ -21,6 +21,25 @@
   <img src="https://img.shields.io/badge/AI-100%25%20On--Device-5B7C6B?style=flat-square" alt="On-Device AI" />
 </p>
 
+<p align="center">
+  <a href="https://github.com/intrepidkarthi/dailyvox/network/members"><img src="https://img.shields.io/github/forks/intrepidkarthi/dailyvox?style=flat-square&logo=github&color=5B7C6B" alt="Forks" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox/watchers"><img src="https://img.shields.io/github/watchers/intrepidkarthi/dailyvox?style=flat-square&logo=github&color=D4A547" alt="Watchers" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox/commits/main"><img src="https://img.shields.io/github/last-commit/intrepidkarthi/dailyvox?style=flat-square&logo=git&color=22C55E" alt="Last commit" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox/pulse"><img src="https://img.shields.io/github/commit-activity/m/intrepidkarthi/dailyvox?style=flat-square&logo=git&label=Commits%2Fmo&color=F59E0B" alt="Commit activity" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox"><img src="https://img.shields.io/github/repo-size/intrepidkarthi/dailyvox?style=flat-square&logo=database&label=Repo%20Size&color=D97706" alt="Repo size" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox/issues"><img src="https://img.shields.io/github/issues/intrepidkarthi/dailyvox?style=flat-square&logo=github&color=F97316" alt="Open issues" /></a>
+  <a href="https://github.com/intrepidkarthi/dailyvox/graphs/contributors"><img src="https://img.shields.io/github/contributors/intrepidkarthi/dailyvox?style=flat-square&logo=githubsponsors&logoColor=white&label=Contributors&color=EC4899" alt="Contributors" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Swift-5.9-FA7343?style=flat-square&logo=swift&logoColor=white" alt="Swift" />
+  <img src="https://img.shields.io/badge/SwiftUI-5-0080FF?style=flat-square&logo=swift&logoColor=white" alt="SwiftUI" />
+  <img src="https://img.shields.io/badge/Xcode-15%2B-147EFB?style=flat-square&logo=xcode&logoColor=white" alt="Xcode" />
+  <img src="https://img.shields.io/badge/Core%20Data-%2B%20CloudKit-3776AB?style=flat-square&logo=icloud&logoColor=white" alt="Core Data + CloudKit" />
+  <img src="https://img.shields.io/badge/Neural%20Engine-Core%20ML-FF6B6B?style=flat-square&logo=apple&logoColor=white" alt="Neural Engine / Core ML" />
+  <img src="https://img.shields.io/badge/Speech-On--Device-5B7C6B?style=flat-square&logo=apple&logoColor=white" alt="On-device Speech" />
+</p>
+
 ---
 
 ## What is DailyVox?
@@ -134,8 +153,9 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.2 | Ask Your Twin (chat) | Shipped |
 | v1.3 | Constellation Update | Shipped |
 | v1.3.5 | Dynamic Island + New Icon | **Current** |
-| v1.4 | Semantic Search + Proactive Insights | Planned |
-| v1.5 | Apple Watch + macOS | Planned |
+| v1.4 | Body Twin — HealthKit + Apple Watch | Next |
+| v1.5 | Semantic Search + Proactive Insights | Planned |
+| v1.6 | macOS + Multi-Language | Planned |
 | v2.0 | Apple Foundation Models (on-device LLM) + Android | Planned |
 
 [Full roadmap](ROADMAP.md)

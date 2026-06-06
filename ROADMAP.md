@@ -65,7 +65,54 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
   - Streak tracker (opt-in via Settings): star icon + "Day N" in compact, today-done status in expanded; persists until disabled or streak breaks
   - Constellation Lock Screen widget: Canvas-rendered mini constellation, one star per recent entry, coloured by mood
 
-### v1.4 — Semantic Search & Proactive Insights
+### v1.4 — Body Twin: HealthKit + Apple Watch *(next)*
+
+The Twin gains a body. Until now it has learned only from your words; v1.4 gives it physiological context so it can finally tell the difference between "feeling stressed" and *being* stressed. Directly addresses one of the limitations called out for v3.0 ("Feel what you feel — no embodied experience").
+
+**Design principle: two layers, context-aware sampling**
+
+Body data feeds the Twin in two distinct layers, with different sampling rules for each. This prevents the obvious failure mode — recording during a jog showing as "extreme stress" — and gives the Twin a coherent way to interpret physiology.
+
+| Layer | What it captures | When sampled | Purpose |
+|:--|:--|:--|:--|
+| Background | Sleep, morning HRV, resting HR, daily steps, mindful minutes | Snapshotted at entry creation from already-stable Health data | Body state going into the entry |
+| Foreground | Recording HR mean + peak, HRV reactivity | Only sampled when `activityContext == .at_rest` for 10+ min | Embodied entry signature |
+| Activity context tag | `at_rest` / `active` / `post_workout` / `unknown` | Computed in real time from `HKWorkoutSession` + `CMMotionActivity` | Tells the Twin how to interpret everything else |
+
+Foreground HR is **deliberately skipped during exercise** — the entry is tagged `body_context: active` and the Twin infers emotional state from text and voice alone. A jog recording isn't garbage data; it's a different *kind* of data, useful for different insights (e.g. *"you journal during runs when you're processing something"*).
+
+All HR readings are stored as **deltas from your personal baseline for that hour of day**, not raw bpm — making "+18 over your usual" meaningful regardless of whether your resting HR is 55 or 75.
+
+**HealthKit integration (iPhone):**
+- Read access to five high-signal metrics: sleep duration, HRV (SDNN), resting heart rate, steps, mindful minutes
+- Per-entry `HealthSnapshot` frozen with each `JournalEntry` (~10 floats per entry including HR deltas + context tag, optional, CloudKit-synced via personal iCloud)
+- Activity context detected via `HKWorkoutSession` (active workout) and `CMMotionActivity` classifier (stationary / walking / running / cycling / automotive)
+- Pre-entry "body whisper" card — one line of context before recording (e.g. *"You slept 5h 20m. HRV is low. Take a breath."*); suppressed when `activityContext == .active` to avoid interrupting flow
+- Heart model upgrade: background metrics + foreground HR delta (when present) feed mood prediction alongside text sentiment
+- Causal insights surfaced in the Insights tab: *"Your best mood weeks share 7h+ sleep, 8k+ steps, and mentions of [person]"*
+- Twin chat learns to answer body+text questions: *"Why did I feel low Tuesday?"* references body state, not just narrative
+- Personal-baseline learner runs nightly to keep "your normal HR/HRV at this hour" accurate
+- Permission requested after day 3 of use (not at first-launch) for value-framed acceptance
+- Settings → Health: master toggle, per-signal toggles, "Wipe all health snapshots" destructive action
+- "Data Not Collected" Apple privacy label preserved — HealthKit reads stay on-device, snapshots live in Core Data + personal iCloud only
+
+**Apple Watch companion app:**
+- Quick wrist recording: tap mic, speak, auto-syncs to iPhone via WatchConnectivity
+- Heart rate sampled *during* the 42-second recording (Watch is the natural sensor); stored as delta from personal hour-of-day baseline
+- Context-aware capture: if recording starts during a workout, HR is **not** stored as an emotional signal — the entry is tagged `body_context: active` and the Twin treats it accordingly
+- Constellation pulse: ConstellationView renders subtle pulse intensity on each star from recording HR delta (calm reflection = slow pulse; high-arousal at rest = fast). Active-context entries get a distinct "in motion" star variant instead of pulse intensity
+- Embodied entry signature: every star now carries body state alongside mood color
+- Watch Complications: streak counter + "today done" status for quick glance
+- Native WatchKit target, same SwiftUI codebase patterns where shared
+- Works standalone on Watch (records locally) and syncs when iPhone is reachable
+
+**Twin model impact:**
+- **Heart** — physiological mood signature improves prediction confidence; distinguishes felt-stress from body-stress; learns separate emotional patterns for at-rest vs active entries
+- **Mind** — cognitive-state input ("I'm overthinking on low-sleep days") becomes a learned pattern
+- **Voice** — HR/HRV during at-rest speech refines stress detection beyond pacing and tone; active-context recordings rely on voice features alone
+- **Graph** — people, places, and activities now link to physiological response, not just sentiment
+
+### v1.5 — Semantic Search & Proactive Insights
 - NLEmbedding for 512-dimensional sentence embeddings
 - Semantic search via cosine similarity
 - K-means clustering for thematic discovery
@@ -74,12 +121,10 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Foundation for on-device RAG pipeline (inspired by [MiniRAG](https://github.com/HKUDS/MiniRAG) architecture)
 - Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
 - Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
+- Embodied search (builds on v1.4 Body Twin): "show me entries where I was stressed but didn't say so" — finds entries where HR was elevated but text stayed neutral
 
-### v1.5 — Apple Watch, macOS & Multi-Language
+### v1.6 — macOS & Multi-Language
 - Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
-- Apple Watch companion app (WatchKit) for voice mood check-ins
-- WatchConnectivity for iPhone-Watch sync
-- Watch Complications for quick access
 - Multi-language UI via String Catalogs
 
 ### v2.0 — Foundation Models + Android *(iOS 26, iPhone 15 Pro+)*

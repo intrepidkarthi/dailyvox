@@ -192,17 +192,17 @@
 
         <h2>What's Coming in v1.4</h2>
 
-        <p>v1.3.5 clears the decks for the next big release. v1.4 is focused on a single theme: <strong>making the Digital Twin actually understand your entries semantically</strong>. The pieces:</p>
+        <p>v1.3.5 clears the decks for the next big release. v1.4 is focused on a single theme: <strong>giving the Digital Twin a body</strong>. We're calling it Body Twin. It brings Apple Health and an Apple Watch companion into DailyVox so the Twin can finally tell the difference between feeling stressed and being stressed. <a href="/blog/body-twin-healthkit-watch">Read the full Body Twin plan →</a></p>
 
         <ul>
-          <li><strong>NLEmbedding</strong> — 512-dimensional sentence embeddings for every entry, all generated on-device using Apple's NaturalLanguage framework.</li>
-          <li><strong>Semantic search</strong> — find entries by meaning, not keywords. Search for "the night I felt stuck" and pull up the right entry even if those exact words never appear.</li>
-          <li><strong>K-means thematic clustering</strong> — entries automatically group by theme, surfacing patterns you wouldn't have noticed.</li>
-          <li><strong>Anomaly detection</strong> — z-score analysis flags entries that are unusual for you, so reflection on "weird" moments is easier.</li>
-          <li><strong>Foundation for on-device RAG</strong> — laying the groundwork for v2.0's Apple Foundation Models integration, where the Twin will reason about your entries with a 3B-parameter LLM running entirely on your phone.</li>
+          <li><strong>HealthKit integration</strong> — sleep, HRV, resting heart rate, steps, and mindful minutes feed the Twin as background context for every entry. Reads are on-device only; the "Data Not Collected" privacy label stays intact.</li>
+          <li><strong>Apple Watch companion</strong> — record from your wrist, with heart rate sampled during the recording when you're at rest. The Watch is the natural sensor for embodied entry signatures.</li>
+          <li><strong>Activity-context tagging</strong> — every entry gets a <code>body_context</code> tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) so a recording made while jogging isn't mistaken for emotional stress.</li>
+          <li><strong>Constellation pulse</strong> — at-rest entries gain a subtle pulse intensity from your recording heart rate. Active-context entries get an "in motion" star variant instead.</li>
+          <li><strong>Twin model upgrades</strong> — Heart gets physiological mood signals, Mind learns cognitive-state patterns, Voice distinguishes performative calm from physiological calm, Graph links people and places to body response.</li>
         </ul>
 
-        <p>If v1.3 was about giving your journal a visual identity and v1.3.5 was about extending that identity outside the app, v1.4 is about giving the Twin a real sense of meaning. Less surface area, more depth.</p>
+        <p>If v1.3 was about giving your journal a visual identity and v1.3.5 was about extending that identity outside the app, v1.4 is about giving the Twin a second channel of truth. Semantic search and RAG foundations now ship in v1.5; macOS and multi-language move to v1.6. Body Twin first, because the Twin getting smarter about your words matters less than the Twin getting access to a second channel of truth.</p>
 
         <h2>How to Get It</h2>
 

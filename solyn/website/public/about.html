@@ -878,16 +878,24 @@
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
               <div class="rd-tag rd-next"><span class="rd-tag-text">Next · v1.4</span></div>
-              <h3>Semantic search + proactive insights</h3>
-              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Retrieval foundation for v2.0's RAG architecture. Zero network calls.</p>
+              <h3>Body Twin — HealthKit + Apple Watch</h3>
+              <p><strong>Tech:</strong> <code>HealthKit</code> reads sleep, HRV (SDNN), resting heart rate, steps, mindful minutes — all on-device, "Data Not Collected" label preserved. Per-entry <code>HealthSnapshot</code> in Core Data (~10 floats). Activity context detected via <code>HKWorkoutSession</code> + <code>CMMotionActivity</code> classifier. <code>WatchKit</code> companion via <code>WatchConnectivity</code>. Heart rate sampled during recording — but only when at rest, so a workout isn't read as emotional stress. HR stored as delta from your personal hour-of-day baseline. Constellation pulse renders from HR delta on at-rest entries.</p>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.4 · Localization + Apple Watch</span></div>
-              <h3>Multi-language + wrist capture</h3>
-              <p><strong>Tech:</strong> Xcode String Catalogs — Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages. WatchKit companion via <code>WatchConnectivity</code>. Quick voice entry from wrist. Complications for mood and streak.</p>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.5 · Semantic search + proactive insights</span></div>
+              <h3>Find entries by meaning</h3>
+              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v2.0's RAG architecture. Zero network calls.</p>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · macOS + Multi-Language</span></div>
+              <h3>Desktop Twin + localization</h3>
+              <p><strong>Tech:</strong> Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop. Xcode String Catalogs for multi-language UI — Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages.</p>
             </div>
           </div>
           <div class="rd-item">
