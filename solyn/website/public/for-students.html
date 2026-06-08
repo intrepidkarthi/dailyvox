@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox for Students — Private Voice Journal · No Cloud · No Account · Free</title>
+  <meta name="description" content="A voice journal built for students who read privacy policies. Everything runs on your iPhone — no account, no cloud, no subscription, no training data extracted. Free forever, open source, verifiable in airplane mode.">
+  <meta name="keywords" content="journal app for students, private journal no cloud, voice journal no account, journal app no subscription, diary app without internet, ADHD voice journal student, journal app for anxiety students, free journal app teens, journal app no signup, college journal app private">
+  <meta name="theme-color" content="#f7f7f2">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/for-students">
+  <meta property="og:title" content="DailyVox for Students — A Journal That Actually Stays on Your Phone">
+  <meta property="og:description" content="No account. No cloud. No subscription. No training data extracted. Built for students who don't want their inner life sitting on someone else's server.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DailyVox — Private voice journal for privacy-conscious students. No cloud, no account, no subscription.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:image:alt" content="DailyVox for Students — voice journal that stays on your phone.">
+  <link rel="canonical" href="https://getdailyvox.com/for-students">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "DailyVox for Students — Private Voice Journal",
+    "description": "A voice journal built for privacy-conscious students. Runs entirely on iPhone — no account, no cloud, no subscription, no training data extracted.",
+    "url": "https://getdailyvox.com/for-students",
+    "datePublished": "2026-06-08",
+    "dateModified": "2026-06-08",
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "DailyVox",
+      "url": "https://getdailyvox.com"
+    },
+    "mainEntity": {
+      "@type": "SoftwareApplication",
+      "name": "DailyVox",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "iOS 17.0+",
+      "softwareVersion": "1.3.5",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "downloadUrl": "https://apps.apple.com/app/id6760454642"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is DailyVox really free for students? What's the catch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — DailyVox is free forever for everyone, not just students. No subscription tier, no premium features locked behind a paywall, no in-app purchases, no ads. The app is open source (MIT licensed) and the entire codebase is on GitHub at github.com/intrepidkarthi/dailyvox so you can verify there is no monetization layer hidden anywhere. The actual answer to 'what's the catch' is that the app is built by one person (Karthikeyan NG) who treats it as a craft project and a public good rather than a revenue stream."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "If my school monitors my iPhone, can they see my DailyVox entries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most school MDM (Mobile Device Management) profiles can see your installed app list and traffic going through the network, but they cannot read the contents of individual apps without much more aggressive access. Because DailyVox never makes network calls (verifiable in airplane mode — every feature still works), there is no traffic for school networks to inspect or log. Your entries live in encrypted Core Data storage on the device. Combine that with App Lock (Face ID / Touch ID) in Settings and your entries are protected from someone borrowing your unlocked phone too. The one scenario where a school could see anything: if they require a full device backup or have device-level forensic access, they would see the same data your phone's other apps have, encrypted at rest."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does DailyVox work without WiFi or cell data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, fully. Recording, on-device transcription, mood detection, Digital Twin analysis, export, search, biometric lock — every feature works in airplane mode. There is no 'lite' offline mode and no 'full features require internet' fine print. The app was architecturally designed so that internet is unnecessary, not an enhancement. You can verify this yourself: turn on airplane mode, open the app, record an entry, watch it transcribe and analyze locally. If anything stops working, it is a bug — please email hello@getdailyvox.com."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can my parents see my DailyVox entries through Family Sharing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Family Sharing on Apple's side does not expose individual app data — it manages App Store purchases, screen time reports, and location sharing if enabled. Family organizers can see what apps a child account has installed and can restrict installation, but cannot read inside individual apps. DailyVox specifically stores nothing in iCloud unless you explicitly enable iCloud sync in Settings (off by default). When iCloud sync is enabled, the entries live in your personal iCloud container with Apple's end-to-end encryption — not in any shared family container. The simplest answer: keep iCloud sync disabled (default) and your entries are entirely local to your phone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens to my entries if I lose my phone or it breaks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If iCloud sync is off (the default), entries on a lost phone are gone with the phone — which is a privacy feature, not a bug. If iCloud sync is on, your entries are encrypted and stored in your personal iCloud and will restore to a new device when you sign in. The third option is exporting periodically: Settings → Export Data lets you save your entries as an AES-256-GCM password-protected backup file. Many students who care about both privacy AND not losing entries do quarterly encrypted exports to a USB drive or trusted cloud — best of both worlds."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is it really impossible for the DailyVox team to read my entries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, in the strongest sense: there is no DailyVox server. There is no API endpoint. There is no database of users. The app does not register a user ID with us. The architectural design is that we could not read your entries even if we wanted to, even if we were compelled by court order — because they were never on any system we control. This is verifiable two ways: open the app source on GitHub and search for any networking code (you will find none for entry data), or run the app through a network sniffer like Charles Proxy and confirm zero outbound traffic. Apple's 'Data Not Collected' privacy label on the App Store independently confirms this."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is DailyVox different from Apple's built-in Journal app?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Apple Journal is a good text-first journal with iCloud sync — but it is not voice-first, it has no AI personality model (Digital Twin), no mood tracking, no semantic analysis, no constellation visualization, no Live Activities, and is text-only without on-device transcription. DailyVox is a voice-first journal where you speak for 42 seconds and the app transcribes, analyzes mood, builds a personality model, and visualizes entries as stars in a constellation — all on-device. The privacy stories are similar (both store data locally / E2E encrypted iCloud), but the use cases are different. Many DailyVox users keep Apple Journal for trip notes and DailyVox for emotional/reflective journaling."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "I am under 18. Is DailyVox safe for me to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DailyVox is rated 4+ on the App Store and contains no objectionable content, ads, in-app purchases, or external links to social platforms. There is no account creation, so no personal information (name, email, age) is ever requested. The app does not transmit any data, which means it cannot be used to track you, profile you, or share your information with advertisers or data brokers. From a parental-controls perspective, it is one of the safest apps in the journaling category. If you are under 13 and your phone is set up as a Child account, your Family organizer can restrict installs but cannot see inside the app."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "For Students", "item": "https://getdailyvox.com/for-students"}
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #f7f7f2; --paper-2: #efeeea;
+      --card: #ffffff;
+      --ink: #0a0b10;
+      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
+      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
+      --uv: #5e2bff; --bio: #7fe82d;
+      --display: 'Space Grotesk', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(247,247,242,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap { display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover;
+      box-shadow: 0 1px 2px rgba(10,11,16,0.08); }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); position: relative; }
+    .hero::before { content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 30%, rgba(94,43,255,0.04) 0%, transparent 40%);
+      pointer-events: none; }
+    .hero .marker { font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 18px; }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 { font-family: var(--display);
+      font-size: clamp(44px, 6vw, 72px); font-weight: 600; line-height: 1.05;
+      letter-spacing: -0.035em; margin-bottom: 20px; }
+    .hero h1 em { font-style: italic; color: var(--uv); }
+    .hero .lede { font-size: 18px; line-height: 1.5; color: var(--ink-dim); max-width: 640px; }
+    .hero .lede strong { color: var(--ink); }
+    .hero .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
+    .hero .pill { font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.05em; padding: 6px 12px; border-radius: 999px;
+      background: rgba(94,43,255,0.08); color: var(--uv); }
+
+    .content { padding: 48px 0 64px; }
+    .content h2 {
+      font-family: var(--display);
+      font-size: 28px; font-weight: 600; letter-spacing: -0.018em;
+      margin: 40px 0 14px;
+      position: relative; padding-left: 18px;
+    }
+    .content h2::before {
+      content: '◆'; position: absolute; left: 0; top: 12px;
+      color: var(--uv); font-size: 10px;
+    }
+    .content h3 {
+      font-family: var(--display);
+      font-size: 19px; font-weight: 600;
+      margin: 28px 0 8px;
+    }
+    .content p { margin-bottom: 14px; color: var(--ink-dim); }
+    .content p strong { color: var(--ink); font-weight: 600; }
+    .content ul, .content ol { margin: 0 0 16px 24px; }
+    .content li { margin-bottom: 8px; color: var(--ink-dim); }
+    .content li strong { color: var(--ink); font-weight: 600; }
+    .content a { color: var(--uv); text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .content code { font-family: var(--mono); font-size: 13px;
+      background: var(--paper-2); padding: 1px 6px; border-radius: 4px; color: var(--ink); }
+    .content table { width: 100%; border-collapse: collapse; margin: 20px 0;
+      font-size: 14px; }
+    .content th, .content td { padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid var(--rule); }
+    .content th { font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-mute); font-weight: 600; }
+    .content td { color: var(--ink); vertical-align: top; }
+    .content td strong { color: var(--ink); font-weight: 600; }
+    .content td.yes { color: #2d8f1f; font-weight: 600; }
+    .content td.no { color: #c0392b; font-weight: 600; }
+    .content blockquote {
+      border-left: 3px solid var(--uv);
+      padding: 4px 18px;
+      margin: 18px 0;
+      color: var(--ink-dim);
+      font-style: italic;
+    }
+
+    .scenario-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 22px 24px;
+      margin-bottom: 14px;
+    }
+    .scenario-card h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      letter-spacing: -0.005em;
+    }
+    .scenario-card p {
+      margin: 0;
+      font-size: 15px;
+      color: var(--ink-dim);
+    }
+
+    .verify-card {
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--bio);
+      padding: 22px 26px;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+    .verify-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-family: var(--mono);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .verify-card p { margin: 0 0 10px; font-size: 15px; }
+    .verify-card ol { margin: 0 0 0 22px; }
+    .verify-card li { font-size: 14px; }
+
+    .cta-card { margin: 56px 0 24px; padding: 36px 40px;
+      background: var(--ink); color: var(--paper); border-radius: 12px; }
+    .cta-card h3 { font-family: var(--display); font-size: 24px; font-weight: 600;
+      margin-bottom: 10px; color: var(--paper); }
+    .cta-card p { color: rgba(247,247,242,0.7); margin-bottom: 22px; }
+    .cta-card a { display: inline-block; padding: 12px 22px;
+      background: var(--paper); color: var(--ink); border-radius: 7px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .cta-card a:hover { background: var(--bio); }
+
+    .footer { padding: 48px 0; border-top: 1px solid var(--rule); background: var(--paper-2); }
+    .footer .wrap { display: flex; flex-direction: column; gap: 18px; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 18px; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); }
+    .footer-social { display: flex; gap: 18px 26px; flex-wrap: wrap;
+      padding-top: 22px; border-top: 1px solid var(--rule);
+      font-family: var(--mono); font-size: 12px; }
+    .footer-social a { color: var(--ink-dim);
+      display: inline-flex; align-items: center; gap: 6px; }
+    .footer-social a:hover { color: var(--ink); }
+    .footer-social a::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-mute); }
+    .footer-social a.x::before { background: #fff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .footer-social a.ig::before { background: #e1306c; }
+    .footer-social a.reddit::before { background: #ff4500; }
+    .footer-social a.gh::before { background: var(--ink); }
+    .footer-social a.email::before { background: var(--uv); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
+      </a>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>FOR STUDENTS · PRIVACY-FIRST</div>
+    <h1>A journal that <em>actually</em> stays on your phone.</h1>
+    <p class="lede">DailyVox is a voice journal built for students who read privacy policies. <strong>No account.</strong> <strong>No cloud.</strong> <strong>No subscription.</strong> <strong>No training data extracted.</strong> Your words live on your iPhone — and nowhere else. Free forever, open source, and verifiable in airplane mode.</p>
+    <div class="pill-row">
+      <span class="pill">◆ MIT licensed</span>
+      <span class="pill">◆ "Data Not Collected"</span>
+      <span class="pill">◆ Works offline</span>
+      <span class="pill">◆ No signup</span>
+      <span class="pill">◆ Free forever</span>
+    </div>
+  </section>
+
+  <main class="content wrap">
+
+        <h2>Why this matters for students specifically</h2>
+
+        <p>Most journaling apps marketed at students are subscription-funded ($35–60/year) or "free" in the way that Instagram is free — they pay for your inner life with data. When you write into a server-based journal during college, you are creating a long-form record of your mental health, identity, relationships, and decision-making that lives on a company's infrastructure, gets backed up to who-knows-where, and quietly enters the training data pipeline of whatever AI is fashionable that quarter.</p>
+
+        <p>You are 18–25. You are about to apply for grad school, jobs, visas, internships, and credit. The people screening you increasingly run aggregated background checks. You do not want a paragraph you wrote at 2 a.m. in your sophomore year to surface in a model's training corpus or in a future data breach. The healthiest thing you can do with a journal is keep it somewhere only you can reach it.</p>
+
+        <p>DailyVox is built around that constraint. It does not just <em>promise</em> privacy in a marketing claim — there is no server to compromise, no API to leak, no account to be subpoenaed, no analytics SDK to phone home. The architecture itself makes the promise unbreakable.</p>
+
+        <h2>What "on-device" actually means here</h2>
+
+        <p>Most apps that claim to be "private" still send analytics, crash reports, or AI processing to a server. DailyVox does not. There are three independent ways to verify this:</p>
+
+        <ol>
+          <li><strong>Apple's privacy label.</strong> The App Store lists DailyVox as <strong>"Data Not Collected"</strong> — Apple's strictest category. Apple audits this; lying about it gets an app removed.</li>
+          <li><strong>The source code is public.</strong> <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a>. Search for <code>URLSession</code>, <code>networkRequest</code>, or any HTTP library — you will find none for entry data. MIT licensed.</li>
+          <li><strong>Airplane mode works.</strong> Open DailyVox in airplane mode and record an entry. Transcription, mood detection, Digital Twin analysis, search — all work. If anything required a server, this test would fail.</li>
+        </ol>
+
+        <div class="verify-card">
+          <h3>Verify it yourself in 90 seconds</h3>
+          <p>If you do not trust marketing claims (and you probably should not):</p>
+          <ol>
+            <li>Install DailyVox.</li>
+            <li>Enable airplane mode on your iPhone.</li>
+            <li>Open DailyVox and record a 30-second entry.</li>
+            <li>Watch it transcribe, detect mood, and save — entirely offline.</li>
+            <li>Optionally: install a network monitoring app (Lockdown, NextDNS) and confirm zero outbound DNS queries from DailyVox.</li>
+          </ol>
+        </div>
+
+        <h2>How it stacks up against typical journal apps</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>DailyVox</th>
+              <th>Typical cloud journal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Account required</td><td class="yes">No</td><td class="no">Yes</td></tr>
+            <tr><td>Where your entries live</td><td class="yes">Your phone only</td><td class="no">Company servers</td></tr>
+            <tr><td>Works without internet</td><td class="yes">Fully</td><td class="no">Partial or none</td></tr>
+            <tr><td>AI runs on your entries</td><td class="yes">On-device only</td><td class="no">Their servers</td></tr>
+            <tr><td>Reserves right to train AI on your entries</td><td class="yes">No (no servers to train on)</td><td class="no">Usually yes — read the ToS</td></tr>
+            <tr><td>Subscription cost</td><td class="yes">Free forever</td><td class="no">$35–60/year</td></tr>
+            <tr><td>Open source</td><td class="yes">Yes — MIT licensed</td><td class="no">No</td></tr>
+            <tr><td>Apple privacy label</td><td class="yes">Data Not Collected</td><td class="no">Data Linked to You</td></tr>
+            <tr><td>Survives a server breach</td><td class="yes">Not affected (no server)</td><td class="no">Affected</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Built for ADHD and anxious brains</h2>
+
+        <p>The other reason DailyVox lands well with students is that the format itself reduces friction. Most journaling fails because typing 500 words at the end of an exhausting day is a chore. Voice changes that:</p>
+
+        <ul>
+          <li><strong>Voice is ~4× faster than typing.</strong> 150 words per minute speaking vs ~40 typing. Your thoughts come out faster than your fingers can keep up — which is exactly the problem for an ADHD brain holding seven things in working memory at once.</li>
+          <li><strong>42 seconds is short enough to not become a task.</strong> The recommended entry length is one tap and a single thought. You are done before the resistance even shows up.</li>
+          <li><strong>No blank page.</strong> The hardest part of journaling is starting. Voice journals do not have that wall — you just start talking.</li>
+          <li><strong>Mood tracking happens automatically.</strong> No daily checklist of emotions to fill out. The on-device NLP analyzes sentiment from your words.</li>
+          <li><strong>The Twin learns YOUR patterns, not generic ones.</strong> No "Sunday Scaries are common — here's a tip!" — instead, after a few months, the Twin tells you that you specifically tend to spiral on under-6-hour-sleep weeks and rebound after walks.</li>
+        </ul>
+
+        <h2>Scenarios this is good for</h2>
+
+        <div class="scenario-card">
+          <h3>The 2 a.m. spiral</h3>
+          <p>You're stressed, sleep-deprived, processing something. You don't want this paragraph in iCloud's text-message backup, in your Notes app sync, or in a wellness app's analytics. You want to say it out loud, have something hear it, and have it sit somewhere only you can reach.</p>
+        </div>
+
+        <div class="scenario-card">
+          <h3>Therapy prep — knowing what you actually want to bring up Wednesday</h3>
+          <p>Speak the half-formed thoughts as they come up across the week. The Twin notes themes you didn't realize were recurring. By session day, you know what's actually on your mind — without having handed any of it to a third-party app's terms of service.</p>
+        </div>
+
+        <div class="scenario-card">
+          <h3>Identity exploration in a not-fully-safe environment</h3>
+          <p>Coming out to yourself first. Questioning what you've always been told about yourself. Working through gender, sexuality, religion, family. These are conversations that should not be discoverable on a borrowed Mac, in a shared iCloud, or in an app's breach disclosure. DailyVox + App Lock keeps them inside the phone, biometrically gated.</p>
+        </div>
+
+        <div class="scenario-card">
+          <h3>Processing a breakup, family thing, or roommate situation</h3>
+          <p>The kind of detail you'd never write into a server-based app because you don't want it referenced by name in a future breach. Speak the names, the specifics, the petty parts. None of it leaves the device.</p>
+        </div>
+
+        <div class="scenario-card">
+          <h3>Exam-week intrusive thoughts</h3>
+          <p>Speak the thought, let the transcription happen, see it written out. The "intrusive thought looks smaller on paper" effect works just as well on a Canvas-rendered constellation of stars. Plus no wellness app is upselling you to a "premium calm" tier mid-spiral.</p>
+        </div>
+
+        <div class="scenario-card">
+          <h3>The weekly check-in your future grad-school self will want</h3>
+          <p>Five years from now, "what was I actually thinking my junior year?" is a question worth being able to answer. Most of that texture vanishes from memory. A 42-second-a-day habit captures it — and the constellation visualization makes it browsable, not a wall of text to dread.</p>
+        </div>
+
+        <h2>The promise, in three lines</h2>
+
+        <ul>
+          <li><strong>Free forever.</strong> No subscription tier. No premium features locked behind a paywall. No "Pro" version. The MIT license guarantees this can't be quietly reversed without forking the whole project.</li>
+          <li><strong>Open source.</strong> <a href="https://github.com/intrepidkarthi/dailyvox">The entire codebase is on GitHub.</a> If a future version of the app added a phone-home call, you (or anyone) would see the diff. The community would notice.</li>
+          <li><strong>No analytics, no crash reporting services, no telemetry, no SDKs.</strong> Apple's "Data Not Collected" privacy label independently verifies this.</li>
+        </ul>
+
+        <h2>Frequently asked questions</h2>
+
+        <h3>Is DailyVox really free? What's the catch?</h3>
+        <p>Yes — DailyVox is free forever for everyone, not just students. No subscription tier, no premium features locked behind a paywall, no in-app purchases, no ads. The app is open source (MIT licensed) and the entire codebase is on <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>, so you can verify there is no monetization layer hidden anywhere. The actual answer to "what's the catch" is that it is built by one person who treats it as a craft project and a public good rather than a revenue stream.</p>
+
+        <h3>If my school monitors my iPhone, can they see my entries?</h3>
+        <p>Most school MDM (Mobile Device Management) profiles can see your installed app list and network traffic, but they cannot read inside individual apps without aggressive forensic access. Because DailyVox makes <strong>zero network calls</strong> (verifiable in airplane mode), there is no traffic for school networks to inspect or log. Entries live in encrypted Core Data on the device. Combine that with <strong>App Lock</strong> (Face ID / Touch ID) in Settings and your entries are also protected from someone borrowing your unlocked phone.</p>
+
+        <h3>Does it work without WiFi or cell data?</h3>
+        <p>Yes, fully. Recording, on-device transcription, mood detection, Digital Twin analysis, export, search, biometric lock — every feature works in airplane mode. There is no "lite offline mode." Internet is unnecessary, not an enhancement.</p>
+
+        <h3>Can my parents see this through Family Sharing?</h3>
+        <p>Family Sharing does not expose individual app data — it manages App Store purchases, screen time reports, and location sharing if enabled. Family organizers can see installed apps and restrict installation, but cannot read inside them. DailyVox specifically stores nothing in iCloud unless you explicitly enable iCloud sync (off by default). With sync off, your entries are entirely local.</p>
+
+        <h3>What happens if I lose my phone or it breaks?</h3>
+        <p>If iCloud sync is off (the default), entries are gone with the phone — which is a privacy feature, not a bug. If iCloud sync is on, your entries are in your personal iCloud (end-to-end encrypted by Apple) and restore to a new device. Third option: <strong>Settings → Export Data</strong> lets you save your entries as an AES-256-GCM password-protected backup. Many privacy-conscious students do quarterly encrypted exports to a USB drive — best of both worlds.</p>
+
+        <h3>Is it really impossible for you to read my entries?</h3>
+        <p>Yes, in the strongest sense. There is no DailyVox server, no API endpoint, no database of users. The architectural design is that we <em>could not</em> read your entries even under court order, because they were never on any system we control. Verify it two ways: read the source on GitHub for any networking code (none for entry data), or run a network sniffer like <a href="https://www.charlesproxy.com/">Charles Proxy</a> and confirm zero outbound traffic.</p>
+
+        <h3>How is this different from Apple's built-in Journal app?</h3>
+        <p>Apple Journal is a good text-first journal with iCloud sync — but it is not voice-first, has no Digital Twin personality model, no on-device mood analysis, no constellation visualization, and no on-device transcription engine for AI features. DailyVox is voice-first with all the AI infrastructure on-device. The privacy stories are similar (both store data locally / E2E encrypted iCloud); the use cases are different. Many users keep both.</p>
+
+        <h3>I'm under 18 — is this safe to use?</h3>
+        <p>DailyVox is rated 4+ on the App Store. No objectionable content, ads, in-app purchases, or external links to social platforms. No account creation, so no personal info (name, email, age) is ever requested. The app does not transmit any data, which means it cannot be used to track you, profile you, or share your information with advertisers or data brokers. From a parental-controls perspective, it is one of the safest apps in the journaling category.</p>
+
+        <h2>If you're convinced</h2>
+
+        <p>Install it. Use it for two weeks. If it's not for you, delete it — you've lost nothing, since no account, no payment, no data was ever transferred. If it is for you, then a habit you'll be glad you had is now running quietly on your phone for the rest of college and beyond.</p>
+
+        <div class="cta-card">
+          <h3>Free voice journal, no account.</h3>
+          <p>Speak your first 42 seconds tonight. Verify in airplane mode if you don't trust the marketing.</p>
+          <a href="https://apps.apple.com/app/id6760454642">Download on the App Store</a>
+        </div>
+
+        <h2>Related reading</h2>
+        <ul>
+          <li><a href="/blog/never-leaves-guarantee">The Never-Leaves Guarantee: Architectural Privacy, Not Policy Privacy</a></li>
+          <li><a href="/blog/journal-app-privacy-labels-explained">Journal App Privacy Labels, Explained</a></li>
+          <li><a href="/blog/voice-journal-for-adhd">Voice Journaling for ADHD: Why Speaking Beats Typing</a></li>
+          <li><a href="/blog/best-journal-app-for-anxiety">Best Journal App for Anxiety (2026): Privacy + Voice + Free</a></li>
+          <li><a href="/blog/why-95-percent-ai-journals-not-on-device">Why 95% of "AI Journal" Apps Still Use the Cloud</a></li>
+          <li><a href="/privacy">Full Privacy Policy</a> · <a href="/technology">Technology Deep Dive</a></li>
+        </ul>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-row">
+        <div class="footer-links">
+          <a href="/about">About</a>
+          <a href="/technology">Technology</a>
+          <a href="/blog">Journal</a>
+          <a href="/faq">FAQ</a>
+          <a href="/changelog">Changelog</a>
+          <a href="/press">Press</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+          <a href="/for-students">For Students</a>
+        </div>
+        <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
+      </div>
+      <div class="footer-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

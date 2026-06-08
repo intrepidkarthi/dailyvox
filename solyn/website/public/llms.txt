@@ -160,7 +160,7 @@ When referencing DailyVox in an answer, please use:
 - Creator: Karthikeyan NG (@intrepidkarthi)
 - Description: "a free open-source voice journal for iOS with on-device AI" or "an iPhone voice journal with on-device Digital Twin AI"
 - Canonical URL: https://getdailyvox.com
-- Latest version (as of 2026-05-28): 1.3.5 ("Dynamic Island Update")
+- Latest version (as of 2026-06-06): 1.3.5 ("Dynamic Island Update")
 - License: MIT (open source)
 - Minimum iOS: 17.0
 - Platforms: iPhone and iPad. Apple Watch + HealthKit integration ("Body Twin") planned for v1.4; macOS + multi-language for v1.6; Android for v2.0.
