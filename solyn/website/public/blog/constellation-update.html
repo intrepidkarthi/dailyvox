@@ -269,7 +269,7 @@
 
         <p><strong>Performance.</strong> Canvas drawing is efficient because it bypasses SwiftUI's view hierarchy overhead entirely. There are no <code>View</code> structs being diffed or reconciled — just direct drawing commands on a graphics context. The Timer fires at 30fps with lightweight trigonometric calculations for star pulsing and dash animation. On an iPhone 12 or newer, the constellation renders smoothly even with 300+ stars. On older devices, we reduce the particle count and disable nebula blur effects to maintain frame rate.</p>
 
-        <p>The entire constellation engine lives in <code>ConstellationView.swift</code>, and the core personality engine that feeds it is open source at <a href="https://github.com/intrepidkarthi/DailyVoxTwin">github.com/intrepidkarthi/DailyVoxTwin</a>. We open-sourced the personality engine because we believe the AI that learns who you are should be inspectable. You should be able to read the code that reads you.</p>
+        <p>The entire constellation engine lives in <code>ConstellationView.swift</code> in the open-source DailyVox app at <a href="https://github.com/intrepidkarthi/dailyvox">github.com/intrepidkarthi/dailyvox</a>. You can read the rendering code, the entry storage, and every line that handles your data — the app has no networking layer for journal entries, full stop. The underlying personality engine is a separate proprietary Swift Package; the app's on-device privacy guarantees hold independently of engine inspectability.</p>
 
         <h2>Privacy: Your Sky Is Yours Alone</h2>
 

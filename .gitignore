@@ -73,3 +73,17 @@ fastlane/test_output
 quora-strategy/
 solyn/marketing/
 GROWTH_PACKAGE_MANIFEST.md
+
+# Proprietary Digital Twin engine — lives in its own private repo at
+# https://github.com/intrepidkarthi/DailyVoxTwin and is consumed by the
+# app as a Swift Package dependency. Never commit this tree to the public repo.
+DailyVoxTwin/
+
+# Body Twin / HealthKit foundation code awaiting migration into the private
+# DailyVoxTwin package (see V1_4_XCODE_SETUP.md). Once the engine package is
+# wired into the Xcode project, these will move into Sources/DailyVoxTwin/
+# and these ignore rules will be removed.
+solyn/solyn/BodyTwin.swift
+solyn/solyn/HealthKitService.swift
+solyn/solyn/ActivityContextDetector.swift
+solyn/V1_4_XCODE_SETUP.md

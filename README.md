@@ -215,7 +215,6 @@ The constellation metaphor came from staring at my own journal entries — hundr
 | **App Store** | [Download DailyVox Free](https://apps.apple.com/app/id6760454642) |
 | **Website** | [getdailyvox.com](https://getdailyvox.com) |
 | **Blog** | [getdailyvox.com/blog](https://getdailyvox.com/blog) |
-| **DailyVoxTwin Engine** | [github.com/intrepidkarthi/DailyVoxTwin](https://github.com/intrepidkarthi/DailyVoxTwin) |
 | **Privacy Policy** | [getdailyvox.com/privacy](https://getdailyvox.com/privacy.html) |
 | **Press Kit** | [getdailyvox.com/press](https://getdailyvox.com/press) |
 | **Contact** | intrepidkarthi@gmail.com |

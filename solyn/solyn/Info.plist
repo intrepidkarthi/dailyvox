@@ -16,6 +16,10 @@
 	<string>DailyVox Diary</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>DailyVox reads sleep, HRV, resting heart rate, steps, and mindful minutes to give your Digital Twin physiological context for each entry. Nothing leaves your device — all reads happen on iPhone and Apple's "Data Not Collected" privacy label is preserved.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>DailyVox uses motion data to detect whether you're at rest or active when you record. This prevents a recording made during a workout from being mistaken for emotional stress. All motion classification happens on-device.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSSupportsLiveActivities</key>
