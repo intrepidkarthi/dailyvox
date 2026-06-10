@@ -152,13 +152,14 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.1 | Twin Predictions + Shareable Cards | Shipped |
 | v1.2 | Ask Your Twin (chat) | Shipped |
 | v1.3 | Constellation Update | Shipped |
-| v1.3.5 | Dynamic Island + New Icon | **Current** |
-| v1.4 | Body Twin — HealthKit + Apple Watch | Next |
+| v1.3.5 | Dynamic Island + New Icon | Shipped |
+| v1.4 | Body Twin — HealthKit + Apple Watch | **Current** |
 | v1.5 | Semantic Search + Proactive Insights | Planned |
-| v1.6 | macOS + Multi-Language | Planned |
-| v2.0 | Apple Foundation Models (on-device LLM) + Android | Planned |
+| v1.6 | Foundation Models Twin — on-device LLM chat | Planned |
+| v1.7 | macOS + Multi-Language + visionOS | Planned |
+| v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
 
-[Full roadmap](ROADMAP.md)
+Beyond v2.0: LoRA fine-tuning, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device — [full roadmap](ROADMAP.md)
 
 ---
 

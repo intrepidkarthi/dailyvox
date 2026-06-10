@@ -1097,11 +1097,11 @@
           <div class="st-card">
             <div class="st-head">
               <div class="st-glyph">Sa</div>
-              <span class="st-pill st-pill-next">NEXT · v2.0</span>
+              <span class="st-pill st-pill-next">NEXT · v1.6</span>
             </div>
             <h3>SpeechAnalyzer</h3>
             <div class="st-fw">Speech.framework · iOS 26</div>
-            <p>Apple's next-generation speech recognition framework, replacing SFSpeechRecognizer in v2.0.</p>
+            <p>Apple's next-generation speech recognition framework, replacing SFSpeechRecognizer in v1.6.</p>
             <ul>
               <li>Significantly faster recognition, lower latency</li>
               <li>Native long-form audio without session timeouts</li>
@@ -1140,7 +1140,7 @@
               <li>512-dim sentence embeddings per entry</li>
               <li>Cosine similarity for semantic search</li>
               <li>K-means clustering for hidden thematic groupings</li>
-              <li>Foundation for v2.0's RAG retrieval layer</li>
+              <li>Foundation for v1.6's RAG retrieval layer</li>
               <li>Vectors persisted in Core Data alongside entry text</li>
             </ul>
           </div>
@@ -1148,11 +1148,11 @@
           <div class="st-card">
             <div class="st-head">
               <div class="st-glyph">Fm</div>
-              <span class="st-pill st-pill-next">NEXT · v2.0</span>
+              <span class="st-pill st-pill-next">NEXT · v1.6</span>
             </div>
             <h3>Foundation Models</h3>
             <div class="st-fw">iOS 26 · 3B on-device LLM</div>
-            <p>Apple's on-device large language model, enabling conversational Twin interactions in v2.0.</p>
+            <p>Apple's on-device large language model, enabling conversational Twin interactions in v1.6.</p>
             <ul>
               <li><code>LanguageModelSession</code> — multi-turn conversation with transcript memory</li>
               <li><strong>Tool calling</strong> — Twin autonomously queries Core Data via custom Tool protocol</li>
@@ -1436,32 +1436,41 @@
             <div class="rd-body">
               <div class="rd-tag rd-next-txt">v1.5 · Semantic Search & Proactive Insights</div>
               <h3>Find entries by meaning, not keywords</h3>
-              <p>NLEmbedding for 512-dim sentence embeddings. Cosine similarity vector search. Z-score anomaly detection. K-means clustering. Foundation for v2.0 RAG. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so."</p>
+              <p>NLEmbedding for 512-dim sentence embeddings. Cosine similarity vector search. Z-score anomaly detection. K-means clustering. Foundation for v1.6 RAG. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so."</p>
               <div class="rd-tags"><span>NLEmbedding</span><span>Cosine Similarity</span><span>Anomaly Detection</span><span>K-Means</span><span>Embodied Search</span></div>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v1.6 · macOS & Multi-Language</div>
-              <h3>Desktop Twin + localization</h3>
-              <p>Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop. String Catalogs for multi-language UI (Hindi, Spanish, Japanese, German first). Speech framework already supports 60+ transcription languages.</p>
-              <div class="rd-tags"><span>macOS</span><span>SwiftUI (shared)</span><span>String Catalogs</span></div>
-            </div>
-          </div>
-          <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
-            <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v2.0 · Conversational Twin (iOS 26)</div>
+              <div class="rd-tag rd-next-txt">v1.6 · Foundation Models Twin (iOS 26)</div>
               <h3>Foundation Models + tool calling + SpeechAnalyzer</h3>
-              <p>On-device 3B Foundation Model. Tool calling lets the Twin autonomously query Core Data. <code>@Generable</code> for structured output. <code>streamResponse()</code> for streaming. SpeechAnalyzer replaces SFSpeechRecognizer. Requires iPhone 15 Pro+. Zero network calls.</p>
+              <p>On-device 3B Foundation Model replaces template-based Twin chat. Tool calling lets the Twin autonomously query Core Data. <code>@Generable</code> for structured output. <code>streamResponse()</code> for streaming. RAG-grounded answers cite the entries they drew from. SpeechAnalyzer replaces SFSpeechRecognizer. Requires iPhone 15 Pro+. Zero network calls.</p>
               <div class="rd-tags"><span>Foundation Models</span><span>LanguageModelSession</span><span>Tool Calling</span><span>@Generable</span><span>streamResponse()</span><span>SpeechAnalyzer</span></div>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v2.5 · Train Your Twin</div>
+              <div class="rd-tag rd-next-txt">v1.7 · macOS, Multi-Language & Spatial</div>
+              <h3>Desktop Twin + localization</h3>
+              <p>Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop. String Catalogs for multi-language UI (Hindi, Spanish, Japanese, German first). Speech framework already supports 60+ transcription languages. Exploratory visionOS spatial constellation — walk inside your inner sky.</p>
+              <div class="rd-tags"><span>macOS</span><span>SwiftUI (shared)</span><span>String Catalogs</span><span>visionOS (exploratory)</span></div>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-next-txt">v2.0 · Apple Intelligence Native (iOS 27)</div>
+              <h3>The Twin joins the system assistant — on your terms</h3>
+              <p>Siri AI integration via App Intents: ask the system assistant and it consults your Twin. Cross-app context adoption as iOS 27 APIs open to third parties — context flows in, nothing flows out. Next-generation Foundation Models for deeper reasoning. Twin replies in your voice via Personal Voice.</p>
+              <div class="rd-tags"><span>Siri AI</span><span>App Intents</span><span>Cross-App Context</span><span>Personal Voice</span></div>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-next-txt">v2.1 · Train Your Twin</div>
               <h3>LoRA fine-tuning — Twin learns to sound like you</h3>
               <p>Apple's Foundation Models Adapter Training toolkit for Low-Rank Adaptation. Export 100–1,000 entries as JSONL. Train a personal adapter on Mac. ~160 MB adapter delivered via Background Assets. Loaded via <code>SystemLanguageModel(adapter:)</code>. Training data never leaves your Mac.</p>
               <div class="rd-tags"><span>LoRA Adapters</span><span>Adapter Training</span><span>JSONL Export</span><span>Background Assets</span><span>~160 MB adapter</span></div>
@@ -1494,7 +1503,7 @@
             <span class="cit-year">2026</span>
             <div class="cit-body">
               <div class="cit-title">Memory-Efficient Structured Backpropagation for On-Device LLM Fine-Tuning</div>
-              <div class="cit-desc">Efficient fine-tuning under mobile memory constraints — directly relevant to v2.5 LoRA adapter training.</div>
+              <div class="cit-desc">Efficient fine-tuning under mobile memory constraints — directly relevant to v2.1 LoRA adapter training.</div>
             </div>
           </li>
           <li class="citation">
@@ -1510,7 +1519,7 @@
             <span class="cit-year">2024</span>
             <div class="cit-body">
               <div class="cit-title">PocketLLM: On-Device Fine-Tuning for Personalized LLMs</div>
-              <div class="cit-desc">Personal model adaptation on mobile hardware — foundational for v2.5's personal adapter.</div>
+              <div class="cit-desc">Personal model adaptation on mobile hardware — foundational for v2.1's personal adapter.</div>
             </div>
           </li>
           <li class="citation">

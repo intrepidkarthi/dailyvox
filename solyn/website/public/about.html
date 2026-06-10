@@ -895,29 +895,37 @@
             <div class="rd-body">
               <div class="rd-tag rd-next"><span class="rd-tag-text">v1.5 · Semantic search + proactive insights</span></div>
               <h3>Find entries by meaning</h3>
-              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v2.0's RAG architecture. Zero network calls.</p>
+              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v1.6's RAG architecture. Zero network calls.</p>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · macOS + Multi-Language</span></div>
-              <h3>Desktop Twin + localization</h3>
-              <p><strong>Tech:</strong> Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop. Xcode String Catalogs for multi-language UI — Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages.</p>
-            </div>
-          </div>
-          <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
-            <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v2.0 · Conversational Twin (iOS 26)</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · Foundation Models Twin (iOS 26)</span></div>
               <h3>Foundation Models + tool calling + SpeechAnalyzer</h3>
-              <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>. Twin becomes a real chatbot with multi-turn transcript memory. Autonomous Core Data querying via <code>Tool</code> protocol. Dynamic instructions fed from <code>TwinEngine</code> for tone matching. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time streaming. <code>SpeechAnalyzer</code> replaces <code>SFSpeechRecognizer</code>. Requires iPhone 15 Pro+. Zero network calls.</p>
+              <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>. Twin becomes a real chatbot with multi-turn transcript memory. Autonomous Core Data querying via <code>Tool</code> protocol. Dynamic instructions fed from <code>TwinEngine</code> for tone matching. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time streaming. RAG-grounded answers cite the entries they drew from. <code>SpeechAnalyzer</code> replaces <code>SFSpeechRecognizer</code>. Requires iPhone 15 Pro+. Zero network calls.</p>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v2.5 · Train Your Twin</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.7 · macOS, Multi-Language & Spatial</span></div>
+              <h3>Desktop Twin + localization</h3>
+              <p><strong>Tech:</strong> Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop. Xcode String Catalogs for multi-language UI — Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages. Exploratory visionOS spatial constellation — walk inside your inner sky.</p>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v2.0 · Apple Intelligence Native (iOS 27)</span></div>
+              <h3>The Twin joins the system assistant — on your terms</h3>
+              <p><strong>Tech:</strong> Siri AI integration via App Intents — ask the system assistant and it consults your Twin. Cross-app context adoption as iOS 27 APIs open to third parties, with DailyVox's standing rule: context flows in, nothing flows out. Next-generation Apple Foundation Models for deeper reasoning and longer conversations. Twin replies in your voice via Apple Personal Voice.</p>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v2.1 · Train Your Twin</span></div>
               <h3>LoRA fine-tuning — Twin learns to sound like you</h3>
               <p><strong>Tech:</strong> Apple's Foundation Models Adapter Training toolkit for Low-Rank Adaptation. Export 100–1,000 entries as JSONL prompt/response pairs. Train a personal adapter on Mac (32GB+ Apple Silicon). ~160 MB adapter delivered via Background Assets. Loaded via <code>SystemLanguageModel(adapter:)</code>. The Twin doesn't just know your data — it sounds like you. Training data never leaves your Mac.</p>
             </div>

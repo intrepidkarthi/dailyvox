@@ -55,11 +55,16 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 
 ### v1.5 and beyond (planned)
 - v1.5 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.4 ("entries where I was stressed but didn't say so")
-- v1.6 — macOS + Multi-Language (Hindi, Spanish, Japanese, German first via String Catalogs)
-- v2.0 — Apple Foundation Models (on-device 3B LLM) + Android native (Kotlin / Jetpack Compose / Gemini Nano)
-- v2.1 — LoRA fine-tuning: train a personal adapter so the Twin sounds like you
+- v1.6 — Foundation Models Twin: Apple's on-device 3B LLM (iOS 26) replaces template chat — real multi-turn conversations with tool calling and RAG-grounded answers that cite your entries
+- v1.7 — macOS + Multi-Language (Hindi, Spanish, Japanese, German first via String Catalogs) + exploratory visionOS spatial constellation
+- v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. Android deferred until iOS product-market fit is proven
+- v2.1 — LoRA fine-tuning: train a personal adapter so the Twin sounds like you; talk to your past self via monthly personality snapshots
+- v2.2 — Agentic Twin: weekly reviews drafted for you, decision pre-briefs from your own precedent, intention follow-through — every suggestion cites its evidence, no autonomous actions
+- v2.3 — Ambient Twin: opt-in passive capture, fully on-device — day summaries from Watch signals and calendar context with a review-and-discard step; no continuous audio, no raw location storage
+- v2.5 — Twin Protocol: open, encrypted, portable `.twin` format with user-held keys; AI agents query your Twin with per-field consent instead of owning your data
 - v3.0 — True Digital Self: the most accurate mirror of yourself
-- v4.0 — DailyVox Mirror: hardware device with holographic display, no internet capability
+- v3.5 — Twin-to-Twin: two consenting people's Twins converse peer-to-peer, nothing through a server
+- v4.0 — DailyVox Mirror: hardware device with holographic display, no internet capability; Legacy mode for encrypted bequest of your Twin
 
 ## 2. Complete Feature List
 

@@ -53,9 +53,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - 35+ new/rewritten SEO blog posts with GEO optimization
 - Newsletter, RSS, press page, /facts page
 
-## Planned
-
-### v1.3.5 — New Icon & Dynamic Island *(next)*
+### v1.3.5 — New Icon & Dynamic Island
 - **New app icon**: golden mic on sage green with 4+2 notch easter egg (matches landing page refresh)
   - Full AppIcon set across all iOS sizes (iPhone, iPad, App Store 1024×1024)
   - iOS 18 dark + tinted icon variants (warm charcoal background, monochrome silhouette)
@@ -64,6 +62,8 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
   - Star birth: brief celebratory Live Activity after entry completion ("A new star appeared in your sky"), auto-dismisses
   - Streak tracker (opt-in via Settings): star icon + "Day N" in compact, today-done status in expanded; persists until disabled or streak breaks
   - Constellation Lock Screen widget: Canvas-rendered mini constellation, one star per recent entry, coloured by mood
+
+## Planned
 
 ### v1.4 — Body Twin: HealthKit + Apple Watch *(next)*
 
@@ -125,23 +125,36 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - **Voice biomarkers**: on-device prosody analysis (pace, pitch variability, energy, pause patterns) as a mood/stress signal independent of word content — "your voice sounded tired before you said you were". Patterns and reflections only, never diagnoses; per-signal toggle in Settings; raw audio features stay on-device like everything else
 - **Twin Resolution score**: a visible accuracy/depth meter that grows with every entry ("your Twin can now see 7 months deep"). Makes the data moat *felt* — the longer you journal, the more it knows, the harder it is to leave
 
-### v1.6 — macOS & Multi-Language
-- Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
-- Strategic purpose: the Mac app is the **LoRA training environment for v2.1** — desktop compute is what makes personal fine-tuning practical
-- Multi-language UI via String Catalogs
+### v1.6 — Foundation Models Twin *(iOS 26, iPhone 15 Pro+)*
 
-### v2.0 — Apple Foundation Models *(iOS 26, iPhone 15 Pro+)*
+The Twin gets a real brain. Apple's on-device Foundation Models framework has been shipping since iOS 26 — this release adopts it fully, replacing the template-based Twin chat with genuine on-device language model conversations grounded in everything the Twin knows.
 
 - Apple Foundation Models integration (on-device 3B LLM)
 - LanguageModelSession for multi-turn conversations
-- Tool calling for autonomous Core Data queries
+- Tool calling for autonomous Core Data queries — the Twin fetches its own evidence
 - @Generable for type-safe structured outputs
-- Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
-- "How would I react?" — Twin predicts your response to situations based on past patterns and personality
-- Twin replies in your voice using Apple Personal Voice API (AVSpeechSynthesizer)
+- RAG grounding via the v1.5 semantic index: every Twin answer cites the entries it drew from
 - Autobiographical memory consolidation: monthly distillation of journal entries into semantic self-knowledge ("I tend to...", "I always...")
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
+- Graceful fallback to the current Twin chat on devices below iPhone 15 Pro
+
+### v1.7 — macOS, Multi-Language & Spatial
+- Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
+- Strategic purpose: the Mac app is the **LoRA training environment for v2.1** — desktop compute is what makes personal fine-tuning practical
+- Multi-language UI via String Catalogs
+- **visionOS spatial constellation** *(exploratory)*: walk inside your inner sky — entries as stars around you, years of your life at room scale. The constellation metaphor was built for this
+
+### v2.0 — Apple Intelligence Native *(iOS 27)*
+
+Ride the platform, don't trail it. WWDC 2026 rebuilt Siri on next-generation Foundation Models with OS-level, cross-app context. v2.0 makes the Twin a first-class citizen of that world — while keeping every byte on-device.
+
+- Siri AI integration via App Intents: ask the system assistant and it consults your Twin ("Hey Siri, how was my week really?")
+- Cross-app context adoption as Apple opens iOS 27 APIs to third parties — with DailyVox's standing rule: context flows in, nothing flows out
+- Next-generation Apple Foundation Models for deeper reasoning and longer conversations
+- Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
+- "How would I react?" — Twin predicts your response to situations based on past patterns and personality
+- Twin replies in your voice using Apple Personal Voice API (AVSpeechSynthesizer)
 
 > **Android: deliberately deferred.** A native Kotlin port doubles the engineering surface right when iOS needs depth. Android happens after iOS retention proves product-market fit — not before. (Prior native-Kotlin design notes preserved in git history.)
 
@@ -153,6 +166,7 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
 - Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
 - Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
+- **Talk to your past self**: conversational time-travel built on those snapshots — "ask 2024-you what they were afraid of." The Twin answers as you *were*, citing entries from that era; diff the conversation against present-you to see how far you've come
 
 ### v2.2 — Agentic Twin
 
@@ -165,13 +179,25 @@ The Twin stops only reflecting and starts acting — a chief of staff for your i
 - **Drafting on request**: "help me write this difficult message the way I'd want to say it" — grounded in your communication style model
 - Guardrails: no autonomous outbound actions, no notifications without opt-in, every suggestion cites its evidence
 
+### v2.3 — Ambient Twin *(opt-in passive capture)*
+
+The industry is racing toward always-on AI wearables that journal your day for you — by sending your life to a server. DailyVox's architecture is the only honest way to build this. The Twin learns from your day, not just your narration of it, and nothing ever leaves the device.
+
+- **Day summarization**: on-device synthesis of Watch signals (movement, heart patterns, workouts), location *patterns* (place categories, not coordinates), and calendar context into a draft "here's what your day looked like"
+- **Review-and-discard**: every ambient observation lands in a daily review queue — you keep, edit, or discard before anything touches the Twin. Nothing is learned without your eyes on it first
+- **Whisper capture**: AirPods quick-journaling — raise to speak, no phone out; transcribed on-device like everything else
+- **Gap awareness**: the Twin distinguishes "you didn't journal" from "nothing happened" — ambient context fills silence honestly ("a hard week, three back-to-back conflict meetings, no entries")
+- Hard lines: no continuous audio recording, no raw location storage, master kill-switch, ambient data wiped on demand
+- Strict superset of the privacy promise: "Data Not Collected" label preserved; ambient capture is off by default
+
 ### v2.5 — Twin Protocol *(the open format)*
 
-The infrastructure play. Your digital self should be **yours** — portable, inspectable, not locked inside any app, including this one.
+The infrastructure play. Your digital self should be **yours** — portable, inspectable, not locked inside any app, including this one. And in the agent era, the Twin becomes the **personal context layer**: the thing every AI assistant needs and none of them should own.
 
 - Open specification for the portable personal model: personality vectors + knowledge graph + emotional history + voice profile in a documented, versioned format
 - Encrypted container ("`.twin` file") with user-held keys; export and import in full fidelity
 - Swift SDK (and reference spec for other platforms) so third-party apps can read a Twin **with user consent, scoped per-field** — a meditation app reads emotional patterns, never raw entries
+- **Agent interop**: the Twin as an on-device personal-context server (MCP-style) that AI agents query with per-field consent — your assistant asks your Twin how you like to be briefed; a writing tool asks for your voice profile; neither sees a single journal entry. Consent receipts log every access
 - DailyVox becomes the best *producer* of the format, not the only one — the moat moves from lock-in to being the canonical implementation
 - Positioning: the personality wallet. Data lock-in is the industry default; portability as a feature is the trust differentiator that matches the privacy brand
 
