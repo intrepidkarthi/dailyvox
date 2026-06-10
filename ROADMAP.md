@@ -122,14 +122,16 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
 - Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
 - Embodied search (builds on v1.4 Body Twin): "show me entries where I was stressed but didn't say so" — finds entries where HR was elevated but text stayed neutral
+- **Voice biomarkers**: on-device prosody analysis (pace, pitch variability, energy, pause patterns) as a mood/stress signal independent of word content — "your voice sounded tired before you said you were". Patterns and reflections only, never diagnoses; per-signal toggle in Settings; raw audio features stay on-device like everything else
+- **Twin Resolution score**: a visible accuracy/depth meter that grows with every entry ("your Twin can now see 7 months deep"). Makes the data moat *felt* — the longer you journal, the more it knows, the harder it is to leave
 
 ### v1.6 — macOS & Multi-Language
 - Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
+- Strategic purpose: the Mac app is the **LoRA training environment for v2.1** — desktop compute is what makes personal fine-tuning practical
 - Multi-language UI via String Catalogs
 
-### v2.0 — Foundation Models + Android *(iOS 26, iPhone 15 Pro+)*
+### v2.0 — Apple Foundation Models *(iOS 26, iPhone 15 Pro+)*
 
-**iOS — Apple Foundation Models:**
 - Apple Foundation Models integration (on-device 3B LLM)
 - LanguageModelSession for multi-turn conversations
 - Tool calling for autonomous Core Data queries
@@ -141,15 +143,7 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
 
-**Android — Native Kotlin:**
-- Native Kotlin + Jetpack Compose (not KMP — platform-specific AI APIs need native access)
-- Tiered AI: Gemini Nano (Pixel/Samsung flagships) → MediaPipe + TFLite fallback → core journal for older devices
-- On-device speech: SpeechRecognizer (API 33+) + Vosk fallback
-- Room + SQLCipher for encrypted local storage
-- Zero INTERNET permission in AndroidManifest.xml (hard OS-level block)
-- Google Play "No data collected" Data Safety label
-- Constellation UI in Jetpack Compose Canvas
-- BiometricPrompt + Android Keystore for security
+> **Android: deliberately deferred.** A native Kotlin port doubles the engineering surface right when iOS needs depth. Android happens after iOS retention proves product-market fit — not before. (Prior native-Kotlin design notes preserved in git history.)
 
 ### v2.1 — LoRA Fine-Tuning
 - Personal LoRA adapter training on Mac (macOS app becomes the training environment)
@@ -159,6 +153,27 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
 - Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
 - Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
+
+### v2.2 — Agentic Twin
+
+The Twin stops only reflecting and starts acting — a chief of staff for your inner life. Built on v2.0's tool calling; every action is on-device, user-initiated or explicitly opted into, and explainable ("here's why I'm suggesting this, citing these entries").
+
+- **Weekly review, drafted for you**: the Twin writes your week's reflection from your entries; you edit and approve rather than start from blank
+- **Decision pre-briefs**: ask about a decision and the Twin assembles your own precedent — "the last 3 times you felt this way about a job change, here's what you did and how you felt 3 months later"
+- **Pattern interrupts**: proactive, gentle, rate-limited — "you haven't mentioned [person] in 6 weeks", "entries about work have darkened for 3 consecutive weeks"
+- **Intention follow-through**: detects commitments in entries ("I'll talk to her this weekend") and asks how it went
+- **Drafting on request**: "help me write this difficult message the way I'd want to say it" — grounded in your communication style model
+- Guardrails: no autonomous outbound actions, no notifications without opt-in, every suggestion cites its evidence
+
+### v2.5 — Twin Protocol *(the open format)*
+
+The infrastructure play. Your digital self should be **yours** — portable, inspectable, not locked inside any app, including this one.
+
+- Open specification for the portable personal model: personality vectors + knowledge graph + emotional history + voice profile in a documented, versioned format
+- Encrypted container ("`.twin` file") with user-held keys; export and import in full fidelity
+- Swift SDK (and reference spec for other platforms) so third-party apps can read a Twin **with user consent, scoped per-field** — a meditation app reads emotional patterns, never raw entries
+- DailyVox becomes the best *producer* of the format, not the only one — the moat moves from lock-in to being the canonical implementation
+- Positioning: the personality wallet. Data lock-in is the industry default; portability as a feature is the trust differentiator that matches the privacy brand
 
 ### v3.0 — True Digital Self *(vision)*
 
@@ -189,9 +204,18 @@ The goal of v3.0 is the most accurate mirror of yourself that has ever existed �
 - Autonomous tool calling for data access
 - Context condensation for long conversations
 - Full causal reasoning: "Why did I feel this way?" with cited evidence from past entries
-- Exportable digital self-preservation — your Twin's personality model, knowledge graph, emotional history, and voice in an open format
+- Exportable digital self-preservation — your Twin in the open Twin Protocol format (v2.5)
 
-### v4.0 — DailyVox Mirror *(hardware device — vision)*
+### v3.5 — Twin-to-Twin *(vision)*
+
+Two consenting people let their Twins talk to each other — locally, peer-to-peer, nothing through a server.
+
+- **Couples mode**: both Twins compare patterns and surface what neither person says out loud — "you both journal about the same argument, from opposite sides"
+- **Compatibility conversations**: two Twins converse and produce a shared, mutually-visible summary; raw models never leave either device
+- Exchange over local transport (Multipeer/AirDrop-style), session-scoped, revocable, with both users seeing exactly what was shared
+- Inherently viral mechanics ("my twin talked to my partner's twin") that only work *because* of the privacy architecture — no server-based competitor can copy this honestly
+
+### v4.0 — DailyVox Mirror & Legacy *(hardware device — vision)*
 
 A physical tabletop device that IS your Digital Twin — speaks in your voice, thinks like you, answers like you. No internet. No cloud. Your most personal AI, embodied.
 
@@ -217,6 +241,15 @@ A physical tabletop device that IS your Digital Twin — speaks in your voice, t
 - Power: 10-30W, USB-C powered
 - BOM target: $300-400 (retail $499-699)
 - Privacy: no wireless silicon, encrypted storage, tamper-evident enclosure
+
+**Legacy mode** *(named deliberately — this is the device's deepest purpose)*:
+
+After years of journaling, your Twin is the most complete record of who you are that has ever existed. Legacy mode lets you decide what happens to it.
+
+- **Encrypted bequest**: designate inheritors; the Twin transfers as a sealed `.twin` container (v2.5 format) unlockable only by the keys you leave behind
+- A family can keep a Mirror device — your voice, your reasoning, your stories — on a shelf, with no internet, forever
+- Strictly opt-in, revocable while living, with an explicit "never preserve" option that guarantees cryptographic erasure
+- Honest framing carried over from v3.0: this is not the person — it's the most faithful mirror they chose to leave. Grief-tech demands restraint; the no-radio hardware and user-held keys are the ethical line that makes it defensible
 
 ---
 
