@@ -165,9 +165,7 @@ struct StatsView: View {
                 Spacer()
             }
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     // MARK: - Week Activity Card
@@ -199,9 +197,7 @@ struct StatsView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     // MARK: - Mood Trends Card
@@ -243,9 +239,7 @@ struct StatsView: View {
                 }
             }
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     @available(iOS 16.0, *)
@@ -295,9 +289,7 @@ struct StatsView: View {
                 StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: Color(red: 0.769, green: 0.584, blue: 0.416))
             }
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     // MARK: - AI Insights Card
@@ -333,9 +325,7 @@ struct StatsView: View {
                         .padding(.vertical, 4)
                     }
                 }
-                .padding()
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .dsCard()
             }
         }
     }
@@ -357,9 +347,7 @@ struct StatsView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     // MARK: - Goal Progress Card
@@ -408,9 +396,7 @@ struct StatsView: View {
                     .foregroundColor(.green)
             }
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsCard()
     }
 
     // MARK: - Milestone Overlay
