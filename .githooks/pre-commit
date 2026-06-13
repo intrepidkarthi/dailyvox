@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# DailyVox guardrail: keep the proprietary Digital Twin engine OUT of the
+# public dailyvox repo. The engine lives in its own private package:
+#   git@github.com:intrepidkarthi/DailyVoxTwin.git
+#
+# This hook blocks ADDING or MODIFYING engine source files. Deletions are
+# allowed on purpose, so the in-tree legacy engine can be migrated out.
+#
+# Enable once with:  git config core.hooksPath .githooks
+
+# Proprietary engine files that must not live in dailyvox (basenames / paths).
+BLOCKED='DigitalTwinEngine\.swift|LocalAIEngine\.swift|InsightsEngine\.swift|TwinPredictions\.swift|NLPipeline\.swift|TwinPersistence\.swift|/BodyTwin/|HealthKitService\.swift|ActivityContextDetector\.swift'
+
+# Staged Added/Modified files only (Deletions pass through).
+offenders=$(git diff --cached --name-status --diff-filter=AM | awk '{print $2}' | grep -E "$BLOCKED")
+
+if [ -n "$offenders" ]; then
+    echo "✋ Commit blocked: proprietary Digital Twin engine code must not be added to the dailyvox repo."
+    echo "   These belong in the private DailyVoxTwin package (git@github.com:intrepidkarthi/DailyVoxTwin.git):"
+    echo "$offenders" | sed 's/^/     - /'
+    echo ""
+    echo "   If you are intentionally REMOVING in-tree engine code, deletions are allowed — this only blocks add/modify."
+    echo "   To override in a genuine emergency: git commit --no-verify"
+    exit 1
+fi
+
+exit 0
