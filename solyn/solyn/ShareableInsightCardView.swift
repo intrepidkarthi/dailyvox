@@ -87,16 +87,7 @@ struct ShareableInsightCardView: View {
         .padding(24)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.08, green: 0.08, blue: 0.12),
-                            Color(red: 0.12, green: 0.10, blue: 0.16)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(ShareCardTheme.background)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
                         .stroke(categoryColor.opacity(0.15), lineWidth: 1)
@@ -106,12 +97,12 @@ struct ShareableInsightCardView: View {
 
     private var categoryColor: Color {
         switch insight.category {
-        case .emotion: return .pink
-        case .pattern: return .purple
-        case .people: return .orange
-        case .language: return .cyan
-        case .growth: return .green
-        case .time: return .indigo
+        case .emotion: return ShareCardTheme.coral
+        case .pattern: return ShareCardTheme.terracotta
+        case .people: return ShareCardTheme.gold
+        case .language: return ShareCardTheme.sage
+        case .growth: return ShareCardTheme.forest
+        case .time: return ShareCardTheme.amber
         }
     }
 }
@@ -195,16 +186,7 @@ private struct ShareableCardForExport: View {
         .padding(32)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.06, green: 0.06, blue: 0.10),
-                            Color(red: 0.10, green: 0.08, blue: 0.14)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(ShareCardTheme.background)
                 .overlay(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .stroke(categoryColor.opacity(0.2), lineWidth: 1)
@@ -214,12 +196,12 @@ private struct ShareableCardForExport: View {
 
     private var categoryColor: Color {
         switch insight.category {
-        case .emotion: return .pink
-        case .pattern: return .purple
-        case .people: return .orange
-        case .language: return .cyan
-        case .growth: return .green
-        case .time: return .indigo
+        case .emotion: return ShareCardTheme.coral
+        case .pattern: return ShareCardTheme.terracotta
+        case .people: return ShareCardTheme.gold
+        case .language: return ShareCardTheme.sage
+        case .growth: return ShareCardTheme.forest
+        case .time: return ShareCardTheme.amber
         }
     }
 }
@@ -247,7 +229,7 @@ struct WeeklyInsightsSection: View {
             // Section header
             HStack {
                 Image(systemName: "sparkles")
-                    .foregroundColor(.purple)
+                    .foregroundColor(ShareCardTheme.gold)
                 Text("Your Week, Decoded")
                     .font(.headline)
                 Spacer()

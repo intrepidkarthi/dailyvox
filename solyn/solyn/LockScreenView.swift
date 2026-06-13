@@ -7,15 +7,10 @@ struct LockScreenView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color(red: 0.980, green: 0.973, blue: 0.961),  // Warm ivory
-                    Color(red: 0.949, green: 0.929, blue: 0.910)   // Warm beige
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            // Theme-matched background — warm ivory, light, or dark per the active theme
+            // (was a hardcoded ivory gradient that clashed with Light/Dark themes).
+            WarmBackground()
+                .ignoresSafeArea()
 
             VStack(spacing: 32) {
                 Image(systemName: "lock.shield.fill")

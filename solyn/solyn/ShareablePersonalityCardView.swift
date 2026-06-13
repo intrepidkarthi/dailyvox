@@ -73,7 +73,7 @@ private struct ShareablePersonalityCardExport: View {
             HStack(spacing: 6) {
                 Image(systemName: "waveform.circle.fill")
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.teal)
+                    .foregroundColor(ShareCardTheme.gold)
                 Text("DailyVox")
                     .font(.system(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(.white.opacity(0.5))
@@ -84,7 +84,7 @@ private struct ShareablePersonalityCardExport: View {
             Text("MY DIGITAL TWIN")
                 .font(.system(size: 13, weight: .heavy, design: .rounded))
                 .tracking(2.5)
-                .foregroundColor(.teal.opacity(0.9))
+                .foregroundColor(ShareCardTheme.gold.opacity(0.9))
                 .padding(.bottom, 6)
 
             Text(profile.maturityLevel)
@@ -94,8 +94,8 @@ private struct ShareablePersonalityCardExport: View {
 
             // Style badges
             HStack(spacing: 10) {
-                exportBadge(profile.communicationStyle, color: .teal)
-                exportBadge(profile.thinkingStyle, color: .purple)
+                exportBadge(profile.communicationStyle, color: ShareCardTheme.gold)
+                exportBadge(profile.thinkingStyle, color: ShareCardTheme.sage)
             }
             .padding(.bottom, 20)
 
@@ -110,7 +110,7 @@ private struct ShareablePersonalityCardExport: View {
             // Dominant mood
             HStack(spacing: 8) {
                 Circle()
-                    .fill(Color.teal)
+                    .fill(ShareCardTheme.gold)
                     .frame(width: 8, height: 8)
                 Text("Dominant Mood")
                     .font(.system(size: 10, weight: .semibold))
@@ -127,7 +127,7 @@ private struct ShareablePersonalityCardExport: View {
             // Communication style
             HStack(spacing: 8) {
                 Circle()
-                    .fill(Color.purple)
+                    .fill(ShareCardTheme.sage)
                     .frame(width: 8, height: 8)
                 Text("Communication")
                     .font(.system(size: 10, weight: .semibold))
@@ -153,10 +153,10 @@ private struct ShareablePersonalityCardExport: View {
                         ForEach(Array(profile.signatureWords.prefix(3)), id: \.self) { word in
                             Text(word)
                                 .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                                .foregroundColor(.teal.opacity(0.9))
+                                .foregroundColor(ShareCardTheme.gold.opacity(0.9))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color.teal.opacity(0.12))
+                                .background(ShareCardTheme.gold.opacity(0.12))
                                 .cornerRadius(8)
                         }
                     }
@@ -191,22 +191,12 @@ private struct ShareablePersonalityCardExport: View {
         .padding(28)
         .background(
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.05, green: 0.05, blue: 0.09),
-                            Color(red: 0.08, green: 0.06, blue: 0.13),
-                            Color(red: 0.06, green: 0.06, blue: 0.10)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(ShareCardTheme.background)
                 .overlay(
                     RoundedRectangle(cornerRadius: 28, style: .continuous)
                         .stroke(
                             LinearGradient(
-                                colors: [.teal.opacity(0.25), .purple.opacity(0.15)],
+                                colors: [ShareCardTheme.gold.opacity(0.25), ShareCardTheme.sage.opacity(0.15)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             ),
@@ -225,7 +215,7 @@ private struct ShareablePersonalityCardExport: View {
                 HStack(spacing: 6) {
                     Image(systemName: "waveform.circle.fill")
                         .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.teal)
+                        .foregroundColor(ShareCardTheme.gold)
                     Text("DailyVox")
                         .font(.system(size: 10, weight: .bold, design: .rounded))
                         .foregroundColor(.white.opacity(0.4))
@@ -234,11 +224,11 @@ private struct ShareablePersonalityCardExport: View {
                 Text("MY DIGITAL TWIN")
                     .font(.system(size: 11, weight: .heavy, design: .rounded))
                     .tracking(2.0)
-                    .foregroundColor(.teal.opacity(0.9))
+                    .foregroundColor(ShareCardTheme.gold.opacity(0.9))
 
                 HStack(spacing: 6) {
-                    exportBadge(profile.communicationStyle, color: .teal, compact: true)
-                    exportBadge(profile.thinkingStyle, color: .purple, compact: true)
+                    exportBadge(profile.communicationStyle, color: ShareCardTheme.gold, compact: true)
+                    exportBadge(profile.thinkingStyle, color: ShareCardTheme.sage, compact: true)
                 }
 
                 Spacer()
@@ -248,7 +238,7 @@ private struct ShareablePersonalityCardExport: View {
                         ForEach(Array(profile.signatureWords.prefix(3)), id: \.self) { word in
                             Text(word)
                                 .font(.system(size: 9, weight: .medium, design: .monospaced))
-                                .foregroundColor(.teal.opacity(0.8))
+                                .foregroundColor(ShareCardTheme.gold.opacity(0.8))
                         }
                     }
                 }
@@ -282,21 +272,12 @@ private struct ShareablePersonalityCardExport: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.05, green: 0.05, blue: 0.09),
-                            Color(red: 0.08, green: 0.06, blue: 0.13)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(ShareCardTheme.background)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .stroke(
                             LinearGradient(
-                                colors: [.teal.opacity(0.2), .purple.opacity(0.15)],
+                                colors: [ShareCardTheme.gold.opacity(0.2), ShareCardTheme.sage.opacity(0.15)],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             ),
@@ -336,7 +317,7 @@ private struct ShareablePersonalityCardExport: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(
                             LinearGradient(
-                                colors: [.teal, .purple],
+                                colors: [ShareCardTheme.gold, ShareCardTheme.sage],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -375,7 +356,7 @@ private struct ShareablePersonalityCardExport: View {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(
                             LinearGradient(
-                                colors: [.teal, .purple],
+                                colors: [ShareCardTheme.gold, ShareCardTheme.sage],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
