@@ -308,19 +308,25 @@ struct StatsView: View {
                     }
 
                     ForEach(insights.prefix(3)) { insight in
-                        HStack(alignment: .top, spacing: 12) {
+                        HStack(alignment: .top, spacing: DS.Space.md) {
                             Image(systemName: insight.icon)
-                                .font(.title3)
+                                .font(.system(size: 15, weight: .semibold))
                                 .foregroundColor(colorFromName(insight.color))
-                                .frame(width: 30)
+                                .frame(width: 38, height: 38)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                        .fill(colorFromName(insight.color).opacity(0.12))
+                                )
 
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: 3) {
                                 Text(insight.title)
-                                    .font(.subheadline.weight(.semibold))
+                                    .font(.dsHeadline)
                                 Text(insight.description)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .font(.dsCaption)
+                                    .foregroundColor(DS.Palette.inkMute)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
+                            Spacer(minLength: 0)
                         }
                         .padding(.vertical, 4)
                     }
@@ -361,13 +367,13 @@ struct StatsView: View {
             HStack {
                 Image(systemName: "target")
                     .font(.title2)
-                    .foregroundColor(.teal)
+                    .foregroundColor(DS.Palette.sage)
                 Text("Weekly Goal")
                     .font(.system(.headline, design: .rounded))
                 Spacer()
                 Text("\(count)/\(goalManager.weeklyTarget)")
                     .font(.subheadline.weight(.medium))
-                    .foregroundColor(.teal)
+                    .foregroundColor(DS.Palette.sage)
             }
 
             ZStack {
@@ -375,14 +381,14 @@ struct StatsView: View {
                     .stroke(Color.gray.opacity(0.2), lineWidth: 8)
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(Color.teal, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .stroke(DS.Palette.sage, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .animation(.spring(response: 0.6), value: progress)
 
                 VStack(spacing: 2) {
                     Text("\(Int(progress * 100))%")
                         .font(.title2.bold())
-                        .foregroundColor(.teal)
+                        .foregroundColor(DS.Palette.sage)
                     Text("\(remaining) days left")
                         .font(.caption2)
                         .foregroundColor(.secondary)
