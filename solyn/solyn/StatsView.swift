@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DailyVoxTwinEngine
 import CoreData
 import Charts
 
@@ -302,7 +303,7 @@ struct StatsView: View {
     // MARK: - AI Insights Card
 
     private var aiInsightsCard: some View {
-        let insights = InsightsEngine.generateInsights(from: Array(entries))
+        let insights = InsightsEngine.generateInsights(from: entries.map(\.twinInput))
 
         return Group {
             if !insights.isEmpty {
@@ -342,7 +343,7 @@ struct StatsView: View {
     // MARK: - Weekly Summary Card
 
     private var weeklySummaryCard: some View {
-        let summary = InsightsEngine.generateWeeklySummary(from: Array(entries))
+        let summary = InsightsEngine.generateWeeklySummary(from: entries.map(\.twinInput))
 
         return VStack(alignment: .leading, spacing: 12) {
             HStack {

@@ -15,6 +15,7 @@
 		B7EDDB5B7F09E36FFA05C0D9 /* SolynWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0987F76F9C9410B7407713F /* SolynWidget.swift */; };
 		C57AB08B73E27F7100545751 /* DailyVoxWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C636FC9C3F1928B91DA5C868 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */; };
+		CF62F84D2FDDE10400A0E332 /* DailyVoxTwinEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CF62F84C2FDDE10400A0E331 /* DailyVoxTwinEngine */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,15 +91,11 @@
 		};
 		CFF97C072EDE056900ED7317 /* solynTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = solynTests;
 			sourceTree = "<group>";
 		};
 		CFF97C112EDE056900ED7317 /* solynUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = solynUITests;
 			sourceTree = "<group>";
 		};
@@ -117,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF62F84D2FDDE10400A0E332 /* DailyVoxTwinEngine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,7 +161,6 @@
 				9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */,
 				8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */,
 			);
-			name = SolynWidget;
 			path = SolynWidget;
 			sourceTree = "<group>";
 		};
@@ -211,6 +208,9 @@
 				CFF97BF02EDE056600ED7317 /* solyn */,
 			);
 			name = solyn;
+			packageProductDependencies = (
+				CF62F84C2FDDE10400A0E331 /* DailyVoxTwinEngine */,
+			);
 			productName = solyn;
 			productReference = CFF97BEE2EDE056600ED7317 /* solyn.app */;
 			productType = "com.apple.product-type.application";
@@ -308,6 +308,9 @@
 			);
 			mainGroup = CFF97BE52EDE056600ED7317;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CF62F84B2FDDE10400A0E330 /* XCLocalSwiftPackageReference "../DailyVoxTwin" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CFF97BEF2EDE056600ED7317 /* Products */;
 			projectDirPath = "";
@@ -810,6 +813,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CF62F84B2FDDE10400A0E330 /* XCLocalSwiftPackageReference "../DailyVoxTwin" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../DailyVoxTwin;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CF62F84C2FDDE10400A0E331 /* DailyVoxTwinEngine */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DailyVoxTwinEngine;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CFF97BE62EDE056600ED7317 /* Project object */;
 }

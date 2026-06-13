@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import DailyVoxTwinEngine
 import CoreData
 
 struct ScreenshotDataSeeder {

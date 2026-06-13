@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import DailyVoxTwinEngine
 
 struct DigitalTwinView: View {
     @ObservedObject private var twin = DigitalTwinEngine.shared
@@ -1155,5 +1156,66 @@ struct FlowLayout: Layout {
 #Preview {
     NavigationView {
         DigitalTwinView()
+    }
+}
+
+// MARK: - Predictions View (consumes the DailyVoxTwinEngine prediction engine)
+
+/// "Your Twin Thinks..." section. The prediction *engine* lives in the
+/// DailyVoxTwinEngine package; this view maps the app's DiaryEntry values into
+/// TwinEntryInput and renders the results.
+struct TwinPredictionsSection: View {
+    let entries: [DiaryEntry]
+    @State private var predictions: [TwinPrediction] = []
+
+    var body: some View {
+        Group {
+            if !predictions.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "brain.head.profile")
+                            .foregroundColor(.purple)
+                        Text("Your Twin Thinks...")
+                            .font(.headline)
+                    }
+
+                    ForEach(predictions) { prediction in
+                        predictionCard(prediction)
+                    }
+                }
+            }
+        }
+        .onAppear { predictions = TwinPredictionEngine.generatePredictions(entries: entries.map(\.twinInput)) }
+    }
+
+    private func predictionCard(_ prediction: TwinPrediction) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(prediction.tint.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                Image(systemName: prediction.icon)
+                    .font(.system(size: 15))
+                    .foregroundColor(prediction.tint)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(prediction.message)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let detail = prediction.detail {
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .cornerRadius(14)
     }
 }

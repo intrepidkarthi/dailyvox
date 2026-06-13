@@ -11,6 +11,7 @@
 //
 
 import Foundation
+import DailyVoxTwinEngine
 import NaturalLanguage
 
 // MARK: - Shareable Insight Model

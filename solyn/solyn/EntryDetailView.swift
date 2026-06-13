@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import DailyVoxTwinEngine
 import AVFoundation
 import PhotosUI
 import WidgetKit

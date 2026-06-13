@@ -10,6 +10,7 @@
 
 import CoreData
 import CloudKit
+import DailyVoxTwinEngine
 
 /// Manages Core Data persistence with optional CloudKit synchronization.
 /// Data is stored locally on device and synced through user's personal iCloud account.
@@ -192,5 +193,52 @@ struct PersistenceController {
             print("Failed to toggle CloudKit sync: \(error)")
             #endif
         }
+    }
+}
+
+// MARK: - Twin Engine Persistence Bridge
+
+/// Core Data + CloudKit-backed store the DailyVoxTwinEngine writes its state through.
+/// Maps each key to an `AIState` row by `type`, exactly as the in-tree engine did
+/// (keys "digital_twin" / "user_profile"), so existing synced state loads unchanged.
+struct CoreDataTwinStateStore: TwinStateStore {
+    func loadState(forKey key: String) -> Data? {
+        let context = PersistenceController.shared.container.viewContext
+        let request = NSFetchRequest<AIState>(entityName: "AIState")
+        request.predicate = NSPredicate(format: "type == %@", key)
+        return (try? context.fetch(request).first)?.payload
+    }
+
+    func saveState(_ data: Data, forKey key: String) {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.perform {
+            let request = NSFetchRequest<AIState>(entityName: "AIState")
+            request.predicate = NSPredicate(format: "type == %@", key)
+            let existing = try? context.fetch(request).first
+            let state = existing ?? AIState(context: context)
+            if existing == nil {
+                state.id = UUID()
+                state.type = key
+            }
+            state.payload = data
+            state.updatedAt = Date()
+            try? context.save()
+        }
+    }
+}
+
+// MARK: - DiaryEntry → TwinEntryInput
+
+extension DiaryEntry {
+    /// Persistence-agnostic snapshot fed to the analysis engines (InsightsEngine,
+    /// TwinPredictionEngine) in place of the Core Data object.
+    var twinInput: TwinEntryInput {
+        TwinEntryInput(
+            date: date,
+            text: text,
+            mood: value(forKey: "mood") as? String,
+            duration: duration,
+            isStarred: isStarred
+        )
     }
 }

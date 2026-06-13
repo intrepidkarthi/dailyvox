@@ -11,6 +11,7 @@
 import SwiftUI
 import WidgetKit
 import CoreData
+import DailyVoxTwinEngine
 
 /// Main app entry point.
 /// Manages app lifecycle, authentication state, and theme.
@@ -25,6 +26,13 @@ struct DailyVoxApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     init() {
+        // Inject the Core Data + CloudKit-backed store into the Twin engines BEFORE any
+        // UI (or the seeder) touches them, so each reloads its existing state from the
+        // same AIState rows it always used — no Twin reset for existing users.
+        let twinStore = CoreDataTwinStateStore()
+        LocalAIEngine.configure(store: twinStore)
+        DigitalTwinEngine.configure(store: twinStore)
+
         ScreenshotDataSeeder.seedIfNeeded(context: persistenceController.container.viewContext)
     }
 

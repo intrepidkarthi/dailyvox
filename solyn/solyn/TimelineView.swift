@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import DailyVoxTwinEngine
 import CoreData
 import WidgetKit
 #if os(iOS)

@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import DailyVoxTwinEngine
 
 // MARK: - Twin Profile Data
 
