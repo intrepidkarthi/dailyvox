@@ -65,6 +65,27 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 
 ## Planned
 
+> **One device, by conviction.** As of June 2026 this roadmap is iPhone-only — with Apple Watch as the Twin's sensor and iPad along for free. Everything that makes the Twin defensible lives on the device that's with you all day: ambient signals, body sensors, Foundation Models, Apple Intelligence, the "Data Not Collected" label. Journaling is a phone-shaped habit; the phone is not one port target among many — it's the Twin's body. There is no macOS app, no visionOS app, and Android stays deferred until iOS product-market fit. Portability is solved where it belongs — in the *data*, via the open Twin Protocol (v2.5) — not by spreading a small team across platforms.
+>
+> **The end-to-end rule.** Every feature on this roadmap — from the first entry to v3.0's full digital self — must work for a user whose only computer is their iPhone. No step may ever require a Mac, a desktop, or any second machine: not training, not export, not setup, not backup. If a capability can't be delivered on the phone, it waits for the phone to catch up — it never graduates to a desktop. (The v4.0 Mirror is downstream of the phone, not a dependency: it syncs *from* the iPhone over USB-C and adds embodiment, never capability the app lacks.)
+
+**How the Twin grows.** One device means one trajectory: every release is a stage in the same organism, not a feature grab-bag.
+
+| Stage | Release | The Twin... |
+|:--|:--|:--|
+| **Scribe** | v1.0–v1.3.5 *(shipped)* | listens, remembers, and reflects what you tell it |
+| **Body** | v1.4 | feels what your body felt — physiology joins the narrative |
+| **Senses** | v1.4.5 | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
+| **Memory** | v1.5 | finds meaning across years — semantic search, causal chains |
+| **Voice** | v1.6 | converses with a real on-device brain, citing your own entries |
+| **Polyglot** | v1.7 | speaks your language — depth on one platform, breadth in languages |
+| **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
+| **Self** | v2.1 | knows who you are — and lets you talk to who you were |
+| **Agent** | v2.2 | acts on your behalf, every action explained and evidenced |
+| **Presence** | v2.3 | learns from your day, not just your narration of it |
+| **Protocol** | v2.5 | becomes portable — yours, not the app's |
+| **Mirror** | v3.0+ | the most faithful reflection ever built — eventually embodied (v4.0) |
+
 ### v1.4 — Body Twin: HealthKit + Apple Watch *(next)*
 
 The Twin gains a body. Until now it has learned only from your words; v1.4 gives it physiological context so it can finally tell the difference between "feeling stressed" and *being* stressed. Directly addresses one of the limitations called out for v3.0 ("Feel what you feel — no embodied experience").
@@ -95,6 +116,7 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - Permission requested after day 3 of use (not at first-launch) for value-framed acceptance
 - Settings → Health: master toggle, per-signal toggles, "Wipe all health snapshots" destructive action
 - "Data Not Collected" Apple privacy label preserved — HealthKit reads stay on-device, snapshots live in Core Data + personal iCloud only
+- **Foundation for ambient capture**: v1.4 introduces the generic *review-and-discard queue* — a reusable surface where passively-captured signals (health snapshots first) wait for you to keep, edit, or discard before they reach the Twin. Building it here is what lets v1.4.5's photo/music signals and v2.3's full Ambient Twin plug in cleanly; every future passive signal is honest-by-default because it flows through this one gate
 
 **Apple Watch companion app:**
 - Quick wrist recording: tap mic, speak, auto-syncs to iPhone via WatchConnectivity
@@ -111,6 +133,15 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - **Mind** — cognitive-state input ("I'm overthinking on low-sleep days") becomes a learned pattern
 - **Voice** — HR/HRV during at-rest speech refines stress detection beyond pacing and tone; active-context recordings rely on voice features alone
 - **Graph** — people, places, and activities now link to physiological response, not just sentiment
+
+### v1.4.5 — Ambient Signals *(pulled forward from v2.3)*
+
+The first taste of the Twin learning from your day, not just your words — and the part of the ambient thesis that needs no new conversational brain, so it ships now rather than at v2.3. Both signals run entirely on-device and flow through the v1.4 review-and-discard queue: nothing is learned without your eyes on it first. This is the differentiation the server-based companion apps structurally cannot copy — they ingest the same signals by uploading your life; DailyVox reads them where they already live.
+
+- **Photo signals**: on-device Photos/Vision scene analysis turns the day's camera roll into context — "mostly trail photos, one birthday dinner." Only derived labels are produced, never the photos themselves, and they never leave the device. Per-day, opt-in, reviewed before anything reaches the Twin
+- **Music mood**: listening patterns from your on-device music library as an emotional signal — what you reached for on a hard day says something your entries might not. On-device only; no ShazamKit/network dependency
+- **Reuses the v1.4 queue**: no new privacy surface beyond the Photos and Media Library permissions; the review-and-discard gate already exists. "Data Not Collected" label preserved; both signals off by default
+- Deliberately *not* here: location, calendar, email — those wait for v2.3's full Ambient Twin (location/calendar) or are ruled out entirely (email credentials). v1.4.5 is the cheapest, highest-trust slice of the ambient bet
 
 ### v1.5 — Semantic Search & Proactive Insights
 - NLEmbedding for 512-dimensional sentence embeddings
@@ -139,11 +170,13 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - Zero network calls — entire pipeline on-device
 - Graceful fallback to the current Twin chat on devices below iPhone 15 Pro
 
-### v1.7 — macOS, Multi-Language & Spatial
-- Native macOS target — same SwiftUI codebase, sidebar navigation, Twin accessible from the desktop
-- Strategic purpose: the Mac app is the **LoRA training environment for v2.1** — desktop compute is what makes personal fine-tuning practical
-- Multi-language UI via String Catalogs
-- **visionOS spatial constellation** *(exploratory)*: walk inside your inner sky — entries as stars around you, years of your life at room scale. The constellation metaphor was built for this
+### v1.7 — Multi-Language
+
+iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
+
+- Multi-language UI via Xcode String Catalogs — Hindi, Spanish, Japanese, German first
+- Speech framework already transcribes 60+ languages on-device; the UI catches up to the pipeline
+- **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)
 
 ### v2.0 — Apple Intelligence Native *(iOS 27)*
 
@@ -158,15 +191,16 @@ Ride the platform, don't trail it. WWDC 2026 rebuilt Siri on next-generation Fou
 
 > **Android: deliberately deferred.** A native Kotlin port doubles the engineering surface right when iOS needs depth. Android happens after iOS retention proves product-market fit — not before. (Prior native-Kotlin design notes preserved in git history.)
 
-### v2.1 — LoRA Fine-Tuning
-- Personal LoRA adapter training on Mac (macOS app becomes the training environment)
-- ~160 MB adapter delivered via Background Assets
-- Train the Twin to sound and think like you
-- Export entries as JSONL for training
+### v2.1 — Personality Depth *(re-scoped for one device)*
+
+Originally planned as Mac-based LoRA fine-tuning; the iPhone-only commitment retires the desktop training rig. Personalization moves from *training weights* to *conditioning the on-device model* with a scientifically grounded personality profile — no export step, no second machine, nothing leaves the phone. The Twin sounds like you because every conversation is grounded in your measured personality and your own words, not because weights were tuned on a desktop.
+
 - Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
 - Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
+- **Deep persona conditioning**: v2.0's multi-tier prompts upgraded with the Big Five profile plus retrieved style exemplars — your actual phrasings, drawn from the v1.5 semantic index, steer every reply
 - Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
 - **Talk to your past self**: conversational time-travel built on those snapshots — "ask 2024-you what they were afraid of." The Twin answers as you *were*, citing entries from that era; diff the conversation against present-you to see how far you've come
+- *Sounding* like you stays with Personal Voice (v2.0); *thinking* like you is conditioning + retrieval. If Apple ever ships user-level adapter training on-device, weight-level personalization returns to the table — on the phone, where it belongs
 
 ### v2.2 — Agentic Twin
 
@@ -177,14 +211,15 @@ The Twin stops only reflecting and starts acting — a chief of staff for your i
 - **Pattern interrupts**: proactive, gentle, rate-limited — "you haven't mentioned [person] in 6 weeks", "entries about work have darkened for 3 consecutive weeks"
 - **Intention follow-through**: detects commitments in entries ("I'll talk to her this weekend") and asks how it went
 - **Drafting on request**: "help me write this difficult message the way I'd want to say it" — grounded in your communication style model
+- **Relationship map, yours to correct**: the Twin's model of the people in your life — built only from your own entries — is fully inspectable and editable. See what it believes about each relationship, correct it, or delete it entirely. Derived social graphs you can't audit are the industry's anti-pattern; here the map is a first-class screen
 - Guardrails: no autonomous outbound actions, no notifications without opt-in, every suggestion cites its evidence
 
 ### v2.3 — Ambient Twin *(opt-in passive capture)*
 
-The industry is racing toward always-on AI wearables that journal your day for you — by sending your life to a server. DailyVox's architecture is the only honest way to build this. The Twin learns from your day, not just your narration of it, and nothing ever leaves the device.
+The industry is racing toward always-on AI wearables that journal your day for you — by sending your life to a server. DailyVox's architecture is the only honest way to build this. v1.4.5 shipped the first ambient signals (photo, music); v2.3 completes the thesis — the Twin synthesizes a *whole day* from every passive signal, not just your narration of it, and nothing ever leaves the device.
 
-- **Day summarization**: on-device synthesis of Watch signals (movement, heart patterns, workouts), location *patterns* (place categories, not coordinates), and calendar context into a draft "here's what your day looked like"
-- **Review-and-discard**: every ambient observation lands in a daily review queue — you keep, edit, or discard before anything touches the Twin. Nothing is learned without your eyes on it first
+- **Day summarization**: on-device synthesis of the v1.4.5 photo/music signals plus Watch signals (movement, heart patterns, workouts), location *patterns* (place categories, not coordinates), and calendar context into a draft "here's what your day looked like"
+- **New ambient inputs**: location *patterns* and calendar context join the photo/music signals already shipped — the same review-and-discard gate, more of the day covered
 - **Whisper capture**: AirPods quick-journaling — raise to speak, no phone out; transcribed on-device like everything else
 - **Gap awareness**: the Twin distinguishes "you didn't journal" from "nothing happened" — ambient context fills silence honestly ("a hard week, three back-to-back conflict meetings, no entries")
 - Hard lines: no continuous audio recording, no raw location storage, master kill-switch, ambient data wiped on demand
@@ -194,12 +229,15 @@ The industry is racing toward always-on AI wearables that journal your day for y
 
 The infrastructure play. Your digital self should be **yours** — portable, inspectable, not locked inside any app, including this one. And in the agent era, the Twin becomes the **personal context layer**: the thing every AI assistant needs and none of them should own.
 
+> **Spec ships before the implementation.** The Twin Protocol *specification* — the documented, versioned format — is published as a standalone document well ahead of the full SDK, as soon as the v2.1 personality model stabilizes. A public format spec is a credibility artifact in its own right (citable, reference-able, a standards-positioning move) and costs little next to the implementation. It is the clearest signal that DailyVox is building an open personal-data standard, not just an app.
+
 - Open specification for the portable personal model: personality vectors + knowledge graph + emotional history + voice profile in a documented, versioned format
 - Encrypted container ("`.twin` file") with user-held keys; export and import in full fidelity
 - Swift SDK (and reference spec for other platforms) so third-party apps can read a Twin **with user consent, scoped per-field** — a meditation app reads emotional patterns, never raw entries
 - **Agent interop**: the Twin as an on-device personal-context server (MCP-style) that AI agents query with per-field consent — your assistant asks your Twin how you like to be briefed; a writing tool asks for your voice profile; neither sees a single journal entry. Consent receipts log every access
 - DailyVox becomes the best *producer* of the format, not the only one — the moat moves from lock-in to being the canonical implementation
 - Positioning: the personality wallet. Data lock-in is the industry default; portability as a feature is the trust differentiator that matches the privacy brand
+- **The platform hedge**: the app is iPhone-only by conviction, but your digital self is not locked to any platform — the `.twin` format is how the Twin outlives device choices. The honest answer to "what about Android?" is a protocol reader, not a port
 
 ### v3.0 — True Digital Self *(vision)*
 
@@ -226,7 +264,7 @@ The goal of v3.0 is the most accurate mirror of yourself that has ever existed �
 **Technical capabilities:**
 
 - Full RAG implementation with personal knowledge base
-- Personal LoRA adapter loaded at runtime
+- Persona conditioning stack (v2.1) loaded at runtime: Big Five profile + style exemplars + autobiographical memory
 - Autonomous tool calling for data access
 - Context condensation for long conversations
 - Full causal reasoning: "Why did I feel this way?" with cited evidence from past entries
@@ -243,7 +281,7 @@ Two consenting people let their Twins talk to each other — locally, peer-to-pe
 
 ### v4.0 — DailyVox Mirror & Legacy *(hardware device — vision)*
 
-A physical tabletop device that IS your Digital Twin — speaks in your voice, thinks like you, answers like you. No internet. No cloud. Your most personal AI, embodied.
+A physical tabletop device that IS your Digital Twin — speaks in your voice, thinks like you, answers like you. No internet. No cloud. Your most personal AI, embodied. This is the one deliberate exception to the one-device conviction: not a port, a graduation — the Twin leaves the phone only to take physical form.
 
 **Hardware:**
 - Holographic display (Pepper's ghost + high-brightness LCD in dark enclosure)

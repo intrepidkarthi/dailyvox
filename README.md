@@ -154,12 +154,13 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.3 | Constellation Update | Shipped |
 | v1.3.5 | Dynamic Island + New Icon | Shipped |
 | v1.4 | Body Twin — HealthKit + Apple Watch | **Current** |
+| v1.4.5 | Ambient Signals — on-device photo + music context | Planned |
 | v1.5 | Semantic Search + Proactive Insights | Planned |
 | v1.6 | Foundation Models Twin — on-device LLM chat | Planned |
-| v1.7 | macOS + Multi-Language + visionOS | Planned |
+| v1.7 | Multi-Language (Hindi, Spanish, Japanese, German first) | Planned |
 | v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
 
-Beyond v2.0: LoRA fine-tuning, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device — [full roadmap](ROADMAP.md)
+Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device. iPhone-only by conviction — the phone is the Twin's body, and every feature works end-to-end on the phone alone (no Mac or second computer, ever); portability lives in the data (Twin Protocol), not in platform ports — [full roadmap](ROADMAP.md)
 
 ---
 
