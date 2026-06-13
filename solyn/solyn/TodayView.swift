@@ -12,6 +12,7 @@ import AVFoundation
 import UIKit
 import PhotosUI
 import os.log
+import WidgetKit
 
 private let logger = Logger(subsystem: "com.dailyvox.app", category: "TodayView")
 
@@ -848,7 +849,15 @@ struct TodayView: View {
         }
 
         entry.updatedAt = now
-        entry.setValue(audioURL.lastPathComponent, forKey: "audioFileName")
+        let newFileName = audioURL.lastPathComponent
+        // Accumulate every recording for the day instead of overwriting the last one.
+        // Build the list from the existing multi-file field (falling back to the legacy
+        // single field) BEFORE we update the legacy field to the newest recording.
+        var fileNames = AudioFileList.parse(entry.value(forKey: "audioFileNames") as? String,
+                                            legacy: entry.value(forKey: "audioFileName") as? String)
+        if !fileNames.contains(newFileName) { fileNames.append(newFileName) }
+        entry.setValue(AudioFileList.encode(fileNames), forKey: "audioFileNames")
+        entry.setValue(newFileName, forKey: "audioFileName") // latest, kept for back-compat
         let existingDuration = entry.value(forKey: "duration") as? Double ?? 0
         entry.setValue(existingDuration + duration, forKey: "duration")
 
@@ -856,6 +865,7 @@ struct TodayView: View {
             try viewContext.save()
             // Clear any selected prompt once an entry has been saved
             selectedPrompt = nil
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -878,6 +888,7 @@ struct TodayView: View {
                         try viewContext.save()
                         HapticManager.shared.entrySaved()
                         ReviewManager.shared.recordEntry()
+                        WidgetCenter.shared.reloadAllTimelines()
 
                         // Show celebration for first-ever entry
                         if !UserDefaults.standard.bool(forKey: "hasCompletedFirstEntry") {

@@ -26,6 +26,7 @@ struct ExportableEntry: Codable, Identifiable {
     let createdAt: Date
     let updatedAt: Date
     let audioFileName: String?
+    let audioFileNames: String?
     let photoFileNames: String?
 
     init(from entry: DiaryEntry) {
@@ -37,6 +38,7 @@ struct ExportableEntry: Codable, Identifiable {
         self.createdAt = entry.createdAt ?? Date()
         self.updatedAt = entry.updatedAt ?? Date()
         self.audioFileName = entry.audioFileName
+        self.audioFileNames = entry.value(forKey: "audioFileNames") as? String
         self.photoFileNames = entry.value(forKey: "photoFileNames") as? String
     }
 }
@@ -141,6 +143,7 @@ final class BackupService {
                 newEntry.createdAt = exportedEntry.createdAt
                 newEntry.updatedAt = exportedEntry.updatedAt
                 newEntry.audioFileName = exportedEntry.audioFileName
+                newEntry.setValue(exportedEntry.audioFileNames, forKey: "audioFileNames")
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
 
                 importedCount += 1
@@ -335,6 +338,97 @@ final class BackupService {
         return tempURL
     }
     
+    // MARK: - PDF Export
+
+    #if canImport(UIKit)
+    /// Export entries to a formatted PDF document (iOS only).
+    func exportToPDF(entries: [DiaryEntry]) throws -> URL {
+        let pageWidth: CGFloat = 612   // US Letter @ 72dpi
+        let pageHeight: CGFloat = 792
+        let margin: CGFloat = 48
+        let contentWidth = pageWidth - margin * 2
+        let pageRect = CGRect(x: 0, y: 0, width: pageWidth, height: pageHeight)
+
+        let sortedEntries = entries.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) }
+
+        let titleFont = UIFont.systemFont(ofSize: 26, weight: .bold)
+        let dateFont = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        let metaFont = UIFont.systemFont(ofSize: 12, weight: .regular)
+        let bodyFont = UIFont.systemFont(ofSize: 13, weight: .regular)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy · h:mm a"
+
+        let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
+        let fileName = "dailyvox_diary_\(formattedDate()).pdf"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+
+        try renderer.writePDF(to: tempURL) { context in
+            context.beginPage()
+            var cursorY: CGFloat = margin
+
+            // Cover heading
+            let title = "DailyVox Diary"
+            title.draw(at: CGPoint(x: margin, y: cursorY),
+                       withAttributes: [.font: titleFont, .foregroundColor: UIColor.label])
+            cursorY += 38
+            "Exported \(formattedFullDate(Date())) · \(sortedEntries.count) entries"
+                .draw(at: CGPoint(x: margin, y: cursorY),
+                      withAttributes: [.font: metaFont, .foregroundColor: UIColor.secondaryLabel])
+            cursorY += 30
+
+            for entry in sortedEntries {
+                let date = entry.date ?? Date()
+                let mood = entry.value(forKey: "mood") as? String ?? ""
+                let starred = entry.isStarred ? "  ★" : ""
+                let header = dateFormatter.string(from: date) + starred
+                let body = entry.text ?? "(No text)"
+
+                // Measure the body so we can page-break cleanly
+                let bodyAttrs: [NSAttributedString.Key: Any] = [.font: bodyFont, .foregroundColor: UIColor.label]
+                let bodyBounding = (body as NSString).boundingRect(
+                    with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                    attributes: bodyAttrs, context: nil)
+                let blockHeight = 22 + (mood.isEmpty ? 0 : 16) + ceil(bodyBounding.height) + 24
+
+                if cursorY + min(blockHeight, pageHeight - margin * 2) > pageHeight - margin {
+                    context.beginPage()
+                    cursorY = margin
+                }
+
+                header.draw(at: CGPoint(x: margin, y: cursorY),
+                            withAttributes: [.font: dateFont, .foregroundColor: UIColor.label])
+                cursorY += 22
+
+                if !mood.isEmpty {
+                    "Mood: \(mood.capitalized)".draw(
+                        at: CGPoint(x: margin, y: cursorY),
+                        withAttributes: [.font: metaFont, .foregroundColor: UIColor.secondaryLabel])
+                    cursorY += 16
+                }
+
+                (body as NSString).draw(
+                    with: CGRect(x: margin, y: cursorY, width: contentWidth, height: bodyBounding.height),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                    attributes: bodyAttrs, context: nil)
+                cursorY += ceil(bodyBounding.height) + 24
+            }
+        }
+
+        return tempURL
+    }
+
+    /// Export selected entries to PDF
+    func exportToPDF(entries: [DiaryEntry], startDate: Date?, endDate: Date?, starredOnly: Bool) throws -> URL {
+        var filtered = entries
+        if let start = startDate { filtered = filtered.filter { ($0.date ?? Date.distantPast) >= start } }
+        if let end = endDate { filtered = filtered.filter { ($0.date ?? Date.distantFuture) <= end } }
+        if starredOnly { filtered = filtered.filter { $0.isStarred } }
+        return try exportToPDF(entries: filtered)
+    }
+    #endif
+
     // MARK: - Encrypted Export
 
     /// Export all entries as an encrypted .dvx file
@@ -384,6 +478,7 @@ final class BackupService {
                 newEntry.createdAt = exportedEntry.createdAt
                 newEntry.updatedAt = exportedEntry.updatedAt
                 newEntry.audioFileName = exportedEntry.audioFileName
+                newEntry.setValue(exportedEntry.audioFileNames, forKey: "audioFileNames")
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
 
                 importedCount += 1
@@ -470,5 +565,28 @@ enum ExportFormat: String, CaseIterable, Identifiable {
         case .pdf: return "Beautiful formatted document."
         case .encryptedBackup: return "Password-protected backup. Maximum privacy."
         }
+    }
+}
+
+// MARK: - Audio File List Helper
+
+/// Encodes/decodes the newline-delimited list of audio recording filenames stored
+/// in `DiaryEntry.audioFileNames`. Supports multiple recordings per entry while
+/// keeping the legacy single `audioFileName` field for backward compatibility.
+enum AudioFileList {
+    /// Parse the stored list, falling back to the legacy single `audioFileName`.
+    static func parse(_ stored: String?, legacy: String?) -> [String] {
+        var names = (stored ?? "")
+            .split(separator: "\n", omittingEmptySubsequences: true)
+            .map(String.init)
+        if names.isEmpty, let legacy, !legacy.isEmpty {
+            names = [legacy]
+        }
+        return names
+    }
+
+    /// Encode a list of filenames for storage.
+    static func encode(_ names: [String]) -> String {
+        names.joined(separator: "\n")
     }
 }

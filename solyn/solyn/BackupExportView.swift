@@ -50,7 +50,7 @@ struct BackupExportView: View {
         Form {
             // Format selection
             Section {
-                ForEach(ExportFormat.allCases.filter { $0 != .pdf }, id: \.self) { format in
+                ForEach(ExportFormat.allCases, id: \.self) { format in
                     Button {
                         selectedFormat = format
                         HapticManager.shared.selectionChanged()
@@ -209,20 +209,20 @@ struct BackupExportView: View {
                     url = try BackupService.shared.exportToJSON(entries: entries)
                 case .encryptedBackup:
                     url = try BackupService.shared.exportEncrypted(entries: entries, password: encryptionPassword)
-                case .text, .markdown, .csv:
+                case .text, .markdown, .csv, .pdf:
                     var filteredEntries = entries
-                    
+
                     if !includeAllEntries {
                         filteredEntries = filteredEntries.filter { entry in
                             guard let date = entry.date else { return false }
                             return date >= startDate && date <= endDate
                         }
                     }
-                    
+
                     if starredOnly {
                         filteredEntries = filteredEntries.filter { $0.isStarred }
                     }
-                    
+
                     switch selectedFormat {
                     case .text:
                         url = try BackupService.shared.exportToText(entries: filteredEntries)
@@ -230,13 +230,12 @@ struct BackupExportView: View {
                         url = try BackupService.shared.exportToMarkdown(entries: filteredEntries)
                     case .csv:
                         url = try BackupService.shared.exportToCSV(entries: filteredEntries)
+                    case .pdf:
+                        url = try BackupService.shared.exportToPDF(entries: filteredEntries)
                     default:
                         // Should not be reached
                         return
                     }
-                case .pdf:
-                    // PDF handled separately elsewhere
-                    return
                 }
                 
                 DispatchQueue.main.async {

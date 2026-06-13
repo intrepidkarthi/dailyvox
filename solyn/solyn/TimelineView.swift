@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreData
+import WidgetKit
 #if os(iOS)
 import Speech
 #endif
@@ -547,6 +548,7 @@ struct TimelineView: View {
         do {
             try viewContext.save()
             HapticManager.shared.entryDeleted()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // ignore for now
         }

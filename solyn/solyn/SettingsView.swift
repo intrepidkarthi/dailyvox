@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import WidgetKit
 #if os(iOS)
 import UIKit
 #endif
@@ -50,6 +51,8 @@ struct SettingsView: View {
     @State private var databaseStorageBytes: Int64 = 0
     @State private var isCalculatingStorage = false
     @State private var showDeleteAudioConfirm = false
+    @State private var showDeletePhotosConfirm = false
+    @State private var showDeleteAllConfirm = false
 
     var body: some View {
         Form {
@@ -551,6 +554,26 @@ struct SettingsView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
                 }
+
+                Button(role: .destructive) {
+                    showDeleteAudioConfirm = true
+                } label: {
+                    Label("Clear Audio Recordings", systemImage: "waveform.slash")
+                }
+                .disabled(audioStorageBytes == 0)
+
+                Button(role: .destructive) {
+                    showDeletePhotosConfirm = true
+                } label: {
+                    Label("Clear Photos", systemImage: "photo.badge.minus")
+                }
+                .disabled(photoStorageBytes == 0)
+
+                Button(role: .destructive) {
+                    showDeleteAllConfirm = true
+                } label: {
+                    Label("Delete All Entries & Media", systemImage: "trash")
+                }
             }
         } header: {
             HStack {
@@ -566,6 +589,57 @@ struct SettingsView: View {
         } footer: {
             Text("Audio and photos are stored on-device only. iCloud syncs text entries only.")
         }
+        .confirmationDialog("Delete all audio recordings? Your text entries are kept.",
+                            isPresented: $showDeleteAudioConfirm, titleVisibility: .visible) {
+            Button("Delete Audio", role: .destructive) { deleteAllAudio() }
+            Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Delete all photos? Your text entries are kept.",
+                            isPresented: $showDeletePhotosConfirm, titleVisibility: .visible) {
+            Button("Delete Photos", role: .destructive) { deleteAllPhotos() }
+            Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Delete ALL entries and media? This cannot be undone.",
+                            isPresented: $showDeleteAllConfirm, titleVisibility: .visible) {
+            Button("Delete Everything", role: .destructive) { deleteAllData() }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    // MARK: - Storage Deletion
+
+    private func deleteAllAudio() {
+        Self.clearDirectory(name: "Recordings")
+        HapticManager.shared.entryDeleted()
+        calculateStorage()
+    }
+
+    private func deleteAllPhotos() {
+        Self.clearDirectory(name: "Photos")
+        HapticManager.shared.entryDeleted()
+        calculateStorage()
+    }
+
+    /// Deletes every entry (propagating to iCloud) plus all on-device media.
+    private func deleteAllData() {
+        let fetch: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
+        if let all = try? viewContext.fetch(fetch) {
+            for entry in all { viewContext.delete(entry) }
+            try? viewContext.save()
+        }
+        Self.clearDirectory(name: "Recordings")
+        Self.clearDirectory(name: "Photos")
+        HapticManager.shared.entryDeleted()
+        WidgetCenter.shared.reloadAllTimelines()
+        calculateStorage()
+    }
+
+    private static func clearDirectory(name: String) {
+        let fm = FileManager.default
+        guard let base = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
+        let dir = base.appendingPathComponent(name)
+        guard let files = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) else { return }
+        for file in files { try? fm.removeItem(at: file) }
     }
 
     private func calculateStorage() {

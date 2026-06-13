@@ -75,7 +75,10 @@ struct PersistenceController {
 
         // File protection (iOS only - not available on macOS)
         #if os(iOS)
-        description.setOption(FileProtectionType.complete as NSObject,
+        // Use completeUntilFirstUserAuthentication (not .complete) so the widget
+        // can read the shared App Group store while the device is locked.
+        // .complete makes the file unreadable whenever locked → widget shows zero.
+        description.setOption(FileProtectionType.completeUntilFirstUserAuthentication as NSObject,
                               forKey: NSPersistentStoreFileProtectionKey)
         #endif
 
@@ -94,6 +97,21 @@ struct PersistenceController {
                 #endif
             }
         }
+
+        // One-time CloudKit schema deployment (DEBUG only).
+        // Run once on a development build while signed into iCloud, then promote
+        // the schema to the Production environment in the CloudKit Dashboard.
+        // Without this, a shipped/TestFlight build hits an empty Production schema
+        // and sync silently never happens — the most common "iCloud never syncs" cause.
+        #if DEBUG
+        if !inMemory && PersistenceController.shouldEnableCloudKit {
+            do {
+                try container.initializeCloudKitSchema(options: [])
+            } catch {
+                print("CloudKit schema init failed (expected if already deployed): \(error)")
+            }
+        }
+        #endif
 
         // Configure view context
         container.viewContext.automaticallyMergesChangesFromParent = true
@@ -145,8 +163,10 @@ struct PersistenceController {
                 let description = NSPersistentStoreDescription(url: storeURL)
                 description.cloudKitContainerOptions = options
                 try container.persistentStoreCoordinator.remove(store)
-                description.setOption(FileProtectionType.complete as NSObject,
+                #if os(iOS)
+                description.setOption(FileProtectionType.completeUntilFirstUserAuthentication as NSObject,
                                       forKey: NSPersistentStoreFileProtectionKey)
+                #endif
                 description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
                 description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
                 container.persistentStoreDescriptions = [description]
@@ -156,8 +176,10 @@ struct PersistenceController {
                 try container.persistentStoreCoordinator.remove(store)
                 let description = NSPersistentStoreDescription(url: storeURL)
                 description.cloudKitContainerOptions = nil
-                description.setOption(FileProtectionType.complete as NSObject,
+                #if os(iOS)
+                description.setOption(FileProtectionType.completeUntilFirstUserAuthentication as NSObject,
                                       forKey: NSPersistentStoreFileProtectionKey)
+                #endif
                 description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
                 description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
                 container.persistentStoreDescriptions = [description]

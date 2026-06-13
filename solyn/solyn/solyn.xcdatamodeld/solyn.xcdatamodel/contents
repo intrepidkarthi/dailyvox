@@ -8,6 +8,7 @@
     </entity>
     <entity name="DiaryEntry" representedClassName="DiaryEntry" syncable="YES" codeGenerationType="class">
         <attribute name="audioFileName" optional="YES" attributeType="String"/>
+        <attribute name="audioFileNames" optional="YES" attributeType="String"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

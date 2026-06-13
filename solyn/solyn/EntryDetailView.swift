@@ -9,6 +9,7 @@
 import SwiftUI
 import AVFoundation
 import PhotosUI
+import WidgetKit
 
 /// Detail view for a single diary entry.
 /// Allows viewing, editing text, setting mood, playing back audio, and attaching photos.
@@ -45,6 +46,7 @@ struct EntryDetailView: View {
         ZStack {
             WarmBackground()
 
+            ScrollViewReader { scrollProxy in
             ScrollView {
                 VStack(spacing: 0) {
                     // Header card with metadata
@@ -52,8 +54,8 @@ struct EntryDetailView: View {
                         .padding(.horizontal)
                         .padding(.top, 8)
 
-                    // Audio player (when audio exists locally)
-                    if hasAudio, let url = audioURL() {
+                    // Audio players — one per recording made that day (multi-recording aware)
+                    ForEach(localAudioURLs(), id: \.self) { url in
                         AudioPlayerView(audioURL: url)
                             .padding(.horizontal)
                             .padding(.top, 4)
@@ -102,6 +104,15 @@ struct EntryDetailView: View {
             }
             .frame(maxWidth: isIPad ? 700 : .infinity)
             .frame(maxWidth: .infinity)
+            .scrollDismissesKeyboard(.interactively)
+            .onChange(of: isTextFocused) { _, focused in
+                if focused {
+                    withAnimation(.easeOut(duration: 0.25)) {
+                        scrollProxy.scrollTo("entryEditor", anchor: .top)
+                    }
+                }
+            }
+            }
         }
         .navigationTitle(formattedShortDate)
         .navigationBarTitleDisplayMode(.inline)
@@ -403,7 +414,7 @@ struct EntryDetailView: View {
                 .lineSpacing(6)
                 .focused($isTextFocused)
                 .scrollContentBackground(.hidden)
-                .frame(minHeight: 300)
+                .frame(minHeight: 240, maxHeight: 360)
                 .padding()
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -433,6 +444,7 @@ struct EntryDetailView: View {
         .onAppear {
             isTextFocused = true
         }
+        .id("entryEditor")
     }
 
     // MARK: - Photo Section
@@ -603,6 +615,21 @@ struct EntryDetailView: View {
         return recordingsDir.appendingPathComponent(fileName)
     }
 
+    /// All recordings referenced by this entry (multi-recording aware, with legacy fallback).
+    private func audioFileNamesList() -> [String] {
+        AudioFileList.parse(entry.value(forKey: "audioFileNames") as? String,
+                            legacy: entry.value(forKey: "audioFileName") as? String)
+    }
+
+    /// Local URLs for the recordings that actually exist on this device.
+    private func localAudioURLs() -> [URL] {
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let recordingsDir = base.appendingPathComponent("Recordings", isDirectory: true)
+        return audioFileNamesList()
+            .map { recordingsDir.appendingPathComponent($0) }
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+    }
+
     // MARK: - Actions
 
     private func toggleStar() {
@@ -611,6 +638,7 @@ struct EntryDetailView: View {
         HapticManager.shared.entryStarred()
         do {
             try viewContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // ignore
         }
@@ -628,6 +656,7 @@ struct EntryDetailView: View {
             entry.updatedAt = Date()
             do {
                 try viewContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
 
                 // Feed into Digital Twin — use reprocess if text was edited
                 if !trimmed.isEmpty {
@@ -661,6 +690,7 @@ struct EntryDetailView: View {
         HapticManager.shared.moodSelected()
         do {
             try viewContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // ignore
         }
