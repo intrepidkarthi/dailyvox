@@ -576,34 +576,36 @@ struct TodayView: View {
                 .transition(.scale.combined(with: .opacity))
             }
 
-            // Record button + photo button
-            HStack(spacing: 24) {
-                Spacer()
-
-                // Photo picker
-                if recordingState == .idle {
-                    PhotosPicker(
-                        selection: $selectedPhotos,
-                        maxSelectionCount: 5,
-                        matching: .images
-                    ) {
-                        ZStack {
-                            Circle()
-                                .fill(ThemeManager.shared.warmSubtleFill)
-                                .frame(width: isIPad ? 56 : 48, height: isIPad ? 56 : 48)
-                            Image(systemName: "photo.badge.plus")
-                                .font(.system(size: isIPad ? 22 : 18))
-                                .foregroundColor(.accentColor)
-                        }
-                    }
-                    .onChange(of: selectedPhotos) { _, newItems in
-                        handlePhotoPickerSelection(newItems)
-                    }
-                }
-
+            // Record button stays dead-centre; photo-add is a secondary side action
+            // (it used to share the row and push the mic off-centre to the right).
+            ZStack {
                 recordButton
 
-                Spacer()
+                if recordingState == .idle {
+                    HStack {
+                        Spacer()
+                        PhotosPicker(
+                            selection: $selectedPhotos,
+                            maxSelectionCount: 5,
+                            matching: .images
+                        ) {
+                            ZStack {
+                                Circle()
+                                    .fill(ThemeManager.shared.warmSubtleFill)
+                                    .frame(width: isIPad ? 52 : 44, height: isIPad ? 52 : 44)
+                                Image(systemName: "photo.badge.plus")
+                                    .font(.system(size: isIPad ? 20 : 17))
+                                    .foregroundColor(DS.Palette.inkMute)
+                            }
+                        }
+                        .buttonStyle(SpringPressStyle())
+                        .onChange(of: selectedPhotos) { _, newItems in
+                            handlePhotoPickerSelection(newItems)
+                        }
+                        .padding(.trailing, DS.Space.xl)
+                        .accessibilityLabel("Add photos")
+                    }
+                }
             }
 
             // Status text (only when idle)
