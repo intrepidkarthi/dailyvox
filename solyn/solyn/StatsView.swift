@@ -219,13 +219,18 @@ struct StatsView: View {
                     ForEach(topMoods, id: \.mood) { item in
                         VStack(spacing: 6) {
                             Image(systemName: item.mood.icon)
-                                .font(.title2)
+                                .font(.system(size: 18, weight: .semibold))
                                 .foregroundColor(item.mood.color)
+                                .frame(width: 40, height: 40)
+                                .background(
+                                    Circle().fill(item.mood.color.opacity(0.14))
+                                )
                             Text("\(item.count)")
-                                .font(.subheadline.weight(.medium))
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(item.mood.color)
                             Text(item.mood.displayName)
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
+                                .font(.dsCaption)
+                                .foregroundColor(DS.Palette.inkMute)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -615,21 +620,30 @@ struct StatItem: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                Spacer()
-            }
+        VStack(alignment: .leading, spacing: DS.Space.xs) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(color)
+                .frame(width: 34, height: 34)
+                .background(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(color.opacity(0.14))
+                )
             Text(value)
-                .font(.title2.weight(.semibold))
+                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .foregroundColor(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                .font(.dsCaption)
+                .foregroundColor(DS.Palette.inkMute)
         }
-        .padding()
-        .background(Color(.tertiarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(DS.Space.md)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                .fill(ThemeManager.shared.warmSubtleFill)
+        )
     }
 }
 
