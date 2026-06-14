@@ -95,69 +95,64 @@ struct AudioPlayerView: View {
     @State private var loadError: String?
 
     var body: some View {
-        VStack(spacing: 12) {
-            // Play/Pause + Slider + Time
-            HStack(spacing: 12) {
-                Button {
-                    controller.togglePlayback()
-                    HapticManager.shared.buttonTap()
-                } label: {
-                    Image(systemName: controller.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.accentColor)
-                }
-                .buttonStyle(.plain)
+        // Compact single-row player: play · scrubber · tap-to-cycle speed.
+        HStack(spacing: DS.Space.sm) {
+            Button {
+                controller.togglePlayback()
+                HapticManager.shared.buttonTap()
+            } label: {
+                Image(systemName: controller.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                    .font(.system(size: 34))
+                    .foregroundColor(DS.Palette.sage)
+            }
+            .buttonStyle(.plain)
 
-                VStack(spacing: 4) {
-                    Slider(
-                        value: Binding(
-                            get: { controller.currentTime },
-                            set: { controller.seek(to: $0) }
-                        ),
-                        in: 0...max(0.01, controller.duration)
-                    )
-                    .tint(.accentColor)
+            VStack(spacing: 3) {
+                Slider(
+                    value: Binding(
+                        get: { controller.currentTime },
+                        set: { controller.seek(to: $0) }
+                    ),
+                    in: 0...max(0.01, controller.duration)
+                )
+                .tint(DS.Palette.sage)
 
-                    HStack {
-                        Text(formatTime(controller.currentTime))
-                            .font(.caption2.monospacedDigit())
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text(formatTime(controller.duration))
-                            .font(.caption2.monospacedDigit())
-                            .foregroundColor(.secondary)
-                    }
+                HStack {
+                    Text(formatTime(controller.currentTime))
+                        .font(.caption2.monospacedDigit())
+                        .foregroundColor(DS.Palette.inkMute)
+                    Spacer()
+                    Text(formatTime(controller.duration))
+                        .font(.caption2.monospacedDigit())
+                        .foregroundColor(DS.Palette.inkMute)
                 }
             }
 
-            // Speed selector
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    Text("Speed")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-
-                    ForEach(AudioPlaybackController.speedOptions, id: \.self) { speed in
-                        Button {
-                            controller.setSpeed(speed)
-                            HapticManager.shared.selectionChanged()
-                        } label: {
-                            Text(speedLabel(speed))
-                                .font(.caption2.weight(controller.playbackRate == speed ? .bold : .regular))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(controller.playbackRate == speed ? Color.accentColor.opacity(0.15) : Color(.tertiarySystemFill))
-                                .foregroundColor(controller.playbackRate == speed ? .accentColor : .secondary)
-                                .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
+            // Speed — one pill that cycles 0.5x … 2x on tap (was a 6-chip row)
+            Button {
+                let opts = AudioPlaybackController.speedOptions
+                let idx = opts.firstIndex(of: controller.playbackRate) ?? opts.firstIndex(of: 1.0) ?? 0
+                controller.setSpeed(opts[(idx + 1) % opts.count])
+                HapticManager.shared.selectionChanged()
+            } label: {
+                Text(speedLabel(controller.playbackRate))
+                    .font(.caption.weight(.semibold).monospacedDigit())
+                    .foregroundColor(DS.Palette.sageDeep)
+                    .frame(minWidth: 38)
+                    .padding(.vertical, 7)
+                    .padding(.horizontal, 4)
+                    .background(Capsule().fill(DS.Palette.sage.opacity(0.14)))
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Playback speed \(speedLabel(controller.playbackRate))")
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(.vertical, DS.Space.sm)
+        .padding(.horizontal, DS.Space.md)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                .fill(ThemeManager.shared.warmCardBackground)
+        )
+        .dsShadowSoft()
         .onAppear {
             do {
                 try controller.load(url: audioURL)
@@ -169,7 +164,7 @@ struct AudioPlayerView: View {
             if let error = loadError {
                 Text(error)
                     .font(.caption)
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.Palette.coral)
             }
         }
     }

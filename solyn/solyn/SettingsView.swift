@@ -259,7 +259,7 @@ struct SettingsView: View {
             Toggle("Enable Face ID", isOn: $lockManager.isEnabled)
 
             if lockManager.isEnabled {
-                Text("DailyVox will require \\(lockManager.biometryTypeName) or your device passcode to open.")
+                Text("DailyVox will require \(lockManager.biometryTypeName) or your device passcode to open.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
