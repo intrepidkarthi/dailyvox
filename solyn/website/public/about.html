@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About DailyVox — Why I Built a Free On-Device AI Voice Journal</title>
   <meta name="description" content="The story behind DailyVox. Built by Karthikeyan NG, a 20-year diary writer who started talking instead of writing. The vision: a Digital Twin that lives on your phone, not someone else's server.">
-  <meta name="theme-color" content="#f7f7f2">
+  <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/about">
   <meta property="og:title" content="About DailyVox — Why I Built This App">
@@ -31,7 +31,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <script type="application/ld+json">
   {
@@ -48,18 +48,18 @@
     html { scroll-behavior: smooth; }
 
     :root {
-      --paper: #f7f7f2; --paper-2: #efeeea; --paper-3: #e6e5e0;
+      --paper: #FAF8F5; --paper-2: #F2EDE8; --paper-3: #E8E0D8;
       --card: #ffffff;
-      --ink: #0a0b10;
-      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
-      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
-      --uv: #5e2bff; --uv-wash: rgba(94,43,255,0.06); --uv-soft: rgba(94,43,255,0.12); --uv-edge: rgba(94,43,255,0.28);
-      --bio: #7fe82d; --bio-soft: rgba(127,232,45,0.14); --bio-edge: rgba(127,232,45,0.45);
-      --vital: #ff3561; --vital-soft: rgba(255,53,97,0.10);
-      --ray: #13c8d8; --ray-soft: rgba(19,200,216,0.10);
-      --display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      --ink: #1A1A2E;
+      --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
+      --rule: rgba(26,26,46,0.08); --rule-2: rgba(26,26,46,0.16);
+      --uv: #5B7C6B; --uv-wash: rgba(91,124,107,0.06); --uv-soft: rgba(91,124,107,0.12); --uv-edge: rgba(91,124,107,0.28);
+      --bio: #D4A547; --bio-soft: rgba(212,165,71,0.14); --bio-edge: rgba(212,165,71,0.45);
+      --vital: #C4956A; --vital-soft: rgba(196,149,106,0.10);
+      --ray: #D4634B; --ray-soft: rgba(212,99,75,0.10);
+      --display: 'Nunito', 'Inter', system-ui, sans-serif;
       --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
       --r: 10px; --r-sm: 6px; --r-xs: 4px;
     }
 
@@ -82,7 +82,7 @@
     /* ── NAV ── */
     .topbar {
       position: sticky; top: 0; z-index: 80;
-      background: rgba(247,247,242,0.78);
+      background: rgba(250,248,245,0.78);
       backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
       border-bottom: 1px solid var(--rule);
     }
@@ -95,7 +95,7 @@
       width: 30px; height: 30px; border-radius: 7px;
       display: inline-block; flex-shrink: 0;
       background: url("/apple-touch-icon.png") center/cover no-repeat;
-      box-shadow: 0 1px 2px rgba(10,11,16,0.08), 0 0 0 1px rgba(10,11,16,0.04);
+      box-shadow: 0 1px 2px rgba(26,26,46,0.08), 0 0 0 1px rgba(26,26,46,0.04);
     }
     .logo-text {
       font-family: var(--display);
@@ -117,7 +117,7 @@
       letter-spacing: -0.01em;
       transition: color .15s, background .15s;
     }
-    .nav a:hover { color: var(--ink); background: rgba(10,11,16,0.04); }
+    .nav a:hover { color: var(--ink); background: rgba(26,26,46,0.04); }
     .nav a.active { color: var(--ink); }
     .cta-btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -142,7 +142,7 @@
       position: absolute; inset: -40px 0 0;
       background:
         radial-gradient(700px 500px at 20% 30%, var(--uv-wash), transparent 60%),
-        radial-gradient(600px 400px at 80% 80%, rgba(127,232,45,0.05), transparent 60%);
+        radial-gradient(600px 400px at 80% 80%, rgba(212,165,71,0.05), transparent 60%);
       pointer-events: none; z-index: 0;
     }
     .about-hero-inner {
@@ -357,8 +357,8 @@
     }
     .vt-priv { background: var(--bio-soft); color: #4c8f1f; border-color: var(--bio-edge); }
     .vt-free { background: var(--uv-soft); color: var(--uv); border-color: var(--uv-edge); }
-    .vt-local { background: var(--ray-soft); color: #0e8a96; border-color: rgba(19,200,216,0.3); }
-    .vt-voice { background: var(--vital-soft); color: var(--vital); border-color: rgba(255,53,97,0.3); }
+    .vt-local { background: var(--ray-soft); color: #0e8a96; border-color: rgba(212,99,75,0.3); }
+    .vt-voice { background: var(--vital-soft); color: var(--vital); border-color: rgba(196,149,106,0.3); }
     .val-card h3 {
       font-family: var(--display);
       font-size: 16px; font-weight: 600;
@@ -506,7 +506,7 @@
     }
     .btn-primary::before {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(100deg, transparent, rgba(127,232,45,0.35), transparent);
+      background: linear-gradient(100deg, transparent, rgba(212,165,71,0.35), transparent);
       transform: translateX(-120%); transition: transform .7s;
     }
     .btn-primary:hover::before { transform: translateX(120%); }

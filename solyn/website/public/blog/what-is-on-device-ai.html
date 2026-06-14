@@ -136,7 +136,7 @@
 
 <p>The term "AI" has become a marketing checkbox. Nearly every app claims to be "AI-powered" in 2026. But the critical question that most people never ask is: <em>where</em> does that AI run? The answer determines whether your data stays private or gets uploaded to a server you do not control. This article explains on-device AI in plain English, compares it to cloud AI, shows exactly how DailyVox uses it, and addresses the real tradeoffs honestly.</p>
 
-<nav style="background:rgba(94,43,255,0.04);border:1px solid rgba(94,43,255,0.12);border-radius:12px;padding:24px;margin:32px 0;">
+<nav style="background:rgba(91,124,107,0.04);border:1px solid rgba(91,124,107,0.12);border-radius:12px;padding:24px;margin:32px 0;">
 <strong>Table of Contents</strong>
 <ol style="margin:12px 0 0 0;padding-left:20px;line-height:2;">
 <li><a href="#what-is-on-device-ai">What Is On-Device AI?</a></li>
@@ -172,52 +172,52 @@
 <div style="overflow-x:auto;margin:24px 0;">
 <table style="width:100%;border-collapse:collapse;min-width:600px;font-size:14px;">
 <thead>
-<tr style="background:rgba(94,43,255,0.06);">
-<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;width:25%;">Dimension</th>
-<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;width:37.5%;">On-Device AI</th>
-<th style="padding:10px 12px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;width:37.5%;">Cloud AI</th>
+<tr style="background:rgba(91,124,107,0.06);">
+<th style="padding:10px 12px;border:1px solid rgba(26,26,46,0.12);text-align:left;font-weight:700;width:25%;">Dimension</th>
+<th style="padding:10px 12px;border:1px solid rgba(26,26,46,0.12);text-align:left;font-weight:700;width:37.5%;">On-Device AI</th>
+<th style="padding:10px 12px;border:1px solid rgba(26,26,46,0.12);text-align:left;font-weight:700;width:37.5%;">Cloud AI</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Where data goes</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Stays on your device. Never transmitted.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Sent to remote servers (often third-party).</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Where data goes</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Stays on your device. Never transmitted.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Sent to remote servers (often third-party).</td>
 </tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Privacy</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Architecturally private. No server to breach.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Depends on company's policies and security.</td>
-</tr>
-<tr>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Latency</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Near-instant. No network round-trip.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Depends on connection speed (50ms&ndash;2s+).</td>
-</tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Offline access</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Works fully offline. Airplane mode, no Wi-Fi, anywhere.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Requires active internet connection.</td>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Privacy</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Architecturally private. No server to breach.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Depends on company's policies and security.</td>
 </tr>
 <tr>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Ongoing cost</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Zero. Uses hardware you already own.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Server costs per API call. Often passed to users via subscription.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Latency</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Near-instant. No network round-trip.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Depends on connection speed (50ms&ndash;2s+).</td>
 </tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Model size</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Smaller, optimized for mobile hardware.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Can use very large models (hundreds of billions of parameters).</td>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Offline access</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Works fully offline. Airplane mode, no Wi-Fi, anywhere.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Requires active internet connection.</td>
 </tr>
 <tr>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Capability</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Excellent for focused tasks (transcription, NLP, classification).</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Can handle open-ended, generative tasks with massive models.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Ongoing cost</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Zero. Uses hardware you already own.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Server costs per API call. Often passed to users via subscription.</td>
 </tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Data breach risk</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Only if your physical device is compromised.</td>
-<td style="padding:8px 12px;border:1px solid rgba(10,11,16,0.1);">Server breaches can expose millions of users at once.</td>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Model size</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Smaller, optimized for mobile hardware.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Can use very large models (hundreds of billions of parameters).</td>
+</tr>
+<tr>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Capability</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Excellent for focused tasks (transcription, NLP, classification).</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Can handle open-ended, generative tasks with massive models.</td>
+</tr>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Data breach risk</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Only if your physical device is compromised.</td>
+<td style="padding:8px 12px;border:1px solid rgba(26,26,46,0.1);">Server breaches can expose millions of users at once.</td>
 </tr>
 </tbody>
 </table>
@@ -326,13 +326,13 @@
 <h2 id="related">Related Articles</h2>
 <!-- ============================================ -->
 
-        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(10,11,16,0.08)">
+        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(26,26,46,0.08)">
           <ul style="list-style:none;padding:0;">
-            <li style="margin-bottom:8px;"><a href="/blog/best-ai-journal-app" style="color:#5e2bff;font-weight:500;">Best AI Journal App (2026): 9 Apps Ranked by Intelligence</a></li>
-            <li style="margin-bottom:8px;"><a href="/blog/journal-app-with-ai" style="color:#5e2bff;font-weight:500;">Journal App with AI: How Smart Journaling Actually Works</a></li>
-            <li style="margin-bottom:8px;"><a href="/technology" style="color:#5e2bff;font-weight:500;">DailyVox Technology: The On-Device AI Stack</a></li>
-            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5e2bff;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Data Practices</a></li>
-            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5e2bff;font-weight:500;">DailyVox Privacy Facts</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/best-ai-journal-app" style="color:#5B7C6B;font-weight:500;">Best AI Journal App (2026): 9 Apps Ranked by Intelligence</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/journal-app-with-ai" style="color:#5B7C6B;font-weight:500;">Journal App with AI: How Smart Journaling Actually Works</a></li>
+            <li style="margin-bottom:8px;"><a href="/technology" style="color:#5B7C6B;font-weight:500;">DailyVox Technology: The On-Device AI Stack</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5B7C6B;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Data Practices</a></li>
+            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5B7C6B;font-weight:500;">DailyVox Privacy Facts</a></li>
           </ul>
         </div>
 

@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyVox FAQ — Everything About the Voice Journal That Lives on Your iPhone</title>
   <meta name="description" content="Answers to every question about DailyVox: privacy, on-device AI, the Digital Twin, the constellation, Dynamic Island Live Activities, mood tracking, data export, and more.">
-  <meta name="theme-color" content="#f7f7f2">
+  <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/faq">
   <meta property="og:title" content="DailyVox FAQ — Questions, Answered.">
@@ -32,7 +32,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- FAQPage Schema (preserved for Google rich results) -->
   <script type="application/ld+json">
@@ -77,19 +77,19 @@
     html { scroll-behavior: smooth; }
 
     :root {
-      --paper: #f7f7f2; --paper-2: #efeeea; --paper-3: #e6e5e0;
+      --paper: #FAF8F5; --paper-2: #F2EDE8; --paper-3: #E8E0D8;
       --card: #ffffff;
-      --ink: #0a0b10;
-      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
-      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
-      --uv: #5e2bff; --uv-wash: rgba(94,43,255,0.06); --uv-soft: rgba(94,43,255,0.12); --uv-edge: rgba(94,43,255,0.28);
-      --bio: #7fe82d; --bio-soft: rgba(127,232,45,0.14); --bio-edge: rgba(127,232,45,0.45);
-      --vital: #ff3561; --vital-soft: rgba(255,53,97,0.10);
-      --ray: #13c8d8; --ray-soft: rgba(19,200,216,0.10);
+      --ink: #1A1A2E;
+      --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
+      --rule: rgba(26,26,46,0.08); --rule-2: rgba(26,26,46,0.16);
+      --uv: #5B7C6B; --uv-wash: rgba(91,124,107,0.06); --uv-soft: rgba(91,124,107,0.12); --uv-edge: rgba(91,124,107,0.28);
+      --bio: #D4A547; --bio-soft: rgba(212,165,71,0.14); --bio-edge: rgba(212,165,71,0.45);
+      --vital: #C4956A; --vital-soft: rgba(196,149,106,0.10);
+      --ray: #D4634B; --ray-soft: rgba(212,99,75,0.10);
       --sage: #455945;
-      --display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      --display: 'Nunito', 'Inter', system-ui, sans-serif;
       --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
       --r: 10px; --r-sm: 6px; --r-xs: 4px;
     }
 
@@ -111,7 +111,7 @@
     /* ── TOP NAV ── */
     .topbar {
       position: sticky; top: 0; z-index: 80;
-      background: rgba(247,247,242,0.78);
+      background: rgba(250,248,245,0.78);
       backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
       border-bottom: 1px solid var(--rule);
     }
@@ -123,7 +123,7 @@
     .logo-mark {
       width: 30px; height: 30px; border-radius: 7px;
       background: url("/apple-touch-icon.png") center/cover no-repeat;
-      box-shadow: 0 1px 2px rgba(10,11,16,0.08), 0 0 0 1px rgba(10,11,16,0.04);
+      box-shadow: 0 1px 2px rgba(26,26,46,0.08), 0 0 0 1px rgba(26,26,46,0.04);
       flex-shrink: 0;
     }
     .logo-text {
@@ -140,7 +140,7 @@
       color: var(--ink-dim);
       transition: color 0.15s, background 0.15s;
     }
-    .nav a:hover { color: var(--ink); background: rgba(10,11,16,0.04); }
+    .nav a:hover { color: var(--ink); background: rgba(26,26,46,0.04); }
     .nav a.active { color: var(--ink); }
     .cta-btn {
       background: var(--ink); color: var(--paper);
@@ -164,8 +164,8 @@
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(circle at 12% 22%, rgba(94,43,255,0.05) 0%, transparent 35%),
-        radial-gradient(circle at 88% 78%, rgba(127,232,45,0.06) 0%, transparent 40%);
+        radial-gradient(circle at 12% 22%, rgba(91,124,107,0.05) 0%, transparent 35%),
+        radial-gradient(circle at 88% 78%, rgba(212,165,71,0.06) 0%, transparent 40%);
       pointer-events: none;
     }
     .hero-marker {
@@ -355,14 +355,14 @@
       content: '';
       position: absolute; inset: 0;
       background:
-        radial-gradient(circle at 80% 30%, rgba(94,43,255,0.25) 0%, transparent 50%),
-        radial-gradient(circle at 20% 80%, rgba(127,232,45,0.15) 0%, transparent 50%);
+        radial-gradient(circle at 80% 30%, rgba(91,124,107,0.25) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(212,165,71,0.15) 0%, transparent 50%);
     }
     .end-cta-inner { position: relative; z-index: 1; max-width: 720px; }
     .end-cta .marker {
       font-family: var(--mono); font-size: 11px; font-weight: 600;
       letter-spacing: 0.18em;
-      color: rgba(247,247,242,0.5);
+      color: rgba(250,248,245,0.5);
       text-transform: uppercase;
       margin-bottom: 18px;
     }
@@ -383,7 +383,7 @@
     .end-cta p {
       font-size: 17px;
       line-height: 1.55;
-      color: rgba(247,247,242,0.72);
+      color: rgba(250,248,245,0.72);
       margin-bottom: 32px;
       max-width: 540px;
     }
@@ -398,8 +398,8 @@
       transition: background 0.15s, transform 0.15s;
     }
     .end-cta a:hover { background: var(--bio); transform: translateY(-1px); }
-    .end-cta a.secondary { background: transparent; color: var(--paper); border: 1px solid rgba(247,247,242,0.18); }
-    .end-cta a.secondary:hover { background: rgba(247,247,242,0.08); border-color: rgba(247,247,242,0.35); }
+    .end-cta a.secondary { background: transparent; color: var(--paper); border: 1px solid rgba(250,248,245,0.18); }
+    .end-cta a.secondary:hover { background: rgba(250,248,245,0.08); border-color: rgba(250,248,245,0.35); }
 
     /* ── FOOTER ── */
     .footer {

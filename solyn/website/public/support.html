@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyVox Support — Get Help With the Voice Journal</title>
   <meta name="description" content="Help, troubleshooting, and contact for DailyVox — the free voice journal for iPhone with on-device AI.">
-  <meta name="theme-color" content="#f7f7f2">
+  <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/support">
   <meta property="og:title" content="DailyVox Support — Help & Common Questions">
@@ -34,20 +34,20 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --paper: #f7f7f2; --paper-2: #efeeea;
+      --paper: #FAF8F5; --paper-2: #F2EDE8;
       --card: #ffffff;
-      --ink: #0a0b10;
-      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
-      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
-      --uv: #5e2bff; --bio: #7fe82d;
-      --display: 'Space Grotesk', system-ui, sans-serif;
+      --ink: #1A1A2E;
+      --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
+      --rule: rgba(26,26,46,0.08); --rule-2: rgba(26,26,46,0.16);
+      --uv: #5B7C6B; --bio: #D4A547;
+      --display: 'Nunito', system-ui, sans-serif;
       --sans: 'Inter', -apple-system, system-ui, sans-serif;
-      --mono: 'JetBrains Mono', ui-monospace, monospace;
+      --mono: 'DM Mono', ui-monospace, monospace;
     }
     body {
       font-family: var(--sans);
@@ -58,7 +58,7 @@
     .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
     .topbar {
       position: sticky; top: 0; z-index: 80;
-      background: rgba(247,247,242,0.78);
+      background: rgba(250,248,245,0.78);
       backdrop-filter: blur(18px) saturate(150%);
       border-bottom: 1px solid var(--rule);
     }
@@ -67,14 +67,14 @@
     .logo { display: flex; align-items: center; gap: 10px; }
     .logo-mark { width: 30px; height: 30px; border-radius: 7px;
       background: url("/apple-touch-icon.png") center/cover;
-      box-shadow: 0 1px 2px rgba(10,11,16,0.08); }
+      box-shadow: 0 1px 2px rgba(26,26,46,0.08); }
     .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
     .nav { display: flex; gap: 4px; }
     .nav a { padding: 8px 14px; border-radius: 6px;
       font-family: var(--mono); font-size: 12px; font-weight: 500;
       color: var(--ink-dim); }
     .nav a.active { color: var(--ink); }
-    .nav a:hover { background: rgba(10,11,16,0.04); color: var(--ink); }
+    .nav a:hover { background: rgba(26,26,46,0.04); color: var(--ink); }
     .cta-btn { background: var(--ink); color: var(--paper);
       padding: 9px 18px; border-radius: 7px;
       font-family: var(--mono); font-size: 12px; font-weight: 600; }
@@ -82,7 +82,7 @@
 
     .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); position: relative; }
     .hero::before { content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 80% 30%, rgba(94,43,255,0.04) 0%, transparent 40%);
+      background: radial-gradient(circle at 80% 30%, rgba(91,124,107,0.04) 0%, transparent 40%);
       pointer-events: none; }
     .hero .marker { font-family: var(--mono); font-size: 11px; font-weight: 600;
       letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 18px; }
@@ -139,7 +139,7 @@
       background: var(--ink); color: var(--paper); border-radius: 12px; }
     .cta-card h3 { font-family: var(--display); font-size: 24px; font-weight: 600;
       margin-bottom: 10px; color: var(--paper); }
-    .cta-card p { color: rgba(247,247,242,0.7); margin-bottom: 22px; }
+    .cta-card p { color: rgba(250,248,245,0.7); margin-bottom: 22px; }
     .cta-card a { display: inline-block; padding: 12px 22px;
       background: var(--paper); color: var(--ink); border-radius: 7px;
       font-family: var(--mono); font-size: 13px; font-weight: 600; text-decoration: none; }

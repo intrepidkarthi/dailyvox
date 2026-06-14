@@ -14,7 +14,7 @@
   <title>DailyVox Technology — On-Device AI Architecture for Private Voice Journaling</title>
   <meta name="description" content="A deep technical breakdown of DailyVox's on-device AI pipeline. SFSpeechRecognizer, NLTagger, NLEmbedding, Foundation Models, Core Data, CryptoKit — nine Apple frameworks, zero third-party SDKs, all inference on Neural Engine.">
   <meta name="keywords" content="on-device AI, voice journaling, digital twin, Apple Foundation Models, NLTagger, SFSpeechRecognizer, privacy, iOS development">
-  <meta name="theme-color" content="#f7f7f2">
+  <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://getdailyvox.com/technology">
   <meta property="og:title" content="DailyVox Technology — On-Device AI Architecture">
@@ -34,7 +34,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <script type="application/ld+json">
   {
@@ -54,18 +54,18 @@
     html { scroll-behavior: smooth; }
 
     :root {
-      --paper: #f7f7f2; --paper-2: #efeeea; --paper-3: #e6e5e0;
+      --paper: #FAF8F5; --paper-2: #F2EDE8; --paper-3: #E8E0D8;
       --card: #ffffff;
-      --ink: #0a0b10;
-      --ink-dim: rgba(10,11,16,0.62); --ink-mute: rgba(10,11,16,0.42);
-      --rule: rgba(10,11,16,0.08); --rule-2: rgba(10,11,16,0.16);
-      --uv: #5e2bff; --uv-wash: rgba(94,43,255,0.06); --uv-soft: rgba(94,43,255,0.12); --uv-edge: rgba(94,43,255,0.28);
-      --bio: #7fe82d; --bio-soft: rgba(127,232,45,0.14); --bio-edge: rgba(127,232,45,0.45);
-      --vital: #ff3561; --vital-soft: rgba(255,53,97,0.10);
-      --ray: #13c8d8; --ray-soft: rgba(19,200,216,0.10);
-      --display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+      --ink: #1A1A2E;
+      --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
+      --rule: rgba(26,26,46,0.08); --rule-2: rgba(26,26,46,0.16);
+      --uv: #5B7C6B; --uv-wash: rgba(91,124,107,0.06); --uv-soft: rgba(91,124,107,0.12); --uv-edge: rgba(91,124,107,0.28);
+      --bio: #D4A547; --bio-soft: rgba(212,165,71,0.14); --bio-edge: rgba(212,165,71,0.45);
+      --vital: #C4956A; --vital-soft: rgba(196,149,106,0.10);
+      --ray: #D4634B; --ray-soft: rgba(212,99,75,0.10);
+      --display: 'Nunito', 'Inter', system-ui, sans-serif;
       --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
       --r: 10px; --r-sm: 6px; --r-xs: 4px;
     }
 
@@ -86,7 +86,7 @@
     /* ── NAV ── */
     .topbar {
       position: sticky; top: 0; z-index: 80;
-      background: rgba(247,247,242,0.78);
+      background: rgba(250,248,245,0.78);
       backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
       border-bottom: 1px solid var(--rule);
     }
@@ -99,7 +99,7 @@
       width: 30px; height: 30px; border-radius: 7px;
       display: inline-block; flex-shrink: 0;
       background: url("/apple-touch-icon.png") center/cover no-repeat;
-      box-shadow: 0 1px 2px rgba(10,11,16,0.08), 0 0 0 1px rgba(10,11,16,0.04);
+      box-shadow: 0 1px 2px rgba(26,26,46,0.08), 0 0 0 1px rgba(26,26,46,0.04);
     }
     .logo-text {
       font-family: var(--display);
@@ -121,7 +121,7 @@
       letter-spacing: -0.01em;
       transition: color .15s, background .15s;
     }
-    .nav a:hover { color: var(--ink); background: rgba(10,11,16,0.04); }
+    .nav a:hover { color: var(--ink); background: rgba(26,26,46,0.04); }
     .nav a.active { color: var(--ink); }
     .cta-btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -147,7 +147,7 @@
       position: absolute; inset: -40px 0 0;
       background:
         radial-gradient(700px 500px at 80% 20%, var(--uv-wash), transparent 60%),
-        radial-gradient(500px 400px at 20% 80%, rgba(127,232,45,0.05), transparent 60%);
+        radial-gradient(500px 400px at 20% 80%, rgba(212,165,71,0.05), transparent 60%);
       pointer-events: none; z-index: 0;
     }
     .tech-hero-inner {
@@ -529,8 +529,8 @@
       position: absolute;
       top: -20%; left: -10%; right: -10%; bottom: -20%;
       background:
-        radial-gradient(600px 400px at 80% 10%, rgba(127,232,45,0.1), transparent 60%),
-        radial-gradient(500px 400px at 10% 90%, rgba(94,43,255,0.15), transparent 60%);
+        radial-gradient(600px 400px at 80% 10%, rgba(212,165,71,0.1), transparent 60%),
+        radial-gradient(500px 400px at 10% 90%, rgba(91,124,107,0.15), transparent 60%);
       pointer-events: none;
     }
     .privacy-block > * { position: relative; z-index: 1; }
@@ -538,9 +538,9 @@
     .privacy-block .sec-num  { color: var(--bio); }
     .privacy-block .sec-title { color: var(--paper); }
     .privacy-block .sec-title em { color: var(--bio); }
-    .privacy-block .sec-tag { color: rgba(247,247,242,0.55); }
+    .privacy-block .sec-tag { color: rgba(250,248,245,0.55); }
     .privacy-block p {
-      color: rgba(247,247,242,0.78);
+      color: rgba(250,248,245,0.78);
       font-size: 16px;
       line-height: 1.7;
       margin-bottom: 18px;
@@ -548,8 +548,8 @@
     .privacy-block strong { color: var(--paper); }
     .privacy-block code {
       font-family: var(--mono); font-size: 0.88em;
-      background: rgba(127,232,45,0.1); padding: 1px 6px; border-radius: 3px;
-      color: var(--bio); border: 1px solid rgba(127,232,45,0.25);
+      background: rgba(212,165,71,0.1); padding: 1px 6px; border-radius: 3px;
+      color: var(--bio); border: 1px solid rgba(212,165,71,0.25);
     }
 
     .compare-table {
@@ -562,22 +562,22 @@
       text-align: left;
       padding: 14px 16px;
       font-family: var(--mono); font-size: 10px;
-      color: rgba(247,247,242,0.55); letter-spacing: 0.12em;
+      color: rgba(250,248,245,0.55); letter-spacing: 0.12em;
       text-transform: uppercase; font-weight: 600;
-      background: rgba(247,247,242,0.04);
-      border-bottom: 1px solid rgba(247,247,242,0.1);
+      background: rgba(250,248,245,0.04);
+      border-bottom: 1px solid rgba(250,248,245,0.1);
     }
     .compare-table thead th.us { color: var(--bio); }
     .compare-table tbody td {
       padding: 12px 16px;
-      color: rgba(247,247,242,0.78);
-      border-bottom: 1px solid rgba(247,247,242,0.08);
+      color: rgba(250,248,245,0.78);
+      border-bottom: 1px solid rgba(250,248,245,0.08);
     }
     .compare-table tbody tr:last-child td { border-bottom: 0; }
     .compare-table .us-col {
       color: var(--bio);
       font-weight: 500;
-      background: rgba(127,232,45,0.05);
+      background: rgba(212,165,71,0.05);
     }
     .compare-table .lbl { color: var(--paper); font-weight: 500; }
 
@@ -773,7 +773,7 @@
     }
     .btn-primary::before {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(100deg, transparent, rgba(127,232,45,0.35), transparent);
+      background: linear-gradient(100deg, transparent, rgba(212,165,71,0.35), transparent);
       transform: translateX(-120%); transition: transform .7s;
     }
     .btn-primary:hover::before { transform: translateX(120%); }

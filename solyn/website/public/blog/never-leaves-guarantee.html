@@ -130,7 +130,7 @@
 
 <p>This article explains what the Never-Leaves Guarantee actually means at a technical level, how you can verify it yourself in under five minutes, why the absence of a server is more powerful than any encryption, and how other journal apps compare when you look at what actually happens to your data.</p>
 
-<nav style="background:rgba(94,43,255,0.04);border:1px solid rgba(94,43,255,0.12);border-radius:12px;padding:24px;margin:32px 0;">
+<nav style="background:rgba(91,124,107,0.04);border:1px solid rgba(91,124,107,0.12);border-radius:12px;padding:24px;margin:32px 0;">
 <strong>Table of Contents</strong>
 <ol style="margin:12px 0 0 0;padding-left:20px;line-height:2;">
 <li><a href="#what-is">What Is the Never-Leaves Guarantee?</a></li>
@@ -261,56 +261,56 @@
 <div style="overflow-x:auto;margin:24px 0;">
 <table style="width:100%;border-collapse:collapse;min-width:600px;font-size:14px;">
 <thead>
-<tr style="background:rgba(94,43,255,0.06);">
-<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:left;font-weight:700;">Criteria</th>
-<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">DailyVox</th>
-<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Day One</th>
-<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Rosebud</th>
-<th style="padding:10px 8px;border:1px solid rgba(10,11,16,0.12);text-align:center;font-weight:700;">Calmplot</th>
+<tr style="background:rgba(91,124,107,0.06);">
+<th style="padding:10px 8px;border:1px solid rgba(26,26,46,0.12);text-align:left;font-weight:700;">Criteria</th>
+<th style="padding:10px 8px;border:1px solid rgba(26,26,46,0.12);text-align:center;font-weight:700;">DailyVox</th>
+<th style="padding:10px 8px;border:1px solid rgba(26,26,46,0.12);text-align:center;font-weight:700;">Day One</th>
+<th style="padding:10px 8px;border:1px solid rgba(26,26,46,0.12);text-align:center;font-weight:700;">Rosebud</th>
+<th style="padding:10px 8px;border:1px solid rgba(26,26,46,0.12);text-align:center;font-weight:700;">Calmplot</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Data leaves device</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">Never</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Always</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Always</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#d97706;">Optional sync</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Data leaves device</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">Never</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#dc2626;">Always</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#dc2626;">Always</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#d97706;">Optional sync</td>
 </tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Server infrastructure</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">None exists</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Automattic cloud</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud + OpenAI</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Optional iCloud</td>
-</tr>
-<tr>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">AI processing location</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">On-device</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Cloud (GPT)</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">None</td>
-</tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Works in airplane mode</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">100%</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Partial</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">No</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Mostly</td>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Server infrastructure</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">None exists</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Automattic cloud</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Cloud + OpenAI</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Optional iCloud</td>
 </tr>
 <tr>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">App Store privacy label</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">Data Not Collected</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Linked to You</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Linked to You</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;">Data Not Linked to You</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">AI processing location</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">On-device</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Cloud</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Cloud (GPT)</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">None</td>
 </tr>
-<tr style="background:rgba(10,11,16,0.02);">
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);font-weight:600;">Can be subpoenaed</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#16a34a;font-weight:700;">No</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Yes</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#dc2626;">Yes</td>
-<td style="padding:8px;border:1px solid rgba(10,11,16,0.1);text-align:center;color:#d97706;">Apple (iCloud only)</td>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Works in airplane mode</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">100%</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Partial</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#dc2626;">No</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Mostly</td>
+</tr>
+<tr>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">App Store privacy label</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">Data Not Collected</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Data Linked to You</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Data Linked to You</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;">Data Not Linked to You</td>
+</tr>
+<tr style="background:rgba(26,26,46,0.02);">
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);font-weight:600;">Can be subpoenaed</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#16a34a;font-weight:700;">No</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#dc2626;">Yes</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#dc2626;">Yes</td>
+<td style="padding:8px;border:1px solid rgba(26,26,46,0.1);text-align:center;color:#d97706;">Apple (iCloud only)</td>
 </tr>
 </tbody>
 </table>
@@ -365,12 +365,12 @@
 <h2 id="related">Related Articles</h2>
 <!-- ============================================ -->
 
-        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(10,11,16,0.08)">
+        <div style="margin-top:16px;padding-top:24px;border-top:1px solid rgba(26,26,46,0.08)">
           <ul style="list-style:none;padding:0;">
-            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5e2bff;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Actual Data Practices</a></li>
-            <li style="margin-bottom:8px;"><a href="/blog/complete-guide-to-private-journaling" style="color:#5e2bff;font-weight:500;">Complete Guide to Private Journaling</a></li>
-            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5e2bff;font-weight:500;">DailyVox Privacy Facts</a></li>
-            <li style="margin-bottom:8px;"><a href="/blog/signs-your-journal-app-is-selling-your-data" style="color:#5e2bff;font-weight:500;">5 Signs Your Journal App Is Selling Your Data</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/best-journal-app-for-privacy" style="color:#5B7C6B;font-weight:500;">Best Private Journal App (2026): 8 Apps Ranked by Actual Data Practices</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/complete-guide-to-private-journaling" style="color:#5B7C6B;font-weight:500;">Complete Guide to Private Journaling</a></li>
+            <li style="margin-bottom:8px;"><a href="/facts" style="color:#5B7C6B;font-weight:500;">DailyVox Privacy Facts</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/signs-your-journal-app-is-selling-your-data" style="color:#5B7C6B;font-weight:500;">5 Signs Your Journal App Is Selling Your Data</a></li>
           </ul>
         </div>
 
