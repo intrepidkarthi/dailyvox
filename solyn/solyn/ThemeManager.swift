@@ -43,7 +43,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
         case .ivory:
             return Color(red: 0.357, green: 0.486, blue: 0.420)  // #5B7C6B sage green
         case .dark:
-            return Color(red: 0.6, green: 0.7, blue: 0.8)  // Soft blue for dark mode
+            return Color(red: 0.557, green: 0.698, blue: 0.604)  // Lightened sage — warm + on-brand on dark (was soft blue)
         }
     }
 
