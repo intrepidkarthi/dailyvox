@@ -44,6 +44,7 @@ struct TodayView: View {
     @State private var pulseScale: CGFloat = 1.0
     @State private var showFirstEntryMoment: Bool = false
     @State private var firstTimePulse: Bool = false
+    @State private var recordingRingPulse: Bool = false
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -656,6 +657,21 @@ struct TodayView: View {
                         .onAppear { firstTimePulse = true }
                 }
 
+                // Recording pulse rings — concentric, expanding outward
+                if recordingState == .recording {
+                    ForEach(0..<3, id: \.self) { i in
+                        Circle()
+                            .stroke(buttonColor.opacity(0.35), lineWidth: 2)
+                            .frame(width: recordButtonOuterSize, height: recordButtonOuterSize)
+                            .scaleEffect(recordingRingPulse ? 1.8 : 1.0)
+                            .opacity(recordingRingPulse ? 0 : 0.5)
+                            .animation(
+                                .easeOut(duration: 1.8).repeatForever(autoreverses: false).delay(Double(i) * 0.6),
+                                value: recordingRingPulse
+                            )
+                    }
+                }
+
                 // Warm ambient glow
                 Circle()
                     .fill(buttonColor.opacity(recordingState == .idle ? 0.12 : 0.06))
@@ -673,31 +689,39 @@ struct TodayView: View {
                     .frame(width: recordButtonOuterSize, height: recordButtonOuterSize)
 
                 // Icon
-                if recordingState == .recording {
-                    // Stop square
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(.white)
-                        .frame(width: isIPad ? 30 : 24, height: isIPad ? 30 : 24)
-                } else if recordingState == .processing {
-                    ProgressView()
-                        .tint(.white)
-                } else {
-                    // Mic icon
-                    Image(systemName: "mic.fill")
-                        .font(.system(size: isIPad ? 34 : 28))
-                        .foregroundColor(.white)
+                Group {
+                    if recordingState == .recording {
+                        // Stop square
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(.white)
+                            .frame(width: isIPad ? 30 : 24, height: isIPad ? 30 : 24)
+                            .transition(.scale.combined(with: .opacity))
+                    } else if recordingState == .processing {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        // Mic icon
+                        Image(systemName: "mic.fill")
+                            .font(.system(size: isIPad ? 34 : 28))
+                            .foregroundColor(.white)
+                            .transition(.scale.combined(with: .opacity))
+                    }
                 }
             }
+            .animation(.spring(response: 0.4, dampingFraction: 0.7), value: recordingState)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(SpringPressStyle())
         .accessibilityLabel(recordingState == .recording ? "Stop recording" : "Start recording")
+        .onChange(of: recordingState) { _, newValue in
+            recordingRingPulse = (newValue == .recording)
+        }
     }
 
     private var buttonColor: Color {
         switch recordingState {
         case .idle: return .accentColor
         case .recording: return ThemeManager.shared.recordingColor
-        case .processing: return .orange
+        case .processing: return DS.Palette.gold
         }
     }
 
@@ -1017,6 +1041,16 @@ struct TodayView: View {
 }
 
 // MARK: - Stat Badge Component
+
+/// Springy scale-down press feedback for tappable controls (the "buttery" tap feel).
+struct SpringPressStyle: ButtonStyle {
+    var scale: CGFloat = 0.92
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? scale : 1)
+            .animation(.spring(response: 0.3, dampingFraction: 0.55), value: configuration.isPressed)
+    }
+}
 
 struct StatBadge: View {
     let icon: String
