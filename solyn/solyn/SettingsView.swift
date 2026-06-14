@@ -565,7 +565,7 @@ struct SettingsView: View {
                 Button(role: .destructive) {
                     showDeletePhotosConfirm = true
                 } label: {
-                    Label("Clear Photos", systemImage: "photo.badge.minus")
+                    Label("Clear Photos", systemImage: "photo.on.rectangle.angled")
                 }
                 .disabled(photoStorageBytes == 0)
 
@@ -919,54 +919,43 @@ struct ReminderPresetRow: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 12) {
+            HStack(spacing: DS.Space.sm) {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.1))
-                        .frame(width: 36, height: 36)
+                        .fill(isSelected ? DS.Palette.sage.opacity(0.16) : DS.Palette.inkMute.opacity(0.10))
+                        .frame(width: 38, height: 38)
                     Image(systemName: icon)
-                        .font(.subheadline)
-                        .foregroundColor(isSelected ? .accentColor : .secondary)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
                         Text(title)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundColor(.primary)
+                            .font(.dsHeadline)
+                            .foregroundColor(DS.Palette.ink)
                         if let time = time {
                             Text(time)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.dsCaption)
+                                .foregroundColor(DS.Palette.inkMute)
                         }
                     }
                     Text(intent)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(.dsCaption)
+                        .foregroundColor(DS.Palette.inkMute)
                 }
 
                 Spacer()
 
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.accentColor)
-                }
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 18))
+                    .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute.opacity(0.4))
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, DS.Space.xs)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .listRowBackground(
-            isSelected
-                ? Color.accentColor.opacity(0.08)
-                : Color.clear
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
-                .padding(.horizontal, -16)
-                .padding(.vertical, -4)
-        )
+        .listRowBackground(isSelected ? DS.Palette.sage.opacity(0.08) : Color.clear)
     }
 }
 

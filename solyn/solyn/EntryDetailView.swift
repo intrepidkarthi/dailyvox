@@ -64,6 +64,7 @@ struct EntryDetailView: View {
 
                     // Photo section
                     photoSection
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                         .padding(.top, 4)
 
@@ -86,6 +87,7 @@ struct EntryDetailView: View {
                                     .clipShape(Capsule())
                                 }
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                             .padding(.top, 4)
                         }

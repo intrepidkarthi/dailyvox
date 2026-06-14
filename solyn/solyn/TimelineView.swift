@@ -164,6 +164,7 @@ struct TimelineView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .contentMargins(.top, DS.Space.xs, for: .scrollContent)
             .background { WarmBackground().ignoresSafeArea() }
         }
         .searchable(text: $searchText, prompt: "Search entries")
