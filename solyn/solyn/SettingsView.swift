@@ -713,6 +713,16 @@ struct SettingsView: View {
                 Text("\(totalEntriesCount)")
                     .foregroundColor(.secondary)
             }
+
+            Button {
+                HapticManager.shared.buttonTap()
+                UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+            } label: {
+                HStack {
+                    Image(systemName: "sparkles")
+                    Text("Replay welcome")
+                }
+            }
         }
     }
 
