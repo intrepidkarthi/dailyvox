@@ -260,16 +260,18 @@ struct OnboardingWelcomeView: View {
 
             VStack(spacing: 16) {
                 Text("Your inner sky\nis waiting")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .tracking(-0.6)
+                    .lineSpacing(2)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .opacity(textOpacity)
 
                 Text("Every thought you speak becomes a star.\nOver time, constellations form — patterns\nonly you can see.")
                     .font(.system(size: 16, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.6))
+                    .foregroundColor(.white.opacity(0.65))
                     .multilineTextAlignment(.center)
-                    .lineSpacing(4)
+                    .lineSpacing(5)
                     .opacity(textOpacity)
             }
             .padding(.horizontal, 30)
@@ -343,18 +345,19 @@ struct OnboardingPageView: View {
             // Text with staggered fade
             VStack(spacing: 14) {
                 Text(page.title)
-                    .font(.system(size: isIPad ? 36 : 28, weight: .bold, design: .rounded))
+                    .font(.system(size: isIPad ? 38 : 30, weight: .bold, design: .rounded))
+                    .tracking(-0.6)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
 
                 Text(page.subtitle)
-                    .font(.system(size: isIPad ? 17 : 15, weight: .medium, design: .rounded))
-                    .foregroundColor(.white.opacity(0.7))
+                    .font(.system(size: isIPad ? 17 : 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(page.iconColor.opacity(0.95))
                     .multilineTextAlignment(.center)
 
                 Text(page.description)
-                    .font(.system(size: isIPad ? 15 : 13, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.5))
+                    .font(.system(size: isIPad ? 15 : 14, weight: .regular, design: .rounded))
+                    .foregroundColor(.white.opacity(0.58))
                     .multilineTextAlignment(.center)
                     .lineSpacing(5)
                     .padding(.horizontal, 8)
