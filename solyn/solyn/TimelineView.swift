@@ -573,32 +573,45 @@ struct EntryRowView: View {
         return !PhotoStorageManager.parsePhotoFileNames(jsonString).isEmpty
     }
 
+    private var moodColor: Color {
+        if let moodString = entry.value(forKey: "mood") as? String,
+           let mood = Mood(rawValue: moodString), mood != .none {
+            return mood.color
+        }
+        return DS.Palette.inkMute.opacity(0.25)
+    }
+
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: DS.Space.md) {
+            // Mood accent — scan your journal by feeling
+            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                .fill(moodColor)
+                .frame(width: 4)
+
+            VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
                     Text(dateString)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(.dsCaption)
+                        .foregroundColor(DS.Palette.inkMute)
 
                     if let moodString = entry.value(forKey: "mood") as? String,
                        let mood = Mood(rawValue: moodString),
                        mood != .none {
                         Image(systemName: mood.icon)
-                            .font(.caption)
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundColor(mood.color)
                     }
 
                     if wordCount > 0 {
                         Text("\(wordCount) words")
-                            .font(.caption2)
-                            .foregroundColor(.secondary.opacity(0.7))
+                            .font(.dsCaption2)
+                            .foregroundColor(DS.Palette.inkMute.opacity(0.8))
                     }
 
                     if hasPhotos {
                         Image(systemName: "photo")
-                            .font(.caption2)
-                            .foregroundColor(.secondary.opacity(0.7))
+                            .font(.system(size: 10))
+                            .foregroundColor(DS.Palette.inkMute.opacity(0.8))
                     }
                 }
 
@@ -607,7 +620,8 @@ struct EntryRowView: View {
                         .lineLimit(2)
                 } else {
                     Text("Tap to add text")
-                        .foregroundColor(.secondary)
+                        .font(.dsBody)
+                        .foregroundColor(DS.Palette.inkMute)
                         .italic()
                 }
 
@@ -622,36 +636,36 @@ struct EntryRowView: View {
                                         .fill(area.color)
                                         .frame(width: 6, height: 6)
                                     Text(area.rawValue)
-                                        .font(.caption2)
+                                        .font(.dsCaption2)
                                         .foregroundColor(area.color)
                                 }
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(area.color.opacity(0.1))
-                                .clipShape(Capsule())
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 3)
+                                .background(Capsule().fill(area.color.opacity(0.1)))
                             }
                         }
                     }
                 }
             }
-            Spacer()
+            Spacer(minLength: 0)
             if entry.isStarred {
                 Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
-                    .font(.caption)
+                    .foregroundColor(DS.Palette.gold)
+                    .font(.system(size: 13))
             }
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, DS.Space.xs)
     }
 
     @ViewBuilder
     private func highlightedText(_ text: String) -> some View {
         if searchText.isEmpty {
             Text(text)
-                .font(.subheadline)
+                .font(.dsBody)
+                .foregroundColor(DS.Palette.ink)
         } else {
             Text(attributedString(for: text))
-                .font(.subheadline)
+                .font(.dsBody)
         }
     }
 

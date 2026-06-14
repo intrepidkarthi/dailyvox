@@ -1026,15 +1026,14 @@ struct StatBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.caption)
+                .font(.system(size: 12, weight: .semibold))
             Text(value)
-                .font(.caption)
+                .font(.dsCaption2)
         }
         .foregroundColor(color)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(color.opacity(0.12))
-        .clipShape(Capsule())
+        .padding(.horizontal, DS.Space.sm)
+        .padding(.vertical, 7)
+        .background(Capsule().fill(color.opacity(0.12)))
     }
 }
 
@@ -1080,18 +1079,25 @@ struct PromptChip: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(prompt.title)
-                    .font(.caption.weight(.semibold))
+                    .font(.dsCallout)
+                    .foregroundColor(isSelected ? DS.Palette.sageDeep : DS.Palette.ink)
                 Text(prompt.detail)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .font(.dsCaption)
+                    .foregroundColor(DS.Palette.inkMute)
                     .lineLimit(2)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
+            .padding(.horizontal, DS.Space.md)
+            .padding(.vertical, DS.Space.sm)
             .frame(maxWidth: 280, alignment: .leading)
-            .background(isSelected ? Color.accentColor.opacity(0.15) : ThemeManager.shared.warmCardBackground)
-            .foregroundColor(.primary)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background(
+                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                    .fill(isSelected ? DS.Palette.tintSage : ThemeManager.shared.warmCardBackground)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                    .stroke(isSelected ? DS.Palette.sage.opacity(0.40) : DS.Palette.ink.opacity(0.05), lineWidth: 1)
+            )
+            .dsShadowSoft()
         }
         .buttonStyle(.plain)
     }
