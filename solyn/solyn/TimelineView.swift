@@ -126,13 +126,19 @@ struct TimelineView: View {
             List {
                 ForEach(sectionKeys, id: \.self) { key in
                     if let sectionEntries = groupedEntries[key] {
-                        Section(header: VStack(alignment: .leading, spacing: 2) {
+                        Section(header: HStack(alignment: .firstTextBaseline) {
                             Text(sectionTitle(for: key))
-                                .font(.system(.headline, design: .rounded))
+                                .font(.dsTitle2)
+                                .foregroundColor(DS.Palette.ink)
+                                .textCase(nil)
+                            Spacer()
                             Text(sectionSummary(for: sectionEntries))
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                        }) {
+                                .font(.dsCaption)
+                                .foregroundColor(DS.Palette.inkMute)
+                                .textCase(nil)
+                        }
+                        .padding(.top, DS.Space.xs)
+                        ) {
                             ForEach(sectionEntries) { entry in
                                 NavigationLink {
                                     EntryDetailView(entry: entry)
@@ -157,6 +163,8 @@ struct TimelineView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background { WarmBackground().ignoresSafeArea() }
         }
         .searchable(text: $searchText, prompt: "Search entries")
         .refreshable {
