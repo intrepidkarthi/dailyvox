@@ -37,17 +37,17 @@ struct ContentView: View {
             }
 
             NavigationStack {
-                StatsView()
-            }
-            .tabItem {
-                Label("Insights", systemImage: "sparkle.magnifyingglass")
-            }
-
-            NavigationStack {
                 DigitalTwinView()
             }
             .tabItem {
                 Label("Twin", systemImage: "star.circle.fill")
+            }
+
+            NavigationStack {
+                StatsView()
+            }
+            .tabItem {
+                Label("Insights", systemImage: "sparkle.magnifyingglass")
             }
 
             NavigationStack {
