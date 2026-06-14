@@ -19,13 +19,13 @@ struct OnboardingView: View {
     private let pages: [OnboardingPage] = [
         OnboardingPage(
             icon: "person.crop.circle.fill",
-            iconColor: .pink,
+            iconColor: Color(red: 0.831, green: 0.647, blue: 0.278),  // warm gold — the sun at the centre
             title: "Meet Your Digital Twin",
             subtitle: "The sun at the center of your sky",
             description: "Your Digital Twin orbits your inner world — learning your personality, emotional patterns, and the people in your life. Four planets emerge: Mind, Heart, Voice, and Graph.",
             gradient: [
-                Color(red: 45/255, green: 35/255, blue: 55/255),    // Deep purple-brown
-                Color(red: 90/255, green: 65/255, blue: 80/255)     // Warm mauve
+                Color(red: 38/255, green: 30/255, blue: 22/255),    // deep warm espresso
+                Color(red: 92/255, green: 68/255, blue: 38/255)     // warm amber-bronze
             ]
         ),
         OnboardingPage(
