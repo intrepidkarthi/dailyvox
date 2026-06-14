@@ -402,7 +402,7 @@ struct StatsView: View {
             if progress >= 1.0 {
                 Text("Goal reached! Great work this week.")
                     .font(.caption)
-                    .foregroundColor(.green)
+                    .foregroundColor(DS.Palette.forest)
             }
         }
         .dsCard()
@@ -423,14 +423,14 @@ struct StatsView: View {
             VStack(spacing: 20) {
                 Image(systemName: "trophy.fill")
                     .font(.system(size: 60))
-                    .foregroundColor(.yellow)
+                    .foregroundColor(DS.Palette.gold)
 
                 Text("Milestone!")
                     .font(.largeTitle.bold())
 
                 Text("\(days)-Day Streak")
                     .font(.title2)
-                    .foregroundColor(.orange)
+                    .foregroundColor(DS.Palette.gold)
 
                 Text("You've journaled for \(days) consecutive days. Your dedication to self-reflection is paying off.")
                     .font(.subheadline)
@@ -446,7 +446,7 @@ struct StatsView: View {
                 .font(.headline)
                 .padding(.horizontal, 32)
                 .padding(.vertical, 12)
-                .background(Color.orange)
+                .background(DS.Palette.sage)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
             }

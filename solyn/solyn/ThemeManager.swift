@@ -100,7 +100,7 @@ final class ThemeManager: ObservableObject {
 
     /// Data visualization color (charts, meters, bars)
     var dataColor: Color {
-        Color.teal
+        DS.Palette.sage
     }
 
     /// Warm background for Ivory theme, system default for others

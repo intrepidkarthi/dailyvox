@@ -185,7 +185,7 @@ struct TwinProfileCardSection: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "person.text.rectangle")
-                            .foregroundColor(.teal)
+                            .foregroundColor(DS.Palette.gold)
                         Text("Your Personality Card")
                             .font(.headline)
                         Spacer()
@@ -197,7 +197,7 @@ struct TwinProfileCardSection: View {
                                 Text("Share")
                             }
                             .font(.caption.weight(.semibold))
-                            .foregroundColor(.teal)
+                            .foregroundColor(DS.Palette.gold)
                         }
                     }
 
@@ -235,8 +235,8 @@ struct TwinProfileCardContent: View {
         VStack(alignment: .leading, spacing: 16) {
             // Style labels
             HStack(spacing: 12) {
-                styleBadge(profile.communicationStyle, color: .teal)
-                styleBadge(profile.thinkingStyle, color: .purple)
+                styleBadge(profile.communicationStyle, color: DS.Palette.gold)
+                styleBadge(profile.thinkingStyle, color: DS.Palette.terracotta)
             }
 
             // Trait bars
@@ -258,7 +258,7 @@ struct TwinProfileCardContent: View {
                                 .font(.system(size: 12, weight: .medium, design: .monospaced))
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(Color.teal.opacity(0.15))
+                                .background(DS.Palette.gold.opacity(0.15))
                                 .cornerRadius(6)
                         }
                     }
@@ -287,7 +287,7 @@ struct TwinProfileCardContent: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(Color.teal.opacity(0.2), lineWidth: 1)
+                        .stroke(DS.Palette.gold.opacity(0.2), lineWidth: 1)
                 )
         )
     }
@@ -320,7 +320,7 @@ struct TwinProfileCardContent: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(
                             LinearGradient(
-                                colors: [.teal, .purple],
+                                colors: [DS.Palette.gold, DS.Palette.terracotta],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -370,12 +370,12 @@ private struct TwinProfileCardExport: View {
                     .textCase(.uppercase)
                     .tracking(1.0)
             }
-            .foregroundColor(.teal.opacity(0.9))
+            .foregroundColor(DS.Palette.gold.opacity(0.9))
 
             // Style labels
             HStack(spacing: 10) {
-                exportBadge(profile.communicationStyle, color: .teal)
-                exportBadge(profile.thinkingStyle, color: .purple)
+                exportBadge(profile.communicationStyle, color: DS.Palette.gold)
+                exportBadge(profile.thinkingStyle, color: DS.Palette.terracotta)
             }
 
             // Traits
@@ -395,7 +395,7 @@ private struct TwinProfileCardExport: View {
                         ForEach(profile.signatureWords, id: \.self) { word in
                             Text(word)
                                 .font(.system(size: 12, weight: .medium, design: .monospaced))
-                                .foregroundColor(.teal.opacity(0.8))
+                                .foregroundColor(DS.Palette.gold.opacity(0.8))
                         }
                     }
                 }
@@ -442,7 +442,7 @@ private struct TwinProfileCardExport: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(Color.teal.opacity(0.2), lineWidth: 1)
+                        .stroke(DS.Palette.gold.opacity(0.2), lineWidth: 1)
                 )
         )
     }
@@ -473,7 +473,7 @@ private struct TwinProfileCardExport: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.white.opacity(0.08))
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(LinearGradient(colors: [.teal, .purple], startPoint: .leading, endPoint: .trailing))
+                        .fill(LinearGradient(colors: [DS.Palette.gold, DS.Palette.terracotta], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * max(0.05, min(1, trait.value)))
                 }
             }

@@ -131,7 +131,7 @@ struct BackupExportView: View {
                 if selectedFormat == .json || selectedFormat == .encryptedBackup {
                     HStack(spacing: 8) {
                         Image(systemName: "arrow.triangle.2.circlepath")
-                            .foregroundColor(.green)
+                            .foregroundColor(DS.Palette.forest)
                             .font(.caption)
                         Text("Can be imported back into DailyVox")
                             .font(.caption)
@@ -142,7 +142,7 @@ struct BackupExportView: View {
                 if selectedFormat == .encryptedBackup {
                     HStack(spacing: 8) {
                         Image(systemName: "lock.shield.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(DS.Palette.forest)
                             .font(.caption)
                         Text("AES-256 encrypted with your password")
                             .font(.caption)
@@ -152,7 +152,7 @@ struct BackupExportView: View {
                 
                 HStack(spacing: 8) {
                     Image(systemName: "lock.fill")
-                        .foregroundColor(.blue)
+                        .foregroundColor(DS.Palette.sage)
                         .font(.caption)
                     Text("File saved to your device only")
                         .font(.caption)
@@ -280,11 +280,11 @@ struct ImportBackupView: View {
                 VStack(spacing: 16) {
                     ZStack {
                         Circle()
-                            .fill(Color.blue.opacity(0.1))
+                            .fill(DS.Palette.sage.opacity(0.1))
                             .frame(width: 80, height: 80)
                         Image(systemName: "doc.badge.plus")
                             .font(.system(size: 32))
-                            .foregroundColor(.blue)
+                            .foregroundColor(DS.Palette.sage)
                     }
                     
                     Text("Import JSON Backup")
@@ -302,7 +302,7 @@ struct ImportBackupView: View {
             Section {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundColor(DS.Palette.forest)
                         .font(.caption)
                     Text("Duplicate entries are automatically skipped")
                         .font(.caption)
@@ -311,7 +311,7 @@ struct ImportBackupView: View {
                 
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.triangle.merge")
-                        .foregroundColor(.blue)
+                        .foregroundColor(DS.Palette.sage)
                         .font(.caption)
                     Text("Existing entries are preserved")
                         .font(.caption)
@@ -320,7 +320,7 @@ struct ImportBackupView: View {
                 
                 HStack(spacing: 8) {
                     Image(systemName: "icloud.and.arrow.up")
-                        .foregroundColor(.purple)
+                        .foregroundColor(DS.Palette.terracotta)
                         .font(.caption)
                     Text("Imported entries sync to iCloud")
                         .font(.caption)

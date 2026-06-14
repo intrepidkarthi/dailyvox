@@ -296,7 +296,7 @@ struct EntryDetailView: View {
             }) {
                 HStack {
                     Image(systemName: "brain.head.profile")
-                        .foregroundColor(.teal)
+                        .foregroundColor(DS.Palette.sage)
                     Text("AI Insights")
                         .font(.subheadline.weight(.medium))
                     Spacer()
@@ -330,9 +330,9 @@ struct EntryDetailView: View {
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
                                     RoundedRectangle(cornerRadius: 4)
-                                        .fill(Color.gray.opacity(0.2))
+                                        .fill(DS.Palette.inkMute.opacity(0.2))
                                     RoundedRectangle(cornerRadius: 4)
-                                        .fill(analysis.sentiment > 0 ? Color.green : Color.orange)
+                                        .fill(analysis.sentiment > 0 ? DS.Palette.forest : DS.Palette.terracotta)
                                         .frame(width: geo.size.width * CGFloat(abs(analysis.sentiment)))
                                 }
                             }
@@ -349,7 +349,7 @@ struct EntryDetailView: View {
                     // Intent
                     HStack {
                         Image(systemName: "quote.bubble")
-                            .foregroundColor(.blue)
+                            .foregroundColor(DS.Palette.sage)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Intent")
                                 .font(.caption)
@@ -372,7 +372,7 @@ struct EntryDetailView: View {
                                         .font(.caption2)
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 4)
-                                        .background(Color.teal.opacity(0.1))
+                                        .background(DS.Palette.sage.opacity(0.1))
                                         .clipShape(Capsule())
                                 }
                             }
@@ -395,7 +395,7 @@ struct EntryDetailView: View {
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.teal.opacity(0.05))
+                    .background(DS.Palette.sage.opacity(0.05))
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
                 .padding()

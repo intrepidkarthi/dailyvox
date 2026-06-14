@@ -371,11 +371,11 @@ struct SettingsView: View {
                 HStack(spacing: 12) {
                     ZStack {
                         Circle()
-                            .fill(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? Color.blue.opacity(0.15) : Color.gray.opacity(0.15))
+                            .fill(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? DS.Palette.sage.opacity(0.15) : DS.Palette.inkMute.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: iCloudSyncEnabled && PersistenceController.isCloudAvailable ? "icloud.fill" : "icloud.slash")
                             .font(.body)
-                            .foregroundColor(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? .blue : .gray)
+                            .foregroundColor(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? DS.Palette.sage : DS.Palette.inkMute)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("iCloud Sync")
@@ -394,7 +394,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(DS.Palette.forest)
                             .font(.caption)
                         Text("Entries sync automatically via your personal iCloud")
                             .font(.caption)
@@ -402,7 +402,7 @@ struct SettingsView: View {
                     }
                     HStack(spacing: 8) {
                         Image(systemName: "lock.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(DS.Palette.forest)
                             .font(.caption)
                         Text("End-to-end encrypted with your Apple ID")
                             .font(.caption)
@@ -438,11 +438,11 @@ struct SettingsView: View {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(Color.green.opacity(0.15))
+                        .fill(DS.Palette.forest.opacity(0.15))
                         .frame(width: 44, height: 44)
                     Image(systemName: "lock.shield.fill")
                         .font(.title3)
-                        .foregroundColor(.green)
+                        .foregroundColor(DS.Palette.forest)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Privacy First")
@@ -488,11 +488,11 @@ struct SettingsView: View {
                 HStack(spacing: 12) {
                     ZStack {
                         Circle()
-                            .fill(Color.orange.opacity(0.15))
+                            .fill(DS.Palette.terracotta.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: "square.and.arrow.up")
                             .font(.subheadline)
-                            .foregroundColor(.orange)
+                            .foregroundColor(DS.Palette.terracotta)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Export Data")
@@ -510,11 +510,11 @@ struct SettingsView: View {
                 HStack(spacing: 12) {
                     ZStack {
                         Circle()
-                            .fill(Color.blue.opacity(0.15))
+                            .fill(DS.Palette.sage.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: "square.and.arrow.down")
                             .font(.subheadline)
-                            .foregroundColor(.blue)
+                            .foregroundColor(DS.Palette.sage)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Import Backup")
@@ -542,9 +542,9 @@ struct SettingsView: View {
                     ProgressView()
                 }
             } else {
-                StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: .blue)
-                StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: .pink)
-                StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: .orange)
+                StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
+                StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
+                StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
 
                 HStack {
                     Text("Total")
@@ -970,7 +970,7 @@ struct PrivacyInfoRow: View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.subheadline)
-                .foregroundColor(.green)
+                .foregroundColor(DS.Palette.forest)
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 2) {
