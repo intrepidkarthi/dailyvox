@@ -357,11 +357,11 @@ struct DigitalTwinView: View {
 
     private var orbColor: Color {
         let valence = twin.emotionalSignature.baselineValence
-        if valence > 0.3 { return .green }
-        if valence > 0.1 { return .blue }
-        if valence > -0.1 { return .purple }
-        if valence > -0.3 { return .orange }
-        return .pink
+        if valence > 0.3 { return DS.Palette.forest }
+        if valence > 0.1 { return DS.Palette.sage }
+        if valence > -0.1 { return DS.Palette.terracotta }
+        if valence > -0.3 { return DS.Palette.gold }
+        return DS.Palette.coral
     }
 
     // MARK: - Maturity Badge
@@ -568,14 +568,14 @@ struct DigitalTwinView: View {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [.teal.opacity(0.4), .purple.opacity(0.3)],
+                            colors: [DS.Palette.sage.opacity(0.4), DS.Palette.terracotta.opacity(0.3)],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color.teal.opacity(0.3), lineWidth: 1)
+                            .stroke(DS.Palette.sage.opacity(0.3), lineWidth: 1)
                     )
             )
         }
@@ -600,15 +600,15 @@ struct DigitalTwinView: View {
                 sectionHeader("Emotional Baseline", icon: "heart.circle.fill")
 
                 HStack(spacing: 20) {
-                    emotionMeter(label: "Valence", value: (twin.emotionalSignature.baselineValence + 1) / 2, color: twin.emotionalSignature.baselineValence > 0 ? .green : .orange)
-                    emotionMeter(label: "Arousal", value: twin.emotionalSignature.baselineArousal, color: .blue)
-                    emotionMeter(label: "Range", value: twin.emotionalSignature.emotionalRange, color: .teal)
+                    emotionMeter(label: "Valence", value: (twin.emotionalSignature.baselineValence + 1) / 2, color: twin.emotionalSignature.baselineValence > 0 ? DS.Palette.forest : DS.Palette.gold)
+                    emotionMeter(label: "Arousal", value: twin.emotionalSignature.baselineArousal, color: DS.Palette.sage)
+                    emotionMeter(label: "Range", value: twin.emotionalSignature.emotionalRange, color: DS.Palette.sage)
                 }
 
                 if twin.emotionalSignature.sentimentTrend != 0 {
                     HStack {
                         Image(systemName: twin.emotionalSignature.sentimentTrend > 0 ? "arrow.up.right" : "arrow.down.right")
-                            .foregroundColor(twin.emotionalSignature.sentimentTrend > 0 ? .green : .orange)
+                            .foregroundColor(twin.emotionalSignature.sentimentTrend > 0 ? DS.Palette.forest : DS.Palette.gold)
                         Text("Emotional trajectory is \(twin.emotionalSignature.sentimentTrend > 0 ? "improving" : "declining")")
                             .font(.caption)
                             .foregroundColor(themeManager.secondaryTextColor)
@@ -674,7 +674,7 @@ struct DigitalTwinView: View {
                     if !twin.emotionalSignature.positiveTriggersTopics.isEmpty {
                         Text("Lifts your mood")
                             .font(.caption.bold())
-                            .foregroundColor(.green)
+                            .foregroundColor(DS.Palette.forest)
 
                         FlowLayout(spacing: 6) {
                             ForEach(Array(twin.emotionalSignature.positiveTriggersTopics.sorted { $0.value > $1.value }.prefix(8)), id: \.key) { topic, _ in
@@ -682,7 +682,7 @@ struct DigitalTwinView: View {
                                     .font(.caption)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color.green.opacity(0.2))
+                                    .background(DS.Palette.forest.opacity(0.2))
                                     .cornerRadius(8)
                             }
                         }
@@ -691,7 +691,7 @@ struct DigitalTwinView: View {
                     if !twin.emotionalSignature.negativeTriggersTopics.isEmpty {
                         Text("Weighs on you")
                             .font(.caption.bold())
-                            .foregroundColor(.orange)
+                            .foregroundColor(DS.Palette.gold)
                             .padding(.top, 4)
 
                         FlowLayout(spacing: 6) {
@@ -700,7 +700,7 @@ struct DigitalTwinView: View {
                                     .font(.caption)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(Color.orange.opacity(0.2))
+                                    .background(DS.Palette.gold.opacity(0.2))
                                     .cornerRadius(8)
                             }
                         }
@@ -765,7 +765,7 @@ struct DigitalTwinView: View {
                         let count = Double(twin.behavioralPatterns.hourlyActivity[hour] ?? 0)
                         VStack(spacing: 2) {
                             RoundedRectangle(cornerRadius: 2)
-                                .fill(Color.teal.opacity(count / max(1, maxHourly)))
+                                .fill(DS.Palette.sage.opacity(count / max(1, maxHourly)))
                                 .frame(height: max(4, 60 * (count / max(1, maxHourly))))
 
                             if hour % 6 == 0 {
@@ -800,7 +800,7 @@ struct DigitalTwinView: View {
                         let count = Double(twin.behavioralPatterns.dayOfWeekActivity[day] ?? 0)
                         VStack(spacing: 4) {
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.blue.opacity(count / max(1, maxDaily) * 0.8 + 0.1))
+                                .fill(DS.Palette.sage.opacity(count / max(1, maxDaily) * 0.8 + 0.1))
                                 .frame(height: max(8, 50 * (count / max(1, maxDaily))))
 
                             Text(days[day - 1])
@@ -1051,10 +1051,10 @@ struct DigitalTwinView: View {
     // MARK: - Helpers
 
     private func sentimentColor(_ sentiment: Double) -> Color {
-        if sentiment > 0.3 { return .green }
-        if sentiment > 0.1 { return .blue }
+        if sentiment > 0.3 { return DS.Palette.forest }
+        if sentiment > 0.1 { return DS.Palette.sage }
         if sentiment > -0.1 { return .gray }
-        if sentiment > -0.3 { return .orange }
+        if sentiment > -0.3 { return DS.Palette.gold }
         return .red
     }
 
@@ -1082,13 +1082,13 @@ struct DigitalTwinView: View {
 
     private func moodColor(_ mood: String) -> Color {
         switch mood.lowercased() {
-        case "happy": return .yellow
-        case "calm": return .blue
-        case "grateful": return .green
-        case "excited": return .orange
+        case "happy": return DS.Palette.gold
+        case "calm": return DS.Palette.sage
+        case "grateful": return DS.Palette.forest
+        case "excited": return DS.Palette.gold
         case "tired": return .gray
-        case "anxious": return .purple
-        case "sad": return .indigo
+        case "anxious": return DS.Palette.terracotta
+        case "sad": return DS.Palette.terracotta
         case "angry": return .red
         default: return .gray
         }
@@ -1174,7 +1174,7 @@ struct TwinPredictionsSection: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 6) {
                         Image(systemName: "brain.head.profile")
-                            .foregroundColor(.purple)
+                            .foregroundColor(DS.Palette.terracotta)
                         Text("Your Twin Thinks...")
                             .font(.headline)
                     }
