@@ -8,7 +8,6 @@
 import SwiftUI
 import DailyVoxTwinEngine
 import CoreData
-import Charts
 
 struct StatsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -236,46 +235,45 @@ struct StatsView: View {
                     }
                 }
 
-                // Mood chart (last 14 days)
-                if #available(iOS 16.0, *) {
-                    moodChart
-                        .frame(height: 120)
-                        .padding(.top, 8)
-                }
+                // Mood over the last 14 days
+                moodStrip
+                    .padding(.top, DS.Space.sm)
             }
         }
         .dsCard()
     }
 
-    @available(iOS 16.0, *)
-    private var moodChart: some View {
-        Chart {
-            ForEach(moodChartData, id: \.date) { item in
-                if let mood = item.mood {
-                    PointMark(
-                        x: .value("Date", item.date, unit: .day),
-                        y: .value("Mood", mood.moodValue)
-                    )
-                    .foregroundStyle(mood.color)
-                    .symbolSize(100)
-                }
-            }
-        }
-        .chartYScale(domain: 1...5)
-        .chartYAxis {
-            AxisMarks(values: [1, 3, 5]) { value in
-                AxisValueLabel {
-                    if let v = value.as(Int.self) {
-                        Image(systemName: v == 1 ? "cloud.rain.fill" : v == 3 ? "circle.fill" : "sun.max.fill")
-                            .font(.caption2)
-                            .foregroundColor(v == 1 ? Color(red: 0.769, green: 0.451, blue: 0.420) : v == 3 ? .secondary : Color(red: 0.831, green: 0.647, blue: 0.278))
+    /// Compact 14-day mood strip — bar height by valence, color by mood, faint dot
+    /// for days with no entry. Reads as an intentional trend even with sparse data.
+    private var moodStrip: some View {
+        let maxH: CGFloat = 66
+        return VStack(spacing: DS.Space.xs) {
+            HStack(alignment: .bottom, spacing: 5) {
+                ForEach(moodChartData, id: \.date) { item in
+                    ZStack(alignment: .bottom) {
+                        Color.clear.frame(height: maxH)
+                        if let mood = item.mood {
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [mood.color, mood.color.opacity(0.75)],
+                                        startPoint: .top, endPoint: .bottom
+                                    )
+                                )
+                                .frame(height: max(12, maxH * CGFloat(mood.moodValue) / 5.0))
+                        } else {
+                            Circle()
+                                .fill(DS.Palette.inkMute.opacity(0.18))
+                                .frame(width: 5, height: 5)
+                        }
                     }
+                    .frame(maxWidth: .infinity)
                 }
             }
-        }
-        .chartXAxis {
-            AxisMarks(values: .stride(by: .day, count: 3)) { value in
-                AxisValueLabel(format: .dateTime.day())
+            HStack {
+                Text("2 weeks ago").font(.dsCaption2).foregroundColor(DS.Palette.inkMute)
+                Spacer()
+                Text("Today").font(.dsCaption2).foregroundColor(DS.Palette.inkMute)
             }
         }
     }
