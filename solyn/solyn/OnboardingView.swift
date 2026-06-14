@@ -54,19 +54,19 @@ struct OnboardingView: View {
 
     private var backgroundGradient: [Color] {
         if currentPage == 0 {
-            // Celestial gradient for welcome star
+            // Warm night sky for the welcome star (matches the app's warm theme)
             return [
-                Color(red: 12/255, green: 12/255, blue: 28/255),   // Deep night
-                Color(red: 20/255, green: 18/255, blue: 40/255)    // Warm night
+                Color(red: 26/255, green: 21/255, blue: 18/255),   // warm espresso night
+                Color(red: 42/255, green: 32/255, blue: 26/255)    // warm dusk
             ]
         } else if currentPage <= pages.count {
             // Feature pages (1-based index, so subtract 1 for array)
             return pages[currentPage - 1].gradient
         } else {
-            // Intention check-in page
+            // Intention check-in page — deep sage close (warm, on-brand)
             return [
-                Color(red: 40/255, green: 35/255, blue: 50/255),    // Deep warm purple
-                Color(red: 85/255, green: 60/255, blue: 75/255)     // Warm plum
+                Color(red: 28/255, green: 38/255, blue: 32/255),    // deep sage night
+                Color(red: 56/255, green: 78/255, blue: 64/255)     // warm sage
             ]
         }
     }
@@ -204,6 +204,8 @@ struct OnboardingWelcomeView: View {
     @State private var starScale: CGFloat = 0.3
     @State private var glowOpacity: Double = 0
     @State private var textOpacity: Double = 0
+    @State private var breathe = false   // continuous glow pulse
+    @State private var drift = false     // slow ambient-star rotation
 
     var body: some View {
         VStack(spacing: 0) {
@@ -211,20 +213,22 @@ struct OnboardingWelcomeView: View {
 
             // Constellation star animation
             ZStack {
-                // Outer glow
+                // Outer glow — gently breathing
                 Circle()
                     .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.15))
                     .frame(width: 200, height: 200)
+                    .scaleEffect(breathe ? 1.12 : 0.94)
 
                 Circle()
                     .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.25))
                     .frame(width: 120, height: 120)
+                    .scaleEffect(breathe ? 1.08 : 0.96)
 
                 // Core star
                 Circle()
                     .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.8))
                     .frame(width: 20, height: 20)
-                    .scaleEffect(starScale)
+                    .scaleEffect(starScale * (breathe ? 1.08 : 1.0))
                     .shadow(color: Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.6), radius: 20)
 
                 // White hot center
@@ -233,18 +237,22 @@ struct OnboardingWelcomeView: View {
                     .frame(width: 8, height: 8)
                     .scaleEffect(starScale)
 
-                // Ambient stars around core
-                ForEach(0..<8, id: \.self) { i in
-                    let angle = Double(i) * (.pi * 2 / 8)
-                    let radius: CGFloat = 85 + CGFloat(i % 3) * 20
-                    Circle()
-                        .fill(Color.white.opacity(glowOpacity * (0.15 + Double(i % 3) * 0.1)))
-                        .frame(width: CGFloat(2 + i % 3), height: CGFloat(2 + i % 3))
-                        .offset(
-                            x: cos(angle) * radius,
-                            y: sin(angle) * radius
-                        )
+                // Ambient stars around core — slowly drifting as a ring
+                ZStack {
+                    ForEach(0..<8, id: \.self) { i in
+                        let angle = Double(i) * (.pi * 2 / 8)
+                        let radius: CGFloat = 85 + CGFloat(i % 3) * 20
+                        Circle()
+                            .fill(Color.white.opacity(glowOpacity * (0.15 + Double(i % 3) * 0.1)))
+                            .frame(width: CGFloat(2 + i % 3), height: CGFloat(2 + i % 3))
+                            .offset(
+                                x: cos(angle) * radius,
+                                y: sin(angle) * radius
+                            )
+                    }
                 }
+                .rotationEffect(.degrees(drift ? 360 : 0))
+                .animation(.linear(duration: 90).repeatForever(autoreverses: false), value: drift)
             }
 
             Spacer()
@@ -277,6 +285,11 @@ struct OnboardingWelcomeView: View {
             withAnimation(.easeOut(duration: 1.0).delay(0.8)) {
                 textOpacity = 1.0
             }
+            // Ongoing living motion (so the welcome screen isn't static like before)
+            withAnimation(.easeInOut(duration: 3.2).repeatForever(autoreverses: true).delay(0.6)) {
+                breathe = true
+            }
+            drift = true
         }
     }
 }
