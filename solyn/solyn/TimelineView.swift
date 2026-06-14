@@ -205,13 +205,13 @@ struct TimelineView: View {
                     HapticManager.shared.selectionChanged()
                 }) {
                     Image(systemName: showStarredOnly ? "star.fill" : "star")
-                        .foregroundColor(showStarredOnly ? .yellow : .accentColor)
+                        .foregroundColor(showStarredOnly ? DS.Palette.gold : DS.Palette.sage)
                 }
                 .accessibilityLabel("Show starred only")
             }
         }
         .background { WarmBackground() }
-        .navigationTitle("Timeline")
+        .navigationTitle("Journal")
         #if os(iOS)
         .onChange(of: voiceSearch.transcribedText) { _, newValue in
             if !newValue.isEmpty {
@@ -341,7 +341,7 @@ struct TimelineView: View {
                         HapticManager.shared.buttonTap()
                     }
                     .font(.caption)
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.Palette.coral)
                 }
             }
             .padding(.horizontal)
@@ -356,7 +356,7 @@ struct TimelineView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 if showStarredOnly {
-                    FilterChip(label: "Starred", icon: "star.fill", color: .yellow) {
+                    FilterChip(label: "Starred", icon: "star.fill", color: DS.Palette.gold) {
                         showStarredOnly = false
                     }
                 }
@@ -368,13 +368,13 @@ struct TimelineView: View {
                 }
                 
                 if let start = startDate {
-                    FilterChip(label: "From \(formatShortDate(start))", icon: "calendar", color: .blue) {
+                    FilterChip(label: "From \(formatShortDate(start))", icon: "calendar", color: DS.Palette.terracotta) {
                         startDate = nil
                     }
                 }
                 
                 if let end = endDate {
-                    FilterChip(label: "To \(formatShortDate(end))", icon: "calendar", color: .blue) {
+                    FilterChip(label: "To \(formatShortDate(end))", icon: "calendar", color: DS.Palette.terracotta) {
                         endDate = nil
                     }
                 }
@@ -384,7 +384,7 @@ struct TimelineView: View {
                         clearAllFilters()
                     }
                     .font(.caption.weight(.medium))
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.Palette.coral)
                     .padding(.leading, 8)
                 }
             }
@@ -685,7 +685,7 @@ struct EntryRowView: View {
         var searchStart = textLower.startIndex
         while let range = textLower.range(of: searchLower, range: searchStart..<textLower.endIndex) {
             if let attrRange = Range(range, in: attributedString) {
-                attributedString[attrRange].backgroundColor = .yellow.opacity(0.3)
+                attributedString[attrRange].backgroundColor = DS.Palette.gold.opacity(0.3)
                 attributedString[attrRange].foregroundColor = .primary
             }
             searchStart = range.upperBound
