@@ -12,40 +12,47 @@ struct LockScreenView: View {
             WarmBackground()
                 .ignoresSafeArea()
 
-            VStack(spacing: 32) {
-                Image(systemName: "lock.shield.fill")
-                    .font(.system(size: horizontalSizeClass == .regular ? 80 : 64))
-                    .foregroundColor(.accentColor)
+            VStack(spacing: DS.Space.xl) {
+                // Sage badge — warm + on-brand in every theme (no more dark-mode blue)
+                ZStack {
+                    Circle()
+                        .fill(DS.Palette.sage.opacity(0.12))
+                        .frame(width: horizontalSizeClass == .regular ? 132 : 112,
+                               height: horizontalSizeClass == .regular ? 132 : 112)
+                    Image(systemName: "lock.shield.fill")
+                        .font(.system(size: horizontalSizeClass == .regular ? 56 : 46, weight: .semibold))
+                        .foregroundColor(DS.Palette.sage)
+                }
 
-                Text("DailyVox is Locked")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                VStack(spacing: DS.Space.xs) {
+                    Text("DailyVox is locked")
+                        .font(.dsTitle)
+                        .foregroundColor(DS.Palette.ink)
 
-                Text("Only you can unlock and see your entries.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text("Only you can unlock and see your entries.")
+                        .font(.dsBody)
+                        .foregroundColor(DS.Palette.inkSoft)
+                        .multilineTextAlignment(.center)
+                }
 
                 Button(action: unlock) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: lockManager.biometricsAvailable ? biometryIcon : "key.fill")
                         Text("Unlock with \(lockManager.biometryTypeName)")
                     }
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: 320)
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
+                .buttonStyle(.dsPrimary)
+                .frame(maxWidth: 300)
+                .padding(.top, DS.Space.xs)
 
                 if authFailed {
                     Text("Authentication failed. Please try again.")
-                        .font(.caption)
-                        .foregroundColor(Color(red: 0.769, green: 0.451, blue: 0.420))
+                        .font(.dsCaption)
+                        .foregroundColor(DS.Palette.coral)
                 }
             }
             .frame(maxWidth: 500)
-            .padding()
+            .padding(DS.Space.xl)
         }
         .onAppear {
             // Auto-prompt on appear
