@@ -80,18 +80,18 @@ private struct StreakLockScreenView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Day \(context.state.streak)")
                     .font(.headline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(lsWarmInk)
                 Text(context.state.hasEntryToday
                      ? "Today's entry is in. \(context.state.totalEntries) stars total."
                      : "Open today — keep the streak alive.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(lsWarmInkMute)
             }
 
             Spacer()
 
             Image(systemName: context.state.hasEntryToday ? "checkmark.circle.fill" : "circle.dashed")
-                .foregroundStyle(context.state.hasEntryToday ? .green : .secondary)
+                .foregroundStyle(context.state.hasEntryToday ? lsWarmSage : lsWarmInkMute)
                 .font(.title2)
         }
         .padding(.horizontal, 16)

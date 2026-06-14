@@ -13,6 +13,13 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
+// Warm dark text for the light ivory Lock-Screen background. The system renders
+// Live Activity `.primary`/`.secondary` text as white by default, which is
+// unreadable on the ivory tint — so the Lock Screen views set these explicitly.
+let lsWarmInk = Color(red: 0.169, green: 0.145, blue: 0.125)      // warm near-black
+let lsWarmInkMute = Color(red: 0.42, green: 0.38, blue: 0.34)     // warm muted
+let lsWarmSage = Color(red: 0.32, green: 0.40, blue: 0.36)        // sage
+
 @available(iOS 16.2, *)
 struct RecordingLiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
@@ -81,10 +88,10 @@ private struct RecordingLockScreenView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Recording your entry")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(lsWarmInk)
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(lsWarmInkMute)
                 WaveformGlyph(level: CGFloat(context.state.level), bars: 28)
                     .frame(height: 18)
             }
@@ -93,7 +100,7 @@ private struct RecordingLockScreenView: View {
 
             Text(elapsedString(context.state.elapsed))
                 .font(.title2.monospacedDigit().weight(.semibold))
-                .foregroundStyle(.primary)
+                .foregroundStyle(lsWarmInk)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

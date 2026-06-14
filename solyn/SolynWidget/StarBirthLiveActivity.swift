@@ -73,10 +73,10 @@ private struct StarBirthLockScreenView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("A new star appeared in your sky")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(lsWarmInk)
                 Text(streakLine(context.state))
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(lsWarmInkMute)
             }
 
             Spacer()
@@ -84,10 +84,10 @@ private struct StarBirthLockScreenView: View {
             VStack(alignment: .trailing, spacing: 0) {
                 Text("\(context.state.totalStars)")
                     .font(.title3.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(lsWarmInk)
                 Text("stars")
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(lsWarmInkMute)
             }
         }
         .padding(.horizontal, 16)
