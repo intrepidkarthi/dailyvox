@@ -143,7 +143,7 @@ def main():
         html = page_html(fm, body_html, faq, related)
         open(os.path.join(OUT, slug + ".html"), "w", encoding="utf-8").write(html)
         sitemap.append(f"{DOMAIN}/blog/{slug}")
-        print(f"  rendered /guide/{slug}  ({len(body.split())} words, {len(faq)} FAQ)")
+        print(f"  rendered /blog/{slug}  ({len(body.split())} words, {len(faq)} FAQ)")
     sm = os.path.join(ROOT, "public", "sitemap-articles.xml")
     open(sm, "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "\n".join(f"<url><loc>{u}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>" for u in sitemap)
