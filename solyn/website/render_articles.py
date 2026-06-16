@@ -9,7 +9,7 @@ import os, re, json, glob
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, "content", "articles")
-OUT = os.path.join(ROOT, "public", "guide")
+OUT = os.path.join(ROOT, "public", "blog")
 DOMAIN = "https://getdailyvox.com"
 APP_STORE = "https://apps.apple.com/app/id6760454642"
 IVORY, INK, SAGE, GOLD, TERRA = "#FAF8F5", "#2B2520", "#5B7C6B", "#D4A547", "#C4956A"
@@ -75,7 +75,7 @@ def body_to_html(body):
     return "\n".join(html), faq
 
 def page_html(fm, body_html, faq, related):
-    slug = fm["slug"]; canonical = f"{DOMAIN}/guide/{slug}"
+    slug = fm["slug"]; canonical = f"{DOMAIN}/blog/{slug}"
     title = fm["title"]; meta = fm.get("meta_description", "")
     article_schema = {"@context":"https://schema.org","@type":"Article","headline":title,
         "description":meta,"url":canonical,"author":{"@type":"Organization","name":"DailyVox"},
@@ -84,11 +84,11 @@ def page_html(fm, body_html, faq, related):
         {"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in faq]} if faq else None
     bc = {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
         {"@type":"ListItem","position":1,"name":"Home","item":DOMAIN+"/"},
-        {"@type":"ListItem","position":2,"name":"Guides","item":DOMAIN+"/guide"},
+        {"@type":"ListItem","position":2,"name":"Blog","item":DOMAIN+"/blog"},
         {"@type":"ListItem","position":3,"name":title}]}
     schemas = "\n".join(f'<script type="application/ld+json">{json.dumps(s)}</script>'
                         for s in [article_schema, faq_schema, bc] if s)
-    rel = "".join(f'<a href="/guide/{s}">{t}</a>' for s,t in related)
+    rel = "".join(f'<a href="/blog/{s}">{t}</a>' for s,t in related)
     return f"""<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -116,9 +116,9 @@ footer{{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid
 a{{color:var(--terra)}}
 </style></head>
 <body>
-<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/guide">Guides</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
 <main>
-<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/guide">Guides</a></div>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
 <h1>{esc(title)}</h1>
 {body_html}
 <div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="{APP_STORE}">Get it on the App Store</a></div>
@@ -142,47 +142,13 @@ def main():
         related = [(s, t) for s, t in index if s != slug][:4]
         html = page_html(fm, body_html, faq, related)
         open(os.path.join(OUT, slug + ".html"), "w", encoding="utf-8").write(html)
-        sitemap.append(f"{DOMAIN}/guide/{slug}")
+        sitemap.append(f"{DOMAIN}/blog/{slug}")
         print(f"  rendered /guide/{slug}  ({len(body.split())} words, {len(faq)} FAQ)")
-    # /guide hub (de-orphans the cluster; linked from homepage footer)
-    cards = "\n".join(
-        f'<li><a href="/guide/{fm["slug"]}"><strong>{esc(fm["title"])}</strong><span>{esc(fm.get("meta_description",""))}</span></a></li>'
-        for fm, _, _, _ in pages)
-    hub = f"""<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guides — DailyVox</title>
-<meta name="description" content="Guides on private, on-device voice journaling: what to look for, how it works, and why your words should stay on your phone.">
-<link rel="canonical" href="{DOMAIN}/guide">
-<meta name="theme-color" content="{IVORY}">
-<style>
-:root{{--ivory:{IVORY};--ink:{INK};--sage:{SAGE};--gold:{GOLD};--terra:{TERRA}}}
-*{{box-sizing:border-box}}body{{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}}
-header,main,footer{{max-width:720px;margin:0 auto;padding:0 22px}}
-header{{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}}
-header a{{color:var(--ink);text-decoration:none;font-size:15px}}header .logo{{color:var(--sage);font-size:20px}}
-h1{{font-size:34px;margin:22px 0 6px}}.sub{{color:#8a8175;margin-top:0}}
-ul{{list-style:none;padding:0}}li{{margin:14px 0}}
-li a{{display:block;background:#fff;border:1px solid #e7e0d6;border-radius:14px;padding:16px 18px;text-decoration:none;color:var(--ink)}}
-li strong{{display:block;color:var(--sage);font-size:19px}}li span{{display:block;color:#6b6358;font-size:15px;margin-top:4px}}
-footer{{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6;margin-top:30px}}
-</style></head>
-<body>
-<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/guide">Guides</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
-<main>
-<h1>Guides</h1>
-<p class="sub">Private, on-device voice journaling: what to look for, how it works, why it stays on your phone.</p>
-<ul>{cards}</ul>
-</main>
-<footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.</footer>
-</body></html>"""
-    open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(hub)
-    sitemap.insert(0, f"{DOMAIN}/guide")
-    sm = os.path.join(ROOT, "public", "sitemap-guides.xml")
+    sm = os.path.join(ROOT, "public", "sitemap-articles.xml")
     open(sm, "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "\n".join(f"<url><loc>{u}</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>" for u in sitemap)
         + "\n</urlset>")
-    print(f"\n{len(pages)} pages -> public/guide/ ; sitemap -> public/sitemap-guides.xml")
+    print(f"\n{len(pages)} pages -> public/blog/ ; sitemap -> public/sitemap-articles.xml")
 
 if __name__ == "__main__":
     main()
