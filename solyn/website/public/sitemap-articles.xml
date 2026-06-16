@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://getdailyvox.com/blog/dailyvox-vs-reflection</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://getdailyvox.com/blog/dailyvox-vs-speakwise</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://getdailyvox.com/blog/dailyvox-vs-tinh</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://getdailyvox.com/blog/dailyvox-vs-untold</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<url><loc>https://getdailyvox.com/blog/dailyvox-vs-voicescriber</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 <url><loc>https://getdailyvox.com/blog/is-your-diary-app-private</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 <url><loc>https://getdailyvox.com/blog/voice-diary-app</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

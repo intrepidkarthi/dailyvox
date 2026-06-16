@@ -68,6 +68,18 @@ def body_to_html(body):
             faq.append((q, a))
             html.append(f'<details><summary>{inline(q)}</summary><p>{inline(a)}</p></details>')
             continue
+        if ln.startswith("|"):                # markdown pipe table
+            flush_para(); flush_list()
+            tbl = [ln]; j = i + 1
+            while j < len(lines) and lines[j].strip().startswith("|"):
+                tbl.append(lines[j].strip()); j += 1
+            cells = lambda r: [c.strip() for c in r.strip().strip("|").split("|")]
+            head = cells(tbl[0]); body_rows = [cells(r) for r in tbl[2:]]  # tbl[1] = separator
+            html.append("<table><thead><tr>" + "".join(f"<th>{inline(c)}</th>" for c in head) +
+                        "</tr></thead><tbody>" +
+                        "".join("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>" for r in body_rows) +
+                        "</tbody></table>")
+            i = j; continue
         if re.match(r'^\d+\.\s+', ln):
             flush_para(); listbuf.append(re.sub(r'^\d+\.\s+', '', ln)); i += 1; continue
         flush_list(); para.append(ln); i += 1
@@ -111,6 +123,9 @@ ol{{padding-left:22px}}ol li{{margin:6px 0}}
 .cta{{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}}
 .cta a{{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}}
 details{{border-top:1px solid #e7e0d6;padding:13px 0}}summary{{font-weight:700;cursor:pointer}}
+table{{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}}
+th,td{{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}}
+th{{background:#f3efe8;color:var(--ink)}}td:first-child{{font-weight:600}}
 .related{{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}}.related a{{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}}
 footer{{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}}
 a{{color:var(--terra)}}
