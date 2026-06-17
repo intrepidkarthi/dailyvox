@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyVox Changelog — Every Version, Every Change</title>
-  <meta name="description" content="Every release of DailyVox documented. From v1.0 (March 2026) through v1.3.5 (May 2026). What we shipped, why we shipped it, and what's next.">
+  <meta name="description" content="Every release of DailyVox documented. From v1.0 (March 2026) through v1.4.0 (June 2026). What we shipped, why we shipped it, and what's next.">
   <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/changelog">
@@ -178,14 +178,50 @@
 
       <section class="version" style="border-left:3px solid var(--uv);padding-left:18px;">
         <div class="v-head">
-          <div class="v-tag" style="color:var(--uv);">◇ next · v1.4</div>
-          <h2 id="v1-4-next">Version 1.4 — Body Twin (in development)</h2>
+          <div class="v-tag" style="color:var(--uv);">◇ next · v1.5</div>
+          <h2 id="v1-5-next">Version 1.5 — Body Twin (in development)</h2>
           <time class="v-date">coming soon</time>
         </div>
         <div class="v-body">
-        <p><strong>The Digital Twin gains a body.</strong> v1.4 brings Apple Health and an Apple Watch companion into DailyVox so the Twin can finally tell the difference between feeling stressed and being stressed. HealthKit reads sleep, HRV, resting heart rate, steps, and mindful minutes as background context for every entry. Apple Watch records from your wrist and samples heart rate during the recording — only when you're at rest, so a workout isn't mistaken for emotional stress. Every entry gets an activity context tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) that tells the Twin how to interpret the body data. HR is stored as delta from your personal hour-of-day baseline, not raw bpm. The "Data Not Collected" privacy label stays intact — all HealthKit reads happen on-device.</p>
+        <p><strong>The Digital Twin gains a body.</strong> Body Twin brings Apple Health and an Apple Watch companion into DailyVox so the Twin can finally tell the difference between feeling stressed and being stressed. HealthKit reads sleep, HRV, resting heart rate, steps, and mindful minutes as background context for every entry. Apple Watch records from your wrist and samples heart rate during the recording — only when you're at rest, so a workout isn't mistaken for emotional stress. Every entry gets an activity context tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) that tells the Twin how to interpret the body data. HR is stored as delta from your personal hour-of-day baseline, not raw bpm. The "Data Not Collected" privacy label stays intact — all HealthKit reads happen on-device.</p>
         <p><a href="/blog/body-twin-healthkit-watch" style="color:var(--uv); text-decoration:underline;">Read the full Body Twin plan →</a></p>
-        <p style="margin-top:8px; color:var(--ink-soft); font-size:14px;"><em>After v1.4: v1.5 Semantic Search & Proactive Insights · v1.6 Foundation Models Twin (on-device LLM chat) · v1.7 Multi-Language · v2.0 Apple Intelligence Native · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/ROADMAP.md" style="color:var(--uv); text-decoration:underline;">full roadmap</a></em></p>
+        <p style="margin-top:8px; color:var(--ink-soft); font-size:14px;"><em>After v1.5: v1.6 Semantic Search & Proactive Insights · v1.7 Foundation Models Twin (on-device LLM chat) · v1.8 Multi-Language · v2.0 Apple Intelligence Native · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/ROADMAP.md" style="color:var(--uv); text-decoration:underline;">full roadmap</a></em></p>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.4.0</div>
+          <h2 id="v1-4-0">Version 1.4.0 — The warm redesign</h2>
+          <time class="v-date">2026-06-17</time>
+        </div>
+        <div class="v-body">
+        <p><strong>A complete visual rework.</strong> DailyVox moves to a warm, calm palette — sage, gold, and terracotta on ivory — across every screen, and the Digital Twin becomes the center of the app.</p>
+        <h3>Changed</h3>
+        <ul>
+          <li><strong>Warm design system</strong> applied app-wide: Record, Journal, Twin, Insights, Settings, onboarding, the lock screen, and both light and dark themes</li>
+          <li><strong>Digital Twin promoted to the center tab</strong> as the hero feature; Insights moves to the fourth tab</li>
+          <li><strong>Record screen</strong>: centered mic with refined micro-interactions; photo-add demoted to a secondary side action</li>
+          <li><strong>Onboarding</strong> refined: larger, tighter title typography, a warmed Digital Twin page, and living motion on the welcome screen</li>
+          <li><strong>Journal</strong>: title renamed to "Journal"; polished section headers and a warm list background</li>
+          <li>Dark-theme accent warmed from soft blue to lightened sage; lock-screen widget moved to sage</li>
+        </ul>
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Replay welcome</strong> in Settings to re-run onboarding</li>
+          <li>Compact audio player on the entry detail screen</li>
+        </ul>
+        <h3>Fixed</h3>
+        <ul>
+          <li>Face ID prompt text bug</li>
+          <li>Assorted off-palette accents and alignment across reminders, entry chips, and the Journal top gap</li>
+        </ul>
+        <h3>Build</h3>
+        <ul>
+          <li><code>MARKETING_VERSION</code> 1.3.5 → 1.4.0</li>
+          <li><code>CURRENT_PROJECT_VERSION</code> 15 → 16</li>
+          <li>Removed the unused HealthKit entitlement; it returns with Body Twin in v1.5</li>
+        </ul>
         </div>
       </section>
 
