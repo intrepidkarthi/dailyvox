@@ -44,7 +44,7 @@ The tradeoff is real, and I will state it plainly. You lose automatic cloud sync
 
 ## Where DailyVox stands
 
-DailyVox sits at level 4. You speak for about forty seconds a day, the phone turns it into text and builds a private model of how you think and feel, and during a recording the app makes zero network calls. Attach a proxy and watch: nothing leaves. That is the whole design, and you can check it yourself in two minutes.
+DailyVox sits at level 4. You speak for about forty-two seconds a day, the phone turns it into text and builds a private model of how you think and feel, and during a recording the app makes zero network calls. Attach a proxy and watch: nothing leaves. That is the whole design, and you can check it yourself in two minutes.
 
 ## Questions
 

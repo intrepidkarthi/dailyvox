@@ -29,7 +29,7 @@ A voice diary app worth keeping does five things: transcribes accurately, works 
 
 ## How DailyVox does it
 
-DailyVox is a voice diary built to stay on your phone. You speak for about forty seconds a day, the phone transcribes it and builds a private model of your moods and the people in your life, and during a recording it makes zero network calls. No account, no server, free. You can confirm it sends nothing with a network proxy in two minutes.
+DailyVox is a voice diary built to stay on your phone. You speak for about forty-two seconds a day, the phone transcribes it and builds a private model of your moods and the people in your life, and during a recording it makes zero network calls. No account, no server, free. You can confirm it sends nothing with a network proxy in two minutes.
 
 ## Questions
 
