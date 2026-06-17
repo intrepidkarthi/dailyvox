@@ -95,3 +95,7 @@ solyn/build/
 solyn/DerivedData/
 **/DerivedData/
 **/*.xcuserstate
+
+# Marketing automation tool (relay) — local-only video-posting engine, its
+# secrets (.env FAL_KEY, Google OAuth tokens) and content queue. Never push.
+relay/
