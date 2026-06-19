@@ -1,13 +1,5 @@
 .vercel
 
-# internal SEO strategy / tooling — never publish to public repo
-SEO_KEYWORD_PLAN.md
-BACKLINK_SEO_ASO_PLAN.md
-generate_quality_pages.py
-seo_data/quality_keywords.sample.json
-
-# internal marketing content — never publish to public repo
-MARKETING_CONTENT_PACK.md
-
-# internal marketing video scripts — never publish
-MARKETING_VIDEO_SCRIPTS.md
+# Note: internal marketing/SEO docs and the SEO page-generation tooling
+# (generate_*.py, render_articles.py, seo_data/) are gitignored from the repo
+# root. Marketing content now lives under /marketing/. See marketing/README.md.

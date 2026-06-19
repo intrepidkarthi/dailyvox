@@ -67,12 +67,22 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
-# Marketing plans (private — never push to public repo)
-# The entire solyn/marketing/ tree contains strategy, content drafts, design
-# templates, distribution dashboards, and research. None of it ships publicly.
-quora-strategy/
-solyn/marketing/
-GROWTH_PACKAGE_MANIFEST.md
+# Marketing & SEO (private — never push to public repo)
+# All marketing/SEO strategy, content, launch, outreach, assets, and research
+# are consolidated under /marketing/ (organised strategy- and platform-wise).
+# Nothing in it ships publicly. See marketing/README.md for the map.
+/marketing/
+
+# SEO page-generation machinery (lives next to the site it builds, but is
+# internal tooling — the generated public/*.html stays tracked & deployed).
+solyn/website/generate_massive_seo.py
+solyn/website/generate_pages.py
+solyn/website/generate_quality_pages.py
+solyn/website/render_articles.py
+solyn/website/seo_data/
+
+# Research paper draft (parked; kept local until/if published).
+paper/
 
 # Proprietary Digital Twin engine — lives in its own private repo at
 # https://github.com/intrepidkarthi/DailyVoxTwin and is consumed by the
