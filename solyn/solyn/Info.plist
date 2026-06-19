@@ -2,29 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>DailyVox needs microphone access to record your voice diary entries.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>DailyVox uses speech recognition to transcribe your voice recordings into text.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
-	<key>NSFaceIDUsageDescription</key>
-	<string>DailyVox uses Face ID to lock and unlock access to your private diary entries.</string>
 	<key>CFBundleDisplayName</key>
 	<string>DailyVox Diary</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>DailyVox reads sleep, HRV, resting heart rate, steps, and mindful minutes to give your Digital Twin physiological context for each entry. Nothing leaves your device — all reads happen on iPhone and Apple's "Data Not Collected" privacy label is preserved.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>DailyVox uses motion data to detect whether you're at rest or active when you record. This prevents a recording made during a workout from being mistaken for emotional stress. All motion classification happens on-device.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>DailyVox uses Face ID to lock and unlock access to your private diary entries.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>DailyVox needs microphone access to record your voice diary entries.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>DailyVox uses speech recognition to transcribe your voice recordings into text.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
