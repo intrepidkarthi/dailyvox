@@ -5,3 +5,9 @@ SEO_KEYWORD_PLAN.md
 BACKLINK_SEO_ASO_PLAN.md
 generate_quality_pages.py
 seo_data/quality_keywords.sample.json
+
+# internal marketing content — never publish to public repo
+MARKETING_CONTENT_PACK.md
+
+# internal marketing video scripts — never publish
+MARKETING_VIDEO_SCRIPTS.md

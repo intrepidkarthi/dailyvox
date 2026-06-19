@@ -875,17 +875,25 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-now">→</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
-              <div class="rd-tag rd-now"><span class="rd-tag-text">Latest shipped · v1.3 + v1.3.5</span></div>
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.3 + v1.3.5</span></div>
               <h3>Constellation Update + Dynamic Island</h3>
               <p><strong>Tech:</strong> SwiftUI <code>Canvas</code>-rendered constellation (every entry becomes a mood-coloured star, 60 fps). Celestial onboarding flow with star-birth welcome. Ivory theme + sage/terracotta/gold palette. SF Rounded typography. ActivityKit Live Activities for the Dynamic Island — recording timer, "new star appeared" celebration, opt-in streak indicator. Lock Screen Constellation widget via WidgetKit. iOS 18 dark + tinted app icon variants.</p>
             </div>
           </div>
           <div class="rd-item">
+            <div class="rd-dot rd-now">→</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-now"><span class="rd-tag-text">Latest shipped · v1.4.0</span></div>
+              <h3>The warm redesign</h3>
+              <p><strong>Design:</strong> a complete visual rework to a warm, calm palette — sage, gold, and terracotta on ivory — across every screen, with the Digital Twin moved to the center of the app. SF Rounded typography, warmed light and dark themes, refined onboarding, and a polished Journal. The unused HealthKit entitlement was removed; it returns with Body Twin in v1.5.</p>
+            </div>
+          </div>
+          <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">Next · v1.4</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">Next · v1.5</span></div>
               <h3>Body Twin — HealthKit + Apple Watch</h3>
               <p><strong>Tech:</strong> <code>HealthKit</code> reads sleep, HRV (SDNN), resting heart rate, steps, mindful minutes — all on-device, "Data Not Collected" label preserved. Per-entry <code>HealthSnapshot</code> in Core Data (~10 floats). Activity context detected via <code>HKWorkoutSession</code> + <code>CMMotionActivity</code> classifier. <code>WatchKit</code> companion via <code>WatchConnectivity</code>. Heart rate sampled during recording — but only when at rest, so a workout isn't read as emotional stress. HR stored as delta from your personal hour-of-day baseline. Constellation pulse renders from HR delta on at-rest entries.</p>
             </div>
@@ -893,7 +901,7 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.4.5 · Ambient Signals</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.5.5 · Ambient Signals</span></div>
               <h3>The Twin learns from your day</h3>
               <p><strong>Tech:</strong> On-device <code>Photos</code>/<code>Vision</code> scene analysis turns the day's camera roll into context — only derived labels, never the photos, nothing leaving the device — plus on-device music-library listening patterns as a mood signal. Both flow through a review-and-discard queue: nothing reaches the Twin without your eyes on it first. Off by default; "Data Not Collected" label preserved. Pulled forward from v2.3 as the highest-trust slice of the ambient bet.</p>
             </div>
@@ -901,15 +909,15 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.5 · Semantic search + proactive insights</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · Semantic search + proactive insights</span></div>
               <h3>Find entries by meaning</h3>
-              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v1.6's RAG architecture. Zero network calls.</p>
+              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.5 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v1.7's RAG architecture. Zero network calls.</p>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · Foundation Models Twin (iOS 26)</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.7 · Foundation Models Twin (iOS 26)</span></div>
               <h3>Foundation Models + tool calling + SpeechAnalyzer</h3>
               <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>. Twin becomes a real chatbot with multi-turn transcript memory. Autonomous Core Data querying via <code>Tool</code> protocol. Dynamic instructions fed from <code>TwinEngine</code> for tone matching. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time streaming. RAG-grounded answers cite the entries they drew from. <code>SpeechAnalyzer</code> replaces <code>SFSpeechRecognizer</code>. Requires iPhone 15 Pro+. Zero network calls.</p>
             </div>
@@ -917,7 +925,7 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.7 · Multi-Language</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.8 · Multi-Language</span></div>
               <h3>The Twin speaks your language</h3>
               <p><strong>Tech:</strong> Xcode String Catalogs for multi-language UI — Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages on-device; the UI catches up to the pipeline. iPhone-only by conviction — no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
             </div>

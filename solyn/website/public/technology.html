@@ -1423,9 +1423,18 @@
             </div>
           </div>
           <div class="rd-item">
+            <div class="rd-dot rd-done">✓</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-done-txt">Shipped · v1.4.0</div>
+              <h3>The warm redesign</h3>
+              <p>A complete visual rework to a warm, calm palette — sage, gold, and terracotta on ivory — applied app-wide across light and dark themes, with the Digital Twin moved to the center of the app. The unused HealthKit entitlement was removed; it returns with Body Twin in v1.5.</p>
+              <div class="rd-tags"><span>Warm Design System</span><span>SF Rounded</span><span>Light + Dark</span><span>Twin-Centered</span></div>
+            </div>
+          </div>
+          <div class="rd-item">
             <div class="rd-dot rd-now">→</div>
             <div class="rd-body">
-              <div class="rd-tag rd-now-txt">Next · v1.4</div>
+              <div class="rd-tag rd-now-txt">Next · v1.5</div>
               <h3>Body Twin — HealthKit + Apple Watch</h3>
               <p>The Twin gains a body. HealthKit reads sleep, HRV, resting heart rate, steps, and mindful minutes as background context for every entry. Apple Watch companion records from the wrist and samples heart rate during the recording — but only when at rest, so a workout isn't mistaken for emotional stress. Activity context tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) tells the Twin how to interpret each entry. HR stored as delta from your personal hour-of-day baseline. "Data Not Collected" privacy label preserved.</p>
               <div class="rd-tags"><span>HealthKit</span><span>HKWorkoutSession</span><span>CMMotionActivity</span><span>WatchKit</span><span>WatchConnectivity</span><span>Complications</span></div>
@@ -1434,7 +1443,7 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v1.4.5 · Ambient Signals</div>
+              <div class="rd-tag rd-next-txt">v1.5.5 · Ambient Signals</div>
               <h3>The Twin learns from your day, not just your words</h3>
               <p>On-device Photos/Vision scene analysis turns the day's camera roll into context (derived labels only — never the photos, nothing leaves the device), plus on-device music-library listening patterns as a mood signal. Both flow through a review-and-discard queue. Off by default; "Data Not Collected" label preserved. Pulled forward from v2.3.</p>
               <div class="rd-tags"><span>Photos / Vision</span><span>On-device labels</span><span>Music mood</span><span>Review-and-discard</span></div>
@@ -1443,16 +1452,16 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v1.5 · Semantic Search & Proactive Insights</div>
+              <div class="rd-tag rd-next-txt">v1.6 · Semantic Search & Proactive Insights</div>
               <h3>Find entries by meaning, not keywords</h3>
-              <p>NLEmbedding for 512-dim sentence embeddings. Cosine similarity vector search. Z-score anomaly detection. K-means clustering. Foundation for v1.6 RAG. Embodied search builds on v1.4 — "show me entries where I was stressed but didn't say so."</p>
+              <p>NLEmbedding for 512-dim sentence embeddings. Cosine similarity vector search. Z-score anomaly detection. K-means clustering. Foundation for v1.7 RAG. Embodied search builds on v1.5 — "show me entries where I was stressed but didn't say so."</p>
               <div class="rd-tags"><span>NLEmbedding</span><span>Cosine Similarity</span><span>Anomaly Detection</span><span>K-Means</span><span>Embodied Search</span></div>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v1.6 · Foundation Models Twin (iOS 26)</div>
+              <div class="rd-tag rd-next-txt">v1.7 · Foundation Models Twin (iOS 26)</div>
               <h3>Foundation Models + tool calling + SpeechAnalyzer</h3>
               <p>On-device 3B Foundation Model replaces template-based Twin chat. Tool calling lets the Twin autonomously query Core Data. <code>@Generable</code> for structured output. <code>streamResponse()</code> for streaming. RAG-grounded answers cite the entries they drew from. SpeechAnalyzer replaces SFSpeechRecognizer. Requires iPhone 15 Pro+. Zero network calls.</p>
               <div class="rd-tags"><span>Foundation Models</span><span>LanguageModelSession</span><span>Tool Calling</span><span>@Generable</span><span>streamResponse()</span><span>SpeechAnalyzer</span></div>
@@ -1461,7 +1470,7 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">v1.7 · Multi-Language</div>
+              <div class="rd-tag rd-next-txt">v1.8 · Multi-Language</div>
               <h3>The Twin speaks your language</h3>
               <p>String Catalogs for multi-language UI (Hindi, Spanish, Japanese, German first). Speech framework already supports 60+ transcription languages on-device — the UI catches up to the pipeline. iPhone-only by conviction: no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
               <div class="rd-tags"><span>String Catalogs</span><span>60+ Languages</span><span>iPhone-only</span></div>
