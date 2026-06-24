@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox Interactive Demo — See the On-Device Voice Journal in Action</title>
+  <meta name="description" content="Walk through DailyVox step by step: record your voice, watch it transcribe on-device, and see your Digital Twin take shape. An interactive demo of the free, private voice journal for iPhone.">
+  <meta name="keywords" content="voice journal demo, DailyVox demo, on-device journal app, digital twin app, voice diary walkthrough, private journaling app iPhone, free journal app">
+  <meta name="author" content="DailyVox">
+  <meta name="theme-color" content="#0F140F">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/demo">
+  <meta property="og:title" content="DailyVox Interactive Demo — Voice Journal with an On-Device Digital Twin">
+  <meta property="og:description" content="Tap through the real app: speak 42 seconds, it transcribes on-device, and a Digital Twin learns your patterns. Free, private, open source.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DailyVox — interactive demo of the on-device voice journal for iPhone.">
+  <meta property="og:site_name" content="DailyVox">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DailyVox Interactive Demo — See the App in Action">
+  <meta name="twitter:description" content="An interactive walkthrough of the free, on-device voice journal that builds a Digital Twin of you.">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://getdailyvox.com/demo">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Structured data: SoftwareApplication + HowTo walkthrough + Breadcrumb -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Speak, and it transcribes and learns your patterns — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"downloadUrl":"https://apps.apple.com/app/id6760454642","author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"HowTo","name":"How DailyVox works — an interactive walkthrough","description":"The five-step flow of journaling with DailyVox, the on-device voice journal for iPhone.","image":"https://getdailyvox.com/og-image.png","totalTime":"PT1M","tool":[{"@type":"HowToTool","name":"iPhone running DailyVox"}],"step":[
+    {"@type":"HowToStep","position":1,"name":"Tap and speak","text":"Hit record and talk for about 42 seconds about your day. No blank page, no typing.","url":"https://getdailyvox.com/demo#step-record","image":"https://getdailyvox.com/demo-screens/record.png"},
+    {"@type":"HowToStep","position":2,"name":"It transcribes itself","text":"Your voice becomes a clean written entry instantly, processed entirely on your iPhone. Nothing is sent to a server.","url":"https://getdailyvox.com/demo#step-entry","image":"https://getdailyvox.com/demo-screens/entry.png"},
+    {"@type":"HowToStep","position":3,"name":"Your Digital Twin grows","text":"Every entry feeds a private on-device model of you that reflects your patterns, moods and themes back to you.","url":"https://getdailyvox.com/demo#step-twin","image":"https://getdailyvox.com/demo-screens/twin.png"},
+    {"@type":"HowToStep","position":4,"name":"Patterns surface","text":"DailyVox highlights what keeps recurring across your entries — worries, people, and habits you might never notice yourself.","url":"https://getdailyvox.com/demo#step-insights","image":"https://getdailyvox.com/demo-screens/insights.png"},
+    {"@type":"HowToStep","position":5,"name":"Free, private, yours","text":"Every entry becomes a star in your timeline. No account, no cloud, no subscription, and open source.","url":"https://getdailyvox.com/demo#step-journal","image":"https://getdailyvox.com/demo-screens/journal.png"}
+  ]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},{"@type":"ListItem","position":2,"name":"Interactive Demo","item":"https://getdailyvox.com/demo"}]}
+  </script>
+
+  <style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ivory:#FAF8F5; --dark:#0F140F; --dark2:#1A2420; --card:rgba(255,255,255,.04);
+    --sage:#8FB09E; --sage-d:#5B7C6B; --gold:#D4A547; --gold-l:#E8C770;
+    --muted:rgba(232,226,214,.62); --line:rgba(143,176,158,.18);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ivory);
+    background:radial-gradient(ellipse at 50% -10%,var(--dark2) 0%,var(--dark) 55%,#060709 100%);
+    background-attachment:fixed;min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+  /* nav */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(15,20,15,.72);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .wordmark{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:18px}
+  .wordmark img{border-radius:7px}
+  .nav-links{display:flex;gap:26px;font-size:15px;font-weight:600}
+  .nav-links a{text-decoration:none;color:var(--muted);transition:.2s}
+  .nav-links a:hover{color:var(--ivory)}
+  .pill{display:inline-block;text-decoration:none;font-weight:800;border-radius:50px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#1a1407;padding:9px 20px;font-size:14px;
+    box-shadow:0 8px 22px -10px rgba(212,165,71,.7);transition:.2s}
+  .pill:hover{transform:translateY(-2px)}
+  @media(max-width:720px){.nav-links{display:none}}
+  /* hero */
+  .hero{text-align:center;padding:64px 0 32px}
+  .eyebrow{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--sage);margin-bottom:16px}
+  h1{font-size:clamp(34px,5.5vw,60px);font-weight:800;line-height:1.05;letter-spacing:-1.5px;margin-bottom:18px}
+  h1 .g{background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .deck{font-size:18px;color:var(--muted);max-width:640px;margin:0 auto 26px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .ghost{text-decoration:none;color:var(--ivory);border:1px solid var(--line);border-radius:50px;padding:9px 20px;font-weight:700;font-size:14px}
+  .trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:24px;
+    font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)}
+  .trust span::before{content:"✦ ";color:var(--gold)}
+  /* demo stage */
+  .stage{display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start;padding:40px 0 24px}
+  .phone-col{position:sticky;top:90px}
+  .phone{position:relative;width:300px;aspect-ratio:1320/2868;margin:0 auto;
+    border-radius:46px;padding:11px;background:linear-gradient(160deg,#2a322c,#11160f);
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.85),0 0 0 1px rgba(143,176,158,.15)}
+  .screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;background:#000}
+  .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease}
+  .screen img.on{opacity:1}
+  .notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:88px;height:25px;background:#05070a;border-radius:16px;z-index:5}
+  .hot{position:absolute;width:54px;height:54px;border-radius:50%;z-index:4;transform:translate(-50%,-50%);opacity:0;transition:opacity .4s}
+  .hot.on{opacity:1}
+  .hot::before,.hot::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--gold)}
+  .hot::after{animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.9);opacity:0}}
+  /* steps */
+  .steps{list-style:none;display:flex;flex-direction:column;gap:16px}
+  .step{border:1px solid var(--line);border-radius:18px;padding:22px 24px;background:var(--card);cursor:pointer;transition:.25s;scroll-margin-top:80px}
+  .step:hover{border-color:rgba(143,176,158,.4)}
+  .step.active{border-color:var(--gold);background:rgba(212,165,71,.06);box-shadow:0 10px 30px -16px rgba(212,165,71,.5)}
+  .step .n{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.08em}
+  .step h2{font-size:22px;font-weight:800;margin:6px 0 8px;letter-spacing:-.5px}
+  .step p{color:var(--muted);font-size:16px}
+  .step .thumb{display:none}
+  /* cta band */
+  .band{text-align:center;padding:56px 0;border-top:1px solid var(--line);margin-top:32px}
+  .band h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+  .band p{color:var(--muted);max-width:560px;margin:0 auto 24px;font-size:17px}
+  /* prose */
+  .prose{max-width:760px;margin:0 auto;padding:8px 0 56px}
+  .prose h2{font-size:26px;font-weight:800;margin:36px 0 12px;letter-spacing:-.5px}
+  .prose p{color:var(--muted);margin-bottom:14px;font-size:16px}
+  .prose a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(212,165,71,.3)}
+  .prose a:hover{border-color:var(--gold)}
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:48px 0;font-size:14px}
+  .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}
+  .fgrid h4{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--sage);margin-bottom:12px}
+  .fgrid a{display:block;text-decoration:none;color:var(--muted);margin-bottom:8px;transition:.2s}
+  .fgrid a:hover{color:var(--ivory)}
+  .ftag{color:var(--muted);margin-top:10px;max-width:260px}
+  .fbottom{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);
+    font-family:'DM Mono',monospace;font-size:12px;color:rgba(232,226,214,.4);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  @media(max-width:860px){.stage{grid-template-columns:1fr;gap:28px}.phone-col{position:static}
+    .fgrid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="/" class="wordmark"><img src="/apple-touch-icon.png" alt="DailyVox" width="30" height="30"><span>DailyVox</span></a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/technology">Technology</a>
+      <a href="/about">About</a>
+      <a href="/blog">Journal</a>
+      <a href="/faq">FAQ</a>
+    </nav>
+    <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <p class="eyebrow">Interactive Demo</p>
+    <h1>See DailyVox <span class="g">in action.</span></h1>
+    <p class="deck">DailyVox is a free, on-device voice journal for iPhone. Tap through the real app below — speak for about 42 seconds, watch it transcribe privately on your phone, and see how a <strong>Digital Twin</strong> takes shape from your own words.</p>
+    <div class="cta-row">
+      <a href="https://apps.apple.com/app/id6760454642" class="pill">Get it free on the App Store →</a>
+      <a href="#walkthrough" class="ghost">Start the walkthrough ↓</a>
+    </div>
+    <div class="trust"><span>Free forever</span><span>100% on-device</span><span>No account</span><span>Open source</span></div>
+  </section>
+
+  <section id="walkthrough" class="wrap stage" aria-label="Interactive walkthrough">
+    <div class="phone-col">
+      <div class="phone" id="phone" role="img" aria-label="DailyVox app screen, currently showing the active step of the walkthrough">
+        <div class="notch"></div>
+        <div class="screen" id="screen">
+          <img data-i="0" class="on" src="/demo-screens/record.png" alt="DailyVox recording screen — a large microphone button to start a 42-second voice journal entry on iPhone.">
+          <img data-i="1" src="/demo-screens/entry.png" alt="DailyVox entry screen — a voice note transcribed into clean written text on-device.">
+          <img data-i="2" src="/demo-screens/twin.png" alt="DailyVox Digital Twin screen — a constellation model of the user's personality, people and topics built from journal entries.">
+          <img data-i="3" src="/demo-screens/insights.png" alt="DailyVox insights screen — recurring patterns and themes surfaced across journal entries.">
+          <img data-i="4" src="/demo-screens/journal.png" alt="DailyVox timeline screen — past entries shown as a private constellation of stars.">
+        </div>
+        <div class="hot" id="hot"></div>
+      </div>
+    </div>
+    <ol class="steps" id="steps">
+      <li class="step active" id="step-record" data-i="0" data-hot="50,84">
+        <div class="n">STEP 1 / 5</div><h2>Tap once. Just talk.</h2>
+        <p>No blank page, no typing. Hit record and speak for about 42 seconds about your day — the lowest-friction way to actually keep a journal going.</p>
+      </li>
+      <li class="step" id="step-entry" data-i="1">
+        <div class="n">STEP 2 / 5</div><h2>It writes itself.</h2>
+        <p>Your voice is transcribed into a clean written entry — instantly, and entirely on your iPhone. Nothing is uploaded; there is no server holding your words.</p>
+      </li>
+      <li class="step" id="step-twin" data-i="2" data-hot="50,46">
+        <div class="n">STEP 3 / 5</div><h2>Meet your Digital Twin.</h2>
+        <p>Every entry quietly feeds a private model of you. Over weeks it begins reflecting your patterns, moods and recurring themes back to you — a mirror, not a feed.</p>
+      </li>
+      <li class="step" id="step-insights" data-i="3">
+        <div class="n">STEP 4 / 5</div><h2>Patterns you'd never catch.</h2>
+        <p>DailyVox surfaces what keeps recurring — the worry that returns every spring, the people who lift you, the habits that quietly drain you.</p>
+      </li>
+      <li class="step" id="step-journal" data-i="4">
+        <div class="n">STEP 5 / 5</div><h2>Free. Private. Yours alone.</h2>
+        <p>Every entry becomes a star in your timeline. No account, no cloud, no subscription — and fully open source. Your words never leave your phone.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="band wrap">
+    <h2>Start your own inner sky.</h2>
+    <p>DailyVox is free, on-device, and open source. Speak forty-two seconds a day and watch your Digital Twin take shape.</p>
+    <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iPhone →</a>
+  </section>
+
+  <section class="prose wrap">
+    <h2>What you're looking at</h2>
+    <p>This is a hands-on demo of <strong>DailyVox</strong>, a voice journaling app for iPhone. Instead of typing, you speak — and the app transcribes your entry on-device using Apple's speech frameworks, then builds a <a href="/technology">Digital Twin</a>: a private, evolving model of your personality assembled entirely from your own journal entries.</p>
+    <p>Unlike cloud journaling apps, DailyVox keeps everything on your phone. There is no account, no server, and no tracking — a design we explain in detail in our <a href="/privacy">privacy approach</a> and <a href="/technology">technology overview</a>. It is free forever and <a href="https://github.com/intrepidkarthi/dailyvox">open source on GitHub</a>.</p>
+    <h2>Why voice journaling?</h2>
+    <p>The hardest part of journaling was never the writing — it was keeping the habit and being able to look back. Speaking removes the friction of the blank page, and an on-device model makes years of entries searchable and reflective rather than dead weight. See how it compares in our <a href="/journal-app-comparison">journal app comparison</a>, or read more in the <a href="/faq">FAQ</a> and the <a href="/blog">DailyVox journal</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="/" class="wordmark"><img src="/apple-touch-icon.png" alt="DailyVox" width="28" height="28"><span>DailyVox</span></a>
+        <p class="ftag">A personal AI that lives on your phone. Free, open source, private by construction.</p>
+      </div>
+      <div><h4>Product</h4>
+        <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="/demo">Interactive Demo</a>
+        <a href="/technology">Technology</a>
+        <a href="/journal-app-comparison">Compare</a>
+        <a href="/faq">FAQ</a>
+      </div>
+      <div><h4>Company</h4>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/press">Press Kit</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+      </div>
+      <div><h4>Connect</h4>
+        <a href="https://x.com/getDailyVox">X · @getDailyVox</a>
+        <a href="https://www.reddit.com/user/getDailyVox/">Reddit</a>
+        <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+    </div>
+    <div class="fbottom"><span>© 2026 DailyVox · built on-device, by hand</span><span>✦ data on-device</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var imgs=[].slice.call(document.querySelectorAll('#screen img'));
+  var hot=document.getElementById('hot');
+  function activate(i){
+    steps.forEach(function(s){s.classList.toggle('active',+s.dataset.i===i);});
+    imgs.forEach(function(im){im.classList.toggle('on',+im.dataset.i===i);});
+    var s=steps[i], h=s&&s.dataset.hot;
+    if(h){var p=h.split(',');hot.style.left=p[0]+'%';hot.style.top=p[1]+'%';hot.classList.add('on');}
+    else{hot.classList.remove('on');}
+  }
+  steps.forEach(function(s){
+    s.addEventListener('click',function(){activate(+s.dataset.i);});
+  });
+  // tap the phone to advance
+  var cur=0;
+  document.getElementById('phone').addEventListener('click',function(){
+    cur=(cur+1)%steps.length; activate(cur);
+    steps[cur].scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  // keep cur in sync when a step is clicked
+  steps.forEach(function(s){s.addEventListener('click',function(){cur=+s.dataset.i;});});
+  activate(0);
+})();
+</script>
+</body>
+</html>
