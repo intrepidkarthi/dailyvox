@@ -155,11 +155,11 @@ h3{font-weight:700; font-size:clamp(22px,2.4vw,28px); line-height:1.2; letter-sp
 .nav-links{display:flex; align-items:center; gap:30px}
 .nav-links a{font-size:15px; color:var(--ink-dim); transition:color .2s}
 .nav-links a:hover{color:var(--uv-text)}
-.nav-right{display:flex; align-items:center; gap:14px}
+.nav-right{display:flex; align-items:center; gap:14px; flex-shrink:0}
 .menu-btn{display:none; align-items:center; justify-content:center; width:44px; height:44px;
   border:1px solid var(--rule-2); border-radius:var(--r-sm); background:var(--card); cursor:pointer; color:var(--ink)}
 .menu-btn svg{display:block}
-.pill{position:relative; display:inline-flex; align-items:center; gap:8px; background:var(--uv); color:#fff; font-family:var(--ui); font-weight:700; font-size:16px; padding:14px 26px; border-radius:var(--r-pill); box-shadow:var(--sh-2); transition:transform .2s,box-shadow .2s; border:none; cursor:pointer}
+.pill{position:relative; display:inline-flex; align-items:center; gap:8px; background:var(--uv); color:#fff; font-family:var(--ui); font-weight:700; font-size:16px; padding:14px 26px; border-radius:var(--r-pill); box-shadow:var(--sh-2); transition:transform .2s,box-shadow .2s; border:none; cursor:pointer; white-space:nowrap}
 .pill:hover{transform:translateY(-1px); box-shadow:var(--sh-3)}
 .pill:active{transform:translateY(0)}
 .pill.sm{padding:10px 20px; font-size:15px; box-shadow:var(--sh-1)}
@@ -183,6 +183,12 @@ h3{font-weight:700; font-size:clamp(22px,2.4vw,28px); line-height:1.2; letter-sp
   .drawer-panel .close{align-self:flex-end; width:44px;height:44px; border:none; background:none; cursor:pointer; color:var(--ink); font-size:26px; line-height:1}
   .drawer-panel a{padding:14px 6px; font-family:var(--ui); font-weight:600; font-size:18px; color:var(--ink); border-bottom:1px solid var(--rule)}
   .drawer-panel .pill{margin-top:18px; justify-content:center}
+}
+/* small phones: free up nav space so the Download button never collides with the version badge */
+@media(max-width:480px){
+  .wordmark .ver{display:none}
+  .nav-in{gap:10px}
+  .pill.sm{padding:10px 16px}
 }
 
 /* hero */
