@@ -174,7 +174,7 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 
-- Multi-language UI via Xcode String Catalogs — Hindi, Spanish, Japanese, German first
+- Multi-language UI via Xcode String Catalogs — Tamil, Kannada, Hindi, Spanish, Japanese, German first
 - Speech framework already transcribes 60+ languages on-device; the UI catches up to the pipeline
 - **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)
 
