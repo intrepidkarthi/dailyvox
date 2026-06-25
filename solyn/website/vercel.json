@@ -8,5 +8,11 @@
     { "source": "/blog/journal-app-that-doesnt-use-the-cloud", "destination": "/blog/best-offline-journal-app", "permanent": true },
     { "source": "/blog/best-free-journal-app-2026", "destination": "/blog/best-free-journal-app", "permanent": true },
     { "source": "/blog/best-free-journal-app-no-paywall-2026", "destination": "/blog/best-free-journal-app", "permanent": true }
+  ],
+  "headers": [
+    { "source": "/in/(.*)",          "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/for/(.*)",         "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/use/(.*)",         "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/alternative/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
   ]
 }
