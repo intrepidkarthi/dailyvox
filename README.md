@@ -1,17 +1,22 @@
 <p align="center">
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/01_hero.png" width="220" alt="DailyVox - Your inner sky is waiting" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/03_constellation.png" width="220" alt="DailyVox constellation view" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/02_digital_twin.png" width="220" alt="DailyVox Digital Twin" />
+  <img src=".github/readme/hero-banner.png" alt="DailyVox — speak, and watch your stars appear" width="840" />
 </p>
 
 <h1 align="center">DailyVox</h1>
 <p align="center"><strong>Speak for 42 seconds. Watch your words become stars.</strong></p>
 <p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your iPhone.</p>
+<p align="center"><sub><b>Free forever</b> &nbsp;·&nbsp; 100% on-device &nbsp;·&nbsp; ⭐️ 5-star rated &nbsp;·&nbsp; 500+ downloads, growing ~50% week-over-week &nbsp;·&nbsp; 🚀 live on Product Hunt</sub></p>
 
 <p align="center">
   <a href="https://apps.apple.com/app/id6760454642"><img src="https://img.shields.io/badge/Download_Free-App%20Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Download on App Store" /></a>
   <a href="https://getdailyvox.com"><img src="https://img.shields.io/badge/Website-getdailyvox.com-5B7C6B?style=for-the-badge" alt="Website" /></a>
   <a href="https://github.com/intrepidkarthi/dailyvox/stargazers"><img src="https://img.shields.io/github/stars/intrepidkarthi/dailyvox?style=for-the-badge&logo=github" alt="GitHub stars" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.producthunt.com/products/dailyvox"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&theme=light" alt="DailyVox on Product Hunt — upvote us" width="220" height="48" /></a>
+  &nbsp;
+  <a href="https://getdailyvox.com/demo"><img src="https://img.shields.io/badge/Try_the_Interactive_Demo-getdailyvox.com%2Fdemo-D4A547?style=for-the-badge" alt="Try the interactive demo" /></a>
 </p>
 <p align="center">
   <a href="https://getdailyvox.com/privacy.html"><img src="https://img.shields.io/badge/Apple_Privacy-Data%20Not%20Collected-brightgreen?style=flat-square&logo=apple" alt="Privacy" /></a>
@@ -59,12 +64,12 @@ Behind the scenes, an **on-device Digital Twin** learns how you think, how you f
 ## App Screenshots
 
 <p align="center">
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/01_hero.png" width="160" alt="DailyVox hero - Your inner sky is waiting" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/02_digital_twin.png" width="160" alt="DailyVox Digital Twin AI" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/03_constellation.png" width="160" alt="DailyVox constellation grows with mood-colored stars" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/04_privacy.png" width="160" alt="DailyVox privacy - a constellation no one else can see" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/05_voice.png" width="160" alt="DailyVox voice recording - speak for 42 seconds" />
-  <img src="solyn/AppStore/screenshots/iPhone_67_2778/06_free.png" width="160" alt="DailyVox is free forever with no catch" />
+  <img src=".github/readme/speak.png" width="160" alt="Just speak — 42-second voice entries" />
+  <img src=".github/readme/twin.png" width="160" alt="Your on-device Digital Twin predicts your mood" />
+  <img src=".github/readme/remembers.png" width="160" alt="It remembers the people and topics that matter to you" />
+  <img src=".github/readme/patterns.png" width="160" alt="Patterns surfaced across months of entries" />
+  <img src=".github/readme/reads.png" width="160" alt="Reads between the lines of what you say" />
+  <img src=".github/readme/private.png" width="160" alt="100% private — a constellation only you can see" />
 </p>
 
 ---
@@ -131,16 +136,15 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 ---
 
-## What's New: v1.3.5 — Dynamic Island & New Icon
+## What's New: v1.4.0 — Warm Redesign
 
-- **Dynamic Island recording timer** — live elapsed time and waveform while you record, counting up past 42 seconds so you can speak as long as you need
-- **"A new star appeared" Live Activity** — a brief celebratory pop the moment your entry is saved
-- **Streak in the Dynamic Island** (opt-in) — pin `★ Day N` to the Dynamic Island and Lock Screen
-- **Constellation Lock Screen widget** — Canvas-rendered mini constellation, one star per recent entry, coloured by mood
-- **iOS 18 icon variants** — proper dark-mode (golden mic on warm charcoal) and tinted (monochrome silhouette)
-- Built on top of v1.3.0's Constellation Update (Canvas visualisation, Ivory theme, celestial onboarding)
+- **A calm new look** — a warm sage-and-gold palette across every screen, gentler typography, and more room to breathe
+- **Digital Twin, front and center** — your evolving on-device model of you now takes the main stage
+- **Refined recording & onboarding** — softer, clearer, and faster to your first entry
+- **Compact audio player** on entries, and replay the welcome anytime from Settings
+- Built on v1.3.5's Dynamic Island recording timer + Lock Screen constellation widget
 
-[Full changelog](CHANGELOG.md) | [Read the constellation story](https://getdailyvox.com/blog/constellation-update)
+[Full changelog](CHANGELOG.md) · [Try the interactive demo](https://getdailyvox.com/demo)
 
 ---
 
@@ -153,9 +157,9 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.2 | Ask Your Twin (chat) | Shipped |
 | v1.3 | Constellation Update | Shipped |
 | v1.3.5 | Dynamic Island + New Icon | Shipped |
-| v1.4 | Body Twin — HealthKit + Apple Watch | **Current** |
+| v1.4.0 | Warm redesign — Digital Twin moved to center | **Shipped** |
 | v1.4.5 | Ambient Signals — on-device photo + music context | Planned |
-| v1.5 | Semantic Search + Proactive Insights | Planned |
+| v1.5 | Body Twin (HealthKit + Apple Watch) + Semantic Search | **Up next** |
 | v1.6 | Foundation Models Twin — on-device LLM chat | Planned |
 | v1.7 | Multi-Language (Hindi, Spanish, Japanese, German first) | Planned |
 | v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
@@ -207,6 +211,19 @@ But every voice diary app I tried wanted to upload my recordings to their server
 The constellation metaphor came from staring at my own journal entries — hundreds of days, each one a tiny light. Together they form patterns. DailyVox makes those patterns visible.
 
 — [Karthikeyan NG](https://github.com/intrepidkarthi)
+
+---
+
+## Contributing & Support
+
+DailyVox is open source (MIT) and built solo, in the open. If the mission — a personal AI that's **private by construction** — resonates, here's how to help:
+
+- ⭐ **Star this repo** — the simplest way to help others find it
+- 🚀 **[Upvote on Product Hunt](https://www.producthunt.com/products/dailyvox)** — we just launched
+- 🛠️ **Contribute** — issues and PRs welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [ARCHITECTURE.md](ARCHITECTURE.md)
+- 🗣️ **Try it and tell me what's missing** — [download free](https://apps.apple.com/app/id6760454642) or [explore the interactive demo](https://getdailyvox.com/demo)
+
+It's a genuinely fun codebase to hack on: 100% on-device AI, SwiftUI, a Canvas-rendered constellation, and a Digital Twin engine — no backend to spin up, no API keys, just clone and run.
 
 ---
 
