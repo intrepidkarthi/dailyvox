@@ -36,6 +36,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. DailyVox processes everything on your device. There are no servers receiving your data. Your voice recordings, transcriptions, photos, and Digital Twin model never leave your phone." } },
+      { "@type": "Question", "name": "Does the app work offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Recording, journaling, transcription, mood detection, and all AI features work fully offline. Verifiable in airplane mode." } },
+      { "@type": "Question", "name": "How do I back up my data?", "acceptedAnswer": { "@type": "Answer", "text": "Go to Settings → Export Data. You can export in JSON, Markdown, CSV, plain text, or password-protected encrypted format (AES-256-GCM). You can also enable iCloud sync for automatic backup." } },
+      { "@type": "Question", "name": "Can I sync across devices?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Enable iCloud sync in Settings to sync diary entries across your Apple devices via CloudKit. Your data is encrypted with your Apple ID. iCloud sync is optional and disabled by default." } },
+      { "@type": "Question", "name": "What is the Digital Twin?", "acceptedAnswer": { "@type": "Answer", "text": "Your Digital Twin is a private AI model that learns your personality, emotional patterns, communication style, and personal knowledge graph from your journal entries. It grows more accurate with every entry and stays 100% on your device." } },
+      { "@type": "Question", "name": "How do I lock the app?", "acceptedAnswer": { "@type": "Answer", "text": "Go to Settings → App Lock and enable Face ID or Touch ID protection. The app locks automatically when you leave it and requires authentication to re-enter." } },
+      { "@type": "Question", "name": "Can I attach photos?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can attach up to 5 photos per diary entry. Photos are stored locally on your device and are never uploaded to any server." } },
+      { "@type": "Question", "name": "How do I delete my data?", "acceptedAnswer": { "@type": "Answer", "text": "Swipe left on any entry in the Timeline view to delete it. To remove all data, uninstall the app. For iCloud data, manage it through your device's iCloud settings." } },
+      { "@type": "Question", "name": "What iOS version is required?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox requires iOS 17.0 or later. The Dynamic Island recording timer requires an iPhone 14 Pro or newer." } },
+      { "@type": "Question", "name": "How do the Live Activities work?", "acceptedAnswer": { "@type": "Answer", "text": "When you start recording, a Live Activity appears in the Dynamic Island (or as a Lock Screen banner on non-Pro iPhones) showing your elapsed time and waveform. After your entry saves, a brief 'new star appeared' Live Activity celebrates the entry and auto-dismisses. The streak Live Activity is opt-in — enable in Settings → Live Activities." } }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org","@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},
+      {"@type":"ListItem","position":2,"name":"Support"}
+    ]
+  }
+  </script>
+
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
