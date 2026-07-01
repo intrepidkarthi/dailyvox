@@ -94,7 +94,7 @@ private struct InviteScreen: View {
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("Not a form. Not a tour. Just say one\ntrue thing — and watch it become the\nfirst star in a sky only you can see.")
+                Text("No forms, no sign-up. Just talk about\nyour day — and watch your voice become\nthe first star in a sky only you can see.")
                     .font(.system(size: 16, weight: .regular, design: .rounded))
                     .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
@@ -194,12 +194,12 @@ private struct SpeakScreen: View {
         switch phase {
         case .born: return "A star is born."
         case .processing: return "Finding your words…"
-        default: return "Say one true thing\nabout today."
+        default: return "How was your day,\nreally?"
         }
     }
     private var subhead: String {
         switch phase {
-        case .idle: return "Out loud. Anything. It stays on your phone."
+        case .idle: return "Speak, don't type. DailyVox turns it into your private journal — kept on your phone."
         case .recording: return "Listening… speak as long as you like."
         case .processing: return "On-device. Nothing left your phone."
         case .born: return "Your voice, now a light in your sky."
