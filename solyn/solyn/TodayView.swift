@@ -938,11 +938,16 @@ struct TodayView: View {
                         Task { @MainActor in
                             let streak = currentStreak(in: viewContext)
                             let total = totalEntryCount(in: viewContext)
-                            LiveActivityManager.shared.fireStarBirthActivity(
-                                streak: streak,
-                                totalStars: total,
-                                moodRaw: entry.mood ?? ""
-                            )
+                            // Celebrate only the FIRST entry of the day. Subsequent
+                            // same-day entries must not stack a new "a new star
+                            // appeared" Live Activity each time.
+                            if entriesTodayCount(in: viewContext) <= 1 {
+                                LiveActivityManager.shared.fireStarBirthActivity(
+                                    streak: streak,
+                                    totalStars: total,
+                                    moodRaw: entry.mood ?? ""
+                                )
+                            }
                             LiveActivityManager.shared.refreshStreakActivity(
                                 streak: streak,
                                 hasEntryToday: true,
@@ -1176,6 +1181,17 @@ func currentStreak(in context: NSManagedObjectContext) -> Int {
 
 func totalEntryCount(in context: NSManagedObjectContext) -> Int {
     let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
+    return (try? context.count(for: request)) ?? 0
+}
+
+/// Number of entries created today — used to fire the Star Birth celebration
+/// only on the first entry of the day.
+func entriesTodayCount(in context: NSManagedObjectContext) -> Int {
+    let calendar = Calendar.current
+    let startOfDay = calendar.startOfDay(for: Date())
+    let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
+    let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
+    request.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
     return (try? context.count(for: request)) ?? 0
 }
 

@@ -794,6 +794,17 @@ struct WidgetPersistenceController {
         if let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: WidgetPersistenceController.appGroupIdentifier) {
             let storeURL = appGroupURL.appendingPathComponent("solyn.sqlite")
             let description = NSPersistentStoreDescription(url: storeURL)
+
+            // These MUST match the app's PersistenceController. The app creates the
+            // store with history tracking + file protection; a reader that opens it
+            // without the same options gets a stale/empty view (widget shows zeros).
+            #if os(iOS)
+            description.setOption(FileProtectionType.completeUntilFirstUserAuthentication as NSObject,
+                                  forKey: NSPersistentStoreFileProtectionKey)
+            #endif
+            description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+            description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+
             container.persistentStoreDescriptions = [description]
         }
 
@@ -802,6 +813,10 @@ struct WidgetPersistenceController {
                 logger.error("Widget Core Data error: \(error.localizedDescription)")
             }
         }
+
+        // Pick up writes the app makes while the widget process is alive.
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 }
 
