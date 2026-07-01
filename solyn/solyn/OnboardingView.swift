@@ -165,11 +165,7 @@ private struct SpeakScreen: View {
                                          center: .center, startRadius: 6, endRadius: 130))
                     .frame(width: 260, height: 260)
 
-                if phase == .born {
-                    BornStar(flare: flare)
-                } else {
-                    WaveOrb(level: level, active: phase == .recording)
-                }
+                VoiceStar(level: level, active: phase == .recording, born: flare)
             }
             .frame(height: 260)
 
@@ -270,8 +266,9 @@ private struct SpeakScreen: View {
     }
 
     private func born() {
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.58)) { phase = .born }
-        withAnimation(.easeOut(duration: 0.8)) { flare = 1 }
+        withAnimation(.easeInOut(duration: 0.25)) { phase = .born }
+        // Springy overshoot = the waveform collapses and the star pops into being.
+        withAnimation(.spring(response: 0.7, dampingFraction: 0.52).delay(0.05)) { flare = 1 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { onBorn(transcript) }
     }
 
@@ -293,29 +290,59 @@ private struct SpeakScreen: View {
     }
 }
 
-// MARK: - Live waveform orb (bars radiating; amplitude follows the mic level)
+// MARK: - Voice star (waveform that collapses & coalesces into a star)
 
-private struct WaveOrb: View {
+private struct VoiceStar: View {
     let level: CGFloat
     let active: Bool
+    let born: CGFloat   // 0 = live waveform, 1 = ignited star
     private let bars = 40
 
     var body: some View {
         SwiftUI.TimelineView(.animation) { tl in
             let t: Double = tl.date.timeIntervalSinceReferenceDate
+            let b: Double = Double(born)
             ZStack {
+                // Ignition shockwave — expands and fades as the star is born
+                Circle()
+                    .fill(OB.gold.opacity(0.35 * (1 - b)))
+                    .frame(width: 60, height: 60)
+                    .scaleEffect(0.4 + born * 3.4)
+                    .opacity(b > 0.001 ? 1 : 0)
+
+                // Soft recording disc (dissolves into the star)
                 Circle()
                     .fill(OB.card)
                     .frame(width: 96, height: 96)
-                    .shadow(color: OB.ink.opacity(0.05), radius: 8, y: 3)
-                Circle()
-                    .fill(OB.gold.opacity(0.9))
-                    .frame(width: 14, height: 14)
-                    .scaleEffect(1 + (active ? level * 0.8 : 0))
+                    .shadow(color: OB.ink.opacity(0.05 * (1 - b)), radius: 8, y: 3)
+                    .opacity(1 - b)
+                    .scaleEffect(1 - born * 0.45)
 
+                // Collapsing waveform bars
                 ForEach(0..<bars, id: \.self) { i in
                     bar(i: i, t: t)
                 }
+
+                // Flare rays (extend as it ignites)
+                ForEach(0..<8, id: \.self) { i in
+                    Capsule()
+                        .fill(OB.gold.opacity(0.55 * b))
+                        .frame(width: 2.4, height: 66)
+                        .offset(y: -44)
+                        .scaleEffect(x: 1, y: born, anchor: .bottom)
+                        .rotationEffect(.degrees(Double(i) / 8.0 * 360.0))
+                }
+
+                // Star core (glows into being; also the live recording pulse)
+                Circle()
+                    .fill(OB.gold)
+                    .frame(width: 16, height: 16)
+                    .scaleEffect(1 + (active ? level * 0.7 : 0) + born * 0.9)
+                    .shadow(color: OB.gold.opacity(0.7 * b), radius: 18 * born)
+                Circle()
+                    .fill(.white)
+                    .frame(width: 7, height: 7)
+                    .scaleEffect(0.6 + born * 1.1 + (active ? level * 0.4 : 0))
             }
         }
     }
@@ -324,39 +351,16 @@ private struct WaveOrb: View {
         let angle: Double = Double(i) / Double(bars) * 360.0
         let wobble: Double = 0.5 + 0.5 * sin(t * 3.0 + Double(i) * 0.7)
         let amp: CGFloat = active ? level * CGFloat(wobble) : 0.04
-        let h: CGFloat = 10 + amp * 64
+        let baseH: CGFloat = 10 + amp * 64
+        let h: CGFloat = max(0.5, baseH * (1 - born))     // shrink as they collapse
+        let outward: CGFloat = 70 * (1 - born)            // pull inward on birth
+        let op: Double = (active ? 0.9 : 0.35) * Double(1 - born)
         return Capsule()
             .fill(LinearGradient(colors: [OB.gold, OB.sage], startPoint: .top, endPoint: .bottom))
             .frame(width: 3.2, height: h)
-            .offset(y: -70)
+            .offset(y: -outward)
             .rotationEffect(.degrees(angle))
-            .opacity(active ? 0.9 : 0.35)
-    }
-}
-
-// MARK: - The born star (flare + rays)
-
-private struct BornStar: View {
-    let flare: CGFloat
-
-    var body: some View {
-        ZStack {
-            Circle().fill(OB.gold.opacity(0.18 * Double(flare))).frame(width: 200, height: 200)
-                .scaleEffect(0.6 + flare * 0.6)
-            ForEach(0..<8, id: \.self) { i in
-                Capsule()
-                    .fill(OB.gold.opacity(0.5 * Double(flare)))
-                    .frame(width: 2, height: 60)
-                    .offset(y: -46)
-                    .rotationEffect(.degrees(Double(i) / 8 * 360))
-                    .scaleEffect(y: flare)
-            }
-            Circle().fill(OB.gold).frame(width: 26, height: 26)
-                .shadow(color: OB.gold.opacity(0.7), radius: 16)
-                .scaleEffect(0.4 + flare * 0.9)
-            Circle().fill(.white).frame(width: 10, height: 10)
-                .scaleEffect(flare)
-        }
+            .opacity(op)
     }
 }
 
@@ -470,6 +474,17 @@ private struct LivingSky: View {
                     let rect = CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)
                     let col: Color = (isGold ? OB.gold : OB.sage).opacity(base * tw)
                     ctx.fill(Path(ellipseIn: rect), with: .color(col))
+                }
+
+                // The sky gains your star once it's born
+                if bright > 0 {
+                    let hx: Double = w * 0.5
+                    let hy: Double = h * 0.26
+                    let pulse: Double = 0.7 + 0.3 * sin(t * 1.6)
+                    let halo = CGRect(x: hx - 10, y: hy - 10, width: 20, height: 20)
+                    ctx.fill(Path(ellipseIn: halo), with: .color(OB.gold.opacity(0.20 * pulse)))
+                    let core = CGRect(x: hx - 3, y: hy - 3, width: 6, height: 6)
+                    ctx.fill(Path(ellipseIn: core), with: .color(OB.gold.opacity(0.95)))
                 }
             }
         }
