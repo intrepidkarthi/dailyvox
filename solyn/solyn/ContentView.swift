@@ -58,11 +58,18 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            // Warm tab bar appearance
-            let appearance = UITabBarAppearance()
-            appearance.configureWithDefaultBackground()
-            UITabBar.appearance().standardAppearance = appearance
-            UITabBar.appearance().scrollEdgeAppearance = appearance
+            // On iOS 26+, let the system render the native Liquid Glass tab bar.
+            // A manual UITabBarAppearance override forces an opaque background and
+            // defeats the glass material, so we only apply the warm configured
+            // appearance on iOS 25 and earlier.
+            if #available(iOS 26.0, *) {
+                // No override — inherit the native Liquid Glass tab bar.
+            } else {
+                let appearance = UITabBarAppearance()
+                appearance.configureWithDefaultBackground()
+                UITabBar.appearance().standardAppearance = appearance
+                UITabBar.appearance().scrollEdgeAppearance = appearance
+            }
         }
     }
 }
