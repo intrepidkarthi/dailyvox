@@ -106,6 +106,13 @@ final class LiveActivityManager {
         #if os(iOS)
         guard #available(iOS 16.2, *), areActivitiesEnabled else { return }
 
+        // Never stack: end any Star Birth activity that's still on screen before
+        // starting a new one. Belt-and-suspenders alongside the once-per-day gate
+        // at the call site.
+        for existing in Activity<StarBirthActivityAttributes>.activities {
+            Task { await existing.end(nil, dismissalPolicy: .immediate) }
+        }
+
         let attributes = StarBirthActivityAttributes(moodRaw: moodRaw)
         let state = StarBirthActivityAttributes.ContentState(streak: streak, totalStars: totalStars)
         let content = ActivityContent(state: state, staleDate: Date().addingTimeInterval(dismissAfter))
