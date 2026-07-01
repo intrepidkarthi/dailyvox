@@ -36,6 +36,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Does DailyVox collect my data?", "acceptedAnswer": { "@type": "Answer", "text": "No. DailyVox has no servers, so there is no infrastructure to collect data with — this is privacy by architecture, not by policy. Apple's App Store privacy nutrition label for DailyVox reads 'Data Not Collected,' verified during App Store review." } },
+      { "@type": "Question", "name": "Where is my journal data stored?", "acceptedAnswer": { "@type": "Answer", "text": "All your data lives on your iPhone or iPad, in the app's sandboxed storage protected by iOS. The database is encrypted at rest with iOS Data Protection, so when the device is locked your entries are mathematically inaccessible without your passcode or biometric." } },
+      { "@type": "Question", "name": "Does DailyVox work without an account?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. There is no account, no sign-up, and no email required. You download DailyVox and start journaling immediately. Optional iCloud sync uses your existing Apple ID and is disabled by default." } },
+      { "@type": "Question", "name": "Does DailyVox send my journal to cloud AI like OpenAI or Anthropic?", "acceptedAnswer": { "@type": "Answer", "text": "No. DailyVox does not send your entries to OpenAI, Google, Anthropic, or any cloud AI vendor. All AI features — speech recognition, sentiment analysis, named entity recognition, and personality modelling — run on your device's Neural Engine using Apple's built-in frameworks, with no network calls." } },
+      { "@type": "Question", "name": "Is DailyVox open source so I can verify the privacy claims?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The entire DailyVox codebase is published on GitHub under the MIT License at github.com/intrepidkarthi/dailyvox. Anyone can read the source and confirm there are no network calls in the AI pipeline — privacy claims should be verifiable, not just stated." } },
+      { "@type": "Question", "name": "What permissions does DailyVox need?", "acceptedAnswer": { "@type": "Answer", "text": "DailyVox requests the microphone (to record your voice) and speech recognition (for on-device transcription). Face ID/Touch ID, Photo Library, and Notifications are all optional and requested only when you use the related feature. None of these permissions cause data to leave your device." } }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org","@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},
+      {"@type":"ListItem","position":2,"name":"Privacy"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  { "@context":"https://schema.org","@type":"WebPage","name":"DailyVox Privacy Policy — Privacy by Architecture","speakable":{"@type":"SpeakableSpecification","cssSelector":["h1",".lede"]},"url":"https://getdailyvox.com/privacy" }
+  </script>
+
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
