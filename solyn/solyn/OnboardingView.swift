@@ -78,13 +78,13 @@ struct OnboardingView: View {
                         .tag(Step.name.rawValue)
                     MessageStep(
                         symbol: "mic.fill", tint: OB.gold,
-                        title: "Your voice builds a\nDigital Twin",
+                        title: "Your voice builds a Digital Twin",
                         message: "Speak about 42 seconds a day. Your Twin learns your personality, moods, and the people in your life — all on your phone.",
                         isIPad: isIPad
                     ).tag(Step.twin.rawValue)
                     MessageStep(
                         symbol: "lock.shield.fill", tint: OB.sage,
-                        title: "A sky no one else\ncan see",
+                        title: "A sky no one else can see",
                         message: "Everything runs on your device. No account, no cloud, no one watching. Apple's privacy label: Data Not Collected.",
                         isIPad: isIPad
                     ).tag(Step.privacy.rawValue)
@@ -321,6 +321,8 @@ private struct MessageStep: View {
                     .tracking(-0.4)
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .minimumScaleFactor(0.85)
                 Text(message)
                     .font(.system(size: 15, weight: .regular, design: .rounded))
                     .foregroundColor(OB.inkDim)
