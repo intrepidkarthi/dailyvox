@@ -76,7 +76,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | **Scribe** | v1.0–v1.3.5 *(shipped)* | listens, remembers, and reflects what you tell it |
 | **Body** | v1.4 | feels what your body felt — physiology joins the narrative |
 | **Senses** | v1.4.5 | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
-| **Memory** | v1.5 | finds meaning across years — semantic search, causal chains |
+| **Memory** | v1.5 | remembers you accurately across years — measurable fidelity + semantic memory |
 | **Voice** | v1.6 | converses with a real on-device brain, citing your own entries |
 | **Polyglot** | v1.7 | speaks your language — depth on one platform, breadth in languages |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
@@ -143,18 +143,29 @@ The first taste of the Twin learning from your day, not just your words — and 
 - **Reuses the v1.4 queue**: no new privacy surface beyond the Photos and Media Library permissions; the review-and-discard gate already exists. "Data Not Collected" label preserved; both signals off by default
 - Deliberately *not* here: location, calendar, email — those wait for v2.3's full Ambient Twin (location/calendar) or are ruled out entirely (email credentials). v1.4.5 is the cheapest, highest-trust slice of the ambient bet
 
-### v1.5 — Semantic Search & Proactive Insights
-- NLEmbedding for 512-dimensional sentence embeddings
-- Semantic search via cosine similarity
-- K-means clustering for thematic discovery
-- Z-score anomaly detection for unusual entries
-- Graph-based semantic indexing (text chunks + knowledge graph entities unified)
-- Foundation for on-device RAG pipeline (inspired by [MiniRAG](https://github.com/HKUDS/MiniRAG) architecture)
-- Causal chains: connect entities temporally to emotional outcomes ("your mood drops after mentions of [person] in [context]")
-- Decision-language extraction: detect and store patterns like "I decided to...", "I regret...", "I chose..."
-- Embodied search (builds on v1.4 Body Twin): "show me entries where I was stressed but didn't say so" — finds entries where HR was elevated but text stayed neutral
-- **Voice biomarkers**: on-device prosody analysis (pace, pitch variability, energy, pause patterns) as a mood/stress signal independent of word content — "your voice sounded tired before you said you were". Patterns and reflections only, never diagnoses; per-signal toggle in Settings; raw audio features stay on-device like everything else
-- **Twin Resolution score**: a visible accuracy/depth meter that grows with every entry ("your Twin can now see 7 months deep"). Makes the data moat *felt* — the longer you journal, the more it knows, the harder it is to leave
+### v1.5 — Semantic Memory & Measurable Fidelity
+
+Reframed from "semantic search + insights." Now that v1.4 gave the Twin a body, the binding constraint is no longer *more signals* — it's proving the Twin **remembers accurately across years** and **models you rather than imitates you**. So evaluation and long-term memory move onto the critical path *ahead* of v1.6's on-device brain: you can't tell whether the Foundation-Models Twin beats the template Twin without a fidelity number, and you can't ground it without a memory layer. **Measurement infrastructure comes before features.**
+
+**Measurable fidelity (build first — currently the roadmap's biggest gap):**
+- **Twin Resolution score** — the surfaced number, now backed by a real harness. A self-prediction fidelity benchmark in the style of Park et al. ([arXiv:2411.10109](https://arxiv.org/abs/2411.10109)): the Twin predicts your answers to a fixed, periodically-answered questionnaire from your entries alone, **normalized against your own two-week test-retest consistency**. Floor to beat: 74% (demographics-only); aspiration: the 83–86% band self-report agents reached. Shown in-app as "your Twin can now see N months deep" so accuracy is *felt*, not claimed.
+- **Out-of-Character (OOC) rate** — an atomic-level persona-fidelity metric ([arXiv:2506.19352](https://arxiv.org/abs/2506.19352)) tracked across releases as the drift regression-alarm. A feature that raises fidelity on paper but increases OOC drift is a net loss; this catches it.
+- **Faithful-reflection (anti-sycophancy) audit** — measure whether the Twin reflects an *accurate* rather than *flattering* version of you (false-premise correction rate). Early on-device evidence: journal-grounded, evidence-forced answering is the dominant mitigation. A mirror that only tells you what you want to hear is worse than useless.
+
+**Semantic memory:**
+- NLEmbedding sentence-embedding vector store + semantic search via cosine similarity.
+- Graph-based semantic indexing (text chunks + knowledge-graph entities unified) with **boundary-aware retrieval** to stop the Twin recalling wrong facts ([RoleRAG, arXiv:2505.18541](https://arxiv.org/abs/2505.18541)).
+- **Long-term memory as tools** — the Twin decides what to store, retrieve, update, summarize, or discard (design from Agentic Memory, [arXiv:2601.01885](https://arxiv.org/abs/2601.01885)); benchmarked against **MemoryCD** ([arXiv:2603.25973](https://arxiv.org/abs/2603.25973)), which the field has *not* solved — an open problem DailyVox's longitudinal single-user data is uniquely positioned to contribute to.
+- **Offline monthly summary distillation** — task-aware user summaries generated on-device, combined with light runtime retrieval ([arXiv:2310.20081](https://arxiv.org/abs/2310.20081): matches or beats pure retrieval with ~75% less retrieved data — the difference between a sluggish and a snappy Twin). Feeds both the memory layer and the v1.6 RAG pipeline. (MiniRAG remains architectural inspiration for RAG on small models.)
+
+**Proactive insights (carried from the original scope):**
+- K-means thematic clustering; Z-score anomaly detection for unusual entries.
+- Causal chains: entities → emotional outcomes over time ("your mood drops after mentions of [person] in [context]").
+- Decision-language extraction ("I decided to…", "I regret…", "I chose…").
+- Embodied search (builds on v1.4 Body Twin): "show me entries where I was stressed but didn't say so" — HR elevated, text neutral.
+- **Voice biomarkers**: on-device prosody analysis (pace, pitch variability, energy, pause patterns) as a mood/stress signal independent of word content. Patterns and reflections only, never diagnoses; per-signal toggle in Settings; raw audio features stay on-device like everything else.
+
+> **The honest ceiling (unchanged from v3.0's framing).** This is a *mirror* of your reflective self: attitudes, personality, and reflective responses transfer well (83–86% of your own self-consistency); one-shot strategic decisions in novel situations do not. DailyVox is built and marketed as **reflection and precedent, never a decision-making oracle** — and never a mood-diagnosis tool (passive affect sensing tops out ~0.74 AUROC: insight, never diagnosis).
 
 ### v1.6 — Foundation Models Twin *(iOS 26, iPhone 15 Pro+)*
 
