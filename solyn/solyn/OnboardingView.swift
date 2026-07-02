@@ -9,6 +9,18 @@
 //
 
 import SwiftUI
+import CoreData
+import WidgetKit
+import DailyVoxTwinEngine
+import AVFoundation
+import Speech
+
+/// What the "speak your first star" moment produces, handed to the container to persist.
+struct OnboardingFirstEntry {
+    var audioFileName: String?   // nil in demo / no-audio paths
+    var duration: Double
+    var transcript: String
+}
 
 // MARK: - Palette
 
@@ -29,10 +41,12 @@ private enum OB {
 
 struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
+    @Environment(\.managedObjectContext) private var viewContext
 
     @State private var screen = 0          // 0 invite, 1 speak, 2 claim
     @State private var starBorn = false
     @State private var transcript = ""
+    @State private var firstEntry: OnboardingFirstEntry?
 
     private var demo: Bool { ProcessInfo.processInfo.arguments.contains("-OnboardingDemo") }
 
@@ -47,8 +61,9 @@ struct OnboardingView: View {
                 case 0:
                     InviteScreen(demo: demo) { advance() }
                 case 1:
-                    SpeakScreen(demo: demo) { text in
-                        transcript = text
+                    SpeakScreen(demo: demo) { entry in
+                        firstEntry = entry
+                        transcript = entry.transcript
                         withAnimation(.easeInOut(duration: 0.8)) { starBorn = true }
                         advance()
                     }
@@ -63,8 +78,39 @@ struct OnboardingView: View {
     private func advance() { withAnimation(.easeInOut(duration: 0.6)) { screen += 1 } }
 
     private func complete() {
+        persistFirstStar()
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         withAnimation(.easeInOut(duration: 0.4)) { hasCompletedOnboarding = true }
+    }
+
+    /// Save the onboarding recording as the user's real first DiaryEntry, so "that
+    /// star is yours" is true — they enter the app to a sky that already holds their
+    /// star, not an empty one, and TodayView won't re-fire a duplicate first-star moment.
+    private func persistFirstStar() {
+        guard let entry = firstEntry else { return }
+        let text = entry.transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard entry.audioFileName != nil || !text.isEmpty else { return }
+        let now = Date()
+        let e = DiaryEntry(context: viewContext)
+        e.id = UUID()
+        e.date = now
+        e.createdAt = now
+        e.updatedAt = now
+        e.text = text
+        e.isStarred = false
+        if let fileName = entry.audioFileName {
+            e.setValue(AudioFileList.encode([fileName]), forKey: "audioFileNames")
+            e.setValue(fileName, forKey: "audioFileName")
+            e.setValue(entry.duration, forKey: "duration")
+        }
+        do {
+            try viewContext.save()
+            UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
+            DigitalTwinEngine.shared.processEntry(text: text, mood: nil, date: now, duration: entry.duration)
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            // Non-fatal: onboarding still completes; worst case the star isn't pre-seeded.
+        }
     }
 }
 
@@ -108,7 +154,19 @@ private struct InviteScreen: View {
             Spacer()
             Spacer()
 
-            PrimaryButton(title: "I'm ready", filled: true, action: onBegin)
+            PrimaryButton(title: "I'm ready", filled: true) {
+                // Pre-frame the mic + speech prompts here, on the calm invite screen,
+                // so they don't interrupt the recording moment itself.
+                #if os(iOS)
+                AVAudioApplication.requestRecordPermission { _ in
+                    SFSpeechRecognizer.requestAuthorization { _ in
+                        DispatchQueue.main.async { onBegin() }
+                    }
+                }
+                #else
+                onBegin()
+                #endif
+            }
                 .padding(.horizontal, 28)
                 .padding(.bottom, 44)
         }
@@ -128,7 +186,7 @@ private struct InviteScreen: View {
 
 private struct SpeakScreen: View {
     let demo: Bool
-    let onBorn: (String) -> Void
+    let onBorn: (OnboardingFirstEntry) -> Void
 
     @StateObject private var recorder = AudioRecorder()
     @State private var phase: Phase = .idle
@@ -136,9 +194,12 @@ private struct SpeakScreen: View {
     @State private var elapsed: Double = 0
     @State private var transcript = ""
     @State private var flare: CGFloat = 0
+    @State private var capturedFile: String?
+    @State private var capturedDuration: Double = 0
+    @State private var typing = false
+    @State private var typedText = ""
 
     enum Phase { case idle, recording, processing, born }
-    private let softTarget: Double = 42
 
     var body: some View {
         VStack(spacing: 0) {
@@ -180,10 +241,13 @@ private struct SpeakScreen: View {
             withAnimation(.easeOut(duration: 0.08)) { level = CGFloat(l) }
         }
         .onReceive(recorder.$currentTime) { t in
+            // 42s is a soft target, not a cut-off — let people finish their sentence.
             elapsed = t
-            if t >= softTarget { finish() }
         }
         .onAppear(perform: autoDemo)
+        .sheet(isPresented: $typing) {
+            TypeFirstEntryView(text: $typedText, onSave: finishTyped, onCancel: { typing = false })
+        }
     }
 
     private var headline: String {
@@ -218,6 +282,10 @@ private struct SpeakScreen: View {
                 }
                 Text("Tap to speak").font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundColor(OB.inkMute)
+                Button("I can't talk right now") { typing = true }
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundColor(OB.sage)
+                    .padding(.top, 2)
             }
         case .recording:
             Button(action: finish) {
@@ -256,7 +324,9 @@ private struct SpeakScreen: View {
             born(); return
         }
         withAnimation(.easeInOut(duration: 0.3)) { phase = .processing }
-        guard let res = recorder.stopRecording() else { transcript = ""; born(); return }
+        guard let res = recorder.stopRecording() else { born(); return }
+        capturedFile = res.url.lastPathComponent
+        capturedDuration = res.duration
         SpeechTranscriber.shared.transcribe(from: res.url) { result in
             DispatchQueue.main.async {
                 if case .success(let t) = result { transcript = t }
@@ -269,7 +339,21 @@ private struct SpeakScreen: View {
         withAnimation(.easeInOut(duration: 0.25)) { phase = .born }
         // Springy overshoot = the waveform collapses and the star pops into being.
         withAnimation(.spring(response: 0.7, dampingFraction: 0.52).delay(0.05)) { flare = 1 }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { onBorn(transcript) }
+        let payload = OnboardingFirstEntry(audioFileName: capturedFile,
+                                           duration: capturedDuration,
+                                           transcript: transcript)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { onBorn(payload) }
+    }
+
+    private func finishTyped() {
+        let t = typedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !t.isEmpty else { return }
+        transcript = t
+        capturedFile = nil
+        capturedDuration = 0
+        typing = false
+        // Let the sheet dismiss, then ignite the star from the typed words.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { born() }
     }
 
     private func autoDemo() {
@@ -287,6 +371,59 @@ private struct SpeakScreen: View {
             }
             finish()
         }
+    }
+}
+
+// MARK: - Type instead (escape hatch for "I can't talk right now")
+
+private struct TypeFirstEntryView: View {
+    @Binding var text: String
+    var onSave: () -> Void
+    var onCancel: () -> Void
+    @FocusState private var focused: Bool
+
+    private var isEmpty: Bool { text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Button("Cancel", action: onCancel).foregroundColor(OB.inkMute)
+                Spacer()
+                Text("Your first star")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundColor(OB.ink)
+                Spacer()
+                Button("Save", action: onSave)
+                    .fontWeight(.semibold)
+                    .foregroundColor(isEmpty ? OB.inkMute : OB.sage)
+                    .disabled(isEmpty)
+            }
+            .font(.system(size: 15, design: .rounded))
+            .padding()
+
+            Text("How was your day, really?")
+                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundColor(OB.ink)
+                .padding(.top, 4)
+
+            TextEditor(text: $text)
+                .font(.system(size: 17, design: .rounded))
+                .foregroundColor(OB.ink)
+                .scrollContentBackground(.hidden)
+                .padding(12)
+                .background(OB.card)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(OB.rule, lineWidth: 1))
+                .frame(height: 200)
+                .padding()
+                .focused($focused)
+
+            Text("Stored only on your phone.")
+                .font(.system(size: 12, design: .rounded)).foregroundColor(OB.inkMute)
+
+            Spacer()
+        }
+        .background(OB.paper.ignoresSafeArea())
+        .onAppear { focused = true }
     }
 }
 
