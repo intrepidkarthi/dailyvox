@@ -253,7 +253,7 @@ struct WeeklyInsightsSection: View {
             .frame(height: 280)
         }
         .padding(.vertical, 8)
-        .sheet(isPresented: $showShareSheet) {
+        .sheet(isPresented: $showShareSheet, onDismiss: { ReviewManager.shared.recordPositiveMoment() }) {
             if let image = shareImage {
                 ShareSheet(activityItems: [image])
             }

@@ -203,7 +203,7 @@ struct TwinProfileCardSection: View {
 
                     TwinProfileCardContent(profile: profile)
                 }
-                .sheet(isPresented: $showShareSheet) {
+                .sheet(isPresented: $showShareSheet, onDismiss: { ReviewManager.shared.recordPositiveMoment() }) {
                     if let image = shareImage {
                         ShareSheet(activityItems: [
                             image,
