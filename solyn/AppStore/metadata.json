@@ -16,8 +16,8 @@
       "name": "DailyVox: Voice Journal Diary",
       "subtitle": "Private On-Device Audio Diary",
       "keywords": "offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital",
-      "promotional_text": "Private voice journal & audio diary, 100% on your iPhone. Speak ~42 seconds a day and your Digital Twin learns your moods and patterns. No account. No cloud. Free.",
-      "whats_new": "A warm new look.\n\nDailyVox now wears a calm sage-and-gold palette across every screen, and your Digital Twin takes center stage.\n\n- Redesigned, warmer interface throughout\n- Digital Twin promoted to the center of the app\n- Refined recording screen and onboarding\n- Compact audio player on entries\n- Replay the welcome anytime from Settings\n- Polish and fixes across the app\n\nStill free. Still 100% on-device. Your words never leave your phone."
+      "promotional_text": "Speak your first star. Your voice becomes a private journal and a Digital Twin that learns your moods — 100% on your iPhone. No account, no cloud. Free.",
+      "whats_new": "Start with your voice.\n\n- Voice-first onboarding: speak one true thing and watch it become the first star in your private sky\n- Your very first recording is saved as your real first journal entry — no empty start\n- Can't talk right now? Type your first entry instead\n- Fixed Home & Lock Screen widget counters and the recording timer\n- Rating moments that respect your time\n\nStill free. Still 100% on-device. Your words never leave your phone."
     }
   },
   "app_privacy": {
@@ -36,31 +36,46 @@
     "notes_for_reviewer": "DailyVox is a privacy-first voice diary app. All AI processing happens on-device using Apple's NaturalLanguage framework. The app requires microphone access for voice recording, Speech Recognition for transcription, and optionally Photo Library access for attaching photos to entries. Encrypted backups use CryptoKit (AES-256-GCM). No data is sent to external servers. The app does not require an account or internet connection to function."
   },
   "screenshots": {
-    "iphone_67": {
-      "resolution": "1284x2778",
-      "count": 7,
-      "files": [
-        "01_hero.png",
-        "02_digital_twin.png",
-        "03_constellation.png",
-        "04_privacy.png",
-        "05_voice.png",
-        "06_free.png",
-        "07_dynamic_island.png"
-      ],
-      "captions": [
-        "Your inner sky is waiting",
-        "Your Digital Twin learns your patterns",
-        "Every entry becomes a star in your constellation",
-        "100% on-device. Your diary never leaves your phone.",
-        "Voice journaling — just speak, we transcribe",
-        "Open source. No accounts. No tracking.",
-        "Always visible. Never in the way. (NEW in v1.3.5)"
-      ]
-    },
-    "iphone_65": {
-      "resolution": "1242x2688",
+    "_note": "Captioned marketing set generated via screenshot-src/gen_appstore.py. Both sizes are the same 7 frames.",
+    "iphone_6.9": {
+      "resolution": "1320x2868",
+      "dir": "screenshots/iPhone_6.9_1320x2868",
       "count": 7
-    }
+    },
+    "iphone_6.5": {
+      "resolution": "1284x2778",
+      "dir": "screenshots/iPhone_6.5_1284x2778",
+      "count": 7
+    },
+    "recommended_upload_order": [
+      {
+        "file": "07_first_star.png",
+        "headline": "your voice becomes a star"
+      },
+      {
+        "file": "01_predicts_you.png",
+        "headline": "it knows you better than you do"
+      },
+      {
+        "file": "02_just_speak.png",
+        "headline": "speak 42 sec — that's the whole app"
+      },
+      {
+        "file": "03_remembers.png",
+        "headline": "it remembers everything"
+      },
+      {
+        "file": "04_patterns.png",
+        "headline": "it clocks your patterns before you do"
+      },
+      {
+        "file": "05_reads_between_lines.png",
+        "headline": "it reads between the lines"
+      },
+      {
+        "file": "06_private.png",
+        "headline": "it never leaves your phone. period."
+      }
+    ]
   }
 }
