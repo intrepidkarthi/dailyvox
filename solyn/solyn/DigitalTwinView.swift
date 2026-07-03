@@ -50,6 +50,9 @@ struct DigitalTwinView: View {
                     // Maturity indicator
                     maturityBadge
 
+                    // How well the Twin actually knows you (self-prediction fidelity)
+                    TwinResolutionCard()
+
                     // Section Picker
                     sectionPicker
 
