@@ -2,807 +2,666 @@
 //  OnboardingView.swift
 //  solyn
 //
-//  Privacy-focused onboarding experience
+//  Signature onboarding — "Speak your first star into being."
+//  Three beats: invite → speak (live waveform, on-device) → your star is born.
+//  The product's magic (voice → a private star that never leaves the phone)
+//  is *experienced* in the first 30 seconds, not explained.
 //
 
 import SwiftUI
+import CoreData
+import WidgetKit
+import DailyVoxTwinEngine
+import AVFoundation
+import Speech
+
+/// What the "speak your first star" moment produces, handed to the container to persist.
+struct OnboardingFirstEntry {
+    var audioFileName: String?   // nil in demo / no-audio paths
+    var duration: Double
+    var transcript: String
+}
+
+// MARK: - Palette
+
+private enum OB {
+    static let paper   = Color(red: 0.980, green: 0.972, blue: 0.961)
+    static let paper2  = Color(red: 0.949, green: 0.929, blue: 0.910)
+    static let card    = Color.white
+    static let ink     = Color(red: 0.102, green: 0.102, blue: 0.180)
+    static let inkDim  = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.62)
+    static let inkMute = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.40)
+    static let rule    = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.10)
+    static let gold    = Color(red: 0.831, green: 0.647, blue: 0.278)
+    static let sage    = Color(red: 0.357, green: 0.486, blue: 0.420)
+    static let forest  = Color(red: 0.420, green: 0.620, blue: 0.482)
+}
+
+// MARK: - Container
 
 struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var currentPage = 0
-    @State private var selectedIntentions: Set<String> = []
+    @Environment(\.managedObjectContext) private var viewContext
 
-    private var isIPad: Bool { horizontalSizeClass == .regular }
-    private var totalPageCount: Int { pages.count + 2 } // welcome + feature pages + intention
+    @State private var screen = 0          // 0 invite, 1 speak, 2 claim
+    @State private var starBorn = false
+    @State private var transcript = ""
+    @State private var firstEntry: OnboardingFirstEntry?
 
-    private let pages: [OnboardingPage] = [
-        OnboardingPage(
-            icon: "person.crop.circle.fill",
-            iconColor: Color(red: 0.831, green: 0.647, blue: 0.278),  // warm gold — the sun at the centre
-            title: "Meet Your Digital Twin",
-            subtitle: "The sun at the center of your sky",
-            description: "Your Digital Twin orbits your inner world — learning your personality, emotional patterns, and the people in your life. Four planets emerge: Mind, Heart, Voice, and Graph.",
-            gradient: [
-                Color(red: 38/255, green: 30/255, blue: 22/255),    // deep warm espresso
-                Color(red: 92/255, green: 68/255, blue: 38/255)     // warm amber-bronze
-            ]
-        ),
-        OnboardingPage(
-            icon: "chart.bar.fill",
-            iconColor: Color(red: 0.769, green: 0.584, blue: 0.416),
-            title: "Insights That Matter",
-            subtitle: "Patterns written in light",
-            description: "Like an aurora forming in your night sky, insights emerge from your journal entries. Mood trends, streaks, and emotional patterns — visible only when you look up.",
-            gradient: [
-                Color(red: 50/255, green: 38/255, blue: 30/255),    // Deep brown
-                Color(red: 120/255, green: 80/255, blue: 55/255)    // Warm amber
-            ]
-        ),
-        OnboardingPage(
-            icon: "lock.shield",
-            iconColor: Color(red: 0.420, green: 0.620, blue: 0.482),
-            title: "100% Private. Always.",
-            subtitle: "A constellation no one else can see",
-            description: "Your stars are protected by an unbreakable shield. All AI runs on your device. No servers. No accounts. No one watches your sky but you.",
-            gradient: [
-                Color(red: 25/255, green: 40/255, blue: 38/255),    // Deep teal-green
-                Color(red: 50/255, green: 80/255, blue: 70/255)     // Forest green
-            ]
-        )
-    ]
-
-    private var backgroundGradient: [Color] {
-        if currentPage == 0 {
-            // Warm night sky for the welcome star (matches the app's warm theme)
-            return [
-                Color(red: 26/255, green: 21/255, blue: 18/255),   // warm espresso night
-                Color(red: 42/255, green: 32/255, blue: 26/255)    // warm dusk
-            ]
-        } else if currentPage <= pages.count {
-            // Feature pages (1-based index, so subtract 1 for array)
-            return pages[currentPage - 1].gradient
-        } else {
-            // Intention check-in page — deep sage close (warm, on-brand)
-            return [
-                Color(red: 28/255, green: 38/255, blue: 32/255),    // deep sage night
-                Color(red: 56/255, green: 78/255, blue: 64/255)     // warm sage
-            ]
-        }
-    }
-
-    private var buttonGradientColors: [Color] {
-        if currentPage == 0 {
-            return [Color(red: 0.831, green: 0.647, blue: 0.278), Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.8)]
-        } else if currentPage <= pages.count {
-            let page = pages[currentPage - 1]
-            return [page.iconColor, page.iconColor.opacity(0.8)]
-        } else {
-            // Last page: sage green
-            return [Color(red: 0.357, green: 0.486, blue: 0.420), Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.8)]
-        }
-    }
-
-    private var buttonShadowColor: Color {
-        if currentPage == 0 {
-            return Color(red: 0.831, green: 0.647, blue: 0.278)
-        } else if currentPage <= pages.count {
-            return pages[currentPage - 1].iconColor
-        } else {
-            return Color(red: 0.357, green: 0.486, blue: 0.420)
-        }
-    }
+    private var demo: Bool { ProcessInfo.processInfo.arguments.contains("-OnboardingDemo") }
 
     var body: some View {
         ZStack {
-            // Background
-            LinearGradient(
-                colors: backgroundGradient,
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            .animation(.easeInOut(duration: 0.5), value: currentPage)
+            LinearGradient(colors: [OB.paper, OB.paper2], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+            LivingSky(bright: starBorn ? 1 : 0)
 
-            StarFieldView(count: 60)
-
-            VStack(spacing: 0) {
-                // Skip button
-                HStack {
-                    Spacer()
-                    if currentPage < totalPageCount - 1 {
-                        Button("Skip") {
-                            withAnimation {
-                                currentPage = totalPageCount - 1
-                            }
-                        }
-                        .font(.subheadline.weight(.medium))
-                        .foregroundColor(.white.opacity(0.6))
-                        .padding()
+            Group {
+                switch screen {
+                case 0:
+                    InviteScreen(demo: demo) { advance() }
+                case 1:
+                    SpeakScreen(demo: demo) { entry in
+                        firstEntry = entry
+                        transcript = entry.transcript
+                        withAnimation(.easeInOut(duration: 0.8)) { starBorn = true }
+                        advance()
                     }
+                default:
+                    ClaimScreen(transcript: transcript, onEnter: complete)
                 }
-
-                // Page content
-                TabView(selection: $currentPage) {
-                    // Page 0: Welcome star moment
-                    OnboardingWelcomeView()
-                        .tag(0)
-
-                    // Pages 1-3: Feature pages
-                    ForEach(0..<pages.count, id: \.self) { index in
-                        OnboardingPageView(page: pages[index])
-                            .tag(index + 1)
-                    }
-
-                    // Last page: Intention check-in
-                    IntentionCheckInView(selectedIntentions: $selectedIntentions, isIPad: isIPad)
-                        .tag(pages.count + 1)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-
-                // Constellation-themed progress indicator
-                HStack(spacing: 12) {
-                    ForEach(0..<totalPageCount, id: \.self) { index in
-                        Image(systemName: index <= currentPage ? "star.fill" : "star")
-                            .font(.system(size: index == currentPage ? 10 : 8))
-                            .foregroundColor(index <= currentPage ? Color(red: 0.831, green: 0.647, blue: 0.278) : .white.opacity(0.25))
-                            .animation(.spring(response: 0.3), value: currentPage)
-                    }
-                }
-                .padding(.bottom, 30)
-
-                // Action button
-                Button(action: {
-                    if currentPage < totalPageCount - 1 {
-                        withAnimation(.spring(response: 0.4)) {
-                            currentPage += 1
-                        }
-                    } else {
-                        completeOnboarding()
-                    }
-                }) {
-                    HStack {
-                        Text(currentPage == totalPageCount - 1 ? "Begin my journey" : "Next")
-                            .font(.headline)
-                        if currentPage == totalPageCount - 1 {
-                            Image(systemName: "sparkles")
-                                .font(.headline)
-                        }
-                    }
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                    .background(
-                        LinearGradient(
-                            colors: buttonGradientColors,
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .shadow(color: buttonShadowColor.opacity(0.3), radius: 10, y: 5)
-                }
-                .frame(maxWidth: isIPad ? 500 : .infinity)
-                .padding(.horizontal, isIPad ? 60 : 30)
-                .padding(.bottom, 50)
             }
+            .transition(.opacity)
         }
     }
 
-    private func completeOnboarding() {
-        UserDefaults.standard.set(Array(selectedIntentions), forKey: "onboardingIntentions")
-        withAnimation(.easeInOut(duration: 0.3)) {
-            hasCompletedOnboarding = true
-        }
+    private func advance() { withAnimation(.easeInOut(duration: 0.6)) { screen += 1 } }
+
+    private func complete() {
+        persistFirstStar()
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        withAnimation(.easeInOut(duration: 0.4)) { hasCompletedOnboarding = true }
+    }
+
+    /// Save the onboarding recording as the user's real first DiaryEntry, so "that
+    /// star is yours" is true — they enter the app to a sky that already holds their
+    /// star, not an empty one, and TodayView won't re-fire a duplicate first-star moment.
+    private func persistFirstStar() {
+        guard let entry = firstEntry else { return }
+        let text = entry.transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard entry.audioFileName != nil || !text.isEmpty else { return }
+        let now = Date()
+        let e = DiaryEntry(context: viewContext)
+        e.id = UUID()
+        e.date = now
+        e.createdAt = now
+        e.updatedAt = now
+        e.text = text
+        e.isStarred = false
+        if let fileName = entry.audioFileName {
+            e.setValue(AudioFileList.encode([fileName]), forKey: "audioFileNames")
+            e.setValue(fileName, forKey: "audioFileName")
+            e.setValue(entry.duration, forKey: "duration")
+        }
+        do {
+            try viewContext.save()
+            UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
+            DigitalTwinEngine.shared.processEntry(text: text, mood: nil, date: now, duration: entry.duration)
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            // Non-fatal: onboarding still completes; worst case the star isn't pre-seeded.
+        }
     }
 }
 
-// MARK: - Welcome Star Moment
+// MARK: - Beat 1: Invite
 
-struct OnboardingWelcomeView: View {
-    @State private var starScale: CGFloat = 0.3
-    @State private var glowOpacity: Double = 0
-    @State private var textOpacity: Double = 0
-    @State private var breathe = false   // continuous glow pulse
-    @State private var drift = false     // slow ambient-star rotation
+private struct InviteScreen: View {
+    let demo: Bool
+    let onBegin: () -> Void
+    @State private var appear = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            ZStack {
+                Circle().fill(OB.gold.opacity(appear ? 0.14 : 0)).frame(width: 140, height: 140)
+                Circle().fill(OB.gold.opacity(appear ? 0.22 : 0)).frame(width: 84, height: 84)
+                Image(systemName: "waveform")
+                    .font(.system(size: 34, weight: .semibold))
+                    .foregroundColor(OB.gold)
+            }
+            .scaleEffect(appear ? 1 : 0.7)
+
+            VStack(spacing: 14) {
+                Text("Your sky starts\nwith your voice")
+                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .tracking(-0.5)
+                    .foregroundColor(OB.ink)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("No forms, no sign-up. Just talk about\nyour day — and watch your voice become\nthe first star in a sky only you can see.")
+                    .font(.system(size: 16, weight: .regular, design: .rounded))
+                    .foregroundColor(OB.inkDim)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(5)
+            }
+            .padding(.top, 32)
+            .padding(.horizontal, 30)
+            .opacity(appear ? 1 : 0)
+            .offset(y: appear ? 0 : 16)
+
+            Spacer()
+            Spacer()
+
+            PrimaryButton(title: "I'm ready", filled: true) {
+                // Pre-frame the mic + speech prompts here, on the calm invite screen,
+                // so they don't interrupt the recording moment itself.
+                #if os(iOS)
+                AVAudioApplication.requestRecordPermission { _ in
+                    SFSpeechRecognizer.requestAuthorization { _ in
+                        DispatchQueue.main.async { onBegin() }
+                    }
+                }
+                #else
+                onBegin()
+                #endif
+            }
+                .padding(.horizontal, 28)
+                .padding(.bottom, 44)
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.9).delay(0.15)) { appear = true }
+            if demo {
+                Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 2_200_000_000)
+                    onBegin()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Beat 2: Speak (the heart)
+
+private struct SpeakScreen: View {
+    let demo: Bool
+    let onBorn: (OnboardingFirstEntry) -> Void
+
+    @StateObject private var recorder = AudioRecorder()
+    @State private var phase: Phase = .idle
+    @State private var level: CGFloat = 0
+    @State private var elapsed: Double = 0
+    @State private var transcript = ""
+    @State private var flare: CGFloat = 0
+    @State private var capturedFile: String?
+    @State private var capturedDuration: Double = 0
+    @State private var typing = false
+    @State private var typedText = ""
+
+    enum Phase { case idle, recording, processing, born }
 
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Constellation star animation
-            ZStack {
-                // Outer glow — gently breathing
-                Circle()
-                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.15))
-                    .frame(width: 200, height: 200)
-                    .scaleEffect(breathe ? 1.12 : 0.94)
-
-                Circle()
-                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(glowOpacity * 0.25))
-                    .frame(width: 120, height: 120)
-                    .scaleEffect(breathe ? 1.08 : 0.96)
-
-                // Core star
-                Circle()
-                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.8))
-                    .frame(width: 20, height: 20)
-                    .scaleEffect(starScale * (breathe ? 1.08 : 1.0))
-                    .shadow(color: Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.6), radius: 20)
-
-                // White hot center
-                Circle()
-                    .fill(Color(red: 0.957, green: 0.933, blue: 0.878))
-                    .frame(width: 8, height: 8)
-                    .scaleEffect(starScale)
-
-                // Ambient stars around core — slowly drifting as a ring
-                ZStack {
-                    ForEach(0..<8, id: \.self) { i in
-                        let angle = Double(i) * (.pi * 2 / 8)
-                        let radius: CGFloat = 85 + CGFloat(i % 3) * 20
-                        Circle()
-                            .fill(Color.white.opacity(glowOpacity * (0.15 + Double(i % 3) * 0.1)))
-                            .frame(width: CGFloat(2 + i % 3), height: CGFloat(2 + i % 3))
-                            .offset(
-                                x: cos(angle) * radius,
-                                y: sin(angle) * radius
-                            )
-                    }
-                }
-                .rotationEffect(.degrees(drift ? 360 : 0))
-                .animation(.linear(duration: 90).repeatForever(autoreverses: false), value: drift)
+            VStack(spacing: 10) {
+                Text(headline)
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .foregroundColor(OB.ink)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(subhead)
+                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                    .foregroundColor(OB.inkDim)
+                    .multilineTextAlignment(.center)
             }
+            .padding(.horizontal, 32)
+
+            Spacer().frame(height: 40)
+
+            ZStack {
+                Circle()
+                    .fill(RadialGradient(colors: [OB.gold.opacity(0.16), .clear],
+                                         center: .center, startRadius: 6, endRadius: 130))
+                    .frame(width: 260, height: 260)
+
+                VoiceStar(level: level, active: phase == .recording, born: flare)
+            }
+            .frame(height: 260)
+
+            Spacer().frame(height: 36)
+
+            control
+                .frame(height: 96)
 
             Spacer()
-                .frame(height: 60)
+        }
+        .onReceive(recorder.$level) { l in
+            withAnimation(.easeOut(duration: 0.08)) { level = CGFloat(l) }
+        }
+        .onReceive(recorder.$currentTime) { t in
+            // 42s is a soft target, not a cut-off — let people finish their sentence.
+            elapsed = t
+        }
+        .onAppear(perform: autoDemo)
+        .sheet(isPresented: $typing) {
+            TypeFirstEntryView(text: $typedText, onSave: finishTyped, onCancel: { typing = false })
+        }
+    }
+
+    private var headline: String {
+        switch phase {
+        case .born: return "A star is born."
+        case .processing: return "Finding your words…"
+        default: return "How was your day,\nreally?"
+        }
+    }
+    private var subhead: String {
+        switch phase {
+        case .idle: return "Speak, don't type. DailyVox turns it into your private journal — kept on your phone."
+        case .recording: return "Listening… speak as long as you like."
+        case .processing: return "On-device. Nothing left your phone."
+        case .born: return "Your voice, now a light in your sky."
+        }
+    }
+
+    @ViewBuilder private var control: some View {
+        switch phase {
+        case .idle:
+            VStack(spacing: 12) {
+                Button(action: start) {
+                    ZStack {
+                        Circle().fill(LinearGradient(colors: [OB.sage, OB.sage.opacity(0.85)],
+                                                     startPoint: .top, endPoint: .bottom))
+                            .frame(width: 76, height: 76)
+                            .shadow(color: OB.sage.opacity(0.35), radius: 14, y: 6)
+                        Image(systemName: "mic.fill").font(.system(size: 28, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
+                }
+                Text("Tap to speak").font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundColor(OB.inkMute)
+                Button("I can't talk right now") { typing = true }
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundColor(OB.sage)
+                    .padding(.top, 2)
+            }
+        case .recording:
+            Button(action: finish) {
+                HStack(spacing: 8) {
+                    Circle().fill(OB.forest).frame(width: 8, height: 8)
+                    Text("Done · \(Int(elapsed))s")
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                }
+                .foregroundColor(.white)
+                .padding(.vertical, 15).padding(.horizontal, 34)
+                .background(Capsule().fill(OB.ink))
+            }
+        case .processing:
+            HStack(spacing: 10) {
+                ProgressView().tint(OB.sage)
+                Text("finding your words…").font(.system(size: 14, design: .rounded))
+                    .foregroundColor(OB.inkMute)
+            }
+        case .born:
+            Color.clear
+        }
+    }
+
+    // MARK: Actions
+
+    private func start() {
+        withAnimation(.easeInOut(duration: 0.3)) { phase = .recording }
+        guard !demo else { return }
+        do { try recorder.startRecording() } catch { finish() }
+    }
+
+    private func finish() {
+        guard phase == .recording else { return }
+        if demo {
+            transcript = "Today felt lighter than yesterday. I paused for a minute and just breathed."
+            born(); return
+        }
+        withAnimation(.easeInOut(duration: 0.3)) { phase = .processing }
+        guard let res = recorder.stopRecording() else { born(); return }
+        capturedFile = res.url.lastPathComponent
+        capturedDuration = res.duration
+        SpeechTranscriber.shared.transcribe(from: res.url) { result in
+            DispatchQueue.main.async {
+                if case .success(let t) = result { transcript = t }
+                born()
+            }
+        }
+    }
+
+    private func born() {
+        withAnimation(.easeInOut(duration: 0.25)) { phase = .born }
+        // Springy overshoot = the waveform collapses and the star pops into being.
+        withAnimation(.spring(response: 0.7, dampingFraction: 0.52).delay(0.05)) { flare = 1 }
+        let payload = OnboardingFirstEntry(audioFileName: capturedFile,
+                                           duration: capturedDuration,
+                                           transcript: transcript)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { onBorn(payload) }
+    }
+
+    private func finishTyped() {
+        let t = typedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !t.isEmpty else { return }
+        transcript = t
+        capturedFile = nil
+        capturedDuration = 0
+        typing = false
+        // Let the sheet dismiss, then ignite the star from the typed words.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { born() }
+    }
+
+    private func autoDemo() {
+        guard demo else { return }
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_300_000_000)
+            withAnimation(.easeInOut(duration: 0.3)) { phase = .recording }
+            let began = Date()
+            while phase == .recording && Date().timeIntervalSince(began) < 5.2 {
+                let e = Date().timeIntervalSince(began)
+                let env = 0.55 + 0.45 * sin(e * 2.1)
+                level = CGFloat(max(0.06, abs(sin(e * 7.5)) * env))
+                elapsed = e
+                try? await Task.sleep(nanoseconds: 45_000_000)
+            }
+            finish()
+        }
+    }
+}
+
+// MARK: - Type instead (escape hatch for "I can't talk right now")
+
+private struct TypeFirstEntryView: View {
+    @Binding var text: String
+    var onSave: () -> Void
+    var onCancel: () -> Void
+    @FocusState private var focused: Bool
+
+    private var isEmpty: Bool { text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Button("Cancel", action: onCancel).foregroundColor(OB.inkMute)
+                Spacer()
+                Text("Your first star")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundColor(OB.ink)
+                Spacer()
+                Button("Save", action: onSave)
+                    .fontWeight(.semibold)
+                    .foregroundColor(isEmpty ? OB.inkMute : OB.sage)
+                    .disabled(isEmpty)
+            }
+            .font(.system(size: 15, design: .rounded))
+            .padding()
+
+            Text("How was your day, really?")
+                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundColor(OB.ink)
+                .padding(.top, 4)
+
+            TextEditor(text: $text)
+                .font(.system(size: 17, design: .rounded))
+                .foregroundColor(OB.ink)
+                .scrollContentBackground(.hidden)
+                .padding(12)
+                .background(OB.card)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(OB.rule, lineWidth: 1))
+                .frame(height: 200)
+                .padding()
+                .focused($focused)
+
+            Text("Stored only on your phone.")
+                .font(.system(size: 12, design: .rounded)).foregroundColor(OB.inkMute)
+
+            Spacer()
+        }
+        .background(OB.paper.ignoresSafeArea())
+        .onAppear { focused = true }
+    }
+}
+
+// MARK: - Voice star (waveform that collapses & coalesces into a star)
+
+private struct VoiceStar: View {
+    let level: CGFloat
+    let active: Bool
+    let born: CGFloat   // 0 = live waveform, 1 = ignited star
+    private let bars = 40
+
+    var body: some View {
+        SwiftUI.TimelineView(.animation) { tl in
+            let t: Double = tl.date.timeIntervalSinceReferenceDate
+            let b: Double = Double(born)
+            ZStack {
+                // Ignition shockwave — expands and fades as the star is born
+                Circle()
+                    .fill(OB.gold.opacity(0.35 * (1 - b)))
+                    .frame(width: 60, height: 60)
+                    .scaleEffect(0.4 + born * 3.4)
+                    .opacity(b > 0.001 ? 1 : 0)
+
+                // Soft recording disc (dissolves into the star)
+                Circle()
+                    .fill(OB.card)
+                    .frame(width: 96, height: 96)
+                    .shadow(color: OB.ink.opacity(0.05 * (1 - b)), radius: 8, y: 3)
+                    .opacity(1 - b)
+                    .scaleEffect(1 - born * 0.45)
+
+                // Collapsing waveform bars
+                ForEach(0..<bars, id: \.self) { i in
+                    bar(i: i, t: t)
+                }
+
+                // Flare rays (extend as it ignites)
+                ForEach(0..<8, id: \.self) { i in
+                    Capsule()
+                        .fill(OB.gold.opacity(0.55 * b))
+                        .frame(width: 2.4, height: 66)
+                        .offset(y: -44)
+                        .scaleEffect(x: 1, y: born, anchor: .bottom)
+                        .rotationEffect(.degrees(Double(i) / 8.0 * 360.0))
+                }
+
+                // Star core (glows into being; also the live recording pulse)
+                Circle()
+                    .fill(OB.gold)
+                    .frame(width: 16, height: 16)
+                    .scaleEffect(1 + (active ? level * 0.7 : 0) + born * 0.9)
+                    .shadow(color: OB.gold.opacity(0.7 * b), radius: 18 * born)
+                Circle()
+                    .fill(.white)
+                    .frame(width: 7, height: 7)
+                    .scaleEffect(0.6 + born * 1.1 + (active ? level * 0.4 : 0))
+            }
+        }
+    }
+
+    private func bar(i: Int, t: Double) -> some View {
+        let angle: Double = Double(i) / Double(bars) * 360.0
+        let wobble: Double = 0.5 + 0.5 * sin(t * 3.0 + Double(i) * 0.7)
+        let amp: CGFloat = active ? level * CGFloat(wobble) : 0.04
+        let baseH: CGFloat = 10 + amp * 64
+        let h: CGFloat = max(0.5, baseH * (1 - born))     // shrink as they collapse
+        let outward: CGFloat = 70 * (1 - born)            // pull inward on birth
+        let op: Double = (active ? 0.9 : 0.35) * Double(1 - born)
+        return Capsule()
+            .fill(LinearGradient(colors: [OB.gold, OB.sage], startPoint: .top, endPoint: .bottom))
+            .frame(width: 3.2, height: h)
+            .offset(y: -outward)
+            .rotationEffect(.degrees(angle))
+            .opacity(op)
+    }
+}
+
+// MARK: - Beat 3: Claim
+
+private struct ClaimScreen: View {
+    let transcript: String
+    let onEnter: () -> Void
+    @State private var appear = false
+
+    private var words: String {
+        let t = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        return t.isEmpty ? "your first words" : t
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            ZStack {
+                Circle().fill(OB.gold.opacity(0.14)).frame(width: 120, height: 120)
+                Circle().fill(OB.gold).frame(width: 24, height: 24)
+                    .shadow(color: OB.gold.opacity(0.6), radius: 14)
+                Circle().fill(.white).frame(width: 8, height: 8)
+            }
+            .scaleEffect(appear ? 1 : 0.6).opacity(appear ? 1 : 0)
 
             VStack(spacing: 16) {
-                Text("Your inner sky\nis waiting")
-                    .font(.system(size: 38, weight: .bold, design: .rounded))
-                    .tracking(-0.6)
-                    .lineSpacing(2)
-                    .foregroundColor(.white)
+                Text("That star is yours.")
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
-                    .opacity(textOpacity)
 
-                Text("Every thought you speak becomes a star.\nOver time, constellations form — patterns\nonly you can see.")
-                    .font(.system(size: 16, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.65))
+                Text("“\(words)”")
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                    .italic()
+                    .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
-                    .lineSpacing(5)
-                    .opacity(textOpacity)
+                    .lineSpacing(4)
+                    .padding(.horizontal, 22)
+                    .padding(.vertical, 16)
+                    .frame(maxWidth: .infinity)
+                    .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(OB.card))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(OB.rule, lineWidth: 1))
+                    .padding(.horizontal, 26)
+
+                Text("It lives on your phone — nowhere else.\nSpeak again tomorrow, and your sky grows.")
+                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                    .foregroundColor(OB.inkDim)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(4)
             }
-            .padding(.horizontal, 30)
+            .padding(.top, 28)
+            .padding(.horizontal, 24)
+            .opacity(appear ? 1 : 0)
+            .offset(y: appear ? 0 : 16)
 
             Spacer()
             Spacer()
+
+            PrimaryButton(title: "Enter my sky", filled: true, action: onEnter)
+                .padding(.horizontal, 28)
+                .padding(.bottom, 44)
         }
-        .onAppear {
-            withAnimation(.easeOut(duration: 1.5)) {
-                starScale = 1.0
-                glowOpacity = 1.0
-            }
-            withAnimation(.easeOut(duration: 1.0).delay(0.8)) {
-                textOpacity = 1.0
-            }
-            // Ongoing living motion (so the welcome screen isn't static like before)
-            withAnimation(.easeInOut(duration: 3.2).repeatForever(autoreverses: true).delay(0.6)) {
-                breathe = true
-            }
-            drift = true
-        }
+        .onAppear { withAnimation(.spring(response: 0.6, dampingFraction: 0.7).delay(0.15)) { appear = true } }
     }
 }
 
-struct OnboardingPage {
-    let icon: String
-    let iconColor: Color
+// MARK: - Primary button
+
+private struct PrimaryButton: View {
     let title: String
-    let subtitle: String
-    let description: String
-    let gradient: [Color]
-}
-
-struct OnboardingPageView: View {
-    let page: OnboardingPage
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var animate1 = false
-    @State private var animate2 = false
-    @State private var animate3 = false
-    @State private var textOpacity: Double = 0
-
-    private var isIPad: Bool { horizontalSizeClass == .regular }
-
-    // Warm palette
-    private let warmGold = Color(red: 0.831, green: 0.647, blue: 0.278)
-    private let sageGreen = Color(red: 0.357, green: 0.486, blue: 0.420)
-    private let softCoral = Color(red: 0.769, green: 0.451, blue: 0.420)
-    private let forestGreen = Color(red: 0.420, green: 0.620, blue: 0.482)
-    private let ivory = Color(red: 0.957, green: 0.933, blue: 0.878)
+    var filled: Bool = true
+    let action: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-
-            // Each page gets a unique celestial visual
-            Group {
-                switch page.icon {
-                case "person.crop.circle.fill":
-                    twinPlanetSystem
-                case "chart.bar.fill":
-                    auroraInsights
-                case "lock.shield":
-                    shieldConstellation
-                default:
-                    twinPlanetSystem
-                }
-            }
-            .frame(height: isIPad ? 280 : 220)
-            .padding(.bottom, 24)
-
-            // Text with staggered fade
-            VStack(spacing: 14) {
-                Text(page.title)
-                    .font(.system(size: isIPad ? 38 : 30, weight: .bold, design: .rounded))
-                    .tracking(-0.6)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-
-                Text(page.subtitle)
-                    .font(.system(size: isIPad ? 17 : 15, weight: .semibold, design: .rounded))
-                    .foregroundColor(page.iconColor.opacity(0.95))
-                    .multilineTextAlignment(.center)
-
-                Text(page.description)
-                    .font(.system(size: isIPad ? 15 : 14, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.58))
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(5)
-                    .padding(.horizontal, 8)
-            }
-            .padding(.horizontal, isIPad ? 60 : 28)
-            .frame(maxWidth: isIPad ? 600 : .infinity)
-            .opacity(textOpacity)
-            .offset(y: textOpacity > 0 ? 0 : 20)
-
-            Spacer()
-            Spacer()
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 17)
+                .background(LinearGradient(colors: [OB.sage, OB.sage.opacity(0.85)],
+                                           startPoint: .leading, endPoint: .trailing))
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .shadow(color: OB.sage.opacity(0.28), radius: 12, y: 6)
         }
-        .onAppear {
-            withAnimation(.easeOut(duration: 0.8)) {
-                animate1 = true
-            }
-            withAnimation(.easeOut(duration: 1.2).delay(0.2)) {
-                animate2 = true
-            }
-            withAnimation(.easeOut(duration: 1.0).delay(0.4)) {
-                animate3 = true
-            }
-            withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
-                textOpacity = 1
-            }
-        }
-        .onDisappear {
-            animate1 = false
-            animate2 = false
-            animate3 = false
-            textOpacity = 0
-        }
-    }
-
-    // MARK: - Page 1: Digital Twin = Your Personal Star System
-    // Central sun with 4 orbiting planets (Mind, Heart, Voice, Graph)
-
-    private var twinPlanetSystem: some View {
-        ZStack {
-            // Outer orbit path
-            Circle()
-                .stroke(ivory.opacity(0.08), lineWidth: 1)
-                .frame(width: isIPad ? 240 : 190, height: isIPad ? 240 : 190)
-
-            // Middle orbit path
-            Circle()
-                .stroke(ivory.opacity(0.12), lineWidth: 1)
-                .frame(width: isIPad ? 170 : 130, height: isIPad ? 170 : 130)
-
-            // Inner orbit path
-            Circle()
-                .stroke(ivory.opacity(0.06), lineWidth: 0.5)
-                .frame(width: isIPad ? 260 : 210, height: isIPad ? 260 : 210)
-
-            // Planet: Mind (outer orbit, top)
-            planetDot(color: page.iconColor, size: 10, label: "Mind")
-                .offset(x: 0, y: isIPad ? -120 : -95)
-                .rotationEffect(.degrees(animate2 ? 360 : 0))
-                .animation(.linear(duration: 40).repeatForever(autoreverses: false), value: animate2)
-
-            // Planet: Heart (middle orbit, right)
-            planetDot(color: softCoral, size: 8, label: "Heart")
-                .offset(x: isIPad ? 85 : 65, y: 0)
-                .rotationEffect(.degrees(animate2 ? -360 : 0))
-                .animation(.linear(duration: 28).repeatForever(autoreverses: false), value: animate2)
-
-            // Planet: Voice (middle orbit, left)
-            planetDot(color: forestGreen, size: 9, label: "Voice")
-                .offset(x: isIPad ? -85 : -65, y: isIPad ? 30 : 20)
-                .rotationEffect(.degrees(animate2 ? 360 : 0))
-                .animation(.linear(duration: 34).repeatForever(autoreverses: false), value: animate2)
-
-            // Planet: Graph (outer orbit, bottom-right)
-            planetDot(color: warmGold, size: 7, label: "Graph")
-                .offset(x: isIPad ? 70 : 55, y: isIPad ? 90 : 70)
-                .rotationEffect(.degrees(animate2 ? -360 : 0))
-                .animation(.linear(duration: 50).repeatForever(autoreverses: false), value: animate2)
-
-            // Central sun (your Twin)
-            ZStack {
-                Circle()
-                    .fill(page.iconColor.opacity(animate1 ? 0.15 : 0))
-                    .frame(width: isIPad ? 100 : 80, height: isIPad ? 100 : 80)
-
-                Circle()
-                    .fill(page.iconColor.opacity(animate1 ? 0.3 : 0))
-                    .frame(width: isIPad ? 60 : 48, height: isIPad ? 60 : 48)
-                    .shadow(color: page.iconColor.opacity(0.5), radius: 16)
-
-                Circle()
-                    .fill(page.iconColor.opacity(0.7))
-                    .frame(width: isIPad ? 32 : 24, height: isIPad ? 32 : 24)
-
-                Circle()
-                    .fill(ivory.opacity(0.8))
-                    .frame(width: isIPad ? 14 : 10, height: isIPad ? 14 : 10)
-            }
-            .scaleEffect(animate1 ? 1.0 : 0.5)
-        }
-    }
-
-    // MARK: - Page 2: Insights = Aurora / Nebula Waves
-
-    private var auroraColors: [Color] {
-        [warmGold, page.iconColor, sageGreen, softCoral, forestGreen]
-    }
-
-    private var auroraOffsets: [CGFloat] { [-15, 10, -8, 12, -5] }
-
-    private var auroraInsights: some View {
-        ZStack {
-            // Aurora bands
-            ForEach(0..<5, id: \.self) { i in
-                let bandColor = auroraColors[i]
-                let bandWidth: CGFloat = isIPad ? CGFloat(220 - i * 25) : CGFloat(180 - i * 20)
-                let bandHeight: CGFloat = isIPad ? 6 : 4
-                let xOffset: CGFloat = animate2 ? auroraOffsets[i] : 0
-                let yOffset: CGFloat = CGFloat(i * (isIPad ? 28 : 22) - 50)
-                Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [bandColor.opacity(0.3), bandColor.opacity(0.05)],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(width: bandWidth, height: bandHeight)
-                    .offset(x: xOffset, y: yOffset)
-                    .scaleEffect(x: animate1 ? 1.0 : 0.3, anchor: .center)
-                    .opacity(animate1 ? 1 : 0)
-                    .animation(
-                        .easeInOut(duration: 3.0 + Double(i) * 0.5)
-                        .repeatForever(autoreverses: true),
-                        value: animate2
-                    )
-            }
-
-            // Data point stars emerging from aurora
-            auroraDataPoints
-
-            // Central insight orb
-            auroraOrb
-        }
-    }
-
-    private var auroraDataPoints: some View {
-        ForEach(0..<8, id: \.self) { i in
-            let angle = Double(i) * (.pi * 2 / 8) + 0.3
-            let radius: CGFloat = isIPad ? 80 : 65
-            let dotSize: CGFloat = CGFloat(2 + i % 3)
-            Circle()
-                .fill(ivory.opacity(animate3 ? 0.6 : 0))
-                .frame(width: dotSize, height: dotSize)
-                .offset(
-                    x: cos(angle) * radius,
-                    y: sin(angle) * radius * 0.5
-                )
-                .animation(.easeOut(duration: 0.8).delay(Double(i) * 0.1), value: animate3)
-        }
-    }
-
-    private var auroraOrb: some View {
-        ZStack {
-            Circle()
-                .fill(page.iconColor.opacity(animate1 ? 0.12 : 0))
-                .frame(width: isIPad ? 80 : 64, height: isIPad ? 80 : 64)
-
-            Circle()
-                .fill(page.iconColor.opacity(0.4))
-                .frame(width: isIPad ? 36 : 28, height: isIPad ? 36 : 28)
-                .shadow(color: page.iconColor.opacity(0.6), radius: 12)
-
-            Image(systemName: "sparkle")
-                .font(.system(size: isIPad ? 18 : 14, weight: .semibold))
-                .foregroundColor(ivory)
-        }
-        .scaleEffect(animate1 ? 1.0 : 0.6)
-    }
-
-    // MARK: - Page 3: Privacy = Protective Star Shield
-
-    private var shieldConstellation: some View {
-        ZStack {
-            // Outer protective ring of stars
-            shieldStarRing
-
-            // Connection lines forming the shield
-            shieldConnectionLines
-
-            // Pulsing protection rings
-            shieldPulsingRings
-
-            // Central shield
-            shieldCenter
-        }
-    }
-
-    private var shieldStarRing: some View {
-        ForEach(0..<12, id: \.self) { i in
-            let angle = Double(i) * (.pi * 2 / 12)
-            let radius: CGFloat = isIPad ? 100 : 80
-            Circle()
-                .fill(forestGreen.opacity(animate1 ? 0.7 : 0))
-                .frame(width: 4, height: 4)
-                .offset(
-                    x: cos(angle) * radius,
-                    y: sin(angle) * radius
-                )
-                .shadow(color: forestGreen.opacity(0.4), radius: 4)
-                .animation(.easeOut(duration: 0.5).delay(Double(i) * 0.05), value: animate1)
-        }
-    }
-
-    private var shieldConnectionLines: some View {
-        let r: CGFloat = isIPad ? 100 : 80
-        let frameSize: CGFloat = (r + 10) * 2
-        return ForEach(0..<12, id: \.self) { i in
-            let angle1 = Double(i) * (.pi * 2 / 12)
-            let angle2 = Double((i + 1) % 12) * (.pi * 2 / 12)
-            let startX = cos(angle1) * r + r + 10
-            let startY = sin(angle1) * r + r + 10
-            let endX = cos(angle2) * r + r + 10
-            let endY = sin(angle2) * r + r + 10
-            Path { path in
-                path.move(to: CGPoint(x: startX, y: startY))
-                path.addLine(to: CGPoint(x: endX, y: endY))
-            }
-            .stroke(forestGreen.opacity(animate2 ? 0.2 : 0), lineWidth: 0.8)
-            .frame(width: frameSize, height: frameSize)
-            .offset(x: -(r + 10), y: -(r + 10))
-            .animation(.easeOut(duration: 0.8).delay(0.6 + Double(i) * 0.04), value: animate2)
-        }
-    }
-
-    private var shieldPulsingRings: some View {
-        ForEach(0..<3, id: \.self) { i in
-            let ringSize: CGFloat = isIPad ? CGFloat(110 + i * 30) : CGFloat(90 + i * 24)
-            Circle()
-                .stroke(forestGreen.opacity(animate3 ? 0 : 0.2), lineWidth: 1)
-                .frame(width: ringSize, height: ringSize)
-                .scaleEffect(animate3 ? 1.4 : 1.0)
-                .animation(
-                    .easeOut(duration: 2.5)
-                    .repeatForever(autoreverses: false)
-                    .delay(Double(i) * 0.8),
-                    value: animate3
-                )
-        }
-    }
-
-    private var shieldCenter: some View {
-        ZStack {
-            Circle()
-                .fill(forestGreen.opacity(animate1 ? 0.15 : 0))
-                .frame(width: isIPad ? 70 : 56, height: isIPad ? 70 : 56)
-
-            Circle()
-                .fill(forestGreen.opacity(0.35))
-                .frame(width: isIPad ? 44 : 34, height: isIPad ? 44 : 34)
-                .shadow(color: forestGreen.opacity(0.5), radius: 12)
-
-            Image(systemName: "lock.fill")
-                .font(.system(size: isIPad ? 20 : 16, weight: .semibold))
-                .foregroundColor(ivory)
-        }
-        .scaleEffect(animate1 ? 1.0 : 0.5)
-    }
-
-    // MARK: - Planet Dot Helper
-
-    private func planetDot(color: Color, size: CGFloat, label: String) -> some View {
-        VStack(spacing: 3) {
-            ZStack {
-                Circle()
-                    .fill(color.opacity(0.3))
-                    .frame(width: size + 8, height: size + 8)
-                Circle()
-                    .fill(color)
-                    .frame(width: size, height: size)
-                    .shadow(color: color.opacity(0.6), radius: 4)
-            }
-            Text(label.uppercased())
-                .font(.system(size: 7, weight: .bold, design: .rounded))
-                .tracking(1.5)
-                .foregroundColor(ivory.opacity(0.4))
-        }
-        .opacity(animate1 ? 1 : 0)
     }
 }
 
-// MARK: - Intention Check-In Page
+// MARK: - Living sky
 
-struct IntentionCheckInView: View {
-    @Binding var selectedIntentions: Set<String>
-    var isIPad: Bool
-
-    private let intentions: [(title: String, icon: String, planet: String)] = [
-        ("Track my thoughts", "brain.head.profile", "Mercury"),
-        ("Understand my emotions", "heart.text.square", "Venus"),
-        ("Build a daily habit", "calendar.badge.clock", "Mars"),
-        ("Remember my life", "book.pages", "Jupiter"),
-        ("Create my Digital Twin", "person.crop.circle.badge.plus", "Saturn")
-    ]
+private struct LivingSky: View {
+    let bright: Int   // number of hero stars lit (after the first is born)
 
     var body: some View {
-        VStack(spacing: isIPad ? 32 : 24) {
-            Spacer()
+        SwiftUI.TimelineView(.animation) { tl in
+            Canvas { ctx, size in
+                let t: Double = tl.date.timeIntervalSinceReferenceDate
+                let w: Double = size.width
+                let h: Double = size.height
+                for i in 0..<64 {
+                    let seed: UInt64 = UInt64(i) &* 6364136223846793005 &+ 1442695040888963407
+                    let x: Double = Double((seed >> 16) % 10000) / 10000.0 * w
+                    let y: Double = Double((seed >> 32) % 10000) / 10000.0 * h
+                    let r: Double = Double((seed >> 48) % 100) / 100.0 * 1.5 + 0.4
+                    let phase: Double = Double((seed >> 8) % 628) / 100.0
+                    let tw: Double = 0.55 + 0.45 * sin(t * 1.1 + phase)
+                    let isGold: Bool = (seed >> 4) % 6 == 0
+                    let base: Double = Double((seed >> 12) % 100) / 100.0 * 0.10 + 0.04
+                    let rect = CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)
+                    let col: Color = (isGold ? OB.gold : OB.sage).opacity(base * tw)
+                    ctx.fill(Path(ellipseIn: rect), with: .color(col))
+                }
 
-            VStack(spacing: 12) {
-                Text("Name your planets")
-                    .font(.system(size: isIPad ? 40 : 32, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-
-                Text("Each intention becomes a planet in your constellation. Pick the ones that matter.")
-                    .font(isIPad ? .title3 : .body)
-                    .foregroundColor(.white.opacity(0.7))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-            }
-            .padding(.horizontal, isIPad ? 80 : 30)
-
-            VStack(spacing: 12) {
-                ForEach(intentions, id: \.title) { intention in
-                    IntentionCard(
-                        title: intention.title,
-                        icon: intention.icon,
-                        planet: intention.planet,
-                        isSelected: selectedIntentions.contains(intention.title),
-                        isIPad: isIPad
-                    ) {
-                        if selectedIntentions.contains(intention.title) {
-                            selectedIntentions.remove(intention.title)
-                        } else {
-                            selectedIntentions.insert(intention.title)
-                        }
-                    }
+                // The sky gains your star once it's born
+                if bright > 0 {
+                    let hx: Double = w * 0.5
+                    let hy: Double = h * 0.26
+                    let pulse: Double = 0.7 + 0.3 * sin(t * 1.6)
+                    let halo = CGRect(x: hx - 10, y: hy - 10, width: 20, height: 20)
+                    ctx.fill(Path(ellipseIn: halo), with: .color(OB.gold.opacity(0.20 * pulse)))
+                    let core = CGRect(x: hx - 3, y: hy - 3, width: 6, height: 6)
+                    ctx.fill(Path(ellipseIn: core), with: .color(OB.gold.opacity(0.95)))
                 }
             }
-            .padding(.horizontal, isIPad ? 80 : 30)
-            .frame(maxWidth: isIPad ? 600 : .infinity)
-
-            Spacer()
-            Spacer()
         }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
     }
 }
 
-struct IntentionCard: View {
-    let title: String
-    let icon: String
-    let planet: String
-    let isSelected: Bool
-    var isIPad: Bool
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 14) {
-                Image(systemName: icon)
-                    .font(.system(size: isIPad ? 24 : 20))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.7))
-                    .frame(width: 32)
-
-                Text(title)
-                    .font(isIPad ? .title3.weight(.medium) : .body.weight(.medium))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.8))
-
-                Spacer()
-
-                Text(planet)
-                    .font(.system(size: 9, weight: .bold, design: .rounded))
-                    .tracking(1.5)
-                    .foregroundColor(isSelected ? Color(red: 0.831, green: 0.647, blue: 0.278) : .white.opacity(0.25))
-
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
-                        .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(isSelected ? Color.white.opacity(0.15) : Color.white.opacity(0.06))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(isSelected ? Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.7) : Color.white.opacity(0.1), lineWidth: 1.5)
-            )
-        }
-        .buttonStyle(.plain)
-        .animation(.easeInOut(duration: 0.2), value: isSelected)
-    }
-}
-
-// MARK: - Privacy Badge Component
+// MARK: - Shared components used elsewhere in the app (unchanged)
 
 struct PrivacyBadge: View {
     var compact: Bool = false
-
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: "lock.shield.fill")
                 .font(compact ? .caption : .subheadline)
                 .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
-
             if !compact {
-                Text("100% Private")
-                    .font(.caption.weight(.medium))
-                    .foregroundColor(.secondary)
+                Text("100% Private").font(.caption.weight(.medium)).foregroundColor(.secondary)
             }
         }
-        .padding(.horizontal, compact ? 8 : 12)
-        .padding(.vertical, compact ? 4 : 6)
+        .padding(.horizontal, compact ? 8 : 12).padding(.vertical, compact ? 4 : 6)
         .background(Color(red: 0.420, green: 0.620, blue: 0.482).opacity(0.1))
         .clipShape(Capsule())
     }
 }
 
-// MARK: - Offline Indicator
-
 struct OfflineIndicator: View {
     var body: some View {
         HStack(spacing: 4) {
-            Circle()
-                .fill(Color(red: 0.420, green: 0.620, blue: 0.482))
-                .frame(width: 6, height: 6)
-            Text("Offline")
-                .font(.caption2.weight(.medium))
-                .foregroundColor(.secondary)
+            Circle().fill(Color(red: 0.420, green: 0.620, blue: 0.482)).frame(width: 6, height: 6)
+            Text("Offline").font(.caption2.weight(.medium)).foregroundColor(.secondary)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(Capsule())
+        .padding(.horizontal, 8).padding(.vertical, 4)
+        .background(Color(.tertiarySystemBackground)).clipShape(Capsule())
     }
 }
 
-// MARK: - Star Field Background
-
 struct StarFieldView: View {
     let count: Int
-
     var body: some View {
         Canvas { context, size in
             for i in 0..<count {
@@ -811,7 +670,6 @@ struct StarFieldView: View {
                 let y = Double((seed >> 32) % 10000) / 10000.0 * size.height
                 let r = Double((seed >> 48) % 100) / 100.0 * 1.5 + 0.3
                 let opacity = Double((seed >> 8) % 100) / 100.0 * 0.4 + 0.1
-
                 let star = Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2))
                 context.fill(star, with: .color(Color.white.opacity(opacity)))
             }
