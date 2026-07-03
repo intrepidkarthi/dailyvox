@@ -58,10 +58,27 @@ class ScreenshotTests: XCTestCase {
         XCTFail("Could not find tab: \(name)")
     }
 
+    // MARK: - Screenshot 0: Onboarding — "Speak your first star" (voice-first)
+
+    func test00_OnboardingFlow() throws {
+        // -OnboardingDemo autoplays invite → speak → star born → claim with
+        // synthetic audio, so we can capture the moment without a mic.
+        app.terminate()
+        app.launchArguments = ["-hasCompletedOnboarding", "NO", "-OnboardingDemo",
+                               "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        sleep(4)   // live waveform — "How was your day, really?"
+        takeScreenshot(named: "OB1_Speak")
+        sleep(6)   // star ignition — "A star is born"
+        takeScreenshot(named: "OB2_StarBorn")
+        sleep(3)   // claim — "That star is yours"
+        takeScreenshot(named: "OB3_Claim")
+    }
+
     // MARK: - Screenshot 1: Today View
 
     func test01_TodayView() throws {
-        navigateToTab("Today")
+        navigateToTab("Record")
         sleep(2)
         takeScreenshot(named: "01_TodayView")
     }
@@ -69,7 +86,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 2: Timeline
 
     func test02_Timeline() throws {
-        navigateToTab("Timeline")
+        navigateToTab("Journal")
         sleep(2)
         takeScreenshot(named: "02_Timeline")
     }
@@ -136,7 +153,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 7: Entry Detail
 
     func test07_EntryDetail() throws {
-        navigateToTab("Timeline")
+        navigateToTab("Journal")
         sleep(2)
 
         // Tap the first NavigationLink row containing entry text
