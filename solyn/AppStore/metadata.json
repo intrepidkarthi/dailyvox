@@ -1,7 +1,7 @@
 {
   "app_store_connect": {
-    "app_name": "DailyVox - AI Voice Journal",
-    "subtitle": "Private Journal & Mood Tracker",
+    "app_name": "DailyVox: Voice Journal Diary",
+    "subtitle": "Private On-Device Audio Diary",
     "bundle_id": "com.dailyvox.app",
     "primary_category": "HEALTH_AND_FITNESS",
     "secondary_category": "PRODUCTIVITY",
@@ -13,11 +13,11 @@
   },
   "localization": {
     "en-US": {
-      "name": "DailyVox - AI Voice Journal",
-      "subtitle": "Voice Diary, Lives on Device",
-      "keywords": "diary,journal,voice,mood tracker,digital twin,private,dynamic island,live activity,speech to text,encrypted",
-      "promotional_text": "NEW in v1.3.5: Watch your recording timer in the Dynamic Island. A new star appears the moment your entry saves. Pin your streak to the Lock Screen. All on-device. All yours.",
-      "whats_new": "New in v1.3.5:\n\n- Dynamic Island: a live recording timer with waveform — see how long you've been speaking at a glance\n- A celebratory \"new star\" Live Activity appears the moment your entry is saved\n- Opt-in: pin your current streak to the Dynamic Island and Lock Screen (Settings → Live Activities)\n- New Constellation Lock Screen widget — your inner sky, one star per recent entry\n- Brand new app icon — a golden mic on warm sage, with iOS 18 dark mode + tinted variants\n- 42 seconds is still the sweet spot, but you can now speak for as long as you need"
+      "name": "DailyVox: Voice Journal Diary",
+      "subtitle": "Private On-Device Audio Diary",
+      "keywords": "offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital",
+      "promotional_text": "Private voice journal & audio diary, 100% on your iPhone. Speak ~42 seconds a day and your Digital Twin learns your moods and patterns. No account. No cloud. Free.",
+      "whats_new": "A warm new look.\n\nDailyVox now wears a calm sage-and-gold palette across every screen, and your Digital Twin takes center stage.\n\n- Redesigned, warmer interface throughout\n- Digital Twin promoted to the center of the app\n- Refined recording screen and onboarding\n- Compact audio player on entries\n- Replay the welcome anytime from Settings\n- Polish and fixes across the app\n\nStill free. Still 100% on-device. Your words never leave your phone."
     }
   },
   "app_privacy": {
