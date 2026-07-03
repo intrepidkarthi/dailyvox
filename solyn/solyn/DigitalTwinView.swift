@@ -531,7 +531,7 @@ struct DigitalTwinView: View {
                 shareYourTwinButton
             }
         }
-        .sheet(isPresented: $showTwinShareSheet) {
+        .sheet(isPresented: $showTwinShareSheet, onDismiss: { ReviewManager.shared.recordPositiveMoment() }) {
             if let image = twinShareImage {
                 ShareSheet(activityItems: [
                     image,

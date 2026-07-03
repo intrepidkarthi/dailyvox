@@ -22,10 +22,27 @@ final class ReviewManager {
         checkAndRequestReview(entryCount: count)
     }
 
+    /// Call after a genuinely positive moment (e.g. sharing a personality card),
+    /// once the user has a little history. Requests a review within Apple's caps.
+    func recordPositiveMoment() {
+        guard !UserDefaults.standard.bool(forKey: hasReviewedKey) else { return }
+        // Needs some history so it never fires on a brand-new install.
+        guard UserDefaults.standard.integer(forKey: entryCountKey) >= 2 else { return }
+        if let lastRequest = UserDefaults.standard.object(forKey: lastReviewRequestKey) as? Date {
+            let daysSince = Calendar.current.dateComponents([.day], from: lastRequest, to: Date()).day ?? 0
+            guard daysSince >= 90 else { return }
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(1))
+            await requestReview()
+        }
+    }
+
     private func checkAndRequestReview(entryCount: Int) {
         guard !UserDefaults.standard.bool(forKey: hasReviewedKey) else { return }
 
-        let milestones = [5, 15, 40]
+        // First ask at 3 (most users never reached the old floor of 5).
+        let milestones = [3, 12, 40]
         guard milestones.contains(entryCount) else { return }
 
         if let lastRequest = UserDefaults.standard.object(forKey: lastReviewRequestKey) as? Date {
