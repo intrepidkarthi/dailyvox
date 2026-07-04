@@ -40,6 +40,11 @@ final class BodyTwinManager: ObservableObject {
         didSet {
             defaults.set(isEnabled, forKey: Keys.enabled)
             DigitalTwinEngine.shared.setBodyTwinEnabled(isEnabled)
+            if !isEnabled {
+                // The user just said "stop using my body data" — the cached
+                // health line must not flash on the Record tab afterwards.
+                BodyWhisperProvider.shared.invalidate()
+            }
         }
     }
 

@@ -58,6 +58,17 @@ final class BodyWhisperProvider: ObservableObject {
             return
         }
 
+        // Cold-launch re-sync: the engine's persisted isActive loads
+        // synchronously at launch, but HealthKitService.isAuthorized starts
+        // false until its async getRequestStatusForAuthorization round-trip
+        // lands — and TodayView's .task reliably wins that race. Without
+        // this, an authorized user's whisper is absent on every cold launch
+        // until the app is backgrounded and foregrounded once.
+        if DigitalTwinEngine.shared.bodyTwin.isActive,
+           !HealthKitService.shared.isAuthorized {
+            await HealthKitService.shared.refreshAuthorizationState()
+        }
+
         guard DigitalTwinEngine.shared.bodyTwin.isActive,
               HealthKitService.shared.isAuthorized else {
             // Deliberately uncached: the moment Health is connected, the
@@ -101,6 +112,15 @@ final class BodyWhisperProvider: ObservableObject {
             return
         }
         setWhisper(Self.compose(from: snapshot))
+    }
+
+    /// Synchronously drops the cached whisper. Called when the user turns
+    /// Body Twin off, so the health-derived line can never flash back on the
+    /// Record tab after they said "stop" (the async refresh would only clear
+    /// it a frame or two later).
+    func invalidate() {
+        computedAt = nil
+        setWhisper(nil)
     }
 
     private func setWhisper(_ newWhisper: BodyWhisper?) {
@@ -158,6 +178,7 @@ struct BodyTwinIdleCards: View {
     @ObservedObject private var healthKit = HealthKitService.shared
     @ObservedObject private var manager = BodyTwinManager.shared
     @ObservedObject private var whisperProvider = BodyWhisperProvider.shared
+    @ObservedObject private var twin = DigitalTwinEngine.shared
     @ObservedObject private var theme = ThemeManager.shared
     @State private var showInviteSheet = false
 
@@ -173,7 +194,10 @@ struct BodyTwinIdleCards: View {
         if healthKit.isAvailable {
             if manager.shouldOfferInvite {
                 inviteCard
-            } else if let whisper = whisperProvider.whisper {
+            } else if twin.bodyTwin.isActive, let whisper = whisperProvider.whisper {
+                // Render-time gate on the engine flag: a cached whisper must
+                // never appear after the user disabled Body Twin (the
+                // provider is also invalidated on disable — belt and braces).
                 whisperCard(whisper)
             }
         }

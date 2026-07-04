@@ -19,15 +19,31 @@ struct BodyTwinCard: View {
     @State private var showReview = false
     @State private var isRequestingAccess = false
 
+    /// The review queue stays reachable whenever anything is waiting — even
+    /// with the master toggle off. Keep is still an explicit act and Let go
+    /// must always be available; queued health data with no way to view or
+    /// discard it would break the review-before-learning promise.
+    private var opensReview: Bool {
+        twin.bodyTwin.isActive || queue.count > 0
+    }
+
+    /// Authorized but switched off in Settings, nothing waiting: a quiet
+    /// signpost, not a button. A tap here must NOT silently reverse an
+    /// explicit Settings opt-out — re-enabling lives in Settings → Health.
+    private var isQuietOffState: Bool {
+        !twin.bodyTwin.isActive && twin.bodyTwin.isAuthorized && queue.count == 0
+    }
+
     var body: some View {
         // Absent entirely on devices without HealthKit, matching Settings.
         if healthKit.isAvailable {
             Button {
-                if twin.bodyTwin.isActive {
+                if opensReview {
                     showReview = true
-                } else {
+                } else if !twin.bodyTwin.isAuthorized {
                     enableBodyTwin()
                 }
+                // isQuietOffState: deliberately inert.
             } label: {
                 HStack(spacing: 16) {
                     meter
@@ -41,12 +57,14 @@ struct BodyTwinCard: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     Spacer()
-                    if twin.bodyTwin.isActive && queue.count > 0 {
+                    if queue.count > 0 {
                         DSTag(text: "\(queue.count) waiting", tint: DS.Palette.gold)
                     }
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(.secondary.opacity(0.5))
+                    if !isQuietOffState {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(.secondary.opacity(0.5))
+                    }
                 }
                 .padding(16)
                 .background(RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -63,6 +81,16 @@ struct BodyTwinCard: View {
             return "Asking Health for permission…"
         }
         guard twin.bodyTwin.isActive else {
+            if queue.count > 0 {
+                // Off, but signals still await a decision — the tap opens
+                // the review sheet (Keep stays explicit, Let go always works).
+                return "Body Twin is off — tap to review or let go of what's still waiting."
+            }
+            if twin.bodyTwin.isAuthorized {
+                // Explicitly switched off — respect it. Point to Settings
+                // instead of re-enabling on a stray tap.
+                return "Body Twin is off. You can turn it back on in Settings → Health."
+            }
             return "Your Twin can learn what your body felt. Tap to begin."
         }
         let kept = twin.bodyTwin.entriesWithSnapshot

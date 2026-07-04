@@ -448,7 +448,13 @@ struct SettingsView: View {
         if healthKit.isAvailable {
             Section {
                 Toggle(isOn: Binding(
-                    get: { twin.bodyTwin.isActive },
+                    // Optimistic while the async enable flow runs: isActive
+                    // only flips after the Health sheet completes, so without
+                    // this the knob the user just flipped ON snaps back to
+                    // OFF for the whole permission ask. It reverts naturally
+                    // if requestAuthorization throws (flag resets, get falls
+                    // back to isActive == false).
+                    get: { isRequestingHealthAccess || twin.bodyTwin.isActive },
                     set: { newValue in
                         if newValue {
                             enableBodyTwin()
@@ -523,7 +529,12 @@ struct SettingsView: View {
                                  ? "1 signal waiting for review"
                                  : "\(pendingSnapshots.count) signals waiting for review")
                                 .font(.subheadline.weight(.semibold))
-                            Text("Your Twin tab holds them — nothing is learned until you tap Keep.")
+                            // The Twin tab opens the queue even while Body
+                            // Twin is off (BodyTwinCard) — the caption tracks
+                            // that so it never points at a door that won't open.
+                            Text(twin.bodyTwin.isActive
+                                 ? "Your Twin tab holds them — nothing is learned until you tap Keep."
+                                 : "Body Twin is off, but the Twin tab still holds them — Keep or Let go anytime.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
