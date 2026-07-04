@@ -893,6 +893,11 @@ struct TodayView: View {
             // Clear any selected prompt once an entry has been saved
             selectedPrompt = nil
             WidgetCenter.shared.reloadAllTimelines()
+            // Body Twin: offer this moment's body signals to the review queue.
+            // Fire-and-forget — never delays or fails the save, and this is the
+            // ONLY capture site (onboarding seeds, Siri, imports and edits
+            // deliberately never snapshot).
+            Task { await BodyTwinManager.shared.captureSnapshotIfEligible() }
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle

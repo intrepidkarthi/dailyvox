@@ -138,6 +138,29 @@ final class BodyTwinManager: ObservableObject {
         PendingSnapshotQueue.shared.remove(id: id)
     }
 
+    // MARK: - Backup Restore
+
+    /// Restores Body Twin data from an encrypted backup (BackupService).
+    /// Snapshots land verbatim in their stores, deduped by id, and nothing is
+    /// ever re-folded or re-captured — a Keep decided on the old device stays
+    /// decided. The learned state is adopted only when the backup's Twin has
+    /// folded more than this device's, so a stale backup can never erase live
+    /// learning. Consent flags stay local: HealthKit authorization is
+    /// per-device and must be asked here anew.
+    func restoreFromBackup(_ payload: ExportableBodyTwin) {
+        PendingSnapshotQueue.shared.restore(payload.pendingSnapshots)
+        KeptSnapshotStore.shared.restore(payload.keptSnapshots)
+
+        guard var imported = payload.state else { return }
+        let local = DigitalTwinEngine.shared.bodyTwin
+        guard imported.entriesWithSnapshot > local.entriesWithSnapshot else { return }
+        imported.isAuthorized = local.isAuthorized
+        imported.isEnabledByUser = local.isEnabledByUser
+        let store = FileBodyTwinStateStore()
+        store.saveBodyTwin(imported)
+        DigitalTwinEngine.configureBodyTwinStore(store)
+    }
+
     // MARK: - Wipe
 
     /// Settings' "Wipe all health snapshots": clears the review queue, the

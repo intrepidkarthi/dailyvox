@@ -10,6 +10,7 @@
 import Foundation
 import CoreData
 import UniformTypeIdentifiers
+import DailyVoxTwinEngine
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -43,6 +44,18 @@ struct ExportableEntry: Codable, Identifiable {
     }
 }
 
+/// Body Twin data carried ONLY by the encrypted .dvx backup (format 1.1).
+/// Health signals never ride the plain JSON export — the password-protected
+/// file is the single way they leave this iPhone, user-initiated and
+/// user-held key. See BodyTwinStores.swift for the gathering side.
+struct ExportableBodyTwin: Codable {
+    let state: BodyTwin?
+    let keptSnapshots: [KeptSnapshot]
+    let pendingSnapshots: [PendingSnapshot]
+
+    var isEmpty: Bool { state == nil && keptSnapshots.isEmpty && pendingSnapshots.isEmpty }
+}
+
 /// Container for full backup data
 struct BackupData: Codable {
     let version: String
@@ -50,9 +63,11 @@ struct BackupData: Codable {
     let deviceName: String
     let entryCount: Int
     let entries: [ExportableEntry]
-    
-    init(entries: [ExportableEntry]) {
-        self.version = "1.0"
+    /// Optional so 1.0 backups decode unchanged and older app builds ignore it.
+    let bodyTwin: ExportableBodyTwin?
+
+    init(entries: [ExportableEntry], bodyTwin: ExportableBodyTwin? = nil) {
+        self.version = bodyTwin == nil ? "1.0" : "1.1"
         self.exportDate = Date()
         #if canImport(UIKit)
         self.deviceName = UIDevice.current.name
@@ -61,6 +76,7 @@ struct BackupData: Codable {
         #endif
         self.entryCount = entries.count
         self.entries = entries
+        self.bodyTwin = bodyTwin
     }
 }
 
@@ -434,7 +450,8 @@ final class BackupService {
     /// Export all entries as an encrypted .dvx file
     func exportEncrypted(entries: [DiaryEntry], password: String) throws -> URL {
         let exportableEntries = entries.map { ExportableEntry(from: $0) }
-        let backupData = BackupData(entries: exportableEntries)
+        let backupData = BackupData(entries: exportableEntries,
+                                    bodyTwin: ExportableBodyTwin.currentOnDisk())
 
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -487,6 +504,15 @@ final class BackupService {
 
         if importedCount > 0 {
             try context.save()
+        }
+
+        // Restore Body Twin data even when every entry already exists — on a
+        // fresh device CloudKit brings the entries back, but health data is
+        // local-only and can ONLY return through this encrypted backup.
+        if let bodyTwin = backupData.bodyTwin {
+            Task { @MainActor in
+                BodyTwinManager.shared.restoreFromBackup(bodyTwin)
+            }
         }
 
         return importedCount

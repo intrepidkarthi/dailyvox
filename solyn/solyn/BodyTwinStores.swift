@@ -25,6 +25,10 @@ import DailyVoxTwinEngine
 /// a device backup into iCloud, even for users upgrading from older installs.
 private enum BodyTwinFileStorage {
 
+    static let stateFile   = "state.json"
+    static let pendingFile = "pending.json"
+    static let keptFile    = "kept.json"
+
     static var directory: URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         var dir = base.appendingPathComponent("BodyTwin", isDirectory: true)
@@ -59,7 +63,7 @@ private enum BodyTwinFileStorage {
 /// launch (solynApp), beside the CloudKit-backed store the text Twin uses.
 final class FileBodyTwinStateStore: BodyTwinStateStore {
 
-    private let fileName = "state.json"
+    private let fileName = BodyTwinFileStorage.stateFile
 
     func loadBodyTwin() -> BodyTwin? {
         BodyTwinFileStorage.read(BodyTwin.self, from: fileName)
@@ -87,7 +91,7 @@ struct PendingSnapshot: Codable, Equatable, Identifiable {
 final class PendingSnapshotQueue: ObservableObject {
     static let shared = PendingSnapshotQueue()
 
-    private let fileName = "pending.json"
+    private let fileName = BodyTwinFileStorage.pendingFile
 
     @Published private(set) var items: [PendingSnapshot]
 
@@ -117,6 +121,17 @@ final class PendingSnapshotQueue: ObservableObject {
         return item.snapshot
     }
 
+    /// Backup restore: merge imported items in, deduped by id — a snapshot
+    /// already reviewed (or still waiting) on this device is never duplicated.
+    func restore(_ imported: [PendingSnapshot]) {
+        let existing = Set(items.map(\.id))
+        let added = imported.filter { !existing.contains($0.id) }
+        guard !added.isEmpty else { return }
+        items.append(contentsOf: added)
+        items.sort { $0.createdAt < $1.createdAt }
+        persist()
+    }
+
     func wipe() {
         items = []
         persist()
@@ -143,7 +158,7 @@ struct KeptSnapshot: Codable, Equatable, Identifiable {
 final class KeptSnapshotStore {
     static let shared = KeptSnapshotStore()
 
-    private let fileName = "kept.json"
+    private let fileName = BodyTwinFileStorage.keptFile
     private var cache: [KeptSnapshot]
 
     private init() {
@@ -158,8 +173,35 @@ final class KeptSnapshotStore {
 
     func loadAll() -> [KeptSnapshot] { cache }
 
+    /// Backup restore: merge imported snapshots in, deduped by id.
+    func restore(_ imported: [KeptSnapshot]) {
+        let existing = Set(cache.map(\.id))
+        let added = imported.filter { !existing.contains($0.id) }
+        guard !added.isEmpty else { return }
+        cache.append(contentsOf: added)
+        cache.sort { $0.keptAt < $1.keptAt }
+        BodyTwinFileStorage.write(cache, to: fileName)
+    }
+
     func wipe() {
         cache = []
         BodyTwinFileStorage.delete(fileName)
+    }
+}
+
+// MARK: - Backup Bridge
+
+extension ExportableBodyTwin {
+    /// Everything the Body Twin holds on disk, gathered for the encrypted
+    /// export. Safe to call off the main actor (BackupService runs on a
+    /// background queue): every store writes atomically from the main actor,
+    /// so a concurrent read always sees a complete file.
+    static func currentOnDisk() -> ExportableBodyTwin? {
+        let payload = ExportableBodyTwin(
+            state: BodyTwinFileStorage.read(BodyTwin.self, from: BodyTwinFileStorage.stateFile),
+            keptSnapshots: BodyTwinFileStorage.read([KeptSnapshot].self, from: BodyTwinFileStorage.keptFile) ?? [],
+            pendingSnapshots: BodyTwinFileStorage.read([PendingSnapshot].self, from: BodyTwinFileStorage.pendingFile) ?? []
+        )
+        return payload.isEmpty ? nil : payload
     }
 }
