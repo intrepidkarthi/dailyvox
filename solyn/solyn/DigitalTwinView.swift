@@ -53,6 +53,9 @@ struct DigitalTwinView: View {
                     // How well the Twin actually knows you (self-prediction fidelity)
                     TwinResolutionCard()
 
+                    // The Body dimension + review-before-learning queue
+                    BodyTwinCard()
+
                     // Section Picker
                     sectionPicker
 
