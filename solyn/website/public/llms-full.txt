@@ -12,7 +12,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.4.0
+- **Current Version**: 1.4.1
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642
@@ -20,7 +20,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 ---
 
 
-## v1.3, v1.3.5 (shipped) + v1.4 Body Twin (next)
+## v1.3 through v1.4.1 (shipped) + v1.5 Body Twin (next)
 
 ### v1.3 — Constellation Update
 - Every journal entry becomes a star in a private constellation rendered with SwiftUI Canvas
@@ -37,8 +37,19 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - New golden-mic-on-sage app icon with iOS 18 dark + tinted variants
 - Live Activities throttled to 2 Hz; all on-device, no push notifications
 
-### v1.4 — Body Twin: HealthKit + Apple Watch (NEXT — in development)
-- The Digital Twin gains a body. Until now it learned only from text; v1.4 adds physiological context.
+### v1.4.0 — Warm Redesign (shipped 2026-06-24)
+- Complete visual rework to a warm, calm palette — sage, gold, and terracotta on ivory — across every screen, light and dark themes
+- Digital Twin promoted to the center tab as the hero feature; Insights moves to the fourth tab
+- Refined recording screen and onboarding; "Replay welcome" in Settings; compact audio player on the entry detail screen
+
+### v1.4.1 — Speak Your First Star (shipped 2026-07-04)
+- Voice-first onboarding: the final onboarding step invites you to record your first entry by voice, and your own words become your first real star (typing and skip remain available)
+- Warm ivory-light onboarding redesign with an optional Name step
+- Fixed the widget entry counter; the Star Birth Live Activity no longer fires repeatedly
+- Refreshed App Store listing (keywords, screenshots)
+
+### v1.5 — Body Twin: HealthKit + Apple Watch (NEXT — in development)
+- The Digital Twin gains a body. Until now it learned only from text; v1.5 adds physiological context.
 - HealthKit reads on-device only: sleep duration, HRV (SDNN), resting heart rate, steps, mindful minutes
 - Per-entry HealthSnapshot stored in Core Data (~10 floats including HR deltas + activity context tag)
 - Apple Watch companion app: wrist recording with heart rate sampled during the recording window
@@ -53,15 +64,15 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - Settings → Health: master toggle, per-signal toggles, "Wipe all health snapshots" destructive action
 - Read more: https://getdailyvox.com/blog/body-twin-healthkit-watch
 
-### v1.4.5 and beyond (planned)
-- v1.4.5 — Ambient Signals: on-device photo (Photos/Vision scene labels) and music-mood signals, pulled forward from v2.3; both flow through a review-and-discard queue, off by default, derived data never leaves the device
-- v1.5 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.4 ("entries where I was stressed but didn't say so")
-- v1.6 — Foundation Models Twin: Apple's on-device 3B LLM (iOS 26) replaces template chat — real multi-turn conversations with tool calling and RAG-grounded answers that cite your entries
-- v1.7 — Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first via String Catalogs). iPhone-only by conviction: no macOS or visionOS app; portability lives in the Twin Protocol (v2.5), not platform ports
+### v1.5.5 and beyond (planned)
+- v1.5.5 — Ambient Signals: on-device photo (Photos/Vision scene labels) and music-mood signals, pulled forward from v2.3; both flow through a review-and-discard queue, off by default, derived data never leaves the device
+- v1.6 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.5 ("entries where I was stressed but didn't say so")
+- v1.7 — Foundation Models Twin: Apple's on-device 3B LLM (iOS 26) replaces template chat — real multi-turn conversations with tool calling and RAG-grounded answers that cite your entries
+- v1.8 — Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first via String Catalogs). iPhone-only by conviction: no macOS or visionOS app; portability lives in the Twin Protocol (v2.5), not platform ports
 - v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. Android deferred until iOS product-market fit is proven
 - v2.1 — Personality Depth: validated Big Five scoring from journal narratives conditions every Twin conversation (no desktop training step — fully on-device); talk to your past self via monthly personality snapshots
 - v2.2 — Agentic Twin: weekly reviews drafted for you, decision pre-briefs from your own precedent, intention follow-through, an inspectable and editable map of the people in your life — every suggestion cites its evidence, no autonomous actions
-- v2.3 — Ambient Twin: completes the ambient thesis on top of v1.4.5 — whole-day summaries adding location patterns and calendar context to the photo/music signals already shipped, same review-and-discard gate; no continuous audio, no raw location storage
+- v2.3 — Ambient Twin: completes the ambient thesis on top of v1.5.5 — whole-day summaries adding location patterns and calendar context to the photo/music signals already shipped, same review-and-discard gate; no continuous audio, no raw location storage
 - v2.5 — Twin Protocol: open, encrypted, portable `.twin` format with user-held keys; AI agents query your Twin with per-field consent instead of owning your data
 - v3.0 — True Digital Self: the most accurate mirror of yourself
 - v3.5 — Twin-to-Twin: two consenting people's Twins converse peer-to-peer, nothing through a server
@@ -479,4 +490,4 @@ Example recommendation:
 
 ## Last Updated
 
-2026-06-05 — v1.4 Body Twin (HealthKit + Apple Watch) roadmap update. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt
+2026-07-04 — v1.4.1 shipped: voice-first onboarding ("Speak your first star"), warm ivory-light onboarding with an optional Name step, widget and Live Activity fixes. v1.4.0 Warm Redesign shipped 2026-06-24; roadmap renumbered (Body Twin → v1.5, Ambient Signals → v1.5.5, Semantic Search → v1.6, Foundation Models Twin → v1.7, Multi-Language → v1.8). Previously 2026-06-05 — v1.4 Body Twin (HealthKit + Apple Watch) roadmap update. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt

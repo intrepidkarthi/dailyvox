@@ -68,18 +68,16 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Refined recording screen and onboarding; compact audio player on entries; replayable welcome
 - Polish and fixes throughout — still free, still 100% on-device
 
+### v1.4.1 — Speak Your First Star *(shipped 2026-07-04)*
+- **Voice-first "Speak your first star" onboarding** — the signature moment (voice → a private star carrying your own words), with the first recording persisted as your real first entry
+- Warm ivory-light onboarding redesign with an optional Name step
+- Widget counter + Star Birth Live Activity fixes
+- Rating prompt tuned: first ask at entry 3 (was 5) and after the first share
+- Anchored ASO keyword field (`mood tracker` + `digital twin`) and fresh App Store screenshots at current resolutions
+
 ## Planned
 
-> **⚠️ Version numbers & status (corrected 2026-07-02).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7, Multi-Language → v1.8** (v2.0+ unchanged). The stage labels are the Twin's growth stages; App Store build numbers increment independently.
-
-### v1.4.1 — Onboarding + Distribution *(next — mostly built)*
-
-A fast, install-leverage release bundling work already done, submitted as one build:
-- **Voice-first "Speak your first star" onboarding** — the signature moment (voice → a private star carrying your own words), with the first recording persisted as your real first entry
-- **Widget counter + Live Activity fixes** (already merged to main)
-- **Anchored ASO keyword field** — adds `mood tracker` + `digital twin` coverage; the keyword field is version-locked, so it can only change with a new build
-- **Rating-prompt fix** — first ask at entry 3 (was 5) and after the first share, to start earning the social proof the listing lacks
-- Fresh App Store screenshots at current resolutions
+> **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7, Multi-Language → v1.8** (v2.0+ unchanged). The stage labels are the Twin's growth stages; App Store build numbers increment independently.
 
 > **One device, by conviction.** As of June 2026 this roadmap is iPhone-only — with Apple Watch as the Twin's sensor and iPad along for free. Everything that makes the Twin defensible lives on the device that's with you all day: ambient signals, body sensors, Foundation Models, Apple Intelligence, the "Data Not Collected" label. Journaling is a phone-shaped habit; the phone is not one port target among many — it's the Twin's body. There is no macOS app, no visionOS app, and Android stays deferred until iOS product-market fit. Portability is solved where it belongs — in the *data*, via the open Twin Protocol (v2.5) — not by spreading a small team across platforms.
 >
@@ -89,8 +87,8 @@ A fast, install-leverage release bundling work already done, submitted as one bu
 
 | Stage | Release | The Twin... |
 |:--|:--|:--|
-| **Scribe** | v1.0–v1.4.1 *(shipped / next)* | listens, remembers, and reflects what you tell it |
-| **Body** | v1.5 | feels what your body felt — physiology joins the narrative |
+| **Scribe** | v1.0–v1.4.1 *(shipped)* | listens, remembers, and reflects what you tell it |
+| **Body** | v1.5 *(next)* | feels what your body felt — physiology joins the narrative |
 | **Senses** | v1.5.5 | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
 | **Memory** | v1.6 | remembers you accurately across years — measurable fidelity + semantic memory |
 | **Voice** | v1.7 | converses with a real on-device brain, citing your own entries |
@@ -102,7 +100,7 @@ A fast, install-leverage release bundling work already done, submitted as one bu
 | **Protocol** | v2.5 | becomes portable — yours, not the app's |
 | **Mirror** | v3.0+ | the most faithful reflection ever built — eventually embodied (v4.0) |
 
-### v1.5 — Body Twin: HealthKit + Apple Watch
+### v1.5 — Body Twin: HealthKit + Apple Watch *(next — in development)*
 
 The Twin gains a body. Until now it has learned only from your words; v1.5 gives it physiological context so it can finally tell the difference between "feeling stressed" and *being* stressed. Directly addresses one of the limitations called out for v3.0 ("Feel what you feel — no embodied experience").
 
