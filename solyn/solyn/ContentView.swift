@@ -61,7 +61,7 @@ struct ContentView: View {
             // On iOS 26+, let the system render the native Liquid Glass tab bar.
             // A manual UITabBarAppearance override forces an opaque background and
             // defeats the glass material, so we only apply the warm configured
-            // appearance on iOS 25 and earlier.
+            // appearance on releases before iOS 26.
             if #available(iOS 26.0, *) {
                 // No override — inherit the native Liquid Glass tab bar.
             } else {
