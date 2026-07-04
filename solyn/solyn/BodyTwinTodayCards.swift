@@ -43,6 +43,21 @@ final class BodyWhisperProvider: ObservableObject {
     private init() {}
 
     func refreshIfNeeded(now: Date = Date()) async {
+        // SCREENSHOT-ONLY: the simulator's Health store is always empty, so
+        // composeSnapshot would yield permanent silence. Under -ScreenshotMode
+        // (set exclusively by the UI-test harness) we pin the snapshot a real
+        // 6h 54m night would produce and let the normal composer phrase it.
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("-ScreenshotMode") && !arguments.contains("-BodyTwinInviteDemo") {
+            setWhisper(Self.compose(from: HealthSnapshot(
+                capturedAt: now,
+                activityContext: .atRest,
+                sleepHours: 6.9,
+                activityConfidence: 0.95
+            )))
+            return
+        }
+
         guard DigitalTwinEngine.shared.bodyTwin.isActive,
               HealthKitService.shared.isAuthorized else {
             // Deliberately uncached: the moment Health is connected, the
