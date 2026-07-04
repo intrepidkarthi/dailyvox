@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Twin Shipped — And Where It Honestly Falls Short of the Plan</title>
+  <meta name="description" content="DailyVox v1.5 gives the Digital Twin a physiological channel, on-device, with an honesty gate for passive signals and a validation stack built on lift-over-baseline. It also owns three honest shortfalls against the original plan.">
+  <meta name="keywords" content="dailyvox v1.5, body twin, on-device machine learning, model validation, synthetic personas, negative controls, mirror not oracle, no server feature store, per-person baseline, on-device ai">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/body-twin-v1-5-what-shipped">
+  <meta property="og:title" content="Body Twin Shipped — And Where It Honestly Falls Short of the Plan">
+  <meta property="og:description" content="What actually shipped in v1.5, the honesty gate we had to build for passive physiological signals, how you validate a model you can never observe — and a candid section on the three places v1.5 falls short of what we promised.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/body-twin-v1-5-what-shipped">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Body Twin Shipped — And Where It Honestly Falls Short of the Plan",
+    "description": "DailyVox v1.5 gives the Digital Twin a physiological channel, entirely on-device, with an honesty gate for passive signals and a validation stack built on lift-over-baseline. It also owns three honest shortfalls against the original plan.",
+    "url": "https://getdailyvox.com/blog/body-twin-v1-5-what-shipped",
+    "datePublished": "2026-07-05",
+    "dateModified": "2026-07-05",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/body-twin-v1-5-what-shipped" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Did the Apple Watch recording-time body layer ship in v1.5?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The original plan promised a live physiological signature captured at the moment you record — what your heart is doing as you speak. Doing that honestly needs the Apple Watch for live sampling, and it is deferred. v1.5 ships only the background-context layer, drawn from health data that is already stable and settled by the time you journal. We chose to ship one layer we could stand behind rather than fabricate a second one from phone-only data that would produce a confident wrong number."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can the DailyVox Twin predict my mood tomorrow?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, and we measured it. On short-horizon mood, the Twin does not beat a trivial persistence baseline — 'tomorrow is about the same as today.' That is the expected result and it matches the affect-forecasting literature, where persistence baselines are notoriously hard to beat. So the Twin is positioned as a conditional-mean mirror, not an oracle: 'given a day like this, here is your typical response', and 'you have felt this before, and here is what tended to follow.' We let the negative result set the product boundary rather than ship a forecaster that would fail quietly in the field."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is DailyVox's 'measurable fidelity' proven on real people?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not yet. The whole validation stack runs on synthetic and model-generated personas with known ground-truth traits. That establishes feasibility, style-invariance, and the shape of the learning curves — but not human accuracy. Real-diary validation, under the same lift-over-baseline discipline and the same nothing-collected constraint, is unfinished and gated work. We would rather state plainly what we cannot yet claim than imply a clean synthetic number holds for real people writing real diaries."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does DailyVox store heart signals as a delta instead of a heart rate number?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because absolute heart rate is dominated by between-person variation — fitness, age, medication — that swamps the within-person signal we actually care about. Instead of a raw number, the Twin stores a deviation from your own hour-of-day baseline: this heartbeat relative to what is normal for you at this time of day. Baselining per person and per hour removes most of that nuisance variance, and as a side effect makes the representation portable — a delta means roughly the same thing across two very different bodies, where a raw reading does not. It is per-subject standardisation applied at the moment of capture."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why can't DailyVox reprocess or backfill its health features later?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Because there is no server-side feature store. Every feature is computed, stored, and consumed on one device. There is no central place to reprocess history when a transform improves, no backfill, no normalisation statistics shared across users, no way to recompute a baseline centrally when its definition changes. Baselines are personal and live locally; migrations run on-device or not at all. That rules out an entire comfortable class of architecture — and it is precisely the constraint that lets the privacy label stay literally 'Data Not Collected.'"
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "Body Twin Shipped — And Where It Honestly Falls Short of the Plan"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-technology">Engineering</span>
+        <h1>Body Twin Shipped — And Where It Honestly Falls Short of the Plan</h1>
+        <p class="article-meta">July 5, 2026 &middot; 8 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>A month ago we published <a href="/blog/body-twin-healthkit-watch">the original plan for Body Twin</a>: give the Digital Twin a second channel of truth by reading your body, on the iPhone alone, without breaking the promise that nothing is collected. This is the release retrospective. Some of that plan shipped in v1.5, and it is genuinely the part we are proud of. Some of it did not, and this post is at least as much about the second category as the first. If you only read the plan, you would come away expecting more than v1.5 delivers — so the honest thing is to say exactly what landed, what slipped, and why we think the half we shipped is the defensible half.</p>
+
+        <p>The engineering context that makes all of this unusual: DailyVox has no server-side anything. No feature store, no training cluster, no analytics pipeline you could inspect to see whether a model is misbehaving. The Twin is a small personal model that lives and dies on one device, seen by exactly one person. That framing is easy to say and removes almost every instrument an ML team normally leans on — which is why the validation half of this post exists at all.</p>
+
+        <h2>Two-layer sampling, and why only one layer shipped</h2>
+
+        <p>The design separates two very different physiological signals. The first is <em>background context</em>: sleep, morning heart-rate variability, resting heart rate, steps, mindful minutes — snapshotted at the moment you journal from health data that is already stable and settled. The second is a <em>foreground recording-time signature</em>: what your body is doing in the very moment you speak.</p>
+
+        <p>The second layer is the interesting one, and it is deliberately <strong>not in this build</strong>. Reading it properly needs a wrist sensor for live sampling during the recording; approximating it from phone-only data would produce a confident, wrong number, and a confident wrong number is worse than an honest absence. So v1.5 ships the background-context layer only. The bulk of this post's "what shipped" is really about making that one layer trustworthy — because a single physiological channel with no server to clean it up has to be right the first time, on-device.</p>
+
+        <h2>Activity context is the field everything hinges on</h2>
+
+        <p>A raised heart rate means nothing without knowing why. The same reading is stress at a desk and unremarkable on a jog. So every snapshot carries an activity-context value — at rest, active, post-workout, or unknown — derived from the phone's motion sensing. The critical decision here is that <strong>"unknown" is a first-class value we are willing to emit rather than guess</strong>. Without this tag the physiological signal is not merely noisy; it is systematically misleading, because it would read every workout as anxiety. An honest "unknown" is worth more than a precise lie, and treating it as a real category rather than a fallback is what keeps the background layer from poisoning the model with exercise mislabelled as emotion.</p>
+
+        <h2>Heart signals are stored as deltas, not absolutes</h2>
+
+        <p>We do not store a raw heartbeat. We store a deviation from <em>your own</em> hour-of-day baseline — this heart activity relative to what is normal for you at this time of day. The reason is standard but load-bearing: absolute heart rate is dominated by between-person variation (fitness, age, medication) that swamps the within-person signal we actually care about. Baselining per person and per hour removes most of that nuisance variance, and, as a side effect, makes the representation portable — a delta means roughly the same thing across two very different bodies, where a raw reading does not. It is per-subject standardisation applied at the point of capture, and because there is no server, the baseline it standardises against is computed and refined locally as your entries accumulate.</p>
+
+        <h2>The review-and-discard queue as an honesty primitive</h2>
+
+        <p>Passively-captured signals do not flow straight into the Twin. They land in a review queue and wait for you to explicitly keep or discard each one before it can ever reach the model. This inverts the usual passive-sensing default, where data is ingested first and maybe forgotten later. Here, nothing passive is trusted by default.</p>
+
+        <p>We built it as a reusable gate, not a one-off screen: every future passive signal — the deferred recording-time layer included, whenever it arrives — inherits the same keep-or-discard barrier. It is opt-in consent expressed as a data-flow primitive rather than a settings toggle, and it has a clean consequence for the model: the training set for the physiological channel is, by construction, only the data you chose to include. That is a stronger guarantee than a privacy policy paragraph, because it is enforced by where the data can and cannot go.</p>
+
+        <h2>No server-side feature store — the real ML-systems constraint</h2>
+
+        <p>Health-derived data stays local to the device: never synced to a cloud database, excluded from device backups, and able to leave only inside your own encrypted export. Per-signal opt-outs filter before the read, so a disabled signal is never even fetched. For an ML engineer the consequence is structural, not merely legal: <strong>there is no server-side feature store.</strong> Every feature is computed, stored, and consumed on one device. There is no place to reprocess history when you improve a transform, no backfill, no normalisation statistics shared across users, no way to recompute a baseline centrally when its definition changes. Baselines are personal and live locally; migrations run on-device or not at all. It rules out an entire, comfortable class of architecture — and it is the constraint that makes the rest of the promise credible.</p>
+
+        <p>Riding the same release train: a native Liquid Glass tab bar, a self-prediction fidelity feature we call <strong>Twin Resolution</strong> — a felt read on how well your Twin currently knows you, which is the maturation curve below surfaced honestly to the user — and a fix that stopped the constellation view from pinning the run loop while rendering.</p>
+
+        <h2>How do you validate a model you can never see?</h2>
+
+        <p>This is the part the on-device promise makes genuinely hard, and it is the payoff. We cannot watch the model in production, so validation happens <em>before</em> shipping, on synthetic and model-generated personas, and every result is reported against an explicit baseline. The approach follows the spirit of recent generative-agent and persona-simulation work: construct personas with known ground-truth traits, generate diary-like text from them, and check what the pipeline recovers.</p>
+
+        <p><strong>Lift over an explicit baseline, or it does not count.</strong> The spine of the whole evaluation is a refusal to report raw agreement numbers. A "do-nothing" model — one that ignores the data and always predicts the prior — scores around 75% on a naive agreement metric for these tasks, purely because the label distribution is skewed. That kind of 75% flatters every model equally; it is a vanity metric. So every result is reported as lift over a named baseline plus a tracking correlation: a constant-prior baseline for fidelity, a climatology-plus-persistence baseline for forecasting, a population-mean baseline for personality. If a model cannot beat its baseline, we say so.</p>
+
+        <p><strong>Self-prediction fidelity matures on a curve.</strong> Against synthetic personas with analytic ground truth, the Twin's recovery of a persona's traits beats the do-nothing baseline, and — usefully for product design — the self-model stabilises after roughly twenty entries. That maturation curve is not a nuisance to hide; it is the honest content behind Twin Resolution. Below about twenty entries the model genuinely does not know you well, and the product should say so rather than perform a confidence it has not earned.</p>
+
+        <p><strong>On-device personality inference is feasible, and cheap.</strong> A light regressor over the platform's on-device sentence embeddings recovers assigned Big Five traits from diary text at roughly 0.74&ndash;0.83 correlation on a synthetic corpus — for a model measured in kilobytes, because the embeddings themselves already sit resident in the operating system. Two properties make this more than a curiosity. First, <em>cross-corpus robustness</em>: a model trained on one writing style still recovers personality from a deliberately different style at about 0.74. That gap between train and test styles is the test that it learned personality signal rather than a stylistic fingerprint — and 0.74 sits cleanly above the roughly 0.38 band that human-text-to-personality studies report, which is our sanity ceiling for "is this even a plausible amount of signal." Second, it is honestly bounded: the labels are synthetic, so this demonstrates feasibility and style-invariance, <em>not</em> human accuracy. There is also a size discipline here worth stating: for plain valence and sentiment, the platform's built-in on-device language stack is good enough that a bespoke model is not worth the bytes. Custom ML earns its place specifically for personality, which the built-in stack cannot produce at all.</p>
+
+        <p><strong>Multilingual means per-language heads, not translated rules.</strong> English keyword heuristics do not transfer to other languages — obviously — but neither does a naive "translate then apply" shortcut. The learned embedding path transfers, but only per language, because the embedding spaces differ; a model trained on one language is useless in another. So multilingual support means separately trained heads per language, not one model plus a translation layer. And on-device sentence embeddings exist for only a handful of languages today, which is a concrete constraint on which languages we can prioritise — the platform's coverage, not our ambition, sets the order.</p>
+
+        <p><strong>Negative controls, so the metrics can say no.</strong> A validation suite that only ever produces good news is broken. The evaluation includes negative controls: shuffle the labels or the inputs and confirm the metrics collapse back to baseline. When personality correlation falls to chance under shuffling and forecasting lift disappears, the positive results become trustworthy — we have shown the metric is capable of reporting failure, which is the only thing that makes it capable of reporting success.</p>
+
+        <h2>Where v1.5 falls short of the plan</h2>
+
+        <p>The plan post promised more than this release delivers. That is not something to bury under the good news, so here it is plainly. Three shortfalls, stated as shortfalls.</p>
+
+        <h3>1. The embodied recording-time body layer did not ship</h3>
+
+        <p>The plan promised a live physiological signature captured at the moment of recording — the foreground layer that reads what your body is doing as you actually speak. It is deferred. Reading it honestly requires the wrist sensor for live sampling, and rather than fabricate that layer from phone-only data, we shipped without it. v1.5 delivers the background-context layer alone. This was a deliberate choice — one honest layer over two where one would be invented — but it is still a promise from the plan that this release does not keep, and the more embodied half of "Body Twin" is not yet in your hands.</p>
+
+        <h3>2. The Twin cannot forecast your mood</h3>
+
+        <p>The roadmap leaned on a predictive framing: a Twin that could see a little way ahead. We measured that directly, and it does not hold. On short-horizon mood, the Twin does not beat a trivial persistence baseline — "tomorrow is about the same as today." This is not a bug we are working around; it is the expected result, and it aligns with an affect-forecasting literature in which persistence baselines are famously hard to beat and people are famously poor at predicting their own future feelings. So the Twin behaves as a conditional-mean estimator — "given a day like this, here is your typical response" — not a trajectory predictor. We let the honest negative result set the product boundary: DailyVox is positioned as reflection and precedent ("you have felt this before, and here is what tended to follow"), and never as mood prediction. It is a mirror, not an oracle, and we can prove it fails the oracle test.</p>
+
+        <h3>3. "Measurable fidelity" is proven on synthetic data only</h3>
+
+        <p>Everything in the validation section above runs on synthetic and model-generated personas. That establishes feasibility, style-invariance, and the shape of the learning curves — genuinely useful things to know before shipping. It does <em>not</em> establish human accuracy. No amount of clean synthetic performance substitutes for real people writing real diaries, and we have not yet done that study. Real-diary validation, under the same lift-over-baseline discipline and the same on-device, nothing-collected constraint, is unfinished, gated work. Until it is done, "measurable fidelity" is a claim about the measurement apparatus and the synthetic curves, not a claim about how well the Twin reflects an actual person. We would rather state that boundary than let a synthetic number stand in for a human one.</p>
+
+        <h2>The half we shipped is the half we can defend</h2>
+
+        <p>None of the three shortfalls above is comfortable to publish, and that is rather the point. The Twin is a mirror of your reflective self — the person who shows up in what you chose to write down — not a clone of you, and not a forecaster. The most important results in this release are the negative ones: forecasting that cannot beat persistence, accuracy claims fenced off as synthetic-only, a "do-nothing" baseline held up next to every number so that none of them can flatter us quietly. An engineering team that measures honestly ends up shipping the defensible half and naming the rest as unfinished. That is what v1.5 is. We would rather ship a mirror we can stand behind than an oracle we cannot — especially one we could never watch fail.</p>
+
+        <p>—</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/body-twin-healthkit-watch">The Body Twin: How DailyVox v1.5 Brings Apple Health and Apple Watch to Your Digital Twin (the original plan)</a></li>
+          <li><a href="/blog/speak-your-first-star-v1-4-1">DailyVox v1.4.1: Speak Your First Star — the Cold-Start Problem for a Model of One</a></li>
+          <li><a href="/blog/on-device-ai-maturity-model">The On-Device AI Maturity Model</a></li>
+          <li><a href="/blog/your-journal-app-should-predict-not-just-record">Why Your Journal App Should Predict, Not Just Record</a></li>
+        </ul>
+
+        <p><a href="https://apps.apple.com/app/dailyvox">Download DailyVox on the App Store</a> &middot; <a href="/blog/body-twin-healthkit-watch">Read the original Body Twin plan</a> &middot; <a href="/">getdailyvox.com</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 DailyVox. Voice diary that respects your privacy.</p>
+      <p><a href="/privacy">Privacy</a> &middot; <a href="/support">Support</a> &middot; <a href="/blog">Blog</a></p>
+    </div>
+  </footer>
+</body>
+</html>
