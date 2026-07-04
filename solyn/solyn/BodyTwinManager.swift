@@ -97,6 +97,13 @@ final class BodyTwinManager: ObservableObject {
 
     // MARK: - Capture
 
+    /// Monotonic counter bumped by `wipeAllHealthData()`. A capture Task
+    /// suspends across several HealthKit round-trips; if the user completes
+    /// the destructive wipe inside that window, the resumed task must not
+    /// enqueue a fresh snapshot into the queue the wipe just promised to
+    /// clear. (The master toggle is covered by re-checking `isActive`.)
+    private var captureGeneration = 0
+
     /// Composes a background-context snapshot and, when it carries anything
     /// useful, adds it to the review queue — your Twin learns nothing until
     /// you tap Keep. Wired into TodayView's save flow after phase-1 save;
@@ -104,6 +111,7 @@ final class BodyTwinManager: ObservableObject {
     func captureSnapshotIfEligible(at moment: Date = Date()) async {
         guard DigitalTwinEngine.shared.bodyTwin.isActive,
               HealthKitService.shared.isAuthorized else { return }
+        let generation = captureGeneration
 
         let detector = ActivityContextDetector.shared
         let context = await detector.update()
@@ -111,9 +119,12 @@ final class BodyTwinManager: ObservableObject {
             at: moment,
             activityContext: context,
             activityConfidence: detector.currentConfidence,
-            minutesSinceLastWorkout: detector.minutesSinceLastWorkout
+            minutesSinceLastWorkout: detector.minutesSinceLastWorkout,
+            includedSignals: enabledSignals   // disabled signals are never queried
         )
 
+        // Belt-and-braces behind the includedSignals mask: nothing a user
+        // switched off may survive into the queue even if a read slips through.
         if !sleepEnabled     { snapshot.sleepHours = nil }
         if !hrvEnabled       { snapshot.morningHRVMs = nil }
         if !restingHREnabled { snapshot.restingHRBpm = nil }
@@ -121,7 +132,23 @@ final class BodyTwinManager: ObservableObject {
         if !mindfulEnabled   { snapshot.mindfulMinutesToday = nil }
 
         guard snapshot.hasUsefulData else { return }
+        // Re-check the gate after the awaits: a wipe or toggle-off completed
+        // mid-capture wins over the in-flight snapshot.
+        guard DigitalTwinEngine.shared.bodyTwin.isActive,
+              generation == captureGeneration else { return }
         PendingSnapshotQueue.shared.enqueue(snapshot)
+    }
+
+    /// The per-signal opt-outs as a `HealthSignalSet`, so composeSnapshot
+    /// only queries HealthKit for what the user left on.
+    var enabledSignals: HealthSignalSet {
+        var signals: HealthSignalSet = []
+        if sleepEnabled     { signals.insert(.sleep) }
+        if hrvEnabled       { signals.insert(.hrv) }
+        if restingHREnabled { signals.insert(.restingHR) }
+        if stepsEnabled     { signals.insert(.steps) }
+        if mindfulEnabled   { signals.insert(.mindful) }
+        return signals
     }
 
     // MARK: - Review Decisions
@@ -129,6 +156,12 @@ final class BodyTwinManager: ObservableObject {
     /// Keep — the only path by which a snapshot ever reaches the Twin.
     func keepSnapshot(id: UUID) {
         guard let snapshot = PendingSnapshotQueue.shared.keep(id: id) else { return }
+        // Fold-once invariant, belt-and-braces: if this id somehow re-entered
+        // the queue after already being kept (a duplicate slipping past the
+        // restore filters), drop it silently rather than double-fold the
+        // baseline. KeptSnapshotStore.append's own dedupe can't help here —
+        // it runs AFTER the fold.
+        guard !KeptSnapshotStore.shared.contains(id: id) else { return }
         DigitalTwinEngine.shared.foldHealthSnapshot(snapshot)
         KeptSnapshotStore.shared.append(id: id, snapshot: snapshot)
     }
@@ -147,9 +180,17 @@ final class BodyTwinManager: ObservableObject {
     /// folded more than this device's, so a stale backup can never erase live
     /// learning. Consent flags stay local: HealthKit authorization is
     /// per-device and must be asked here anew.
+    ///
+    /// Order matters: the kept store is restored FIRST so the pending merge
+    /// can drop anything already reviewed — a snapshot that was pending when
+    /// the backup was made but has been Kept since must not re-enter the
+    /// queue (a second Keep would double-fold it). Let-go decisions are
+    /// covered by the queue's own tombstone filter.
     func restoreFromBackup(_ payload: ExportableBodyTwin) {
-        PendingSnapshotQueue.shared.restore(payload.pendingSnapshots)
         KeptSnapshotStore.shared.restore(payload.keptSnapshots)
+        let keptIds = KeptSnapshotStore.shared.ids
+        PendingSnapshotQueue.shared.restore(
+            payload.pendingSnapshots.filter { !keptIds.contains($0.id) })
 
         guard var imported = payload.state else { return }
         let local = DigitalTwinEngine.shared.bodyTwin
@@ -169,6 +210,9 @@ final class BodyTwinManager: ObservableObject {
     /// only the two consent flags, then re-configures the store — which
     /// reloads the pristine state into the engine's published sub-model.
     func wipeAllHealthData() {
+        // Invalidate any capture Task currently suspended mid-HealthKit-read
+        // so it cannot enqueue into the queue this wipe clears.
+        captureGeneration += 1
         PendingSnapshotQueue.shared.wipe()
         KeptSnapshotStore.shared.wipe()
 

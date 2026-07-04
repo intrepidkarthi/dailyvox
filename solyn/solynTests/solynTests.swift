@@ -8,6 +8,7 @@
 import Testing
 import Foundation
 import CryptoKit
+import DailyVoxTwinEngine
 @testable import solyn
 
 // MARK: - Mood Tests
@@ -137,5 +138,102 @@ struct EncryptionErrorTests {
             #expect(error.errorDescription != nil)
             #expect(!error.errorDescription!.isEmpty)
         }
+    }
+}
+
+// MARK: - Body Twin Restore-Filtering Tests
+
+/// The fold-once / decided-stays-decided invariants around backup restore:
+/// a snapshot the user already Kept or Let go of must never re-enter the
+/// review queue, no matter how many times a stale .dvx is re-imported.
+@MainActor
+struct BodyTwinRestoreFilteringTests {
+
+    private func pending(_ id: UUID, at date: Date = Date()) -> PendingSnapshot {
+        PendingSnapshot(id: id,
+                        snapshot: HealthSnapshot(capturedAt: date, sleepHours: 7.0),
+                        createdAt: date)
+    }
+
+    private func resetStores() {
+        PendingSnapshotQueue.shared.wipe()
+        KeptSnapshotStore.shared.wipe()
+    }
+
+    @Test func discardedIdNeverReentersTheQueue() {
+        resetStores()
+        defer { resetStores() }
+
+        let tombstoned = UUID()
+        PendingSnapshotQueue.shared.restore([pending(tombstoned)])
+        #expect(PendingSnapshotQueue.shared.count == 1)
+
+        // Let go — deleted, and the id is tombstoned.
+        BodyTwinManager.shared.discardSnapshot(id: tombstoned)
+        #expect(PendingSnapshotQueue.shared.count == 0)
+
+        // Re-importing a backup that still carried it must NOT resurrect it.
+        PendingSnapshotQueue.shared.restore([pending(tombstoned)])
+        #expect(PendingSnapshotQueue.shared.count == 0,
+                "A Let-go snapshot came back through backup restore")
+    }
+
+    @Test func alreadyKeptIdIsFilteredOutOfRestoredPending() {
+        resetStores()
+        defer { resetStores() }
+
+        let keptId = UUID()
+        let freshId = UUID()
+        KeptSnapshotStore.shared.restore([
+            KeptSnapshot(id: keptId,
+                         snapshot: HealthSnapshot(capturedAt: Date(), sleepHours: 6.5),
+                         keptAt: Date())
+        ])
+
+        // A stale backup exported while keptId was still pending.
+        let payload = ExportableBodyTwin(state: nil,
+                                         keptSnapshots: [],
+                                         pendingSnapshots: [pending(keptId), pending(freshId)])
+        BodyTwinManager.shared.restoreFromBackup(payload)
+
+        let queuedIds = PendingSnapshotQueue.shared.items.map(\.id)
+        #expect(!queuedIds.contains(keptId),
+                "An already-Kept snapshot re-entered the review queue")
+        #expect(queuedIds.contains(freshId))
+    }
+
+    @Test func keepSnapshotSkipsFoldWhenIdAlreadyKept() {
+        resetStores()
+        defer { resetStores() }
+
+        let id = UUID()
+        let snapshot = HealthSnapshot(capturedAt: Date(), sleepHours: 8.0)
+        KeptSnapshotStore.shared.restore([KeptSnapshot(id: id, snapshot: snapshot, keptAt: Date())])
+        PendingSnapshotQueue.shared.restore([pending(id)])
+        // (Duplicate deliberately forced past the restore filters.)
+        let foldedBefore = DigitalTwinEngine.shared.bodyTwin.entriesWithSnapshot
+
+        BodyTwinManager.shared.keepSnapshot(id: id)
+
+        #expect(DigitalTwinEngine.shared.bodyTwin.entriesWithSnapshot == foldedBefore,
+                "Keeping an already-kept id must not fold the snapshot a second time")
+        #expect(PendingSnapshotQueue.shared.count == 0)
+    }
+
+    @Test func pendingQueueCapsAtThirtyDroppingOldest() {
+        resetStores()
+        defer { resetStores() }
+
+        let base = Date(timeIntervalSince1970: 1_780_000_000)
+        for i in 0..<35 {
+            PendingSnapshotQueue.shared.enqueue(
+                HealthSnapshot(capturedAt: base.addingTimeInterval(Double(i) * 60),
+                               sleepHours: 7.0))
+        }
+
+        #expect(PendingSnapshotQueue.shared.count == 30)
+        // Oldest five dropped: the earliest surviving capture is #5.
+        let earliest = PendingSnapshotQueue.shared.items.map(\.snapshot.capturedAt).min()
+        #expect(earliest == base.addingTimeInterval(5 * 60))
     }
 }

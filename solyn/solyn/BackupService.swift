@@ -447,11 +447,17 @@ final class BackupService {
 
     // MARK: - Encrypted Export
 
-    /// Export all entries as an encrypted .dvx file
-    func exportEncrypted(entries: [DiaryEntry], password: String) throws -> URL {
+    /// Export all entries as an encrypted .dvx file.
+    ///
+    /// `bodyTwin` must be assembled on the main actor BEFORE hopping to the
+    /// export queue (`ExportableBodyTwin.currentInMemory()`), so the payload
+    /// is one consistent picture of the three Body Twin stores — a Keep
+    /// mid-export can no longer tear it.
+    func exportEncrypted(entries: [DiaryEntry], password: String,
+                         bodyTwin: ExportableBodyTwin?) throws -> URL {
         let exportableEntries = entries.map { ExportableEntry(from: $0) }
         let backupData = BackupData(entries: exportableEntries,
-                                    bodyTwin: ExportableBodyTwin.currentOnDisk())
+                                    bodyTwin: bodyTwin)
 
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
