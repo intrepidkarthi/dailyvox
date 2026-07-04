@@ -21,6 +21,10 @@ struct StatsView: View {
 
     @State private var showMilestone: Int? = nil
 
+    /// Embodied insights, computed off the render path in onAppear — the
+    /// correlation math must never run inside body (Twin-perf lesson).
+    @State private var bodyInsights: [BodyInsight] = []
+
     private var isIPad: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
@@ -49,6 +53,11 @@ struct StatsView: View {
                     // Mood Trends
                     moodTrendsCard
 
+                    // Body & Mood — absent entirely until honest patterns exist
+                    if !bodyInsights.isEmpty {
+                        bodyCorrelationsCard
+                    }
+
                     // Stats Summary
                     statsSummaryCard
 
@@ -68,6 +77,7 @@ struct StatsView: View {
             }
         }
         .onAppear {
+            refreshBodyInsights()
             if let milestone = goalManager.checkMilestone(currentStreak: currentStreak) {
                 HapticManager.shared.streakMilestone()
                 withAnimation(.spring(response: 0.5)) {
@@ -275,6 +285,130 @@ struct StatsView: View {
                 Spacer()
                 Text("Today").font(.dsCaption2).foregroundColor(DS.Palette.inkMute)
             }
+        }
+    }
+
+    // MARK: - Body & Mood Card
+
+    /// Patterns between the body signals the user chose to keep and how the
+    /// same days felt. The engine (BodyCorrelations) stays silent below 14
+    /// paired days or |r| < 0.35, so this card only ever shows real patterns —
+    /// and the card itself disappears when there are none.
+    private var bodyCorrelationsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "figure.mind.and.body")
+                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                Text("Body & Mood")
+                    .font(.system(.headline, design: .rounded))
+            }
+
+            ForEach(bodyInsights) { insight in
+                HStack(alignment: .top, spacing: DS.Space.md) {
+                    Image(systemName: bodyInsightIcon(insight.kind))
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(bodyInsightColor(insight.kind))
+                        .frame(width: 38, height: 38)
+                        .background(
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                .fill(bodyInsightColor(insight.kind).opacity(0.12))
+                        )
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(bodyInsightTitle(insight))
+                            .font(.dsHeadline)
+                        Text(bodyInsightDescription(insight))
+                            .font(.dsCaption)
+                            .foregroundColor(DS.Palette.inkMute)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 4)
+            }
+
+            Text("Patterns from the body signals you chose to keep — a noticing, not a prescription.")
+                .font(.dsCaption2)
+                .foregroundColor(DS.Palette.inkMute)
+        }
+        .dsCard()
+    }
+
+    /// Feeds kept snapshots + the per-day mood series into the engine.
+    private func refreshBodyInsights() {
+        let snapshots = KeptSnapshotStore.shared.loadAll().map(\.snapshot)
+        guard !snapshots.isEmpty else {
+            bodyInsights = []
+            return
+        }
+        bodyInsights = BodyCorrelations.compute(snapshots: snapshots, moodByDay: moodValueByDay)
+    }
+
+    /// Mood valence (1–5) per calendar day, real moods only — `.none` is a
+    /// placeholder, not a reading, and would flatten every correlation.
+    private var moodValueByDay: [Date: Double] {
+        let calendar = Calendar.current
+        var byDay: [Date: Double] = [:]
+        for entry in entries {
+            guard let date = entry.date,
+                  let moodString = entry.value(forKey: "mood") as? String,
+                  let mood = Mood(rawValue: moodString),
+                  mood != .none else { continue }
+            let day = calendar.startOfDay(for: date)
+            if byDay[day] == nil { byDay[day] = Double(mood.moodValue) }
+        }
+        return byDay
+    }
+
+    private func bodyInsightIcon(_ kind: BodyInsight.Kind) -> String {
+        switch kind {
+        case .sleepAndMood: return "bed.double.fill"
+        case .stepsAndMood: return "figure.walk"
+        case .hrvAndMood: return "waveform.path.ecg"
+        }
+    }
+
+    private func bodyInsightColor(_ kind: BodyInsight.Kind) -> Color {
+        switch kind {
+        case .sleepAndMood: return colorFromName("indigo")
+        case .stepsAndMood: return colorFromName("green")
+        case .hrvAndMood: return colorFromName("pink")
+        }
+    }
+
+    private func bodyInsightTitle(_ insight: BodyInsight) -> String {
+        switch insight.kind {
+        case .sleepAndMood:
+            return insight.movesTogether
+                ? "Rest and brightness rise together"
+                : "Your sleep writes its own pattern"
+        case .stepsAndMood:
+            return insight.movesTogether
+                ? "Moving days glow a little brighter"
+                : "Your stiller days glow brighter"
+        case .hrvAndMood:
+            return insight.movesTogether
+                ? "Your calm shows in your morning rhythm"
+                : "Your morning rhythm runs its own way"
+        }
+    }
+
+    /// The two group means tell the pattern honestly in either direction.
+    private func bodyInsightDescription(_ insight: BodyInsight) -> String {
+        let days = "across \(insight.sampleDays) days"
+        switch insight.kind {
+        case .sleepAndMood:
+            let bright = String(format: "%.1f", insight.signalMeanOnBrighterDays)
+            let dim = String(format: "%.1f", insight.signalMeanOnDimmerDays)
+            return "Your brighter days followed about \(bright)h of sleep; dimmer ones about \(dim)h — \(days)."
+        case .stepsAndMood:
+            let bright = Int(insight.signalMeanOnBrighterDays).formatted()
+            let dim = Int(insight.signalMeanOnDimmerDays).formatted()
+            return "Brighter days carried around \(bright) steps; dimmer ones around \(dim) — \(days)."
+        case .hrvAndMood:
+            let bright = Int(insight.signalMeanOnBrighterDays.rounded())
+            let dim = Int(insight.signalMeanOnDimmerDays.rounded())
+            return "Morning rhythm (HRV) averaged \(bright) ms on brighter days and \(dim) ms on dimmer ones — \(days)."
         }
     }
 
