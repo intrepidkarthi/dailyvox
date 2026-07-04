@@ -12,7 +12,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyVox Changelog — Every Version, Every Change</title>
-  <meta name="description" content="Every release of DailyVox documented. From v1.0 (March 2026) through v1.4.0 (June 2026). What we shipped, why we shipped it, and what's next.">
+  <meta name="description" content="Every release of DailyVox documented. From v1.0 (March 2026) through v1.4.1 (July 2026). What we shipped, why we shipped it, and what's next.">
   <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://getdailyvox.com/changelog">
@@ -169,7 +169,7 @@
   </header>
 
   <section class="hero wrap">
-    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-06-05</div>
+    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-07-04</div>
     <h1>Every <em>version</em>, every change.</h1>
     <p class="lede">DailyVox shipped its first version in March 2026. Here is every release since — what we built, what we changed, and (occasionally) what we shouldn't have done. For the developer-facing diff, see the <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/CHANGELOG.md" style="color:var(--uv); text-decoration:underline;">GitHub CHANGELOG</a>.</p>
   </section>
@@ -186,6 +186,38 @@
         <p><strong>The Digital Twin gains a body.</strong> Body Twin brings Apple Health and an Apple Watch companion into DailyVox so the Twin can finally tell the difference between feeling stressed and being stressed. HealthKit reads sleep, HRV, resting heart rate, steps, and mindful minutes as background context for every entry. Apple Watch records from your wrist and samples heart rate during the recording — only when you're at rest, so a workout isn't mistaken for emotional stress. Every entry gets an activity context tag (<code>at_rest</code> / <code>active</code> / <code>post_workout</code>) that tells the Twin how to interpret the body data. HR is stored as delta from your personal hour-of-day baseline, not raw bpm. The "Data Not Collected" privacy label stays intact — all HealthKit reads happen on-device.</p>
         <p><a href="/blog/body-twin-healthkit-watch" style="color:var(--uv); text-decoration:underline;">Read the full Body Twin plan →</a></p>
         <p style="margin-top:8px; color:var(--ink-soft); font-size:14px;"><em>After v1.5: v1.6 Semantic Search & Proactive Insights · v1.7 Foundation Models Twin (on-device LLM chat) · v1.8 Multi-Language · v2.0 Apple Intelligence Native · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/ROADMAP.md" style="color:var(--uv); text-decoration:underline;">full roadmap</a></em></p>
+        </div>
+      </section>
+
+      <section class="version">
+        <div class="v-head">
+          <div class="v-tag">◆ v1.4.1</div>
+          <h2 id="v1-4-1">Version 1.4.1 — Speak your first star</h2>
+          <time class="v-date">2026-07-04</time>
+        </div>
+        <div class="v-body">
+        <p><strong>Onboarding becomes voice-first.</strong> The welcome flow now ends the way DailyVox begins every day — with your voice. The final step invites you to record your first entry, and your own words become the first real star in your constellation.</p>
+        <h3>Added</h3>
+        <ul>
+          <li><strong>"Speak your first star"</strong>: the final onboarding step invites you to record your first entry by voice. What you say is saved as your first real star — typing and skipping remain available if you'd rather not speak yet</li>
+          <li><strong>Optional Name step</strong> in onboarding, so DailyVox can greet you by name</li>
+        </ul>
+        <h3>Changed</h3>
+        <ul>
+          <li><strong>Onboarding redesigned</strong> in the warm ivory-light style to match the rest of the app</li>
+          <li>Rating prompt now asks at gentler, more natural moments</li>
+          <li>App Store listing refreshed with new keywords and screenshots</li>
+        </ul>
+        <h3>Fixed</h3>
+        <ul>
+          <li>Widget entry counter now shows the correct number of stars</li>
+          <li>Star Birth Live Activity no longer fires repeatedly for the same entry</li>
+        </ul>
+        <h3>Build</h3>
+        <ul>
+          <li><code>MARKETING_VERSION</code> 1.4.0 → 1.4.1</li>
+          <li><code>CURRENT_PROJECT_VERSION</code> 17 → 18</li>
+        </ul>
         </div>
       </section>
 

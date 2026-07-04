@@ -136,13 +136,12 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 ---
 
-## What's New: v1.4.0 — Warm Redesign
+## What's New: v1.4.1 — Speak Your First Star
 
-- **A calm new look** — a warm sage-and-gold palette across every screen, gentler typography, and more room to breathe
-- **Digital Twin, front and center** — your evolving on-device model of you now takes the main stage
-- **Refined recording & onboarding** — softer, clearer, and faster to your first entry
-- **Compact audio player** on entries, and replay the welcome anytime from Settings
-- Built on v1.3.5's Dynamic Island recording timer + Lock Screen constellation widget
+- **Voice-first onboarding** — speak your first star during onboarding; your own words, kept private, become your first real entry
+- **Warm ivory-light onboarding redesign** with an optional name step
+- **Widget & Live Activity fixes** — accurate entry counters, no more repeated star-birth banners
+- Built on v1.4.0's warm sage-and-gold redesign with the Digital Twin front and center
 
 [Full changelog](CHANGELOG.md) · [Try the interactive demo](https://getdailyvox.com/demo)
 
@@ -157,11 +156,13 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.2 | Ask Your Twin (chat) | Shipped |
 | v1.3 | Constellation Update | Shipped |
 | v1.3.5 | Dynamic Island + New Icon | Shipped |
-| v1.4.0 | Warm redesign — Digital Twin moved to center | **Shipped** |
-| v1.4.5 | Ambient Signals — on-device photo + music context | Planned |
-| v1.5 | Body Twin (HealthKit + Apple Watch) + Semantic Search | **Up next** |
-| v1.6 | Foundation Models Twin — on-device LLM chat | Planned |
-| v1.7 | Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first) | Planned |
+| v1.4.0 | Warm redesign — Digital Twin moved to center | Shipped |
+| v1.4.1 | Voice-first "Speak your first star" onboarding | **Shipped** |
+| v1.5 | Body Twin — HealthKit + Apple Watch | **Up next** |
+| v1.5.5 | Ambient Signals — on-device photo + music context | Planned |
+| v1.6 | Semantic Memory & Measurable Fidelity | Planned |
+| v1.7 | Foundation Models Twin — on-device LLM chat | Planned |
+| v1.8 | Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first) | Planned |
 | v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device. iPhone-only by conviction — the phone is the Twin's body, and every feature works end-to-end on the phone alone (no Mac or second computer, ever); portability lives in the data (Twin Protocol), not in platform ports — [full roadmap](ROADMAP.md)

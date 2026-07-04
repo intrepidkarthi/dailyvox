@@ -2,6 +2,36 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.4.1] — 2026-07-04
+
+### Added
+- **Voice-first onboarding — "Speak your first star"**: the final onboarding step invites you to record your first entry by voice; your own words become your first real star in the constellation (typing and skipping remain available)
+- Optional **Name step** in onboarding so the Twin can greet you personally
+
+### Changed
+- Onboarding redesigned in the warm ivory-light style; message-step titles no longer truncate
+- Rating prompt: first ask moved from entry 5 to entry 3, plus a second natural moment after your first share
+- App Store listing: anchored keyword field (`mood tracker`, `digital twin`), refreshed copy, and fresh screenshots at current device resolutions
+
+### Fixed
+- Widget entry counters showing stale counts
+- Star Birth Live Activity firing repeatedly after a single entry
+
+### Build
+- `MARKETING_VERSION` 1.4.0 → 1.4.1
+- `CURRENT_PROJECT_VERSION` 17 → 18
+
+## [1.4.0] — 2026-06-19
+
+### Changed
+- **Warm Look**: calm sage-and-gold palette across every screen; the Digital Twin promoted to the center of the app
+- Refined recording screen and onboarding; compact audio player on entries; welcome replayable from Settings
+- Polish and fixes throughout — still free, still 100% on-device
+
+### Build
+- `MARKETING_VERSION` 1.3.5 → 1.4.0
+- `CURRENT_PROJECT_VERSION` 15 → 17 (build 16 was rejected in App Review for leftover HealthKit/Motion Info.plist keys with no corresponding code; both keys removed in build 17)
+
 ## [1.3.5] — 2026-05-27
 
 ### Added
