@@ -258,6 +258,12 @@ struct TodayView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     headerSection
+                    // Body Twin idle-state slot: today's one-line body whisper,
+                    // or the one-time Health invite — never both, never while
+                    // recording, never in the first-run zero-state.
+                    if recordingState == .idle {
+                        BodyTwinIdleCards()
+                    }
                     entryCardSection
                     if recordingState == .idle && latestEntry == nil {
                         promptsSection
@@ -269,6 +275,10 @@ struct TodayView: View {
             }
             Spacer(minLength: 0)
             recordingSection
+        }
+        .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            Task { await BodyWhisperProvider.shared.refreshIfNeeded() }
         }
     }
 
