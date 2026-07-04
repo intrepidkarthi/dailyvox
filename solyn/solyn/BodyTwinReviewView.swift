@@ -188,9 +188,8 @@ struct BodyTwinReviewView: View {
 
     private func keepAll() {
         withAnimation(.spring(response: 0.4)) {
-            for item in queue.items {
-                BodyTwinManager.shared.keepSnapshot(id: item.id)
-            }
+            // Batch path: three file writes total, not three per snapshot.
+            BodyTwinManager.shared.keepAll()
         }
         HapticManager.shared.entrySaved()
     }

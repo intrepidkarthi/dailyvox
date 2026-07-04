@@ -171,6 +171,29 @@ final class BodyTwinManager: ObservableObject {
         KeptSnapshotStore.shared.append(id: id, snapshot: snapshot)
     }
 
+    /// Keep all — batch path for the review sheet's one-tap approval.
+    /// Looping `keepSnapshot(id:)` cost three synchronous file rewrites per
+    /// snapshot (pending.json, state.json, kept.json) on the main actor —
+    /// O(N²) encoding for one gesture. This drains the queue once, folds
+    /// through the engine's batch API (one publish, one state save), and
+    /// appends to the kept store in a single write: three writes total.
+    func keepAll() {
+        let drained = PendingSnapshotQueue.shared.drainAll()
+        guard !drained.isEmpty else { return }
+
+        // Fold-once invariant, same as keepSnapshot: anything already kept
+        // is dropped without folding.
+        let alreadyKept = KeptSnapshotStore.shared.ids
+        let fresh = drained.filter { !alreadyKept.contains($0.id) }
+        guard !fresh.isEmpty else { return }
+
+        DigitalTwinEngine.shared.foldHealthSnapshots(fresh.map(\.snapshot))
+        let keptAt = Date()
+        KeptSnapshotStore.shared.appendAll(fresh.map {
+            KeptSnapshot(id: $0.id, snapshot: $0.snapshot, keptAt: keptAt)
+        })
+    }
+
     /// Let go — deleted before the Twin ever saw it.
     func discardSnapshot(id: UUID) {
         PendingSnapshotQueue.shared.remove(id: id)

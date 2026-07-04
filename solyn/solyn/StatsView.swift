@@ -25,6 +25,16 @@ struct StatsView: View {
     /// correlation math must never run inside body (Twin-perf lesson).
     @State private var bodyInsights: [BodyInsight] = []
 
+    /// Cache key for `bodyInsights`: recompute only when the calendar day or
+    /// the kept-snapshot count changes, so tab-switching to Insights never
+    /// re-walks a multi-year history for the same answer.
+    @State private var bodyInsightsKey: BodyInsightsCacheKey?
+
+    private struct BodyInsightsCacheKey: Equatable {
+        let day: Date
+        let keptCount: Int
+    }
+
     private var isIPad: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
@@ -335,29 +345,48 @@ struct StatsView: View {
     }
 
     /// Feeds kept snapshots + the per-day mood series into the engine.
+    ///
+    /// Cached and computed off-main: for a Body Twin user with years of
+    /// history this walks every entry (Calendar.startOfDay dominates) plus
+    /// every kept snapshot — tens of ms that must not ride the tab-switch
+    /// frame on every Insights visit. Only the raw (date, mood) pairs are
+    /// gathered on the main actor (managed objects are not thread-safe);
+    /// the day-bucketing and Pearson math run at utility QoS.
     private func refreshBodyInsights() {
-        let snapshots = KeptSnapshotStore.shared.loadAll().map(\.snapshot)
-        guard !snapshots.isEmpty else {
+        let kept = KeptSnapshotStore.shared.loadAll()
+        guard !kept.isEmpty else {
             bodyInsights = []
+            bodyInsightsKey = nil
             return
         }
-        bodyInsights = BodyCorrelations.compute(snapshots: snapshots, moodByDay: moodValueByDay)
-    }
 
-    /// Mood valence (1–5) per calendar day, real moods only — `.none` is a
-    /// placeholder, not a reading, and would flatten every correlation.
-    private var moodValueByDay: [Date: Double] {
-        let calendar = Calendar.current
-        var byDay: [Date: Double] = [:]
-        for entry in entries {
+        let key = BodyInsightsCacheKey(day: Calendar.current.startOfDay(for: Date()),
+                                       keptCount: kept.count)
+        guard key != bodyInsightsKey else { return }
+        bodyInsightsKey = key
+
+        // Main-thread extraction only — no Core Data access off-main.
+        let moodPairs: [(date: Date, mood: String)] = entries.compactMap { entry in
             guard let date = entry.date,
-                  let moodString = entry.value(forKey: "mood") as? String,
-                  let mood = Mood(rawValue: moodString),
-                  mood != .none else { continue }
-            let day = calendar.startOfDay(for: date)
-            if byDay[day] == nil { byDay[day] = Double(mood.moodValue) }
+                  let moodString = entry.value(forKey: "mood") as? String else { return nil }
+            return (date, moodString)
         }
-        return byDay
+        let snapshots = kept.map(\.snapshot)
+
+        Task.detached(priority: .utility) {
+            // Mood valence (1–5) per calendar day, real moods only — `.none`
+            // is a placeholder, not a reading, and would flatten every
+            // correlation. First entry in fetch order (newest) wins a day.
+            let calendar = Calendar.current
+            var moodByDay: [Date: Double] = [:]
+            for pair in moodPairs {
+                guard let mood = Mood(rawValue: pair.mood), mood != .none else { continue }
+                let day = calendar.startOfDay(for: pair.date)
+                if moodByDay[day] == nil { moodByDay[day] = Double(mood.moodValue) }
+            }
+            let result = BodyCorrelations.compute(snapshots: snapshots, moodByDay: moodByDay)
+            await MainActor.run { bodyInsights = result }
+        }
     }
 
     private func bodyInsightIcon(_ kind: BodyInsight.Kind) -> String {
