@@ -157,7 +157,15 @@ struct BodyTwinIdleCards: View {
     @ObservedObject private var healthKit = HealthKitService.shared
     @ObservedObject private var manager = BodyTwinManager.shared
     @ObservedObject private var whisperProvider = BodyWhisperProvider.shared
+    @ObservedObject private var theme = ThemeManager.shared
     @State private var showInviteSheet = false
+
+    // Fixed warm inks belong to the ivory theme only; every other theme sits
+    // on system backgrounds, so text must use system adaptive colors or it
+    // vanishes in Dark (ThemeManager's own `ivory ? warm : system` pattern).
+    private var inkPrimary: Color   { theme.selectedTheme == .ivory ? DS.Palette.ink : .primary }
+    private var inkSecondary: Color { theme.selectedTheme == .ivory ? DS.Palette.inkSoft : .primary }
+    private var inkMuted: Color     { theme.selectedTheme == .ivory ? DS.Palette.inkMute : .secondary }
 
     var body: some View {
         // Absent entirely on devices without HealthKit, matching Settings.
@@ -179,7 +187,7 @@ struct BodyTwinIdleCards: View {
                 .foregroundColor(whisper.tint)
             Text(whisper.text)
                 .font(.dsCallout)
-                .foregroundColor(DS.Palette.inkSoft)
+                .foregroundColor(inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
@@ -212,23 +220,23 @@ struct BodyTwinIdleCards: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Your Twin can learn what your body felt")
                         .font(.dsCallout)
-                        .foregroundColor(DS.Palette.ink)
+                        .foregroundColor(inkPrimary)
                         .fixedSize(horizontal: false, vertical: true)
                     Text("Sleep, steps, quiet minutes — you approve every signal first.")
                         .font(.dsCaption)
-                        .foregroundColor(DS.Palette.inkMute)
+                        .foregroundColor(inkMuted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(DS.Palette.inkMute.opacity(0.6))
+                    .foregroundColor(inkMuted.opacity(0.6))
             }
             .padding(DS.Space.md)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .fill(ThemeManager.shared.warmCardBackground)
+                    .fill(theme.warmCardBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
