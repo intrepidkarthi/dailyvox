@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import Combine
 
 // MARK: - Star Data Model
 
@@ -38,7 +39,22 @@ struct ConstellationView: View {
 
     @State private var animationTime: Double = Date().timeIntervalSinceReferenceDate
     @State private var appeared = false
-    private let timer = Timer.publish(every: 1.0 / 30.0, on: .main, in: .common).autoconnect()
+    @State private var stars: [ConstellationStar] = []
+    @State private var starConnections: [ConstellationConnection] = []
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// UI-test / screenshot runs need the main run loop to go idle — a live
+    /// 30 Hz timer keeps XCUITest's quiescence wait spinning (~16 min per event).
+    /// Matches the launch arguments ScreenshotTests passes.
+    private static let animationsDisabledForTesting =
+        ProcessInfo.processInfo.arguments.contains("-UITesting") ||
+        ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
+
+    /// 30 Hz animation clock. Under UI testing the timer is never scheduled at
+    /// all (Empty publisher), so no per-tick commits happen and the app idles.
+    private let timer: AnyPublisher<Date, Never> = ConstellationView.animationsDisabledForTesting
+        ? Empty().eraseToAnyPublisher()
+        : Timer.publish(every: 1.0 / 30.0, on: .main, in: .common).autoconnect().eraseToAnyPublisher()
 
     // Palette
     private let warmGold   = Color(red: 0.831, green: 0.647, blue: 0.278)  // #D4A547
@@ -54,8 +70,6 @@ struct ConstellationView: View {
     var body: some View {
         GeometryReader { geo in
             let size = geo.size
-            let stars = generateStars(in: size)
-            let conns = buildConnections(stars: stars)
 
             Canvas { context, canvasSize in
                 let t = animationTime
@@ -67,7 +81,7 @@ struct ConstellationView: View {
                 drawNebulae(context: context, size: canvasSize, stars: stars, time: t)
 
                 // Layer 3: Connection lines
-                drawConnections(context: context, size: canvasSize, stars: stars, connections: conns, time: t)
+                drawConnections(context: context, size: canvasSize, stars: stars, connections: starConnections, time: t)
 
                 // Layer 4: Stars
                 drawStars(context: context, size: canvasSize, stars: stars, time: t)
@@ -77,7 +91,7 @@ struct ConstellationView: View {
                     drawCoreStar(context: context, size: canvasSize, time: t)
                 }
             }
-            .onReceive(timer) { _ in
+            .onReceive(reduceMotion ? Empty().eraseToAnyPublisher() : timer) { _ in
                 animationTime = Date().timeIntervalSinceReferenceDate
             }
             .overlay {
@@ -92,15 +106,29 @@ struct ConstellationView: View {
         }
         .aspectRatio(1.0, contentMode: .fit)
         .onAppear {
+            rebuildConstellation()
             withAnimation(.easeOut(duration: 2.0)) {
                 appeared = true
             }
         }
+        .onChange(of: starCount) { _, _ in rebuildConstellation() }
+        .onChange(of: starMoods) { _, _ in rebuildConstellation() }
+        .onChange(of: connections.count) { _, _ in rebuildConstellation() }
     }
 
     // MARK: - Star Generation (deterministic from count)
 
-    private func generateStars(in size: CGSize) -> [ConstellationStar] {
+    /// Stars and connections are deterministic functions of (starCount,
+    /// starMoods, connections) — positions are normalized 0-1, so canvas size
+    /// is not an input. Rebuild only when those inputs change instead of on
+    /// every body evaluation (which happens 30×/sec while animating).
+    private func rebuildConstellation() {
+        let newStars = generateStars()
+        stars = newStars
+        starConnections = buildConnections(stars: newStars)
+    }
+
+    private func generateStars() -> [ConstellationStar] {
         guard starCount > 0 else { return [] }
 
         var stars: [ConstellationStar] = []
