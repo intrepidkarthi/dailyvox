@@ -539,7 +539,10 @@ struct SettingsView: View {
             } header: {
                 Text("Health")
             } footer: {
-                Text("Health signals stay on this iPhone. They are never uploaded, never synced, and your Twin only learns the ones you approve.")
+                // Honest promise: DECISIONS #1's single sanctioned exit path
+                // (user-initiated encrypted export, user-held key) is named,
+                // so "stays on this iPhone" never over-claims.
+                Text("Health signals stay on this iPhone — never synced, and your Twin only learns the ones you approve. The one way they ever leave is inside an encrypted backup you export yourself, locked with your password.")
             }
             .confirmationDialog("Wipe all health snapshots and everything your Twin learned from them? This cannot be undone.",
                                 isPresented: $showWipeHealthConfirm, titleVisibility: .visible) {
@@ -587,6 +590,11 @@ struct SettingsView: View {
             }
             bodyTwinManager.recordAuthorizationRequested()
             bodyTwinManager.isEnabled = true
+            // Prime the Motion & Fitness prompt HERE, inside the moment the
+            // user chose to connect — the first CMMotionActivity query is
+            // what triggers it, and without this pass it would otherwise pop
+            // un-contextualized in the middle of their next entry save.
+            await ActivityContextDetector.shared.update()
         }
     }
 

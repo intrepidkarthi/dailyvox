@@ -116,6 +116,9 @@ struct BodyTwinCard: View {
             }
             manager.recordAuthorizationRequested()
             manager.isEnabled = true
+            // Prime the Motion & Fitness prompt inside this connect moment,
+            // not mid entry-save (first CMMotionActivity query triggers it).
+            await ActivityContextDetector.shared.update()
         }
     }
 }

@@ -81,14 +81,15 @@ final class BodyWhisperProvider: ObservableObject {
             return
         }
 
+        let manager = BodyTwinManager.shared
         var snapshot = await HealthKitService.shared.composeSnapshot(
             at: now,
             activityContext: context,
             activityConfidence: detector.currentConfidence,
-            minutesSinceLastWorkout: detector.minutesSinceLastWorkout
+            minutesSinceLastWorkout: detector.minutesSinceLastWorkout,
+            includedSignals: manager.enabledSignals   // opt-outs filter the reads themselves
         )
-        // Honor the same per-signal opt-outs the review queue honors.
-        let manager = BodyTwinManager.shared
+        // Belt-and-braces behind the includedSignals mask, mirroring capture.
         if !manager.sleepEnabled     { snapshot.sleepHours = nil }
         if !manager.hrvEnabled       { snapshot.morningHRVMs = nil }
         if !manager.restingHREnabled { snapshot.restingHRBpm = nil }
@@ -353,7 +354,7 @@ struct BodyTwinInviteSheet: View {
             promiseRow(icon: "sparkles", color: DS.Palette.gold,
                        text: "Review before your Twin learns. Every signal waits for you — Keep what feels true, let go of the rest.")
             promiseRow(icon: "lock.shield.fill", color: DS.Palette.sage,
-                       text: "Private by design. Health signals stay on this iPhone — never uploaded, never synced.")
+                       text: "Private by design. Health and motion signals stay on this iPhone — never uploaded, never synced. iOS will also ask about motion, so moving days are read in context.")
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

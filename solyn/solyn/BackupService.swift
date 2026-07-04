@@ -590,12 +590,12 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 
     var description: String {
         switch self {
-        case .json: return "Full backup with all data. Can be imported back."
+        case .json: return "Full backup of your entries. Can be imported back."
         case .text: return "Simple readable format for archiving."
         case .markdown: return "Formatted text for notes apps."
         case .csv: return "Spreadsheet format for analysis."
         case .pdf: return "Beautiful formatted document."
-        case .encryptedBackup: return "Password-protected backup. Maximum privacy."
+        case .encryptedBackup: return "Password-protected backup, including your Body Twin's health data — the only export that carries it."
         }
     }
 }

@@ -13,7 +13,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>DailyVox needs microphone access to record your voice diary entries.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>DailyVox uses motion activity to tell when you were walking or working out, so a racing heart from exercise is never mistaken for emotion. Activity context stays on this iPhone.</string>
+	<string>DailyVox uses motion activity to tell whether you were moving when a journal entry was made, so body signals are read in the right context. Activity context stays on this iPhone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
