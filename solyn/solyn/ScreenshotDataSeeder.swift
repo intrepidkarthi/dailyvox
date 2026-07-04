@@ -299,8 +299,10 @@ struct ScreenshotDataSeeder {
         KeptSnapshotStore.shared.restore(kept)
 
         // Review queue: two snapshots waiting, exactly as capture would leave
-        // them — a short-sleep evening at rest, and a post-workout morning
-        // where HR fields are honestly absent.
+        // them — a short-sleep evening at rest, and a mid-walk morning where
+        // the rest-dependent fields are honestly absent. (No .postWorkout
+        // here: v1.5 requests no Workouts read access, so screenshots must
+        // not depict a state the shipping detector cannot produce.)
         let yesterday = calendar.date(byAdding: .day, value: -1, to: now)!
         let eveningAt = calendar.date(bySettingHour: 21, minute: 37, second: 0, of: yesterday)!
         let evening = HealthSnapshot(
@@ -315,9 +317,8 @@ struct ScreenshotDataSeeder {
         let morningAt = calendar.date(bySettingHour: 8, minute: 12, second: 0, of: now)!
         let morning = HealthSnapshot(
             capturedAt: morningAt,
-            activityContext: .postWorkout,
-            stepsToday: 9800,
-            minutesSinceLastWorkout: 6,
+            activityContext: .active,
+            stepsToday: 6800,
             activityConfidence: 0.85
         )
         PendingSnapshotQueue.shared.wipe()
