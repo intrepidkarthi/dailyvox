@@ -35,7 +35,9 @@ struct MoodTests {
     @Test func moodInitFromRawValue() {
         #expect(Mood(rawValue: "happy") == .happy)
         #expect(Mood(rawValue: "sad") == .sad)
-        #expect(Mood(rawValue: "") == .none)
+        // Explicit `Mood.none`: a bare `.none` against a `Mood?` resolves to
+        // Optional.none and can never match `.some(.none)`.
+        #expect(Mood(rawValue: "") == Mood.none)
         #expect(Mood(rawValue: "invalid") == nil)
     }
 
