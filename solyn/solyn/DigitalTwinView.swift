@@ -14,6 +14,13 @@ struct DigitalTwinView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Matches the launch arguments ScreenshotTests passes. Repeat-forever
+    /// animations keep the run loop busy, so XCUITest never sees the app idle.
+    private static let animationsDisabledForTesting =
+        ProcessInfo.processInfo.arguments.contains("-UITesting") ||
+        ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
     @State private var selectedSection: TwinSection = .overview
     @State private var showingDetail = false
     @State private var animateOrb = false
@@ -83,11 +90,6 @@ struct DigitalTwinView: View {
         }
         .navigationTitle("Your Digital Twin")
         .background { WarmBackground() }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
-                animateOrb = true
-            }
-        }
     }
 
     // MARK: - First-Time Twin Introduction
@@ -221,6 +223,15 @@ struct DigitalTwinView: View {
                     .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
             }
             .padding(.bottom, 20)
+        }
+        .onAppear {
+            // The pulsing core star is decorative. A repeat-forever animation
+            // never lets the run loop idle, so skip it under UI testing and
+            // respect Reduce Motion; the star simply stays at its dim state.
+            guard !Self.animationsDisabledForTesting && !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                animateOrb = true
+            }
         }
     }
 
