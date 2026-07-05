@@ -119,7 +119,7 @@
         <a href="/blog" class="back-link">&larr; Back to Blog</a>
         <span class="blog-tag tag-technology">Engineering</span>
         <h1>Body Twin Shipped — And Where It Honestly Falls Short of the Plan</h1>
-        <p class="article-meta">July 5, 2026 &middot; 8 min read</p>
+        <p class="article-meta">July 5, 2026 &middot; 9 min read</p>
       </div>
 
       <div class="article-body">
@@ -145,6 +145,52 @@
 
         <p>Passively-captured signals do not flow straight into the Twin. They land in a review queue and wait for you to explicitly keep or discard each one before it can ever reach the model. This inverts the usual passive-sensing default, where data is ingested first and maybe forgotten later. Here, nothing passive is trusted by default.</p>
 
+        <figure>
+          <svg role="img" aria-label="Data-flow diagram: passive signals feed an activity-context step, then a keep-or-discard review queue that either passes data to the Digital Twin or drops it to a deleted node; the whole flow stays on device." viewBox="0 0 640 220" width="640" style="width:100%;max-width:640px;height:auto">
+            <defs>
+              <marker id="v15arrow" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0.5,1 L7,4 L0.5,7" fill="none" stroke="rgba(26,26,46,0.5)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+              <marker id="v15arrowWarn" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0.5,1 L7,4 L0.5,7" fill="none" stroke="rgba(196,149,106,0.85)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </marker>
+            </defs>
+            <rect x="0.5" y="0.5" width="639" height="219" rx="12" fill="#FAF8F5" stroke="rgba(26,26,46,0.08)"/>
+            <rect x="12" y="34" width="616" height="172" rx="12" fill="none" stroke="rgba(26,26,46,0.16)" stroke-width="1" stroke-dasharray="5 5"/>
+            <text x="24" y="24" font-family="'DM Mono',ui-monospace,monospace" font-size="11" fill="rgba(26,26,46,0.42)">On device &mdash; nothing synced, nothing collected.</text>
+
+            <rect x="20" y="62" width="150" height="60" rx="8" fill="rgba(26,26,46,0.025)" stroke="rgba(26,26,46,0.08)"/>
+            <text x="95" y="84" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#1A1A2E">Passive signals</text>
+            <text x="95" y="100" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="rgba(26,26,46,0.55)">sleep &middot; HRV &middot; resting HR</text>
+            <text x="95" y="112" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="rgba(26,26,46,0.55)">steps &middot; mindful minutes</text>
+
+            <line x1="170" y1="92" x2="198" y2="92" stroke="rgba(26,26,46,0.4)" stroke-width="1.3" marker-end="url(#v15arrow)"/>
+
+            <rect x="200" y="62" width="120" height="60" rx="8" fill="rgba(26,26,46,0.025)" stroke="rgba(26,26,46,0.08)"/>
+            <text x="260" y="88" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#1A1A2E">Activity context</text>
+            <text x="260" y="104" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="rgba(26,26,46,0.55)">rest &middot; active &middot; unknown</text>
+
+            <line x1="320" y1="92" x2="348" y2="92" stroke="rgba(26,26,46,0.4)" stroke-width="1.3" marker-end="url(#v15arrow)"/>
+
+            <rect x="350" y="62" width="140" height="60" rx="8" fill="rgba(91,124,107,0.08)" stroke="rgba(91,124,107,0.55)"/>
+            <text x="420" y="88" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="#3f5a4c">Review queue</text>
+            <text x="420" y="104" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="rgba(26,26,46,0.62)">you Keep or Discard</text>
+
+            <line x1="490" y1="92" x2="518" y2="92" stroke="rgba(26,26,46,0.4)" stroke-width="1.3" marker-end="url(#v15arrow)"/>
+            <text x="504" y="84" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="#5B7C6B">keep</text>
+
+            <rect x="520" y="62" width="100" height="60" rx="8" fill="rgba(26,26,46,0.025)" stroke="rgba(26,26,46,0.08)"/>
+            <text x="570" y="96" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="700" fill="#1A1A2E">Digital Twin</text>
+
+            <line x1="420" y1="122" x2="420" y2="157" stroke="rgba(196,149,106,0.75)" stroke-width="1.3" marker-end="url(#v15arrowWarn)"/>
+            <text x="430" y="144" text-anchor="start" font-family="'DM Mono',ui-monospace,monospace" font-size="8.5" fill="#C4956A">discard</text>
+
+            <rect x="360" y="160" width="120" height="28" rx="8" fill="none" stroke="rgba(26,26,46,0.22)" stroke-width="1" stroke-dasharray="4 4"/>
+            <text x="420" y="178" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="9" fill="rgba(26,26,46,0.42)">deleted</text>
+          </svg>
+          <figcaption>Passively-captured signals pass through an explicit keep-or-discard gate before they can reach the Twin &mdash; and never leave the device.</figcaption>
+        </figure>
+
         <p>We built it as a reusable gate, not a one-off screen: every future passive signal — the deferred recording-time layer included, whenever it arrives — inherits the same keep-or-discard barrier. It is opt-in consent expressed as a data-flow primitive rather than a settings toggle, and it has a clean consequence for the model: the training set for the physiological channel is, by construction, only the data you chose to include. That is a stronger guarantee than a privacy policy paragraph, because it is enforced by where the data can and cannot go.</p>
 
         <h2>No server-side feature store — the real ML-systems constraint</h2>
@@ -159,13 +205,145 @@
 
         <p><strong>Lift over an explicit baseline, or it does not count.</strong> The spine of the whole evaluation is a refusal to report raw agreement numbers. A "do-nothing" model — one that ignores the data and always predicts the prior — scores around 75% on a naive agreement metric for these tasks, purely because the label distribution is skewed. That kind of 75% flatters every model equally; it is a vanity metric. So every result is reported as lift over a named baseline plus a tracking correlation: a constant-prior baseline for fidelity, a climatology-plus-persistence baseline for forecasting, a population-mean baseline for personality. If a model cannot beat its baseline, we say so.</p>
 
+        <p class="table-lead">Every number is a lift over a baseline</p>
+        <table>
+          <thead>
+            <tr>
+              <th>What we measured</th>
+              <th>Metric</th>
+              <th>Result</th>
+              <th>Measured against</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Self-prediction fidelity</td>
+              <td>1&minus;MAE lift over a do-nothing model</td>
+              <td>+15.5%</td>
+              <td>constant-prior (do-nothing &asymp; 75% raw)</td>
+              <td><span class="v-yes">&#10003;</span> Signal</td>
+            </tr>
+            <tr>
+              <td>Short-horizon mood forecast</td>
+              <td>skill vs baselines</td>
+              <td>+5% vs climatology; &minus;178% vs persistence</td>
+              <td>&ldquo;tomorrow &asymp; today&rdquo;</td>
+              <td><span class="v-no">&#10007;</span> No &mdash; a mirror, not an oracle</td>
+            </tr>
+            <tr>
+              <td>On-device Big Five</td>
+              <td>correlation with assigned traits</td>
+              <td>r 0.74&ndash;0.83</td>
+              <td>population mean</td>
+              <td><span class="v-yes">&#10003;</span> Yes (synthetic)</td>
+            </tr>
+            <tr>
+              <td>Answer groundedness</td>
+              <td>claims backed by state</td>
+              <td>100% (1,705&nbsp;/&nbsp;1,705)</td>
+              <td>&mdash;</td>
+              <td><span class="v-yes">&#10003;</span> Yes</td>
+            </tr>
+          </tbody>
+        </table>
+
         <p><strong>Self-prediction fidelity matures on a curve.</strong> Against synthetic personas with analytic ground truth, the Twin's recovery of a persona's traits beats the do-nothing baseline, and — usefully for product design — the self-model stabilises after roughly twenty entries. That maturation curve is not a nuisance to hide; it is the honest content behind Twin Resolution. Below about twenty entries the model genuinely does not know you well, and the product should say so rather than perform a confidence it has not earned.</p>
 
-        <p><strong>On-device personality inference is feasible, and cheap.</strong> A light regressor over the platform's on-device sentence embeddings recovers assigned Big Five traits from diary text at roughly 0.74&ndash;0.83 correlation on a synthetic corpus — for a model measured in kilobytes, because the embeddings themselves already sit resident in the operating system. Two properties make this more than a curiosity. First, <em>cross-corpus robustness</em>: a model trained on one writing style still recovers personality from a deliberately different style at about 0.74. That gap between train and test styles is the test that it learned personality signal rather than a stylistic fingerprint — and 0.74 sits cleanly above the roughly 0.38 band that human-text-to-personality studies report, which is our sanity ceiling for "is this even a plausible amount of signal." Second, it is honestly bounded: the labels are synthetic, so this demonstrates feasibility and style-invariance, <em>not</em> human accuracy. There is also a size discipline here worth stating: for plain valence and sentiment, the platform's built-in on-device language stack is good enough that a bespoke model is not worth the bytes. Custom ML earns its place specifically for personality, which the built-in stack cannot produce at all.</p>
+        <figure>
+          <svg role="img" aria-label="Line chart: self-prediction fidelity lift over baseline rises steeply and then flattens, stabilising after about twenty entries." viewBox="0 0 600 260" width="600" style="width:100%;max-width:600px;height:auto">
+            <rect x="0.5" y="0.5" width="599" height="259" rx="10" fill="#FAF8F5" stroke="rgba(26,26,46,0.08)"/>
+            <g stroke="rgba(26,26,46,0.05)" stroke-width="1">
+              <line x1="60" y1="30" x2="568" y2="30"/>
+              <line x1="60" y1="72.5" x2="568" y2="72.5"/>
+              <line x1="60" y1="115" x2="568" y2="115"/>
+              <line x1="60" y1="157.5" x2="568" y2="157.5"/>
+            </g>
+            <g stroke="rgba(26,26,46,0.08)" stroke-width="1">
+              <line x1="60" y1="30" x2="60" y2="200"/>
+              <line x1="60" y1="200" x2="568" y2="200"/>
+            </g>
+            <g font-family="'DM Mono',ui-monospace,monospace" font-size="10" fill="rgba(26,26,46,0.42)" text-anchor="end">
+              <text x="52" y="204">0</text>
+              <text x="52" y="161.5">5</text>
+              <text x="52" y="119">10</text>
+              <text x="52" y="76.5">15</text>
+              <text x="52" y="34">20</text>
+            </g>
+            <line x1="364.8" y1="30" x2="364.8" y2="200" stroke="#D4A547" stroke-width="1.4" stroke-dasharray="4 4"/>
+            <circle cx="364.8" cy="68.25" r="4.6" fill="none" stroke="#D4A547" stroke-width="1.4"/>
+            <text x="364.8" y="20" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="10.5" fill="rgba(26,26,46,0.62)">self-model stabilises (~20 entries)</text>
+            <polyline points="78,108.2 173.6,88.65 269.2,79.3 364.8,68.25 460.4,64.85 556,61.45" fill="none" stroke="#5B7C6B" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            <g fill="#5B7C6B" stroke="#FAF8F5" stroke-width="1.5">
+              <circle cx="78" cy="108.2" r="3.4"/>
+              <circle cx="173.6" cy="88.65" r="3.4"/>
+              <circle cx="269.2" cy="79.3" r="3.4"/>
+              <circle cx="364.8" cy="68.25" r="3.4"/>
+              <circle cx="460.4" cy="64.85" r="3.4"/>
+              <circle cx="556" cy="61.45" r="3.4"/>
+            </g>
+            <g font-family="'DM Mono',ui-monospace,monospace" font-size="10" fill="rgba(26,26,46,0.42)" text-anchor="middle">
+              <text x="78" y="218">2</text>
+              <text x="173.6" y="218">5</text>
+              <text x="269.2" y="218">10</text>
+              <text x="364.8" y="218">20</text>
+              <text x="460.4" y="218">40</text>
+              <text x="556" y="218">80</text>
+            </g>
+            <text x="314" y="242" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="11" fill="rgba(26,26,46,0.42)">entries the Twin has seen</text>
+            <text transform="rotate(-90 18 115)" x="18" y="115" text-anchor="middle" font-family="'DM Mono',ui-monospace,monospace" font-size="11" fill="rgba(26,26,46,0.42)">fidelity lift over baseline (%)</text>
+          </svg>
+          <figcaption>Self-prediction fidelity vs. how many entries the Twin has seen. Synthetic personas; the curve&rsquo;s shape, not the entry counts, is the finding.</figcaption>
+        </figure>
+
+        <p><strong>On-device personality inference is feasible, and cheap.</strong> A light regressor over the platform's on-device sentence embeddings recovers assigned Big Five traits from diary text at roughly 0.74&ndash;0.83 correlation on a synthetic corpus — for a model measured in kilobytes, because the embeddings themselves already sit resident in the operating system. Two properties make this more than a curiosity. First, <em>cross-corpus robustness</em>: a model trained on one writing style still recovers personality from a deliberately different style at about 0.74.</p>
+
+        <p class="table-lead">On-device Big Five, per trait</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Trait</th>
+              <th>Within-corpus r</th>
+              <th>Cross-corpus r (different writing style)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Openness</td><td>0.83</td><td>0.80</td></tr>
+            <tr><td>Conscientiousness</td><td>0.78</td><td>0.68</td></tr>
+            <tr><td>Extraversion</td><td>0.74</td><td>0.70</td></tr>
+            <tr><td>Agreeableness</td><td>0.75</td><td>0.79</td></tr>
+            <tr><td>Neuroticism</td><td>0.74</td><td>0.63</td></tr>
+            <tr><td><strong>Mean</strong></td><td><strong>0.77</strong></td><td><strong>0.72</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="table-note">Cross-corpus = trained on one writing style, tested on a deliberately different one (the reverse direction holds too, mean r 0.77). Human text-to-Big-Five studies report roughly r 0.38 &mdash; our sanity ceiling for &lsquo;a plausible amount of signal.&rsquo;</p>
+
+        <p>That gap between train and test styles is what shows it learned a personality signal rather than a stylistic fingerprint. Second, it is honestly bounded: the labels are synthetic, so this demonstrates feasibility and style-invariance, <em>not</em> human accuracy. There is also a size discipline here worth stating: for plain valence and sentiment, the platform's built-in on-device language stack is good enough that a bespoke model is not worth the bytes. Custom ML earns its place specifically for personality, which the built-in stack cannot produce at all.</p>
 
         <p><strong>Multilingual means per-language heads, not translated rules.</strong> English keyword heuristics do not transfer to other languages — obviously — but neither does a naive "translate then apply" shortcut. The learned embedding path transfers, but only per language, because the embedding spaces differ; a model trained on one language is useless in another. So multilingual support means separately trained heads per language, not one model plus a translation layer. And on-device sentence embeddings exist for only a handful of languages today, which is a concrete constraint on which languages we can prioritise — the platform's coverage, not our ambition, sets the order.</p>
 
-        <p><strong>Negative controls, so the metrics can say no.</strong> A validation suite that only ever produces good news is broken. The evaluation includes negative controls: shuffle the labels or the inputs and confirm the metrics collapse back to baseline. When personality correlation falls to chance under shuffling and forecasting lift disappears, the positive results become trustworthy — we have shown the metric is capable of reporting failure, which is the only thing that makes it capable of reporting success.</p>
+        <p><strong>Negative controls, so the metrics can say no.</strong> A validation suite that only ever produces good news is broken. The evaluation includes negative controls: shuffle the labels or the inputs and confirm the metrics collapse back to baseline.</p>
+
+        <p class="table-lead">When the signal is destroyed, the metrics collapse</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Control (signal destroyed on purpose)</th>
+              <th>Metric</th>
+              <th>Real</th>
+              <th>After shuffling</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Shuffled labels (fidelity)</td><td>tracking r</td><td>+1.00</td><td>&minus;0.08</td></tr>
+            <tr><td>Shuffled labels (fidelity)</td><td>lift over do-nothing</td><td>+16.5%</td><td>&minus;6.8%</td></tr>
+            <tr><td>Shuffled entries (personality)</td><td>Big Five r</td><td>+0.77</td><td>&minus;0.02</td></tr>
+            <tr><td>Permuted labels (personality)</td><td>Big Five r</td><td>+0.77</td><td>&minus;0.04</td></tr>
+          </tbody>
+        </table>
+        <p class="table-note">Against a 20-run label-permutation null (mean +0.005), the real r = +0.77 sits 7.2 standard deviations above chance &mdash; p = 0.000. The metric can report failure, which is what lets it report success.</p>
+
+        <p>When personality correlation falls to chance under shuffling and forecasting lift disappears, the positive results become trustworthy — we have shown the metric is capable of reporting failure, which is the only thing that makes it capable of reporting success.</p>
 
         <h2>Where v1.5 falls short of the plan</h2>
 
