@@ -67,8 +67,11 @@ struct BodyTwinCard: View {
                     }
                 }
                 .padding(16)
-                .background(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(Color(.secondarySystemBackground)))
+                // Grouped-secondary matches every neighboring Twin-tab card
+                // (plain-secondary rendered cool gray on the warm ivory canvas
+                // in light, and a darker off-shade in Dark).
+                .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color(.secondarySystemGroupedBackground)))
             }
             .buttonStyle(.plain)
             .disabled(isRequestingAccess)

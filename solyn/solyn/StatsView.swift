@@ -132,7 +132,7 @@ struct StatsView: View {
             HStack {
                 Image(systemName: "flame.fill")
                     .font(.title2)
-                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                    .foregroundColor(DS.Palette.terracotta)
                 Text("Writing Streak")
                     .font(.system(.headline, design: .rounded))
                 Spacer()
@@ -141,7 +141,7 @@ struct StatsView: View {
             HStack(alignment: .bottom, spacing: 4) {
                 Text("\(currentStreak)")
                     .font(.system(size: 48, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                    .foregroundColor(DS.Palette.terracotta)
                 Text(currentStreak == 1 ? "day" : "days")
                     .font(.title3)
                     .foregroundColor(.secondary)
@@ -308,7 +308,7 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "figure.mind.and.body")
-                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                    .foregroundColor(DS.Palette.terracotta)
                 Text("Body & Mood")
                     .font(.system(.headline, design: .rounded))
             }
@@ -391,17 +391,19 @@ struct StatsView: View {
 
     private func bodyInsightIcon(_ kind: BodyInsight.Kind) -> String {
         switch kind {
-        case .sleepAndMood: return "bed.double.fill"
+        case .sleepAndMood: return "moon.zzz.fill"
         case .stepsAndMood: return "figure.walk"
         case .hrvAndMood: return "waveform.path.ecg"
         }
     }
 
+    /// Same signal→color mapping as the review sheet, invite sheet, and
+    /// Settings → Health: sleep is sage, steps gold, HRV terracotta.
     private func bodyInsightColor(_ kind: BodyInsight.Kind) -> Color {
         switch kind {
-        case .sleepAndMood: return colorFromName("indigo")
-        case .stepsAndMood: return colorFromName("green")
-        case .hrvAndMood: return colorFromName("pink")
+        case .sleepAndMood: return DS.Palette.sage
+        case .stepsAndMood: return DS.Palette.gold
+        case .hrvAndMood: return DS.Palette.terracotta
         }
     }
 
@@ -449,10 +451,10 @@ struct StatsView: View {
                 .font(.system(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
-                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: Color(red: 0.357, green: 0.486, blue: 0.420))
-                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: Color(red: 0.420, green: 0.620, blue: 0.482))
-                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: Color(red: 0.831, green: 0.647, blue: 0.278))
-                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: Color(red: 0.769, green: 0.584, blue: 0.416))
+                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: DS.Palette.sage)
+                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: DS.Palette.forest)
+                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: DS.Palette.gold)
+                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: DS.Palette.terracotta)
             }
         }
         .dsCard()
@@ -468,7 +470,7 @@ struct StatsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "sparkles")
-                            .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                            .foregroundColor(DS.Palette.gold)
                         Text("AI Insights")
                             .font(.system(.headline, design: .rounded))
                     }
@@ -510,7 +512,7 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "calendar")
-                    .foregroundColor(Color(red: 0.357, green: 0.486, blue: 0.420))
+                    .foregroundColor(DS.Palette.sage)
                 Text("Weekly reflection")
                     .font(.system(.headline, design: .rounded))
             }
@@ -544,7 +546,7 @@ struct StatsView: View {
 
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 8)
+                    .stroke(DS.Palette.inkMute.opacity(0.2), lineWidth: 8)
                 Circle()
                     .trim(from: 0, to: progress)
                     .stroke(DS.Palette.sage, style: StrokeStyle(lineWidth: 8, lineCap: .round))
@@ -615,7 +617,7 @@ struct StatsView: View {
             }
             .padding(32)
             .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(radius: 20)
             .padding(40)
             .transition(.scale.combined(with: .opacity))
@@ -624,7 +626,7 @@ struct StatsView: View {
 
     private func colorFromName(_ name: String) -> Color {
         switch name {
-        case "orange": return Color(red: 0.769, green: 0.584, blue: 0.416)  // terracotta
+        case "orange": return DS.Palette.terracotta  // terracotta
         case "green": return Color(red: 0.420, green: 0.620, blue: 0.482)   // forest green
         case "blue": return Color(red: 0.357, green: 0.486, blue: 0.420)    // sage green
         case "yellow": return Color(red: 0.831, green: 0.647, blue: 0.278)  // warm gold

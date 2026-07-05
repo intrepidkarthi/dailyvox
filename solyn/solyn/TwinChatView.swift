@@ -570,7 +570,7 @@ struct TwinChatView: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
                     .background(
-                        RoundedRectangle(cornerRadius: 18)
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .fill(message.isUser
                                   ? themeManager.accentColor
                                   : themeManager.cardBackgroundColor)

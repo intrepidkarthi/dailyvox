@@ -259,12 +259,14 @@ struct BodyTwinIdleCards: View {
             }
             .padding(DS.Space.md)
             .frame(maxWidth: .infinity, alignment: .leading)
+            // 20pt like the entry card stacked directly beneath it — the two
+            // full-width Today cards should share one corner radius.
             .background(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(theme.warmCardBackground)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(DS.Palette.gold.opacity(0.25), lineWidth: 1)
             )
             .dsShadowSoft()

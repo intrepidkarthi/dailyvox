@@ -315,3 +315,57 @@ class ScreenshotTests: XCTestCase {
         add(attachment)
     }
 }
+
+// MARK: - Dark-theme captures
+//
+// Separate class so the App Store suite above (-only-testing:…/ScreenshotTests)
+// never picks these up. `-selectedTheme Dark` lands in the NSArgumentDomain,
+// which ThemeManager's UserDefaults read resolves first — same fixture data,
+// dark appearance. Run explicitly:
+//   -only-testing:solynUITests/DarkScreenshotTests
+
+class DarkScreenshotTests: XCTestCase {
+
+    let app = XCUIApplication()
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        app.launchArguments += ["-UITesting", "-ScreenshotMode",
+                                "-hasCompletedOnboarding", "YES",
+                                "-selectedTheme", "Dark",
+                                "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+    }
+
+    private func tab(_ name: String) {
+        let tabButton = app.tabBars.buttons[name]
+        if tabButton.waitForExistence(timeout: 3) { tabButton.tap(); return }
+        let button = app.buttons[name].firstMatch
+        if button.waitForExistence(timeout: 3) { button.tap() }
+    }
+
+    private func snap(_ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    func test90_DarkMainTabs() throws {
+        tab("Record"); sleep(3); snap("D1_Record_dark")
+        tab("Journal"); sleep(2); snap("D2_Journal_dark")
+        tab("Insights"); sleep(2)
+        let keepGoing = app.buttons["Keep Going"]
+        if keepGoing.waitForExistence(timeout: 3) { keepGoing.tap(); sleep(1) }
+        snap("D3_Insights_dark")
+        tab("Twin"); sleep(2); snap("D4_Twin_dark")
+        // Scroll until the Body Twin card is up — both new v1.5 Twin cards in frame.
+        let bodyCard = app.staticTexts["Body Twin"].firstMatch
+        var attempts = 0
+        while !bodyCard.isHittable && attempts < 4 {
+            app.swipeUp(); attempts += 1; sleep(1)
+        }
+        snap("D5_Twin_BodyCard_dark")
+        tab("Settings"); sleep(2); snap("D6_Settings_dark")
+    }
+}

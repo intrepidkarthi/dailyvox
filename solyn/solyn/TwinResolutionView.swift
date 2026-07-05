@@ -41,8 +41,11 @@ struct TwinResolutionCard: View {
                     .foregroundColor(.secondary.opacity(0.5))
             }
             .padding(16)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(.secondarySystemBackground)))
+            // Grouped-secondary matches every neighboring Twin-tab card
+            // (plain-secondary rendered cool gray on the warm ivory canvas
+            // in light, and a darker off-shade in Dark).
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(.secondarySystemGroupedBackground)))
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showSheet) { TwinResolutionSheet() }

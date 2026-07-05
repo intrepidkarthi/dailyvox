@@ -103,7 +103,7 @@ struct TodayView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "sparkles")
                             .font(.system(size: 56))
-                            .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                            .foregroundColor(DS.Palette.gold)
 
                         Text("Your first star")
                             .font(.system(size: 22, weight: .bold, design: .rounded))
@@ -124,14 +124,14 @@ struct TodayView: View {
                                 .padding(.vertical, 12)
                                 .background(Color.accentColor)
                                 .foregroundColor(.white)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(.plain)
                     }
                     .padding(24)
                     .frame(maxWidth: 300)
                     .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .shadow(color: .black.opacity(0.2), radius: 20, y: 10)
                     .transition(.scale.combined(with: .opacity))
                 }
@@ -166,14 +166,14 @@ struct TodayView: View {
                 // Small star icon
                 ZStack {
                     Circle()
-                        .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.1))
+                        .fill(DS.Palette.gold.opacity(0.1))
                         .frame(width: 64, height: 64)
                     Circle()
-                        .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.2))
+                        .fill(DS.Palette.gold.opacity(0.2))
                         .frame(width: 40, height: 40)
                     Image(systemName: "sparkle")
                         .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                        .foregroundColor(DS.Palette.gold)
                 }
 
                 VStack(spacing: 12) {
@@ -200,7 +200,7 @@ struct TodayView: View {
                     ZStack {
                         // Pulsing ring
                         Circle()
-                            .stroke(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.2), lineWidth: 2)
+                            .stroke(DS.Palette.sage.opacity(0.2), lineWidth: 2)
                             .frame(width: 108, height: 108)
                             .scaleEffect(firstTimePulse ? 1.3 : 1.0)
                             .opacity(firstTimePulse ? 0 : 0.5)
@@ -208,18 +208,18 @@ struct TodayView: View {
 
                         // Ambient glow
                         Circle()
-                            .fill(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.08))
+                            .fill(DS.Palette.sage.opacity(0.08))
                             .frame(width: 120, height: 120)
                             .blur(radius: 15)
 
                         // Outer ring
                         Circle()
-                            .stroke(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.3), lineWidth: 4)
+                            .stroke(DS.Palette.sage.opacity(0.3), lineWidth: 4)
                             .frame(width: 96, height: 96)
 
                         // Main circle
                         Circle()
-                            .fill(Color(red: 0.357, green: 0.486, blue: 0.420))
+                            .fill(DS.Palette.sage)
                             .frame(width: 80, height: 80)
 
                         // Mic icon
@@ -239,7 +239,7 @@ struct TodayView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "lock.shield.fill")
                         .font(.caption2)
-                        .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                        .foregroundColor(DS.Palette.forest)
                     Text("No servers. No accounts. 100% private.")
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundColor(.secondary.opacity(0.7))
@@ -305,7 +305,7 @@ struct TodayView: View {
                     StatBadge(
                         icon: "flame.fill",
                         value: "\(streakCount) day streak",
-                        color: Color(red: 0.769, green: 0.584, blue: 0.416)
+                        color: DS.Palette.terracotta
                     )
                 }
 
@@ -313,7 +313,7 @@ struct TodayView: View {
                     StatBadge(
                         icon: "calendar",
                         value: "\(daysRecordedThisYear) this year",
-                        color: Color(red: 0.357, green: 0.486, blue: 0.420)
+                        color: DS.Palette.sage
                     )
                 }
 
@@ -454,7 +454,7 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .shadow(color: Color.black.opacity(0.04), radius: 12, y: 4)
+                    .dsShadowSoft()
                 }
                 .buttonStyle(.plain)
             } else {
@@ -467,14 +467,14 @@ struct TodayView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "arrow.down")
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                                .foregroundColor(DS.Palette.gold)
                             Text("Tap the mic below to plant your first star")
                                 .font(.system(size: 14, weight: .medium, design: .rounded))
                                 .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 12)
                         .padding(.horizontal, 20)
-                        .background(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.08))
+                        .background(DS.Palette.gold.opacity(0.08))
                         .clipShape(Capsule())
                     }
                 } else {
@@ -482,11 +482,11 @@ struct TodayView: View {
                     VStack(spacing: 16) {
                         ZStack {
                             Circle()
-                                .fill(Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.1))
+                                .fill(DS.Palette.sage.opacity(0.1))
                                 .frame(width: 80, height: 80)
                             Image(systemName: "mic.circle.fill")
                                 .font(.system(size: 36))
-                                .foregroundColor(Color(red: 0.357, green: 0.486, blue: 0.420))
+                                .foregroundColor(DS.Palette.sage)
                         }
 
                         VStack(spacing: 4) {
@@ -763,8 +763,8 @@ struct TodayView: View {
         if normalizedLevel > threshold {
             // Warm gradient from sage to gold — NOT traffic light colors
             let t = CGFloat(index) / barCount
-            let sage = Color(red: 0.357, green: 0.486, blue: 0.420)
-            let gold = Color(red: 0.831, green: 0.647, blue: 0.278)
+            let sage = DS.Palette.sage
+            let gold = DS.Palette.gold
             return t < 0.6 ? sage : gold
         }
         return Color.secondary.opacity(0.12)

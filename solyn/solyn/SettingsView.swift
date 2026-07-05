@@ -678,7 +678,7 @@ struct SettingsView: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Export Data")
-                            .font(.subheadline)
+                            .font(.subheadline.weight(.semibold))
                         Text("JSON, Text, Markdown, CSV")
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -700,7 +700,7 @@ struct SettingsView: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Import Backup")
-                            .font(.subheadline)
+                            .font(.subheadline.weight(.semibold))
                         Text("Restore from JSON backup")
                             .font(.caption)
                             .foregroundColor(.secondary)
