@@ -12,6 +12,7 @@ import CoreData
 
 struct ScreenshotDataSeeder {
 
+    @MainActor
     static func seedIfNeeded(context: NSManagedObjectContext) {
         guard ProcessInfo.processInfo.arguments.contains("-ScreenshotMode") else { return }
 
@@ -216,5 +217,132 @@ struct ScreenshotDataSeeder {
                 duration: entry.duration
             )
         }
+
+        seedBodyTwinFixtures(entries: entries, calendar: calendar, now: now)
+    }
+
+    // MARK: - Body Twin Fixtures (v1.5)
+
+    /// Seeds Body Twin state through the same local stores the app uses at
+    /// runtime, so every new surface (Twin-tab card, review sheet, Settings
+    /// Health section, Insights Body & Mood card) has honest data to show.
+    /// Screenshot-only: reachable exclusively behind the -ScreenshotMode gate.
+    ///
+    /// Pass -BodyTwinInviteDemo as well to force the not-yet-authorized state
+    /// instead, so TodayView's one-time Health invite card is capturable.
+    @MainActor
+    private static func seedBodyTwinFixtures(
+        entries: [(text: String, mood: String, daysAgo: Int, starred: Bool, duration: Double)],
+        calendar: Calendar,
+        now: Date
+    ) {
+        let defaults = UserDefaults.standard
+
+        // The invite gate reads ReviewManager's saved-entry counter; 35 seeded
+        // entries = 35 saved. Mark as already-reviewed so the StoreKit rating
+        // prompt can never wander into a screenshot.
+        defaults.set(entries.count, forKey: "reviewManager_entryCount")
+        defaults.set(true, forKey: "reviewManager_hasReviewed")
+
+        if ProcessInfo.processInfo.arguments.contains("-BodyTwinInviteDemo") {
+            // Not-yet-authorized: the one-time "your Twin can learn what your
+            // body felt" invite renders on TodayView's idle state.
+            defaults.set(false, forKey: "bodyTwin_hasSeenInvite")
+            defaults.removeObject(forKey: "com.dailyvox.bodytwin.hkRequested")
+            PendingSnapshotQueue.shared.wipe()
+            KeptSnapshotStore.shared.wipe()
+            let store = FileBodyTwinStateStore()
+            store.saveBodyTwin(BodyTwin(isAuthorized: false, isEnabledByUser: true))
+            DigitalTwinEngine.configureBodyTwinStore(store)
+            return
+        }
+
+        // Health connected, Body Twin mid-journey (.learning maturity).
+        defaults.set(true, forKey: "bodyTwin_hasSeenInvite")
+        defaults.set(true, forKey: "bodyTwin_enabled")
+        // HealthKitService's persisted "the user has been asked" flag (the only
+        // authorization signal read-only HealthKit exposes).
+        defaults.set(true, forKey: "com.dailyvox.bodytwin.hkRequested")
+
+        // Kept snapshots: one per day across the last three weeks, whose sleep
+        // and steps honestly track the seeded entries' moods — brighter days
+        // slept longer and moved more — so the Body & Mood insights card shows
+        // patterns the data actually contains. Morning HRV appears on only
+        // some days (like real life), staying below the 14-day insight bar.
+        var kept: [KeptSnapshot] = []
+        for entry in entries where (1...21).contains(entry.daysAgo) && entry.daysAgo != 13 {
+            let day = calendar.date(byAdding: .day, value: -entry.daysAgo, to: now)!
+            let capturedAt = calendar.date(bySettingHour: 9, minute: (entry.daysAgo * 13) % 60, second: 0, of: day)!
+            let jitter = Double((entry.daysAgo * 7) % 5)   // deterministic, small
+            let (sleep, steps): (Double, Int) = {
+                switch entry.mood {
+                case "happy", "excited", "grateful": return (7.4 + jitter * 0.08, 9200 + entry.daysAgo * 90)
+                case "calm":                         return (7.0 + jitter * 0.06, 7600 + entry.daysAgo * 70)
+                case "tired":                        return (6.3, 5200)
+                case "anxious":                      return (5.7 + jitter * 0.10, 3900 + entry.daysAgo * 60)
+                default:                             return (5.9, 3800)   // sad
+                }
+            }()
+            var snapshot = HealthSnapshot(
+                capturedAt: capturedAt,
+                activityContext: .atRest,
+                sleepHours: sleep,
+                stepsToday: steps,
+                activityConfidence: 0.9
+            )
+            if entry.daysAgo % 2 == 0 {   // HRV on ~10 of 20 days
+                snapshot.morningHRVMs = 34 + Double((entry.daysAgo * 11) % 18)
+            }
+            kept.append(KeptSnapshot(id: UUID(), snapshot: snapshot, keptAt: capturedAt))
+        }
+        KeptSnapshotStore.shared.wipe()
+        KeptSnapshotStore.shared.restore(kept)
+
+        // Review queue: two snapshots waiting, exactly as capture would leave
+        // them — a short-sleep evening at rest, and a mid-walk morning where
+        // the rest-dependent fields are honestly absent. (No .postWorkout
+        // here: v1.5 requests no Workouts read access, so screenshots must
+        // not depict a state the shipping detector cannot produce.)
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: now)!
+        let eveningAt = calendar.date(bySettingHour: 21, minute: 37, second: 0, of: yesterday)!
+        let evening = HealthSnapshot(
+            capturedAt: eveningAt,
+            activityContext: .atRest,
+            sleepHours: 5.0 + 50.0 / 60.0,   // 5h 50m
+            morningHRVMs: 38,
+            restingHRBpm: 64,
+            stepsToday: 4100,
+            activityConfidence: 0.92
+        )
+        let morningAt = calendar.date(bySettingHour: 8, minute: 12, second: 0, of: now)!
+        let morning = HealthSnapshot(
+            capturedAt: morningAt,
+            activityContext: .active,
+            stepsToday: 6800,
+            activityConfidence: 0.85
+        )
+        PendingSnapshotQueue.shared.wipe()
+        PendingSnapshotQueue.shared.restore([
+            PendingSnapshot(id: UUID(), snapshot: evening, createdAt: eveningAt),
+            PendingSnapshot(id: UUID(), snapshot: morning, createdAt: morningAt)
+        ])
+
+        // Engine state: authorized + enabled, 22 kept moments (.learning),
+        // baseline consistent with the kept snapshots above.
+        let newestKeptAt = kept.map(\.keptAt).max() ?? now
+        var baseline = PersonalBaseline()
+        baseline.averageSleepHours = 6.9
+        baseline.samplesFolded = 22
+        baseline.sleepSamplesFolded = 20
+        baseline.lastRefreshed = newestKeptAt
+        let store = FileBodyTwinStateStore()
+        store.saveBodyTwin(BodyTwin(
+            isAuthorized: true,
+            isEnabledByUser: true,
+            baseline: baseline,
+            entriesWithSnapshot: 22,
+            lastSnapshotAt: newestKeptAt
+        ))
+        DigitalTwinEngine.configureBodyTwinStore(store)
     }
 }

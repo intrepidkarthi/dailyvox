@@ -33,6 +33,10 @@ struct DailyVoxApp: App {
         LocalAIEngine.configure(store: twinStore)
         DigitalTwinEngine.configure(store: twinStore)
 
+        // Body Twin state is LOCAL-ONLY (guideline 2.5.1): a backup-excluded
+        // JSON file, never the CloudKit-synced store above.
+        DigitalTwinEngine.configureBodyTwinStore(FileBodyTwinStateStore())
+
         ScreenshotDataSeeder.seedIfNeeded(context: persistenceController.container.viewContext)
     }
 

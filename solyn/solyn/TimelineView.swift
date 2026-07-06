@@ -24,14 +24,16 @@ enum LifeArea: String, CaseIterable {
     case family = "Family"
     case creativity = "Creativity"
 
+    /// Warm-palette hues (same blue→sage, green→forest, pink→dusty rose,
+    /// purple→plum, orange→terracotta, yellow→gold mapping as Insights).
     var color: Color {
         switch self {
-        case .work: return .blue
-        case .health: return .green
-        case .relationships: return .pink
-        case .growth: return .purple
-        case .family: return .orange
-        case .creativity: return .yellow
+        case .work: return DS.Palette.sage
+        case .health: return DS.Palette.forest
+        case .relationships: return Color(red: 0.741, green: 0.486, blue: 0.498) // dusty rose
+        case .growth: return Color(red: 0.557, green: 0.467, blue: 0.592)        // muted plum
+        case .family: return DS.Palette.terracotta
+        case .creativity: return DS.Palette.gold
         }
     }
 
@@ -82,6 +84,7 @@ func detectLifeAreas(from text: String) -> [LifeArea] {
 struct TimelineView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @ObservedObject private var theme = ThemeManager.shared
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: false)],
@@ -129,12 +132,12 @@ struct TimelineView: View {
                         Section(header: HStack(alignment: .firstTextBaseline) {
                             Text(sectionTitle(for: key))
                                 .font(.dsTitle2)
-                                .foregroundColor(DS.Palette.ink)
+                                .foregroundColor(theme.selectedTheme == .ivory ? DS.Palette.ink : Color.primary)
                                 .textCase(nil)
                             Spacer()
                             Text(sectionSummary(for: sectionEntries))
                                 .font(.dsCaption)
-                                .foregroundColor(DS.Palette.inkMute)
+                                .foregroundColor(theme.selectedTheme == .ivory ? DS.Palette.inkMute : Color.secondary)
                                 .textCase(nil)
                         }
                         .padding(.top, DS.Space.xs)
@@ -181,7 +184,7 @@ struct TimelineView: View {
                         toggleVoiceSearch()
                     } label: {
                         Image(systemName: isListening ? "mic.fill" : "mic")
-                            .foregroundColor(isListening ? .red : .accentColor)
+                            .foregroundColor(isListening ? theme.recordingColor : .accentColor)
                     }
                     .accessibilityLabel("Voice search")
                     
@@ -571,6 +574,12 @@ struct EntryRowView: View {
     let entry: DiaryEntry
     let searchText: String
     let dateString: String
+    @ObservedObject private var theme = ThemeManager.shared
+
+    // Fixed warm inks belong to the ivory theme only; on system dark cards
+    // they disappear (same `ivory ? warm : system` pattern as BodyTwinIdleCards).
+    private var inkPrimary: Color { theme.selectedTheme == .ivory ? DS.Palette.ink : .primary }
+    private var inkMuted: Color   { theme.selectedTheme == .ivory ? DS.Palette.inkMute : .secondary }
 
     private var wordCount: Int {
         guard let text = entry.text, !text.isEmpty else { return 0 }
@@ -601,7 +610,7 @@ struct EntryRowView: View {
                 HStack(spacing: 6) {
                     Text(dateString)
                         .font(.dsCaption)
-                        .foregroundColor(DS.Palette.inkMute)
+                        .foregroundColor(inkMuted)
 
                     if let moodString = entry.value(forKey: "mood") as? String,
                        let mood = Mood(rawValue: moodString),
@@ -614,13 +623,13 @@ struct EntryRowView: View {
                     if wordCount > 0 {
                         Text("\(wordCount) words")
                             .font(.dsCaption2)
-                            .foregroundColor(DS.Palette.inkMute.opacity(0.8))
+                            .foregroundColor(inkMuted.opacity(0.8))
                     }
 
                     if hasPhotos {
                         Image(systemName: "photo")
                             .font(.system(size: 10))
-                            .foregroundColor(DS.Palette.inkMute.opacity(0.8))
+                            .foregroundColor(inkMuted.opacity(0.8))
                     }
                 }
 
@@ -630,7 +639,7 @@ struct EntryRowView: View {
                 } else {
                     Text("Tap to add text")
                         .font(.dsBody)
-                        .foregroundColor(DS.Palette.inkMute)
+                        .foregroundColor(inkMuted)
                         .italic()
                 }
 
@@ -671,7 +680,7 @@ struct EntryRowView: View {
         if searchText.isEmpty {
             Text(text)
                 .font(.dsBody)
-                .foregroundColor(DS.Palette.ink)
+                .foregroundColor(inkPrimary)
         } else {
             Text(attributedString(for: text))
                 .font(.dsBody)

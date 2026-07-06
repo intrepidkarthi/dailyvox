@@ -8,8 +8,12 @@
 	<false/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>DailyVox uses Face ID to lock and unlock access to your private diary entries.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>DailyVox reads sleep, heart, steps and mindfulness data on this iPhone so your Twin can understand what your body felt around each entry. You review every signal before your Twin learns it; nothing is uploaded or synced.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>DailyVox needs microphone access to record your voice diary entries.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>DailyVox uses motion activity to tell whether you were moving when a journal entry was made, so body signals are read in the right context. Activity context stays on this iPhone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries. Photos are stored on your device only.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

@@ -2,6 +2,32 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.5.0] — 2026-07-04
+
+### Added
+- **Body Twin — the Twin gains a body.** With your permission, DailyVox reads five signals on this iPhone (sleep, morning HRV, resting heart rate, steps, mindful minutes) and freezes a small snapshot alongside each entry, tagged with your activity context (at rest / in motion) so a walk is never mistaken for a feeling
+- **Review before your Twin learns**: every captured signal waits in a review queue — *Keep* folds it into your Twin, *Let go* deletes it. Nothing reaches the Twin without your eyes on it. This gate is the foundation every future passive signal will flow through
+- **Body card** on the Twin tab: maturity (warming up → learning → ready), moments kept, and signals waiting
+- **Body whisper** on the Today screen: one calm line of context before you speak ("Slept 5h 20m. Take a breath.")
+- **Body & Mood insights**: honest correlations (sleep vs mood, steps vs mood) that appear only when there's enough data — patterns, never prescriptions
+- **Settings → Health**: master toggle, per-signal toggles, and "Wipe all health snapshots"
+- **Twin Resolution**: answer a few quick questions and see how well your Twin already knows you — "your Twin knows you N%," measured, not claimed
+- **Native Liquid Glass tab bar** on iOS 26 (warm classic bar preserved on earlier iOS)
+
+### Privacy
+- Health signals stay on this iPhone: never uploaded, never in iCloud/CloudKit, excluded from device backups. They leave the device only inside your encrypted export, locked with your key
+- Per-signal opt-outs filter *before* the HealthKit read — disabled signals are never queried
+- The widget extension has zero health access
+
+### Fixed
+- The Twin tab can rest: the constellation now animates without keeping the run loop busy, honors Reduce Motion, and pauses cleanly during UI tests (screenshot runs dropped from ~17 minutes to seconds)
+- Dark-theme legibility on the new Today cards
+
+### Build
+- `MARKETING_VERSION` 1.4.1 → 1.5.0
+- `CURRENT_PROJECT_VERSION` 18 → 19
+- HealthKit entitlement + Health/Motion usage descriptions added to the app target only
+
 ## [1.4.1] — 2026-07-04
 
 ### Added

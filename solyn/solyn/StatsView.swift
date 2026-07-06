@@ -21,6 +21,20 @@ struct StatsView: View {
 
     @State private var showMilestone: Int? = nil
 
+    /// Embodied insights, computed off the render path in onAppear — the
+    /// correlation math must never run inside body (Twin-perf lesson).
+    @State private var bodyInsights: [BodyInsight] = []
+
+    /// Cache key for `bodyInsights`: recompute only when the calendar day or
+    /// the kept-snapshot count changes, so tab-switching to Insights never
+    /// re-walks a multi-year history for the same answer.
+    @State private var bodyInsightsKey: BodyInsightsCacheKey?
+
+    private struct BodyInsightsCacheKey: Equatable {
+        let day: Date
+        let keptCount: Int
+    }
+
     private var isIPad: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
@@ -49,6 +63,11 @@ struct StatsView: View {
                     // Mood Trends
                     moodTrendsCard
 
+                    // Body & Mood — absent entirely until honest patterns exist
+                    if !bodyInsights.isEmpty {
+                        bodyCorrelationsCard
+                    }
+
                     // Stats Summary
                     statsSummaryCard
 
@@ -68,6 +87,7 @@ struct StatsView: View {
             }
         }
         .onAppear {
+            refreshBodyInsights()
             if let milestone = goalManager.checkMilestone(currentStreak: currentStreak) {
                 HapticManager.shared.streakMilestone()
                 withAnimation(.spring(response: 0.5)) {
@@ -112,7 +132,7 @@ struct StatsView: View {
             HStack {
                 Image(systemName: "flame.fill")
                     .font(.title2)
-                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                    .foregroundColor(DS.Palette.terracotta)
                 Text("Writing Streak")
                     .font(.system(.headline, design: .rounded))
                 Spacer()
@@ -121,7 +141,7 @@ struct StatsView: View {
             HStack(alignment: .bottom, spacing: 4) {
                 Text("\(currentStreak)")
                     .font(.system(size: 48, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(red: 0.769, green: 0.584, blue: 0.416))
+                    .foregroundColor(DS.Palette.terracotta)
                 Text(currentStreak == 1 ? "day" : "days")
                     .font(.title3)
                     .foregroundColor(.secondary)
@@ -278,6 +298,151 @@ struct StatsView: View {
         }
     }
 
+    // MARK: - Body & Mood Card
+
+    /// Patterns between the body signals the user chose to keep and how the
+    /// same days felt. The engine (BodyCorrelations) stays silent below 14
+    /// paired days or |r| < 0.35, so this card only ever shows real patterns —
+    /// and the card itself disappears when there are none.
+    private var bodyCorrelationsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "figure.mind.and.body")
+                    .foregroundColor(DS.Palette.terracotta)
+                Text("Body & Mood")
+                    .font(.system(.headline, design: .rounded))
+            }
+
+            ForEach(bodyInsights) { insight in
+                HStack(alignment: .top, spacing: DS.Space.md) {
+                    Image(systemName: bodyInsightIcon(insight.kind))
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(bodyInsightColor(insight.kind))
+                        .frame(width: 38, height: 38)
+                        .background(
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
+                                .fill(bodyInsightColor(insight.kind).opacity(0.12))
+                        )
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(bodyInsightTitle(insight))
+                            .font(.dsHeadline)
+                        Text(bodyInsightDescription(insight))
+                            .font(.dsCaption)
+                            .foregroundColor(DS.Palette.inkMute)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 4)
+            }
+
+            Text("Patterns from the body signals you chose to keep — a noticing, not a prescription.")
+                .font(.dsCaption2)
+                .foregroundColor(DS.Palette.inkMute)
+        }
+        .dsCard()
+    }
+
+    /// Feeds kept snapshots + the per-day mood series into the engine.
+    ///
+    /// Cached and computed off-main: for a Body Twin user with years of
+    /// history this walks every entry (Calendar.startOfDay dominates) plus
+    /// every kept snapshot — tens of ms that must not ride the tab-switch
+    /// frame on every Insights visit. Only the raw (date, mood) pairs are
+    /// gathered on the main actor (managed objects are not thread-safe);
+    /// the day-bucketing and Pearson math run at utility QoS.
+    private func refreshBodyInsights() {
+        let kept = KeptSnapshotStore.shared.loadAll()
+        guard !kept.isEmpty else {
+            bodyInsights = []
+            bodyInsightsKey = nil
+            return
+        }
+
+        let key = BodyInsightsCacheKey(day: Calendar.current.startOfDay(for: Date()),
+                                       keptCount: kept.count)
+        guard key != bodyInsightsKey else { return }
+        bodyInsightsKey = key
+
+        // Main-thread extraction only — no Core Data access off-main.
+        let moodPairs: [(date: Date, mood: String)] = entries.compactMap { entry in
+            guard let date = entry.date,
+                  let moodString = entry.value(forKey: "mood") as? String else { return nil }
+            return (date, moodString)
+        }
+        let snapshots = kept.map(\.snapshot)
+
+        Task.detached(priority: .utility) {
+            // Mood valence (1–5) per calendar day, real moods only — `.none`
+            // is a placeholder, not a reading, and would flatten every
+            // correlation. First entry in fetch order (newest) wins a day.
+            let calendar = Calendar.current
+            var moodByDay: [Date: Double] = [:]
+            for pair in moodPairs {
+                guard let mood = Mood(rawValue: pair.mood), mood != .none else { continue }
+                let day = calendar.startOfDay(for: pair.date)
+                if moodByDay[day] == nil { moodByDay[day] = Double(mood.moodValue) }
+            }
+            let result = BodyCorrelations.compute(snapshots: snapshots, moodByDay: moodByDay)
+            await MainActor.run { bodyInsights = result }
+        }
+    }
+
+    private func bodyInsightIcon(_ kind: BodyInsight.Kind) -> String {
+        switch kind {
+        case .sleepAndMood: return "moon.zzz.fill"
+        case .stepsAndMood: return "figure.walk"
+        case .hrvAndMood: return "waveform.path.ecg"
+        }
+    }
+
+    /// Same signal→color mapping as the review sheet, invite sheet, and
+    /// Settings → Health: sleep is sage, steps gold, HRV terracotta.
+    private func bodyInsightColor(_ kind: BodyInsight.Kind) -> Color {
+        switch kind {
+        case .sleepAndMood: return DS.Palette.sage
+        case .stepsAndMood: return DS.Palette.gold
+        case .hrvAndMood: return DS.Palette.terracotta
+        }
+    }
+
+    private func bodyInsightTitle(_ insight: BodyInsight) -> String {
+        switch insight.kind {
+        case .sleepAndMood:
+            return insight.movesTogether
+                ? "Rest and brightness rise together"
+                : "Your sleep writes its own pattern"
+        case .stepsAndMood:
+            return insight.movesTogether
+                ? "Moving days glow a little brighter"
+                : "Your stiller days glow brighter"
+        case .hrvAndMood:
+            return insight.movesTogether
+                ? "Your calm shows in your morning rhythm"
+                : "Your morning rhythm runs its own way"
+        }
+    }
+
+    /// The two group means tell the pattern honestly in either direction.
+    private func bodyInsightDescription(_ insight: BodyInsight) -> String {
+        let days = "across \(insight.sampleDays) days"
+        switch insight.kind {
+        case .sleepAndMood:
+            let bright = String(format: "%.1f", insight.signalMeanOnBrighterDays)
+            let dim = String(format: "%.1f", insight.signalMeanOnDimmerDays)
+            return "Your brighter days followed about \(bright)h of sleep; dimmer ones about \(dim)h — \(days)."
+        case .stepsAndMood:
+            let bright = Int(insight.signalMeanOnBrighterDays).formatted()
+            let dim = Int(insight.signalMeanOnDimmerDays).formatted()
+            return "Brighter days carried around \(bright) steps; dimmer ones around \(dim) — \(days)."
+        case .hrvAndMood:
+            let bright = Int(insight.signalMeanOnBrighterDays.rounded())
+            let dim = Int(insight.signalMeanOnDimmerDays.rounded())
+            return "Morning rhythm (HRV) averaged \(bright) ms on brighter days and \(dim) ms on dimmer ones — \(days)."
+        }
+    }
+
     // MARK: - Stats Summary Card
 
     private var statsSummaryCard: some View {
@@ -286,10 +451,10 @@ struct StatsView: View {
                 .font(.system(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
-                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: Color(red: 0.357, green: 0.486, blue: 0.420))
-                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: Color(red: 0.420, green: 0.620, blue: 0.482))
-                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: Color(red: 0.831, green: 0.647, blue: 0.278))
-                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: Color(red: 0.769, green: 0.584, blue: 0.416))
+                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: DS.Palette.sage)
+                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: DS.Palette.forest)
+                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: DS.Palette.gold)
+                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: DS.Palette.terracotta)
             }
         }
         .dsCard()
@@ -305,7 +470,7 @@ struct StatsView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Image(systemName: "sparkles")
-                            .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                            .foregroundColor(DS.Palette.gold)
                         Text("AI Insights")
                             .font(.system(.headline, design: .rounded))
                     }
@@ -347,7 +512,7 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "calendar")
-                    .foregroundColor(Color(red: 0.357, green: 0.486, blue: 0.420))
+                    .foregroundColor(DS.Palette.sage)
                 Text("Weekly reflection")
                     .font(.system(.headline, design: .rounded))
             }
@@ -381,7 +546,7 @@ struct StatsView: View {
 
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 8)
+                    .stroke(DS.Palette.inkMute.opacity(0.2), lineWidth: 8)
                 Circle()
                     .trim(from: 0, to: progress)
                     .stroke(DS.Palette.sage, style: StrokeStyle(lineWidth: 8, lineCap: .round))
@@ -452,7 +617,7 @@ struct StatsView: View {
             }
             .padding(32)
             .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .shadow(radius: 20)
             .padding(40)
             .transition(.scale.combined(with: .opacity))
@@ -461,7 +626,7 @@ struct StatsView: View {
 
     private func colorFromName(_ name: String) -> Color {
         switch name {
-        case "orange": return Color(red: 0.769, green: 0.584, blue: 0.416)  // terracotta
+        case "orange": return DS.Palette.terracotta  // terracotta
         case "green": return Color(red: 0.420, green: 0.620, blue: 0.482)   // forest green
         case "blue": return Color(red: 0.357, green: 0.486, blue: 0.420)    // sage green
         case "yellow": return Color(red: 0.831, green: 0.647, blue: 0.278)  // warm gold

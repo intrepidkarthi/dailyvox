@@ -196,19 +196,29 @@ struct BackupExportView: View {
         }
     }
     
+    @MainActor
     private func exportData() {
         isExporting = true
         HapticManager.shared.buttonTap()
-        
+
+        // Gather the Body Twin payload NOW, on the main actor, so the export
+        // carries one consistent snapshot of the three health stores (a Keep
+        // racing the background queue's file reads could otherwise tear it).
+        let bodyTwinPayload = selectedFormat == .encryptedBackup
+            ? ExportableBodyTwin.currentInMemory()
+            : nil
+
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let url: URL
-                
+
                 switch selectedFormat {
                 case .json:
                     url = try BackupService.shared.exportToJSON(entries: entries)
                 case .encryptedBackup:
-                    url = try BackupService.shared.exportEncrypted(entries: entries, password: encryptionPassword)
+                    url = try BackupService.shared.exportEncrypted(entries: entries,
+                                                                   password: encryptionPassword,
+                                                                   bodyTwin: bodyTwinPayload)
                 case .text, .markdown, .csv, .pdf:
                     var filteredEntries = entries
 

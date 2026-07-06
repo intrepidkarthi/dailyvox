@@ -132,8 +132,8 @@ struct WelcomeCard: View {
         }
         .padding(24)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: Color.black.opacity(0.04), radius: 12, y: 4)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .dsShadowSoft()
     }
 }
 

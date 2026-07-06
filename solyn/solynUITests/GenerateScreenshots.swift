@@ -179,7 +179,133 @@ class ScreenshotTests: XCTestCase {
         takeScreenshot(named: "08_Settings")
     }
 
+    // MARK: - Screenshot 10: Twin tab — Body Twin card
+
+    func test10_TwinTabBodyCard() throws {
+        navigateToTab("Twin")
+        sleep(2)
+
+        // BodyTwinCard sits below the orb header / Ask / Twin Resolution —
+        // scroll until it is on screen, then lift it clear of the tab bar.
+        let bodyCard = app.staticTexts["Body Twin"].firstMatch
+        scrollUntilHittable(bodyCard)
+        liftAboveTabBar()
+        takeScreenshot(named: "10_Twin_BodyCard")
+    }
+
+    // MARK: - Screenshot 11: Review-before-learning sheet (2 pending)
+
+    func test11_BodyReviewSheet() throws {
+        navigateToTab("Twin")
+        sleep(2)
+
+        let bodyCard = app.staticTexts["Body Twin"].firstMatch
+        scrollUntilHittable(bodyCard)
+        XCTAssertTrue(bodyCard.waitForExistence(timeout: 3), "Body Twin card not found on Twin tab")
+        bodyCard.tap()
+        sleep(2)
+
+        XCTAssertTrue(app.staticTexts["Your body had a say"].waitForExistence(timeout: 3),
+                      "Review sheet did not open")
+        takeScreenshot(named: "11_Twin_ReviewSheet")
+    }
+
+    // MARK: - Screenshot 12: Settings — Health section
+
+    func test12_SettingsHealth() throws {
+        navigateToTab("Settings")
+        sleep(2)
+
+        // Anchor on the section's last row, then nudge so the master toggle
+        // (section top) sits just under the nav bar — whole section framed.
+        let wipeButton = app.buttons["Wipe All Health Snapshots"].firstMatch
+        scrollUntilHittable(wipeButton, maxSwipes: 8)
+        let masterToggle = app.staticTexts["Body Twin"].firstMatch
+        let topY = masterToggle.frame.minY
+        if topY < 140 {
+            nudgeContentDown(by: 150 - topY)
+        }
+        takeScreenshot(named: "12_Settings_Health")
+    }
+
+    // MARK: - Screenshot 13: Today idle — body whisper
+
+    func test13_TodayWhisper() throws {
+        navigateToTab("Record")
+        sleep(3)   // whisper computes in TodayView's .task
+        takeScreenshot(named: "13_Today_Whisper")
+    }
+
+    // MARK: - Screenshot 14: Insights — Body & Mood card
+
+    func test14_InsightsBodyMood() throws {
+        navigateToTab("Insights")
+        sleep(2)
+
+        let keepGoingButton = app.buttons["Keep Going"]
+        if keepGoingButton.waitForExistence(timeout: 3) {
+            keepGoingButton.tap()
+            sleep(1)
+        }
+
+        // Scroll to the card's footer line so the whole card is framed.
+        let footer = app.staticTexts.matching(
+            NSPredicate(format: "label CONTAINS %@", "a noticing, not a prescription")).firstMatch
+        scrollUntilHittable(footer, maxSwipes: 10)
+        liftAboveTabBar()
+        takeScreenshot(named: "14_Insights_BodyMood")
+    }
+
+    // MARK: - Screenshot 15: Today idle — one-time Health invite
+
+    func test15_TodayInviteCard() throws {
+        // Relaunch in the not-yet-authorized state (same pattern as
+        // test00's -OnboardingDemo relaunch).
+        app.terminate()
+        app.launchArguments = ["-UITesting", "-ScreenshotMode", "-BodyTwinInviteDemo",
+                               "-hasCompletedOnboarding", "YES",
+                               "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+
+        navigateToTab("Record")
+        sleep(2)
+        XCTAssertTrue(app.staticTexts["Your Twin can learn what your body felt"]
+            .waitForExistence(timeout: 5), "Invite card not shown under -BodyTwinInviteDemo")
+        takeScreenshot(named: "15_Today_InviteCard")
+    }
+
     // MARK: - Helpers
+
+    /// Swipes up until `element` reports hittable (or swipes run out).
+    private func scrollUntilHittable(_ element: XCUIElement, maxSwipes: Int = 4) {
+        var attempts = 0
+        while !element.isHittable && attempts < maxSwipes {
+            app.swipeUp()
+            attempts += 1
+            sleep(1)
+        }
+    }
+
+    /// Gentle partial scroll (~30% of the screen) so a just-revealed card sits
+    /// clear of the floating tab bar; slow velocity + hold suppress inertia.
+    private func liftAboveTabBar() {
+        let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.72))
+        let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.42))
+        start.press(forDuration: 0.1, thenDragTo: end,
+                    withVelocity: .slow, thenHoldForDuration: 0.3)
+        sleep(1)
+    }
+
+    /// Reverse-scrolls by an exact number of points (drag downward), used to
+    /// re-reveal content that a full swipe carried off the top.
+    private func nudgeContentDown(by points: CGFloat) {
+        guard points > 0 else { return }
+        let start = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+        let end = start.withOffset(CGVector(dx: 0, dy: points))
+        start.press(forDuration: 0.1, thenDragTo: end,
+                    withVelocity: .slow, thenHoldForDuration: 0.3)
+        sleep(1)
+    }
 
     private func takeScreenshot(named name: String) {
         let screenshot = app.screenshot()
@@ -187,5 +313,59 @@ class ScreenshotTests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+}
+
+// MARK: - Dark-theme captures
+//
+// Separate class so the App Store suite above (-only-testing:…/ScreenshotTests)
+// never picks these up. `-selectedTheme Dark` lands in the NSArgumentDomain,
+// which ThemeManager's UserDefaults read resolves first — same fixture data,
+// dark appearance. Run explicitly:
+//   -only-testing:solynUITests/DarkScreenshotTests
+
+class DarkScreenshotTests: XCTestCase {
+
+    let app = XCUIApplication()
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        app.launchArguments += ["-UITesting", "-ScreenshotMode",
+                                "-hasCompletedOnboarding", "YES",
+                                "-selectedTheme", "Dark",
+                                "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+    }
+
+    private func tab(_ name: String) {
+        let tabButton = app.tabBars.buttons[name]
+        if tabButton.waitForExistence(timeout: 3) { tabButton.tap(); return }
+        let button = app.buttons[name].firstMatch
+        if button.waitForExistence(timeout: 3) { button.tap() }
+    }
+
+    private func snap(_ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    func test90_DarkMainTabs() throws {
+        tab("Record"); sleep(3); snap("D1_Record_dark")
+        tab("Journal"); sleep(2); snap("D2_Journal_dark")
+        tab("Insights"); sleep(2)
+        let keepGoing = app.buttons["Keep Going"]
+        if keepGoing.waitForExistence(timeout: 3) { keepGoing.tap(); sleep(1) }
+        snap("D3_Insights_dark")
+        tab("Twin"); sleep(2); snap("D4_Twin_dark")
+        // Scroll until the Body Twin card is up — both new v1.5 Twin cards in frame.
+        let bodyCard = app.staticTexts["Body Twin"].firstMatch
+        var attempts = 0
+        while !bodyCard.isHittable && attempts < 4 {
+            app.swipeUp(); attempts += 1; sleep(1)
+        }
+        snap("D5_Twin_BodyCard_dark")
+        tab("Settings"); sleep(2); snap("D6_Settings_dark")
     }
 }

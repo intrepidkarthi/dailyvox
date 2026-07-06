@@ -60,6 +60,9 @@ struct DigitalTwinView: View {
                     // How well the Twin actually knows you (self-prediction fidelity)
                     TwinResolutionCard()
 
+                    // The Body dimension + review-before-learning queue
+                    BodyTwinCard()
+
                     // Section Picker
                     sectionPicker
 
@@ -127,10 +130,10 @@ struct DigitalTwinView: View {
                 VStack(spacing: 8) {
                     ZStack {
                         Circle()
-                            .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(animateOrb ? 0.12 : 0.06))
+                            .fill(DS.Palette.gold.opacity(animateOrb ? 0.12 : 0.06))
                             .frame(width: 60, height: 60)
                         Circle()
-                            .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.3))
+                            .fill(DS.Palette.gold.opacity(0.3))
                             .frame(width: 24, height: 24)
                         Circle()
                             .fill(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.7))
@@ -165,7 +168,7 @@ struct DigitalTwinView: View {
                     icon: "mic.circle.fill",
                     title: "You speak",
                     description: "Record a voice entry on the Record tab. 42 seconds is the sweet spot — take as long as you need.",
-                    color: Color(red: 0.357, green: 0.486, blue: 0.420),
+                    color: DS.Palette.sage,
                     isLast: false
                 )
                 twinIntroStep(
@@ -173,7 +176,7 @@ struct DigitalTwinView: View {
                     icon: "sparkle",
                     title: "Stars appear",
                     description: "Each entry becomes a star in your constellation, colored by mood.",
-                    color: Color(red: 0.831, green: 0.647, blue: 0.278),
+                    color: DS.Palette.gold,
                     isLast: false
                 )
                 twinIntroStep(
@@ -189,7 +192,7 @@ struct DigitalTwinView: View {
                     icon: "lock.shield.fill",
                     title: "Always private",
                     description: "Everything stays on your device. No servers. No cloud AI. No accounts.",
-                    color: Color(red: 0.420, green: 0.620, blue: 0.482),
+                    color: DS.Palette.forest,
                     isLast: true
                 )
             }
@@ -199,14 +202,14 @@ struct DigitalTwinView: View {
             HStack(spacing: 10) {
                 Image(systemName: "hand.point.left.fill")
                     .font(.system(size: 16))
-                    .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278))
+                    .foregroundColor(DS.Palette.gold)
                 Text("Switch to the Record tab to begin")
                     .font(.system(size: 15, weight: .medium, design: .rounded))
                     .foregroundColor(themeManager.textColor)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.08))
+            .background(DS.Palette.gold.opacity(0.08))
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .padding(.horizontal, 20)
 
@@ -214,7 +217,7 @@ struct DigitalTwinView: View {
             HStack(spacing: 6) {
                 Image(systemName: "lock.shield.fill")
                     .font(.caption2)
-                    .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                    .foregroundColor(DS.Palette.forest)
                 Text("Your Twin never leaves your device")
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
@@ -391,7 +394,7 @@ struct DigitalTwinView: View {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(
                             LinearGradient(
-                                colors: [themeManager.accentColor, Color(red: 0.831, green: 0.647, blue: 0.278), themeManager.accentColor.opacity(0.6)],
+                                colors: [themeManager.accentColor, DS.Palette.gold, themeManager.accentColor.opacity(0.6)],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -411,7 +414,8 @@ struct DigitalTwinView: View {
                     .foregroundColor(themeManager.accentColor)
             }
         }
-        .padding(.horizontal)
+        // No extra horizontal padding: the parent VStack already carries the
+        // 16pt grid inset, so the bar aligns flush with the cards around it.
     }
 
     // MARK: - Section Picker
@@ -900,12 +904,12 @@ struct DigitalTwinView: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.gray.opacity(0.2))
+                        .fill(DS.Palette.inkMute.opacity(0.2))
 
                     RoundedRectangle(cornerRadius: 4)
                         .fill(
                             LinearGradient(
-                                colors: [themeManager.accentColor, Color(red: 0.831, green: 0.647, blue: 0.278)],
+                                colors: [themeManager.accentColor, DS.Palette.gold],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -932,7 +936,7 @@ struct DigitalTwinView: View {
         return VStack(spacing: 6) {
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.2), lineWidth: lineWidth)
+                    .stroke(DS.Palette.inkMute.opacity(0.2), lineWidth: lineWidth)
                 Circle()
                     .trim(from: 0, to: max(0.05, value))
                     .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
@@ -994,7 +998,7 @@ struct DigitalTwinView: View {
                             HStack(spacing: 1) {
                                 ForEach(0..<5, id: \.self) { i in
                                     Circle()
-                                        .fill(Double(i) / 5.0 < node.importance ? themeManager.accentColor : Color.gray.opacity(0.2))
+                                        .fill(Double(i) / 5.0 < node.importance ? themeManager.accentColor : DS.Palette.inkMute.opacity(0.2))
                                         .frame(width: 4, height: 4)
                                 }
                             }
@@ -1024,7 +1028,7 @@ struct DigitalTwinView: View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
                 .font(.system(size: 40))
-                .foregroundColor(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.6))
+                .foregroundColor(DS.Palette.gold.opacity(0.6))
 
             Text("Your constellation awaits")
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
@@ -1051,14 +1055,14 @@ struct DigitalTwinView: View {
     private var privacyBadge: some View {
         HStack(spacing: 8) {
             Image(systemName: "lock.shield.fill")
-                .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                .foregroundColor(DS.Palette.forest)
             Text("100% on-device. Your twin never leaves your device.")
                 .font(.caption)
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color(red: 0.420, green: 0.620, blue: 0.482).opacity(0.1))
+        .background(DS.Palette.forest.opacity(0.1))
         .cornerRadius(12)
     }
 
@@ -1067,9 +1071,9 @@ struct DigitalTwinView: View {
     private func sentimentColor(_ sentiment: Double) -> Color {
         if sentiment > 0.3 { return DS.Palette.forest }
         if sentiment > 0.1 { return DS.Palette.sage }
-        if sentiment > -0.1 { return .gray }
+        if sentiment > -0.1 { return DS.Palette.inkMute }
         if sentiment > -0.3 { return DS.Palette.gold }
-        return .red
+        return DS.Palette.coral
     }
 
     private func sentimentLabel(_ sentiment: Double) -> String {

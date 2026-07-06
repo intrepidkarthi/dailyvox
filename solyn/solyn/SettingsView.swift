@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreData
 import WidgetKit
+import DailyVoxTwinEngine
 #if os(iOS)
 import UIKit
 #endif
@@ -12,6 +13,10 @@ struct SettingsView: View {
     @ObservedObject private var lockManager = AppLockManager.shared
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var goalManager = GoalManager.shared
+    @ObservedObject private var bodyTwinManager = BodyTwinManager.shared
+    @ObservedObject private var twin = DigitalTwinEngine.shared
+    @ObservedObject private var healthKit = HealthKitService.shared
+    @ObservedObject private var pendingSnapshots = PendingSnapshotQueue.shared
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -54,6 +59,10 @@ struct SettingsView: View {
     @State private var showDeletePhotosConfirm = false
     @State private var showDeleteAllConfirm = false
 
+    // Health states
+    @State private var showWipeHealthConfirm = false
+    @State private var isRequestingHealthAccess = false
+
     var body: some View {
         Form {
             exportSection
@@ -64,6 +73,7 @@ struct SettingsView: View {
             dailyReminderSection
             storageSection
             iCloudSection
+            healthSection
             privacySection
             backupSection
             aboutSection
@@ -433,6 +443,178 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
+    private var healthSection: some View {
+        // Absent entirely on devices without HealthKit — no dead toggle to explain.
+        if healthKit.isAvailable {
+            Section {
+                Toggle(isOn: Binding(
+                    // Optimistic while the async enable flow runs: isActive
+                    // only flips after the Health sheet completes, so without
+                    // this the knob the user just flipped ON snaps back to
+                    // OFF for the whole permission ask. It reverts naturally
+                    // if requestAuthorization throws (flag resets, get falls
+                    // back to isActive == false).
+                    get: { isRequestingHealthAccess || twin.bodyTwin.isActive },
+                    set: { newValue in
+                        if newValue {
+                            enableBodyTwin()
+                        } else {
+                            bodyTwinManager.isEnabled = false
+                        }
+                    }
+                )) {
+                    HStack(spacing: 12) {
+                        ZStack {
+                            Circle()
+                                .fill(twin.bodyTwin.isActive ? DS.Palette.terracotta.opacity(0.15) : DS.Palette.inkMute.opacity(0.15))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: "figure.mind.and.body")
+                                .font(.body)
+                                .foregroundColor(twin.bodyTwin.isActive ? DS.Palette.terracotta : DS.Palette.inkMute)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Body Twin")
+                                .font(.subheadline.weight(.semibold))
+                            Text(bodyTwinStatusText)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .disabled(isRequestingHealthAccess)
+
+                if twin.bodyTwin.isActive {
+                    HealthSignalToggle(
+                        label: "Sleep",
+                        detail: "Hours of rest the night before",
+                        icon: "moon.zzz.fill",
+                        color: DS.Palette.sage,
+                        isOn: $bodyTwinManager.sleepEnabled
+                    )
+                    HealthSignalToggle(
+                        label: "Heart",
+                        detail: "Morning HRV and resting heart rate",
+                        icon: "heart.fill",
+                        color: DS.Palette.terracotta,
+                        isOn: heartSignalBinding
+                    )
+                    HealthSignalToggle(
+                        label: "Steps",
+                        detail: "Steps taken through the day",
+                        icon: "figure.walk",
+                        color: DS.Palette.gold,
+                        isOn: $bodyTwinManager.stepsEnabled
+                    )
+                    HealthSignalToggle(
+                        label: "Mindful Minutes",
+                        detail: "Quiet minutes you set aside",
+                        icon: "leaf.fill",
+                        color: DS.Palette.forest,
+                        isOn: $bodyTwinManager.mindfulEnabled
+                    )
+                }
+
+                if pendingSnapshots.count > 0 {
+                    HStack(spacing: 12) {
+                        ZStack {
+                            Circle()
+                                .fill(DS.Palette.gold.opacity(0.15))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: "sparkles")
+                                .font(.body)
+                                .foregroundColor(DS.Palette.gold)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(pendingSnapshots.count == 1
+                                 ? "1 signal waiting for review"
+                                 : "\(pendingSnapshots.count) signals waiting for review")
+                                .font(.subheadline.weight(.semibold))
+                            // The Twin tab opens the queue even while Body
+                            // Twin is off (BodyTwinCard) — the caption tracks
+                            // that so it never points at a door that won't open.
+                            Text(twin.bodyTwin.isActive
+                                 ? "Your Twin tab holds them — nothing is learned until you tap Keep."
+                                 : "Body Twin is off, but the Twin tab still holds them — Keep or Let go anytime.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+
+                Button(role: .destructive) {
+                    showWipeHealthConfirm = true
+                } label: {
+                    Label("Wipe All Health Snapshots", systemImage: "trash")
+                }
+            } header: {
+                Text("Health")
+            } footer: {
+                // Honest promise: DECISIONS #1's single sanctioned exit path
+                // (user-initiated encrypted export, user-held key) is named,
+                // so "stays on this iPhone" never over-claims.
+                Text("Health signals stay on this iPhone — never synced, and your Twin only learns the ones you approve. The one way they ever leave is inside an encrypted backup you export yourself, locked with your password.")
+            }
+            .confirmationDialog("Wipe all health snapshots and everything your Twin learned from them? This cannot be undone.",
+                                isPresented: $showWipeHealthConfirm, titleVisibility: .visible) {
+                Button("Wipe Health Snapshots", role: .destructive) { wipeAllHealthSnapshots() }
+                Button("Cancel", role: .cancel) {}
+            }
+        }
+    }
+
+    private var bodyTwinStatusText: String {
+        if isRequestingHealthAccess {
+            return "Asking Health for permission…"
+        }
+        return twin.bodyTwin.isActive
+            ? "Learning what your body felt"
+            : "Off — your Twin learns from your words alone"
+    }
+
+    /// One switch for both heart signals — HRV and resting rate travel together.
+    private var heartSignalBinding: Binding<Bool> {
+        Binding(
+            get: { bodyTwinManager.hrvEnabled && bodyTwinManager.restingHREnabled },
+            set: { newValue in
+                bodyTwinManager.hrvEnabled = newValue
+                bodyTwinManager.restingHREnabled = newValue
+            }
+        )
+    }
+
+    /// Master-toggle ON path. First time through, this shows Apple's Health
+    /// permission sheet; the sheet completing is all read-only HealthKit lets
+    /// us know (per-signal grants are invisible by design), so completion
+    /// counts as "asked" and the Twin turns on.
+    private func enableBodyTwin() {
+        guard !isRequestingHealthAccess else { return }
+        isRequestingHealthAccess = true
+        Task { @MainActor in
+            defer { isRequestingHealthAccess = false }
+            if !healthKit.isAuthorized {
+                do {
+                    try await healthKit.requestAuthorization()
+                } catch {
+                    return // sheet failed to appear — leave the toggle off
+                }
+            }
+            bodyTwinManager.recordAuthorizationRequested()
+            bodyTwinManager.isEnabled = true
+            // Prime the Motion & Fitness prompt HERE, inside the moment the
+            // user chose to connect — the first CMMotionActivity query is
+            // what triggers it, and without this pass it would otherwise pop
+            // un-contextualized in the middle of their next entry save.
+            await ActivityContextDetector.shared.update()
+        }
+    }
+
+    private func wipeAllHealthSnapshots() {
+        bodyTwinManager.wipeAllHealthData()
+        HapticManager.shared.entryDeleted()
+    }
+
+    @ViewBuilder
     private var privacySection: some View {
         Section {
             HStack(spacing: 12) {
@@ -496,7 +678,7 @@ struct SettingsView: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Export Data")
-                            .font(.subheadline)
+                            .font(.subheadline.weight(.semibold))
                         Text("JSON, Text, Markdown, CSV")
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -518,7 +700,7 @@ struct SettingsView: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Import Backup")
-                            .font(.subheadline)
+                            .font(.subheadline.weight(.semibold))
                         Text("Restore from JSON backup")
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -956,6 +1138,37 @@ struct ReminderPresetRow: View {
         }
         .buttonStyle(.plain)
         .listRowBackground(isSelected ? DS.Palette.sage.opacity(0.08) : Color.clear)
+    }
+}
+
+// MARK: - Health Signal Toggle
+
+struct HealthSignalToggle: View {
+    let label: String
+    let detail: String
+    let icon: String
+    let color: Color
+    @Binding var isOn: Bool
+
+    var body: some View {
+        Toggle(isOn: $isOn) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 32, height: 32)
+                    Image(systemName: icon)
+                        .font(.caption)
+                        .foregroundColor(color)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(label)
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
     }
 }
 
