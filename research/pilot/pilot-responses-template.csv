@@ -1,0 +1,2 @@
+participant_id,date_answered,consent,q1_expression,q2_directness,q3_thinking,q4_abstraction,q5_time_focus,q6_mindset,q7_emotional_range,diary_export_sent,retest_date,r1_expression,r2_directness,r3_thinking,r4_abstraction,r5_time_focus,r6_mindset,r7_emotional_range,notes
+EXAMPLE-DELETE-ME,2026-07-06,I consent,Somewhat reserved,Somewhat direct,Mostly analysis,Abstract,Mostly the future,Mostly grow from it,Fairly wide-ranging,yes,2026-07-20,Somewhat reserved,Direct,Mostly analysis,Abstract,Mostly the future,Mostly grow from it,Fairly wide-ranging,example row — delete before use
