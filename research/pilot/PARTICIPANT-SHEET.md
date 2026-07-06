@@ -33,6 +33,8 @@ You give us two things: your diary export (text) and your answers to 7 short que
 
 **Step 4 — Send both privately to the researcher** (AirDrop, Signal, or email — whatever you prefer): the export file + your 7 answers + the words "I consent".
 
+Two practical notes: send your diary as the **export file itself** — please don't paste entries into a spreadsheet or message; and send your **complete history** rather than a sample (the model is graded on your whole run of entries; more is fairer — and you're welcome to delete any entries you'd rather not share before exporting). If you journal somewhere other than DailyVox, a folder of text files named by date (`2026-05-04.txt`) works too — or just ask.
+
 **Step 5 — In about two weeks** we'll ask you the same 7 questions once more. Please don't write down or try to remember your first answers — answering fresh is the point (it lets us measure how consistent *anyone* is with themselves, which is the fair yardstick for the model).
 
 ## What we compute and what gets published
