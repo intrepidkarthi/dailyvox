@@ -1,0 +1,8 @@
+# Never commit personal data or build artifacts
+entries/
+*.json
+twin
+*.o
+# corpus / diaries live OUTSIDE the repo (e.g. ~/Desktop) — never copy them in
+*-articles.txt
+*diary*.txt
