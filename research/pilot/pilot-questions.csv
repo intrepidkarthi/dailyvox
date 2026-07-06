@@ -1,0 +1,8 @@
+q_no,key,question,option_1,option_2,option_3,option_4
+1,expressiveness,How do you tend to express yourself?,Reserved,Somewhat reserved,Somewhat expressive,Expressive
+2,directness,"When you say what you mean, you're usually…",Nuanced,Somewhat nuanced,Somewhat direct,Direct
+3,analytical,You make sense of things more through…,Intuition,Mostly intuition,Mostly analysis,Analysis
+4,abstract,Your thinking leans…,Concrete,Mostly concrete,Mostly abstract,Abstract
+5,future,Your mind spends more time on…,The past,Mostly the past,Mostly the future,The future
+6,growth,"When something goes wrong, you tend to feel you can…",Accept it,Mostly accept it,Mostly grow from it,Grow from it
+7,emotionalRange,"Across a week, your emotions are…",Steady,Mostly steady,Fairly wide-ranging,Wide-ranging
