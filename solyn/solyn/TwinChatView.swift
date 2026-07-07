@@ -309,7 +309,11 @@ struct TwinResponseGenerator {
             .prefix(5)
 
         guard !negativeTriggers.isEmpty else {
-            return "I haven't identified clear stress triggers yet. This is actually a good sign! As you journal more, I'll be able to spot patterns in what weighs on you."
+            // No celebratory spin on a data gap: an empty trigger map means the
+            // Twin hasn't learned triggers yet — it says nothing about how the
+            // person is doing. The old "actually a good sign!" copy misfired on
+            // genuinely-negative baselines (engine groundedness tonal audit).
+            return "I haven't identified clear stress triggers yet — I need more entries before patterns in what weighs on you become visible."
         }
 
         let triggerList = negativeTriggers.map { $0.key.capitalized }
