@@ -20,8 +20,14 @@ All notable changes to DailyVox are documented here.
 - The widget extension has zero health access
 
 ### Fixed
+- **Widgets finally count**: the widget extension shipped without the Core Data model, so every counter (entries, streak, stars, today's entry) rendered zero forever regardless of data — the model is now bundled with the widget and all surfaces populate
+- The Twin's stress-triggers answer no longer calls a data gap "actually a good sign" — an empty trigger map means the Twin needs more entries, and now it says exactly that
 - The Twin tab can rest: the constellation now animates without keeping the run loop busy, honors Reduce Motion, and pauses cleanly during UI tests (screenshot runs dropped from ~17 minutes to seconds)
 - Dark-theme legibility on the new Today cards
+
+### Research
+- **Join the pilot**: a new invitation in Settings links to getdailyvox.com/research — a small consented study measuring how well the Twin's estimates agree with how you see yourself. Display-only: the app still collects and transmits nothing
+- Privacy policy gains an explicit Health data section
 
 ### Build
 - `MARKETING_VERSION` 1.4.1 → 1.5.0
