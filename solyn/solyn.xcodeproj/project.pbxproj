@@ -71,6 +71,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CF4C16542EDE120000E722CB /* Exceptions for "solyn" folder in "DailyVoxWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				solyn.xcdatamodeld,
+			);
+			target = FD8D5118AB594947E3082E3B /* DailyVoxWidgets */;
+		};
 		CF4C16532EDE120000E722CA /* Exceptions for "solyn" folder in "solyn" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -85,6 +92,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				CF4C16532EDE120000E722CA /* Exceptions for "solyn" folder in "solyn" target */,
+				CF4C16542EDE120000E722CB /* Exceptions for "solyn" folder in "DailyVoxWidgets" target */,
 			);
 			path = solyn;
 			sourceTree = "<group>";
