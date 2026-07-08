@@ -263,8 +263,13 @@
           <li><strong>Face ID / Touch ID</strong> — optional, used only if you enable the App Lock feature.</li>
           <li><strong>Photo Library</strong> — optional, requested only when you tap "Attach Photo."</li>
           <li><strong>Notifications</strong> — optional, used for the daily reminder if you enable it.</li>
+          <li><strong>Health (read-only)</strong> — optional, requested only if you turn on Body Twin in Settings. Reads sleep, heart rate, HRV, steps, and mindful minutes so your Twin can understand what your body felt around each entry.</li>
+          <li><strong>Motion &amp; Fitness</strong> — optional, used with Body Twin to tell whether you were moving when you recorded, so body signals are interpreted in the right context.</li>
         </ul>
         <p>None of these permissions cause data to leave your device.</p>
+
+        <h2>Health data</h2>
+        <p>If you enable Body Twin, DailyVox reads a small set of Health data (sleep, heart rate, heart-rate variability, steps, mindful minutes) and motion-activity context <strong>on your iPhone only</strong>. Health data is processed entirely on-device: it is never uploaded, never synced by us, never shared with anyone, never used for advertising or marketing, and never sold — the app has no server to send it to. You review each body signal before your Twin learns from it, and you can discard any of them. Revoking Health access in the system Settings stops all reading immediately; deleting the app (or using "Delete All Data" in Settings) removes everything the Twin learned. Body data is stored in local files on your iPhone only — outside iCloud sync and explicitly excluded from iCloud device backups, as Apple&#39;s HealthKit rules require.</p>
 
         <h2>Photo storage</h2>
         <p>Photos you attach to entries are stored in your app's sandboxed storage with the rest of your journal data. They are never uploaded to a server. If you enable iCloud sync, photo attachments sync via Apple CloudKit alongside your text entries.</p>
@@ -282,7 +287,7 @@
         <p>Apple's App Store privacy nutrition label for DailyVox reads <strong>"Data Not Collected."</strong> This is verified by Apple as part of the App Store review process and matches the architectural reality described above.</p>
 
         <h2>Changes to this policy</h2>
-        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-05-28.</p>
+        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-07-08 (added the Health data section for Body Twin).</p>
 
         <h2>Contact</h2>
         <p>Questions about privacy? Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> — Karthikeyan reads every message personally.</p>
