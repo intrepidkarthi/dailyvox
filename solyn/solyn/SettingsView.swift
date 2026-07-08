@@ -75,6 +75,7 @@ struct SettingsView: View {
             iCloudSection
             healthSection
             privacySection
+            researchSection
             backupSection
             aboutSection
         }
@@ -658,6 +659,41 @@ struct SettingsView: View {
             Text("Privacy & Security")
         } footer: {
             Text("Your thoughts are yours alone. Data syncs only through your personal iCloud, encrypted with your Apple ID.")
+        }
+    }
+
+    // A display-only invitation: the app collects nothing, so research
+    // recruitment inverts — the invitation stands here, and joining is a
+    // choice the user makes in their browser, never a call the app makes.
+    private var researchSection: some View {
+        Section {
+            Link(destination: URL(string: "https://getdailyvox.com/research")!) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(DS.Palette.gold.opacity(0.15))
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "testtube.2")
+                            .font(.title3)
+                            .foregroundColor(DS.Palette.gold)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Join the research pilot")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(.primary)
+                        Text("Help measure how well the Twin knows you")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
+        } footer: {
+            Text("Opens getdailyvox.com. Taking part is voluntary and consented; nothing about your journal is collected or transmitted by the app.")
         }
     }
 
