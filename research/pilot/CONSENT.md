@@ -4,7 +4,7 @@ Please read this before sending your materials. Reply **"I consent"** with your 
 
 **Who is running this.** Karthikeyan NG, the independent developer of DailyVox, acting as an independent researcher. This is not a university study and has not been reviewed by an institutional review board; it follows the principles below instead, and they are commitments, not boilerplate.
 
-**What you're providing.** (1) Your DailyVox diary text export; (2) your answers to 7 self-description questions, now and once again ~2 weeks later.
+**What you're providing.** (1) Your DailyVox diary text export; (2) your answers to 7 self-description questions, answered once.
 
 **What it's used for.** Solely to compute, on the researcher's own computer, how well the DailyVox Twin's trait estimates from your entries agree with your self-answers. The computation runs locally; your export is not uploaded to any cloud service, not used to train any model, and not shared with anyone else.
 

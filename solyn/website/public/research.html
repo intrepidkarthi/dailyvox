@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyVox Research — Help Us Measure the Digital Twin</title>
+  <meta name="description" content="DailyVox runs an open research program: does an on-device model of one person actually match how that person sees themselves? Join the small consented pilot — your diary never leaves your phone until you choose.">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/research">
+  <meta property="og:title" content="DailyVox Research — Help Us Measure the Digital Twin">
+  <meta property="og:description" content="A small consented pilot: how well does a private, on-device model of you agree with how you see yourself? Only numbers are ever published.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <link rel="canonical" href="https://getdailyvox.com/research">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --paper: #FAF8F5; --paper-2: #F2EDE8;
+      --card: #ffffff;
+      --ink: #1A1A2E;
+      --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
+      --rule: rgba(26,26,46,0.08);
+      --uv: #5B7C6B; --bio: #D4A547;
+      --display: 'Nunito', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --mono: 'DM Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--paper); color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 80;
+      background: rgba(250,248,245,0.78);
+      backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--rule);
+    }
+    .topbar .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px; gap: 20px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
+      background: url("/apple-touch-icon.png") center/cover; }
+    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a { padding: 8px 14px; border-radius: 6px;
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim); }
+    .nav a.active { color: var(--ink); }
+    .nav a:hover { background: rgba(26,26,46,0.04); color: var(--ink); }
+    .cta-btn { background: var(--ink); color: var(--paper);
+      padding: 9px 18px; border-radius: 7px;
+      font-family: var(--mono); font-size: 12px; font-weight: 600; }
+    @media (max-width: 700px) { .nav { display: none; } }
+
+    .hero { padding: 80px 0 48px; border-bottom: 1px solid var(--rule); }
+    .hero .marker {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-mute); margin-bottom: 22px;
+    }
+    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(42px, 5.6vw, 68px);
+      font-weight: 600; line-height: 1.06; letter-spacing: -0.035em;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--uv); }
+    .hero .lede { font-size: 18px; color: var(--ink-dim); max-width: 640px; }
+    .hero .lede a { color: var(--uv); text-decoration: underline; }
+
+    section.block { padding: 52px 0; border-bottom: 1px solid var(--rule); }
+    .block h2 {
+      font-family: var(--display); font-weight: 600;
+      font-size: 28px; letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .block p { color: var(--ink-dim); max-width: 680px; margin-bottom: 14px; }
+    .block p strong { color: var(--ink); }
+    .block a { color: var(--uv); text-decoration: underline; }
+
+    .steps { display: grid; gap: 14px; margin: 26px 0 6px; max-width: 680px; }
+    .step { background: var(--card); border: 1px solid var(--rule);
+      border-radius: 12px; padding: 18px 20px; display: flex; gap: 16px; }
+    .step .n { font-family: var(--mono); font-weight: 600; color: var(--uv);
+      font-size: 13px; padding-top: 2px; }
+    .step .t strong { display: block; margin-bottom: 4px; }
+    .step .t span { color: var(--ink-dim); font-size: 15px; }
+
+    .promise { background: var(--paper-2); border-radius: 14px;
+      padding: 24px 26px; max-width: 680px; margin-top: 8px; }
+    .promise li { margin: 8px 0 8px 18px; color: var(--ink-dim); }
+    .promise li strong { color: var(--ink); }
+
+    .join-cta { display: inline-block; background: var(--uv); color: #fff;
+      padding: 14px 26px; border-radius: 9px; margin-top: 18px;
+      font-family: var(--mono); font-size: 13px; font-weight: 600;
+      text-decoration: none !important; }
+    .join-cta:hover { filter: brightness(1.07); }
+    .fine { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+
+    .footer { padding: 44px 0 60px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px;
+      font-family: var(--mono); font-size: 12px; color: var(--ink-dim);
+      margin-bottom: 18px; }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-size: 12.5px; color: var(--ink-mute); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a href="/" class="logo">
+        <span class="logo-mark"></span>
+        <span class="logo-text">DailyVox</span>
+      </a>
+      <nav class="nav">
+        <a href="/technology">Technology</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/research" class="active">Research</a>
+      </nav>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <div class="marker"><span class="diamond">◆</span>OPEN RESEARCH · PILOT WAVE ONE</div>
+    <h1>Does your Twin actually <em>know</em> you?</h1>
+    <p class="lede">DailyVox builds a private model of you — entirely on your iPhone, nothing collected, nothing transmitted. That architecture has a consequence we refuse to dodge: nobody can check the model works by watching a server, because there isn't one. So we measure it the hard way, in the open, and we publish what we find — including the failures. The next measurement needs a handful of real people. Maybe you.</p>
+  </section>
+
+  <section class="block wrap">
+    <h2>The question</h2>
+    <p>One honest question, precisely stated: <strong>how well do the Twin's estimates of your traits agree with how you see yourself?</strong> You journal by voice; the model estimates seven things about your style of expression; you answer seven short questions about yourself; we compute the agreement — and compare it against a baseline that guesses blindly. If the model can't beat the blind guess, we say so in public. We've already published one negative result on the developer's own twenty-year diary; the instrument is real.</p>
+  </section>
+
+  <section class="block wrap">
+    <h2>What taking part involves</h2>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><div class="t"><strong>Journal by voice for a few weeks.</strong><span>About a minute a day in DailyVox, as you normally would. 20+ entries gives the model a fair chance — but any amount is usable.</span></div></div>
+      <div class="step"><div class="n">02</div><div class="t"><strong>Read the consent note, export your diary.</strong><span>Settings → Export Data → readable text export. Your data stays on your phone until this moment — sharing is a choice you make, not one the app makes.</span></div></div>
+      <div class="step"><div class="n">03</div><div class="t"><strong>Answer 7 short questions about yourself.</strong><span>Two minutes. There are no good or bad answers — the model is the one being graded, not you.</span></div></div>
+      <div class="step"><div class="n">04</div><div class="t"><strong>Send both privately to the researcher.</strong><span>Email, AirDrop, or Signal — with the words "I consent". That's it. About ten minutes of your time in total.</span></div></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <h2>What we promise</h2>
+    <div class="promise">
+      <ul>
+        <li><strong>Only numbers are ever published</strong> — trait estimates, agreement scores, entry counts, under an anonymous ID like “P3”. Never a word of your diary, never your name, nothing quotable.</li>
+        <li><strong>Your export is read by one named person</strong> (the researcher), computed on locally, never uploaded anywhere, never used to train anything.</li>
+        <li><strong>Delete any entries you'd rather not share</strong> before exporting — fine, and nobody asks.</li>
+        <li><strong>Withdraw any time before publication</strong>; your data is deleted, no questions asked — and in any case when the study concludes.</li>
+        <li><strong>You can see your numbers</strong> before anything is published, on request.</li>
+      </ul>
+    </div>
+    <p class="fine">Full documents: <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/pilot/PARTICIPANT-SHEET.md">participant sheet</a> · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/pilot/CONSENT.md">consent note</a> · <a href="https://github.com/intrepidkarthi/dailyvox/tree/main/research">the public research kit</a>. This is an independent, unpaid, consented study run by the developer as an independent researcher; it is not a university study.</p>
+  </section>
+
+  <section class="block wrap" style="border-bottom:none;">
+    <h2>Join wave one</h2>
+    <p>The first wave is deliberately small — a handful of people, measured carefully, reported honestly. If you journal in English on an iPhone and are 18 or older, you're eligible.</p>
+    <a class="join-cta" href="mailto:hello@getdailyvox.com?subject=Research%20pilot%20—%20I%27m%20in&body=Hi%20Karthikeyan%2C%0A%0AI%27d%20like%20to%20join%20the%20DailyVox%20research%20pilot.%20Please%20send%20me%20the%20details.%0A%0A">Email hello@getdailyvox.com</a>
+    <p class="fine">Questions first? Same address — ask anything before sending your materials.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <a href="/technology">Technology</a>
+        <a href="/blog">Journal</a>
+        <a href="/faq">FAQ</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/research">Research</a>
+        <a href="/privacy">Privacy</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+        <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+      <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
+    </div>
+  </footer>
+
+</body>
+</html>
