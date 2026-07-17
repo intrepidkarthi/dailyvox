@@ -680,6 +680,10 @@ struct EntryDetailView: View {
                             duration: entry.duration
                         )
                     }
+                    // v1.6: keep the semantic memory index in step with edits.
+                    if let id = entry.id {
+                        SemanticSearchManager.shared.indexEntry(id: id, text: trimmed, date: entry.date ?? Date())
+                    }
                 }
             } catch {
                 // ignore
