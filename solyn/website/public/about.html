@@ -887,19 +887,19 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-now">→</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
-              <div class="rd-tag rd-now"><span class="rd-tag-text">Latest shipped · v1.4.0 + v1.4.1</span></div>
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.4.0 + v1.4.1</span></div>
               <h3>The warm redesign</h3>
-              <p><strong>Design:</strong> a complete visual rework to a warm, calm palette — sage, gold, and terracotta on ivory — across every screen, with the Digital Twin moved to the center of the app. SF Rounded typography, warmed light and dark themes, refined onboarding, and a polished Journal. The unused HealthKit entitlement was removed; it returns with Body Twin in v1.5. v1.4.1 made onboarding voice-first: the final welcome step invites you to speak your first entry, and your own words become the first star in your constellation.</p>
+              <p><strong>Design:</strong> a complete visual rework to a warm, calm palette — sage, gold, and terracotta on ivory — across every screen, with the Digital Twin moved to the center of the app. SF Rounded typography, warmed light and dark themes, refined onboarding, and a polished Journal. v1.4.1 made onboarding voice-first: the final welcome step invites you to speak your first entry, and your own words become the first star in your constellation.</p>
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
+            <div class="rd-dot rd-now">→</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">Next · v1.5</span></div>
-              <h3>Body Twin — HealthKit + Apple Watch</h3>
-              <p><strong>Tech:</strong> <code>HealthKit</code> reads sleep, HRV (SDNN), resting heart rate, steps, mindful minutes — all on-device, "Data Not Collected" label preserved. Per-entry <code>HealthSnapshot</code> in Core Data (~10 floats). Activity context detected via <code>HKWorkoutSession</code> + <code>CMMotionActivity</code> classifier. <code>WatchKit</code> companion via <code>WatchConnectivity</code>. Heart rate sampled during recording — but only when at rest, so a workout isn't read as emotional stress. HR stored as delta from your personal hour-of-day baseline. Constellation pulse renders from HR delta on at-rest entries.</p>
+              <div class="rd-tag rd-now"><span class="rd-tag-text">Latest shipped · v1.5.0</span></div>
+              <h3>Body Twin — HealthKit</h3>
+              <p><strong>Tech:</strong> <code>HealthKit</code> reads sleep, HRV (SDNN), resting heart rate, steps, mindful minutes — all on-device, "Data Not Collected" label preserved. Per-entry <code>HealthSnapshot</code> in Core Data (~10 floats), each tagged with activity context detected via <code>HKWorkoutSession</code> + <code>CMMotionActivity</code>, so a workout isn't read as emotional stress. HR is stored as a delta from your personal hour-of-day baseline. Every captured signal waits in a review-and-discard queue before it reaches the Twin. The <strong>Apple Watch companion</strong> — wrist recording and heart rate sampled during the entry — is the next step in Body Twin, not part of this release.</p>
             </div>
           </div>
           <div class="rd-item">
