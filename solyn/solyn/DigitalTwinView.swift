@@ -479,6 +479,20 @@ struct DigitalTwinView: View {
 
     // MARK: - Personality Section
 
+    /// The v1.6 learned openness estimate, if the head is past its population
+    /// floor. Read once per render from the engine — deterministic, on-device.
+    private var learnedOpenness: TraitEstimate? {
+        DigitalTwinEngine.shared.personalityEstimates().first { $0.trait == "openness" }
+    }
+
+    private func confidenceWord(_ confidence: Double) -> String {
+        switch confidence {
+        case ..<0.2:  return "low"
+        case ..<0.4:  return "growing"
+        default:      return "moderate"
+        }
+    }
+
     private var personalitySection: some View {
         VStack(spacing: 16) {
             // Communication Style
@@ -492,6 +506,23 @@ struct DigitalTwinView: View {
             .padding()
             .background(themeManager.cardBackgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+
+            // Learned trait (v1.6) — a small on-device model, trained on real
+            // consented human writing, that estimates openness from your entries.
+            // Shown only once your diary is deep enough for it to speak.
+            if let openness = learnedOpenness, openness.basis == .learnedHead {
+                VStack(alignment: .leading, spacing: 12) {
+                    sectionHeader("Learned Trait", icon: "sparkles")
+                    traitBar(label: "Openness", value: openness.value, lowLabel: "Grounded", highLabel: "Open")
+                    Text("A learned estimate — \(confidenceWord(openness.confidence)) confidence. It grows more sure as you write.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding()
+                .background(themeManager.cardBackgroundColor)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            }
 
             // Thinking Style
             VStack(alignment: .leading, spacing: 12) {
@@ -1229,6 +1260,16 @@ struct TwinPredictionsSection: View {
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+
+                // v1.6: honest confidence — the Twin says how sure it is.
+                HStack(spacing: 4) {
+                    Image(systemName: "gauge.with.dots.needle.33percent")
+                        .font(.system(size: 9))
+                    Text(prediction.confidenceBand.label)
+                        .font(.system(size: 11, weight: .medium))
+                }
+                .foregroundColor(.secondary)
+                .padding(.top, 2)
             }
         }
         .padding(14)

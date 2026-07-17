@@ -94,6 +94,7 @@ struct TimelineView: View {
     // MARK: - Search State
     
     @State private var searchText: String = ""
+    @State private var showSemanticSearch: Bool = false
     @State private var showStarredOnly: Bool = false
     @State private var showFilters: Bool = false
     @State private var selectedMoodFilter: Mood? = nil
@@ -171,6 +172,9 @@ struct TimelineView: View {
             .background { WarmBackground().ignoresSafeArea() }
         }
         .searchable(text: $searchText, prompt: "Search entries")
+        .sheet(isPresented: $showSemanticSearch) {
+            SemanticSearchView()
+        }
         .refreshable {
             HapticManager.shared.pullToRefresh()
             try? await Task.sleep(nanoseconds: 300_000_000)
@@ -179,6 +183,15 @@ struct TimelineView: View {
             #if os(iOS)
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 12) {
+                    // Semantic search (v1.6) — find an entry by meaning.
+                    Button {
+                        showSemanticSearch = true
+                    } label: {
+                        Image(systemName: "sparkle.magnifyingglass")
+                            .foregroundColor(.accentColor)
+                    }
+                    .accessibilityLabel("Search by meaning")
+
                     // Voice search button
                     Button {
                         toggleVoiceSearch()
