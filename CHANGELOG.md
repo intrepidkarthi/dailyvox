@@ -2,6 +2,30 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.6.0] — unreleased (in preparation)
+
+### Added
+- **Semantic memory** — your Twin can find an entry by meaning, not just keywords. On-device sentence embeddings (Apple NLEmbedding, no shipped model bytes) index every entry for similarity search. Search works best with a full phrase.
+- **A first learned trait** — the Twin's openness estimate now comes from a small on-device model trained on real, consented human writing, not keyword ratios. It shrinks toward a neutral prior until your diary is deep enough to speak, and it never claims more confidence than it earned in evaluation.
+- **Predictions now say how sure they are** — every Twin prediction carries an honest confidence (tentative / moderate / strong), derived from how much history backs it and how strong the pattern is. No prediction pretends to be an oracle.
+- **Your Day (Ambient), off by default** — DailyVox can read the kind of photos you took and the music you reached for, on-device, and turn each into a one-line note ("mostly trail photos", "reached for calm music"). Every note waits in a review-and-discard queue; nothing reaches your Twin until you keep it. Only derived labels are ever produced — your photos and audio never leave this iPhone. (v1.5.5 Ambient Signals.)
+- **Spoken Words** — teach DailyVox names and uncommon words it keeps mis-hearing (a child's name, say). It listens for them on every recording, so a correction sticks instead of coming back wrong. Stays on this iPhone.
+- **Sharper transcription on iOS 26** — entries transcribe with Apple's new SpeechAnalyzer where available (markedly lower word-error rate on sustained speech), with the current recognizer as the fallback on earlier iOS. Still fully on-device.
+
+### Changed
+- **iCloud sync is now off by default for new installs**, matching the "your entries live on this iPhone" promise. Existing installs that were already syncing keep syncing — nobody's data silently stops.
+
+### Fixed
+- Twin Resolution questions no longer truncate to a single line — the full question shows.
+- Whole-entry sentiment now reads every paragraph, not just the first.
+
+### Privacy
+- Ambient signals (photos, music) are analyzed entirely on-device and produce only derived labels; new Photos and Media Library permissions are opt-in and off by default. The "Data Not Collected" App Store label is preserved.
+
+### Build
+- `MARKETING_VERSION` 1.5.0 → 1.6.0; `CURRENT_PROJECT_VERSION` 19 → 20.
+- Engine (DailyVoxTwin): semantic memory index, embedding trait heads (bundled openness head), per-prediction confidence, prosody/voice-biomarker foundation, and new TwinEval suites (entities NER, retrieval, prosody) — all with measured, honest ceilings.
+
 ## [1.5.0] — 2026-07-04
 
 ### Added
