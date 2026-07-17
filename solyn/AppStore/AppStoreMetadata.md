@@ -10,7 +10,7 @@ Private On-Device Audio Diary
 offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital
 
 ## Promotional Text (170 characters max)
-Private voice journal & audio diary, 100% on your iPhone. Speak ~42 seconds a day and your Digital Twin learns your moods and patterns. No account. No cloud. Free.
+Private voice journal, 100% on your iPhone. Your Digital Twin learns your moods — and now, with Body Twin, what your body felt. No account. No cloud. Free.
 
 ## Description (4000 characters max)
 
@@ -28,6 +28,14 @@ This is what makes DailyVox different. As you journal, DailyVox tracks and visua
 - Top Themes: The subjects that come up most in your entries, ranked by importance
 
 Your twin grows with every entry, giving you a clearer picture of your journaling journey over time.
+
+YOUR BODY, YOUR CONTEXT (NEW)
+With your permission, the Body Twin reads five signals on this iPhone — sleep, morning HRV, resting heart rate, steps, and mindful minutes — and freezes a small snapshot beside each entry, tagged with whether you were at rest or in motion:
+
+- Review queue: every captured signal waits for you. Keep it or let it go — nothing reaches your Twin without your eyes on it
+- Body whisper: one calm line of context before you speak ("Slept 5h 20m. Take a breath.")
+- Body & Mood insights: honest correlations that appear only when there's enough data — patterns, never prescriptions
+- Health data stays on this iPhone: never uploaded, never in iCloud, excluded from backups, wipeable anytime in Settings → Health
 
 SMART INSIGHTS
 DailyVox uses Apple's on-device NLP to surface patterns you might not notice:
@@ -98,6 +106,29 @@ https://getdailyvox.com/support
 
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
+
+## What's New (Version 1.5.0)
+The Twin gains a body.
+
+With your permission, DailyVox now reads five signals on this iPhone — sleep, morning HRV, resting heart rate, steps, and mindful minutes — and freezes a small snapshot beside each entry, tagged with whether you were at rest or in motion, so a walk is never mistaken for a feeling.
+
+NEW
+- Review before your Twin learns: every captured signal waits in a queue. Keep it, or let it go — nothing reaches your Twin without your eyes on it
+- Body whisper on the Today screen: one calm line of context before you speak ("Slept 5h 20m. Take a breath.")
+- Body & Mood insights: honest correlations (sleep vs mood, steps vs mood) that appear only when there's enough data
+- Body card on the Twin tab: maturity, moments kept, signals waiting
+- Twin Resolution: answer a few quick questions and see how well your Twin already knows you — measured, not claimed
+- Settings → Health: master toggle, per-signal toggles, and "Wipe all health snapshots"
+- Native Liquid Glass tab bar on iOS 26
+
+FIXED
+- Widgets finally count: entries, streak, stars, and today's status now populate correctly
+- The constellation animates lighter on battery and honors Reduce Motion
+
+PRIVACY
+Health signals stay on this iPhone: never uploaded, never in iCloud, excluded from device backups. Per-signal opt-outs filter before the read. The widget has zero health access.
+
+Still free. Still no accounts. Still "Data Not Collected."
 
 ## What's New (Version 1.3.5)
 New in v1.3.5:
