@@ -1,4 +1,5 @@
 import Foundation
+import DailyVoxTwinEngine
 
 /// A thin seam between kept ambient signals (v1.5.5) and the Twin. Ambient
 /// signals are derived one-line labels ("Mostly trail photos"), not diary
@@ -21,7 +22,10 @@ enum DigitalTwinContext {
         if notes.count > 200 { notes.removeFirst(notes.count - 200) }
         UserDefaults.standard.set(notes, forKey: key)
 
-        // v1.6 wiring: route to the engine so the label reaches themes/mood.
-        // DigitalTwinEngine.shared.foldContextNote(label, date: day)
+        // Route the kept label into the Twin: it enriches the knowledge graph
+        // (people/places/topics), leaving the emotional/style models — which
+        // learn from your own words — untouched.
+        let note = detail.map { "\(label). \($0)" } ?? label
+        DigitalTwinEngine.shared.foldContextNote(note, date: day)
     }
 }
