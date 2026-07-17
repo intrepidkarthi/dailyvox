@@ -212,7 +212,7 @@ DailyVox is one of very few journal apps that truly collects zero data. Most "pr
 ## 6. Competitor Comparison
 
 ### DailyVox vs Day One
-- Day One costs $34.99/year; DailyVox is free
+- Day One costs $49.99/year; DailyVox is free
 - Day One uses cloud sync through their own servers; DailyVox uses only Apple iCloud or stays fully local
 - Day One collects analytics data; DailyVox collects nothing
 - Day One has no Digital Twin or AI personality modeling

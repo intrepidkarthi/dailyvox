@@ -148,6 +148,13 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - **Voice** — HR/HRV during at-rest speech refines stress detection beyond pacing and tone; active-context recordings rely on voice features alone
 - **Graph** — people, places, and activities now link to physiological response, not just sentiment
 
+### v1.5.1 — Trust Defaults *(next build)*
+
+One small change that makes the code agree with the promise:
+
+- **iCloud sync off by default for new installs.** The privacy story says sync is optional; today's default turns it on whenever an iCloud account exists. New installs will start with sync off and a clear opt-in in Settings. Existing users are migrated to keep their current behavior — anyone already syncing stays syncing; nobody's data silently stops.
+- Settings copy states plainly where entries live (this iPhone) and exactly what turning sync on changes.
+
 ### v1.5.5 — Ambient Signals *(pulled forward from v2.3)*
 
 The first taste of the Twin learning from your day, not just your words — and the part of the ambient thesis that needs no new conversational brain, so it ships now rather than at v2.3. Both signals run entirely on-device and flow through the v1.5 review-and-discard queue: nothing is learned without your eyes on it first. This is the differentiation the server-based companion apps structurally cannot copy — they ingest the same signals by uploading your life; DailyVox reads them where they already live.
