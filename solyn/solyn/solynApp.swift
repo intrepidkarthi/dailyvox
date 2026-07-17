@@ -76,6 +76,9 @@ struct DailyVoxApp: App {
                     checkForSiriRecordingIntent()
                     // Refresh the persistent streak Live Activity (if opted in)
                     refreshStreakLiveActivity()
+                    // v1.5.5: derive today's ambient signals into the review
+                    // queue (no-op unless a source is enabled + authorized).
+                    Task { await AmbientSignalManager.shared.refreshTodaySignals() }
                 default:
                     break
                 }

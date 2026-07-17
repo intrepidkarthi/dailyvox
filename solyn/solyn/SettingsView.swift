@@ -67,6 +67,11 @@ struct SettingsView: View {
     @ObservedObject private var vocabulary = CustomVocabulary.shared
     @State private var newVocabularyTerm = ""
 
+    // Ambient signals (v1.5.5)
+    @ObservedObject private var ambient = AmbientSignalManager.shared
+    @ObservedObject private var ambientQueue = PendingAmbientSignalQueue.shared
+    @State private var showAmbientReview = false
+
     var body: some View {
         Form {
             exportSection
@@ -79,6 +84,7 @@ struct SettingsView: View {
             storageSection
             iCloudSection
             healthSection
+            ambientSection
             privacySection
             researchSection
             backupSection
@@ -266,6 +272,50 @@ struct SettingsView: View {
         let term = newVocabularyTerm
         newVocabularyTerm = ""
         vocabulary.add(term)
+    }
+
+    private var ambientSection: some View {
+        Section {
+            Toggle("Photo context", isOn: Binding(
+                get: { ambient.photoSignalsEnabled },
+                set: { newValue in
+                    if newValue {
+                        Task { _ = await ambient.enablePhotoSignals() }
+                    } else {
+                        ambient.photoSignalsEnabled = false
+                    }
+                }
+            ))
+            Toggle("Music mood", isOn: Binding(
+                get: { ambient.musicSignalsEnabled },
+                set: { newValue in
+                    if newValue {
+                        Task { _ = await ambient.enableMusicSignals() }
+                    } else {
+                        ambient.musicSignalsEnabled = false
+                    }
+                }
+            ))
+            if ambientQueue.count > 0 {
+                Button {
+                    showAmbientReview = true
+                } label: {
+                    HStack {
+                        Text("Review waiting signals")
+                        Spacer()
+                        Text("\(ambientQueue.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text("Your Day (Ambient)")
+        } footer: {
+            Text("On-device only. DailyVox reads the kind of photos you took and the music you reached for, turns them into a one-line note, and holds it for you to keep or let go — nothing reaches your Twin until you say so. Only derived labels are ever produced; your photos and audio never leave this iPhone. Off by default.")
+        }
+        .sheet(isPresented: $showAmbientReview) {
+            AmbientReviewView()
+        }
     }
 
     @ViewBuilder
