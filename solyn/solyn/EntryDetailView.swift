@@ -684,6 +684,16 @@ struct EntryDetailView: View {
                     if let id = entry.id {
                         SemanticSearchManager.shared.indexEntry(id: id, text: trimmed, date: entry.date ?? Date())
                     }
+                    // v1.6 voice biomarkers: extract prosody from the audio ONCE
+                    // (fresh process, not an edit) and fold it as the entry's
+                    // arousal signal — delta from the user's own vocal baseline.
+                    if oldText.isEmpty, let url = audioURL() {
+                        let wordCount = trimmed.split(whereSeparator: { $0 == " " || $0 == "\n" }).count
+                        Task.detached {
+                            let features = ProsodyExtractor.features(from: url, wordCount: wordCount)
+                            await MainActor.run { DigitalTwinEngine.shared.foldProsody(features) }
+                        }
+                    }
                 }
             } catch {
                 // ignore
