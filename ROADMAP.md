@@ -175,6 +175,7 @@ Reframed from "semantic search + insights." Now that v1.5 gives the Twin a body,
 
 **Semantic memory:**
 - NLEmbedding sentence-embedding vector store + semantic search via cosine similarity.
+- **SpeechAnalyzer transcription** (pulled forward from v1.7): on iOS 26+ the new long-form `SpeechAnalyzer`/`SpeechTranscriber` replaces `SFSpeechRecognizer` for entry transcription — measurably lower word-error rate on sustained speech, still fully on-device, models managed by the system (zero app-size cost). Earlier iOS keeps the current on-device recognizer; better transcripts feed every layer above.
 - Graph-based semantic indexing (text chunks + knowledge-graph entities unified) with **boundary-aware retrieval** to stop the Twin recalling wrong facts ([RoleRAG, arXiv:2505.18541](https://arxiv.org/abs/2505.18541)).
 - **Long-term memory as tools** — the Twin decides what to store, retrieve, update, summarize, or discard (design from Agentic Memory, [arXiv:2601.01885](https://arxiv.org/abs/2601.01885)); benchmarked against **MemoryCD** ([arXiv:2603.25973](https://arxiv.org/abs/2603.25973)), which the field has *not* solved — an open problem DailyVox's longitudinal single-user data is uniquely positioned to contribute to.
 - **Offline monthly summary distillation** — task-aware user summaries generated on-device, combined with light runtime retrieval ([arXiv:2310.20081](https://arxiv.org/abs/2310.20081): matches or beats pure retrieval with ~75% less retrieved data — the difference between a sluggish and a snappy Twin). Feeds both the memory layer and the v1.6 RAG pipeline. (MiniRAG remains architectural inspiration for RAG on small models.)
@@ -198,7 +199,6 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - @Generable for type-safe structured outputs
 - RAG grounding via the v1.5 semantic index: every Twin answer cites the entries it drew from
 - Autobiographical memory consolidation: monthly distillation of journal entries into semantic self-knowledge ("I tend to...", "I always...")
-- SpeechAnalyzer replaces SFSpeechRecognizer
 - Zero network calls — entire pipeline on-device
 - Graceful fallback to the current Twin chat on devices below iPhone 15 Pro
 
