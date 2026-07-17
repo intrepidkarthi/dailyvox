@@ -63,11 +63,16 @@ struct SettingsView: View {
     @State private var showWipeHealthConfirm = false
     @State private var isRequestingHealthAccess = false
 
+    // Custom vocabulary
+    @ObservedObject private var vocabulary = CustomVocabulary.shared
+    @State private var newVocabularyTerm = ""
+
     var body: some View {
         Form {
             exportSection
             appearanceSection
             journalingGoalSection
+            vocabularySection
             liveActivitiesSection
             securitySection
             dailyReminderSection
@@ -232,6 +237,35 @@ struct SettingsView: View {
         } footer: {
             Text("Set a weekly journaling target to build a consistent habit.")
         }
+    }
+
+    private var vocabularySection: some View {
+        Section {
+            HStack {
+                TextField("Add a name or word", text: $newVocabularyTerm)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.words)
+                    .onSubmit(addVocabularyTerm)
+                Button(action: addVocabularyTerm) {
+                    Image(systemName: "plus.circle.fill")
+                }
+                .disabled(newVocabularyTerm.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+            ForEach(vocabulary.terms, id: \.self) { term in
+                Text(term)
+            }
+            .onDelete { vocabulary.remove(at: $0) }
+        } header: {
+            Text("Spoken Words")
+        } footer: {
+            Text("Names and uncommon words that transcription keeps getting wrong — like a child's name. DailyVox will listen for these on every recording, so a correction sticks instead of coming back wrong. Stays on this iPhone.")
+        }
+    }
+
+    private func addVocabularyTerm() {
+        let term = newVocabularyTerm
+        newVocabularyTerm = ""
+        vocabulary.add(term)
     }
 
     @ViewBuilder

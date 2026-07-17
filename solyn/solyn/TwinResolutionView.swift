@@ -211,7 +211,8 @@ struct TwinResolutionSheet: View {
                 .foregroundColor(agree >= 0.75 ? TR.forest : agree >= 0.5 ? TR.gold : TR.coral)
             VStack(alignment: .leading, spacing: 2) {
                 Text(q.prompt).font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundColor(.primary).lineLimit(1)
+                    .foregroundColor(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text("Twin guessed: \(twinGuess.lowercased())")
                     .font(.system(size: 12, design: .rounded)).foregroundColor(.secondary)
             }
