@@ -33,6 +33,7 @@ All notable changes to DailyVox are documented here.
 - `MARKETING_VERSION` 1.4.1 → 1.5.0
 - `CURRENT_PROJECT_VERSION` 18 → 19
 - HealthKit entitlement + Health/Motion usage descriptions added to the app target only
+- `NSHealthUpdateUsageDescription` added (upload validation requires it whenever `requestAuthorization(toShare:read:)` is referenced, even read-only with an empty share set); the string states plainly that DailyVox never writes to Apple Health
 
 ## [1.4.1] — 2026-07-04
 

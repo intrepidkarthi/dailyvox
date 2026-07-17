@@ -40,6 +40,7 @@ Everything below is paste-ready. Source of truth for copy: `metadata.json` (mach
 - [x] `MARKETING_VERSION = 1.5.0`, `CURRENT_PROJECT_VERSION = 19`
 - [x] Release build at main: **BUILD SUCCEEDED**
 - [x] `NSHealthShareUsageDescription` + `NSMotionUsageDescription` in app Info.plist, real HealthKit code behind them
+- [x] `NSHealthUpdateUsageDescription` in app Info.plist (2026-07-17: upload validation demands it because `requestAuthorization(toShare:read:)` is referenced, even with an empty share set; string honestly states the app never writes to Health)
 - [x] Widget Info.plist has **zero** health keys; widget bundles `solyn.momd` (PR #39 fix)
 - [x] HealthKit entitlement on app target only
 
