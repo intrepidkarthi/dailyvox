@@ -88,7 +88,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | Stage | Release | The Twin... |
 |:--|:--|:--|
 | **Scribe** | v1.0–v1.4.1 *(shipped)* | listens, remembers, and reflects what you tell it |
-| **Body** | v1.5 *(next)* | feels what your body felt — physiology joins the narrative |
+| **Body** | v1.5 *(shipped)* | feels what your body felt — physiology joins the narrative |
 | **Senses** | v1.5.5 | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
 | **Memory** | v1.6 | remembers you accurately across years — measurable fidelity + semantic memory |
 | **Voice** | v1.7 | converses with a real on-device brain, citing your own entries |
@@ -100,7 +100,9 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | **Protocol** | v2.5 | becomes portable — yours, not the app's |
 | **Mirror** | v3.0+ | the most faithful reflection ever built — eventually embodied (v4.0) |
 
-### v1.5 — Body Twin: HealthKit + Apple Watch *(next — in development)*
+### v1.5 — Body Twin: HealthKit *(shipped 2026-07-18, build 19)*
+
+> Shipped as the **iPhone HealthKit layer**: per-entry health snapshots, activity-context tags, the review-and-discard queue, the body whisper, and Body & Mood insights. The **Apple Watch companion** (wrist recording + heart rate sampled during the entry) is deferred to a later Body Twin release — the sections below that describe the Watch app are the plan for that follow-on, not what shipped in build 19.
 
 The Twin gains a body. Until now it has learned only from your words; v1.5 gives it physiological context so it can finally tell the difference between "feeling stressed" and *being* stressed. Directly addresses one of the limitations called out for v3.0 ("Feel what you feel — no embodied experience").
 
