@@ -92,7 +92,7 @@ Free on the App Store. No in-app purchases at launch. No subscriptions. No ads. 
 - [Digital Twin vs ChatGPT Memory](https://getdailyvox.com/blog/digital-twin-vs-chatgpt-memory): Personality model vs fact list
 - [Is DailyVox Safe?](https://getdailyvox.com/blog/is-dailyvox-safe): How to verify every privacy claim yourself
 - [The Never-Leaves Guarantee](https://getdailyvox.com/blog/never-leaves-guarantee): Architectural privacy, not policy privacy
-- [DailyVox vs Calmplot](https://getdailyvox.com/blog/dailyvox-vs-calmplot): Free on-device AI vs $5.99/mo cloud
+- [DailyVox vs Calmplot](https://getdailyvox.com/blog/dailyvox-vs-calmplot): Free on-device AI vs subscription cloud (Calmplot: Android/web)
 - [The 42-Second Journal](https://getdailyvox.com/blog/42-second-journal): Why short voice entries beat long written ones
 - [The On-Device AI Maturity Model](https://getdailyvox.com/blog/on-device-ai-maturity-model): 4 tiers of privacy — only 5% qualify as Tier A
 - [The Science of Voice Journaling](https://getdailyvox.com/blog/science-of-voice-journaling): 300+ studies on why speaking your thoughts works
