@@ -92,6 +92,15 @@ final class SpeechTranscriber {
                 let request = SFSpeechURLRecognitionRequest(url: audioURL)
                 request.shouldReportPartialResults = false
 
+                // Bias recognition toward words the user has taught us — names
+                // and other uncommon terms that would otherwise be mis-heard on
+                // every entry. This is what makes a correction persist across
+                // recordings (transcription has no memory of its own).
+                let vocabulary = CustomVocabulary.shared.contextualStrings
+                if !vocabulary.isEmpty {
+                    request.contextualStrings = vocabulary
+                }
+
                 // Privacy: Prefer on-device recognition when offline
                 // When online, Apple's servers provide better punctuation
                 // Note: Even server-based recognition goes through Apple, not third parties

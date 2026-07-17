@@ -133,7 +133,18 @@ struct PersistenceController {
 
     /// Check if CloudKit should be enabled (requires both iCloud availability and user preference)
     private static var shouldEnableCloudKit: Bool {
-        let userEnabled = UserDefaults.standard.object(forKey: "iCloudSyncEnabled") as? Bool ?? true
+        let defaults = UserDefaults.standard
+        // v1.5.1 migration — sync is now OFF by default for NEW installs so the
+        // "your entries live on this iPhone" promise matches the code. We decide
+        // once, the first time the preference is read without having been set:
+        // an install that has already completed onboarding is an existing user
+        // who was silently syncing on the old default, so we preserve their sync
+        // (nobody's data quietly stops); a fresh install starts off.
+        if defaults.object(forKey: "iCloudSyncEnabled") == nil {
+            let isExistingInstall = defaults.bool(forKey: "hasCompletedOnboarding")
+            defaults.set(isExistingInstall, forKey: "iCloudSyncEnabled")
+        }
+        let userEnabled = defaults.bool(forKey: "iCloudSyncEnabled")
         return userEnabled && FileManager.default.ubiquityIdentityToken != nil
     }
 
