@@ -237,3 +237,85 @@ struct BodyTwinRestoreFilteringTests {
         #expect(earliest == base.addingTimeInterval(5 * 60))
     }
 }
+
+// MARK: - Backup Round-Trip Tests (v1.6 verification)
+//
+// Confirms the two data-integrity halves of the encrypted backup: the
+// AES-256-GCM encryption round-trips (and rejects a wrong password), and the
+// BackupData wire format survives encode → decode without loss. v1.6 did not
+// touch BackupService; these lock that in and guard the format going forward.
+
+struct BackupRoundTripTests {
+
+    @Test func encryptionRoundTripsWithCorrectPassword() throws {
+        let secret = "the day I decided to leave my job".data(using: .utf8)!
+        let cipher = try EncryptionService.encrypt(data: secret, password: "correct horse")
+        #expect(cipher != secret)
+        let plain = try EncryptionService.decrypt(data: cipher, password: "correct horse")
+        #expect(plain == secret)
+    }
+
+    @Test func encryptionRejectsWrongPassword() throws {
+        let secret = "private".data(using: .utf8)!
+        let cipher = try EncryptionService.encrypt(data: secret, password: "right")
+        #expect(throws: (any Error).self) {
+            _ = try EncryptionService.decrypt(data: cipher, password: "wrong")
+        }
+    }
+
+    @Test func backupDataFormatRoundTrips() throws {
+        // A backup with one entry and no body-twin payload, built from the wire
+        // format (ExportableEntry only has init(from: DiaryEntry), so we go
+        // through JSON — which is exactly the path a real backup takes).
+        let id = UUID()
+        let json = """
+        {
+          "version": "1.1",
+          "exportDate": "2026-07-19T10:00:00Z",
+          "deviceName": "Test iPhone",
+          "entryCount": 1,
+          "entries": [{
+            "id": "\(id.uuidString)",
+            "date": "2026-07-19T10:00:00Z",
+            "text": "Walked the coast and thought about the move.",
+            "mood": "reflective",
+            "isStarred": true,
+            "createdAt": "2026-07-19T10:00:00Z",
+            "updatedAt": "2026-07-19T10:05:00Z",
+            "audioFileName": "abc.m4a",
+            "audioFileNames": null,
+            "photoFileNames": null
+          }],
+          "bodyTwin": null
+        }
+        """
+        let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
+        let encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
+
+        let decoded = try decoder.decode(BackupData.self, from: Data(json.utf8))
+        #expect(decoded.entries.count == 1)
+        #expect(decoded.entries.first?.id == id)
+        #expect(decoded.entries.first?.text == "Walked the coast and thought about the move.")
+        #expect(decoded.entries.first?.isStarred == true)
+
+        // Re-encode and decode again — the format is stable and lossless.
+        let reEncoded = try encoder.encode(decoded)
+        let reDecoded = try decoder.decode(BackupData.self, from: reEncoded)
+        #expect(reDecoded.entries.first?.id == id)
+        #expect(reDecoded.entries.first?.text == decoded.entries.first?.text)
+        #expect(reDecoded.entries.first?.mood == "reflective")
+    }
+
+    @Test func encryptedBackupFormatSurvivesEncryptDecrypt() throws {
+        let id = UUID()
+        let json = """
+        {"version":"1.0","exportDate":"2026-07-19T10:00:00Z","deviceName":"T","entryCount":1,"entries":[{"id":"\(id.uuidString)","date":"2026-07-19T10:00:00Z","text":"t","mood":null,"isStarred":false,"createdAt":"2026-07-19T10:00:00Z","updatedAt":"2026-07-19T10:00:00Z","audioFileName":null,"audioFileNames":null,"photoFileNames":null}],"bodyTwin":null}
+        """
+        let plain = Data(json.utf8)
+        let cipher = try EncryptionService.encrypt(data: plain, password: "pw")
+        let back = try EncryptionService.decrypt(data: cipher, password: "pw")
+        let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode(BackupData.self, from: back)
+        #expect(decoded.entries.first?.id == id)
+    }
+}
