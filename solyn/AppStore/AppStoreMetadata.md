@@ -10,7 +10,7 @@ Private On-Device Audio Diary
 offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital
 
 ## Promotional Text (170 characters max)
-Private voice journal, 100% on your iPhone. Your Digital Twin learns your moods — and now, with Body Twin, what your body felt. No account. No cloud. Free.
+Private voice journal, 100% on your iPhone. Your Twin now finds any entry by meaning and notices the shape of your day — only if you let it. No account. No cloud. Free.
 
 ## Description (4000 characters max)
 
@@ -29,13 +29,18 @@ This is what makes DailyVox different. As you journal, DailyVox tracks and visua
 
 Your twin grows with every entry, giving you a clearer picture of your journaling journey over time.
 
-YOUR BODY, YOUR CONTEXT (NEW)
+MEMORY & YOUR DAY (NEW)
+- Search by meaning: find an entry by what you meant, not the exact words — "the day I decided to leave my job." Entirely on-device.
+- A first learned trait: openness now comes from a small on-device model trained on real, consented human writing — and it never claims more confidence than it earned.
+- Predictions say how sure they are: tentative, moderate, or strong. No prediction pretends to be an oracle.
+- Your Day, off by default: DailyVox can read the kind of photos you took and the music you reached for — on-device — and turn each into a one-line note you keep or let go. Only derived labels; your photos and audio never leave this iPhone.
+
+YOUR BODY, YOUR CONTEXT
 With your permission, the Body Twin reads five signals on this iPhone — sleep, morning HRV, resting heart rate, steps, and mindful minutes — and freezes a small snapshot beside each entry, tagged with whether you were at rest or in motion:
 
 - Review queue: every captured signal waits for you. Keep it or let it go — nothing reaches your Twin without your eyes on it
 - Body whisper: one calm line of context before you speak ("Slept 5h 20m. Take a breath.")
-- Body & Mood insights: honest correlations that appear only when there's enough data — patterns, never prescriptions
-- Health data stays on this iPhone: never uploaded, never in iCloud, excluded from backups, wipeable anytime in Settings → Health
+- Health data stays on this iPhone: never uploaded, never in iCloud, wipeable anytime in Settings → Health
 
 SMART INSIGHTS
 DailyVox uses Apple's on-device NLP to surface patterns you might not notice:
@@ -45,23 +50,12 @@ DailyVox uses Apple's on-device NLP to surface patterns you might not notice:
 - Smart search suggestions powered by the people and topics in your entries
 - All processing happens on your device — nothing is sent to any server
 
-BEAUTIFUL INSIGHTS
-Track your emotional journey with:
-- Writing streaks and consistency scores
-- Mood trends with interactive charts
-- Weekly activity patterns
-- AI-generated insights about your patterns
-- Weekly summaries of your emotional arc
-
 RICH JOURNALING
 - Voice recording with real-time audio visualization
-- Enhanced audio playback with progress bar, scrubbing, and speed control (0.5x-2x)
+- Audio playback with scrubbing and speed control (0.5x-2x)
 - Photo attachments (up to 5 per entry, stored on-device only)
-- Search and filter your entire history
-- Smart search with knowledge graph-powered suggestions
-- Star your favorite entries
-- Mood tagging for every entry
-- Journaling goals with weekly targets and milestone celebrations
+- Search and filter your entire history; writing streaks and goals
+- Mood tagging, starred entries, weekly summaries of your emotional arc
 - Export to PDF, JSON, Markdown, CSV, or plain text
 
 LOCK SCREEN & WIDGETS
@@ -106,6 +100,26 @@ https://getdailyvox.com/support
 
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
+
+## What's New (Version 1.6.0)
+Your Twin remembers you better.
+
+NEW
+- Search by meaning: find an entry by what you meant, not the exact words — "the day I decided to leave my job" works. Runs entirely on your iPhone.
+- A first learned trait: openness now comes from a small on-device model trained on real, consented human writing — and it never claims more confidence than it earned.
+- Predictions say how sure they are: tentative, moderate, or strong. No prediction pretends to be an oracle.
+- Your Day (Ambient), off by default: DailyVox can read the kind of photos you took and the music you reached for, on-device, and turn each into a one-line note. Every note waits for you to keep or let go — nothing reaches your Twin until you say so. Only derived labels are ever produced; your photos and audio never leave this iPhone.
+- Spoken Words: teach DailyVox names it keeps mis-hearing (a child's name, say) so a correction sticks instead of coming back wrong.
+- Sharper transcription on iOS 26 with Apple's new SpeechAnalyzer, the current recognizer as fallback on earlier iOS.
+
+CHANGED
+- iCloud sync is now off by default for new installs, matching the "your entries live on this iPhone" promise. Already syncing? You keep syncing — nothing stops.
+
+FIXED
+- Twin Resolution questions no longer cut off at one line.
+- Whole-entry sentiment now reads every paragraph, not just the first.
+
+Still free. Still no accounts. Still "Data Not Collected."
 
 ## What's New (Version 1.5.0)
 The Twin gains a body.
