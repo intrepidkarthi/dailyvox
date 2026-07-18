@@ -895,35 +895,27 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-now">→</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
-              <div class="rd-tag rd-now"><span class="rd-tag-text">Latest shipped · v1.5.0</span></div>
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.5.0</span></div>
               <h3>Body Twin — HealthKit</h3>
               <p><strong>Tech:</strong> <code>HealthKit</code> reads sleep, HRV (SDNN), resting heart rate, steps, mindful minutes — all on-device, "Data Not Collected" label preserved. Per-entry <code>HealthSnapshot</code> in Core Data (~10 floats), each tagged with activity context detected via <code>HKWorkoutSession</code> + <code>CMMotionActivity</code>, so a workout isn't read as emotional stress. HR is stored as a delta from your personal hour-of-day baseline. Every captured signal waits in a review-and-discard queue before it reaches the Twin. The <strong>Apple Watch companion</strong> — wrist recording and heart rate sampled during the entry — is the next step in Body Twin, not part of this release.</p>
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
+            <div class="rd-dot rd-now">→</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.5.5 · Ambient Signals</span></div>
-              <h3>The Twin learns from your day</h3>
-              <p><strong>Tech:</strong> On-device <code>Photos</code>/<code>Vision</code> scene analysis turns the day's camera roll into context — only derived labels, never the photos, nothing leaving the device — plus on-device music-library listening patterns as a mood signal. Both flow through a review-and-discard queue: nothing reaches the Twin without your eyes on it first. Off by default; "Data Not Collected" label preserved. Pulled forward from v2.3 as the highest-trust slice of the ambient bet.</p>
-            </div>
-          </div>
-          <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
-            <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.6 · Semantic search + proactive insights</span></div>
-              <h3>Find entries by meaning</h3>
-              <p><strong>Tech:</strong> <code>NLEmbedding</code> for 512-dim sentence embeddings per entry, persisted in Core Data. Custom cosine-similarity vector index for semantic queries. Z-score anomaly detection against emotional baseline triggering local notifications. K-means clustering on embedding space for hidden thematic groupings. Embodied search builds on v1.5 — "show me entries where I was stressed but didn't say so." Retrieval foundation for v1.7's RAG architecture. Zero network calls.</p>
+              <div class="rd-tag rd-now"><span class="rd-tag-text">Next · v1.6.0 (in device testing)</span></div>
+              <h3>Memory, measurable fidelity &amp; the first ambient signals</h3>
+              <p><strong>Tech:</strong> semantic search over per-entry <code>NLEmbedding</code> sentence vectors (device-local index, meaning not keywords, with a measured abstention threshold so it declines rather than guesses). A first learned trait — openness — from a small on-device model validated on consented human writing, surfaced only past a data floor with an honest confidence. Per-prediction confidence bands. Voice biomarkers (pace/energy/pause/pitch → an "activated vs your own normal" arousal signal). <strong>Ambient Signals (folded in from v1.5.5):</strong> on-device <code>Vision</code> photo scene labels + music-library mood, through a review-and-discard queue — derived labels only, off by default. Plus a Spoken Words vocabulary so mis-heard names stick, and <code>SpeechAnalyzer</code> transcription on iOS 26. All measured against honest baselines; zero network calls.</p>
             </div>
           </div>
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
               <div class="rd-tag rd-next"><span class="rd-tag-text">v1.7 · Foundation Models Twin (iOS 26)</span></div>
-              <h3>Foundation Models + tool calling + SpeechAnalyzer</h3>
-              <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>. Twin becomes a real chatbot with multi-turn transcript memory. Autonomous Core Data querying via <code>Tool</code> protocol. Dynamic instructions fed from <code>TwinEngine</code> for tone matching. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time streaming. RAG-grounded answers cite the entries they drew from. <code>SpeechAnalyzer</code> replaces <code>SFSpeechRecognizer</code>. Requires iPhone 15 Pro+. Zero network calls.</p>
+              <h3>Foundation Models + tool calling</h3>
+              <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>. Twin becomes a real chatbot with multi-turn transcript memory. Autonomous Core Data querying via <code>Tool</code> protocol. Dynamic instructions fed from <code>TwinEngine</code> for tone matching. <code>@Generable</code> for type-safe structured outputs. <code>streamResponse()</code> for real-time streaming. RAG-grounded answers cite the entries they drew from, with date/recency-aware re-ranking on top of the v1.6 memory index. Requires iPhone 15 Pro+. Zero network calls.</p>
             </div>
           </div>
           <div class="rd-item">
