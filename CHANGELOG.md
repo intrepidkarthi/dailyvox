@@ -2,6 +2,25 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.7.0] — unreleased (in preparation)
+
+### Added
+- **Ask Your Twin becomes a real conversation** — on iPhones with Apple Intelligence (iOS 26+), the Twin answers free-text questions using Apple's on-device foundation model, grounded in your own entries and live Twin state. Ask anything, in your own words.
+- **Every answer shows its sources** — "From your journal" citation chips under each answer open the exact entries the Twin drew from. No citation, no claim: the answer structure forces every factual sentence to cite an entry or a measured Twin signal, and a deterministic audit checks every answer before it renders. An answer that fails the audit never appears — the classic chat answers instead.
+- **Honest by construction** — the Twin cannot cite an entry it didn't retrieve or a signal it hasn't measured (structurally impossible, not just checked); numbers only appear copied verbatim from your data; a hard week is reflected plainly, never spun. Verified by an adversarial evaluation battery (grounding, tone, false-premise resistance, prompt-injection resistance) that the release had to pass twice consecutively — the recorded runs live in the engine repository.
+- **Suggested follow-ups** — the Twin offers up to three next questions after each answer.
+
+### Changed
+- The classic question-chip chat remains the experience on iOS below 26, on devices without Apple Intelligence, when the model is still preparing, when Twin Brain is switched off in Settings — and for any single answer the audit rejects. Same template answers as before, now served from the evaluation-locked engine copy.
+- Settings gains a **Twin Brain** section (only on capable devices): on by default — it adds no new permission or data flow — with a switch back to the classic chat.
+
+### Privacy
+- The entire conversation pipeline runs on-device with Apple's system model. Zero network calls; nothing leaves the iPhone; the "Data Not Collected" App Store label is preserved.
+
+### Build
+- `MARKETING_VERSION` 1.6.0 → 1.7.0; `CURRENT_PROJECT_VERSION` 20 → 21.
+- Engine (DailyVoxTwin): structured `GroundedTwinAnswer` contract + 14-rule deterministic `AnswerAudit`, Foundation-Models pipeline with per-turn constrained citation schema, three read-only evidence tools, and the new TwinEval `--suite brain` gate (passed 2×: raw honesty 95.3%, fallback 4.7%, zero injection leaks).
+
 ## [1.6.0] — 2026-07-19
 
 ### Added
