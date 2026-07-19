@@ -998,7 +998,7 @@
           <span class="pip"></span>
           technical paper
           <span style="opacity:0.35">·</span>
-          v1.4.1 · on-device
+          v1.6.0 · on-device
         </div>
         <h1>
           How DailyVox<br>
@@ -1097,11 +1097,11 @@
           <div class="st-card">
             <div class="st-head">
               <div class="st-glyph">Sa</div>
-              <span class="st-pill st-pill-next">NEXT · v1.6</span>
+              <span class="st-pill st-pill-shipped">SHIPPED · v1.6</span>
             </div>
             <h3>SpeechAnalyzer</h3>
             <div class="st-fw">Speech.framework · iOS 26</div>
-            <p>Apple's next-generation speech recognition framework, replacing SFSpeechRecognizer in v1.6.</p>
+            <p>Apple's next-generation speech recognition framework — transcribes entries on iOS 26+ since v1.6, with the on-device recognizer as the fallback on earlier iOS.</p>
             <ul>
               <li>Significantly faster recognition, lower latency</li>
               <li>Native long-form audio without session timeouts</li>
@@ -1131,28 +1131,27 @@
           <div class="st-card">
             <div class="st-head">
               <div class="st-glyph">Ne</div>
-              <span class="st-pill st-pill-next">NEXT · v1.5</span>
+              <span class="st-pill st-pill-shipped">SHIPPED · v1.6</span>
             </div>
             <h3>NLEmbedding</h3>
-            <div class="st-fw">512-dim word / sentence vectors</div>
-            <p>Generates dense vector representations of journal entries for semantic search and clustering.</p>
+            <div class="st-fw">512-dim sentence vectors</div>
+            <p>Dense vector representations of journal entries, powering on-device semantic search since v1.6.</p>
             <ul>
               <li>512-dim sentence embeddings per entry</li>
-              <li>Cosine similarity for semantic search</li>
-              <li>K-means clustering for hidden thematic groupings</li>
-              <li>Foundation for v1.6's RAG retrieval layer</li>
-              <li>Vectors persisted in Core Data alongside entry text</li>
+              <li>Cosine similarity for search by meaning, with a measured abstention threshold</li>
+              <li>Device-local index, excluded from backups, rebuildable from entries</li>
+              <li>The grounding layer the v1.7 Twin chat retrieves from</li>
             </ul>
           </div>
 
           <div class="st-card">
             <div class="st-head">
               <div class="st-glyph">Fm</div>
-              <span class="st-pill st-pill-next">NEXT · v1.6</span>
+              <span class="st-pill st-pill-next">NEXT · v1.7</span>
             </div>
             <h3>Foundation Models</h3>
             <div class="st-fw">iOS 26 · 3B on-device LLM</div>
-            <p>Apple's on-device large language model, enabling conversational Twin interactions in v1.6.</p>
+            <p>Apple's on-device large language model — the v1.7 Twin chat: free-text questions, answers grounded in and citing your own entries, audited before they render.</p>
             <ul>
               <li><code>LanguageModelSession</code> — multi-turn conversation with transcript memory</li>
               <li><strong>Tool calling</strong> — Twin autonomously queries Core Data via custom Tool protocol</li>
