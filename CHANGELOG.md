@@ -2,7 +2,7 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.6.0] — unreleased (in preparation)
+## [1.6.0] — 2026-07-19
 
 ### Added
 - **Semantic memory** — your Twin can find an entry by meaning, not just keywords. On-device sentence embeddings (Apple NLEmbedding, no shipped model bytes) index every entry for similarity search. Search works best with a full phrase.
