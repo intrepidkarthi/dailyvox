@@ -60,6 +60,11 @@ struct DigitalTwinView: View {
                     // How well the Twin actually knows you (self-prediction fidelity)
                     TwinResolutionCard()
 
+                    // Consented-pilot invitation (high-engagement users only;
+                    // once-ever, dismissible — see PilotInviteCard for gates)
+                    PilotInviteCard(entryCount: entries.count,
+                                    firstEntryDate: entries.last?.date)
+
                     // The Body dimension + review-before-learning queue
                     BodyTwinCard()
 
