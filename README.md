@@ -136,12 +136,14 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 ---
 
-## What's New: v1.4.1 — Speak Your First Star
+## What's New: v1.6.0 — Semantic Memory & Measurable Fidelity
 
-- **Voice-first onboarding** — speak your first star during onboarding; your own words, kept private, become your first real entry
-- **Warm ivory-light onboarding redesign** with an optional name step
-- **Widget & Live Activity fixes** — accurate entry counters, no more repeated star-birth banners
-- Built on v1.4.0's warm sage-and-gold redesign with the Digital Twin front and center
+- **Search by meaning** — find an entry by what it was about, not the words it used; on-device NLEmbedding vectors, with a measured abstention threshold so search declines rather than guesses
+- **A first learned trait with honest confidence** — the openness estimate comes from a small on-device model validated on consented human writing; every Twin prediction now shows how sure it is (tentative / moderate / strong)
+- **Your Day (Ambient), off by default** — on-device photo scene labels and music mood as one-line notes through a review-and-discard queue; only derived labels, never the media
+- **Spoken Words** — teach DailyVox names it mis-hears so corrections stick; sharper SpeechAnalyzer transcription on iOS 26
+- **iCloud sync off by default for new installs** — entries live on this iPhone unless you turn sync on (existing syncers keep syncing)
+- v1.5.0 (Body Twin) shipped the day before: HealthKit snapshots beside each entry, activity context, the body whisper, and Body & Mood insights
 
 [Full changelog](CHANGELOG.md) · [Try the interactive demo](https://getdailyvox.com/demo)
 
@@ -158,10 +160,10 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.3.5 | Dynamic Island + New Icon | Shipped |
 | v1.4.0 | Warm redesign — Digital Twin moved to center | Shipped |
 | v1.4.1 | Voice-first "Speak your first star" onboarding | **Shipped** |
-| v1.5 | Body Twin — HealthKit + Apple Watch | **Up next** |
-| v1.5.5 | Ambient Signals — on-device photo + music context | Planned |
-| v1.6 | Semantic Memory & Measurable Fidelity | Planned |
-| v1.7 | Foundation Models Twin — on-device LLM chat | Planned |
+| v1.5 | Body Twin — HealthKit snapshots, body whisper, review queue | Shipped |
+| v1.5.5 | Ambient Signals — on-device photo + music context | Shipped (in v1.6.0) |
+| v1.6 | Semantic Memory & Measurable Fidelity | **Shipped** |
+| v1.7 | Foundation Models Twin — grounded on-device chat with citations | **Built · next release** |
 | v1.8 | Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first) | Planned |
 | v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
 
