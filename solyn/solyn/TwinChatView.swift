@@ -49,6 +49,7 @@ struct TwinChatView: View {
     @State private var latestFollowUps: [String] = []
     @State private var pipeline: Any?
     @State private var citationEntry: DiaryEntry?
+    private let evidenceAdapter = TwinChatEvidenceAdapter()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -93,10 +94,11 @@ struct TwinChatView: View {
             Divider()
                 .background(themeManager.secondaryTextColor.opacity(0.3))
 
-            // Free-text input (Foundation Models path only)
-            if brain.isActive {
-                inputBar
-            } else if brain.status == .modelNotReady || brain.status == .appleIntelligenceOff {
+            // Free-text input on EVERY device: the Foundation-Models brain
+            // answers where available; everywhere else questions run through
+            // semantic retrieval ("closest entries from your journal").
+            inputBar
+            if brain.status == .modelNotReady || brain.status == .appleIntelligenceOff {
                 classicModeCaption
             }
 
@@ -153,7 +155,7 @@ struct TwinChatView: View {
 
             Text(brain.isActive
                  ? "Ask in your own words, or tap a question below. Answers come from your entries, on this device — and show which entries they drew from."
-                 : "Tap a question below to get insights from your Digital Twin. All answers come from your on-device data.")
+                 : "Ask in your own words and I'll surface the closest entries from your journal, or tap a question below. Everything stays on this iPhone.")
                 .font(.subheadline)
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
@@ -446,24 +448,33 @@ struct TwinChatView: View {
         isThinking = true
 
         Task {
-            var answerText = "I couldn't work through that one — try one of the suggested questions."
-            var citations: [TwinChatEvidence] = []
-            var followUps: [String] = []
+            var turn: TwinChatTurn?
 
             #if canImport(FoundationModels)
             if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat {
-                let turn = await brainPipeline.ask(text)
-                answerText = turn.answer
-                citations = turn.citations
-                followUps = turn.suggestedFollowUps
+                turn = await brainPipeline.ask(text)
             }
             #endif
 
+            if turn == nil {
+                // Retrieval path — every device, no model required: semantic
+                // search resolves the closest entries; the deterministic
+                // composer quotes them verbatim with citations.
+                let evidence = await evidenceAdapter.recall(query: text, topK: 3, dateRange: nil)
+                turn = RetrievalAnswerComposer.compose(
+                    question: text,
+                    evidence: evidence,
+                    twin: DigitalTwinEngine.shared,
+                    profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+            }
+
             isThinking = false
             withAnimation(.easeIn(duration: 0.2)) {
-                messages.append(TwinChatMessage(text: answerText, isUser: false, citations: citations))
+                messages.append(TwinChatMessage(text: turn?.answer ?? "",
+                                                isUser: false,
+                                                citations: turn?.citations ?? []))
             }
-            latestFollowUps = followUps
+            latestFollowUps = turn?.suggestedFollowUps ?? []
         }
     }
 

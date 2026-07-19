@@ -357,7 +357,7 @@ struct SettingsView: View {
             } header: {
                 Text("Twin Brain")
             } footer: {
-                Text("Ask Your Twin answers in your own words, grounded in your entries and citing the ones it drew from. Runs entirely on this iPhone with Apple's on-device model — zero network calls, nothing leaves the device. Turning it off returns the classic question chips.")
+                Text("Ask Your Twin answers in your own words, grounded in your entries and citing the ones it drew from. Runs entirely on this iPhone with Apple's on-device model — zero network calls, nothing leaves the device. Turning it off keeps free-text questions working through journal search, without the conversational model.")
             }
         }
     }
