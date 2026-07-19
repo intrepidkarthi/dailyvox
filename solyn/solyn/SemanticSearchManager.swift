@@ -88,10 +88,12 @@ final class SemanticSearchManager: ObservableObject {
 
     /// Search by meaning. Returns [] when the best match is below the
     /// abstention threshold (the honest "I don't have anything on that").
-    func search(_ query: String, topK: Int = 12) -> [Hit] {
+    /// `dateRange` (v1.7) narrows candidates before ranking — the Twin
+    /// Brain's recallEntries "monthsBack" window.
+    func search(_ query: String, topK: Int = 12, in dateRange: ClosedRange<Date>? = nil) -> [Hit] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 3 else { return [] }
-        let results = index.search(trimmed, topK: topK)
+        let results = index.search(trimmed, topK: topK, in: dateRange)
         guard let best = results.first, best.score >= Self.abstentionThreshold else { return [] }
         return results.map { Hit(id: $0.entryId, score: $0.score) }
     }

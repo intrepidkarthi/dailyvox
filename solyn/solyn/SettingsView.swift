@@ -72,6 +72,9 @@ struct SettingsView: View {
     @ObservedObject private var ambientQueue = PendingAmbientSignalQueue.shared
     @State private var showAmbientReview = false
 
+    // Twin Brain (v1.7 Foundation Models)
+    @ObservedObject private var twinBrain = TwinBrainManager.shared
+
     var body: some View {
         Form {
             exportSection
@@ -85,6 +88,7 @@ struct SettingsView: View {
             iCloudSection
             healthSection
             ambientSection
+            twinBrainSection
             privacySection
             researchSection
             backupSection
@@ -315,6 +319,46 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showAmbientReview) {
             AmbientReviewView()
+        }
+    }
+
+    // MARK: - Twin Brain (v1.7 Foundation Models)
+
+    /// Absent entirely on iOS < 26 and on hardware that can't run Apple
+    /// Intelligence — no dead toggle to explain (healthSection pattern).
+    /// Default ON where available: this gates no new permission or data flow;
+    /// the toggle is a kill-switch back to the classic template chat.
+    @ViewBuilder
+    private var twinBrainSection: some View {
+        if twinBrain.isSupportedHere {
+            Section {
+                Toggle("Conversational answers", isOn: $twinBrain.enabled)
+
+                switch twinBrain.status {
+                case .modelNotReady:
+                    Label("Apple Intelligence is still preparing the on-device model — DailyVox switches automatically when it's ready.",
+                          systemImage: "hourglass")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                case .appleIntelligenceOff:
+                    #if os(iOS)
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        Label("Turn on Apple Intelligence in Settings", systemImage: "gear")
+                            .font(.caption)
+                    }
+                    #endif
+                default:
+                    EmptyView()
+                }
+            } header: {
+                Text("Twin Brain")
+            } footer: {
+                Text("Ask Your Twin answers in your own words, grounded in your entries and citing the ones it drew from. Runs entirely on this iPhone with Apple's on-device model — zero network calls, nothing leaves the device. Turning it off returns the classic question chips.")
+            }
         }
     }
 
