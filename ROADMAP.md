@@ -89,9 +89,9 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 |:--|:--|:--|
 | **Scribe** | v1.0–v1.4.1 *(shipped)* | listens, remembers, and reflects what you tell it |
 | **Body** | v1.5 *(shipped)* | feels what your body felt — physiology joins the narrative |
-| **Senses** | v1.5.5 | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
-| **Memory** | v1.6 | remembers you accurately across years — measurable fidelity + semantic memory |
-| **Voice** | v1.7 | converses with a real on-device brain, citing your own entries |
+| **Senses** | v1.5.5 *(shipped in v1.6.0)* | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
+| **Memory** | v1.6 *(shipped)* | remembers you accurately across years — measurable fidelity + semantic memory |
+| **Voice** | v1.7 *(built — next release)* | converses with a real on-device brain, citing your own entries |
 | **Polyglot** | v1.8 | speaks your language — depth on one platform, breadth in languages |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
 | **Self** | v2.1 | knows who you are — and lets you talk to who you were |
@@ -150,7 +150,7 @@ All HR readings are stored as **deltas from your personal baseline for that hour
 - **Voice** — HR/HRV during at-rest speech refines stress detection beyond pacing and tone; active-context recordings rely on voice features alone
 - **Graph** — people, places, and activities now link to physiological response, not just sentiment
 
-### v1.5.1 — Trust Defaults *(next build)*
+### v1.5.1 — Trust Defaults *(shipped 2026-07-19, in the v1.6.0 build)*
 
 One small change that makes the code agree with the promise:
 
@@ -161,7 +161,7 @@ One small change that makes the code agree with the promise:
 - **Personal names mis-transcribed and won't stick.** Uncommon proper nouns — e.g. his daughter's name *Adyah* — are mis-heard on every recording and corrections don't carry to the next entry. Root cause: `SpeechTranscriber.swift:92` builds `SFSpeechURLRecognitionRequest` with no `contextualStrings`, so recognition has no vocabulary bias; each new entry re-mis-hears the name (editing an entry *does* reprocess — `EntryDetailView.swift:668` — but transcription itself has no memory). Fix = feed the Twin's known people/place entities (the knowledge graph already holds them) into `request.contextualStrings`, plus a small user-editable names list so a correction persists across entries. The same customization carries to `SpeechAnalyzer` (now v1.6). Secondary: NLTagger NER may still mis-class an uncommon name in the World map — the confirmed-names list seeds that too.
 - **Twin Resolution questions truncate to one line.** `TwinResolutionView.swift:214` caps the question prompt with `.lineLimit(1)`, so every question shows one line + "…" and the full text never reveals. Fix = drop the line limit (or `.fixedSize(horizontal: false, vertical: true)`) so questions wrap.
 
-### v1.5.5 — Ambient Signals *(pulled forward from v2.3)*
+### v1.5.5 — Ambient Signals *(shipped 2026-07-19, in the v1.6.0 build; pulled forward from v2.3)*
 
 The first taste of the Twin learning from your day, not just your words — and the part of the ambient thesis that needs no new conversational brain, so it ships now rather than at v2.3. Both signals run entirely on-device and flow through the v1.5 review-and-discard queue: nothing is learned without your eyes on it first. This is the differentiation the server-based companion apps structurally cannot copy — they ingest the same signals by uploading your life; DailyVox reads them where they already live.
 
@@ -170,7 +170,9 @@ The first taste of the Twin learning from your day, not just your words — and 
 - **Reuses the v1.5 queue**: no new privacy surface beyond the Photos and Media Library permissions; the review-and-discard gate already exists. "Data Not Collected" label preserved; both signals off by default
 - Deliberately *not* here: location, calendar, email — those wait for v2.3's full Ambient Twin (location/calendar) or are ruled out entirely (email credentials). v1.5.5 is the cheapest, highest-trust slice of the ambient bet
 
-### v1.6 — Semantic Memory & Measurable Fidelity
+### v1.6 — Semantic Memory & Measurable Fidelity *(shipped 2026-07-19, build 20)*
+
+> Shipped: semantic search (NLEmbedding vector index), SpeechAnalyzer transcription on iOS 26+, the openness trait head with per-prediction confidence bands, the prosody/voice-biomarker foundation, the v1.5.5 ambient signals, and the v1.5.1 trust defaults + fixes — all in the single v1.6.0 build. The measurement infrastructure (TwinEval suites incl. groundedness/tonal audits, retrieval and entity evals) lives engine-side and gates releases rather than shipping in-app. **Deferred from the original v1.6 scope** to a later release: proactive-insight clustering/anomaly detection, causal chains, decision-language extraction, embodied search, and the agentic long-term-memory/summary-distillation designs below (superseded in part by v1.7's grounded chat).
 
 Reframed from "semantic search + insights." Now that v1.5 gives the Twin a body, the binding constraint is no longer *more signals* — it's proving the Twin **remembers accurately across years** and **models you rather than imitates you**. So evaluation and long-term memory move onto the critical path *ahead* of v1.7's on-device brain: you can't tell whether the Foundation-Models Twin beats the template Twin without a fidelity number, and you can't ground it without a memory layer. **Measurement infrastructure comes before features.**
 
@@ -195,7 +197,9 @@ Reframed from "semantic search + insights." Now that v1.5 gives the Twin a body,
 
 > **The honest ceiling (unchanged from v3.0's framing).** This is a *mirror* of your reflective self: attitudes, personality, and reflective responses transfer well (83–86% of your own self-consistency); one-shot strategic decisions in novel situations do not. DailyVox is built and marketed as **reflection and precedent, never a decision-making oracle** — and never a mood-diagnosis tool (passive affect sensing tops out ~0.74 AUROC: insight, never diagnosis).
 
-### v1.7 — Foundation Models Twin *(iOS 26, iPhone 15 Pro+)*
+### v1.7 — Foundation Models Twin *(built and evaluation-gated — next release; iOS 26, Apple Intelligence devices)*
+
+> **Status 2026-07-19: built and merged, release pending.** The engine pipeline (structured answer contract + deterministic groundedness audit) and the app integration (free-text chat, entry citations, kill-switch) are on main. The evaluation gate — a live battery against the real on-device model (honesty, fallback rate, anti-sycophancy, injection resistance, abstention safety) — passed twice consecutively; the recorded runs live in the engine repo. Ships as v1.7.0 after on-device verification.
 
 The Twin gets a real brain. Apple's on-device Foundation Models framework has been shipping since iOS 26 — this release adopts it fully, replacing the template-based Twin chat with genuine on-device language model conversations grounded in everything the Twin knows.
 
