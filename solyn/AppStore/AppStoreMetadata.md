@@ -10,7 +10,7 @@ Private On-Device Audio Diary
 offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital
 
 ## Promotional Text (170 characters max)
-Private voice journal, 100% on your iPhone. Your Twin now finds any entry by meaning and notices the shape of your day — only if you let it. No account. No cloud. Free.
+Ask your Twin anything — answers come from your own entries, quoted and cited. Conversational on Apple Intelligence iPhones. On-device, no account, free.
 
 ## Description (4000 characters max)
 
@@ -29,7 +29,10 @@ This is what makes DailyVox different. As you journal, DailyVox tracks and visua
 
 Your twin grows with every entry, giving you a clearer picture of your journaling journey over time.
 
-MEMORY & YOUR DAY (NEW)
+ASK YOUR TWIN (NEW)
+Ask anything in your own words. On iPhones with Apple Intelligence, your Twin answers with Apple's on-device model — grounded in your entries, every answer citing the exact entries it drew from. On every other iPhone, your question searches the journal by meaning and answers with your closest entries, quoted and dated. Either way: if you haven't written about it, DailyVox says so instead of guessing. The whole conversation happens on this iPhone.
+
+MEMORY & YOUR DAY
 - Search by meaning: find an entry by what you meant, not the exact words — "the day I decided to leave my job." Entirely on-device.
 - A first learned trait: openness now comes from a small on-device model trained on real, consented human writing — and it never claims more confidence than it earned.
 - Predictions say how sure they are: tentative, moderate, or strong. No prediction pretends to be an oracle.
@@ -42,14 +45,6 @@ With your permission, the Body Twin reads five signals on this iPhone — sleep,
 - Body whisper: one calm line of context before you speak ("Slept 5h 20m. Take a breath.")
 - Health data stays on this iPhone: never uploaded, never in iCloud, wipeable anytime in Settings → Health
 
-SMART INSIGHTS
-DailyVox uses Apple's on-device NLP to surface patterns you might not notice:
-
-- Sentiment analysis that tracks your emotional trends over weeks and months
-- Named entity recognition to build your personal knowledge graph
-- Smart search suggestions powered by the people and topics in your entries
-- All processing happens on your device — nothing is sent to any server
-
 RICH JOURNALING
 - Voice recording with real-time audio visualization
 - Audio playback with scrubbing and speed control (0.5x-2x)
@@ -59,11 +54,7 @@ RICH JOURNALING
 - Export to PDF, JSON, Markdown, CSV, or plain text
 
 LOCK SCREEN & WIDGETS
-Quick-access widgets for your Home Screen and Lock Screen:
-- Today's entry preview
-- Streak counter
-- Mood tracker
-- One-tap recording shortcut
+Home and Lock Screen widgets: today's entry, streak, mood, and one-tap recording.
 
 SECURITY & PRIVACY
 - Face ID / Touch ID app lock
@@ -100,6 +91,24 @@ https://getdailyvox.com/support
 
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
+
+## What's New (Version 1.7.0)
+
+Ask Your Twin, in your own words.
+
+NEW
+- Real conversations on Apple Intelligence iPhones: your Twin answers free-text questions with Apple's on-device model, grounded in your entries. Every answer shows "From your journal" citations — tap one to open the exact entry it drew from. An answer that can't cite its evidence never appears.
+- Free-text questions on EVERY iPhone: no Apple Intelligence? Ask anyway. DailyVox searches your journal by meaning and answers with your closest entries, quoted and dated — or says plainly that you haven't written about it. No guessing, ever.
+- Suggested follow-ups after each answer, and the classic question chips are still one tap away.
+- Honest by construction: numbers only appear copied from your data, a hard week is reflected plainly rather than spun, and every conversational answer passes a groundedness check before you see it.
+
+RESEARCH
+- A small, consented research pilot: does your Twin actually know you? If you've journaled for a few weeks, a one-time invitation appears in the Twin tab — dismiss it and it never returns. Details at getdailyvox.com/research. The app itself collects nothing, as always.
+
+PRIVACY
+- The entire conversation runs on this iPhone with Apple's on-device model. Zero network calls. Nothing leaves your phone. The App Store label stays "Data Not Collected."
+
+Still free. Still no accounts.
 
 ## What's New (Version 1.6.0)
 Your Twin remembers you better.
