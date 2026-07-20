@@ -91,7 +91,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | **Body** | v1.5 *(shipped)* | feels what your body felt — physiology joins the narrative |
 | **Senses** | v1.5.5 *(shipped in v1.6.0)* | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
 | **Memory** | v1.6 *(shipped)* | remembers you accurately across years — measurable fidelity + semantic memory |
-| **Voice** | v1.7 *(built — next release)* | converses with a real on-device brain, citing your own entries |
+| **Voice** | v1.7 *(shipped 2026-07-20)* | converses with a real on-device brain, citing your own entries |
 | **Polyglot** | v1.8 | speaks your language — depth on one platform, breadth in languages |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
 | **Self** | v2.1 | knows who you are — and lets you talk to who you were |
@@ -197,9 +197,9 @@ Reframed from "semantic search + insights." Now that v1.5 gives the Twin a body,
 
 > **The honest ceiling (unchanged from v3.0's framing).** This is a *mirror* of your reflective self: attitudes, personality, and reflective responses transfer well (83–86% of your own self-consistency); one-shot strategic decisions in novel situations do not. DailyVox is built and marketed as **reflection and precedent, never a decision-making oracle** — and never a mood-diagnosis tool (passive affect sensing tops out ~0.74 AUROC: insight, never diagnosis).
 
-### v1.7 — Foundation Models Twin *(built and evaluation-gated — next release; iOS 26, Apple Intelligence devices)*
+### v1.7 — Foundation Models Twin *(shipped 2026-07-20, build 22; iOS 26, Apple Intelligence devices)*
 
-> **Status 2026-07-19: built and merged, release pending.** The engine pipeline (structured answer contract + deterministic groundedness audit) and the app integration (free-text chat, entry citations, kill-switch) are on main. The evaluation gate — a live battery against the real on-device model (honesty, fallback rate, anti-sycophancy, injection resistance, abstention safety) — passed twice consecutively; the recorded runs live in the engine repo. Ships as v1.7.0 after on-device verification.
+> **Shipped 2026-07-20 (build 22).** Ask Your Twin answers free-text questions with Apple's on-device model, grounded in your entries and citing them; a deterministic audit gates every answer before it renders (failures fall back to the classic chat). On iPhones without Apple Intelligence, the same box answers from on-device semantic search over your entries. The evaluation gate — a live battery against the real on-device model (honesty, fallback rate, anti-sycophancy, injection and abstention safety) — passed twice consecutively; recorded runs live in the engine repo.
 
 The Twin gets a real brain. Apple's on-device Foundation Models framework has been shipping since iOS 26 — this release adopts it fully, replacing the template-based Twin chat with genuine on-device language model conversations grounded in everything the Twin knows.
 

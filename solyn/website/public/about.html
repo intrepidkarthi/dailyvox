@@ -913,7 +913,7 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-now"><span class="rd-tag-text">Next · v1.7.0 (built, in on-device verification)</span></div>
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.7.0</span></div>
               <h3>Foundation Models + tool calling</h3>
               <p><strong>Tech:</strong> Apple's on-device 3B Foundation Model via <code>LanguageModelSession</code>, grounded on the v1.6 memory index. The model never emits free prose — it emits a structured answer whose every factual sentence must cite a journal entry or a measured Twin signal, with citations constrained per turn so citing an unretrieved entry is impossible, and a deterministic audit checks every answer before it renders (a failed answer falls back to the classic chat). Read-only evidence tools via the <code>Tool</code> protocol; <code>@Generable</code> structured outputs; an adversarial evaluation battery (grounding, tone, false-premise and injection resistance) that the release passed twice consecutively. Requires an Apple Intelligence iPhone; the classic chat remains everywhere else. Zero network calls.</p>
             </div>

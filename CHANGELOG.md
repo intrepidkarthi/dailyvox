@@ -2,7 +2,7 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.7.0] — unreleased (in preparation)
+## [1.7.0] — 2026-07-20
 
 ### Added
 - **Ask Your Twin becomes a real conversation** — on iPhones with Apple Intelligence (iOS 26+), the Twin answers free-text questions using Apple's on-device foundation model, grounded in your own entries and live Twin state. Ask anything, in your own words.
