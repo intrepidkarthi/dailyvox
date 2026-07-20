@@ -58,6 +58,10 @@
       { "@type": "Question", "name": "What is the constellation?", "acceptedAnswer": { "@type": "Answer", "text": "Every journal entry in DailyVox becomes a star in your private constellation. Stars are coloured by mood (warm gold for positive, sage for calm, cool blue for reflective, soft coral for stressed) and connected by faint lines when entries share themes. Over months of journaling, clusters and nebulae form around the parts of your life that show up most. The constellation exists only on your iPhone — no one else can see it." } },
       { "@type": "Question", "name": "What's the Dynamic Island recording timer?", "acceptedAnswer": { "@type": "Answer", "text": "When you tap the mic, the Dynamic Island shows a live recording timer — your seconds tick by, your waveform moves with your voice. The timer counts up past 42 seconds (the suggested target) so you can speak as long as you need. After your entry saves, a brief 'a new star appeared in your sky' Live Activity celebrates the entry. Requires iPhone 14 Pro or newer; on other iPhones it appears as a Lock Screen banner." } },
       { "@type": "Question", "name": "How is DailyVox different from Day One?", "acceptedAnswer": { "@type": "Answer", "text": "The main differences are privacy and AI. DailyVox processes everything on-device with no cloud servers, while Day One syncs data through their servers. DailyVox includes AI features like a Digital Twin, constellation visualisation, and on-device mood prediction that Day One does not offer. Day One supports more platforms (Mac, Android, web) and has a longer track record." } }
+    ,
+      { "@type": "Question", "name": "What is the Body Twin in DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "With permission, DailyVox reads five health signals on-iPhone (sleep, morning HRV, resting heart rate, steps, mindful minutes) and freezes a small snapshot beside each entry, tagged at-rest or moving. Every signal waits in a review queue before it reaches your Twin. Health data is never uploaded, never in iCloud, excluded from backups, and wipeable in Settings." } },
+      { "@type": "Question", "name": "Can I search my journal by meaning in DailyVox?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Since v1.6 DailyVox indexes every entry with on-device sentence embeddings, so you can find an entry by what it was about rather than the exact words. Search runs entirely on your iPhone and declines honestly when nothing matches closely enough." } },
+      { "@type": "Question", "name": "Can I ask my Digital Twin questions in my own words?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. On iPhones with Apple Intelligence, Ask Your Twin answers free-text questions with Apple's on-device model, grounded in your entries, with tappable citations to the exact entries it drew from. On other iPhones, questions are answered from semantic search over your own entries, quoted and dated. Nothing leaves the phone, and it never invents answers." } }
     ]
   }
   </script>
@@ -589,7 +593,7 @@
       <div class="qa-item">
         <div class="q-tag">Q · 11</div>
         <h3>What is the <em>Digital Twin</em>?</h3>
-        <p>Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Twin stays <strong>100% on your device</strong> and grows more accurate the more you journal.</p>
+        <p>Your Digital Twin is a private AI model that learns from your journal entries over time. It picks up on your personality traits, emotional patterns, communication style, values, and personal knowledge. After enough entries, it generates personality cards and can predict your moods. The Twin stays <strong>100% on your device</strong> and grows more accurate the more you journal. Full explainer: <a href="/personal-digital-twin">what a personal digital twin is and how it works</a>.</p>
       </div>
       <div class="qa-item">
         <div class="q-tag">Q · 12</div>
@@ -618,7 +622,7 @@
   <section class="section wrap">
     <div class="section-head">
       <div class="section-marker">
-        <span class="diamond" style="color:var(--ray)">◆</span><span>SECTION 04</span><span class="count">· 2 questions</span>
+        <span class="diamond" style="color:var(--ray)">◆</span><span>SECTION 04</span><span class="count">· 5 questions</span>
       </div>
       <h2>The <em>new stuff.</em></h2>
     </div>
@@ -633,6 +637,21 @@
         <h3>What's the <em>Dynamic Island</em> recording timer?</h3>
         <p>When you tap the mic, the Dynamic Island shows a live recording timer — your seconds tick by, your waveform moves with your voice. The timer counts up <strong>past 42 seconds</strong> (the suggested target) so you can speak as long as you need. After your entry saves, a brief "a new star appeared in your sky" Live Activity celebrates the entry. Requires iPhone 14 Pro or newer; on other iPhones the activity appears as a Lock Screen banner. There's also an opt-in streak Live Activity (Settings → Live Activities) and a new Constellation Lock Screen widget.</p>
       </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 18 · NEW v1.5</div>
+        <h3>What is the <em>Body Twin</em>?</h3>
+        <p>With your permission, DailyVox reads five health signals on this iPhone — sleep, morning HRV, resting heart rate, steps, and mindful minutes — and freezes a small snapshot beside each entry, tagged with whether you were at rest or moving so a jog is never mistaken for stress. Every captured signal waits in a review queue: keep it or let it go — nothing reaches your Twin without your eyes on it. Health data is never uploaded, never in iCloud, excluded from backups, and wipeable anytime in Settings → Health.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 19 · NEW v1.6</div>
+        <h3>Can I search my journal <em>by meaning</em>?</h3>
+        <p>Yes. Since v1.6, DailyVox indexes every entry with on-device sentence embeddings, so you can find "the day I decided to leave my job" without remembering the words you used. Search happens entirely on your iPhone, and when nothing matches closely enough it says so rather than guessing.</p>
+      </div>
+      <div class="qa-item">
+        <div class="q-tag">Q · 20 · NEW v1.7</div>
+        <h3>Can I <em>talk to my Twin</em> in my own words?</h3>
+        <p>Yes — Ask Your Twin accepts free-text questions. On iPhones with Apple Intelligence, answers come from Apple's on-device model, grounded in your entries, and every answer shows "From your journal" citations you can tap to open the exact entries it drew from. On every other iPhone, your question searches the journal by meaning and answers with your closest entries, quoted and dated. If you haven't written about something, it says so — it never invents. The whole conversation runs on your iPhone.</p>
+      </div>
     </div>
   </section>
 
@@ -646,7 +665,7 @@
     </div>
     <div class="qa">
       <div class="qa-item">
-        <div class="q-tag">Q · 18</div>
+        <div class="q-tag">Q · 21</div>
         <h3>How is DailyVox different from <em>Day One</em>?</h3>
         <p>The main differences are <strong>privacy and AI architecture</strong>. DailyVox processes all data on-device with no cloud servers, while Day One syncs your data through their servers. DailyVox includes AI features like a Digital Twin, constellation visualisation, Dynamic Island Live Activities, and on-device mood prediction that Day One does not offer. Day One supports more platforms (Mac, Android, web) and has a longer track record — so if cross-platform sync matters more than on-device privacy to you, that's a real consideration.</p>
       </div>

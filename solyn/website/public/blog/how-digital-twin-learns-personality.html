@@ -32,7 +32,7 @@
     "description": "DailyVox's Digital Twin uses 4 on-device AI models to learn your personality from voice entries. Here's exactly how it works — no cloud, no servers.",
     "url": "https://getdailyvox.com/blog/how-digital-twin-learns-personality",
     "datePublished": "2026-04-01",
-    "dateModified": "2026-05-22",
+    "dateModified": "2026-07-20",
     "author": { "@type": "Organization", "name": "DailyVox" },
     "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/how-digital-twin-learns-personality" }
@@ -127,7 +127,7 @@
         <a href="/blog" class="back-link">&larr; Back to Blog</a>
         <span class="blog-tag tag-tech">Technology</span>
         <h1>How DailyVox's Digital Twin Learns Your Personality — On Your Phone</h1>
-        <p class="article-meta">April 1, 2026 &middot; Updated May 22, 2026 &middot; 14 min read</p>
+        <p class="article-meta">April 1, 2026 &middot; Updated July 20, 2026 &middot; 14 min read</p>
       </div>
 
       <div class="article-body">
@@ -217,7 +217,7 @@
 
         <h3>Step 2: On-Device Transcription</h3>
 
-        <p>The audio buffer is fed into Apple's <code>SFSpeechRecognizer</code>, which runs an on-device speech-to-text model. On modern iPhones (A14 chip and later), this transcription happens on the Neural Engine without any network request. The result is a text string — your journal entry in written form — along with per-word confidence scores and timing information. Transcription typically completes within one to two seconds of you finishing speaking, even for entries several minutes long.</p>
+        <p>The audio buffer is fed into Apple's on-device speech stack — on iOS 26 and later, the new <code>SpeechAnalyzer</code> framework (markedly better on long-form speech), with <code>SFSpeechRecognizer</code> as the fallback on earlier iOS. Either way transcription happens on the Neural Engine without any network request. The result is a text string — your journal entry in written form. Since v1.6 you can also teach DailyVox names it keeps mis-hearing (Spoken Words), so corrections stick across recordings.</p>
 
         <h3>Step 3: NLP Analysis</h3>
 
@@ -270,7 +270,7 @@
 
         <p><strong>It can't predict external events.</strong> The predictions sub-model forecasts your mood based on your internal patterns, not the outside world. If an unexpected event happens — a job loss, a surprise vacation, a health scare — the prediction model will be wrong. It's modeling your baseline tendencies, not the full complexity of life.</p>
 
-        <p><strong>It's limited by Apple's NLP capabilities.</strong> The NaturalLanguage framework is powerful but not cutting-edge compared to the latest cloud-based large language models. Sentiment analysis can miss sarcasm, irony, and cultural nuances. NER can fail on unusual names or ambiguous references. The trade-off is intentional: on-device processing with Apple's framework gives you privacy and speed at the cost of some accuracy compared to what a cloud-based GPT-4-class model might achieve.</p>
+        <p><strong>It's honest about its limits.</strong> Apple's on-device NLP can miss sarcasm and cultural nuance, and NER can stumble on unusual names. The trade-off is intentional: privacy and speed over cloud-scale accuracy. What changed in v1.6 is that the Twin stopped relying on keyword heuristics alone — a semantic memory layer (512-dimensional sentence embeddings via <code>NLEmbedding</code>) lets it find entries by meaning, and its first learned trait ships with a confidence band it earned in evaluation rather than a number it merely asserts. We publish those evaluations, including the failures.</p>
 
         <p><strong>It improves slowly, not instantly.</strong> The Twin needs data to learn. If you journal once a week, your model will be sparse and predictions will be low-confidence even after months. The system is designed for daily or near-daily journaling. Users who journal sporadically will see shallower insights — not because the AI is bad, but because there simply isn't enough data to work with.</p>
 
@@ -284,7 +284,7 @@
         <p>DailyVox's Digital Twin uses four on-device AI sub-models — Communication Style, Emotional Signature, Personal Knowledge Graph, and Twin Predictions — to analyze every voice journal entry you record. Each model extracts different personality dimensions from your transcribed speech using Apple's NaturalLanguage framework, and the results are stored locally in Core Data on your iPhone. The Twin updates incrementally with each new entry, so it grows more accurate over time without ever sending your data to a server.</p>
 
         <h3>Does DailyVox send my journal entries to the cloud?</h3>
-        <p>No. Every step of the Digital Twin pipeline — voice transcription, NLP analysis, personality modeling, and data storage — runs entirely on your iPhone. No audio, text, or personality data ever leaves your device. There are no cloud servers involved. Transcription uses Apple's on-device <code>SFSpeechRecognizer</code>, NLP runs through the local NaturalLanguage framework, and all data is persisted in Core Data's encrypted SQLite database protected by your device passcode.</p>
+        <p>No. Every step of the Digital Twin pipeline — voice transcription, NLP analysis, personality modeling, and data storage — runs entirely on your iPhone. No audio, text, or personality data ever leaves your device. There are no cloud servers involved. Transcription uses Apple's on-device speech stack (<code>SpeechAnalyzer</code> on iOS 26+, <code>SFSpeechRecognizer</code> earlier), NLP runs through the local NaturalLanguage framework, and all data is persisted in Core Data's encrypted SQLite database protected by your device passcode.</p>
 
         <h3>What AI models does the Digital Twin use?</h3>
         <p>The Digital Twin uses four sub-models. Communication Style is powered by <code>NLTagger</code> for part-of-speech tagging and computes formality, reflection depth, and openness scores. Emotional Signature uses Apple's sentiment analysis to track mood over time across nine categories. The Personal Knowledge Graph uses Named Entity Recognition to extract people, places, and topics, then maps their relationships and emotional associations. Twin Predictions synthesizes temporal, linguistic, and topic-based patterns from the other three models to forecast your likely mood in upcoming entries.</p>
@@ -300,6 +300,7 @@
 
         <h2>Related Articles</h2>
         <ul>
+          <li><a href="/personal-digital-twin">What Is a Personal Digital Twin? Definition &amp; How It Works</a></li>
           <li><a href="/blog/what-is-a-digital-twin">What Is a Digital Twin? How AI Learns Your Personality</a></li>
           <li><a href="/blog/best-ai-journal-app">Best AI Journal Apps for iPhone in 2026</a></li>
           <li><a href="/technology">DailyVox Technology: How On-Device AI Works</a></li>
