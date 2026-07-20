@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Intelligence Journaling: AI That Cites Your Entries</title>
+  <meta name="description" content="iOS 26 puts an LLM on your iPhone. DailyVox v1.7 uses Apple's Foundation Models to answer questions about your journal, citing your own entries on-device.">
+  <meta name="keywords" content="apple intelligence journal, apple intelligence journaling app, on-device LLM journal, foundation models journal app, private AI journal">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/apple-intelligence-journal">
+  <meta property="og:title" content="Apple Intelligence Journaling: AI That Cites Your Entries">
+  <meta property="og:description" content="iOS 26 puts an LLM on your iPhone. DailyVox v1.7 uses Apple's Foundation Models to answer questions about your journal, citing your own entries on-device.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/apple-intelligence-journal">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Apple Intelligence Journaling: An On-Device AI That Cites Your Own Entries",
+    "description": "iOS 26 puts an LLM on your iPhone. DailyVox v1.7 uses Apple's Foundation Models to answer questions about your journal, citing your own entries on-device.",
+    "url": "https://getdailyvox.com/blog/apple-intelligence-journal",
+    "datePublished": "2026-07-20",
+    "dateModified": "2026-07-20",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/apple-intelligence-journal" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "Apple Intelligence Journaling: An On-Device AI That Cites Your Own Entries"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does Apple Intelligence read my journal?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No one reads your journal. Apple's on-device foundation model runs entirely on your iPhone's own chip, so your entries are processed locally and never leave the device. DailyVox makes zero network calls, has no account system, and its App Store privacy label is 'Data Not Collected'. Nothing is sent to Apple, to DailyVox, or to anyone else."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which iPhones support conversational answers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Conversational answers use Apple's Foundation Models framework, which requires an Apple Intelligence device: iPhone 15 Pro, iPhone 15 Pro Max, or any iPhone 16 or later, running iOS 26 with Apple Intelligence enabled. On those devices, Ask Your Twin generates written answers grounded in your entries, with citations you can tap to open the source entry."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens on older iPhones?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "On iPhones without Apple Intelligence, the same free-text questions are answered by on-device semantic search: DailyVox finds the entries that best match the meaning of your question and shows them quoted and dated, rather than generating a written summary. It is a different presentation of the same grounded retrieval, and it also runs entirely on-device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is DailyVox free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. DailyVox is free, with no subscription, no ads, and no account required. Because all AI processing happens on your iPhone rather than on rented servers, there is no per-user cloud cost that would force a subscription model."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Technology</span>
+        <h1>Apple Intelligence Journaling: An On-Device AI That Cites Your Own Entries</h1>
+        <p class="article-meta">July 20, 2026 &middot; 7 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>With iOS 26, Apple opened its Foundation Models framework to third-party apps. In plain terms: there is now a roughly 3-billion-parameter language model built into the iPhone itself, and apps can use it without sending a single byte to a server.</p>
+
+        <p>For most app categories, that is a nice efficiency win. For journaling, it changes the basic bargain. A journal is the most private writing most people ever do. Every cloud AI journal asks you to accept the same trade: your diary travels to someone else's server so a model there can analyze it. On-device AI flips that. The model comes to your diary, runs on your chip, and your words never leave your hand.</p>
+
+        <p>DailyVox v1.7, the latest release rolling out now, is built on exactly this. Here is what an Apple Intelligence journal actually looks like, what it can honestly do on which devices, and why the citation design matters more than the model.</p>
+
+        <h2>Ask Your Twin: Questions Answered From Your Own Entries</h2>
+
+        <p>DailyVox builds a <a href="/personal-digital-twin">personal digital twin</a> from your voice journal: a private, on-device model of your moods, people, places, and patterns. In v1.7, you can talk to it. Type or speak a free-text question, the kind you would ask a friend who had read everything you ever wrote:</p>
+
+        <ul>
+          <li>"When did I last feel this stuck at work?"</li>
+          <li>"What did I say about the Goa trip?"</li>
+          <li>"How was I sleeping back in March?"</li>
+        </ul>
+
+        <p>The answer is generated by Apple's on-device foundation model, and it comes with something most AI chat interfaces do not have: receipts. Every answer carries "From your journal" citations. Tap one and it opens the exact entry the answer drew from, on its original date, in your own words.</p>
+
+        <p>And there is a hard rule behind the interface: an answer that cannot cite its evidence never appears. Before anything is shown, a deterministic audit checks every answer against the entries that were actually retrieved. If the check fails, the generated answer is discarded and DailyVox falls back to showing you the relevant entries themselves, quoted and dated. You either get a grounded answer or the raw evidence. Never a confident guess.</p>
+
+        <h2>Why Grounding Is the Whole Point</h2>
+
+        <p>Language models confabulate. Ask one about facts it does not have and it will often produce something fluent and wrong. In most products this is an annoyance. In a journal it is corrosive, because a journal AI that invents memories is worse than no journal AI at all. If it tells you that you "felt anxious about the move in April" and you never wrote that, it is not summarizing your life. It is fabricating one, and quietly editing your memory in the process.</p>
+
+        <p>DailyVox handles this with citation-constrained generation. In plain language: when you ask a question, the app first retrieves the entries that are actually relevant to it, using on-device semantic search. The model is then only allowed to build its answer from those retrieved entries, and every claim in the answer must point back to one of them. This is enforced structurally, in how the answer is constructed, not filtered out afterwards by a second model taking its best guess at what looks made up. The model cannot cite an entry that was never retrieved, and the audit step verifies the citations line up before you see anything.</p>
+
+        <p>This is the same reason a twin grounded in your journal behaves differently from a general chatbot with a memory feature. We have written before about <a href="/blog/digital-twin-vs-chatgpt-memory">how a digital twin differs from ChatGPT's memory</a>: a chat memory is a summary the model paraphrases from; a twin's answers are anchored to source entries you can open and reread. The evidence stays primary. The AI stays a reader of your journal, not a rewriter of it.</p>
+
+        <h2>Honest Device Tiers</h2>
+
+        <p>Not every iPhone can run Apple's foundation model, and we would rather say that plainly than pretend otherwise.</p>
+
+        <p><strong>On Apple Intelligence iPhones</strong> (iPhone 15 Pro and later, with Apple Intelligence enabled): you get the full conversational experience. Written answers, generated on-device, with tappable citations into your entries.</p>
+
+        <p><strong>On every other iPhone</strong> DailyVox supports: the same question box works, answered by on-device semantic search instead of generation. Ask "when did I last feel this stuck at work?" and you get the entries that match the meaning of the question, quoted and dated, even if none of them contain the word "stuck". No written summary, but the same grounded retrieval, and often that is what you actually wanted: your own words, back.</p>
+
+        <p>Both tiers run entirely on the phone. Neither degrades when your connection does, which has been a DailyVox position since long before iOS 26. Our earlier piece on <a href="/blog/ai-journal-that-works-offline">why an AI journal should work without Wi-Fi</a> explains the architecture; the short version is that airplane mode is not a degraded mode here, it is the normal one.</p>
+
+        <h2>What Shipped Before This: The v1.6 Foundation</h2>
+
+        <p>The conversational layer in v1.7 sits on groundwork that shipped in v1.6:</p>
+
+        <ul>
+          <li><strong>Search by meaning.</strong> On-device semantic embeddings let you search your journal by what you meant, not just the words you used. This is the same retrieval engine that now feeds Ask Your Twin its evidence.</li>
+          <li><strong>SpeechAnalyzer transcription.</strong> On iOS 26, DailyVox uses Apple's new SpeechAnalyzer for voice transcription, which is faster and more accurate than the older Speech framework, and still fully local.</li>
+          <li><strong>Ambient signals.</strong> Optional context, like the scene and background music around an entry, captured and processed on-device.</li>
+        </ul>
+
+        <p>If you want the deeper technical picture of how the pieces fit, from transcription through the twin engine, the <a href="/technology">technology page</a> covers the full pipeline.</p>
+
+        <h2>The Privacy Position, Stated Exactly</h2>
+
+        <p>DailyVox makes zero network calls with your journal data. There is no account to create, no server that ever sees an entry, and the App Store privacy label reads "Data Not Collected", the strictest label Apple offers. This is not a policy promise that could change in a future terms-of-service update. It is an architecture: the app has nothing to transmit and nowhere to transmit it.</p>
+
+        <p>Apple's on-device model fits this design exactly. The Foundation Models framework runs on the iPhone's Neural Engine; prompts and outputs stay in the app's local process. If the phrase "on-device" is new to you, our explainer on <a href="/blog/what-is-on-device-ai">what on-device AI is and why it matters</a> walks through the trust model, but the practical summary for a journal is one sentence: the intelligence moved to where the diary lives, instead of the diary moving to where the intelligence lives.</p>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>Does Apple Intelligence read my journal?</h3>
+        <p>No one reads your journal. Apple's on-device foundation model runs entirely on your iPhone's own chip, so your entries are processed locally and never leave the device. DailyVox makes zero network calls, has no account system, and its App Store privacy label is "Data Not Collected". Nothing is sent to Apple, to DailyVox, or to anyone else.</p>
+
+        <h3>Which iPhones support conversational answers?</h3>
+        <p>Conversational answers use Apple's Foundation Models framework, which requires an Apple Intelligence device: iPhone 15 Pro, iPhone 15 Pro Max, or any iPhone 16 or later, running iOS 26 with Apple Intelligence enabled. On those devices, Ask Your Twin generates written answers grounded in your entries, with citations you can tap to open the source entry.</p>
+
+        <h3>What happens on older iPhones?</h3>
+        <p>On iPhones without Apple Intelligence, the same free-text questions are answered by on-device semantic search: DailyVox finds the entries that best match the meaning of your question and shows them quoted and dated, rather than generating a written summary. It is a different presentation of the same grounded retrieval, and it also runs entirely on-device.</p>
+
+        <h3>Is DailyVox free?</h3>
+        <p>Yes. DailyVox is free, with no subscription, no ads, and no account required. Because all AI processing happens on your iPhone rather than on rented servers, there is no per-user cloud cost that would force a subscription model.</p>
+
+        <h2>The Quiet Version of the Big Moment</h2>
+
+        <p>Apple Intelligence journaling does not need superlatives. The honest claim is modest and, we think, more interesting: for the first time, an iPhone can run a capable language model over the most sensitive text you produce, without that text going anywhere. What you build on top of that decides whether it is trustworthy. DailyVox's answer is a twin that can only speak from your entries, shows its sources on every answer, and stays silent when it cannot prove what it is about to say.</p>
+
+        <p>Your journal remembers. Now it can answer, and show you where the answer came from.</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/what-is-on-device-ai">What Is On-Device AI? Why It Matters for Your Privacy</a></li>
+          <li><a href="/blog/digital-twin-vs-chatgpt-memory">Digital Twin vs ChatGPT Memory</a></li>
+          <li><a href="/blog/ai-journal-that-works-offline">Why Your AI Journal Should Work Without Wi-Fi</a></li>
+        </ul>
+
+        <div class="article-cta">
+          <h3>Ask Your Journal Anything</h3>
+          <p>DailyVox v1.7 answers your questions from your own entries, with citations, entirely on your iPhone. Free, no account, no cloud.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Your Journal by Meaning, Not Keywords (On-Device)</title>
+  <meta name="description" content="You remember the day, not the words. Semantic search finds journal entries by meaning — on-device sentence embeddings, no cloud, free in DailyVox v1.6.">
+  <meta name="keywords" content="search journal by meaning, semantic search journal, find old journal entries, journal app semantic search, on-device semantic search">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/search-journal-by-meaning">
+  <meta property="og:title" content="Search Your Journal by Meaning, Not Keywords (On-Device)">
+  <meta property="og:description" content="You remember the day, not the words. Semantic search finds journal entries by meaning — on-device sentence embeddings, no cloud, free in DailyVox v1.6.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/search-journal-by-meaning">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Search Your Journal by Meaning, Not Keywords (On-Device)",
+    "description": "You remember the day, not the words. Semantic search finds journal entries by meaning — on-device sentence embeddings, no cloud, free in DailyVox v1.6.",
+    "url": "https://getdailyvox.com/blog/search-journal-by-meaning",
+    "datePublished": "2026-07-20",
+    "dateModified": "2026-07-20",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/search-journal-by-meaning" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does semantic search upload my journal entries?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. DailyVox builds sentence embeddings with Apple's NLEmbedding framework directly on your iPhone, and both the embeddings and the search index stay on the device. The index is excluded from backups, and search works in airplane mode because there is no server involved at any step."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does semantic search work better with phrases than single keywords?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Semantic search uses sentence embeddings, which represent a whole thought as a single point in meaning-space. A full phrase like 'the week I decided to change careers' gives the model an entire idea to locate. A lone keyword like 'career' carries almost no context, so it lands in a vague region and matches loosely."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens when nothing in my journal matches a search?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DailyVox declines to answer. If no entry is closer than a measured abstention threshold, the app tells you it found no close match instead of padding the screen with loosely related entries. You can then rephrase — often a fuller sentence surfaces the memory."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is semantic search free in DailyVox?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Semantic search shipped in DailyVox v1.6 in July 2026 and is free, like the rest of the app."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "Search Your Journal by Meaning, Not Keywords (On-Device)"}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Technology</span>
+        <h1>Search Your Journal by Meaning, Not Keywords (On-Device)</h1>
+        <p class="article-meta">July 20, 2026 &middot; 6 min read</p>
+      </div>
+
+      <div class="article-body">
+        <p>A few months into a journaling habit, something strange happens: you stop remembering your words and start remembering your days. The day you decided to leave your job. The night you finally slept properly after weeks of not sleeping. The morning the argument with your brother stopped hurting.</p>
+
+        <p>So you open your journal app, tap search, and type <em>decided to leave my job</em>. Zero results.</p>
+
+        <p>Because on that day, you never wrote that phrase. You said something like &ldquo;I can&rsquo;t do another year of this&rdquo; and rambled about the commute, the offer, the guilt. The decision was in the entry. The words weren&rsquo;t. And keyword search matches words, not decisions.</p>
+
+        <p>This is the quiet failure of almost every journal app: the more you journal, the more your archive is worth &mdash; and the harder it becomes to find anything in it.</p>
+
+        <h2>Why Keyword Search Fails a Journal</h2>
+
+        <p>Keyword search was built for documents &mdash; things with titles, headings, and deliberate vocabulary. A journal is the opposite. Entries are unplanned, spoken in the vocabulary of that particular mood, and never labeled. You don&rsquo;t announce &ldquo;today I hit a turning point in my recovery.&rdquo; You say &ldquo;I actually laughed at dinner and it didn&rsquo;t feel like acting.&rdquo;</p>
+
+        <p>Six months later, you remember the turning point. You search for &ldquo;turning point.&rdquo; The entry that <em>was</em> the turning point doesn&rsquo;t contain either word.</p>
+
+        <p>Voice journaling makes this gap wider. Spoken entries wander, circle back, use half-sentences. They&rsquo;re rich in meaning and poor in searchable keywords. What you need is a search that operates on the meaning.</p>
+
+        <h2>How Semantic Search Works, in Plain Language</h2>
+
+        <p>Here is the whole idea, no math degree required.</p>
+
+        <p>When you save an entry, DailyVox turns it into a <strong>sentence embedding</strong> &mdash; a list of 512 numbers produced by Apple&rsquo;s NLEmbedding framework, running entirely on your iPhone. You can think of those 512 numbers as coordinates: every entry becomes a point in a 512-dimensional space, and the model places entries so that <em>entries with similar meaning end up close together</em>. &ldquo;I can&rsquo;t do another year of this&rdquo; and &ldquo;I think I&rsquo;m done with this job&rdquo; land near each other, even though they share almost no words.</p>
+
+        <p>When you search, your question goes through the same process. &ldquo;The day I decided to leave my job&rdquo; becomes its own point in that space. Then the search is simple: find the entries whose points sit closest to your question&rsquo;s point. Closeness in the space <em>is</em> closeness in meaning. No word overlap required.</p>
+
+        <p>And because the embedding model ships inside iOS, all of this happens on the phone. Your entries are never uploaded to be indexed, the index itself never leaves the device, and it&rsquo;s excluded from backups. Airplane mode changes nothing &mdash; the same principle behind <a href="/blog/apple-intelligence-journal">everything else DailyVox does with Apple&rsquo;s on-device frameworks</a>.</p>
+
+        <h2>The Part Most Search Features Get Wrong: Saying &ldquo;No&rdquo;</h2>
+
+        <p>Every search engine can return <em>something</em>. Rank all entries by closeness, show the top of the list, done. Even if nothing is actually close, the screen fills up and the feature looks like it worked.</p>
+
+        <p>For a journal, that&rsquo;s corrosive. If you search &ldquo;the trip where I forgave my father&rdquo; and get back a confident-looking list of entries about unrelated trips, one of two things happens: you waste time re-reading the wrong memories, or worse, you start doubting the entries that <em>are</em> right. A search you can&rsquo;t trust is worse than no search.</p>
+
+        <p>So DailyVox&rsquo;s semantic search does something unfashionable: it declines. We measured an abstention threshold &mdash; a floor for how close a match has to be before it counts &mdash; and when no entry clears it, the app says it found no close match instead of padding the results with noise. That&rsquo;s the same design conviction behind the <a href="/personal-digital-twin">Digital Twin</a> as a whole: a mirror, not an oracle. It reflects what&rsquo;s actually in your journal, and when the answer isn&rsquo;t there, it says so.</p>
+
+        <p>The payoff is trust in the other direction. When DailyVox <em>does</em> return an entry, it means something. It cleared the bar.</p>
+
+        <h2>Shipped in v1.6 &mdash; and How to Get the Most From It</h2>
+
+        <p>Semantic search shipped in DailyVox v1.6 in July 2026, and like everything else in the app, it&rsquo;s free. There&rsquo;s nothing to configure &mdash; your existing entries are indexed on-device and searchable by meaning.</p>
+
+        <p>One tip changes everything about how well it works: <strong>search in full phrases, not single keywords.</strong></p>
+
+        <p>This falls straight out of how sentence embeddings work. The model represents a <em>whole thought</em> as one point in space. Give it a whole thought &mdash; &ldquo;the week I stopped being angry about the move&rdquo; &mdash; and it has an entire idea to place precisely. Give it one word &mdash; &ldquo;angry&rdquo; &mdash; and it has almost nothing to go on; a lone word lands in a vague region and drifts near every entry that ever mentioned frustration. Keyword habits actively hurt here. Ask the way you&rsquo;d ask a friend who had read your whole journal.</p>
+
+        <ul>
+          <li>Instead of <em>&ldquo;job&rdquo;</em> &rarr; try <em>&ldquo;when I started dreading Monday mornings&rdquo;</em></li>
+          <li>Instead of <em>&ldquo;sleep&rdquo;</em> &rarr; try <em>&ldquo;the stretch when I couldn&rsquo;t fall asleep before 3am&rdquo;</em></li>
+          <li>Instead of <em>&ldquo;mom&rdquo;</em> &rarr; try <em>&ldquo;the call where mom finally understood&rdquo;</em></li>
+        </ul>
+
+        <h2>Where This Goes Next: Answers With Receipts</h2>
+
+        <p>Semantic search isn&rsquo;t just a feature; it&rsquo;s a foundation. The same on-device index is what will ground Ask Your Twin in v1.7. Today, a <a href="/blog/how-digital-twin-learns-personality">twin that has learned your patterns</a> can describe you in general terms. With a meaning index underneath it, it can do something better: answer a question about your life and <em>cite its source</em> &mdash; one sentence, plus a link to the exact entry it came from. Tap the link, and you&rsquo;re reading your own words from that day.</p>
+
+        <p>That&rsquo;s the difference between an AI that sounds like it knows you and one that can show its work. The honest search &mdash; including its willingness to say &ldquo;no close match&rdquo; &mdash; is what makes honest answers possible. You can read more about the full on-device pipeline on our <a href="/technology">technology page</a>.</p>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>Does semantic search upload my entries?</h3>
+        <p>No. The embeddings are computed by Apple&rsquo;s NLEmbedding framework on your iPhone, the index is stored only on the device, and it&rsquo;s excluded from backups. No server is involved at any step &mdash; search works in airplane mode.</p>
+
+        <h3>Why does it work better with phrases?</h3>
+        <p>Because the search runs on <em>sentence</em> embeddings. A full phrase is a complete thought the model can place precisely in meaning-space; a single keyword is too little context and matches loosely. Describe the memory the way you&rsquo;d describe it to a person.</p>
+
+        <h3>What happens when nothing matches?</h3>
+        <p>DailyVox tells you. If no entry is closer than the measured abstention threshold, you get &ldquo;no close match&rdquo; instead of a page of loosely related entries. Usually rephrasing with a fuller sentence &mdash; more context, more specifics &mdash; finds the memory.</p>
+
+        <h3>Do I need to re-index or set anything up?</h3>
+        <p>No. From v1.6 (July 2026), indexing happens automatically on-device as you journal, and your existing entries are included. It&rsquo;s free.</p>
+
+        <h2>Related Articles</h2>
+        <ul>
+          <li><a href="/blog/apple-intelligence-journal">How DailyVox Uses Apple&#x27;s On-Device Intelligence</a></li>
+          <li><a href="/blog/how-digital-twin-learns-personality">How a Digital Twin Learns Your Personality</a></li>
+          <li><a href="/blog/ai-journal-that-works-offline">Why Your AI Journal Should Work Without Wi-Fi</a></li>
+        </ul>
+
+        <div class="article-cta">
+          <h3>Find the Day, Not the Words</h3>
+          <p>DailyVox searches your journal by meaning &mdash; entirely on your iPhone, nothing uploaded, free. Speak your entries; find them years later.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
