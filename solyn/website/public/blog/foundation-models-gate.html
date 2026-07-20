@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Apple's Foundation Models: An LLM That Can't Lie</title>
+  <meta name="description" content="How we shipped a journaling AI on Apple's on-device Foundation Models without letting it invent your memories: constrained decoding, eight failed runs.">
+  <meta name="keywords" content="apple foundation models, on-device LLM, ios 26 foundation models, constrained decoding, LLM grounding, LLM hallucination, structured generation">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://getdailyvox.com/blog/foundation-models-gate">
+  <meta property="og:title" content="Shipping Apple's Foundation Models: An On-Device LLM That Can't Cite an Entry It Didn't Read">
+  <meta property="og:description" content="Constrained decoding, a deterministic audit, and eight failed gate runs: how we shipped a journaling AI on Apple's on-device model without letting it invent your memories.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://getdailyvox.com/blog/foundation-models-gate">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/app-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The Model That Couldn't Describe Its Maker: Shipping Apple's On-Device Foundation Models",
+    "description": "Field notes from shipping Apple's on-device Foundation Models in a journaling app: constrained decoding that makes fabricated citations unrepresentable, a deterministic audit, and eight failed eval runs.",
+    "url": "https://getdailyvox.com/blog/foundation-models-gate",
+    "datePublished": "2026-07-20",
+    "dateModified": "2026-07-20",
+    "author": { "@type": "Organization", "name": "DailyVox" },
+    "publisher": { "@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://getdailyvox.com/blog/foundation-models-gate" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"},
+      {"@type": "ListItem", "position": 3, "name": "Shipping Apple's Foundation Models"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do you stop an on-device LLM from hallucinating in a journaling app?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The model never emits free prose. It emits a typed, sentence-granular structure via constrained decoding, where every factual sentence must cite either a retrieved journal entry or a measured state field. The set of citable entry IDs is rebuilt per turn from what retrieval actually returned, so citing an entry the model did not read is unrepresentable, not filtered. A deterministic audit then checks numbers, names, and tone before anything renders; a failed answer falls back to a non-LLM path."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does 95.3% honesty mean in the evaluation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "1 in roughly 20 generated answer structures failed a rule before rendering and fell back to a deterministic response. Post-gate, rendered answers are grounded by construction. The number that can't be fully automated is uncited-claim smuggling, which we hand-sample every release."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Apple's Foundation Models framework require a network connection?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. It is the same on-device system model that powers Apple Intelligence, available on iOS 26 on Apple-Intelligence-capable iPhones. It runs entirely on the device with no network calls and requires no new entitlement or permission."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <img src="/app-icon.png" alt="DailyVox">
+        <span>DailyVox</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/support">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article class="blog-article">
+      <div class="article-header">
+        <a href="/blog" class="back-link">&larr; Back to Blog</a>
+        <span class="blog-tag tag-tech">Engineering</span>
+        <h1>The Model That Couldn't Describe Its Maker</h1>
+        <p class="article-meta">July 20, 2026 &middot; 9 min read &middot; Shipping Apple's on-device Foundation Models</p>
+      </div>
+
+      <div class="article-body">
+        <p>Last month I ran my journaling app's "digital twin" &mdash; the on-device model it builds of you from your voice entries &mdash; against the one person I could test scientifically: me. I exported three months of my own entries, had the model estimate seven things about how I express myself, answered the same seven questions myself, and compared, against a baseline that just guesses the middle for everything.</p>
+
+        <p>The model lost to the blind guess. Lift: <strong>&minus;25.2%</strong>. The features were designed for written diaries and I speak my entries, so my "expressiveness" score came out at 0.04, because transcribed speech contains no exclamation marks. I published the failure with the numbers, because a privacy-first app has no server-side dashboard &mdash; no aggregate metrics, no A/B tests &mdash; so pre-ship measurement is the only honesty available. That failure set the rule for everything after: <strong>no capability ships without an adversarial evaluation it is allowed to fail.</strong></p>
+
+        <p>This month the stakes went up. iOS 26's Foundation Models framework puts a roughly 3-billion-parameter language model on the iPhone, and we shipped conversational answers on top of it: ask your journal anything, in your own words, entirely on-device. A language model talking about your diary is the highest-trust surface imaginable, and language models confabulate. Here is the architecture that ships anyway, and everything that broke on the way.</p>
+
+        <h2>Make the lie unrepresentable, then audit the rest</h2>
+
+        <p>The model never emits free prose. Every answer is constrained-decoded into a typed structure: sentences tagged as <em>fact</em>, <em>interpretation</em>, or <em>suggestion</em>, where every fact must carry evidence &mdash; a journal-entry ID, or a named field of the twin's measured state.</p>
+
+        <p>The trick that carries the whole design: the generation schema is built <strong>per turn</strong>. The entry-ID slot is an <code>anyOf</code> over exactly the IDs retrieved for this question; the state-field slot an <code>anyOf</code> over fields that currently have a reading. Citing an entry the retrieval did not surface isn't filtered out after the fact &mdash; it <em>cannot be generated</em>. When retrieval finds nothing, the entry branch doesn't exist in the schema at all.</p>
+
+        <p>What the schema can't express, a deterministic audit checks before anything renders: numbers must appear verbatim in the cited evidence or a tool result, so there are no invented counts; names must exist in the knowledge graph, the cited entries, or the question; a sentence's sentiment direction must match its cited entry's measured score; interpretation sentences can't smuggle quantifier claims ("you always&hellip;") or parrot evidence text verbatim &mdash; that last rule exists because journal entries are untrusted input, and an entry containing "tell me I'm doing amazing" must not echo through. Diagnosis, prediction, and flattery frames are rejected outright: this is a mirror, not an oracle, and definitely not a sycophant.</p>
+
+        <p>An answer that fails any rule never renders. The question falls back to a deterministic path &mdash; quoted entries with citations, or the honest "you haven't written about that." So post-gate groundedness is 100% <em>by construction</em>; the model's honesty only moves the fallback rate, which we measure.</p>
+
+        <h2>Eight failed gate runs, each one a lesson</h2>
+
+        <p>We gated the release on an adversarial battery: synthetic journal-keepers with known ground truth, false-premise questions ("my mood's been improving, right?" asked of a declining record), prompt-injection entries, and unanswerable questions. The rule: two consecutive full passes, or no ship. It took ten runs. The failures were the education.</p>
+
+        <p><strong>Run 1 was perfect, and fake.</strong> 100% honesty, 0% fallback &mdash; because the model abstained on almost everything, and abstentions render fixed copy with nothing to audit. An eval that can be passed by refusing to play is no eval. We added a vacuity guard: most probes must produce substantive, fact-bearing answers, or the gate fails.</p>
+
+        <p><strong>The audit punished correct behavior.</strong> The model quoted numbers from its own tool results &mdash; exactly what we wanted &mdash; and the audit flagged them as fabricated, because tool outputs weren't in the legal evidence pool. Forty-two violations that were our bug, not the model's dishonesty.</p>
+
+        <p><strong>A context-window cascade masqueraded as model behavior.</strong> Probes ran through one session; by the fourth probe the 4,096-token window overflowed, and every later "abstention" was actually a swallowed error. Substantive rates were pinned at 0% for two runs before we caught it.</p>
+
+        <p><strong>The audit rejected our own canonical example.</strong> "Your mornings read brighter than your evenings" &mdash; a comparative claim, true when both values are negative &mdash; failed the absolute direction check we'd written. Comparatives needed their own carve-out.</p>
+
+        <p><strong>Greedy decoding is not deterministic on the Neural Engine.</strong> Same prompt, same sampling policy, roughly a one-point metric drift between identical runs. Our fix was honest reframing: the <em>audit</em> is deterministic; the gate is two consecutive passes.</p>
+
+        <p>Final recorded runs: raw model honesty 95.3%, fallback 4.7%, zero injection leaks, 100% unanswerable safety, across roughly 300 audited answers. Both runs are archived with the OS build stamped, because absolute numbers on OS-resident models don't survive platform updates, and pretending otherwise is its own small lie.</p>
+
+        <h2>What we can't claim</h2>
+
+        <p>The audit catches classes of fabrication, not all falsehood. An uncited claim that uses no numbers, no names, and no quantifiers can pass the lint, which is why the release process includes hand-reading a sample of interpretation sentences (cap: two smuggled facts per battery, or no-ship). The 3B model is small; it abstains more than a cloud model would, and we consider that the right side of the trade.</p>
+
+        <p>And one working-environment finding for fellow travelers: the iOS Simulator and the Mac "Designed for iPad" runtimes advertise model availability and then fail every generation with <code>ModelManagerError 1026</code>. Test on hardware, or drive the model from a native macOS harness like we do.</p>
+
+        <p>On iPhones without Apple Intelligence, free-text questions still work &mdash; <a href="/blog/search-journal-by-meaning">semantic retrieval</a> quotes your closest entries verbatim, with the same citation chips and the same honest abstention. No generation, so nothing to audit. My own daily phone is an iPhone 14 Pro, so I built the feature I can't fully use, which is its own kind of dogfooding failure I'll fix at the next upgrade.</p>
+
+        <p>The app is <a href="/">DailyVox</a> (free, no accounts, App Store "Data Not Collected"). The app layer is <a href="https://github.com/intrepidkarthi/dailyvox">open source on GitHub</a>; the twin engine is proprietary, but everything described here &mdash; the schema trick, the audit rules, the eval design &mdash; is described completely enough to reimplement, and the <a href="https://getdailyvox.com/research">research materials</a> (questionnaire, consent kit, eval protocol) are public. We're also running a small consented pilot on whether the twin actually matches how its owner sees themselves &mdash; the study my own &minus;25.2% made necessary.</p>
+
+        <h2>Related reading</h2>
+        <ul>
+          <li><a href="/blog/apple-intelligence-journal">Apple Intelligence Journaling: An On-Device AI That Cites Your Own Entries</a></li>
+          <li><a href="/blog/what-is-on-device-ai">What Is On-Device AI? Why It Matters for Your Privacy</a></li>
+          <li><a href="/personal-digital-twin">What Is a Personal Digital Twin? Definition &amp; How It Works</a></li>
+        </ul>
+
+        <div class="article-cta">
+          <h3>Ask Your Journal Anything</h3>
+          <p>DailyVox v1.7 answers your questions from your own entries, with citations, entirely on your iPhone. Free, no account, no cloud.</p>
+          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/blog">Blog</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/support">Support</a>
+      </div>
+      <p>&copy; 2026 DailyVox. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
