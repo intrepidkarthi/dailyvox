@@ -20,7 +20,7 @@ All notable changes to DailyVox are documented here.
 - The entire conversation pipeline runs on-device with Apple's system model. Zero network calls; nothing leaves the iPhone; the "Data Not Collected" App Store label is preserved.
 
 ### Build
-- `MARKETING_VERSION` 1.6.0 → 1.7.0; `CURRENT_PROJECT_VERSION` 20 → 21.
+- `MARKETING_VERSION` 1.6.0 → 1.7.0; `CURRENT_PROJECT_VERSION` 20 → 22 (21 = first TestFlight cut; 22 adds the every-device free-text path, the pilot invitation card, and the fallback/diagnostics fixes).
 - Engine (DailyVoxTwin): structured `GroundedTwinAnswer` contract + 14-rule deterministic `AnswerAudit`, Foundation-Models pipeline with per-turn constrained citation schema, three read-only evidence tools, and the new TwinEval `--suite brain` gate (passed 2×: raw honesty 95.3%, fallback 4.7%, zero injection leaks).
 
 ## [1.6.0] — 2026-07-19
