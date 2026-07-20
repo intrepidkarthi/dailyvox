@@ -4,19 +4,93 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/journal-app-comparison", "destination": "/compare", "permanent": true },
-    { "source": "/blog/on-device-ai-journaling", "destination": "/blog/what-is-on-device-ai", "permanent": true },
-    { "source": "/blog/journal-app-that-doesnt-use-the-cloud", "destination": "/blog/best-offline-journal-app", "permanent": true },
-    { "source": "/blog/best-free-journal-app-2026", "destination": "/blog/best-free-journal-app", "permanent": true },
-    { "source": "/blog/best-free-journal-app-no-paywall-2026", "destination": "/blog/best-free-journal-app", "permanent": true },
-    { "source": "/blog/dailyvox-vs-apple-journal", "destination": "/blog/apple-journal-vs-dailyvox", "permanent": true },
-    { "source": "/alternative/apple-journal", "destination": "/blog/apple-journal-vs-dailyvox", "permanent": true },
-    { "source": "/alternative/day-one", "destination": "/blog/dailyvox-vs-day-one", "permanent": true }
+    {
+      "source": "/journal-app-comparison",
+      "destination": "/compare",
+      "permanent": true
+    },
+    {
+      "source": "/blog/on-device-ai-journaling",
+      "destination": "/blog/what-is-on-device-ai",
+      "permanent": true
+    },
+    {
+      "source": "/blog/journal-app-that-doesnt-use-the-cloud",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-free-journal-app-2026",
+      "destination": "/blog/best-free-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-free-journal-app-no-paywall-2026",
+      "destination": "/blog/best-free-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/dailyvox-vs-apple-journal",
+      "destination": "/blog/apple-journal-vs-dailyvox",
+      "permanent": true
+    },
+    {
+      "source": "/alternative/apple-journal",
+      "destination": "/blog/apple-journal-vs-dailyvox",
+      "permanent": true
+    },
+    {
+      "source": "/alternative/day-one",
+      "destination": "/blog/dailyvox-vs-day-one",
+      "permanent": true
+    },
+    {
+      "source": "/blog/what-is-a-voice-journal",
+      "destination": "/blog/what-is-voice-journaling",
+      "permanent": true
+    },
+    {
+      "source": "/blog/voice-journal-for-walking",
+      "destination": "/blog/voice-journaling-while-walking",
+      "permanent": true
+    }
   ],
   "headers": [
-    { "source": "/in/(.*)",          "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
-    { "source": "/for/(.*)",         "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
-    { "source": "/use/(.*)",         "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
-    { "source": "/alternative/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+    {
+      "source": "/in/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/for/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/use/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/alternative/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }
