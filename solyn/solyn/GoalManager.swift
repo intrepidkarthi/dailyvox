@@ -74,14 +74,16 @@ final class GoalManager: ObservableObject {
     func checkMilestone(currentStreak: Int) -> Int? {
         let lastMilestone = UserDefaults.standard.integer(forKey: lastMilestoneKey)
 
-        for milestone in Self.milestones {
-            if currentStreak >= milestone && milestone > lastMilestone {
-                UserDefaults.standard.set(milestone, forKey: lastMilestoneKey)
-                return milestone
-            }
+        // Celebrate only the HIGHEST milestone the streak has crossed, once.
+        // (Ascending scan replayed every historical milestone one visit at a
+        // time — a 32-day streak greeted the user with "7-Day Streak!".)
+        guard let highest = Self.milestones.last(where: { currentStreak >= $0 }),
+              highest > lastMilestone else {
+            return nil
         }
 
-        return nil
+        UserDefaults.standard.set(highest, forKey: lastMilestoneKey)
+        return highest
     }
 
     // MARK: - Goal Notification

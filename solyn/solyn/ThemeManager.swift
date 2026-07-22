@@ -78,7 +78,10 @@ final class ThemeManager: ObservableObject {
     // MARK: - Semantic Colors
 
     var backgroundColor: Color {
-        Color(.systemGroupedBackground)
+        // Route through the warm palette so every screen that uses the
+        // semantic color (chat, settings, sheets) matches the branded tabs —
+        // non-ivory themes still fall back to the system color inside.
+        warmBackground
     }
 
     var textColor: Color {
@@ -90,7 +93,7 @@ final class ThemeManager: ObservableObject {
     }
 
     var cardBackgroundColor: Color {
-        Color(.secondarySystemGroupedBackground)
+        warmCardBackground
     }
 
     /// Theme-aware accent color for UI elements

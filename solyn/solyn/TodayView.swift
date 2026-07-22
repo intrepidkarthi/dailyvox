@@ -85,7 +85,9 @@ struct TodayView: View {
                 normalView
             }
         }
-        .alert("Recording Error", isPresented: Binding(
+        // "Saved" fallbacks (offline / failed transcription) aren't errors —
+        // don't greet a successfully kept recording with "Recording Error".
+        .alert(errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error", isPresented: Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
         )) {
@@ -1007,7 +1009,7 @@ struct TodayView: View {
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
                         self.errorMessage = transcriptionError.errorDescription
                     } else {
-                        self.errorMessage = "Transcription failed. Your recording is saved—tap the entry to add text manually."
+                        self.errorMessage = "Transcription failed. Your recording is saved — tap the entry to add text manually."
                     }
                 }
                 recordingState = .idle

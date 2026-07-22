@@ -78,7 +78,9 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            exportSection
+            // Daily-use preferences first; PDF export lives with its sibling
+            // backup/export tools near the bottom instead of greeting the
+            // user with a "Your name" field as the first thing in Settings.
             appearanceSection
             journalingGoalSection
             vocabularySection
@@ -92,9 +94,12 @@ struct SettingsView: View {
             twinBrainSection
             privacySection
             researchSection
+            exportSection
             backupSection
             aboutSection
         }
+        .scrollContentBackground(.hidden)
+        .background(themeManager.backgroundColor.ignoresSafeArea())
         .onAppear { calculateStorage() }
         .navigationTitle("Settings")
         .alert("Notifications Disabled", isPresented: $showPermissionDeniedAlert) {
