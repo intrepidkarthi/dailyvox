@@ -46,6 +46,10 @@ struct TodayView: View {
     @State private var firstTimePulse: Bool = false
     @State private var recordingRingPulse: Bool = false
 
+    // Research pilot: optional post-recording self-label picker (Settings → Research).
+    @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
+    @State private var labelTarget: DiaryEntry?
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -145,6 +149,23 @@ struct TodayView: View {
             }
         }
         .animation(.spring(response: 0.4), value: showFirstEntryMoment)
+        .overlay {
+            if let target = labelTarget, !showFirstEntryMoment {
+                ZStack {
+                    Color.black.opacity(0.35)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3)) { labelTarget = nil }
+                        }
+
+                    SelfLabelPickerCard(entry: target) {
+                        withAnimation(.spring(response: 0.3)) { labelTarget = nil }
+                    }
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+        }
+        .animation(.spring(response: 0.4), value: labelTarget != nil)
         .onReceive(NotificationCenter.default.publisher(for: .startRecordingFromSiri)) { _ in
             // Auto-start recording when triggered from Siri shortcut
             if recordingState == .idle {
@@ -908,6 +929,14 @@ struct TodayView: View {
             // ONLY capture site (onboarding seeds, Siri, imports and edits
             // deliberately never snapshot).
             Task { await BodyTwinManager.shared.captureSnapshotIfEligible() }
+
+            // Research pilot: offer the one-tap self-label right at the recording
+            // moment (labels must never be retrospective). Does not wait for
+            // transcription; latest-wins if the day already carries a label.
+            if pilotLabelingEnabled
+                || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
+                withAnimation(.spring(response: 0.4)) { labelTarget = entry }
+            }
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle

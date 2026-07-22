@@ -41,6 +41,7 @@ struct SettingsView: View {
     @AppStorage("authorName") private var authorName: String = ""
     @AppStorage("authorDescription") private var authorDescription: String = ""
     @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled: Bool = true
+    @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled: Bool = false
 
     enum ExportPeriod: String, CaseIterable, Identifiable {
         case monthly = "Monthly"
@@ -820,8 +821,53 @@ struct SettingsView: View {
                 }
                 .padding(.vertical, 4)
             }
+
+            Toggle(isOn: $pilotLabelingEnabled) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Label my entries after recording")
+                        .font(.subheadline.weight(.semibold))
+                    Text("For pilot participants — a one-tap feeling check after each recording")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .tint(DS.Palette.gold)
+
+            if pilotLabelingEnabled {
+                Button {
+                    exportResearchData()
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.subheadline)
+                            .foregroundColor(DS.Palette.gold)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Export research data")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(.primary)
+                            Text("Your labeled entries as JSON — you choose where it goes")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
         } footer: {
-            Text("Opens getdailyvox.com. Taking part is voluntary and consented; nothing about your journal is collected or transmitted by the app.")
+            Text("Opens getdailyvox.com. Taking part is voluntary and consented; nothing about your journal is collected or transmitted by the app. Self-labels stay on this phone until you export and share them yourself, under the pilot consent covering research and model-training use.")
+        }
+    }
+
+    private func exportResearchData() {
+        do {
+            // Device AI availability rides the export per the research
+            // protocol (NLEmbedding/OS version skew is an analysis variable).
+            let aiAvailable = TwinBrainManager.shared.status == .ready
+            exportURL = try BackupService.shared.exportResearchJSON(
+                entries: Array(entries),
+                appleIntelligenceAvailable: aiAvailable
+            )
+        } catch {
+            exportError = "Research export failed: \(error.localizedDescription)"
         }
     }
 
