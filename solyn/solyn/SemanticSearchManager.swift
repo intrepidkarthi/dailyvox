@@ -32,14 +32,20 @@ final class LocalFileTwinStateStore: TwinStateStore {
 final class SemanticSearchManager: ObservableObject {
     static let shared = SemanticSearchManager()
 
-    /// Below this top-cosine, the index is declining rather than answering —
-    /// the abstention operating point measured by TwinEval's retrieval suite
-    /// (τ ≈ 0.37 on synthetic data; re-measure on real diaries before trusting).
-    static let abstentionThreshold: Double = 0.37
+    /// Below this top HYBRID score, the index is declining rather than
+    /// answering. Single source of truth is the engine's measured operating
+    /// point (TwinEval retrieval suite: best-separating τ=0.29, balanced
+    /// accuracy 98.2% — the old hardcoded 0.37 was calibrated on synthetic
+    /// whole-entry cosine and abstained on essentially every real question).
+    static let abstentionThreshold: Double = SemanticMemoryIndex.recommendedAbstentionThreshold
 
     private let index = SemanticMemoryIndex(store: LocalFileTwinStateStore(subfolder: "SemanticMemory"))
     private var indexedIds = Set<String>()
-    private let indexedIdsKey = "semanticIndexedEntryIds"
+    // ".v2" busts the indexed-set cache so every entry re-embeds into the
+    // hybrid sentence-level format on next indexAll — legacy whole-entry
+    // vectors would otherwise stay on the pure-cosine path and keep
+    // abstaining under the new threshold. Re-indexing is ~5 ms/entry.
+    private let indexedIdsKey = "semanticIndexedEntryIds.v2"
 
     @Published var isReady = false
 
