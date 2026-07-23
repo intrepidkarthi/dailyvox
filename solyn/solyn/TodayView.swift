@@ -364,6 +364,19 @@ struct TodayView: View {
 
     // MARK: - Prompts Section
 
+    /// Every third day, pilot participants see a plain "log your day" prompt
+    /// first — the neutral-rich slice the affect research needs (R1 §10
+    /// item 5); the default prompts all pull toward an emotional register.
+    /// Day-of-year cadence keeps it deterministic and testable.
+    private var orderedPrompts: [EntryPrompt] {
+        guard pilotLabelingEnabled,
+              let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()),
+              day % 3 == 0
+        else { return EntryPrompt.defaultPrompts }
+        let neutral = EntryPrompt.neutralPrompts[(day / 3) % EntryPrompt.neutralPrompts.count]
+        return [neutral] + EntryPrompt.defaultPrompts
+    }
+
     private var promptsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -374,7 +387,7 @@ struct TodayView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(EntryPrompt.defaultPrompts) { prompt in
+                    ForEach(orderedPrompts) { prompt in
                         PromptChip(
                             prompt: prompt,
                             isSelected: prompt == selectedPrompt
@@ -1153,6 +1166,21 @@ struct EntryPrompt: Identifiable, Equatable {
         EntryPrompt(
             title: "Tomorrow",
             detail: "What is one gentle intention you have for tomorrow?"
+        )
+    ]
+
+    /// Plain, factual prompts (pilot protocol R1 §10 item 5): neutral is the
+    /// scarce hard class in real diary data, and every default prompt above
+    /// invites an emotional register. Pilot days periodically lead with one
+    /// of these instead.
+    static let neutralPrompts: [EntryPrompt] = [
+        EntryPrompt(
+            title: "Just log your day",
+            detail: "Walk through your day start to finish - what you did, where, with whom. Facts are enough."
+        ),
+        EntryPrompt(
+            title: "Plain notes",
+            detail: "What did today actually look like? No reflection needed - just what happened."
         )
     ]
 }
