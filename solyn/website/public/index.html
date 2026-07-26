@@ -42,12 +42,13 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="alternate" type="application/rss+xml" title="DailyVox Blog" href="/blog/feed.xml">
 
+  <link rel="preload" as="image" href="/app/app-record.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]},"downloadUrl":"https://apps.apple.com/app/id6760454642","softwareVersion":"1.6.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]},"downloadUrl":"https://apps.apple.com/app/id6760454642","softwareVersion":"1.7.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}
   </script>
 
   <style>
@@ -83,7 +84,11 @@ html{scroll-behavior:smooth}
 body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:var(--sans); font-size:17px; line-height:1.7;
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  /* clip, not hidden: `hidden` computes to `overflow:hidden auto`, which makes <body> a scroll
+     container and silently breaks position:sticky (the pinned hero). `clip` clips without
+     creating one. `hidden` stays first as a fallback for browsers without clip support. */
+  overflow-x:hidden; overflow-x:clip;
 }
 body.no-scroll{overflow:hidden}
 h1,h2,h3,h4{font-family:var(--display); margin:0; color:var(--ink); font-weight:800}
@@ -538,13 +543,122 @@ h1.hero{ font-size:clamp(32px,4.2vw,56px) !important; line-height:1.05 !importan
 .device-wrap::before{ height:80% !important; }
 @media (max-width:920px){ .hero{ padding-bottom:clamp(40px,8vw,72px) !important; } .device{ width:260px !important; } }
 
+/* ════════════ PINNED HERO ════════════
+   The device is fixed in the viewport while the screen inside it swaps across four beats.
+   Structural device is a 42-second timecode, not 01/02/03, because the content really is one
+   42-second recording being processed.
+   Geometry note: the bezel uses PERCENTAGE radius/padding so the frame stays correct at any
+   width. border-radius:13.7%/6.3% resolves to the same absolute radius on both axes because
+   the aspect ratio is 402/874 (0.137w == 0.063 × 2.174w). */
+
+.hero-pin{position:relative; height:420vh; padding:0; margin-top:calc(-1 * var(--navh,77px))}
+.pin-stage{position:sticky; top:0; height:100svh; display:flex; align-items:center; overflow:hidden}
+.pin-inner{
+  position:relative; width:100%; display:flex; flex-direction:column; align-items:center;
+  /* padding-top clears the sticky nav, which overlays the stage once it sticks */
+  padding-top:clamp(82px,10vh,94px); padding-bottom:clamp(8px,1.2vh,14px);
+}
+.pin-head{text-align:center; max-width:660px; margin-bottom:clamp(6px,1vh,12px)}
+.pin-head .eyebrow{margin:0 0 7px}
+.pin-head h1.hero{
+  font-size:clamp(19px,1.9vw,26px) !important; line-height:1.1 !important;
+  max-width:30ch; margin-inline:auto;
+  /* the h1 shares the class name `hero` with the OLD hero <section>, so that section's
+     padding-top/bottom (both !important) leak onto the heading and added 64px of dead
+     height. Zeroed here; the small bottom pad leaves room for the .uline underline SVG. */
+  padding:0 0 12px !important;
+}
+
+/* the 42-second rail — vertical and out of the flow on desktop, so it costs the device no height */
+.rail{
+  position:absolute; left:0; top:clamp(168px,27vh,290px); z-index:2;
+  margin:0; padding:0; list-style:none; width:76px; height:min(40vh,330px);
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.rail::before{content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--rule-2)}
+.rail-fill{position:absolute; left:5px; top:6px; width:1px; height:0; background:var(--uv); transition:height .35s ease}
+.tick{position:relative; display:flex; align-items:center; gap:12px; height:12px}
+.tick i{
+  width:11px; height:11px; border-radius:50%; background:var(--paper);
+  border:1px solid var(--rule-2); flex:none; transition:background .3s ease, border-color .3s ease, transform .3s ease;
+}
+.tick b{
+  font-family:var(--mono); font-size:11.5px; font-weight:400; letter-spacing:.08em;
+  color:var(--ink-mute); opacity:.45; transition:opacity .3s ease, color .3s ease;
+}
+.tick.on i{background:var(--uv); border-color:var(--uv); transform:scale(1.25)}
+.tick.on b{opacity:1; color:var(--uv-text)}
+
+/* the constant: one device, whole and centred, never moving. Sized off vh so the entire screen
+   stays above the fold at any viewport height — the device is the page's only visual. */
+.pin-device{position:relative; display:flex; justify-content:center}
+.device.pin-phone{
+  width:clamp(178px,27vh,392px) !important;
+  aspect-ratio:402/874 !important;
+  transform:none !important;
+  background:#0D0D14 !important;
+  border-radius:13.7%/6.3% !important;
+  padding:1.9% !important;
+  box-shadow:0 44px 90px -30px rgba(45,37,32,.55), 0 14px 34px rgba(45,37,32,.16) !important;
+}
+.pin-phone::before{
+  border-radius:13.7%/6.3% !important;
+  background:linear-gradient(150deg,rgba(255,255,255,.12),transparent 42%) !important;
+}
+/* dynamic island, sized off the device width via the aspect ratio */
+.pin-phone::after{
+  top:1.93% !important; width:30% !important; height:4.05% !important;
+  background:#0D0D14 !important; border-radius:999px !important;
+}
+.pin-phone .screens{position:relative; width:100%; height:100%; border-radius:11.8%/5.4%; overflow:hidden}
+.scr{position:absolute; inset:0; margin:0; opacity:0; transition:opacity .3s ease}
+.scr.on{opacity:1}
+.scr img{width:100%; height:100%; object-fit:cover; object-position:top center}
+.pin-device .device-floor{
+  position:absolute; left:50%; bottom:-14px; transform:translateX(-50%); z-index:0;
+  width:58%; height:30px; background:rgba(45,37,32,.20); filter:blur(26px); border-radius:50%;
+}
+
+/* the caption sits BELOW the device — never beside it at equal weight */
+.caps{
+  position:relative; width:min(100%,44ch); height:clamp(60px,8vh,84px);
+  margin-top:clamp(8px,1.2vh,14px); text-align:center;
+}
+.cap{position:absolute; inset:0; opacity:0; transform:translateY(6px); transition:opacity .18s ease, transform .28s ease}
+.cap.on{opacity:1; transform:none; transition:opacity .34s ease .1s, transform .34s ease .1s}
+.cap h2{font-size:clamp(18px,2.05vw,25px); line-height:1.14}
+.cap p{margin-top:7px; font-size:14.5px; color:var(--ink-dim)}
+.pin-cta{margin-top:clamp(8px,1.4vh,16px)}
+
+/* keyword deck + secondary links, directly under the sequence */
+.pin-after{padding-top:clamp(30px,4.4vw,52px); padding-bottom:0}
+.pin-after .cta-row{margin-top:20px; justify-content:center}
+.pin-after .ph-badge{display:flex; justify-content:center}
+
+@media (max-width:860px){
+  .rail{
+    position:static; transform:none; flex-direction:row; width:100%; height:auto;
+    justify-content:space-between; margin:0 0 clamp(8px,1.4vh,14px); padding:0 4px;
+  }
+  .rail::before{left:6px; right:6px; top:5px; bottom:auto; width:auto; height:1px}
+  .rail-fill{left:6px; top:5px; height:1px !important; width:0; transition:width .35s ease}
+  .tick{flex-direction:column; height:auto; gap:7px}
+  .device.pin-phone{width:min(64vw,24vh) !important}
+  .pin-head h1.hero{font-size:clamp(18px,4.6vw,25px) !important}
+  .caps{height:clamp(66px,10vh,92px)}
+  .pin-inner{padding-top:clamp(80px,10vh,90px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .scr,.cap,.rail-fill,.tick i,.tick b{transition:none}
+}
+
 /* --- header logo mark --- */
 .wordmark{ align-items:center !important; gap:9px !important; }
 .logo-mark{ width:30px; height:30px; border-radius:8px; display:block; box-shadow:0 1px 3px rgba(45,37,32,.18); }
 .logo-text{ font-family:var(--display); font-weight:800; }
 
 /* ════════════ MOBILE FIXES ════════════ */
-html,body{ overflow-x:hidden; max-width:100%; }
+html,body{ overflow-x:hidden; overflow-x:clip; max-width:100%; }
 @media (max-width:760px){
   .hero-grid{ grid-template-columns:1fr !important; gap:34px !important; }
   .hero-grid > *{ min-width:0 !important; }            /* allow text column to shrink */
@@ -621,32 +735,95 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 
 <main id="main" tabindex="-1">
 
-<!-- HERO -->
-<section class="hero clip" aria-labelledby="hero-h">
-  <div class="blob blob-hero" aria-hidden="true"></div>
-  <div class="wrap inner hero-grid">
-    <div class="reveal">
-      <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
-      <h1 class="hero" id="hero-h">Your voice builds a Digital
-        <span class="uline">Twin<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q40 2 60 6 T118 5"/></svg></span>
-        that <span class="accent">knows you.</span></h1>
-      <p class="deck">DailyVox is a free voice journal for iPhone with on-device AI. Speak for forty-two seconds — or longer. The app transcribes your voice on-device and builds a Digital Twin, an AI model of your personality and inner world. It lives on your phone. It never leaves. <strong>It's yours.</strong> <a href="/ai-journaling-app">See how the on-device AI journaling app works →</a></p>
-      <div class="cta-row">
-        <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
-        <a href="#specimen" class="ghost">What is a Digital Twin? ↓</a>
-        <a href="/demo" class="ghost">See the interactive demo →</a>
+<!-- HERO — pinned device, one 42-second recording playing out across four beats.
+     The device never moves; the screen inside it does. -->
+<section class="hero-pin" id="pinWrap" aria-labelledby="hero-h">
+  <div class="pin-stage">
+    <!-- blob lives inside the sticky stage, not the 420vh section, or it sits off-screen -->
+    <div class="blob blob-hero" aria-hidden="true"></div>
+    <div class="wrap pin-inner">
+
+      <div class="pin-head">
+        <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
+        <h1 class="hero" id="hero-h">Your voice builds a Digital
+          <span class="uline">Twin<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q40 2 60 6 T118 5"/></svg></span>
+          that <span class="accent">knows you.</span></h1>
       </div>
-      <div class="trust">
-        <span>Free forever</span><span>On-device</span><span>No account</span><span><a href="https://github.com/intrepidkarthi/dailyvox" style="color:inherit;text-decoration:underline">Open source</a></span>
+
+      <!-- the 42-second rail: the page's structural device is a timecode, because the
+           content really is one 42-second recording being processed -->
+      <ol class="rail" aria-label="What happens during one 42-second entry">
+        <li class="tick on" data-i="0"><i aria-hidden="true"></i><b>0:00</b></li>
+        <li class="tick" data-i="1"><i aria-hidden="true"></i><b>0:14</b></li>
+        <li class="tick" data-i="2"><i aria-hidden="true"></i><b>0:28</b></li>
+        <li class="tick" data-i="3"><i aria-hidden="true"></i><b>0:42</b></li>
+        <span class="rail-fill" id="railFill" aria-hidden="true"></span>
+      </ol>
+
+      <div class="pin-device">
+        <div class="device pin-phone">
+          <div class="screens">
+            <figure class="scr on" data-i="0">
+              <img src="/app/app-record.webp" width="900" height="1957" fetchpriority="high"
+                   alt="The DailyVox home screen: a journal entry transcribed from speech about a morning walk, a 32-day streak, and a microphone button labelled “your voice stays on this device”.">
+            </figure>
+            <figure class="scr" data-i="1">
+              <img src="/app/app-journal.webp" width="900" height="1957" loading="lazy"
+                   alt="The DailyVox journal, showing July entries with the people and topics — Sarah, James, Emma, work — picked out of the user’s own words.">
+            </figure>
+            <figure class="scr" data-i="2">
+              <img src="/app/app-twin.webp" width="900" height="1957" loading="lazy"
+                   alt="The Digital Twin screen: a constellation built from 213 stars of journal data, an “Ask Your Twin” card, and a Twin Resolution score of 41 per cent.">
+            </figure>
+            <figure class="scr" data-i="3">
+              <img src="/app/app-insights.webp" width="900" height="1957" loading="lazy"
+                   alt="The Insights screen: a 32-day writing streak, a positive week, and 188 per cent more writing this month than last.">
+            </figure>
+          </div>
+        </div>
+        <div class="device-floor" aria-hidden="true"></div>
       </div>
-      <div class="ph-badge" style="margin-top:22px">
-        <a href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer"><img alt="DailyVox - Speak 42 seconds a day — a private, on-device voice diary | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277"></a>
+
+      <div class="caps">
+        <div class="cap on" data-i="0">
+          <h2>You start talking.</h2>
+          <p>The mic is the whole interface — no prompt, no blank page, nothing to fill in.</p>
+        </div>
+        <div class="cap" data-i="1">
+          <h2>Words appear as you speak.</h2>
+          <p>Transcribed by the phone that heard them. Nothing is uploaded, then or later.</p>
+        </div>
+        <div class="cap" data-i="2">
+          <h2>Names, places and moods get mapped.</h2>
+          <p>Your Twin files what it just learned against every entry before it.</p>
+        </div>
+        <div class="cap" data-i="3">
+          <h2>It knows a little more than it did.</h2>
+          <p>Forty-two seconds. Tomorrow it knows more again.</p>
+        </div>
       </div>
+
     </div>
-    <div class="reveal device-wrap">
-      <div class="device-floor" aria-hidden="true"></div>
-      <div class="device device-back" aria-hidden="true"><img class="screen-img" src="/app/screen-insights.png" alt=""></div>
-      <div class="device device-front" role="img" aria-label="The DailyVox app showing your Digital Twin: a living constellation of the people, places and topics in your journal, built entirely on-device from your voice."><img class="screen-img" src="/app/screen-twin.png" alt=""></div>
+  </div>
+</section>
+
+<!-- the keyword-bearing deck and secondary links live directly under the sequence, so the
+     pinned stage stays purely the app -->
+<section class="pin-after" aria-label="What DailyVox is">
+  <div class="wrap inner narrow">
+    <div class="cta-row reveal" style="justify-content:center;margin-bottom:26px">
+      <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
+    </div>
+    <div class="trust reveal" style="justify-content:center;margin-bottom:26px">
+      <span>Free forever</span><span>On-device</span><span>No account</span><span><a href="https://github.com/intrepidkarthi/dailyvox" style="color:inherit;text-decoration:underline">Open source</a></span>
+    </div>
+    <p class="deck reveal">DailyVox is a free voice journal for iPhone with on-device AI. Speak for forty-two seconds — or longer. The app transcribes your voice on-device and builds a Digital Twin, an AI model of your personality and inner world. It lives on your phone. It never leaves. <strong>It's yours.</strong> <a href="/ai-journaling-app">See how the on-device AI journaling app works →</a></p>
+    <div class="cta-row reveal">
+      <a href="#specimen" class="ghost">What is a Digital Twin? ↓</a>
+      <a href="/demo" class="ghost">See the interactive demo →</a>
+    </div>
+    <div class="ph-badge reveal" style="margin-top:22px">
+      <a href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer"><img alt="DailyVox - Speak 42 seconds a day — a private, on-device voice diary | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277"></a>
     </div>
   </div>
 </section>
@@ -1290,6 +1467,42 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
     });
   }, {threshold:0.25});
   document.querySelectorAll('.dim-card,.tile').forEach(function(e){ vio.observe(e); });
+})();
+</script>
+
+<!-- pinned hero: scroll position drives which beat of the 42-second entry is showing -->
+<script>
+(function(){
+  var wrap = document.getElementById('pinWrap');
+  if(!wrap) return;
+  var fill  = document.getElementById('railFill'),
+      scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
+      caps  = [].slice.call(wrap.querySelectorAll('.cap')),
+      ticks = [].slice.call(wrap.querySelectorAll('.tick')),
+      N = 4, cur = -1, queued = false,
+      horiz = window.matchMedia('(max-width:860px)');
+
+  function set(i){
+    if(i === cur) return;
+    cur = i;
+    [scrs, caps, ticks].forEach(function(group){
+      group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === i); });
+    });
+  }
+  function draw(){
+    queued = false;
+    var r = wrap.getBoundingClientRect(), span = r.height - window.innerHeight;
+    if(span <= 0) return;
+    var p = Math.min(1, Math.max(0, -r.top / span));
+    set(Math.min(N - 1, Math.floor(p * N * 0.999)));
+    var pct = (p * 100).toFixed(2) + '%';
+    if(horiz.matches){ fill.style.width = pct; fill.style.height = '1px'; }
+    else { fill.style.height = pct; fill.style.width = '1px'; }
+  }
+  function onScroll(){ if(!queued){ queued = true; requestAnimationFrame(draw); } }
+  addEventListener('scroll', onScroll, {passive:true});
+  addEventListener('resize', onScroll);
+  draw();
 })();
 </script>
 </body>
