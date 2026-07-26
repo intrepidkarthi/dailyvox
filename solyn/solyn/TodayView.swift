@@ -106,7 +106,7 @@ struct TodayView: View {
                             .foregroundColor(DS.Palette.gold)
 
                         Text("Your first star")
-                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                            .font(.system(.title2, design: .rounded).weight(.bold))
 
                         Text("Your constellation has begun. Every entry adds a new star to your inner sky.")
                             .font(.subheadline)
@@ -172,7 +172,7 @@ struct TodayView: View {
                         .fill(DS.Palette.gold.opacity(0.2))
                         .frame(width: 40, height: 40)
                     Image(systemName: "sparkle")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(.title3).weight(.semibold))
                         .foregroundColor(DS.Palette.gold)
                 }
 
@@ -182,7 +182,7 @@ struct TodayView: View {
                         .foregroundColor(.primary)
 
                     Text("Tap the mic and speak for 42 seconds — or longer.\nYour first star will appear.")
-                        .font(.system(size: 15, weight: .regular, design: .rounded))
+                        .font(.system(.subheadline, design: .rounded).weight(.regular))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
@@ -232,7 +232,7 @@ struct TodayView: View {
                 .onAppear { firstTimePulse = true }
 
                 Text("Your voice stays on this device")
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .font(.system(.caption, design: .rounded).weight(.medium))
                     .foregroundColor(.secondary)
 
                 // Privacy assurance
@@ -241,7 +241,7 @@ struct TodayView: View {
                         .font(.caption2)
                         .foregroundColor(DS.Palette.forest)
                     Text("No servers. No accounts. 100% private.")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .font(.system(.caption2, design: .rounded).weight(.medium))
                         .foregroundColor(.secondary.opacity(0.7))
                 }
             }
@@ -466,10 +466,10 @@ struct TodayView: View {
                         // First-time guided hint
                         HStack(spacing: 12) {
                             Image(systemName: "arrow.down")
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(.subheadline).weight(.semibold))
                                 .foregroundColor(DS.Palette.gold)
                             Text("Tap the mic below to plant your first star")
-                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .font(.system(.subheadline, design: .rounded).weight(.medium))
                                 .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 12)
@@ -491,9 +491,9 @@ struct TodayView: View {
 
                         VStack(spacing: 4) {
                             Text("Add a star to today's sky")
-                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                .font(.system(.title3, design: .rounded).weight(.semibold))
                             Text("Just 42 seconds — your constellation grows with every entry")
-                                .font(.system(size: 14, weight: .regular, design: .rounded))
+                                .font(.system(.subheadline, design: .rounded).weight(.regular))
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                         }
@@ -580,7 +580,7 @@ struct TodayView: View {
                     .frame(height: isIPad ? 40 : 30)
 
                     Text("Speaking... tap when you're done")
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .font(.system(.footnote, design: .rounded).weight(.medium))
                         .foregroundColor(.secondary)
                 }
                 .transition(.scale.combined(with: .opacity))
@@ -622,7 +622,7 @@ struct TodayView: View {
             if recordingState == .idle {
                 VStack(spacing: 6) {
                     Text(statusText)
-                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .font(.system(.subheadline, design: .rounded).weight(.medium))
                         .foregroundColor(.primary)
                     Text("Your voice stays on this device")
                         .font(.caption.weight(.medium))
@@ -1082,7 +1082,7 @@ struct StatBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 12, weight: .semibold))
+                .font(.system(.caption).weight(.semibold))
             Text(value)
                 .font(.dsCaption2)
         }

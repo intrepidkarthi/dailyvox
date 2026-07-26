@@ -1201,7 +1201,7 @@ struct ThemeButton: View {
                         .frame(width: 32, height: 32)
                     
                     Image(systemName: theme.icon)
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.system(.subheadline).weight(.medium))
                         .foregroundColor(.white)
                 }
                 .overlay {
@@ -1271,7 +1271,7 @@ struct ReminderPresetRow: View {
                         .fill(isSelected ? DS.Palette.sage.opacity(0.16) : DS.Palette.inkMute.opacity(0.10))
                         .frame(width: 38, height: 38)
                     Image(systemName: icon)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.system(.subheadline).weight(.semibold))
                         .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute)
                 }
 
@@ -1294,7 +1294,7 @@ struct ReminderPresetRow: View {
                 Spacer()
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 18))
+                    .font(.system(.body))
                     .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute.opacity(0.4))
             }
             .padding(.vertical, DS.Space.xs)

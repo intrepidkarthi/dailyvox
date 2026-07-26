@@ -471,7 +471,7 @@ struct EntryDetailView: View {
                                     removePhoto(at: index)
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
-                                        .font(.system(size: 20))
+                                        .font(.system(.title3))
                                         .foregroundStyle(.white, .red)
                                 }
                                 .offset(x: 6, y: -6)
