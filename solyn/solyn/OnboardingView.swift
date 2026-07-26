@@ -507,10 +507,34 @@ private struct ClaimScreen: View {
     let transcript: String
     let onEnter: () -> Void
     @State private var appear = false
+    /// Pre-checked: the daily nudge is the whole habit loop for a once-a-day app, and until now
+    /// it was off by default and only reachable from Settings. The user can uncheck it here
+    /// before entering, and change it any time in Settings.
+    @State private var remindDaily = true
 
     private var words: String {
         let t = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
         return t.isEmpty ? "your first words" : t
+    }
+
+    private var reminderTimeText: String {
+        var c = DateComponents()
+        c.hour = ReminderManager.shared.reminderHour
+        c.minute = ReminderManager.shared.reminderMinute
+        guard let date = Calendar.current.date(from: c) else { return "in the evening" }
+        let f = DateFormatter()
+        f.timeStyle = .short
+        return f.string(from: date)
+    }
+
+    /// Ask for notification permission only once the user has actually made something —
+    /// a soft ask at the moment of peak intent converts far better than a cold prompt on launch.
+    private func applyReminderChoice() {
+        guard remindDaily else { return }
+        guard !ProcessInfo.processInfo.arguments.contains("-UITesting") else { return }
+        ReminderManager.shared.requestPermissionIfNeeded { granted in
+            if granted { ReminderManager.shared.isEnabled = true }
+        }
     }
 
     var body: some View {
@@ -556,11 +580,43 @@ private struct ClaimScreen: View {
             .offset(y: appear ? 0 : 16)
 
             Spacer()
-            Spacer()
 
-            PrimaryButton(title: "Enter my sky", filled: true, action: onEnter)
-                .padding(.horizontal, 28)
-                .padding(.bottom, 44)
+            Button {
+                remindDaily.toggle()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: remindDaily ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 21))
+                        .foregroundColor(remindDaily ? OB.sage : OB.inkDim.opacity(0.45))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Remind me each evening")
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(OB.ink)
+                        Text("One nudge at \(reminderTimeText). Change it any time in Settings.")
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .foregroundColor(OB.inkDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 14)
+                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(OB.card))
+                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(OB.rule, lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Remind me each evening at \(reminderTimeText)")
+            .accessibilityAddTraits(remindDaily ? [.isSelected] : [])
+            .padding(.horizontal, 28)
+            .padding(.bottom, 14)
+            .opacity(appear ? 1 : 0)
+
+            PrimaryButton(title: "Enter my sky", filled: true) {
+                applyReminderChoice()
+                onEnter()
+            }
+            .padding(.horizontal, 28)
+            .padding(.bottom, 44)
         }
         .onAppear { withAnimation(.spring(response: 0.6, dampingFraction: 0.7).delay(0.15)) { appear = true } }
     }
