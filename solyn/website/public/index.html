@@ -47,6 +47,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+  <!-- FAQPage schema mirroring the six visible Q&A in the FAQ section below. The homepage is the
+       highest-authority page on the domain and was the only major page without this, while 66
+       lesser pages already carry it. FAQPage maps directly onto how answer engines quote. -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Is DailyVox really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every feature, forever. No paywall, no premium tier, no free trial. DailyVox is free and open-source."}},
+    {"@type":"Question","name":"Do I need to create an account to use DailyVox?","acceptedAnswer":{"@type":"Answer","text":"No. No signup, no email, no password. Install and start talking. Your data lives on your device, not on our servers — because we don't have servers."}},
+    {"@type":"Question","name":"What happens to my voice recordings?","acceptedAnswer":{"@type":"Answer","text":"They're transcribed by Apple's speech engine, on your phone. The audio is stored locally. Nothing is uploaded, ever. Run a network proxy during a recording and see for yourself — zero bytes leave the device."}},
+    {"@type":"Question","name":"How is DailyVox different from Day One or Apple Journal?","acceptedAnswer":{"@type":"Answer","text":"DailyVox is voice-first with an on-device AI that builds a Digital Twin of your personality. Day One is cloud-based and text-focused. Apple Journal has no AI. Neither has a Twin that learns who you are."}},
+    {"@type":"Question","name":"What if I miss a day of journaling?","acceptedAnswer":{"@type":"Answer","text":"Nothing happens. No streaks broken, no guilt trips. Your Twin is patient — it picks up right where you left off."}},
+    {"@type":"Question","name":"Can I export my journal data?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDF, JSON, Markdown, CSV, or AES-256 encrypted backups. Your data is yours — always portable, never locked in."}}
+  ]}
+  </script>
+
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]},"downloadUrl":"https://apps.apple.com/app/id6760454642","softwareVersion":"1.7.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}
   </script>
@@ -1325,7 +1339,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
       </div>
     </div>
     <div class="foot-bottom">
-      <span class="colophon">© 2026 DailyVox · v1.4.1 · built on-device, by hand · Nunito / Inter / DM Mono</span>
+      <span class="colophon">© 2026 DailyVox · v1.7.0 · built on-device, by hand · Nunito / Inter / DM Mono</span>
       <span class="status">✦ data on-device</span>
     </div>
   </div>
