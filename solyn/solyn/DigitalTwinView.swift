@@ -425,28 +425,45 @@ struct DigitalTwinView: View {
 
     // MARK: - Section Picker
 
+    /// Chips snap to alignment so the row never comes to rest showing a half-cut word, and the
+    /// selected chip is scrolled into view — previously selecting a middle section left the row
+    /// clipped mid-word at both edges, which reads as a rendering bug rather than a scroll hint.
     private var sectionPicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(TwinSection.allCases, id: \.self) { section in
-                    Button {
-                        withAnimation(.spring(response: 0.3)) {
-                            selectedSection = section
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(TwinSection.allCases, id: \.self) { section in
+                        Button {
+                            withAnimation(.spring(response: 0.3)) {
+                                selectedSection = section
+                            }
+                        } label: {
+                            Text(section.rawValue)
+                                .font(.subheadline.weight(selectedSection == section ? .bold : .regular))
+                                .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    Capsule()
+                                        .fill(selectedSection == section ? themeManager.accentColor : themeManager.cardBackgroundColor)
+                                )
                         }
-                    } label: {
-                        Text(section.rawValue)
-                            .font(.subheadline.weight(selectedSection == section ? .bold : .regular))
-                            .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(selectedSection == section ? themeManager.accentColor : themeManager.cardBackgroundColor)
-                            )
+                        .id(section)
+                        // VoiceOver otherwise reads these as six identical unlabelled buttons
+                        // with no indication of which section is active.
+                        .accessibilityLabel(section.rawValue)
+                        .accessibilityAddTraits(selectedSection == section ? [.isSelected] : [])
                     }
                 }
+                .scrollTargetLayout()
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .scrollTargetBehavior(.viewAligned)
+            .onChange(of: selectedSection) { _, newValue in
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    proxy.scrollTo(newValue, anchor: .center)
+                }
+            }
         }
     }
 
