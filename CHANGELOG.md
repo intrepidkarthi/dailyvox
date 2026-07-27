@@ -2,6 +2,21 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.9.0] — unreleased
+
+### Added
+- **Your Twin can speak — in your own voice.** Ask Your Twin can now read its replies aloud. If you have created a Personal Voice on this iPhone (Settings → Accessibility → Personal Voice), it speaks in *your* voice, accent and cadence included, because that voice was built from recordings of you reading. Everything runs on this device; Apple does not allow apps to record Personal Voice output, so there is no audio file to store, export or leak. Off by default, and it falls back to a system voice if you have not made one.
+- **DailyVox now offers the daily reminder when you finish setting up.** It used to default to off and sit several taps deep in Settings, which meant most people never found the one thing that brings them back tomorrow.
+
+### Changed
+- **Text scales with your system text size.** 138 places in the app used a fixed font size and ignored Accessibility → Display & Text Size entirely. Thirty-five of them were smaller than Apple's own 11pt minimum and are now larger, so this is a legibility fix for everyone, not only for people using larger text.
+- The daily reminder now reads "Forty-two seconds — what happened today?" instead of a generic nudge.
+
+### Fixed
+- **The constellation on your Twin screen is readable.** The labels — the names and topics drawn from your entries — rendered at 9pt and 30% opacity, measuring 2.5:1 against the dark card. They were effectively invisible. Now 8.75:1.
+- The Twin's section picker no longer comes to rest with a word cut in half, and it tells VoiceOver which section is selected instead of reading as six identical buttons.
+- The Twin Resolution ring now announces its score to VoiceOver. It was pure geometry, so the number — the entire point of the card — was silent.
+
 ## [1.8.0] — 2026-07-23
 
 ### Fixed

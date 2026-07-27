@@ -89,7 +89,7 @@ struct SelfLabelPickerCard: View {
     var body: some View {
         VStack(spacing: 14) {
             Text("How did that feel?")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(.title3, design: .rounded).weight(.bold))
 
             Text("One tap — this stays on your phone and helps the research pilot.")
                 .font(.footnote)
@@ -103,7 +103,8 @@ struct SelfLabelPickerCard: View {
                     } label: {
                         VStack(spacing: 6) {
                             Image(systemName: emotion.icon)
-                                .font(.system(size: 20))
+                                .font(.system(.title3))
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                                 .foregroundColor(emotion.color)
                             Text(emotion.displayName)
                                 .font(.caption2.weight(.medium))

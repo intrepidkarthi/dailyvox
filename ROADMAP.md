@@ -77,7 +77,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 
 ## Planned
 
-> **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7, Multi-Language → v1.8** (v2.0+ unchanged). The stage labels are the Twin's growth stages; App Store build numbers increment independently.
+> **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7** (v2.0+ unchanged). *Since then: v1.8 became Research Pilot & retrieval-fix, v1.9 became Voice & Access, and Multi-Language moved again to v1.10.* The stage labels are the Twin's growth stages; App Store build numbers increment independently.
 
 > **One device, by conviction.** As of June 2026 this roadmap is iPhone-only — with Apple Watch as the Twin's sensor and iPad along for free. Everything that makes the Twin defensible lives on the device that's with you all day: ambient signals, body sensors, Foundation Models, Apple Intelligence, the "Data Not Collected" label. Journaling is a phone-shaped habit; the phone is not one port target among many — it's the Twin's body. There is no macOS app, no visionOS app, and Android stays deferred until iOS product-market fit. Portability is solved where it belongs — in the *data*, via the open Twin Protocol (v2.5) — not by spreading a small team across platforms.
 >
@@ -223,7 +223,40 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - Streak milestone now celebrates once, at the highest crossed threshold — a long streak no longer replays "7-Day Streak!" on every visit
 - Entry Topics and Twin "Main themes" no longer surface temporal filler ("Today", "Morning", "While") as if it were a subject
 
-### v1.9 — Multi-Language
+### v1.9 — Voice & Access *(built 2026-07-27, build 24 — awaiting archive)*
+
+> The Twin gets a voice, and the app gets usable by people it previously locked out. Both came out
+> of the same week: a growth diagnosis that found retention — not discovery — was the binding
+> constraint, and a UI/UX audit against the App Store featuring bar that found the accessibility
+> gap was the blocker.
+
+- **Twin Voice** — Ask Your Twin can read its replies aloud, and on a device with an Apple Personal
+  Voice it speaks in *your own voice*, accent and cadence included, because that voice was built
+  from recordings of you. Entirely on-device; Apple does not permit apps to capture the output, so
+  there is nothing to cache, export or leak. Off by default, one runtime permission, no entitlement
+  and no `Info.plist` key. Falls back to a locale-matched system voice everywhere else.
+- **The daily reminder is finally offered** — it defaulted to OFF and was reachable only by digging
+  through Settings, which for a once-a-day app meant the entire habit loop was invisible. Now
+  offered pre-checked at the end of onboarding, where the copy already promises "speak again
+  tomorrow, and your sky grows", with the notification permission requested at peak intent rather
+  than cold on launch. Notification copy rewritten to name the 42-second commitment.
+- **Dynamic Type across the app** — 138 fixed font sizes converted to semantic text styles. 35 of
+  them were below 11pt, Apple's stated minimum, and were mapped *up* rather than ported across: a
+  legibility fix as much as a scaling one. Share-card renderers deliberately keep fixed sizes, since
+  they draw into fixed-size images.
+- **Constellation labels made legible** — the signature visual rendered at 9pt / 0.30 opacity, which
+  measures 2.50:1 against its background and fails WCAG outright. Now 8.75:1.
+- **Twin section picker no longer rests mid-word**, and its chips announce their selected state to
+  VoiceOver instead of reading as six identical unlabelled buttons.
+- Twin Resolution ring gained an accessibility label and value — it was pure geometry, so VoiceOver
+  announced nothing where the score is the whole point of the card.
+
+*Why accessibility is on the roadmap and not in a backlog:* DailyVox exists because its creator lost
+the ability to write by hand. The origin story is an accessibility story, and the app would have
+failed an accessibility review — which is also the single most common reason a well-made indie app
+does not get featured. See `marketing/launch/ux-featuring-readiness-2026-07-26.md`.
+
+### v1.10 — Multi-Language
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 
