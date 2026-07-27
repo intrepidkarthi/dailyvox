@@ -629,7 +629,7 @@ struct EntryRowView: View {
                        let mood = Mood(rawValue: moodString),
                        mood != .none {
                         Image(systemName: mood.icon)
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(.system(.caption2).weight(.semibold))
                             .foregroundColor(mood.color)
                     }
 
@@ -641,7 +641,7 @@ struct EntryRowView: View {
 
                     if hasPhotos {
                         Image(systemName: "photo")
-                            .font(.system(size: 10))
+                            .font(.system(.caption2))
                             .foregroundColor(inkMuted.opacity(0.8))
                     }
                 }
@@ -682,7 +682,7 @@ struct EntryRowView: View {
             if entry.isStarred {
                 Image(systemName: "star.fill")
                     .foregroundColor(DS.Palette.gold)
-                    .font(.system(size: 13))
+                    .font(.system(.footnote))
             }
         }
         .padding(.vertical, DS.Space.xs)

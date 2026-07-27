@@ -238,14 +238,14 @@ struct StatsView: View {
                     ForEach(topMoods, id: \.mood) { item in
                         VStack(spacing: 6) {
                             Image(systemName: item.mood.icon)
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(.system(.body).weight(.semibold))
                                 .foregroundColor(item.mood.color)
                                 .frame(width: 40, height: 40)
                                 .background(
                                     Circle().fill(item.mood.color.opacity(0.14))
                                 )
                             Text("\(item.count)")
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .font(.system(.title3, design: .rounded).weight(.bold))
                                 .foregroundColor(item.mood.color)
                             Text(item.mood.displayName)
                                 .font(.dsCaption)
@@ -316,7 +316,7 @@ struct StatsView: View {
             ForEach(bodyInsights) { insight in
                 HStack(alignment: .top, spacing: DS.Space.md) {
                     Image(systemName: bodyInsightIcon(insight.kind))
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.system(.subheadline).weight(.semibold))
                         .foregroundColor(bodyInsightColor(insight.kind))
                         .frame(width: 38, height: 38)
                         .background(
@@ -478,7 +478,7 @@ struct StatsView: View {
                     ForEach(insights.prefix(3)) { insight in
                         HStack(alignment: .top, spacing: DS.Space.md) {
                             Image(systemName: insight.icon)
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(.subheadline).weight(.semibold))
                                 .foregroundColor(colorFromName(insight.color))
                                 .frame(width: 38, height: 38)
                                 .background(
@@ -785,7 +785,7 @@ struct StatItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Space.xs) {
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(.subheadline).weight(.semibold))
                 .foregroundColor(color)
                 .frame(width: 34, height: 34)
                 .background(

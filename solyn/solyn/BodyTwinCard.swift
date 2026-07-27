@@ -49,10 +49,10 @@ struct BodyTwinCard: View {
                     meter
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Body Twin")
-                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .font(.system(.callout, design: .rounded).weight(.bold))
                             .foregroundColor(.primary)
                         Text(subtitle)
-                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .font(.system(.footnote, design: .rounded).weight(.regular))
                             .foregroundColor(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -62,7 +62,7 @@ struct BodyTwinCard: View {
                     }
                     if !isQuietOffState {
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.system(.footnote).weight(.semibold))
                             .foregroundColor(.secondary.opacity(0.5))
                     }
                 }
@@ -125,7 +125,7 @@ struct BodyTwinCard: View {
                     .frame(width: 58, height: 58)
             }
             Image(systemName: "figure.mind.and.body")
-                .font(.system(size: 20, weight: .semibold))
+                .font(.system(.title3).weight(.semibold))
                 .foregroundColor(twin.bodyTwin.isActive ? DS.Palette.terracotta : DS.Palette.sage)
         }
     }

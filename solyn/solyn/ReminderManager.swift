@@ -80,7 +80,9 @@ final class ReminderManager: ObservableObject {
 
         let content = UNMutableNotificationContent()
         content.title = "DailyVox"
-        content.body = "Take a minute to speak about your day."
+        // Names the size of the commitment (42s is the product's own unit, and small asks get
+        // acted on) and ends on a question, which prompts recall rather than just nagging.
+        content.body = "Forty-two seconds — what happened today?"
         content.sound = .default
 
         var dateComponents = DateComponents()

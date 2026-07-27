@@ -69,17 +69,17 @@ struct AmbientReviewView: View {
     private func signalRow(_ item: AmbientSignal) -> some View {
         HStack(spacing: 14) {
             Image(systemName: item.kind == .photo ? "photo.on.rectangle.angled" : "music.note")
-                .font(.system(size: 20))
+                .font(.system(.title3))
                 .foregroundColor(.accentColor)
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.label)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.system(.subheadline).weight(.medium))
                     .fixedSize(horizontal: false, vertical: true)
                 if let detail = item.detail {
                     Text(detail)
-                        .font(.system(size: 13))
+                        .font(.system(.footnote))
                         .foregroundColor(.secondary)
                 }
             }
@@ -90,7 +90,7 @@ struct AmbientReviewView: View {
                 keep(item)
             } label: {
                 Text("Keep")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(.subheadline).weight(.semibold))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)

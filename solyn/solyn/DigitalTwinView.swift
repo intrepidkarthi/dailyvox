@@ -146,7 +146,7 @@ struct DigitalTwinView: View {
                     }
 
                     Text("Your sky is empty — for now")
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .font(.system(.caption, design: .rounded).weight(.medium))
                         .foregroundColor(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.5))
                 }
             }
@@ -159,7 +159,7 @@ struct DigitalTwinView: View {
                     .foregroundColor(themeManager.textColor)
 
                 Text("A private AI that learns who you are — entirely on your device.")
-                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                    .font(.system(.subheadline, design: .rounded).weight(.regular))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -206,10 +206,10 @@ struct DigitalTwinView: View {
             // CTA hint
             HStack(spacing: 10) {
                 Image(systemName: "hand.point.left.fill")
-                    .font(.system(size: 16))
+                    .font(.system(.callout))
                     .foregroundColor(DS.Palette.gold)
                 Text("Switch to the Record tab to begin")
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .font(.system(.subheadline, design: .rounded).weight(.medium))
                     .foregroundColor(themeManager.textColor)
             }
             .frame(maxWidth: .infinity)
@@ -224,7 +224,7 @@ struct DigitalTwinView: View {
                     .font(.caption2)
                     .foregroundColor(DS.Palette.forest)
                 Text("Your Twin never leaves your device")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .font(.system(.caption2, design: .rounded).weight(.medium))
                     .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
             }
             .padding(.bottom, 20)
@@ -249,7 +249,7 @@ struct DigitalTwinView: View {
                         .fill(color.opacity(0.15))
                         .frame(width: 36, height: 36)
                     Image(systemName: icon)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(.subheadline).weight(.semibold))
                         .foregroundColor(color)
                 }
                 if !isLast {
@@ -262,10 +262,10 @@ struct DigitalTwinView: View {
             // Content
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .font(.system(.callout, design: .rounded).weight(.semibold))
                     .foregroundColor(themeManager.textColor)
                 Text(description)
-                    .font(.system(size: 13, weight: .regular, design: .rounded))
+                    .font(.system(.footnote, design: .rounded).weight(.regular))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .lineSpacing(3)
             }
@@ -288,11 +288,11 @@ struct DigitalTwinView: View {
             .frame(height: isIPad ? 360 : 280)
 
             Text("Your Digital Twin")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.system(.title2, design: .rounded).weight(.bold))
                 .foregroundColor(themeManager.textColor)
 
             Text(constellationSubtitle)
-                .font(.system(size: 14, weight: .regular, design: .rounded))
+                .font(.system(.subheadline, design: .rounded).weight(.regular))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
     }
@@ -350,7 +350,7 @@ struct DigitalTwinView: View {
                         .frame(width: 32, height: 32)
 
                     Image(systemName: "bubble.left.and.bubble.right.fill")
-                        .font(.system(size: 13))
+                        .font(.system(.footnote))
                         .foregroundStyle(.white)
                 }
 
@@ -425,28 +425,45 @@ struct DigitalTwinView: View {
 
     // MARK: - Section Picker
 
+    /// Chips snap to alignment so the row never comes to rest showing a half-cut word, and the
+    /// selected chip is scrolled into view — previously selecting a middle section left the row
+    /// clipped mid-word at both edges, which reads as a rendering bug rather than a scroll hint.
     private var sectionPicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(TwinSection.allCases, id: \.self) { section in
-                    Button {
-                        withAnimation(.spring(response: 0.3)) {
-                            selectedSection = section
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(TwinSection.allCases, id: \.self) { section in
+                        Button {
+                            withAnimation(.spring(response: 0.3)) {
+                                selectedSection = section
+                            }
+                        } label: {
+                            Text(section.rawValue)
+                                .font(.subheadline.weight(selectedSection == section ? .bold : .regular))
+                                .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    Capsule()
+                                        .fill(selectedSection == section ? themeManager.accentColor : themeManager.cardBackgroundColor)
+                                )
                         }
-                    } label: {
-                        Text(section.rawValue)
-                            .font(.subheadline.weight(selectedSection == section ? .bold : .regular))
-                            .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(
-                                Capsule()
-                                    .fill(selectedSection == section ? themeManager.accentColor : themeManager.cardBackgroundColor)
-                            )
+                        .id(section)
+                        // VoiceOver otherwise reads these as six identical unlabelled buttons
+                        // with no indication of which section is active.
+                        .accessibilityLabel(section.rawValue)
+                        .accessibilityAddTraits(selectedSection == section ? [.isSelected] : [])
                     }
                 }
+                .scrollTargetLayout()
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .scrollTargetBehavior(.viewAligned)
+            .onChange(of: selectedSection) { _, newValue in
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    proxy.scrollTo(newValue, anchor: .center)
+                }
+            }
         }
     }
 
@@ -603,17 +620,17 @@ struct DigitalTwinView: View {
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(.callout).weight(.semibold))
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Share Your Twin")
-                        .font(.system(size: 15, weight: .bold))
+                        .font(.system(.subheadline).weight(.bold))
                     Text("Show the world your personality card")
-                        .font(.system(size: 11, weight: .regular))
+                        .font(.system(.caption2).weight(.regular))
                         .opacity(0.6)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(.footnote).weight(.semibold))
                     .opacity(0.4)
             }
             .foregroundColor(.white)
@@ -824,7 +841,7 @@ struct DigitalTwinView: View {
 
                             if hour % 6 == 0 {
                                 Text("\(hour)")
-                                    .font(.system(size: 8))
+                                    .font(.system(.caption2))
                                     .foregroundColor(themeManager.secondaryTextColor)
                             }
                         }
@@ -858,7 +875,7 @@ struct DigitalTwinView: View {
                                 .frame(height: max(8, 50 * (count / max(1, maxDaily))))
 
                             Text(days[day - 1])
-                                .font(.system(size: 10))
+                                .font(.system(.caption2))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }
                     }
@@ -956,11 +973,11 @@ struct DigitalTwinView: View {
             .frame(height: 8)
             HStack {
                 Text(lowLabel)
-                    .font(.system(size: 9))
+                    .font(.system(.caption2))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
                 Text(highLabel)
-                    .font(.system(size: 9))
+                    .font(.system(.caption2))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
         }
@@ -997,11 +1014,11 @@ struct DigitalTwinView: View {
                 .font(.title3)
 
             Text(sentimentLabel(sentiment))
-                .font(.system(size: 10, weight: .medium))
+                .font(.system(.caption2).weight(.medium))
                 .foregroundColor(sentimentColor(sentiment))
 
             Text(label)
-                .font(.system(size: 9))
+                .font(.system(.caption2))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .frame(maxWidth: .infinity)
@@ -1054,7 +1071,7 @@ struct DigitalTwinView: View {
                 .font(.title3.bold())
                 .foregroundColor(themeManager.accentColor)
             Text(label)
-                .font(.system(size: 10))
+                .font(.system(.caption2))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .frame(maxWidth: .infinity)
@@ -1067,11 +1084,11 @@ struct DigitalTwinView: View {
                 .foregroundColor(DS.Palette.gold.opacity(0.6))
 
             Text("Your constellation awaits")
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .font(.system(.body, design: .rounded).weight(.semibold))
                 .foregroundColor(themeManager.textColor)
 
             Text("Every journal entry becomes a star. Speak for 42 seconds — or longer — and watch your inner sky take shape.")
-                .font(.system(size: 14, weight: .regular, design: .rounded))
+                .font(.system(.subheadline, design: .rounded).weight(.regular))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .lineSpacing(3)
@@ -1249,7 +1266,7 @@ struct TwinPredictionsSection: View {
                     .fill(prediction.tint.opacity(0.15))
                     .frame(width: 36, height: 36)
                 Image(systemName: prediction.icon)
-                    .font(.system(size: 15))
+                    .font(.system(.subheadline))
                     .foregroundColor(prediction.tint)
             }
 
@@ -1269,9 +1286,9 @@ struct TwinPredictionsSection: View {
                 // v1.6: honest confidence — the Twin says how sure it is.
                 HStack(spacing: 4) {
                     Image(systemName: "gauge.with.dots.needle.33percent")
-                        .font(.system(size: 9))
+                        .font(.system(.caption2))
                     Text(prediction.confidenceBand.label)
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(.caption2).weight(.medium))
                 }
                 .foregroundColor(.secondary)
                 .padding(.top, 2)

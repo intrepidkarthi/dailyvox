@@ -39,7 +39,7 @@ struct EmptyStateView: View {
 
             VStack(spacing: 8) {
                 Text(title)
-                    .font(.system(size: 22, weight: .semibold, design: .rounded))
+                    .font(.system(.title2, design: .rounded).weight(.semibold))
                     .multilineTextAlignment(.center)
 
                 Text(subtitle)
@@ -116,7 +116,7 @@ struct WelcomeCard: View {
                     .multilineTextAlignment(.center)
 
                 Text("Speak your thoughts. Every word becomes a star in your inner sky. All AI runs on your device — private by design.")
-                    .font(.system(size: 15, weight: .regular, design: .rounded))
+                    .font(.system(.subheadline, design: .rounded).weight(.regular))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)

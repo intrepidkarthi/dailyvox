@@ -452,10 +452,16 @@ struct ConstellationView: View {
                 let starIndex = index * (stars.count / max(1, clusterLabels.count))
                 if starIndex < stars.count {
                     let star = stars[starIndex]
+                    // Was 9pt at 0.30 opacity — 2.5:1 against the #1A1A2E field, a WCAG failure,
+                    // and below the 18pt threshold so it cannot claim the large-text exemption
+                    // either. 11pt at 0.75 measures 8.75:1 while still reading as delicate against
+                    // the dark sky. The shadow keeps it legible where a bright nebula sits behind.
                     Text(label.uppercased())
-                        .font(.system(size: 9, weight: .semibold, design: .rounded))
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .tracking(2)
-                        .foregroundColor(ivoryGlow.opacity(0.3))
+                        .foregroundColor(ivoryGlow.opacity(0.75))
+                        .shadow(color: bgDeep.opacity(0.8), radius: 3, y: 1)
+                        .accessibilityLabel(label)
                         .position(
                             x: star.position.x * size.width,
                             y: star.position.y * size.height + 16

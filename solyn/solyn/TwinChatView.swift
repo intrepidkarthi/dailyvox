@@ -216,7 +216,7 @@ struct TwinChatView: View {
                 .frame(width: 28, height: 28)
 
             Image(systemName: "person.crop.circle.fill")
-                .font(.system(size: 12))
+                .font(.system(.caption))
                 .foregroundStyle(.white)
         }
     }
@@ -257,7 +257,7 @@ struct TwinChatView: View {
                         } label: {
                             HStack(spacing: 4) {
                                 Image(systemName: "book.closed.fill")
-                                    .font(.system(size: 9))
+                                    .font(.system(.caption2))
                                 Text("\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%")
                                     .font(.caption2)
                             }
@@ -338,7 +338,7 @@ struct TwinChatView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: "arrow.turn.down.right")
-                                    .font(.system(size: 11))
+                                    .font(.system(.caption2))
                                 Text(followUp)
                                     .font(.caption)
                                     .lineLimit(1)
@@ -363,7 +363,7 @@ struct TwinChatView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: question.icon)
-                                    .font(.system(size: 11))
+                                    .font(.system(.caption2))
                                 Text(question.rawValue)
                                     .font(.caption)
                                     .lineLimit(1)
