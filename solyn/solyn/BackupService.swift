@@ -29,6 +29,10 @@ struct ExportableEntry: Codable, Identifiable {
     let audioFileName: String?
     let audioFileNames: String?
     let photoFileNames: String?
+    /// Research-pilot self-label (7-class canon + intensity 1–3). Optional so
+    /// pre-existing backups decode unchanged and older builds ignore them.
+    let selfLabelEmotion: String?
+    let selfLabelIntensity: Int?
 
     init(from entry: DiaryEntry) {
         self.id = entry.id ?? UUID()
@@ -41,6 +45,9 @@ struct ExportableEntry: Codable, Identifiable {
         self.audioFileName = entry.audioFileName
         self.audioFileNames = entry.value(forKey: "audioFileNames") as? String
         self.photoFileNames = entry.value(forKey: "photoFileNames") as? String
+        self.selfLabelEmotion = entry.value(forKey: "selfLabelEmotion") as? String
+        let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
+        self.selfLabelIntensity = intensity > 0 ? Int(intensity) : nil
     }
 }
 
@@ -127,7 +134,88 @@ final class BackupService {
         
         return try exportToJSON(entries: filteredEntries)
     }
-    
+
+    // MARK: - Research Export (pilot)
+
+    /// One row of the pilot research export: the fields the affect research
+    /// protocol requires (docs/research-affect, R1 §"what the pilot MUST
+    /// collect") — transcript, recording-time self-label + intensity,
+    /// timestamp, duration — joinable on the entry's stable id.
+    struct ResearchEntry: Codable {
+        let id: UUID
+        let date: Date
+        let text: String
+        let emotions: [String]      // corpus-shaped: [selfLabelEmotion rawValue]
+        let intensity: Int?         // 1–3, nil when the participant skipped it
+        let duration: Double
+        let audioCount: Int         // >1 flags a multi-recording day (label = latest)
+    }
+
+    struct ResearchExport: Codable {
+        let name: String
+        let source: String
+        let exportDate: Date
+        let deviceModel: String
+        let systemVersion: String
+        let appleIntelligenceAvailable: Bool
+        let entryCount: Int
+        let entries: [ResearchEntry]
+    }
+
+    /// Export ONLY self-labeled entries as research JSON, chronological
+    /// (the analysis protocol splits per-user by time, never randomly).
+    /// User-initiated share only — this file is handed to the share sheet
+    /// and goes wherever the participant chooses to send it.
+    func exportResearchJSON(entries: [DiaryEntry], appleIntelligenceAvailable: Bool) throws -> URL {
+        let labeled = entries
+            .filter { ($0.value(forKey: "selfLabelEmotion") as? String)?.isEmpty == false }
+            .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+
+        let rows: [ResearchEntry] = labeled.map { entry in
+            let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
+            let audio = AudioFileList.parse(entry.value(forKey: "audioFileNames") as? String,
+                                            legacy: entry.value(forKey: "audioFileName") as? String)
+            return ResearchEntry(
+                id: entry.id ?? UUID(),
+                date: entry.date ?? Date(),
+                text: entry.text ?? "",
+                emotions: [(entry.value(forKey: "selfLabelEmotion") as? String) ?? ""],
+                intensity: intensity > 0 ? Int(intensity) : nil,
+                duration: entry.duration,
+                audioCount: audio.count
+            )
+        }
+
+        #if canImport(UIKit)
+        let model = UIDevice.current.model
+        let osVersion = "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
+        #else
+        let model = "Mac"
+        let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
+        #endif
+
+        let export = ResearchExport(
+            name: "dailyvox-pilot-export",
+            source: "DailyVox research pilot — writer self-report at recording time",
+            exportDate: Date(),
+            deviceModel: model,
+            systemVersion: osVersion,
+            appleIntelligenceAvailable: appleIntelligenceAvailable,
+            entryCount: rows.count,
+            entries: rows
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let data = try encoder.encode(export)
+
+        let fileName = "dailyvox_research_\(formattedDate()).json"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        try data.write(to: tempURL)
+        return tempURL
+    }
+
     // MARK: - JSON Import
     
     /// Import entries from JSON backup
@@ -161,6 +249,8 @@ final class BackupService {
                 newEntry.audioFileName = exportedEntry.audioFileName
                 newEntry.setValue(exportedEntry.audioFileNames, forKey: "audioFileNames")
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
+                newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
+                newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
 
                 importedCount += 1
             }
@@ -503,6 +593,8 @@ final class BackupService {
                 newEntry.audioFileName = exportedEntry.audioFileName
                 newEntry.setValue(exportedEntry.audioFileNames, forKey: "audioFileNames")
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
+                newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
+                newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
 
                 importedCount += 1
             }

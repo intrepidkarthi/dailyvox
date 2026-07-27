@@ -16,6 +16,8 @@
         <attribute name="isStarred" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="mood" optional="YES" attributeType="String"/>
         <attribute name="photoFileNames" optional="YES" attributeType="String"/>
+        <attribute name="selfLabelEmotion" optional="YES" attributeType="String"/>
+        <attribute name="selfLabelIntensity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>

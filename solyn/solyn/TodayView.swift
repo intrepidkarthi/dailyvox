@@ -46,6 +46,10 @@ struct TodayView: View {
     @State private var firstTimePulse: Bool = false
     @State private var recordingRingPulse: Bool = false
 
+    // Research pilot: optional post-recording self-label picker (Settings → Research).
+    @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
+    @State private var labelTarget: DiaryEntry?
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -81,7 +85,9 @@ struct TodayView: View {
                 normalView
             }
         }
-        .alert("Recording Error", isPresented: Binding(
+        // "Saved" fallbacks (offline / failed transcription) aren't errors —
+        // don't greet a successfully kept recording with "Recording Error".
+        .alert(errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error", isPresented: Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
         )) {
@@ -145,6 +151,23 @@ struct TodayView: View {
             }
         }
         .animation(.spring(response: 0.4), value: showFirstEntryMoment)
+        .overlay {
+            if let target = labelTarget, !showFirstEntryMoment {
+                ZStack {
+                    Color.black.opacity(0.35)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3)) { labelTarget = nil }
+                        }
+
+                    SelfLabelPickerCard(entry: target) {
+                        withAnimation(.spring(response: 0.3)) { labelTarget = nil }
+                    }
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+        }
+        .animation(.spring(response: 0.4), value: labelTarget != nil)
         .onReceive(NotificationCenter.default.publisher(for: .startRecordingFromSiri)) { _ in
             // Auto-start recording when triggered from Siri shortcut
             if recordingState == .idle {
@@ -341,6 +364,19 @@ struct TodayView: View {
 
     // MARK: - Prompts Section
 
+    /// Every third day, pilot participants see a plain "log your day" prompt
+    /// first — the neutral-rich slice the affect research needs (R1 §10
+    /// item 5); the default prompts all pull toward an emotional register.
+    /// Day-of-year cadence keeps it deterministic and testable.
+    private var orderedPrompts: [EntryPrompt] {
+        guard pilotLabelingEnabled,
+              let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()),
+              day % 3 == 0
+        else { return EntryPrompt.defaultPrompts }
+        let neutral = EntryPrompt.neutralPrompts[(day / 3) % EntryPrompt.neutralPrompts.count]
+        return [neutral] + EntryPrompt.defaultPrompts
+    }
+
     private var promptsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -351,7 +387,7 @@ struct TodayView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(EntryPrompt.defaultPrompts) { prompt in
+                    ForEach(orderedPrompts) { prompt in
                         PromptChip(
                             prompt: prompt,
                             isSelected: prompt == selectedPrompt
@@ -908,6 +944,14 @@ struct TodayView: View {
             // ONLY capture site (onboarding seeds, Siri, imports and edits
             // deliberately never snapshot).
             Task { await BodyTwinManager.shared.captureSnapshotIfEligible() }
+
+            // Research pilot: offer the one-tap self-label right at the recording
+            // moment (labels must never be retrospective). Does not wait for
+            // transcription; latest-wins if the day already carries a label.
+            if pilotLabelingEnabled
+                || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
+                withAnimation(.spring(response: 0.4)) { labelTarget = entry }
+            }
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -978,7 +1022,7 @@ struct TodayView: View {
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
                         self.errorMessage = transcriptionError.errorDescription
                     } else {
-                        self.errorMessage = "Transcription failed. Your recording is saved—tap the entry to add text manually."
+                        self.errorMessage = "Transcription failed. Your recording is saved — tap the entry to add text manually."
                     }
                 }
                 recordingState = .idle
@@ -1122,6 +1166,21 @@ struct EntryPrompt: Identifiable, Equatable {
         EntryPrompt(
             title: "Tomorrow",
             detail: "What is one gentle intention you have for tomorrow?"
+        )
+    ]
+
+    /// Plain, factual prompts (pilot protocol R1 §10 item 5): neutral is the
+    /// scarce hard class in real diary data, and every default prompt above
+    /// invites an emotional register. Pilot days periodically lead with one
+    /// of these instead.
+    static let neutralPrompts: [EntryPrompt] = [
+        EntryPrompt(
+            title: "Just log your day",
+            detail: "Walk through your day start to finish - what you did, where, with whom. Facts are enough."
+        ),
+        EntryPrompt(
+            title: "Plain notes",
+            detail: "What did today actually look like? No reflection needed - just what happened."
         )
     ]
 }

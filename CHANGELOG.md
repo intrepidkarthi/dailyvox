@@ -2,6 +2,25 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.8.0] — 2026-07-23
+
+### Fixed
+- **Ask Your Twin actually answers now.** v1.7's retrieval scored realistic questions against your entries at cosine 0.02–0.25 — below the 0.37 abstention threshold — so the chat abstained on almost every real diary question despite working in demos. Retrieval is now hybrid (per-sentence max cosine + content-word overlap) with a re-measured abstention threshold (τ=0.29, 98.2% balanced accuracy on a realistic eval leg authored from this exact failure). Unrelated questions still abstain honestly; journaled topics now surface with dated, cited entries.
+- Streak milestones now celebrate once, at the highest crossed threshold — a long streak no longer replays "7-Day Streak!" on every Insights visit.
+- Entry Topics and the Twin's "Main themes" no longer surface temporal filler ("Today", "Morning", "While") as if it were a subject.
+- Ask Your Twin and Settings now render in the app's warm ivory palette — they were falling back to the system default gray.
+- "Recording saved but not yet transcribed" (offline / no speech detected) no longer alerts as "Recording Error."
+- Minor grammar fix in the Twin's growth summary.
+
+### Added
+- **Research pilot: recording-time self-labels.** Pilot participants (Settings → Research) get a one-tap "how did that feel?" picker right after each recording — 7-class emotion + intensity, on-device only, leaving the phone solely via the existing user-initiated research export. Feeds the affect-research program's per-person adaptation experiment (K-curve harness, engine-side).
+- **Neutral prompt nudge.** Pilot participants occasionally see a plain "Just log your day" starting thought instead of the usual emotionally-loaded prompts, so pilot data isn't neutral-starved — neutral is the scarce hard class in real diary data.
+
+### Build
+- `MARKETING_VERSION` 1.7.0 → 1.8.0; `CURRENT_PROJECT_VERSION` 22 → 23.
+- App icon: four mac-idiom @2x slots were carrying oversized source images (each exactly 2x the declared size); regenerated at the correct pixel dimensions.
+- Engine (DailyVoxTwin): `SemanticMemoryIndex` moved to per-sentence hybrid indexing (store payload v2); `RetrievalSuite` gained a realistic-failure eval leg; new `KCurveSuite` scaffolds the per-person adaptation experiment (Experiment B) against the research-export format.
+
 ## [1.7.0] — 2026-07-20
 
 ### Added

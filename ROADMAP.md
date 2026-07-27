@@ -212,7 +212,18 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - Zero network calls — entire pipeline on-device
 - Graceful fallback to the current Twin chat on devices below iPhone 15 Pro
 
-### v1.8 — Multi-Language
+### v1.8 — Research Pilot & a Twin That Actually Answers *(shipped 2026-07-23, build 23)*
+
+> **Shipped 2026-07-23 (build 23).** v1.7's Ask Your Twin retrieval path was measured post-ship to abstain on almost every real-diary question — whole-entry averaged embeddings put realistic question-vs-entry cosine at 0.02–0.25 against a 0.37 threshold tuned only on synthetic data. Retrieval is now hybrid (per-sentence max cosine + content-word overlap), re-measured against a realistic-failure eval leg (τ=0.29, 98.2% balanced accuracy), and verified end-to-end on device: real questions now answer with dated, cited entries instead of the honest-abstention fallback. Alongside it: the recording-time self-label capture that feeds the affect-research pilot (Experiment B, per-person adaptation), a neutral "just log your day" prompt for the scarce neutral class, and a pass of brand-consistency, streak-milestone, and topic-extraction fixes found in a full app walkthrough.
+
+- **Ask Your Twin, fixed** — hybrid sentence-level retrieval replaces whole-entry cosine; re-measured abstention threshold; unrelated questions still abstain honestly, journaled topics now surface with "From your journal" citation chips
+- **Research pilot: recording-time self-labels** — pilot participants (Settings → Research) get a one-tap emotion + intensity check right after each recording, feeding the affect-research program's per-person adaptation experiment; on-device only, leaves the phone solely via the existing user-initiated research export
+- **Neutral prompt nudge** — pilot participants occasionally see a plain "Just log your day" starting thought instead of the usual emotionally-loaded prompts, so the pilot corpus isn't neutral-starved
+- Brand-consistency fixes: Ask Your Twin and Settings now render in the app's warm ivory palette instead of the system default gray
+- Streak milestone now celebrates once, at the highest crossed threshold — a long streak no longer replays "7-Day Streak!" on every visit
+- Entry Topics and Twin "Main themes" no longer surface temporal filler ("Today", "Morning", "While") as if it were a subject
+
+### v1.9 — Multi-Language
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 
