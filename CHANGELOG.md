@@ -5,7 +5,7 @@ All notable changes to DailyVox are documented here.
 ## [1.9.0] — unreleased
 
 ### Added
-- **Your Twin can speak — in your own voice.** Ask Your Twin can now read its replies aloud. If you have created a Personal Voice on this iPhone (Settings → Accessibility → Personal Voice), it speaks in *your* voice, accent and cadence included, because that voice was built from recordings of you reading. Everything runs on this device; Apple does not allow apps to record Personal Voice output, so there is no audio file to store, export or leak. Off by default, and it falls back to a system voice if you have not made one.
+- **Your Twin can read its replies aloud.** Tap "Read aloud" under any answer. Choose the voice in Settings → Twin Voice — regional voices are listed first, so pick whichever sounds closest to you, and press "Hear a sample" to compare. Synthesis happens on this iPhone; nothing is uploaded. Off by default, and it never asks for a permission.
 - **DailyVox now offers the daily reminder when you finish setting up.** It used to default to off and sit several taps deep in Settings, which meant most people never found the one thing that brings them back tomorrow.
 
 ### Changed

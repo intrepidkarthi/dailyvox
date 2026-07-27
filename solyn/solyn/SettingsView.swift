@@ -335,48 +335,34 @@ struct SettingsView: View {
     /// Absent entirely on iOS < 26 and on hardware that can't run Apple
     /// Intelligence — no dead toggle to explain (healthSection pattern).
     /// Default ON where available: this gates no new permission or data flow;
-    /// Read replies aloud — in the user's own voice when Apple's Personal Voice exists.
-    /// Personal Voice is built from recordings of them reading sentences, so it carries their
-    /// accent and cadence, which voice-conversion models do not.
+    /// Read replies aloud using an installed system voice. Personal Voice is deliberately not
+    /// used: it carries the user's real accent but costs a ~30-minute enrollment the app cannot
+    /// do for them, so this ships with voices already on the device and asks nothing.
     @ViewBuilder
     private var twinVoiceSection: some View {
         Section {
             Toggle("Read replies aloud", isOn: $twinVoice.isEnabled)
 
             if twinVoice.isEnabled {
-                Toggle("Use my Personal Voice", isOn: $twinVoice.preferPersonalVoice)
-
-                Text(twinVoice.statusDescription)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
-                switch twinVoice.personalVoiceStatus {
-                case .notDetermined:
-                    Button {
-                        twinVoice.refreshPersonalVoiceStatus()
-                    } label: {
-                        Label("Allow DailyVox to use my Personal Voice", systemImage: "waveform")
-                            .font(.caption)
+                Picker("Voice", selection: $twinVoice.voiceIdentifier) {
+                    Text("Match my region").tag("")
+                    ForEach(twinVoice.availableVoices, id: \.identifier) { v in
+                        Text(twinVoice.label(for: v)).tag(v.identifier)
                     }
-                case .authorizedButNoneCreated, .denied:
-                    #if os(iOS)
-                    Button {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    } label: {
-                        Label("Open Accessibility settings", systemImage: "gear")
-                            .font(.caption)
-                    }
-                    #endif
-                default:
-                    EmptyView()
+                }
+
+                Button {
+                    twinVoice.isSpeaking ? twinVoice.stop() : twinVoice.preview()
+                } label: {
+                    Label(twinVoice.isSpeaking ? "Stop" : "Hear a sample",
+                          systemImage: twinVoice.isSpeaking ? "stop.circle" : "play.circle")
+                        .font(.caption)
                 }
             }
         } header: {
             Text("Twin Voice")
         } footer: {
-            Text("Your Twin can read its replies out loud. If you have created a Personal Voice on this iPhone, it speaks in your own voice — accent and all — because that voice was built from recordings of you. Synthesis happens on this device and Apple does not let apps record it, so there is no audio file to store or share. Off by default.")
+            Text("Your Twin can read its replies out loud using a voice already on this iPhone. Pick a regional voice if it sounds closer to you — synthesis happens on this device and nothing is uploaded. Off by default.")
         }
     }
 

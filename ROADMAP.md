@@ -230,11 +230,17 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 > constraint, and a UI/UX audit against the App Store featuring bar that found the accessibility
 > gap was the blocker.
 
-- **Twin Voice** — Ask Your Twin can read its replies aloud, and on a device with an Apple Personal
-  Voice it speaks in *your own voice*, accent and cadence included, because that voice was built
-  from recordings of you. Entirely on-device; Apple does not permit apps to capture the output, so
-  there is nothing to cache, export or leak. Off by default, one runtime permission, no entitlement
-  and no `Info.plist` key. Falls back to a locale-matched system voice everywhere else.
+- **Twin Voice** — Ask Your Twin can read its replies aloud, using a voice already installed on the
+  iPhone, with a picker so a regional variant can be chosen if it sounds closer. Entirely
+  on-device, off by default, no permission prompt and no enrollment.
+  *Accent is approximated, not reproduced, and that is a deliberate stopping point.* Apple's
+  Personal Voice does carry the user's real accent, but it costs a ~30-minute enrollment (150
+  sentences, read in Settings) that the app cannot perform for them — if the creator won't do it,
+  users won't either. Voice cloning from existing journal audio was investigated at length and is
+  closed: accent lives in phone realisation and phonemic choice, and everything carrying those is
+  autoregressive over a reference prompt, which does not fit a phone's memory budget. Both paths
+  slot in behind `resolvedVoice` without touching callers when one qualifies. See
+  `project_voice_cloning_spike` and §Deferred below.
 - **The daily reminder is finally offered** — it defaulted to OFF and was reachable only by digging
   through Settings, which for a once-a-day app meant the entire habit loop was invisible. Now
   offered pre-checked at the end of onboarding, where the copy already promises "speak again

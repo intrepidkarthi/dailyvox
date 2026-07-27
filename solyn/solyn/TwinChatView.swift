@@ -221,8 +221,7 @@ struct TwinChatView: View {
         } label: {
             HStack(spacing: 5) {
                 Image(systemName: speakingThis ? "stop.circle.fill" : "speaker.wave.2.fill")
-                Text(speakingThis ? "Stop" : (twinVoice.personalVoiceStatus.canUsePersonalVoice
-                                             ? "Hear it in your voice" : "Read aloud"))
+                Text(speakingThis ? "Stop" : "Read aloud")
             }
             .font(.caption2)
             .foregroundColor(themeManager.secondaryTextColor)

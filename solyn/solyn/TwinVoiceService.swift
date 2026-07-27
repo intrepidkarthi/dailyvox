@@ -2,16 +2,20 @@
 //  TwinVoiceService.swift
 //  solyn
 //
-//  Reads the Twin's replies aloud — in your own voice, if you have one.
+//  Reads the Twin's replies aloud, using the system voices already on the device.
 //
-//  Apple's Personal Voice is built from recordings of you reading sentences, so it carries
-//  your accent and cadence, not just your timbre. That is the whole reason it is used here:
-//  voice-conversion models we evaluated transferred timbre convincingly and accent not at all.
+//  Deliberately simple. An earlier revision led with Apple's Personal Voice, which does carry the
+//  user's real accent — but it costs a ~30-minute enrollment (150 sentences read aloud in Settings)
+//  that the app cannot perform on the user's behalf. If the creator won't do it, users won't either,
+//  so the feature is built on voices already present and asks nothing of anyone.
 //
-//  Nothing leaves the device. Personal Voice is generated and stored on-device, synthesis is
-//  local, and Apple does not permit apps to capture its output — so there is no audio file to
-//  cache, export or leak. The app can make it speak and nothing more, which happens to be
-//  exactly what we want.
+//  Accent is therefore approximated, not reproduced: the picker exposes every installed voice for
+//  the user's language, including regional variants (en-IN, en-GB, en-AU…), and defaults to the one
+//  matching their locale. That is as close as this gets without a model that clones accent at a size
+//  a phone can hold — see project_voice_cloning_spike for why none exists yet. Personal Voice, or a
+//  cloning model when one qualifies, slots in behind `resolvedVoice` without touching callers.
+//
+//  Nothing leaves the device: AVSpeechSynthesizer synthesis is local.
 //
 
 import AVFoundation
@@ -25,12 +29,12 @@ final class TwinVoiceService: NSObject, ObservableObject {
     static let shared = TwinVoiceService()
 
     private let enabledKey = "twinVoice_enabled"
-    private let usePersonalKey = "twinVoice_usePersonalVoice"
+    private let voiceKey = "twinVoice_voiceIdentifier"
 
     private let synthesizer = AVSpeechSynthesizer()
 
-    /// Master switch. Off by default: speech that starts without being asked for is a
-    /// nasty surprise in an app people use in bed.
+    /// Off by default. Speech that starts without being asked for is a nasty surprise in an app
+    /// people use in bed.
     @Published var isEnabled: Bool {
         didSet {
             UserDefaults.standard.set(isEnabled, forKey: enabledKey)
@@ -38,90 +42,60 @@ final class TwinVoiceService: NSObject, ObservableObject {
         }
     }
 
-    /// Prefer the user's Personal Voice when one exists and access was granted.
-    @Published var preferPersonalVoice: Bool {
-        didSet { UserDefaults.standard.set(preferPersonalVoice, forKey: usePersonalKey) }
+    /// Chosen voice, by AVSpeechSynthesisVoice identifier. Empty means "follow the locale".
+    @Published var voiceIdentifier: String {
+        didSet { UserDefaults.standard.set(voiceIdentifier, forKey: voiceKey) }
     }
 
-    @Published private(set) var personalVoiceStatus: PersonalVoiceStatus = .notDetermined
     @Published private(set) var isSpeaking = false
 
-    enum PersonalVoiceStatus: Equatable {
-        /// Not yet asked. We ask lazily, on first use, not at launch.
-        case notDetermined
-        /// Granted, and a Personal Voice exists on this device.
-        case available(voiceName: String)
-        /// Granted, but the user has not created a Personal Voice yet.
-        case authorizedButNoneCreated
-        /// The user declined. Falls back to a system voice.
-        case denied
-        /// Device or OS cannot do Personal Voice (needs iOS 17+ and iPhone 12 or later).
-        case unsupported
-
-        var canUsePersonalVoice: Bool {
-            if case .available = self { return true }
-            return false
-        }
-    }
-
-    /// Screenshot and UI-test runs must never trigger the permission alert or start audio.
     private static let disabledForTesting =
         ProcessInfo.processInfo.arguments.contains("-UITesting") ||
         ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
 
     private override init() {
         self.isEnabled = UserDefaults.standard.bool(forKey: enabledKey)
-        // Default the *preference* on — it only takes effect once the user grants access and
-        // has actually made a voice, so it cannot surprise anyone.
-        self.preferPersonalVoice = UserDefaults.standard.object(forKey: usePersonalKey) as? Bool ?? true
+        self.voiceIdentifier = UserDefaults.standard.string(forKey: voiceKey) ?? ""
         super.init()
         synthesizer.delegate = self
     }
 
-    // MARK: - Authorization
+    // MARK: - Voices
 
-    /// Ask for Personal Voice access. Safe to call repeatedly; only prompts once.
-    func refreshPersonalVoiceStatus() {
-        guard !Self.disabledForTesting else { personalVoiceStatus = .unsupported; return }
-        guard #available(iOS 17.0, *) else { personalVoiceStatus = .unsupported; return }
-
-        AVSpeechSynthesizer.requestPersonalVoiceAuthorization { [weak self] status in
-            Task { @MainActor in
-                guard let self else { return }
-                switch status {
-                case .authorized:
-                    if let v = Self.personalVoice() {
-                        self.personalVoiceStatus = .available(voiceName: v.name)
-                    } else {
-                        self.personalVoiceStatus = .authorizedButNoneCreated
-                    }
-                case .denied, .unsupported:
-                    self.personalVoiceStatus = (status == .denied) ? .denied : .unsupported
-                case .notDetermined:
-                    self.personalVoiceStatus = .notDetermined
-                @unknown default:
-                    self.personalVoiceStatus = .unsupported
-                }
-                logger.info("Personal Voice status: \(String(describing: self.personalVoiceStatus))")
-            }
+    /// Installed voices for the user's language, deduplicated by name keeping the best quality.
+    /// Scoped to one language so the picker is a short list rather than a hundred rows.
+    var availableVoices: [AVSpeechSynthesisVoice] {
+        let lang = Locale.current.language.languageCode?.identifier ?? "en"
+        var bestByName: [String: AVSpeechSynthesisVoice] = [:]
+        for v in AVSpeechSynthesisVoice.speechVoices() where v.language.hasPrefix(lang) {
+            if let existing = bestByName[v.name], existing.quality.rawValue >= v.quality.rawValue { continue }
+            bestByName[v.name] = v
+        }
+        let full = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
+        return bestByName.values.sorted {
+            // Regional match to the full locale first — an en-IN user should find Indian English at
+            // the top rather than hunting for it.
+            let a = ($0.language == full), b = ($1.language == full)
+            if a != b { return a }
+            if $0.language != $1.language { return $0.language < $1.language }
+            return $0.name < $1.name
         }
     }
 
-    private static func personalVoice() -> AVSpeechSynthesisVoice? {
-        guard #available(iOS 17.0, *) else { return nil }
-        return AVSpeechSynthesisVoice.speechVoices()
-            .first { $0.voiceTraits.contains(.isPersonalVoice) }
-    }
-
-    /// The voice we will actually use: the user's own if permitted and present, otherwise a
-    /// system voice matching their language so the accent is at least in the right family.
-    private var resolvedVoice: AVSpeechSynthesisVoice? {
-        if preferPersonalVoice, personalVoiceStatus.canUsePersonalVoice, let mine = Self.personalVoice() {
-            return mine
+    /// The voice actually used: the explicit choice, else the closest locale match.
+    var resolvedVoice: AVSpeechSynthesisVoice? {
+        if !voiceIdentifier.isEmpty,
+           let chosen = AVSpeechSynthesisVoice(identifier: voiceIdentifier) {
+            return chosen
         }
-        let lang = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
-        return AVSpeechSynthesisVoice(language: lang)
+        let full = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
+        return AVSpeechSynthesisVoice(language: full)
             ?? AVSpeechSynthesisVoice(language: "en-US")
+    }
+
+    func label(for voice: AVSpeechSynthesisVoice) -> String {
+        let region = Locale.current.localizedString(forIdentifier: voice.language) ?? voice.language
+        return "\(voice.name) · \(region)"
     }
 
     // MARK: - Speaking
@@ -133,8 +107,8 @@ final class TwinVoiceService: NSObject, ObservableObject {
 
         stop()
 
-        // .playback so a reply still speaks with the ringer switch flipped — someone who taps
-        // "read this aloud" means it. .spokenAudio ducks other audio rather than killing it.
+        // .playback so a reply still speaks with the ringer switch flipped — someone who tapped
+        // "read aloud" meant it. .spokenAudio ducks other audio rather than killing it.
         #if os(iOS)
         do {
             let session = AVAudioSession.sharedInstance()
@@ -152,16 +126,15 @@ final class TwinVoiceService: NSObject, ObservableObject {
         synthesizer.speak(utterance)
     }
 
-    func stop() {
-        if synthesizer.isSpeaking {
-            synthesizer.stopSpeaking(at: .immediate)
-        }
-        isSpeaking = false
-        deactivateSession()
+    /// Short sample so a voice can be auditioned in Settings without going back to the chat.
+    func preview() {
+        speak("This is how your Twin will sound when it reads a reply back to you.")
     }
 
-    func toggle(_ text: String) {
-        if isSpeaking { stop() } else { speak(text) }
+    func stop() {
+        if synthesizer.isSpeaking { synthesizer.stopSpeaking(at: .immediate) }
+        isSpeaking = false
+        deactivateSession()
     }
 
     private func deactivateSession() {
@@ -169,22 +142,6 @@ final class TwinVoiceService: NSObject, ObservableObject {
         // Hand the session back so recording is not left fighting a playback category.
         try? AVAudioSession.sharedInstance().setActive(false, options: [.notifyOthersOnDeactivation])
         #endif
-    }
-
-    /// Copy for Settings, so the UI never has to reason about the status enum.
-    var statusDescription: String {
-        switch personalVoiceStatus {
-        case .available(let name):
-            return "Using your Personal Voice (\(name))."
-        case .authorizedButNoneCreated:
-            return "No Personal Voice yet. Create one in Settings → Accessibility → Personal Voice, then come back — replies will use your own voice, accent and all."
-        case .denied:
-            return "Personal Voice access was declined, so replies use a system voice. You can change this in Settings → Accessibility → Personal Voice."
-        case .notDetermined:
-            return "DailyVox can read replies in your own voice if you have a Personal Voice set up."
-        case .unsupported:
-            return "Personal Voice needs iOS 17 or later on iPhone 12 or later. Replies will use a system voice."
-        }
     }
 }
 
