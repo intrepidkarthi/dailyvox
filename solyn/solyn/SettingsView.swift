@@ -10,6 +10,7 @@ struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var reminderManager = ReminderManager.shared
+    @ObservedObject private var twinVoice = TwinVoiceService.shared
     @ObservedObject private var lockManager = AppLockManager.shared
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var goalManager = GoalManager.shared
@@ -92,6 +93,7 @@ struct SettingsView: View {
             healthSection
             ambientSection
             twinBrainSection
+            twinVoiceSection
             privacySection
             researchSection
             exportSection
@@ -333,6 +335,51 @@ struct SettingsView: View {
     /// Absent entirely on iOS < 26 and on hardware that can't run Apple
     /// Intelligence — no dead toggle to explain (healthSection pattern).
     /// Default ON where available: this gates no new permission or data flow;
+    /// Read replies aloud — in the user's own voice when Apple's Personal Voice exists.
+    /// Personal Voice is built from recordings of them reading sentences, so it carries their
+    /// accent and cadence, which voice-conversion models do not.
+    @ViewBuilder
+    private var twinVoiceSection: some View {
+        Section {
+            Toggle("Read replies aloud", isOn: $twinVoice.isEnabled)
+
+            if twinVoice.isEnabled {
+                Toggle("Use my Personal Voice", isOn: $twinVoice.preferPersonalVoice)
+
+                Text(twinVoice.statusDescription)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                switch twinVoice.personalVoiceStatus {
+                case .notDetermined:
+                    Button {
+                        twinVoice.refreshPersonalVoiceStatus()
+                    } label: {
+                        Label("Allow DailyVox to use my Personal Voice", systemImage: "waveform")
+                            .font(.caption)
+                    }
+                case .authorizedButNoneCreated, .denied:
+                    #if os(iOS)
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        Label("Open Accessibility settings", systemImage: "gear")
+                            .font(.caption)
+                    }
+                    #endif
+                default:
+                    EmptyView()
+                }
+            }
+        } header: {
+            Text("Twin Voice")
+        } footer: {
+            Text("Your Twin can read its replies out loud. If you have created a Personal Voice on this iPhone, it speaks in your own voice — accent and all — because that voice was built from recordings of you. Synthesis happens on this device and Apple does not let apps record it, so there is no audio file to store or share. Off by default.")
+        }
+    }
+
     /// the toggle is a kill-switch back to the classic template chat.
     @ViewBuilder
     private var twinBrainSection: some View {

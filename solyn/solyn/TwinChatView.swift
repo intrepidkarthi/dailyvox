@@ -40,6 +40,7 @@ struct TwinChatMessage: Identifiable {
 struct TwinChatView: View {
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var brain = TwinBrainManager.shared
+    @ObservedObject private var twinVoice = TwinVoiceService.shared
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var messages: [TwinChatMessage] = []
@@ -49,6 +50,8 @@ struct TwinChatView: View {
     @State private var latestFollowUps: [String] = []
     @State private var pipeline: Any?
     @State private var citationEntry: DiaryEntry?
+    /// Which reply is currently being spoken, so only that bubble shows a Stop control.
+    @State private var speakingMessageID: UUID?
     private let evidenceAdapter = TwinChatEvidenceAdapter()
 
     var body: some View {
@@ -191,12 +194,45 @@ struct TwinChatView: View {
                 if !message.citations.isEmpty {
                     citationRow(for: message.citations)
                 }
+
+                // Read-aloud, on the Twin's replies only — there is no reason to speak the
+                // user's own question back at them.
+                if !message.isUser, twinVoice.isEnabled {
+                    speakButton(for: message)
+                }
             }
 
             if !message.isUser {
                 Spacer(minLength: 40)
             }
         }
+    }
+
+    private func speakButton(for message: TwinChatMessage) -> some View {
+        let speakingThis = twinVoice.isSpeaking && speakingMessageID == message.id
+        return Button {
+            if speakingThis {
+                twinVoice.stop()
+                speakingMessageID = nil
+            } else {
+                speakingMessageID = message.id
+                twinVoice.speak(message.text)
+            }
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: speakingThis ? "stop.circle.fill" : "speaker.wave.2.fill")
+                Text(speakingThis ? "Stop" : (twinVoice.personalVoiceStatus.canUsePersonalVoice
+                                             ? "Hear it in your voice" : "Read aloud"))
+            }
+            .font(.caption2)
+            .foregroundColor(themeManager.secondaryTextColor)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Capsule().fill(themeManager.cardBackgroundColor.opacity(0.6)))
+        }
+        .buttonStyle(.plain)
+        .padding(.leading, 4)
+        .accessibilityLabel(speakingThis ? "Stop reading" : "Read this reply aloud")
     }
 
     private var twinOrb: some View {
