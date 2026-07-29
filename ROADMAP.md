@@ -236,11 +236,13 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
   *Accent is approximated, not reproduced, and that is a deliberate stopping point.* Apple's
   Personal Voice does carry the user's real accent, but it costs a ~30-minute enrollment (150
   sentences, read in Settings) that the app cannot perform for them — if the creator won't do it,
-  users won't either. Voice cloning from existing journal audio was investigated at length and is
-  closed: accent lives in phone realisation and phonemic choice, and everything carrying those is
-  autoregressive over a reference prompt, which does not fit a phone's memory budget. Both paths
-  slot in behind `resolvedVoice` without touching callers when one qualifies. See
-  `project_voice_cloning_spike` and §Deferred below.
+  users won't either. Voice cloning from existing journal audio was investigated at length and
+  looked closed at the time this shipped: accent lives in phone realisation and phonemic choice,
+  and everything carrying those is autoregressive over a reference prompt, which appeared not to
+  fit a phone's memory budget. **That conclusion was overturned the day after this build was cut
+  — see "Your own voice" under v1.10.** The stopping point stands for *this release*, not as a
+  permanent verdict. Both paths slot in behind `resolvedVoice` without touching callers when one
+  qualifies. See `project_voice_cloning_spike` and §Deferred below.
 - **The daily reminder is finally offered** — it defaulted to OFF and was reachable only by digging
   through Settings, which for a once-a-day app meant the entire habit loop was invisible. Now
   offered pre-checked at the end of onboarding, where the copy already promises "speak again
@@ -266,6 +268,19 @@ does not get featured. See `marketing/launch/ux-featuring-readiness-2026-07-26.m
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 
+- **Your own voice — candidate, gated on one measurement.** The v1.9 note below says accent cannot
+  be reproduced at a size a phone can hold. **That stopped being true on 2026-07-28.** Kyutai Pocket
+  TTS reproduced Karthik's voice from a 30-second slice of *existing journal audio* — no enrollment,
+  nothing asked of the user — and he confirmed it by ear after every previous attempt failed on
+  accent. The unlock was mundane: normalise the reference clip to full scale before conditioning,
+  and use the full 30 s the model accepts. Model is 109.5M params, uniformly BF16, autoregressive
+  (which is why it carries accent where OpenVoice could not), RTF 0.20. An ExecuTorch iOS export
+  exists with the voice-reference encoder included: 69 MB at enrolment, then unloadable, leaving a
+  188 MB synthesis path. **Ships only when: (1) iPhone peak RSS is measured, not projected —
+  Chatterbox died at exactly this stage of confidence; (2) the weights come from the official gated
+  download rather than the unlicensed mirror used for the spike; (3) it is re-validated on real
+  44.1 kHz journal `.m4a`, not the 22 kHz mp3 the spike ran on.** See
+  `project_voice_cloning_spike_2026_07_27` for the working recipe and the licence landmines.
 - Multi-language UI via Xcode String Catalogs — Tamil, Kannada, Hindi, Spanish, Japanese, German first
 - Speech framework already transcribes 60+ languages on-device; the UI catches up to the pipeline
 - **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)

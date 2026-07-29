@@ -2,7 +2,7 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.9.0] — unreleased
+## [1.9.0] — 2026-07-29
 
 ### Added
 - **Your Twin can read its replies aloud.** Tap "Read aloud" under any answer. Choose the voice in Settings → Twin Voice — regional voices are listed first, so pick whichever sounds closest to you, and press "Hear a sample" to compare. Synthesis happens on this iPhone; nothing is uploaded. Off by default, and it never asks for a permission.
@@ -16,6 +16,11 @@ All notable changes to DailyVox are documented here.
 - **The constellation on your Twin screen is readable.** The labels — the names and topics drawn from your entries — rendered at 9pt and 30% opacity, measuring 2.5:1 against the dark card. They were effectively invisible. Now 8.75:1.
 - The Twin's section picker no longer comes to rest with a word cut in half, and it tells VoiceOver which section is selected instead of reading as six identical buttons.
 - The Twin Resolution ring now announces its score to VoiceOver. It was pure geometry, so the number — the entire point of the card — was silent.
+
+### Build
+- `MARKETING_VERSION` 1.8.0 → 1.9.0; `CURRENT_PROJECT_VERSION` 23 → 24.
+- Website: pinned-device hero (the app demonstrates itself), homepage FAQPage schema, footer version markers.
+- SEO: E-E-A-T pass across all nine striking-distance pages — disclosures, methodology, a "where DailyVox falls short" section, and Person (not Organization) author schema.
 
 ## [1.8.0] — 2026-07-23
 
