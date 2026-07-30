@@ -109,3 +109,8 @@ solyn/DerivedData/
 # Marketing automation tool (relay) — local-only video-posting engine, its
 # secrets (.env FAL_KEY, Google OAuth tokens) and content queue. Never push.
 relay/
+
+# Engine worktrees checked out inside the app repo (git worktrees of the
+# private DailyVoxTwin package, e.g. `.wt-retrieval/`). These are thousands of
+# files belonging to another repository and must never be committed here.
+.wt-*/
