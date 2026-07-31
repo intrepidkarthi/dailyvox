@@ -2,7 +2,7 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.9.0] — 2026-07-29
+## [1.9.0] — 2026-07-31
 
 ### Added
 - **Your Twin can read its replies aloud.** Tap "Read aloud" under any answer. Choose the voice in Settings → Twin Voice — regional voices are listed first, so pick whichever sounds closest to you, and press "Hear a sample" to compare. Synthesis happens on this iPhone; nothing is uploaded. Off by default, and it never asks for a permission.

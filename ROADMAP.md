@@ -92,7 +92,8 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | **Senses** | v1.5.5 *(shipped in v1.6.0)* | learns from your day — on-device photo and music signals, reviewed before they touch the Twin |
 | **Memory** | v1.6 *(shipped)* | remembers you accurately across years — measurable fidelity + semantic memory |
 | **Voice** | v1.7 *(shipped 2026-07-20)* | converses with a real on-device brain, citing your own entries |
-| **Polyglot** | v1.8 | speaks your language — depth on one platform, breadth in languages |
+| **Spoken** | v1.9 *(shipped 2026-07-31)* | reads its answers back to you — and is usable by people the app had locked out |
+| **Polyglot** | v1.10 | speaks your language — depth on one platform, breadth in languages |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
 | **Self** | v2.1 | knows who you are — and lets you talk to who you were |
 | **Agent** | v2.2 | acts on your behalf, every action explained and evidenced |
@@ -223,7 +224,7 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - Streak milestone now celebrates once, at the highest crossed threshold — a long streak no longer replays "7-Day Streak!" on every visit
 - Entry Topics and Twin "Main themes" no longer surface temporal filler ("Today", "Morning", "While") as if it were a subject
 
-### v1.9 — Voice & Access *(build 24 — submitted for review 2026-07-30)*
+### v1.9 — Voice & Access *(shipped 2026-07-31, build 24)*
 
 > The Twin gets a voice, and the app gets usable by people it previously locked out. Both came out
 > of the same week: a growth diagnosis that found retention — not discovery — was the binding

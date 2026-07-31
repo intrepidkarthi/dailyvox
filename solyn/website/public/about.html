@@ -629,7 +629,7 @@
     "operatingSystem": "iOS 17.0 or later",
     "url": "https://getdailyvox.com",
     "downloadUrl": "https://apps.apple.com/app/id6760454642",
-    "softwareVersion": "1.6.0",
+    "softwareVersion": "1.9.0",
     "datePublished": "2026-03-23",
     "dateModified": "2026-07-04",
     "image": "https://getdailyvox.com/app-icon.png",
@@ -903,7 +903,7 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-now">→</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
               <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.6.0</span></div>
               <h3>Memory, measurable fidelity &amp; the first ambient signals</h3>
@@ -911,7 +911,7 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
               <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.7.0</span></div>
               <h3>Foundation Models + tool calling</h3>
@@ -919,9 +919,25 @@
             </div>
           </div>
           <div class="rd-item">
+            <div class="rd-dot rd-done">✓</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.8.0</span></div>
+              <h3>A Twin that actually answers — and a research pilot</h3>
+              <p><strong>Tech:</strong> v1.7's retrieval scored realistic questions against real entries at cosine 0.02–0.25, below the 0.37 abstention threshold, so the chat abstained on almost every genuine diary question while working in demos. Retrieval is now hybrid — per-sentence embedding similarity plus content-word overlap — with a re-measured threshold (τ=0.29, 98.2% balanced accuracy on an eval leg authored from this exact failure). Unrelated questions still abstain honestly. Plus a consented research pilot: opt-in participants can record a one-tap emotion label after each entry, on-device, leaving the phone only through an export they initiate.</p>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-now">→</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.9.0</span></div>
+              <h3>The Twin gets a voice — and the app gets usable by people it had locked out</h3>
+              <p><strong>Tech:</strong> <code>AVSpeechSynthesizer</code> read-aloud over voices already installed on the device, with a picker scoped to the user's language, deduplicated by name and ordered so an exact locale match sits first. No new permission, no entitlement, no enrollment. Apple's Personal Voice <em>does</em> carry a real accent, but it costs a ~30-minute, 150-sentence enrollment the app cannot perform for you — so accent here is approximated, not reproduced, and that is a deliberate stopping point rather than an oversight. Alongside it, an accessibility pass: Dynamic Type across 138 call sites, constellation labels lifted from 2.5:1 to 8.75:1 contrast, and VoiceOver values for the Twin Resolution ring and section picker.</p>
+            </div>
+          </div>
+          <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.8 · Multi-Language</span></div>
+              <div class="rd-tag rd-next"><span class="rd-tag-text">v1.10 · Multi-Language</span></div>
               <h3>The Twin speaks your language</h3>
               <p><strong>Tech:</strong> Xcode String Catalogs for multi-language UI — Tamil, Kannada, Hindi, Spanish, Japanese, German first. Speech framework already supports 60+ transcription languages on-device; the UI catches up to the pipeline. iPhone-only by conviction — no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
             </div>

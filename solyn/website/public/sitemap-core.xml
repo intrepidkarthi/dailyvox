@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://getdailyvox.com/</loc><lastmod>2026-07-17</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://getdailyvox.com/about</loc><lastmod>2026-07-19</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://getdailyvox.com/technology</loc><lastmod>2026-07-17</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://getdailyvox.com/</loc><lastmod>2026-07-31</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://getdailyvox.com/about</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://getdailyvox.com/technology</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://getdailyvox.com/personal-digital-twin</loc><lastmod>2026-06-29</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://getdailyvox.com/ai-journaling-app</loc><lastmod>2026-07-01</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getdailyvox.com/for-students</loc><lastmod>2026-07-04</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://getdailyvox.com/for-students</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://getdailyvox.com/compare</loc><lastmod>2026-07-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://getdailyvox.com/faq</loc><lastmod>2026-07-04</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://getdailyvox.com/faq</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://getdailyvox.com/glossary</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://getdailyvox.com/voice-journaling-statistics</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://getdailyvox.com/privacy</loc><lastmod>2026-07-17</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
@@ -16,6 +16,6 @@
   <url><loc>https://getdailyvox.com/reports/state-of-on-device-ai-journaling-2026</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://getdailyvox.com/reports/journal-app-privacy-audit-2026</loc><lastmod>2026-05-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://getdailyvox.com/facts</loc><lastmod>2026-07-04</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getdailyvox.com/changelog</loc><lastmod>2026-07-20</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://getdailyvox.com/changelog</loc><lastmod>2026-07-31</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://getdailyvox.com/demo</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 </urlset>
