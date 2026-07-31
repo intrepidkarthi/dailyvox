@@ -223,7 +223,7 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
 - Streak milestone now celebrates once, at the highest crossed threshold — a long streak no longer replays "7-Day Streak!" on every visit
 - Entry Topics and Twin "Main themes" no longer surface temporal filler ("Today", "Morning", "While") as if it were a subject
 
-### v1.9 — Voice & Access *(built 2026-07-27, build 24 — awaiting archive)*
+### v1.9 — Voice & Access *(build 24 — submitted for review 2026-07-30)*
 
 > The Twin gets a voice, and the app gets usable by people it previously locked out. Both came out
 > of the same week: a growth diagnosis that found retention — not discovery — was the binding
