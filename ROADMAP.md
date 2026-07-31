@@ -295,7 +295,6 @@ Ride the platform, don't trail it. WWDC 2026 rebuilt Siri on next-generation Fou
 - Next-generation Apple Foundation Models for deeper reasoning and longer conversations
 - Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
 - "How would I react?" — Twin predicts your response to situations based on past patterns and personality
-- Twin replies in your voice using Apple Personal Voice API (AVSpeechSynthesizer)
 
 > **Android: deliberately deferred.** A native Kotlin port doubles the engineering surface right when iOS needs depth. Android happens after iOS retention proves product-market fit — not before. (Prior native-Kotlin design notes preserved in git history.)
 
@@ -308,7 +307,7 @@ Originally planned as Mac-based LoRA fine-tuning; the iPhone-only commitment ret
 - **Deep persona conditioning**: v2.0's multi-tier prompts upgraded with the Big Five profile plus retrieved style exemplars — your actual phrasings, drawn from the v1.5 semantic index, steer every reply
 - Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
 - **Talk to your past self**: conversational time-travel built on those snapshots — "ask 2024-you what they were afraid of." The Twin answers as you *were*, citing entries from that era; diff the conversation against present-you to see how far you've come
-- *Sounding* like you stays with Personal Voice (v2.0); *thinking* like you is conditioning + retrieval. If Apple ever ships user-level adapter training on-device, weight-level personalization returns to the table — on the phone, where it belongs
+- *Sounding* like you is v1.10's problem, not this release's — and it is a voice-cloning question now, not a Personal Voice one (v1.9 dropped Personal Voice: it carries the real accent but costs a ~30-minute enrollment the app cannot perform for the user). *Thinking* like you is conditioning + retrieval. If Apple ever ships user-level adapter training on-device, weight-level personalization returns to the table — on the phone, where it belongs
 
 ### v2.2 — Agentic Twin
 
@@ -354,7 +353,7 @@ The goal of v3.0 is the most accurate mirror of yourself that has ever existed �
 **What the Twin can do at v3.0:**
 
 - Talk like you — your vocabulary, phrasing, tone, and reasoning patterns
-- Sound like you — replies spoken in your cloned voice (Personal Voice)
+- Sound like you — replies spoken in your own cloned voice, if and only if a model qualifies on the phone (see v1.10; not via Personal Voice, which v1.9 rejected on enrollment cost)
 - Know what you care about — values, people, topics, ranked by emotional weight
 - Know how you've felt across years — full emotional history with temporal patterns
 - Predict your likely reaction to familiar situations — grounded in your actual past decisions
