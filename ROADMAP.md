@@ -240,9 +240,10 @@ The Twin gets a real brain. Apple's on-device Foundation Models framework has be
   users won't either. Voice cloning from existing journal audio was investigated at length and
   looked closed at the time this shipped: accent lives in phone realisation and phonemic choice,
   and everything carrying those is autoregressive over a reference prompt, which appeared not to
-  fit a phone's memory budget. **That conclusion was overturned the day after this build was cut
-  — see "Your own voice" under v1.10.** The stopping point stands for *this release*, not as a
-  permanent verdict. Both paths slot in behind `resolvedVoice` without touching callers when one
+  fit a phone's memory budget. **That conclusion appeared overturned on 2026-07-28 and was
+  reinstated on 2026-08-10 by a controlled blind test — see "Your own voice" under v1.10.** The
+  stopping point now stands as the shipped answer, not merely as this release's. Personal Voice or a
+  cloning model still slots in behind `resolvedVoice` without touching callers if one ever
   qualifies. See `project_voice_cloning_spike` and §Deferred below.
 - **The daily reminder is finally offered** — it defaulted to OFF and was reachable only by digging
   through Settings, which for a once-a-day app meant the entire habit loop was invisible. Now
@@ -269,19 +270,21 @@ does not get featured. See `marketing/launch/ux-featuring-readiness-2026-07-26.m
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 
-- **Your own voice — candidate, gated on one measurement.** The v1.9 note below says accent cannot
-  be reproduced at a size a phone can hold. **That stopped being true on 2026-07-28.** Kyutai Pocket
-  TTS reproduced Karthik's voice from a 30-second slice of *existing journal audio* — no enrollment,
-  nothing asked of the user — and he confirmed it by ear after every previous attempt failed on
-  accent. The unlock was mundane: normalise the reference clip to full scale before conditioning,
-  and use the full 30 s the model accepts. Model is 109.5M params, uniformly BF16, autoregressive
-  (which is why it carries accent where OpenVoice could not), RTF 0.20. An ExecuTorch iOS export
-  exists with the voice-reference encoder included: 69 MB at enrolment, then unloadable, leaving a
-  188 MB synthesis path. **Ships only when: (1) iPhone peak RSS is measured, not projected —
-  Chatterbox died at exactly this stage of confidence; (2) the weights come from the official gated
-  download rather than the unlicensed mirror used for the spike; (3) it is re-validated on real
-  44.1 kHz journal `.m4a`, not the 22 kHz mp3 the spike ran on.** See
-  `project_voice_cloning_spike_2026_07_27` for the working recipe and the licence landmines.
+- **Your own voice — CLOSED 2026-08-10, not shipping.** This was carried here as a candidate after
+  Kyutai Pocket TTS appeared, on 2026-07-28, to reproduce Karthik's voice from a 30-second slice of
+  existing journal audio. It does not survive a controlled test. In a forced-choice blind test —
+  eight pairs, each the same sentence spoken once by him and once by the model, with sample rate,
+  RMS loudness and clip length matched, and every real clip in trials 3–8 held out of the
+  conditioning reference — **he identified his own recording 8 times out of 8** (p = 0.0039).
+  That result also retires the July approval it rested on: choosing Pocket TTS over OpenVoice and
+  MOSS-TTS-Nano was a judgement of *which was least bad*, never evidence that any of them was good
+  enough to ship. The memory gate failed independently — measured peak against a ~250 MB ceiling was
+  685 MB for sherpa-onnx INT8 (377 MB after model load alone) and 957 MB for FluidAudio CoreML, all
+  against a ~159 MB projection. Three runtimes, three failures on both gates.
+  **The lesson, which outlives the feature:** comparing two synthetic clips only tells you which is
+  less bad. Any future voice candidate is gated on a forced-choice real-vs-synthetic blind test with
+  format tells controlled, run *before* integration work — an hour that would have saved three weeks.
+  See `project_voice_cloning_spike_2026_07_27` and `research/pocket-tts-optimization.md`.
 - Multi-language UI via Xcode String Catalogs — Tamil, Kannada, Hindi, Spanish, Japanese, German first
 - Speech framework already transcribes 60+ languages on-device; the UI catches up to the pipeline
 - **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)
@@ -307,7 +310,7 @@ Originally planned as Mac-based LoRA fine-tuning; the iPhone-only commitment ret
 - **Deep persona conditioning**: v2.0's multi-tier prompts upgraded with the Big Five profile plus retrieved style exemplars — your actual phrasings, drawn from the v1.5 semantic index, steer every reply
 - Identity evolution tracking: diff monthly personality snapshots to show how you've changed over time
 - **Talk to your past self**: conversational time-travel built on those snapshots — "ask 2024-you what they were afraid of." The Twin answers as you *were*, citing entries from that era; diff the conversation against present-you to see how far you've come
-- *Sounding* like you is v1.10's problem, not this release's — and it is a voice-cloning question now, not a Personal Voice one (v1.9 dropped Personal Voice: it carries the real accent but costs a ~30-minute enrollment the app cannot perform for the user). *Thinking* like you is conditioning + retrieval. If Apple ever ships user-level adapter training on-device, weight-level personalization returns to the table — on the phone, where it belongs
+- *Sounding* like you is not this release's problem, and as of 2026-08-10 it is not v1.10's either — voice cloning closed on a blind test, and Personal Voice was dropped in v1.9 (it carries the real accent but costs a ~30-minute enrollment the app cannot perform for the user). *Thinking* like you is conditioning + retrieval. If Apple ever ships user-level adapter training on-device, weight-level personalization returns to the table — on the phone, where it belongs
 
 ### v2.2 — Agentic Twin
 
