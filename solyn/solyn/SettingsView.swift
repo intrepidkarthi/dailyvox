@@ -99,6 +99,9 @@ struct SettingsView: View {
             exportSection
             backupSection
             aboutSection
+            #if DEBUG
+            developerSection
+            #endif
         }
         .scrollContentBackground(.hidden)
         .background(themeManager.backgroundColor.ignoresSafeArea())
@@ -1155,6 +1158,35 @@ struct SettingsView: View {
             }
         }
     }
+
+    #if DEBUG
+    /// Development instruments. Compiled out of Release entirely — this section
+    /// and everything it reaches cannot ship.
+    private var developerSection: some View {
+        Section {
+            NavigationLink {
+                MemoryProbeView()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "memorychip")
+                        .font(.subheadline)
+                        .foregroundColor(DS.Palette.gold)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Memory probe")
+                            .font(.subheadline.weight(.semibold))
+                        Text("Measure what a workload costs this process")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text("Developer")
+        } footer: {
+            Text("Debug builds only. Gates the v1.10 on-device voice work: a candidate model ships on a measured peak footprint, never a projected one.")
+        }
+    }
+    #endif
 
     private var totalEntriesCount: Int {
         let fetchRequest = DiaryEntry.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
