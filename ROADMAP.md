@@ -285,8 +285,29 @@ iPhone-first by conviction, not just sequencing. Everything that makes the Twin 
   less bad. Any future voice candidate is gated on a forced-choice real-vs-synthetic blind test with
   format tells controlled, run *before* integration work — an hour that would have saved three weeks.
   See `project_voice_cloning_spike_2026_07_27` and `research/pocket-tts-optimization.md`.
-- Multi-language UI via Xcode String Catalogs — Tamil, Kannada, Hindi, Spanish, Japanese, German first
-- Speech framework already transcribes 60+ languages on-device; the UI catches up to the pipeline
+- **Multi-language UI via Xcode String Catalogs — Spanish, French, German, Italian.** 358 strings,
+  shipped. The language set is chosen by what Apple's frameworks actually support, measured rather
+  than assumed, and the binding constraint is not speech recognition:
+
+  | Framework | Languages |
+  |:--|:--|
+  | `SFSpeechRecognizer` | 34 |
+  | `SpeechTranscriber` (iOS 26+) | 10 |
+  | `NLTagger` sentiment | 34 |
+  | `AVSpeechSynthesisVoice` | 33 |
+  | **`NLEmbedding` sentence vectors** | **5** |
+
+  Semantic search (v1.6) runs on sentence embeddings, and those exist only for English, Spanish,
+  French, German and Italian. Localizing beyond them would ship an interface in a language where the
+  Twin's search quietly returns nothing useful — advertising a capability that isn't there.
+- **Tamil and Kannada are not reachable and are not deferred — they are out.** Neither Speech API
+  supports them, and for a voice journal that is a hard stop rather than a backlog item. Hindi is
+  legacy `SFSpeechRecognizer` only, absent from `SpeechTranscriber` entirely, with no embeddings;
+  Japanese has `SpeechTranscriber` but no embeddings. Both sit in a Tier 2 that ships only if
+  degraded semantic search is judged acceptable.
+- Nobody is locked out in the meantime: transcription already follows `Locale.current` on both
+  paths, so journaling in any of the 34 has always worked. This release changes the *interface*
+  language only — the pipeline was never the thing lagging behind
 - **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)
 
 ### v2.0 — Apple Intelligence Native *(iOS 27)*
