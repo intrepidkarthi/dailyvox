@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice Cloning on iPhone: Three Runtimes, One Blind Test, and Why We Stopped</title>
+<meta name="description" content="We tried three ways to run a voice cloning model on an iPhone. All three used too much memory. Then a blind listening test showed the clone was easy to tell apart from a real recording, 8 times out of 8.">
+<link rel="canonical" href="https://getdailyvox.com/blog/voice-cloning-blind-test">
+<meta name="theme-color" content="#FAF8F5">
+<meta property="og:type" content="article"><meta property="og:title" content="Voice Cloning on iPhone: Three Runtimes, One Blind Test, and Why We Stopped">
+<meta property="og:description" content="We tried three ways to run a voice cloning model on an iPhone. All three used too much memory. Then a blind listening test showed the clone was easy to tell apart from a real recording, 8 times out of 8."><meta property="og:url" content="https://getdailyvox.com/blog/voice-cloning-blind-test">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Voice Cloning on iPhone: Three Runtimes, One Blind Test, and Why We Stopped", "description": "We tried three ways to run a voice cloning model on an iPhone. All three used too much memory. Then a blind listening test showed the clone was easy to tell apart from a real recording, 8 times out of 8.", "url": "https://getdailyvox.com/blog/voice-cloning-blind-test", "datePublished": "2026-08-10", "author": {"@type": "Organization", "name": "DailyVox"}, "publisher": {"@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"}, {"@type": "ListItem", "position": 3, "name": "Voice Cloning on iPhone: Three Runtimes, One Blind Test"}]}</script>
+<style>
+:root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
+*{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
+header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
+h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
+h3{font-size:18px;margin-top:26px}
+.bc{font-size:14px;color:#8a8175;margin-top:14px}.bc a{color:#8a8175}
+ol,ul{padding-left:22px}ol li,ul li{margin:6px 0}
+.cta{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}
+.cta a{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}
+details{border-top:1px solid #e7e0d6;padding:13px 0}summary{font-weight:700;cursor:pointer}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
+.related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
+footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
+a{color:var(--terra)}
+pre{background:#f3efe8;border:1px solid #e7e0d6;border-radius:10px;padding:14px;overflow-x:auto;font-size:14px;line-height:1.5}
+code{background:#f3efe8;padding:1px 5px;border-radius:4px;font-size:15px}
+pre code{background:none;padding:0}
+.note{background:#fff;border-left:4px solid var(--gold);padding:14px 18px;margin:22px 0;font-size:16px}
+.tw{overflow-x:auto}
+</style></head>
+<body>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<main>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
+<h1>Voice cloning on iPhone: three runtimes, one blind test, and why we stopped</h1>
+
+<p>We wanted the DailyVox Twin to answer in your own voice. Not a voice that sounds a bit like you. Your voice, copied from journal audio you already recorded, with no setup work asked of you.</p>
+
+<p>We spent three weeks on it and then stopped. This post is the full record: what we measured, how we measured it, what the numbers were, and the test that ended the project. We are writing it up the way we would write up an experiment, because that is what it was.</p>
+
+<div class="note"><strong>Short version.</strong> Three ways of running the model all used far more memory than an iPhone allows. Then a blind listening test showed that the cloned voice can be told apart from a real recording, 8 times out of 8. The second result is the one that mattered, and we should have run that test first.</div>
+
+<h2>What we were trying to build</h2>
+
+<p>Since version 1.9, DailyVox can read its answers out loud. It uses a voice that is already on your iPhone. That works, and it needs no setup, but the accent is only approximated. An Indian English speaker gets an Indian English voice, not <em>their</em> voice.</p>
+
+<p>The goal was to replace that with a copy of your real voice, built from thirty seconds of audio you had already recorded in the app. No enrollment screen. No reading 150 sentences aloud.</p>
+
+<h2>The memory limit, and why it decides everything</h2>
+
+<p>iOS does not let an app use as much memory as it likes. A background process called <strong>jetsam</strong> watches how much memory each app holds and kills apps that go over a limit. On a 6 GB iPhone, a foreground app gets somewhere around 250 MB before it is at risk.</p>
+
+<p>The number jetsam actually looks at is called <code>phys_footprint</code>. This is not the same as the size of the model file on disk, and it is not the same as the number Xcode shows you in the memory gauge. So we built a small measuring tool inside the app that reads <code>phys_footprint</code> directly, and used that number for every test below.</p>
+
+<p>Everything else in this post is a comparison against that 250 MB line.</p>
+
+<h2>Why this particular model</h2>
+
+<p>Two kinds of model can make a computer sound like you, and only one of them works for this.</p>
+
+<p>The first kind copies <strong>timbre</strong>, which is the colour of your voice. Is it deep or light, rough or smooth. Models like OpenVoice do this, and they are small and fast. We tried one early on. The result had our voice colour painted on top of a British speaking rhythm, and it did not sound like the right person.</p>
+
+<p>The reason is that an accent is not mostly timbre. An accent lives in how you shape each sound and which sounds you pick, and those decisions depend on the sounds that came before them. To copy that, a model has to generate speech one small step at a time, with each step looking back at the steps before it. That is called an <strong>autoregressive</strong> model.</p>
+
+<p>Kyutai Pocket TTS is autoregressive and has 109.5 million parameters, which is small for this class of model. That combination is why it was the candidate. It is also why it is expensive to run, because looking back at previous steps means holding a lot of state in memory.</p>
+
+<h2>Method: three ways to run it</h2>
+
+<p>The same model can be packaged for a phone in different ways. Each package makes different trade-offs, so we measured all three.</p>
+
+<h3>Runtime 1: FluidAudio (Core ML)</h3>
+
+<p>An open source Swift package that converts Pocket TTS to Core ML, Apple's own machine learning format. It is Apache 2.0 licensed, supports iOS 17 and later, and installs through Swift Package Manager. It has a working voice cloning function, which matters, because another iOS port we checked ships that function as an empty stub that raises an error when called.</p>
+
+<p>Model files, English pack, on disk:</p>
+
+<div class="tw"><table>
+<tr><th>Setting</th><th>Size on disk</th></tr>
+<tr><td>int8 (smaller)</td><td>549.3 MB</td></tr>
+<tr><td>fp16 (default)</td><td>766.3 MB</td></tr>
+</table></div>
+
+<p><strong>int8</strong> means the model's numbers are squeezed from 16 bits down to 8 bits each, which roughly halves the size and usually costs a little quality. Only one of the four parts of this model has an int8 version available, so the savings are limited. The largest single file is the conditioning step at 254.3 MB, and it stays at full size.</p>
+
+<h3>Runtime 2: sherpa-onnx (ONNX Runtime)</h3>
+
+<p>An open source toolkit that runs the model through ONNX Runtime, a cross-platform engine. This was our planned choice, and on paper it deserved to be:</p>
+
+<div class="tw"><table>
+<tr><th>Measure</th><th>Value</th></tr>
+<tr><td>Size on disk</td><td>198 MB</td></tr>
+<tr><td>Size after setup</td><td>125 MB (the part that reads your reference clip can be deleted once it has run)</td></tr>
+<tr><td>Speed</td><td>Real-time factor 0.13 to 0.18 on 2 CPU threads</td></tr>
+<tr><td>Load time</td><td>0.4 seconds</td></tr>
+<tr><td>Licence</td><td>Present in the repository, not an unlicensed copy</td></tr>
+</table></div>
+
+<p><strong>Real-time factor</strong> is compute time divided by audio length. 0.15 means one second of computing produces about seven seconds of speech, so this is comfortably fast enough to speak while it thinks.</p>
+
+<h3>Runtime 3: an earlier candidate</h3>
+
+<p>Before either of these we had measured a different model, chatterbox-turbo, at 953.7 MB. We had also listened to MOSS-TTS-Nano and rejected it by ear, and its published files are 728 MB with no smaller version available. Both were already out on size.</p>
+
+<h2>Results: memory</h2>
+
+<p>All figures are <code>phys_footprint</code>, measured on a Mac with the same code paths the phone would use. Mac numbers are not phone numbers, and we say more about that under limitations. The 250 MB line is the iPhone budget.</p>
+
+<div class="tw"><table>
+<tr><th>Runtime</th><th>After loading the model</th><th>Peak while working</th></tr>
+<tr><td>FluidAudio (Core ML, int8)</td><td>270.8 MB</td><td>957.0 MB</td></tr>
+<tr><td>sherpa-onnx (int8)</td><td>377.0 MB</td><td>685.4 MB</td></tr>
+<tr><td>chatterbox-turbo (earlier)</td><td>not measured</td><td>953.7 MB</td></tr>
+<tr><td><strong>Budget</strong></td><td colspan="2"><strong>about 250 MB</strong></td></tr>
+</table></div>
+
+<p>Read the first column carefully. FluidAudio is over budget after simply loading the model, before it has done any work at all.</p>
+
+<p>Our own design document had estimated 685 MB would be about 159 MB. That estimate was wrong by a factor of four, and every estimate in this project has been wrong in the same direction. This is the argument for measuring rather than projecting.</p>
+
+<h2>Results: app size</h2>
+
+<p>Memory is what happens while the app runs. App size is what every user downloads, including users who never turn the feature on. So we measured that too.</p>
+
+<p>The two code libraries needed come to 63 MB of static archives. That number overstates the cost, because a linker only pulls in the parts you actually call and then discards unused code. To find the true cost we wrote a tiny program that calls only the speech functions, linked it with dead code stripping on, and stripped the symbol table:</p>
+
+<pre><code>LINKED (with -dead_strip): 34.3 MB
+AFTER strip:               22.3 MB</code></pre>
+
+<p>So the honest figure is about 22 MB of extra binary.</p>
+
+<div class="tw"><table>
+<tr><th>Item</th><th>Today</th><th>With voice cloning</th></tr>
+<tr><td>App binary</td><td>13 MB</td><td>about 35 MB</td></tr>
+<tr><td>Whole app</td><td>20 MB</td><td>about 42 MB</td></tr>
+<tr><td>Model files on your phone</td><td>0 MB</td><td>125 MB after setup</td></tr>
+</table></div>
+
+<p>The app roughly doubles for everyone, and adds 125 MB of storage for anyone who uses the feature.</p>
+
+<h2>The flaw in how we had been testing</h2>
+
+<p>Here the story stops being about memory.</p>
+
+<p>In late July we had produced a cloned clip, listened to it, and approved it. We called it A92. We compared it against the OpenVoice output, and later against MOSS-TTS-Nano, and A92 sounded more like the right person both times. A92 became the standard. Every runtime after that was judged by whether it matched A92.</p>
+
+<p>Every one of those comparisons put one synthetic clip next to another synthetic clip.</p>
+
+<p>That design can only tell you which clip is <em>less bad</em>. It cannot tell you whether either clip is good enough to ship. We had three weeks of engineering sitting on top of an approval that had never once been compared against a real recording.</p>
+
+<p>When we finally played the newest output next to A92, the honest reaction was that neither one was clearly good. That is when we designed a test that could actually answer the question.</p>
+
+<h2>The blind test</h2>
+
+<h3>Design</h3>
+
+<p>A <strong>forced choice</strong> test. The listener gets two clips saying exactly the same sentence. One is a genuine recording of them. The other is the model imitating them. They must pick the real one. There is no "not sure" option, which is the point: it forces a decision and makes the result countable.</p>
+
+<p>We ran 8 trials.</p>
+
+<h3>Controls</h3>
+
+<p>The hard part of this kind of test is that the listener can cheat without meaning to. If the real clips are louder, or clearer, or longer, they will pick the real one every time for reasons that have nothing to do with the voice. So each of those clues was removed:</p>
+
+<div class="tw"><table>
+<tr><th>Clue</th><th>How it was removed</th></tr>
+<tr><td>Audio quality</td><td>Both clips resampled to 22050 Hz, so neither sounds crisper</td></tr>
+<tr><td>Loudness</td><td>Both normalised to the same RMS level of 0.0800, checked file by file, then peak limited</td></tr>
+<tr><td>Wording</td><td>Both clips say the same sentence, so the words give nothing away</td></tr>
+<tr><td>Length</td><td>Clip lengths varied from 5.6 to 8.4 seconds</td></tr>
+</table></div>
+
+<p>That last row was a real bug in the first version of the test. Every genuine clip was exactly 7.00 seconds long, because that was the window size in the script. A listener could have found the real clip just by noticing that one of them always felt the same length. That would have been a flaw in our tooling being measured as a property of the model.</p>
+
+<h3>Making sure the model had not heard the audio before</h3>
+
+<p>A cloning model is given a reference clip to copy from. If you then test it on that same audio, you are testing memory rather than ability. So the test clips had to come from audio the model had never been given.</p>
+
+<p>To guarantee that, we took the thirty second reference clip and cross-correlated it against the full source recording to find exactly where it came from. <strong>Cross-correlation</strong> slides one signal along another and measures how well they line up at each offset. The best match tells you the position.</p>
+
+<p>It sat at exactly 92.0 to 122.0 seconds of a 224.2 second recording. Every genuine clip for trials 3 through 8 was then taken from outside that window, between 12 and 203 seconds.</p>
+
+<p>This also corrected a misunderstanding we had carried for two weeks. The clip was labelled <code>A_92</code>, and we had assumed the 92 meant a 92 second source. It was the start offset. The other variants we had been treating as different clip lengths were simply different thirty second windows of one recording.</p>
+
+<h3>Procedure</h3>
+
+<ol>
+<li>Cut a segment of genuine audio from outside the reference window.</li>
+<li>Transcribe it with Whisper small.en to get the exact words.</li>
+<li>Ask the cloned model to say those same words.</li>
+<li>Match sample rate and loudness on both clips.</li>
+<li>Assign each to slot A or B in an uneven, non-guessable order and write down the answer key.</li>
+<li>Listen and choose, writing all answers down before opening the key.</li>
+</ol>
+
+<h2>Results: the listening test</h2>
+
+<p><strong>8 correct out of 8.</strong></p>
+
+<p>If someone were purely guessing, each trial is a coin flip, so the chance of getting all 8 right is 0.5 multiplied by itself 8 times, which is 1 in 256, or <strong>p = 0.0039</strong>. In plain terms: a result this clean would happen by luck about 4 times in 1000. The identification was real, not luck.</p>
+
+<p>So the cloned voice is reliably distinguishable from a genuine recording, even on audio the model had never been given, with loudness, audio quality, wording and length all controlled.</p>
+
+<p>It also means the July approval of A92 was a <em>relative</em> judgement. Better than OpenVoice and better than MOSS-TTS-Nano is not the same as good. There had never been a demonstrated standard for anything to reach.</p>
+
+<h2>Limitations, honestly stated</h2>
+
+<p>A result is only as good as the things that could be wrong with it. Four things could be wrong with this one.</p>
+
+<p><strong>The bar may be stricter than the product needs.</strong> "Impossible to tell from a real recording" is the hardest test available. The useful product question is closer to "does this sound more like me than a generic voice", which is easier, and the clone might well pass it. We chose the hard test without first asking which question the product needed answered. The memory numbers close the project regardless, but if memory had been fine, this test would have been harder than the decision deserved.</p>
+
+<p><strong>One listener.</strong> Eight trials with one person, who is also the person whose voice it is. Being the owner of the voice probably makes identification easier than it would be for a stranger, so this does not tell you whether your friends could pick it out.</p>
+
+<p><strong>Mac, not iPhone.</strong> The memory numbers come from a desktop. macOS has no jetsam pressure, so it never forces the system to release memory the way a phone does. The iPhone figures would likely be lower. They would have to be about four times lower to matter, and nothing suggested that.</p>
+
+<p><strong>Reference length differed between runtimes.</strong> FluidAudio's encoder is capped at 10 seconds of reference audio, while sherpa-onnx accepts the full 30. That was a genuine confound in the first comparison, and it is why we did not close the whole project on the FluidAudio result alone.</p>
+
+<h2>Two findings we are keeping</h2>
+
+<p>Giving the model a written transcript of the reference clip, instead of an empty string, tightened the speaking pace from a spread of 149 to 223 words per minute down to 167 to 199. That is a genuine improvement in output quality. It did not change the verdict.</p>
+
+<p>And sherpa-onnx remains the best runtime we found for this class of model. The plumbing works, it is fast, and it is properly licensed. If a smaller accent-preserving model appears with a sherpa export, a new candidate can be tested in an afternoon without opening Xcode at all.</p>
+
+<h2>What changed as a result</h2>
+
+<p>The blind test took about an hour, including finding the source recording and writing the loudness-matching script. It answered a question that three separate runtime integrations across three weeks could not.</p>
+
+<p>So the rule now is that any future voice candidate gets the forced choice test against real audio, with the format clues controlled, before the port compiles rather than after it.</p>
+
+<p>Until a model appears that can pass it inside the memory budget, the DailyVox Twin keeps using a voice your phone already has. The accent stays approximate. That is written into the source code as a deliberate stopping point rather than a gap someone should quietly fill later.</p>
+
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+
+<div class="related"><a href="/blog/foundation-models-gate">The Model That Couldn't Describe Its Maker</a><a href="/blog/apple-intelligence-journal">Apple Intelligence Journaling</a><a href="/blog/personal-digital-twin">Building a Personal Digital Twin on iPhone</a><a href="/blog/search-journal-by-meaning">Search Your Journal by Meaning</a></div>
+</main>
+<footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.</footer>
+</body></html>
