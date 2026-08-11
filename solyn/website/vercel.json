@@ -53,6 +53,31 @@
       "source": "/blog/voice-journal-for-walking",
       "destination": "/blog/voice-journaling-while-walking",
       "permanent": true
+    },
+    {
+      "source": "/blog/best-ai-journal-app",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-journal-app-iphone",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-journal-app-for-anxiety",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-journal-app-for-students",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-journal-app-for-therapists",
+      "destination": "/blog/best-offline-journal-app",
+      "permanent": true
     }
   ],
   "headers": [
