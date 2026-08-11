@@ -274,6 +274,106 @@ class ScreenshotTests: XCTestCase {
         takeScreenshot(named: "15_Today_InviteCard")
     }
 
+    // MARK: - Screenshot 20: Ask Your Twin — grounded chat with citations (v1.7)
+
+    func test20_AskYourTwin() throws {
+        navigateToTab("Twin")
+        sleep(2)
+
+        let ask = app.staticTexts["Ask Your Twin"].firstMatch
+        scrollUntilHittable(ask)
+        XCTAssertTrue(ask.waitForExistence(timeout: 3), "Ask Your Twin row not found on Twin tab")
+        ask.tap()
+        sleep(2)
+
+        // Free text, not a suggested chip. The chips answer from the statistical
+        // profile; typed questions go through semantic retrieval, which is what
+        // produces the "From your journal" citations worth showing.
+        // Phrasing matters here. "What gives me a sense of calm?" scores below the
+        // abstention threshold and returns "not enough journaled evidence" — correct
+        // behaviour, useless screenshot. This one clears the threshold and cites.
+        askChat("What do I say about my morning walks?")
+        sleep(12)
+
+        // Dismiss the keyboard, which otherwise eats the lower half of the frame.
+        // A plain coordinate tap does not do it; scrolling the transcript does.
+        app.scrollViews.firstMatch.swipeDown()
+        sleep(1)
+        app.scrollViews.firstMatch.swipeUp()
+        sleep(2)
+
+        takeScreenshot(named: "20_AskYourTwin")
+    }
+
+    /// Types into the chat composer. `axis: .vertical` means the field can surface
+    /// as a text view rather than a text field, so try both.
+    private func askChat(_ question: String) {
+        let field = app.textFields["Ask your twin anything…"].firstMatch
+        let view = app.textViews.firstMatch
+        let target: XCUIElement = field.waitForExistence(timeout: 3) ? field : view
+        guard target.waitForExistence(timeout: 3) else {
+            XCTFail("Chat composer not found"); return
+        }
+        target.tap()
+        target.typeText(question)
+        // Send button is the arrow next to the composer.
+        let send = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS[c] 'send' OR label CONTAINS[c] 'arrow'")).firstMatch
+        if send.exists && send.isHittable { send.tap() } else { target.typeText("\n") }
+    }
+
+    // MARK: - Screenshot 21: Search by meaning (v1.6)
+
+    func test21_SearchByMeaning() throws {
+        navigateToTab("Journal")
+        sleep(2)
+
+        let searchButton = app.buttons["Search by meaning"].firstMatch
+        XCTAssertTrue(searchButton.waitForExistence(timeout: 4), "Search by meaning button not found")
+        searchButton.tap()
+        sleep(2)
+
+        // SemanticSearchView uses .searchable, so this is a search field, not a text field.
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 4), "Search field not found in the sheet")
+        field.tap()
+        // Deliberately shares no keyword with the seeded entries, so any result
+        // can only have come from meaning rather than string matching.
+        field.typeText("a quiet moment that made me feel calm")
+        sleep(2)
+        app.keyboards.buttons["search"].firstMatch.tap()
+        sleep(6)
+        takeScreenshot(named: "21_SearchByMeaning")
+    }
+
+    // MARK: - Screenshot 22: Privacy — the app locked behind Face ID
+    //
+    // A better privacy visual than the Settings export form the old set used.
+    // `-appLockEnabled YES` lands in NSArgumentDomain, which AppLockManager's
+    // UserDefaults read resolves first, so the lock screen shows on launch.
+
+    // NOTE: an earlier version launched with `-appLockEnabled YES` to capture the
+    // app's own lock screen. In the simulator LockScreenView auto-fires biometric
+    // auth, which falls through to the SYSTEM passcode alert — a grey iOS dialog,
+    // not our UI, and not something to put on a store page. Capturing the real
+    // Privacy & Security settings instead.
+    func test22_PrivacySettings() throws {
+        navigateToTab("Settings")
+        sleep(2)
+
+        // Anchor on a privacy row so the whole section is framed, rather than the
+        // PDF export form the previous screenshot set used for the privacy claim.
+        let anchor = app.staticTexts["Your voice stays on this device"].firstMatch
+        if anchor.exists {
+            scrollUntilHittable(anchor, maxSwipes: 8)
+        } else {
+            let faceID = app.staticTexts["Privacy & Security"].firstMatch
+            scrollUntilHittable(faceID, maxSwipes: 8)
+        }
+        liftAboveTabBar()
+        takeScreenshot(named: "22_PrivacySettings")
+    }
+
     // MARK: - Helpers
 
     /// Swipes up until `element` reports hittable (or swipes run out).
