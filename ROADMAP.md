@@ -93,7 +93,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 | **Memory** | v1.6 *(shipped)* | remembers you accurately across years — measurable fidelity + semantic memory |
 | **Voice** | v1.7 *(shipped 2026-07-20)* | converses with a real on-device brain, citing your own entries |
 | **Spoken** | v1.9 *(shipped 2026-07-31)* | reads its answers back to you — and is usable by people the app had locked out |
-| **Polyglot** | v1.10 | speaks your language — depth on one platform, breadth in languages |
+| **Polyglot** | v1.10 *(shipped 2026-08-11)* | speaks your language — depth on one platform, breadth in languages |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
 | **Self** | v2.1 | knows who you are — and lets you talk to who you were |
 | **Agent** | v2.2 | acts on your behalf, every action explained and evidenced |
@@ -266,7 +266,7 @@ the ability to write by hand. The origin story is an accessibility story, and th
 failed an accessibility review — which is also the single most common reason a well-made indie app
 does not get featured. See `marketing/launch/ux-featuring-readiness-2026-07-26.md`.
 
-### v1.10 — Multi-Language
+### v1.10 — Multi-Language *(shipped 2026-08-11, build 25)*
 
 iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
 

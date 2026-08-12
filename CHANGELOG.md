@@ -2,6 +2,18 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.10.0] — 2026-08-11
+
+### Added
+- **The interface now ships in Spanish, French, German and Italian** alongside English, via a single `Localizable.xcstrings` String Catalog (358 strings, complete in all four). It follows your iPhone's language automatically; there is nothing to switch on.
+
+### Why only four
+- Search by meaning relies on `NLEmbedding.sentenceEmbedding`, which Apple provides for English, Spanish, French, German and Italian only. Shipping the interface in a language where that feature silently returned nothing would have been a worse experience than waiting. Tamil and Kannada, which earlier roadmaps listed first, are supported by neither Speech API and are not deferred — they are out until Apple's coverage changes.
+- Recording already worked in every language the iPhone can transcribe, and still does. This release changed the interface language, not what you can speak.
+
+### Changed
+- **App Store screenshots rebuilt across all four device sizes.** The previous set was captured on 3 July and was three releases behind, showing none of v1.6 semantic search, v1.7 Ask Your Twin or v1.9 read-aloud.
+
 ## [1.9.0] — 2026-07-31
 
 ### Added
