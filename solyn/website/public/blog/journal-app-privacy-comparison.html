@@ -49,6 +49,38 @@
     ]
   }
   </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between Journey Cloud and Journey Premium for privacy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Journey Premium adds Journey Cloud sync, but it does not enable default end-to-end encryption. Your entries stay encrypted in transit, not on their servers. Day One handles this better by making zero-knowledge encryption standard for synced entries. I built DailyVox to avoid servers entirely. Every voice note stays on your iPhone. The trade-off is clear. If you lose your iPhone without a local backup, your entries disappear forever."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Journey Cloud sync required to back up journal entries across devices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Apps handle backups differently depending on their architecture. Journey relies on Google Drive or its proprietary Journey Cloud. Apple Journal and Day One use iCloud infrastructure for sync. DailyVox has no custom servers and uses local iPhone storage, though you can sync audio files via Apple's CloudKit. If you need web or Android access, Journey works. DailyVox never will, because I refuse to write server code for your private thoughts."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I get automated mood tracking and journal analysis without uploading data to the cloud?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Apps like Rosebud and Daylio process mood trends on remote servers or simple manual logs. DailyVox runs a local Digital Twin model using Apple frameworks directly on your iPhone hardware. It maps emotional patterns without sending a single byte to an external API. It works completely in airplane mode. The downside is platform locking. You cannot view those emotional trends on a web browser or an Android device."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <nav>
@@ -239,6 +271,14 @@
             <li style="margin-bottom:8px;"><a href="/reports/state-of-on-device-ai-journaling-2026" style="color:#5B7C6B;font-weight:500;">State of On-Device AI Journaling 2026</a></li>
           </ul>
         </div>
+
+        <h2>Frequently asked questions</h2>
+        <h3>What is the difference between Journey Cloud and Journey Premium for privacy?</h3>
+        <p>Journey Premium adds Journey Cloud sync, but it does not enable default end-to-end encryption. Your entries stay encrypted in transit, not on their servers. Day One handles this better by making zero-knowledge encryption standard for synced entries. I built DailyVox to avoid servers entirely. Every voice note stays on your iPhone. The trade-off is clear. If you lose your iPhone without a local backup, your entries disappear forever.</p>
+        <h3>Is Journey Cloud sync required to back up journal entries across devices?</h3>
+        <p>No. Apps handle backups differently depending on their architecture. Journey relies on Google Drive or its proprietary Journey Cloud. Apple Journal and Day One use iCloud infrastructure for sync. DailyVox has no custom servers and uses local iPhone storage, though you can sync audio files via Apple&#x27;s CloudKit. If you need web or Android access, Journey works. DailyVox never will, because I refuse to write server code for your private thoughts.</p>
+        <h3>Can I get automated mood tracking and journal analysis without uploading data to the cloud?</h3>
+        <p>Yes. Apps like Rosebud and Daylio process mood trends on remote servers or simple manual logs. DailyVox runs a local Digital Twin model using Apple frameworks directly on your iPhone hardware. It maps emotional patterns without sending a single byte to an external API. It works completely in airplane mode. The downside is platform locking. You cannot view those emotional trends on a web browser or an Android device.</p>
 
         <div class="article-cta">
           <h3>Get DailyVox — Data Not Collected</h3>
