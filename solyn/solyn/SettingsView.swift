@@ -1057,8 +1057,15 @@ struct SettingsView: View {
     private func deleteAllData() {
         let fetch: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
         if let all = try? viewContext.fetch(fetch) {
+            let deletedIds = all.compactMap { $0.id }
             for entry in all { viewContext.delete(entry) }
             try? viewContext.save()
+            // "Delete all data" has to mean the derived indexes too, or search
+            // and the entity graph keep answering from entries that are gone.
+            for id in deletedIds {
+                SemanticSearchManager.shared.removeEntry(id: id)
+                DigitalTwinEngine.shared.forgetEntry(id.uuidString)
+            }
         }
         Self.clearDirectory(name: "Recordings")
         Self.clearDirectory(name: "Photos")
