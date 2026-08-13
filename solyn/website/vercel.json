@@ -78,6 +78,11 @@
       "source": "/blog/best-journal-app-for-therapists",
       "destination": "/blog/best-offline-journal-app",
       "permanent": true
+    },
+    {
+      "source": "/blog/voice-recorder-diary-app",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
