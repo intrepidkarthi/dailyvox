@@ -8,9 +8,26 @@
 # allowed on purpose, so the in-tree legacy engine can be migrated out.
 #
 # Enable once with:  git config core.hooksPath .githooks
+#
+# LANGUAGE-AGNOSTIC SINCE 2026-08-14. It previously matched `\.swift` only,
+# which was correct while the engine existed in exactly one language. With a
+# Kotlin engine coming, `DigitalTwinEngine.kt` would have committed clean into
+# an MIT-licensed public repository — and a licence leak is not recoverable
+# once pushed, because the object stays in every clone's history. The guard now
+# keys on the engine's FILE STEMS and accepts any source extension.
+#
+# Note on `android/engine/`: a thin Kotlin ADAPTER in the public app repo is
+# fine and expected. What must never land here is the engine implementation
+# itself, which is what these stems name.
 
-# Proprietary engine files that must not live in dailyvox (basenames / paths).
-BLOCKED='DigitalTwinEngine\.swift|LocalAIEngine\.swift|InsightsEngine\.swift|TwinPredictions\.swift|NLPipeline\.swift|TwinPersistence\.swift|/BodyTwin/|HealthKitService\.swift|ActivityContextDetector\.swift'
+# Engine stems, matched against any source extension below.
+#   `Mood` is deliberately ABSENT: solyn/solyn/Mood.swift is a legitimate app
+#   file that collides by name with the engine's own, and blocking it would
+#   wedge ordinary app work. Verified 2026-08-14 as the only such collision.
+STEMS='DigitalTwinEngine|EntityGraph|EntrySentiment|InsightsEngine|LocalAIEngine|NLPipeline|ProsodyFeatures|SemanticMemory|TraitHead|TwinChat|TwinEntryInput|TwinPersistence|TwinPredictions|TwinStateStore|HealthKitService|ActivityContextDetector'
+EXTS='swift|kt|kts|java'
+
+BLOCKED="(${STEMS})\.(${EXTS})$|/BodyTwin/"
 
 # Staged Added/Modified files only (Deletions pass through).
 offenders=$(git diff --cached --name-status --diff-filter=AM | awk '{print $2}' | grep -E "$BLOCKED")

@@ -114,3 +114,19 @@ relay/
 # private DailyVoxTwin package, e.g. `.wt-retrieval/`). These are thousands of
 # files belonging to another repository and must never be committed here.
 .wt-*/
+
+# ── Android (added 2026-08-14, ahead of the port) ──────────────────────────
+# Signing keys FIRST, because this is the entry that cannot be added late: a
+# keystore pushed to a public MIT repo is compromised permanently, and rotating
+# an app-signing key on Play is not a thing you get to do casually.
+*.jks
+*.keystore
+android/keystore.properties
+android/local.properties
+
+# Gradle build output and caches — the Android analogue of DerivedData.
+android/.gradle/
+android/build/
+android/**/build/
+.gradle/
+local.properties
