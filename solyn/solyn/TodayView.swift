@@ -989,7 +989,8 @@ struct TodayView: View {
                             text: textSegment,
                             mood: entry.mood,
                             date: entry.date ?? Date(),
-                            duration: entry.duration
+                            duration: entry.duration,
+                            entryId: entry.id?.uuidString
                         )
 
                         // Fire the "a new star appeared" Live Activity and

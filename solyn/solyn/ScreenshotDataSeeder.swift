@@ -183,9 +183,15 @@ struct ScreenshotDataSeeder {
             ),
         ]
 
+        // Keep the generated ids so the Twin fold below can attach each entry's
+        // entities to the SAME row the timeline shows — otherwise the seeded
+        // graph is anchored to entries that, as far as the index knows, do not exist.
+        var seededIds: [UUID] = []
         for entry in entries {
             let diaryEntry = DiaryEntry(context: context)
-            diaryEntry.id = UUID()
+            let id = UUID()
+            diaryEntry.id = id
+            seededIds.append(id)
             let entryDate = calendar.date(byAdding: .day, value: -entry.daysAgo, to: now)!
             // Set time to a reasonable hour (8am-9pm range)
             let hour = 8 + (entry.daysAgo * 3) % 14
@@ -208,13 +214,14 @@ struct ScreenshotDataSeeder {
         }
 
         // Process entries through DigitalTwinEngine so Twin tab populates
-        for entry in entries {
+        for (entry, id) in zip(entries, seededIds) {
             let entryDate = calendar.date(byAdding: .day, value: -entry.daysAgo, to: now)!
             DigitalTwinEngine.shared.processEntry(
                 text: entry.text,
                 mood: entry.mood,
                 date: entryDate,
-                duration: entry.duration
+                duration: entry.duration,
+                entryId: id.uuidString
             )
         }
 

@@ -37,6 +37,13 @@ struct DailyVoxApp: App {
         // JSON file, never the CloudKit-synced store above.
         DigitalTwinEngine.configureBodyTwinStore(FileBodyTwinStateStore())
 
+        // The entity→entry mention index is per-entry data and must NEVER go in
+        // the CloudKit-synced `digital_twin` blob (~1 MB at diary scale). Same
+        // device-local, rebuildable-from-entries store the semantic index uses.
+        // Injected BEFORE the seeder below, or seeded entries fold into the
+        // throwaway in-memory default and the index starts empty.
+        DigitalTwinEngine.configureEntityGraphStore(LocalFileTwinStateStore(subfolder: "EntityGraph"))
+
         ScreenshotDataSeeder.seedIfNeeded(context: persistenceController.container.viewContext)
     }
 

@@ -106,7 +106,7 @@ struct OnboardingView: View {
         do {
             try viewContext.save()
             UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
-            DigitalTwinEngine.shared.processEntry(text: text, mood: nil, date: now, duration: entry.duration)
+            DigitalTwinEngine.shared.processEntry(text: text, mood: nil, date: now, duration: entry.duration, entryId: e.id?.uuidString)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // Non-fatal: onboarding still completes; worst case the star isn't pre-seeded.

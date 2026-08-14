@@ -670,14 +670,16 @@ struct EntryDetailView: View {
                             newText: trimmed,
                             mood: selectedMood.rawValue,
                             date: entry.date ?? Date(),
-                            duration: entry.duration
+                            duration: entry.duration,
+                            entryId: entry.id?.uuidString
                         )
                     } else {
                         DigitalTwinEngine.shared.processEntry(
                             text: trimmed,
                             mood: selectedMood.rawValue,
                             date: entry.date ?? Date(),
-                            duration: entry.duration
+                            duration: entry.duration,
+                            entryId: entry.id?.uuidString
                         )
                     }
                     // v1.6: keep the semantic memory index in step with edits.

@@ -567,12 +567,23 @@ struct TimelineView: View {
     }
 
     private func delete(entries: [DiaryEntry], at offsets: IndexSet) {
+        // Capture the ids BEFORE deleting — a deleted managed object's `id` is
+        // gone, and both derived indexes are keyed by it.
+        var deletedIds: [UUID] = []
         for index in offsets {
             let entry = entries[index]
+            if let id = entry.id { deletedIds.append(id) }
             viewContext.delete(entry)
         }
         do {
             try viewContext.save()
+            // Detach from the derived indexes only after the delete actually
+            // committed. Without this an entry the user deleted stays searchable
+            // and keeps its entities attached to a row that no longer exists.
+            for id in deletedIds {
+                SemanticSearchManager.shared.removeEntry(id: id)
+                DigitalTwinEngine.shared.forgetEntry(id.uuidString)
+            }
             HapticManager.shared.entryDeleted()
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
