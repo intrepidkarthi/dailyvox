@@ -1,17 +1,17 @@
 name: Build & Test (iOS)
 
-# The website now lives at repo-root website/, outside this filter, so blog and
-# SEO commits no longer trigger a macos-15 Xcode build. When solyn/ becomes ios/,
-# the two 'solyn/**' lines below become 'ios/**'.
+# The website lives at repo-root website/, outside this filter, so blog and SEO
+# commits do not trigger a macos-15 Xcode build. The iOS app is ios/; the Android
+# sibling gets its own workflow rather than sharing this one.
 on:
   pull_request:
     branches: [main]
     paths:
-      - 'solyn/**'
+      - 'ios/**'
   push:
     branches: [main]
     paths:
-      - 'solyn/**'
+      - 'ios/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: |
           xcodebuild build \
-            -project solyn/solyn.xcodeproj \
+            -project ios/solyn.xcodeproj \
             -scheme solyn \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -configuration Debug \
@@ -40,7 +40,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           xcodebuild test \
-            -project solyn/solyn.xcodeproj \
+            -project ios/solyn.xcodeproj \
             -scheme solyn \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -only-testing:solynTests \

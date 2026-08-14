@@ -9,7 +9,7 @@ Thanks for your interest in contributing to DailyVox! This guide will help you g
    git clone https://github.com/<your-username>/dailyvox.git
    cd dailyvox
    ```
-2. **Open in Xcode** — `solyn/solyn.xcodeproj` (shared scheme is included, no setup needed)
+2. **Open in Xcode** — `ios/solyn.xcodeproj` (shared scheme is included, no setup needed)
 3. **Build & run** — select any iOS 17+ Simulator and hit `Cmd+R`
 4. **Run tests** — `Cmd+U` to run the unit test suite
 5. **Pick an issue** — look for [`good first issue`](https://github.com/intrepidkarthi/dailyvox/labels/good%20first%20issue) or [`help wanted`](https://github.com/intrepidkarthi/dailyvox/labels/help%20wanted) labels
@@ -66,7 +66,7 @@ CI will automatically build and run tests on your PR.
 
 ## Understanding the Codebase
 
-All app code lives in `solyn/solyn/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the full module map, but here's the quick version:
+All app code lives in `ios/solyn/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the full module map, but here's the quick version:
 
 ```
 Microphone → AudioRecorder → SpeechTranscriber → LocalAIEngine → DigitalTwinEngine → Core Data

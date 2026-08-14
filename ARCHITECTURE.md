@@ -27,7 +27,7 @@ UI (SwiftUI, WidgetKit, AppIntents)                   ── app
 **The Digital Twin engine is not in this repository.** It is a separate Swift
 package, `DailyVoxTwinEngine`, consumed through a local Swift Package Manager
 reference (`project.pbxproj` → `relativePath = ../DailyVoxTwin`). 25 files under
-`solyn/solyn/` reach it with `import DailyVoxTwinEngine`; none of them contain
+`ios/solyn/` reach it with `import DailyVoxTwinEngine`; none of them contain
 engine code, and `.githooks/pre-commit` blocks engine sources from being added
 here.
 
@@ -72,7 +72,7 @@ sites; the graph, retrieval and scoring code is Foundation-only.
 
 ## Module Overview
 
-App source files are in `solyn/solyn/`. Engine source lives in the separate
+App source files are in `ios/solyn/`. Engine source lives in the separate
 package described above.
 
 ### Core Pipeline
@@ -148,7 +148,7 @@ The engine maintains four interconnected models:
 
 ## Building
 
-1. Open `solyn/solyn.xcodeproj` in Xcode 15+
+1. Open `ios/solyn.xcodeproj` in Xcode 15+
 2. Select the `solyn` scheme
 3. Build and run on an iOS 17+ Simulator or device
 4. Tests: `solynTests` (unit) and `solynUITests` (UI)

@@ -214,7 +214,7 @@ The spike ran on 22 kHz mp3. Production must validate on real 44.1 kHz journal `
 ## File Layout
 
 ```
-solyn/solyn/
+ios/solyn/
 ├── SherpaOnnxPocketTTS-Bridging-Header.h   ← C API declarations
 ├── SherpaOnnxPocketTTS.swift               ← Swift wrapper for sherpa-onnx Pocket TTS
 ├── PocketTTSModelManager.swift             ← Model file management, enrollment, encoder unload

@@ -21,7 +21,7 @@
 # itself, which is what these stems name.
 
 # Engine stems, matched against any source extension below.
-#   `Mood` is deliberately ABSENT: solyn/solyn/Mood.swift is a legitimate app
+#   `Mood` is deliberately ABSENT: ios/solyn/Mood.swift is a legitimate app
 #   file that collides by name with the engine's own, and blocking it would
 #   wedge ordinary app work. Verified 2026-08-14 as the only such collision.
 STEMS='DigitalTwinEngine|EntityGraph|EntrySentiment|InsightsEngine|LocalAIEngine|NLPipeline|ProsodyFeatures|SemanticMemory|TraitHead|TwinChat|TwinEntryInput|TwinPersistence|TwinPredictions|TwinStateStore|HealthKitService|ActivityContextDetector'
