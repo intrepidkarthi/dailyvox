@@ -81,3 +81,18 @@
 - name: "v2.0"
   color: "5319e7"
   description: Foundation Models integration
+
+# Platform routing (added 2026-08-14). With two apps in one repo, an issue with
+# no platform label is unroutable — "voice recording is broken" means different
+# code, different reviewer and different release train depending on the answer.
+- name: "platform:ios"
+  color: "1d76db"
+  description: iOS app only
+
+- name: "platform:android"
+  color: "3ddc84"
+  description: Android app only
+
+- name: "platform:shared"
+  color: "5319e7"
+  description: Website, docs, engine contract, or anything affecting both apps
