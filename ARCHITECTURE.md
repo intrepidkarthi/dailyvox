@@ -5,22 +5,75 @@ This document describes the high-level architecture of DailyVox to help contribu
 ## Data Flow
 
 ```
-Microphone → AudioRecorder (AAC 44.1kHz)
+Microphone → AudioRecorder (AAC 44.1kHz)              ── app
     ↓
-SpeechTranscriber (SFSpeechRecognizer, on-device)
+SpeechTranscriber (SFSpeechRecognizer, on-device)     ── app
     ↓
-LocalAIEngine + InsightsEngine (NLTagger analysis)
+─────────────── engine boundary ───────────────
+DigitalTwinEngine.processEntry(…)                     ── DailyVoxTwinEngine package
+  LocalAIEngine (NLTagger) · InsightsEngine
+  personality models · entity graph · semantic memory
+─────────────── engine boundary ───────────────
     ↓
-DigitalTwinEngine (personality modeling)
+TwinStateStore (host-supplied persistence)            ── app
     ↓
-Persistence (Core Data + optional CloudKit)
+Persistence (Core Data + optional CloudKit)           ── app
     ↓
-UI (SwiftUI, WidgetKit, AppIntents)
+UI (SwiftUI, WidgetKit, AppIntents)                   ── app
 ```
+
+## The engine boundary
+
+**The Digital Twin engine is not in this repository.** It is a separate Swift
+package, `DailyVoxTwinEngine`, consumed through a local Swift Package Manager
+reference (`project.pbxproj` → `relativePath = ../DailyVoxTwin`). 25 files under
+`solyn/solyn/` reach it with `import DailyVoxTwinEngine`; none of them contain
+engine code, and `.githooks/pre-commit` blocks engine sources from being added
+here.
+
+This is the seam that matters for anyone reading the codebase, so it is worth
+stating precisely what crosses it.
+
+**Into the engine** — the app hands over text and metadata, never storage:
+
+| Entry point | Purpose |
+|---|---|
+| `processEntry(text:mood:date:duration:now:prosody:entryId:)` | fold one entry into every model |
+| `reprocessEditedEntry(oldText:newText:…)` | re-fold after an edit, re-keying renamed entities |
+| `forgetEntry(_:)` | detach a deleted entry from the mention index |
+| `LocalAIEngine.analyze(text:)` | per-entry NLP read (people, places, topics, sentiment) |
+
+**Out of the engine** — derived state and retrieval:
+`graphRetrieval()` for entity traversal, `SemanticMemoryIndex` for meaning
+search, plus the published personality models the Twin views render.
+
+**Persistence is injected, not assumed.** The engine never touches Core Data or
+the filesystem. The host supplies a `TwinStateStore`:
+
+```swift
+protocol TwinStateStore {
+    func loadState(forKey key: String) -> Data?
+    func saveState(_ data: Data, forKey key: String)
+}
+```
+
+Three stores are wired at launch in `solynApp.swift`, and which one a model gets
+is a privacy decision, not a technical one:
+
+- `CoreDataTwinStateStore` — the CloudKit-synced Twin blob
+- `FileBodyTwinStateStore` — Body Twin state, local-only and backup-excluded (guideline 2.5.1)
+- `LocalFileTwinStateStore` — the semantic index and entity mention index, per-entry data that must never enter the synced blob
+
+Because storage is injected and the models are plain Swift, the engine's
+portability is bounded by its *Apple framework* dependencies (`NaturalLanguage`
+for embeddings, NER and sentiment; `CoreML` for trait heads) rather than by its
+architecture. Those dependencies are concentrated in a small number of call
+sites; the graph, retrieval and scoring code is Foundation-only.
 
 ## Module Overview
 
-All source files are in `solyn/solyn/`.
+App source files are in `solyn/solyn/`. Engine source lives in the separate
+package described above.
 
 ### Core Pipeline
 
@@ -28,19 +81,18 @@ All source files are in `solyn/solyn/`.
 |---|---|---|
 | **AudioRecorder** | `AudioRecorder.swift` | AVAudioRecorder wrapper. Records AAC at 44.1kHz, provides real-time audio levels. Stores recordings in the app sandbox. |
 | **SpeechTranscriber** | `SpeechTranscriber.swift` | On-device speech-to-text via SFSpeechRecognizer (`requiresOnDeviceRecognition = true`). Supports 60+ languages. Runs on Apple Neural Engine. |
-| **LocalAIEngine** | `LocalAIEngine.swift` | NLP analysis using NaturalLanguage framework. Sentiment analysis, topic extraction, intent recognition. Maintains a UserProfile for learned patterns. |
-| **InsightsEngine** | `InsightsEngine.swift` | Generates insight cards from journal data. Sentiment trends, topic frequency, journaling patterns. |
-| **DigitalTwinEngine** | `DigitalTwinEngine.swift` | Core personality model with four sub-models (see below). Processes NLTagger output per entry. Serializes to JSON in Core Data (~12 KB). |
-| **Persistence** | `Persistence.swift` | Core Data with NSPersistentCloudKitContainer. Stores entries, audio metadata, and AI state. App Group for WidgetKit data sharing. |
+| **Persistence** | `Persistence.swift` | Core Data with NSPersistentCloudKitContainer. Stores entries, audio metadata, and AI state. App Group for WidgetKit data sharing. Also provides `CoreDataTwinStateStore`. |
+| **SemanticSearchManager** | `SemanticSearchManager.swift` | Owns the engine's `SemanticMemoryIndex` over a local file store, keeps it in step with Core Data, and answers phrase queries. |
+| *LocalAIEngine, InsightsEngine, DigitalTwinEngine, TwinPredictions* | *(engine package)* | NLP analysis, insight cards, the personality models and forecasting. **These moved out of this repo** — see the engine boundary above. |
 
 ### Digital Twin Sub-Models
 
-The Twin engine (`DigitalTwinEngine.swift`) maintains four interconnected models:
+The engine maintains four interconnected models:
 
 - **CommunicationStyle** — Vocabulary richness (TTR), directness, formality, signature words
 - **EmotionalSignature** — Valence/arousal/dominance baselines, daily/weekly cycles, emotional volatility
-- **PersonalKnowledgeGraph** — NER-extracted entities (people, places, orgs) with emotional weights and co-occurrence relationships
-- **TwinPredictions** (`TwinPredictions.swift`) — Mood forecasting, trigger anticipation, temporal patterns, seasonal detection
+- **PersonalKnowledgeGraph** — NER-extracted entities (people, places, orgs) with emotional weights and co-occurrence relationships. Entities are additionally attached to the entries they came from, through a device-local mention index that never enters the synced blob.
+- **TwinPredictions** — Mood forecasting, trigger anticipation, temporal patterns, seasonal detection
 
 ### Views
 
