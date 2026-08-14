@@ -2,7 +2,7 @@
 """DailyVox App Store set (1320x2868) — warm on-brand cosmic, 6 distinct screens,
 dramatic varied 3D angles/sizes, bold ink headline + highlighter, handwritten accent, stickers. No footer."""
 import os
-OUT="/Users/karthikeyanng/CascadeProjects/voicetotext/solyn/website/public/_appstore"
+OUT="/Users/karthikeyanng/CascadeProjects/voicetotext/website/public/_appstore"
 os.makedirs(OUT,exist_ok=True)
 
 T="""<!doctype html><html><head><meta charset=utf-8>
