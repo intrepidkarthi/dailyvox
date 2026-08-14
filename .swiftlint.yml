@@ -1,10 +1,10 @@
 included:
-  - solyn/solyn
-  - solyn/solynTests
+  - ios/solyn
+  - ios/solynTests
 
 excluded:
-  - solyn/build
-  - solyn/solyn/Preview Content
+  - ios/build
+  - ios/solyn/Preview Content
 
 disabled_rules:
   - trailing_whitespace

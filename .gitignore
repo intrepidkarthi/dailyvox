@@ -90,7 +90,7 @@ paper/
 DailyVoxTwin/
 
 # Setup doc currently being rewritten — temporarily out of git.
-solyn/V1_4_XCODE_SETUP.md
+ios/V1_4_XCODE_SETUP.md
 
 # Claude Code per-project settings (plugins enabled, hooks, env vars).
 # Personal to this working copy; never push.
@@ -101,8 +101,8 @@ awesome-swift/
 
 # Xcode build artifacts (DerivedData, intermediates, object files).
 # Several gigabytes of regeneratable junk; must never land in git.
-solyn/build/
-solyn/DerivedData/
+ios/build/
+ios/DerivedData/
 **/DerivedData/
 **/*.xcuserstate
 

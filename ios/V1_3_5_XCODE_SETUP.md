@@ -8,7 +8,7 @@ A safety backup of the original `project.pbxproj` is at `/tmp/project.pbxproj.be
 
 ## 1. Sanity check in Xcode
 
-Open `solyn/solyn.xcodeproj`. In the project navigator you should see four targets in the scheme list:
+Open `ios/solyn.xcodeproj`. In the project navigator you should see four targets in the scheme list:
 - `solyn` (the app)
 - `solynTests`
 - `solynUITests`
