@@ -24,8 +24,9 @@ What actually happened.
 If applicable, add screenshots or recordings to help explain the issue.
 
 **Device info**
-- Device: [e.g. iPhone 15 Pro]
-- iOS version: [e.g. 18.2]
+- Platform: [iOS / Android]
+- Device: [e.g. iPhone 15 Pro, Pixel 8]
+- OS version: [e.g. iOS 18.2, Android 15]
 - App version: [e.g. 1.3]
 
 **Additional context**
