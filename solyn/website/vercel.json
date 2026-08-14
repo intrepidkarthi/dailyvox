@@ -83,6 +83,26 @@
       "source": "/blog/voice-recorder-diary-app",
       "destination": "/blog/best-voice-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/reports/journal-app-privacy-audit-2026",
+      "destination": "/blog/journal-app-privacy-comparison",
+      "permanent": true
+    },
+    {
+      "source": "/reports/journal-app-privacy-audit-2026.html",
+      "destination": "/blog/journal-app-privacy-comparison",
+      "permanent": true
+    },
+    {
+      "source": "/reports/state-of-on-device-ai-journaling-2026",
+      "destination": "/blog/why-95-percent-ai-journals-not-on-device",
+      "permanent": true
+    },
+    {
+      "source": "/reports/state-of-on-device-ai-journaling-2026.html",
+      "destination": "/blog/why-95-percent-ai-journals-not-on-device",
+      "permanent": true
     }
   ],
   "headers": [
