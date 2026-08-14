@@ -75,11 +75,11 @@ fastlane/test_output
 
 # SEO page-generation machinery (lives next to the site it builds, but is
 # internal tooling — the generated public/*.html stays tracked & deployed).
-solyn/website/generate_massive_seo.py
-solyn/website/generate_pages.py
-solyn/website/generate_quality_pages.py
-solyn/website/render_articles.py
-solyn/website/seo_data/
+website/generate_massive_seo.py
+website/generate_pages.py
+website/generate_quality_pages.py
+website/render_articles.py
+website/seo_data/
 
 # Research paper draft (parked; kept local until/if published).
 paper/

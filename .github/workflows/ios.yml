@@ -1,23 +1,17 @@
 name: Build & Test (iOS)
 
-# Path filter excludes the website. It lives under solyn/ today purely for
-# historical reasons (it is 1,770 files, 90% of the repo, and belongs to neither
-# platform), so every blog and SEO commit was firing a full macos-15 Xcode
-# build+test for a directory containing no Swift. The negation drops that.
-#
-# When the website moves to repo-root website/ and solyn/ becomes ios/, the two
-# 'solyn/**' lines below become 'ios/**' and the negations can be deleted.
+# The website now lives at repo-root website/, outside this filter, so blog and
+# SEO commits no longer trigger a macos-15 Xcode build. When solyn/ becomes ios/,
+# the two 'solyn/**' lines below become 'ios/**'.
 on:
   pull_request:
     branches: [main]
     paths:
       - 'solyn/**'
-      - '!solyn/website/**'
   push:
     branches: [main]
     paths:
       - 'solyn/**'
-      - '!solyn/website/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
