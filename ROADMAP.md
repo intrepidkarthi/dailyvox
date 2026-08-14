@@ -79,11 +79,50 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 
 > **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7** (v2.0+ unchanged). *Since then: v1.8 became Research Pilot & retrieval-fix, v1.9 became Voice & Access, and Multi-Language moved again to v1.10.* The stage labels are the Twin's growth stages; App Store build numbers increment independently.
 
-> **One device, by conviction.** As of June 2026 this roadmap is iPhone-only — with Apple Watch as the Twin's sensor and iPad along for free. Everything that makes the Twin defensible lives on the device that's with you all day: ambient signals, body sensors, Foundation Models, Apple Intelligence, the "Data Not Collected" label. Journaling is a phone-shaped habit; the phone is not one port target among many — it's the Twin's body. There is no macOS app, no visionOS app, and Android stays deferred until iOS product-market fit. Portability is solved where it belongs — in the *data*, via the open Twin Protocol (v2.5) — not by spreading a small team across platforms.
+> **The phone is the Twin's body.** Everything that makes the Twin defensible lives on the device that's with you all day: ambient signals, body sensors, on-device models, the "Data Not Collected" label. Journaling is a phone-shaped habit. There is still no macOS app and no visionOS app, and that has not changed — a laptop is not where anyone journals.
 >
-> **The end-to-end rule.** Every feature on this roadmap — from the first entry to v3.0's full digital self — must work for a user whose only computer is their iPhone. No step may ever require a Mac, a desktop, or any second machine: not training, not export, not setup, not backup. If a capability can't be delivered on the phone, it waits for the phone to catch up — it never graduates to a desktop. (The v4.0 Mirror is downstream of the phone, not a dependency: it syncs *from* the iPhone over USB-C and adds embodiment, never capability the app lacks.)
+> **Android, and the commitment this reverses (August 2026).** From June 2026 to August 2026 this roadmap said iPhone-only by conviction, and said it in four places: that Android was deferred until iOS product-market fit, that there would be no second platform, that a native Kotlin port "doubles the engineering surface", and that the honest answer to Android was a protocol reader rather than a port. Those statements are withdrawn, and it is worth being exact about which parts were wrong.
+>
+> The **retention gate was not met** — daily actives have not moved this year, and retention remains the binding constraint. Android is therefore a *declared waiver* of that gate, not a claim that the gate was cleared. The reasoning: roughly 95% of phones in India, where the developer lives and where most users would come from, are Android. A retention problem cannot be diagnosed on a platform most of the addressable users cannot install.
+>
+> The **cost argument was wrong**, and measurably so. "Doubles the engineering surface" assumed Android needed its own NER model, sentiment model and embedding model, because Apple provides all three free and Android provides none. Measured in August 2026: a capitalisation-and-recurrence heuristic matches Apple's name detection with no model at all, an MIT-licensed sentiment lexicon *beats* Apple's OS sentiment (r +0.663 vs +0.594), and a 2.4 MB static embedding table matches `NLEmbedding` on retrieval. The engine's graph and retrieval code is already Foundation-only and ports unchanged.
+>
+> Portability of *data* is still solved where it belongs — in the `.twin` format via the open Twin Protocol (v2.5). A second app does not replace that; it is the thing the format was always meant to outlive.
+>
+> **The end-to-end rule.** Every feature on this roadmap — from the first entry to v3.0's full digital self — must work for a user whose only computer is their phone. No step may ever require a Mac, a desktop, or any second machine: not training, not export, not setup, not backup. If a capability can't be delivered on the phone, it waits for the phone to catch up — it never graduates to a desktop. (The v4.0 Mirror is downstream of the phone, not a dependency: it syncs *from* the phone over USB-C and adds embodiment, never capability the app lacks.)
+>
+> **Version numbers are per-platform.** iOS continues its line; Android starts at its own v1.0. The stages below are *capability* milestones, not a shared version log — see [Platforms](#platforms) for which platform has what.
 
-**How the Twin grows.** One device means one trajectory: every release is a stage in the same organism, not a feature grab-bag.
+## Platforms
+
+Two apps, two version lines, one Twin. The stages below are capability
+milestones; this table says which platform has reached them.
+
+| | iOS | Android |
+|:--|:--|:--|
+| **Current** | v1.10 *(shipped 2026-08-11)* | v1.0 *(in development)* |
+| Voice journaling, on-device transcription | ✅ | planned v1.0 |
+| Digital Twin personality models | ✅ | planned v1.0 |
+| Entity graph + semantic memory | ✅ | planned v1.0 |
+| Encrypted export / `.twin` | ✅ | planned v1.0 |
+| Multi-language interface | ✅ 5 languages | English first |
+| Body Twin (health signals) | ✅ HealthKit | not in v1.0 |
+| Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
+| Widgets, Live Activities, Dynamic Island | ✅ | no direct analogue |
+| On-device LLM chat | ✅ Apple Intelligence | later, device-gated |
+
+**Why the version numbers differ.** Android v1.0 is not a regression from iOS
+v1.10; it is a first release. Sharing one number across platforms would force
+publishing empty releases on whichever platform had nothing to ship that cycle,
+which is a promise the number cannot keep. Independent lines never lie about what
+a release contains.
+
+**Sync is the honest gap.** iCloud gives iOS cross-device sync with no server on
+our side. Android has no equivalent that preserves "we run no server", so v1.0 is
+local-only with export. That is a real regression against iOS, and naming it here
+is better than discovering it in a review.
+
+**How the Twin grows.** Every release is a stage in the same organism, not a feature grab-bag.
 
 | Stage | Release | The Twin... |
 |:--|:--|:--|
@@ -268,7 +307,7 @@ does not get featured. See `marketing/launch/ux-featuring-readiness-2026-07-26.m
 
 ### v1.10 — Multi-Language *(shipped 2026-08-11, build 25)*
 
-iPhone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, Watch sensors, Foundation Models, Apple Intelligence — lives on the device that's with you all day, and journaling is a phone-shaped habit. Growth comes from languages, not platforms.
+Phone-first by conviction, not just sequencing. Everything that makes the Twin defensible — ambient signals, body sensors, on-device models — lives on the device that's with you all day, and journaling is a phone-shaped habit. *(Shipped under an iPhone-only commitment; that clause was withdrawn in August 2026 — see [Platforms](#platforms). The phone-shaped part still holds.)*
 
 - **Your own voice — CLOSED 2026-08-10, not shipping.** This was carried here as a candidate after
   Kyutai Pocket TTS appeared, on 2026-07-28, to reproduce Karthik's voice from a 30-second slice of
@@ -308,7 +347,7 @@ iPhone-first by conviction, not just sequencing. Everything that makes the Twin 
 - Nobody is locked out in the meantime: transcription already follows `Locale.current` on both
   paths, so journaling in any of the 34 has always worked. This release changes the *interface*
   language only — the pipeline was never the thing lagging behind
-- **No second platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped; Android stays deferred until iOS product-market fit (see v2.0 note)
+- **No desktop platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped. *(Android was listed here as deferred until iOS product-market fit; withdrawn August 2026 — see [Platforms](#platforms).)*
 
 ### v2.0 — Apple Intelligence Native *(iOS 27)*
 
@@ -320,11 +359,11 @@ Ride the platform, don't trail it. WWDC 2026 rebuilt Siri on next-generation Fou
 - Multi-tier personality conditioning for Twin conversations (demographic + behavioral + psychometric prompts, inspired by [PersonaTwin](https://arxiv.org/abs/2508.10906))
 - "How would I react?" — Twin predicts your response to situations based on past patterns and personality
 
-> **Android: deliberately deferred.** A native Kotlin port doubles the engineering surface right when iOS needs depth. Android happens after iOS retention proves product-market fit — not before. (Prior native-Kotlin design notes preserved in git history.)
+> *This section previously read "Android: deliberately deferred — a native Kotlin port doubles the engineering surface." Withdrawn August 2026; the cost estimate behind it was measured and found wrong. See [Platforms](#platforms).*
 
 ### v2.1 — Personality Depth *(re-scoped for one device)*
 
-Originally planned as Mac-based LoRA fine-tuning; the iPhone-only commitment retires the desktop training rig. Personalization moves from *training weights* to *conditioning the on-device model* with a scientifically grounded personality profile — no export step, no second machine, nothing leaves the phone. The Twin sounds like you because every conversation is grounded in your measured personality and your own words, not because weights were tuned on a desktop.
+Originally planned as Mac-based LoRA fine-tuning; the end-to-end rule — no step may require a second machine — retires the desktop training rig. Personalization moves from *training weights* to *conditioning the on-device model* with a scientifically grounded personality profile — no export step, no second machine, nothing leaves the phone. The Twin sounds like you because every conversation is grounded in your measured personality and your own words, not because weights were tuned on a desktop.
 
 - Validated Big Five personality scoring from journal narratives (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
 - Scientific personality profile based on [language-based personality modeling research](https://arxiv.org/abs/2506.19258)
@@ -368,7 +407,7 @@ The infrastructure play. Your digital self should be **yours** — portable, ins
 - **Agent interop**: the Twin as an on-device personal-context server (MCP-style) that AI agents query with per-field consent — your assistant asks your Twin how you like to be briefed; a writing tool asks for your voice profile; neither sees a single journal entry. Consent receipts log every access
 - DailyVox becomes the best *producer* of the format, not the only one — the moat moves from lock-in to being the canonical implementation
 - Positioning: the personality wallet. Data lock-in is the industry default; portability as a feature is the trust differentiator that matches the privacy brand
-- **The platform hedge**: the app is iPhone-only by conviction, but your digital self is not locked to any platform — the `.twin` format is how the Twin outlives device choices. The honest answer to "what about Android?" is a protocol reader, not a port
+- **The platform hedge**: your digital self is not locked to any app, any vendor, or any operating system — the `.twin` format is how the Twin outlives device choices, including ours. Two first-party apps make that promise easier to keep, not redundant: the format has to survive a real second implementation before anyone should trust it to survive a third-party one
 
 ### v3.0 — True Digital Self *(vision)*
 
