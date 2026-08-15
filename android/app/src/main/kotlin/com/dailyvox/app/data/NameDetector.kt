@@ -30,6 +30,12 @@ object NameDetector {
         "your","their","its","you","me","him","them","us","what","who","how","why","where",
         "which","just","very","still","even","also","one","two","three","first","last",
         "next","another","much","many",
+        // Contractions tokenise as ONE word, so "i" in this list never matches
+        // "I'm". Seeing "I'm" chipped as a person on the running app is what
+        // surfaced this -- the measurement corpus happened not to start a
+        // sentence with one.
+        "i'm","i've","i'll","i'd","it's","that's","there's","they're","we're",
+        "he's","she's","we've","you're","don't","didn't","can't","won't","isn't",
     )
 
     private data class Word(val text: String, val initial: Boolean)
@@ -54,7 +60,7 @@ object NameDetector {
         val midSentence = mutableSetOf<String>()
         val seenLower = mutableSetOf<String>()
         for (t in texts) for (w in words(t)) {
-            val k = w.text.lowercase()
+            val k = canonical(w.text.lowercase())
             if (w.text.firstOrNull()?.isUpperCase() == true) { if (!w.initial) midSentence.add(k) }
             else seenLower.add(k)
         }
@@ -66,23 +72,32 @@ object NameDetector {
         return extract(text, mid, lower)
     }
 
+    /** "Sarah's" and "Sarah" are one person. Without this the graph silently
+     *  splits them into two nodes and every count is wrong. */
+    private fun canonical(w: String): String =
+        w.removeSuffix("'s").removeSuffix("’s").removeSuffix("'").removeSuffix("’")
+
     fun extract(text: String, midSentence: Set<String>, seenLower: Set<String>): List<String> {
         val out = LinkedHashSet<String>()
         val run = mutableListOf<String>()
         var evidence = false
         fun flush() {
-            if (run.isNotEmpty() && evidence) out.add(run.joinToString(" "))
+            if (run.isNotEmpty() && evidence) out.add(canonical(run.joinToString(" ")))
             run.clear(); evidence = false
         }
         for (w in words(text)) {
             val k = w.text.lowercase()
             if (w.text.firstOrNull()?.isUpperCase() != true || k in functionWords) { flush(); continue }
-            val neverLower = k !in seenLower
+            val key = canonical(k)
+            val neverLower = key !in seenLower
             run.add(w.text)
-            // Relaxed arm: never-seen-lowercase alone counts. It recovers names
-            // that only ever appear sentence-initially, which is common in short
-            // spoken entries and invisible to the strict rule.
-            if (neverLower || (midSentence.contains(k) && neverLower)) evidence = true
+            // STRICT arm: requires mid-sentence evidence somewhere in the corpus.
+            // The measurement prefers it -- same 99.1% recall as relaxed, but
+            // 62.4% precision against 58.1% -- and the relaxed arm is what let
+            // "Walked" through here, since a sentence-initial word that never
+            // happens to appear lowercase in a 12-entry corpus looks like a name.
+            val midHere = !w.initial && neverLower
+            if (midHere || (midSentence.contains(key) && neverLower)) evidence = true
         }
         flush()
         return out.toList()
