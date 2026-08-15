@@ -69,7 +69,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - v1.6 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.5 ("entries where I was stressed but didn't say so")
 - v1.7 — Foundation Models Twin: Apple's on-device 3B LLM (iOS 26) replaces template chat — real multi-turn conversations with tool calling and RAG-grounded answers that cite your entries
 - v1.8 — Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first via String Catalogs). iPhone-only by conviction: no macOS or visionOS app; portability lives in the Twin Protocol (v2.5), not platform ports
-- v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. Android deferred until iOS product-market fit is proven
+- v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. a native Android app is in development (not yet released)
 - v2.1 — Personality Depth: validated Big Five scoring from journal narratives conditions every Twin conversation (no desktop training step — fully on-device); talk to your past self via monthly personality snapshots
 - v2.2 — Agentic Twin: weekly reviews drafted for you, decision pre-briefs from your own precedent, intention follow-through, an inspectable and editable map of the people in your life — every suggestion cites its evidence, no autonomous actions
 - v2.3 — Ambient Twin: completes the ambient thesis on top of v1.5.5 — whole-day summaries adding location patterns and calendar context to the photo/music signals already shipped, same review-and-discard gate; no continuous audio, no raw location storage
@@ -338,7 +338,12 @@ A: DailyVox supports any language that Apple's Speech framework supports for tra
 A: Yes. You can export to PDF and plain text.
 
 **Q: Is there an Android version?**
-A: No. DailyVox is iOS-only because it relies on Apple's on-device AI frameworks (Speech, NaturalLanguage, CoreML) which are not available on Android.
+A: Not yet — an Android app is in development, and it is not released. DailyVox
+shipped iOS-first because Apple provides speech recognition, natural-language
+analysis and on-device model inference as free OS services. Android does not, so
+the same capabilities have to be bundled with the app; that is an engineering
+cost, not a technical impossibility. Use the iOS app today; the Android release
+will be announced on getdailyvox.com when it ships.
 
 **Q: How is this different from Apple's built-in Journal app?**
 A: Apple Journal is a basic journaling app with no AI features. DailyVox adds voice transcription, mood tracking, sentiment analysis, a Digital Twin personality model, personality cards, weekly insight cards, and more — while maintaining the same privacy standard.
