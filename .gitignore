@@ -130,3 +130,5 @@ android/build/
 android/**/build/
 .gradle/
 local.properties
+android/.kotlin/
+android/app/build/

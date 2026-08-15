@@ -1,0 +1,9 @@
+<resources>
+    <!-- Compose owns all theming; this exists only so the splash and window
+         background do not flash a system colour before the first frame. -->
+    <style name="Theme.DailyVox" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/brand_cream</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>
