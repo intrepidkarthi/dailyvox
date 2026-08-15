@@ -54,5 +54,6 @@ dependencies {
     implementation(libs.media3.exoplayer)
     implementation(libs.security.crypto)
     implementation(libs.work.runtime)
+    testImplementation(libs.junit)
     debugImplementation(libs.compose.ui.tooling)
 }
