@@ -167,7 +167,7 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | v1.8 | Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first) | Planned |
 | v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
 
-Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device. iPhone-only by conviction — the phone is the Twin's body, and every feature works end-to-end on the phone alone (no Mac or second computer, ever); portability lives in the data (Twin Protocol), not in platform ports — [full roadmap](ROADMAP.md)
+Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device. Phone-first by conviction — the phone is the Twin's body, and every feature works end-to-end on the phone alone (no Mac or second computer, ever). An **Android app is in development**; it is not released yet, and this README describes what ships today. Portability of your data lives in the `.twin` format (Twin Protocol) regardless of which app you use — [full roadmap](ROADMAP.md)
 
 ---
 
