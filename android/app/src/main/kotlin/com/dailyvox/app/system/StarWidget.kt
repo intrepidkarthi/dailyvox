@@ -27,25 +27,53 @@ import com.dailyvox.app.data.Repo
 class StarWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
-        ids.forEach { id -> manager.updateAppWidget(id, build(context)) }
+        // goAsync, because the Room read below CANNOT happen on this thread.
+        // onUpdate arrives via onReceive, which runs on the app's main thread,
+        // and Room throws on a main-thread query unless allowMainThreadQueries
+        // is set (it is not, deliberately).
+        val pending = goAsync()
+        io.execute {
+            try {
+                val views = build(context)
+                ids.forEach { manager.updateAppWidget(it, views) }
+            } catch (t: Throwable) {
+                android.util.Log.e(TAG, "widget update failed", t)
+            } finally {
+                pending.finish()
+            }
+        }
     }
 
     companion object {
+        private const val TAG = "StarWidget"
+        private val io = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+        /** Called after every write. Callers are on the main thread
+         *  (viewModelScope), so the read is handed off here rather than there. */
         fun refresh(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val ids = manager.getAppWidgetIds(ComponentName(context, StarWidget::class.java))
             if (ids.isEmpty()) return
-            val views = build(context)
-            ids.forEach { manager.updateAppWidget(it, views) }
+            val app = context.applicationContext
+            io.execute {
+                try {
+                    val views = build(app)
+                    ids.forEach { manager.updateAppWidget(it, views) }
+                } catch (t: Throwable) {
+                    android.util.Log.e(TAG, "widget refresh failed", t)
+                }
+            }
         }
 
         private fun build(context: Context): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_star)
 
-            // Read straight from Room on the broadcast thread. onUpdate already
-            // runs off the main thread, and a widget that renders empty while a
-            // coroutine resolves is worse than one that blocks for 3ms.
-            val entries = runCatching { Repo.get(context).allBlocking() }.getOrDefault(emptyList())
+            // Deliberately NOT wrapped. An earlier version swallowed the read
+            // into an empty list, which turned a main-thread violation into a
+            // widget that rendered "tonight is waiting · 0" forever and reported
+            // nothing anywhere. A throw here skips the update and leaves the
+            // last good content on screen, which is the honest failure.
+            val entries = Repo.get(context).allBlocking()
             val today = System.currentTimeMillis() / 86_400_000L
             val days = entries.map { it.createdAt / 86_400_000L }.toSet()
             val spokenTonight = today in days
