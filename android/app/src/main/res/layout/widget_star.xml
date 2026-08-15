@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="14dp"
+    android:background="@drawable/widget_bg">
+
+    <ImageView
+        android:id="@+id/widget_star"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="Tonight's star"
+        android:src="@drawable/ic_star_hollow" />
+
+    <TextView
+        android:id="@+id/widget_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:textColor="#F2EFE9"
+        android:text="Tonight is waiting" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <ImageView android:id="@+id/d0" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d1" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d2" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d3" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d4" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d5" android:layout_width="7dp" android:layout_height="7dp" android:layout_marginEnd="4dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        <ImageView android:id="@+id/d6" android:layout_width="7dp" android:layout_height="7dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textSize="10sp"
+        android:textColor="#99F2EFE9"
+        android:text="0" />
+</LinearLayout>

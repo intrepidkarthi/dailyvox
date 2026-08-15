@@ -55,6 +55,8 @@ import kotlinx.coroutines.delay
 fun SpeakScreen(
     streak: Int,
     resolution: Int,
+    autoStart: Boolean = false,
+    onAutoStarted: () -> Unit = {},
     onSaved: (String, Int, String?) -> Unit,
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
@@ -63,6 +65,7 @@ fun SpeakScreen(
     val context = LocalContext.current
     val capture = remember { SpeechCapture(context) }
     val recorder = remember { AudioRecorder(context) }
+    val haptics = remember { com.dailyvox.app.system.Haptics(context) }
     var audioPath by remember { mutableStateOf<String?>(null) }
     var granted by remember {
         mutableStateOf(
@@ -90,7 +93,25 @@ fun SpeakScreen(
     LaunchedEffect(Unit) {
         capture.finished.collect { text ->
             val path = recorder.stop()?.absolutePath
-            if (text.isNotBlank()) onSaved(text, elapsed.coerceAtLeast(1), path)
+            if (text.isNotBlank()) {
+                onSaved(text, elapsed.coerceAtLeast(1), path)
+                if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                else haptics.entrySaved()
+            }
+        }
+    }
+
+    // Arrived from the widget or the Quick Settings tile. Fires once, and only
+    // with the permission already granted -- launching a permission dialog from
+    // a home-screen tap, with no context for why, is how apps get denied
+    // permanently.
+    LaunchedEffect(autoStart, granted) {
+        if (autoStart && granted && state == SpeechCapture.State.IDLE) {
+            onAutoStarted()
+            haptics.recordStart()
+            recorder.start(); capture.start()
+        } else if (autoStart && !granted) {
+            onAutoStarted()
         }
     }
 
@@ -146,14 +167,20 @@ fun SpeakScreen(
         )
 
         Spacer(Modifier.height(20.dp))
+        // Scaled to the window. At a fixed 232dp the button plus the headline
+        // filled a 640dp-tall phone on its own and pushed the airplane-mode card
+        // below the fold -- that card is the product's entire argument, and
+        // burying it on small devices is the one thing this screen cannot do.
         RecordButton(
+            diameter = androidx.compose.ui.platform.LocalConfiguration.current
+                .screenHeightDp.dp.times(0.30f).coerceIn(168.dp, 232.dp),
             state = state,
             level = level,
             elapsed = elapsed,
             onTap = {
                 if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
-                else if (state == SpeechCapture.State.RECORDING) capture.stop()
-                else { recorder.start(); capture.start() }
+                else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
+                else { haptics.recordStart(); recorder.start(); capture.start() }
             },
         )
 
@@ -197,6 +224,7 @@ fun SpeakScreen(
 
 @Composable
 private fun RecordButton(
+    diameter: androidx.compose.ui.unit.Dp,
     state: SpeechCapture.State,
     level: Float,
     elapsed: Int,
@@ -224,7 +252,7 @@ private fun RecordButton(
     Box(contentAlignment = Alignment.Center) {
         Canvas(
             Modifier
-                .size(232.dp)
+                .size(diameter)
                 .semantics { contentDescription = label }
                 .pointerInput(state) { detectTapGestures { onTap() } }
         ) {
@@ -259,7 +287,7 @@ private fun RecordButton(
         }
         // The mic glyph, drawn rather than an icon font, so it needs no asset.
         val micColor = if (state == SpeechCapture.State.IDLE) scheme.onPrimary else Color(0xFF0F140F)
-        Canvas(Modifier.size(46.dp)) {
+        Canvas(Modifier.size(diameter * 0.20f)) {
             val w = size.width
             drawRoundRect(
                 color = micColor,

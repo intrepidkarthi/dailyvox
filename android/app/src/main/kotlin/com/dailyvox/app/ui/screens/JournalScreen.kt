@@ -28,8 +28,19 @@ fun JournalScreen(
     query: String,
     onQuery: (String) -> Unit,
     onOpen: (Entry) -> Unit,
+    onSpeak: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    // Voice search. Same recogniser as the journal itself -- searching a voice
+    // journal by typing was always the odd part.
+    val voiceSearch = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        result.data
+            ?.getStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS)
+            ?.firstOrNull()?.let(onQuery)
+    }
     val filters = listOf("All", "People", "Mood", "Body")
     var filter by rememberSaveable { mutableStateOf("All") }
 
@@ -61,13 +72,41 @@ fun JournalScreen(
             if (query.isEmpty()) {
                 Text("Search by meaning", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 15.sp)
             }
-            BasicTextField(
-                value = query, onValueChange = onQuery,
-                singleLine = true,
-                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary),
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                BasicTextField(
+                    value = query, onValueChange = onQuery,
+                    singleLine = true,
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+                    cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary),
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    "\uD83C\uDF99", fontSize = 15.sp,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable {
+                            runCatching {
+                                voiceSearch.launch(
+                                    android.content.Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                        .putExtra(
+                                            android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                            android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+                                        )
+                                        .putExtra(android.speech.RecognizerIntent.EXTRA_PROMPT, "Search your journal")
+                                )
+                            }.onFailure {
+                                // No recognizer activity on this device. Silent
+                                // failure would look like a dead button.
+                                android.widget.Toast.makeText(
+                                    context, "No voice input on this device.",
+                                    android.widget.Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                        }
+                        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
+                        .wrapContentSize(),
+                )
+            }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -88,11 +127,30 @@ fun JournalScreen(
 
         Spacer(Modifier.height(14.dp))
         if (shown.isEmpty()) {
-            Box(Modifier.fillMaxWidth().padding(top = 60.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    if (query.isNotEmpty()) "Nothing matches that yet."
-                    else "Your first star is one tap away.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+            // Three distinct empties, because they are three different
+            // situations and one shared message would be wrong for two of them.
+            when {
+                query.isNotEmpty() -> EmptyState(
+                    headline = "Nothing matches that",
+                    body = "Search looks at the words in your entries and the people your Twin has filed. Try a name, or fewer words.",
+                    action = "Clear the search",
+                    onAction = { onQuery("") },
+                )
+                entries.isNotEmpty() -> EmptyState(
+                    headline = "No entries in this filter",
+                    body = when (filter) {
+                        "People" -> "None of your entries mention a name your Twin recognised yet."
+                        "Mood" -> "Nothing here reads strongly either way — that is its own kind of week."
+                        else -> "No entry has body context attached yet."
+                    },
+                    action = "Show everything",
+                    onAction = { filter = "All" },
+                )
+                else -> EmptyState(
+                    headline = "Your first star is one tap away",
+                    body = "Speak for forty-two seconds. It stays on this phone, and the Twin starts from there.",
+                    action = "Speak tonight",
+                    onAction = onSpeak,
                 )
             }
         }

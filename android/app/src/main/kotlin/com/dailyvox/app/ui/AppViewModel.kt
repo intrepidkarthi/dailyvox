@@ -36,7 +36,52 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun add(text: String, durationSec: Int, audioPath: String? = null) = viewModelScope.launch {
         repo.add(text, durationSec, audioPath)
         refreshStats()
+        // The widget is the only surface that can go stale without anyone
+        // noticing -- it has no lifecycle of its own and its update period is an
+        // hour. Push after every write, or tonight's star stays hollow until the
+        // system feels like refreshing it.
+        com.dailyvox.app.system.StarWidget.refresh(getApplication())
     }
+
+    fun setSelfLabel(id: String, label: String?) = viewModelScope.launch {
+        repo.setSelfLabel(id, label)
+    }
+
+    fun attachPhoto(id: String, path: String?) = viewModelScope.launch {
+        repo.attachPhoto(id, path)
+    }
+
+    fun exportPdf(context: android.content.Context) = viewModelScope.launch {
+        val all = repo.observeAll().first()
+        if (all.isEmpty()) {
+            toast(context, "Nothing to export yet.")
+            return@launch
+        }
+        runCatching {
+            com.dailyvox.app.system.Exporters.pdf(context, all, "")
+        }.onSuccess {
+            com.dailyvox.app.system.Exporters.share(context, it, "application/pdf")
+        }.onFailure {
+            toast(context, "Could not build the PDF.")
+        }
+    }
+
+    fun importFrom(context: android.content.Context, uri: android.net.Uri) = viewModelScope.launch {
+        val text = runCatching {
+            context.contentResolver.openInputStream(uri)!!.bufferedReader().use { it.readText() }
+        }.getOrNull()
+        if (text == null) { toast(context, "Could not read that file."); return@launch }
+        val added = runCatching { repo.importJson(text) }.getOrElse {
+            toast(context, "That does not look like a DailyVox export."); return@launch
+        }
+        refreshStats()
+        com.dailyvox.app.system.StarWidget.refresh(getApplication())
+        toast(context, if (added == 0) "Nothing new — those entries are already here."
+                       else "Added ${'$'}added entries.")
+    }
+
+    private fun toast(context: android.content.Context, msg: String) =
+        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
 
     fun export(context: android.content.Context) = viewModelScope.launch {
         val all = entries.value
@@ -66,7 +111,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
     }
 
-    fun delete(id: String) = viewModelScope.launch { repo.delete(id); refreshStats() }
+    fun delete(id: String) = viewModelScope.launch {
+        repo.delete(id); refreshStats()
+        com.dailyvox.app.system.StarWidget.refresh(getApplication())
+    }
 
     private suspend fun refreshStats() {
         _streak.value = repo.streakDays()

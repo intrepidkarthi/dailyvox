@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -55,6 +56,28 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
+    var reminderOn by rememberSaveable { mutableStateOf(prefs.getBoolean("reminder", false)) }
+    var reminderHour by rememberSaveable { mutableStateOf(prefs.getInt("reminderHour", 21)) }
+
+    // Launched from the widget or the Quick Settings tile. Read once and cleared,
+    // so a configuration change does not re-arm the recorder behind the user.
+    var autoRecord by remember {
+        mutableStateOf(activity.intent?.getBooleanExtra("start_recording", false) == true)
+            .also { activity.intent?.removeExtra("start_recording") }
+    }
+
+    val askNotifications = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        // The switch already flipped. If the permission is refused, put it back
+        // rather than leaving a toggle on that will never produce a notification.
+        if (granted) com.dailyvox.app.system.Reminders.schedule(context, reminderHour)
+        else { reminderOn = false; prefs.edit().putBoolean("reminder", false).apply() }
+    }
+
+    val pickBackup = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
+    ) { uri -> if (uri != null) vm.importFrom(context, uri) }
 
     val entries by vm.entries.collectAsStateWithLifecycle()
     val query by vm.query.collectAsStateWithLifecycle()
@@ -115,15 +138,27 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     entry = detail,
                     onBack = { openEntry = null },
                     onDelete = { vm.delete(detail.id); openEntry = null },
+                    onSelfLabel = { label ->
+                        vm.setSelfLabel(detail.id, label)
+                        openEntry = detail.copy(selfLabel = label)
+                    },
+                    onPhoto = { path ->
+                        vm.attachPhoto(detail.id, path)
+                        openEntry = detail.copy(photoPath = path)
+                    },
                     modifier = inner,
                 )
 
-                overlay == Overlay.INSIGHTS -> BackedScreen("Insights", { overlay = Overlay.NONE }, inner) { m ->
-                    InsightsScreen(entries = entries, streak = streak, modifier = m)
-                }
+                overlay == Overlay.INSIGHTS ->
+                    InsightsScreen(
+                        entries = entries, streak = streak,
+                        onBack = { overlay = Overlay.NONE },
+                        modifier = inner,
+                    )
 
-                overlay == Overlay.SETTINGS -> BackedScreen("Settings", { overlay = Overlay.NONE }, inner) { m ->
+                overlay == Overlay.SETTINGS -> run {
                     SettingsScreen(
+                        onBack = { overlay = Overlay.NONE },
                         entryCount = entries.size,
                         lockEnabled = lockEnabled,
                         lockAvailable = lockAvailable,
@@ -135,7 +170,22 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
                         onExport = { vm.export(context) },
-                        modifier = m,
+                        onExportPdf = { vm.exportPdf(context) },
+                        onImport = { pickBackup.launch(arrayOf("application/json", "text/plain", "*/*")) },
+                        reminderOn = reminderOn,
+                        reminderHour = reminderHour,
+                        onReminder = { on, hour ->
+                            reminderOn = on; reminderHour = hour
+                            prefs.edit().putBoolean("reminder", on).putInt("reminderHour", hour).apply()
+                            if (!on) com.dailyvox.app.system.Reminders.cancel(context)
+                            else if (android.os.Build.VERSION.SDK_INT >= 33 &&
+                                androidx.core.content.ContextCompat.checkSelfPermission(
+                                    context, android.Manifest.permission.POST_NOTIFICATIONS
+                                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+                            ) askNotifications.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                            else com.dailyvox.app.system.Reminders.schedule(context, hour)
+                        },
+                        modifier = inner,
                     )
                 }
 
@@ -143,6 +193,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     Destination.SPEAK -> SpeakScreen(
                         streak = streak,
                         resolution = resolution,
+                        autoStart = autoRecord,
+                        onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
@@ -150,40 +202,15 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     )
                     Destination.JOURNAL -> JournalScreen(
                         entries = entries, query = query, onQuery = vm::setQuery,
-                        onOpen = { openEntry = it }, modifier = inner,
+                        onOpen = { openEntry = it },
+                        onSpeak = { current = Destination.SPEAK },
+                        modifier = inner,
                     )
                     Destination.TWIN -> TwinScreen(entries = entries, resolution = resolution, modifier = inner)
                     Destination.ASK -> AskScreen(entries = entries, modifier = inner)
                 }
             }
         }
-    }
-}
-
-/** Overlay screens keep their own back affordance, since the nav bar is hidden. */
-@Composable
-private fun BackedScreen(
-    title: String,
-    onBack: () -> Unit,
-    modifier: Modifier,
-    content: @Composable (Modifier) -> Unit,
-) {
-    Box(modifier.fillMaxSize()) {
-        content(Modifier.fillMaxSize())
-        androidx.compose.material3.Text(
-            "‹ back",
-            modifier = Modifier
-                .align(androidx.compose.ui.Alignment.BottomCenter)
-                .padding(bottom = 34.dp)
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
-                // Opaque: this floats over scrolling content, and without a
-                // surface behind it the label collides with whatever is beneath.
-                .background(androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant)
-                .clickable(onClick = onBack)
-                .defaultMinSize(minHeight = 48.dp)
-                .padding(horizontal = 26.dp, vertical = 13.dp),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 

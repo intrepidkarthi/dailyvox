@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DailyVox</string>
+    <string name="widget_description">Tonight&#8217;s star, and the last seven nights. Never shows what you wrote.</string>
 </resources>

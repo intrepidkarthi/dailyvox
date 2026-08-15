@@ -43,6 +43,23 @@ object Sentiment {
             "difficult" to -1.7f, "hard" to -1.2f, "problem" to -1.8f, "worse" to -2.2f,
             "worst" to -3.1f, "cried" to -2.3f, "loss" to -2.4f, "failed" to -2.6f,
             "overwhelmed" to -2.2f, "nervous" to -1.8f, "guilty" to -2.2f, "ashamed" to -2.4f,
+            // Second pass, added after reading a real PDF export: three of twelve
+            // entries scored EXACTLY 0.00 -- "the review went sideways",
+            // "slept badly", "work is sitting on my chest" -- because the first
+            // pass covered emotion nouns and almost no everyday diary verbs.
+            // A mood curve pinned to zero looks broken rather than neutral.
+            "badly" to -2.0f, "sideways" to -1.5f, "wrong" to -2.0f, "mistake" to -1.9f,
+            "regret" to -2.2f, "annoyed" to -1.8f, "upset" to -2.2f, "hopeless" to -2.9f,
+            "drained" to -2.0f, "restless" to -1.4f, "heavy" to -1.3f, "stuck" to -1.6f,
+            "late" to -0.9f, "missed" to -1.4f, "argument" to -2.2f, "fight" to -2.2f,
+            "sick" to -2.1f, "sore" to -1.4f, "dread" to -2.6f, "doubt" to -1.5f,
+            "awkward" to -1.5f, "embarrassed" to -2.1f, "rushed" to -1.3f, "behind" to -1.1f,
+            "boring" to -1.5f, "dull" to -1.3f, "cold" to -0.8f, "quiet" to 0.6f,
+            "rested" to 1.8f, "easy" to 1.6f, "kind" to 2.0f, "gentle" to 1.8f,
+            "safe" to 2.0f, "light" to 1.2f, "bright" to 1.8f, "fresh" to 1.6f,
+            "generous" to 2.2f, "patient" to 1.7f, "honest" to 1.8f, "close" to 1.2f,
+            "surprised" to 0.9f, "curious" to 1.4f, "focused" to 1.6f, "finished" to 1.5f,
+            "solved" to 2.1f, "learned" to 1.5f, "enough" to 1.0f, "worth" to 1.6f,
         ).forEach { (w, v) -> put(w, v) }
     }
 

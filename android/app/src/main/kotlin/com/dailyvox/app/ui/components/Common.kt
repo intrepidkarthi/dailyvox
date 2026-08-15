@@ -2,6 +2,7 @@ package com.dailyvox.app.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,14 +85,94 @@ fun MonoLabel(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ScreenTitle(text: String, trailing: (@Composable () -> Unit)? = null) {
+fun ScreenTitle(
+    text: String,
+    onBack: (() -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+) {
     Row(
         Modifier.fillMaxWidth().padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text, fontSize = 30.sp, fontWeight = FontWeight.Bold,
-             color = MaterialTheme.colorScheme.onBackground)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Inline, next to the title. The earlier version floated a pill over
+            // the bottom of the screen, which on a scrolling settings page sat
+            // directly on top of "Export as PDF" -- a back control that hides a
+            // real one is worse than no chrome at all.
+            if (onBack != null) {
+                Text(
+                    "\u2039", fontSize = 30.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable(onClick = onBack)
+                        .defaultMinSize(48.dp, 48.dp)
+                        .wrapContentSize(),
+                )
+                Spacer(Modifier.width(4.dp))
+            }
+            Text(text, fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                 color = MaterialTheme.colorScheme.onBackground)
+        }
         trailing?.invoke()
+    }
+}
+
+/**
+ * Empty state. There is one rule here and the whole product's tone rests on it:
+ * NO GUILT. A journal that greets a missed night with "you broke your streak"
+ * teaches people to avoid opening it, which is precisely the retention failure
+ * this app already measures. Every string below states the absence and offers
+ * the next action, and none of them scold.
+ */
+@Composable
+fun EmptyState(
+    headline: String,
+    body: String,
+    action: String? = null,
+    onAction: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier.fillMaxWidth().padding(horizontal = 28.dp, vertical = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        // The hollow star: the same mark the widget uses for a night not yet
+        // spoken, so absence looks identical everywhere in the product.
+        androidx.compose.foundation.Canvas(Modifier.size(46.dp)) {
+            val r = size.minDimension / 2f
+            val path = androidx.compose.ui.graphics.Path().apply {
+                moveTo(center.x, center.y - r)
+                cubicTo(center.x + r * .1f, center.y - r * .35f, center.x + r * .35f, center.y - r * .1f, center.x + r, center.y)
+                cubicTo(center.x + r * .35f, center.y + r * .1f, center.x + r * .1f, center.y + r * .35f, center.x, center.y + r)
+                cubicTo(center.x - r * .1f, center.y + r * .35f, center.x - r * .35f, center.y + r * .1f, center.x - r, center.y)
+                cubicTo(center.x - r * .35f, center.y - r * .1f, center.x - r * .1f, center.y - r * .35f, center.x, center.y - r)
+                close()
+            }
+            drawPath(path, StarGold.copy(alpha = 0.4f),
+                     style = androidx.compose.ui.graphics.drawscope.Stroke(1.4.dp.toPx()))
+        }
+        Spacer(Modifier.height(18.dp))
+        Text(headline, style = MaterialTheme.typography.titleMedium,
+             color = MaterialTheme.colorScheme.onBackground,
+             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Spacer(Modifier.height(8.dp))
+        Text(body, fontSize = 14.sp, lineHeight = 21.sp,
+             color = MaterialTheme.colorScheme.onSurfaceVariant,
+             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        if (action != null && onAction != null) {
+            Spacer(Modifier.height(20.dp))
+            Text(
+                action,
+                fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable(onClick = onAction)
+                    .padding(horizontal = 24.dp, vertical = 13.dp),
+            )
+        }
     }
 }

@@ -42,7 +42,52 @@ class Repo private constructor(private val db: DailyVoxDb) {
         t.lowercase().split(Regex("[^a-z0-9']+"))
             .filter { it.length >= 3 && it !in STOP }
             .toSet()
+    fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
+
+    suspend fun setSelfLabel(id: String, label: String?) {
+        db.entries().byId(id)?.let { db.entries().upsert(it.copy(selfLabel = label)) }
+    }
+
+    suspend fun attachPhoto(id: String, path: String?) {
+        db.entries().byId(id)?.let { db.entries().upsert(it.copy(photoPath = path)) }
+    }
+
+    /**
+     * Import from a DailyVox JSON export -- either platform's.
+     *
+     * Deliberately ADDITIVE, never replacing. An import that wipes the journal
+     * to match a file is one mis-tap from destroying twenty years of diary, and
+     * the recovery story for that is nothing. Duplicates are filtered on
+     * (timestamp, text) rather than id, because the iOS export writes Core Data
+     * UUIDs this database has never seen.
+     */
+    suspend fun importJson(json: String): Int = withContext(Dispatchers.IO) {
+        val arr = org.json.JSONObject(json).optJSONArray("entries") ?: return@withContext 0
+        val existing = db.entries().allOnce().map { it.createdAt to it.text }.toSet()
+        var added = 0
+        for (i in 0 until arr.length()) {
+            val o = arr.getJSONObject(i)
+            val text = o.optString("text")
+            val at = o.optLong("date", 0L)
+            if (text.isBlank() || at == 0L || (at to text) in existing) continue
+            db.entries().upsert(
+                Entry(
+                    id = UUID.randomUUID().toString(),
+                    text = text,
+                    createdAt = at,
+                    durationSec = o.optInt("seconds", 0),
+                    // Recompute rather than trust the file: a valence written by
+                    // iOS came from a different lexicon, and mixing two scales in
+                    // one mood curve would make the chart quietly meaningless.
+                    valence = Sentiment.valence(text),
+                    entities = o.optString("entities", ""),
+                )
+            )
+            added++
+        }
+        added
+    }
     suspend fun delete(id: String) = db.entries().delete(id)
 
     suspend fun add(text: String, durationSec: Int, audioPath: String? = null) {

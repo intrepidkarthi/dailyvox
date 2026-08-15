@@ -51,11 +51,17 @@ fun TwinScreen(entries: List<Entry>, resolution: Int, modifier: Modifier = Modif
         label = "breathPhase",
     )
 
+    // The sky is sized against the window, not fixed. At a flat 430dp it ate two
+    // thirds of a 640dp-tall phone and pushed Mind/Heart/Body entirely below the
+    // fold, so the screen read as a wallpaper with a nav bar on it.
+    val skyHeight = androidx.compose.ui.platform.LocalConfiguration.current
+        .screenHeightDp.dp.times(0.52f).coerceIn(280.dp, 430.dp)
+
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(430.dp)
+                .height(skyHeight)
                 .background(Brush.verticalGradient(listOf(SkyTop, SkyBottom)))
         ) {
             Canvas(Modifier.fillMaxSize()) { drawSky(entries, breath) }

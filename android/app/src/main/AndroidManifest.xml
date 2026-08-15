@@ -6,6 +6,13 @@
          The absence of an INTERNET permission is the product claim, in the one
          place a user can verify it without trusting us. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Notifications are runtime-requested on API 33+; the daily reminder is the
+         only thing that posts one, and it is off until the user turns it on. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Normal permission, granted at install. Declaring it is not optional:
+         Vibrator.vibrate throws SecurityException without it, which took down
+         the whole app on the first haptic. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".DailyVoxApplication"
@@ -24,5 +31,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".system.StarWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_star_info" />
+        </receiver>
+
+        <service
+            android:name=".system.SpeakTile"
+            android:exported="true"
+            android:icon="@drawable/ic_nav_speak"
+            android:label="DailyVox"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>

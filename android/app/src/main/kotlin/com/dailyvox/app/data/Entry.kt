@@ -23,6 +23,15 @@ data class Entry(
     val entities: String = "",
     val sleepHours: Float? = null,
     val audioPath: String? = null,
+    val photoPath: String? = null,
+    /**
+     * The user's OWN word for how the entry felt, never the detector's.
+     * Kept separate from `valence` on purpose: the affect programme's whole
+     * finding was that inferred emotion and self-reported emotion disagree, and
+     * collapsing them into one column would destroy the only label with ground
+     * truth in it -- the one that makes an N=20 cohort worth running.
+     */
+    val selfLabel: String? = null,
 ) {
     val entityList: List<String>
         get() = entities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -35,6 +44,10 @@ interface EntryDao {
 
     @Query("SELECT * FROM entries ORDER BY createdAt DESC")
     suspend fun allOnce(): List<Entry>
+
+    /** Synchronous read, for the widget's broadcast thread only. */
+    @Query("SELECT * FROM entries ORDER BY createdAt DESC")
+    fun allBlocking(): List<Entry>
 
     @Query("SELECT * FROM entries WHERE id = :id")
     suspend fun byId(id: String): Entry?

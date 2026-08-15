@@ -53,5 +53,6 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.5")
     implementation(libs.media3.exoplayer)
     implementation(libs.security.crypto)
+    implementation(libs.work.runtime)
     debugImplementation(libs.compose.ui.tooling)
 }

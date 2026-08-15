@@ -36,10 +36,15 @@ import kotlin.math.abs
  * something the Twin noticed about the user.
  */
 @Composable
-fun InsightsScreen(entries: List<Entry>, streak: Int, modifier: Modifier = Modifier) {
+fun InsightsScreen(
+    entries: List<Entry>,
+    streak: Int,
+    onBack: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
         Spacer(Modifier.height(12.dp))
-        ScreenTitle("Insights")
+        ScreenTitle("Insights", onBack = onBack)
 
         val week = entries.filter { it.createdAt > System.currentTimeMillis() - 7L * 86_400_000 }
         val prior = entries.filter {

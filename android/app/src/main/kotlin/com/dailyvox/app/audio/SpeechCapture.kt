@@ -81,6 +81,13 @@ class SpeechCapture(private val context: Context) {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+            // Custom vocabulary. Biasing strings landed in API 33 alongside the
+            // on-device recognizer, and asking for the extra on older platforms
+            // is harmless -- an unknown extra is ignored, never rejected.
+            val bias = com.dailyvox.app.system.Vocabulary.get(context)
+            if (bias.isNotEmpty() && Build.VERSION.SDK_INT >= 33) {
+                putExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, bias.toTypedArray())
+            }
         })
         _state.value = State.RECORDING
     }

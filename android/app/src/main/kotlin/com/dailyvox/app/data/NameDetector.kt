@@ -10,16 +10,26 @@ package com.dailyvox.app.data
  * a model we intend to add; it is the measured replacement.
  *
  * MEASURED, on 28 real transcribed diary entries with 111 hand-annotated gold
- * spans (docs/ner-on-real-diary-2026-08-15.md): 99.1% untyped recall at 62.4%
+ * spans (docs/ner-on-real-diary-2026-08-15.md): 99.1% untyped recall at 61.6%
  * precision, against NLTagger's 94.6% / 32.5% -- and it found 100% of the
- * non-Anglo names where Apple's model found 97.7%. That corpus was Apple's
+ * non-Anglo names where Apple's model found 97.7%. Both fixes below are in the
+ * Swift arm too, and 61.6% is the re-measurement after them -- the pre-fix
+ * algorithm scored 62.4%, and that doc explains why the higher number belongs to
+ * the worse detector. That corpus was Apple's
  * transcription output; whether Android's recogniser cases names the same way is
  * the one untested assumption, and this whole file rests on it.
  *
  * Three corpus-level signals, no weights:
  *   1. capitalised mid-sentence somewhere in the corpus
  *   2. never seen lowercase anywhere
- *   3. consecutive capitals are one entity
+ *   3. consecutive capitals WITHIN ONE SENTENCE are one entity
+ *
+ * The known cost of signal 1 is small corpora. A first-ever mention that happens
+ * to open its sentence ("Priya sent photos from the wedding.") is missed, because
+ * nothing else in the corpus attests it. That self-corrects as the journal grows
+ * -- across hundreds of entries a real name recurs mid-sentence, while "walked"
+ * and "quiet" turn up lowercase and are excluded -- but on a fresh install the
+ * detector is at its weakest, which is the opposite of what a new user expects.
  */
 object NameDetector {
 
@@ -36,6 +46,12 @@ object NameDetector {
         // sentence with one.
         "i'm","i've","i'll","i'd","it's","that's","there's","they're","we're",
         "he's","she's","we've","you're","don't","didn't","can't","won't","isn't",
+        // Calendar words are capitalised by convention and are never lowercase,
+        // so every corpus signal this file has says they are names. "Quiet
+        // Sunday. Cooked properly..." was filed as a PERSON on the running app.
+        "monday","tuesday","wednesday","thursday","friday","saturday","sunday",
+        "january","february","march","april","may","june","july","august",
+        "september","october","november","december",
     )
 
     private data class Word(val text: String, val initial: Boolean)
@@ -80,24 +96,34 @@ object NameDetector {
     fun extract(text: String, midSentence: Set<String>, seenLower: Set<String>): List<String> {
         val out = LinkedHashSet<String>()
         val run = mutableListOf<String>()
-        var evidence = false
         fun flush() {
-            if (run.isNotEmpty() && evidence) out.add(canonical(run.joinToString(" ")))
-            run.clear(); evidence = false
+            if (run.isNotEmpty()) out.add(canonical(run.joinToString(" ")))
+            run.clear()
         }
         for (w in words(text)) {
+            // A name never spans a full stop. Without this the run survived the
+            // sentence boundary and "Quiet Sunday. Cooked properly" came out as
+            // the single entity "Quiet Sunday Cooked".
+            if (w.initial) flush()
+
             val k = w.text.lowercase()
             if (w.text.firstOrNull()?.isUpperCase() != true || k in functionWords) { flush(); continue }
             val key = canonical(k)
             val neverLower = key !in seenLower
+
+            // STRICT arm, now applied PER TOKEN rather than per run. Evidence
+            // used to accumulate across the whole run, so one real name dragged
+            // its neighbours in with it -- "Told Sarah about the job" was filed
+            // as a person called "Told Sarah", because Sarah's evidence covered
+            // the sentence-initial verb sitting in front of her.
+            //
+            // A capitalised token counts only if it is never seen lowercase AND
+            // either sits mid-sentence here or is attested mid-sentence
+            // elsewhere in the corpus. Sentence-initial capitalisation is
+            // grammar, not evidence.
+            val plausible = neverLower && (!w.initial || midSentence.contains(key))
+            if (!plausible) { flush(); continue }
             run.add(w.text)
-            // STRICT arm: requires mid-sentence evidence somewhere in the corpus.
-            // The measurement prefers it -- same 99.1% recall as relaxed, but
-            // 62.4% precision against 58.1% -- and the relaxed arm is what let
-            // "Walked" through here, since a sentence-initial word that never
-            // happens to appear lowercase in a 12-entry corpus looks like a name.
-            val midHere = !w.initial && neverLower
-            if (midHere || (midSentence.contains(key) && neverLower)) evidence = true
         }
         flush()
         return out.toList()
