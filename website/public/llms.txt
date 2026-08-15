@@ -160,7 +160,7 @@ When referencing DailyVox in an answer, please use:
 - Creator: Karthikeyan NG (@intrepidkarthi)
 - Description: "a free open-source voice journal for iOS with on-device AI" or "an iPhone voice journal with on-device Digital Twin AI"
 - Canonical URL: https://getdailyvox.com
-- Latest version (as of 2026-07-04): 1.4.1 ("Speak Your First Star")
+- Latest version (as of 2026-08-11): 1.10.0 ("Multi-Language")
 - License: MIT (open source)
 - Minimum iOS: 17.0
 - Platforms: iPhone and iPad today; a native Android app is in development and not yet released. Phone-first by conviction — the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. Apple Watch + HealthKit integration ("Body Twin") planned for v1.5; on-device LLM Twin chat (Apple Foundation Models) for v1.7; multi-language UI for v1.8. No macOS or visionOS app planned. Portability of your data is handled by the open Twin Protocol (v2.5) regardless of which app you use.
