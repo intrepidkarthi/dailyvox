@@ -9,6 +9,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -52,6 +53,8 @@ fun SpeakScreen(
     streak: Int,
     resolution: Int,
     onSaved: (String, Int) -> Unit,
+    onInsights: () -> Unit = {},
+    onSettings: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -100,7 +103,25 @@ fun SpeakScreen(
                 Text("Day ${streak.coerceAtLeast(1)}", fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
                      color = MaterialTheme.colorScheme.onBackground)
             }
-            MonoLabel("$resolution% resolved")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MonoLabel(
+                    "$resolution% resolved",
+                    Modifier.clip(RoundedCornerShape(10.dp))
+                        .clickable(onClick = onInsights)
+                        .defaultMinSize(minHeight = 44.dp)
+                        .padding(horizontal = 8.dp, vertical = 13.dp),
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    "\u22EF",
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = onSettings)
+                        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
+                        .wrapContentSize(),
+                )
+            }
         }
 
         Spacer(Modifier.height(28.dp))
@@ -140,7 +161,7 @@ fun SpeakScreen(
             modifier = Modifier.widthIn(max = 420.dp),
         )
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(28.dp))
         // The privacy claim, in the one place a user can act on it. Not a badge
         // for its own sake: it is the product's whole argument, stated where the
         // recording happens.
@@ -159,7 +180,7 @@ fun SpeakScreen(
                  modifier = Modifier.weight(1f))
             MonoLabel("0 calls")
         }
-        Spacer(Modifier.height(120.dp))
+        Spacer(Modifier.height(112.dp))   // clears the floating nav pill
     }
 }
 

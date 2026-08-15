@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The mark: a microphone in brand amber. Foreground only — the ink background
+     is a separate layer so Android can mask, shadow and animate them apart,
+     which is the whole point of an adaptive icon. Drawn as vectors so there is
+     no raster asset to keep in five densities. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- capsule -->
+    <path android:fillColor="#E0B15C"
+        android:pathData="M54,30 m-9,0 a9,9 0 1,0 18,0 l0,17 a9,9 0 1,1 -18,0 z" />
+    <!-- cradle -->
+    <path android:strokeColor="#E0B15C" android:strokeWidth="4"
+        android:strokeLineCap="round" android:fillColor="#00000000"
+        android:pathData="M38,45 a16,16 0 0,0 32,0" />
+    <!-- stem -->
+    <path android:strokeColor="#E0B15C" android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M54,61 L54,72" />
+</vector>

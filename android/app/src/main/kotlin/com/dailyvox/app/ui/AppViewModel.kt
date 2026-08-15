@@ -38,6 +38,24 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         refreshStats()
     }
 
+    fun export(context: android.content.Context) = viewModelScope.launch {
+        val all = entries.value
+        val json = buildString {
+            append("{\n  \"app\": \"DailyVox for Android\",\n  \"entries\": [\n")
+            all.forEachIndexed { i, e ->
+                append("    {\"date\": ${e.createdAt}, \"seconds\": ${e.durationSec}, ")
+                append("\"valence\": ${e.valence}, \"entities\": \"${e.entities}\", ")
+                append("\"text\": ${org.json.JSONObject.quote(e.text)}}")
+                if (i < all.size - 1) append(",")
+                append("\n")
+            }
+            append("  ]\n}\n")
+        }
+        val f = java.io.File(context.getExternalFilesDir(null), "dailyvox-export.json")
+        f.writeText(json)
+        android.widget.Toast.makeText(context, "Exported ${all.size} entries", android.widget.Toast.LENGTH_LONG).show()
+    }
+
     fun delete(id: String) = viewModelScope.launch { repo.delete(id); refreshStats() }
 
     private suspend fun refreshStats() {
