@@ -2,7 +2,7 @@ package com.dailyvox.app
 
 import android.content.Context
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,7 +29,7 @@ import com.dailyvox.app.ui.theme.DailyVoxTheme
 /** Overlay routes: full screens that are not nav destinations. */
 private enum class Overlay { NONE, INSIGHTS, SETTINGS }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private val vm: AppViewModel by viewModels()
 
@@ -38,16 +38,19 @@ class MainActivity : ComponentActivity() {
         // windowOptOutEdgeToEdgeEnforcement is deprecated and disabled.
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        setContent { DailyVoxApp(vm) }
+        setContent { DailyVoxApp(vm, this) }
     }
 }
 
 @Composable
-private fun DailyVoxApp(vm: AppViewModel) {
+private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE) }
 
     var onboarded by rememberSaveable { mutableStateOf(prefs.getBoolean("onboarded", false)) }
+    var lockEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("lock", false)) }
+    var unlocked by rememberSaveable { mutableStateOf(false) }
+    val lockAvailable = remember { com.dailyvox.app.security.AppLock.available(activity) }
     var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SYSTEM")!!)) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
@@ -70,6 +73,18 @@ private fun DailyVoxApp(vm: AppViewModel) {
                 prefs.edit().putBoolean("onboarded", true).apply()
                 onboarded = true
             })
+            return@DailyVoxTheme
+        }
+
+        // The lock gates EVERYTHING, before any entry text is composed. Prompting
+        // over a screen that already rendered the journal would be theatre.
+        if (lockEnabled && !unlocked) {
+            LockScreen(onUnlock = {
+                com.dailyvox.app.security.AppLock.prompt(activity, onSuccess = { unlocked = true })
+            })
+            LaunchedEffect(Unit) {
+                com.dailyvox.app.security.AppLock.prompt(activity, onSuccess = { unlocked = true })
+            }
             return@DailyVoxTheme
         }
 
@@ -110,6 +125,13 @@ private fun DailyVoxApp(vm: AppViewModel) {
                 overlay == Overlay.SETTINGS -> BackedScreen("Settings", { overlay = Overlay.NONE }, inner) { m ->
                     SettingsScreen(
                         entryCount = entries.size,
+                        lockEnabled = lockEnabled,
+                        lockAvailable = lockAvailable,
+                        onLock = { on ->
+                            lockEnabled = on
+                            prefs.edit().putBoolean("lock", on).apply()
+                            if (on) unlocked = true      // do not lock the user out mid-session
+                        },
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
                         onExport = { vm.export(context) },
@@ -121,7 +143,7 @@ private fun DailyVoxApp(vm: AppViewModel) {
                     Destination.SPEAK -> SpeakScreen(
                         streak = streak,
                         resolution = resolution,
-                        onSaved = { text, secs -> vm.add(text, secs) },
+                        onSaved = { text, secs, path -> vm.add(text, secs, path) },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
                         modifier = inner,
@@ -162,5 +184,29 @@ private fun BackedScreen(
                 .padding(horizontal = 26.dp, vertical = 13.dp),
             color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+/** Shown while locked. Deliberately says nothing about the journal's contents. */
+@Composable
+private fun LockScreen(onUnlock: () -> Unit) {
+    Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+        Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+            androidx.compose.material3.Text(
+                "DailyVox is locked",
+                style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
+            )
+            Spacer(Modifier.height(16.dp))
+            androidx.compose.material3.Text(
+                "Unlock",
+                modifier = Modifier
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
+                    .background(androidx.compose.material3.MaterialTheme.colorScheme.primary)
+                    .clickable(onClick = onUnlock)
+                    .padding(horizontal = 30.dp, vertical = 15.dp),
+                color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+            )
+        }
     }
 }

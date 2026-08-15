@@ -49,5 +49,9 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.datastore.preferences)
+    implementation(libs.biometric)
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
+    implementation(libs.media3.exoplayer)
+    implementation(libs.security.crypto)
     debugImplementation(libs.compose.ui.tooling)
 }

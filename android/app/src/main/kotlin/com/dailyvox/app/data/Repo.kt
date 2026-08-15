@@ -4,13 +4,44 @@ import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
+
+private val STOP = setOf(
+    "the","and","for","was","were","this","that","with","from","have","has","had","not",
+    "but","are","you","your","his","her","she","him","they","them","their","its","our",
+    "about","just","then","than","when","what","who","how","why","all","some","been",
+    "will","would","could","should","did","does","done","get","got","out","one","two",
+)
 
 class Repo private constructor(private val db: DailyVoxDb) {
 
     fun observeAll(): Flow<List<Entry>> = db.entries().observeAll()
-    fun search(q: String): Flow<List<Entry>> = db.entries().search(q)
+    /**
+     * Content-word overlap, ranked. Not embeddings yet -- but it IS the lexical
+     * leg the iOS hybrid retriever already weights at 60%, so the "search by
+     * meaning" label describes a real subset of shipped behaviour rather than
+     * something the code does not do. Substring matching, which this replaces,
+     * missed "nervous" for a query of "anxious about Sarah" while matching any
+     * entry containing the letters in sequence.
+     */
+    fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all ->
+        val terms = contentWords(q)
+        if (terms.isEmpty()) return@map all
+        all.map { e ->
+            val hay = contentWords(e.text) + e.entityList.map { it.lowercase() }
+            val overlap = terms.count { t -> hay.any { it.startsWith(t) || t.startsWith(it) } }
+            e to overlap / terms.size.toFloat()
+        }.filter { it.second > 0f }
+         .sortedByDescending { it.second }
+         .map { it.first }
+    }
+
+    private fun contentWords(t: String): Set<String> =
+        t.lowercase().split(Regex("[^a-z0-9']+"))
+            .filter { it.length >= 3 && it !in STOP }
+            .toSet()
     suspend fun byId(id: String) = db.entries().byId(id)
     suspend fun delete(id: String) = db.entries().delete(id)
 

@@ -3,12 +3,13 @@ package com.dailyvox.app.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +53,13 @@ fun EntryDetailScreen(
             }
         }
 
+        // Audio, when the entry has it. Without this the transcript is the only
+        // artifact and a voice journal quietly becomes a text journal.
+        entry.audioPath?.let { path ->
+            Spacer(Modifier.height(16.dp))
+            AudioBar(path)
+        }
+
         Spacer(Modifier.height(18.dp))
         Text(entry.text, fontSize = 16.sp, lineHeight = 26.sp,
              color = MaterialTheme.colorScheme.onSurface)
@@ -82,6 +90,55 @@ fun EntryDetailScreen(
             }
         }
         Spacer(Modifier.height(120.dp))
+    }
+}
+
+@Composable
+private fun AudioBar(path: String) {
+    val playback = remember { com.dailyvox.app.audio.AudioPlayback() }
+    var playing by remember { mutableStateOf(false) }
+    var pos by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(playing) {
+        while (playing) {
+            pos = playback.positionMs
+            kotlinx.coroutines.delay(200)
+        }
+    }
+    DisposableEffect(Unit) { onDispose { playback.release() } }
+
+    val total = playback.durationMs.coerceAtLeast(1)
+    DvCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier.size(44.dp).clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .clickable {
+                        playback.toggle(path) { playing = false; pos = 0 }
+                        playing = playback.isPlaying
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(if (playing) "\u2016" else "\u25B6", fontSize = 15.sp,
+                     color = MaterialTheme.colorScheme.onPrimary)
+            }
+            Spacer(Modifier.width(14.dp))
+            Column(Modifier.weight(1f)) {
+                Box(
+                    Modifier.fillMaxWidth().height(4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f))
+                ) {
+                    Box(
+                        Modifier.fillMaxWidth(pos.toFloat() / total).height(4.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(MaterialTheme.colorScheme.secondary)
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                MonoLabel("%d:%02d".format(pos / 60000, (pos / 1000) % 60))
+            }
+        }
     }
 }
 

@@ -72,13 +72,12 @@ fun DailyVoxNavBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Box(
-                    Modifier
-                        .size(if (selected) 10.dp else 8.dp)
-                        .clip(CircleShape)
-                        .background(if (selected) scheme.secondary else scheme.onSurfaceVariant)
+                NavIcon(
+                    dest = dest,
+                    active = selected,
+                    tint = if (selected) scheme.secondary else scheme.onSurfaceVariant,
                 )
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(5.dp))
                 Text(
                     dest.label,
                     fontSize = 11.sp,

@@ -33,8 +33,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setQuery(q: String) { _query.value = q }
 
-    fun add(text: String, durationSec: Int) = viewModelScope.launch {
-        repo.add(text, durationSec)
+    fun add(text: String, durationSec: Int, audioPath: String? = null) = viewModelScope.launch {
+        repo.add(text, durationSec, audioPath)
         refreshStats()
     }
 
@@ -51,9 +51,19 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             }
             append("  ]\n}\n")
         }
-        val f = java.io.File(context.getExternalFilesDir(null), "dailyvox-export.json")
-        f.writeText(json)
-        android.widget.Toast.makeText(context, "Exported ${all.size} entries", android.widget.Toast.LENGTH_LONG).show()
+        // Two files, deliberately. The encrypted one is the backup and can only
+        // be read on this device; the plaintext one is the portability promise
+        // and is the whole point of "never locked in".
+        val plain = java.io.File(context.getExternalFilesDir(null), "dailyvox-export.json")
+        plain.writeText(json)
+        val sealed = runCatching {
+            com.dailyvox.app.security.Vault.encryptToFile(context, json, "dailyvox-backup.dvx")
+        }.getOrNull()
+        val msg = if (sealed != null)
+            "Exported ${all.size} entries — JSON + AES-256 backup"
+        else
+            "Exported ${all.size} entries as JSON (encryption unavailable on this device)"
+        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
     }
 
     fun delete(id: String) = viewModelScope.launch { repo.delete(id); refreshStats() }

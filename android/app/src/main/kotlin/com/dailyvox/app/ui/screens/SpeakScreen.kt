@@ -11,6 +11,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.theme.StarGold
@@ -52,13 +55,15 @@ import kotlinx.coroutines.delay
 fun SpeakScreen(
     streak: Int,
     resolution: Int,
-    onSaved: (String, Int) -> Unit,
+    onSaved: (String, Int, String?) -> Unit,
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val capture = remember { SpeechCapture(context) }
+    val recorder = remember { AudioRecorder(context) }
+    var audioPath by remember { mutableStateOf<String?>(null) }
     var granted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
@@ -84,14 +89,19 @@ fun SpeakScreen(
     // deliberate stop does.
     LaunchedEffect(Unit) {
         capture.finished.collect { text ->
-            if (text.isNotBlank()) onSaved(text, elapsed.coerceAtLeast(1))
+            val path = recorder.stop()?.absolutePath
+            if (text.isNotBlank()) onSaved(text, elapsed.coerceAtLeast(1), path)
         }
     }
 
     DisposableEffect(Unit) { onDispose { capture.release() } }
 
+    // Scrollable, and not merely defensively: Play's pre-launch report tests at
+    // 200% non-linear font scale, where a fixed column silently clips its last
+    // child. The privacy card was already being pushed off-screen at default
+    // scale once the nav icons grew the bar.
     Column(
-        modifier.fillMaxSize().padding(horizontal = 24.dp),
+        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(14.dp))
@@ -135,14 +145,15 @@ fun SpeakScreen(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(20.dp))
         RecordButton(
             state = state,
             level = level,
             elapsed = elapsed,
             onTap = {
                 if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
-                else if (state == SpeechCapture.State.RECORDING) capture.stop() else capture.start()
+                else if (state == SpeechCapture.State.RECORDING) capture.stop()
+                else { recorder.start(); capture.start() }
             },
         )
 

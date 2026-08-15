@@ -28,6 +28,9 @@ enum class ThemeChoice { LIGHT, DARK, SYSTEM }
 @Composable
 fun SettingsScreen(
     entryCount: Int,
+    lockEnabled: Boolean = false,
+    lockAvailable: Boolean = false,
+    onLock: (Boolean) -> Unit = {},
     theme: ThemeChoice,
     onTheme: (ThemeChoice) -> Unit,
     onExport: () -> Unit,
@@ -53,6 +56,28 @@ fun SettingsScreen(
                 fontSize = 12.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+
+        Spacer(Modifier.height(22.dp))
+        MonoLabel("Lock")
+        Spacer(Modifier.height(8.dp))
+        DvCard {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        if (lockAvailable) "Require unlock to open" else "No lock set on this device",
+                        fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        if (lockAvailable) "Fingerprint, face, or your device PIN."
+                        else "Set a screen lock in Android settings to enable this.",
+                        fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(checked = lockEnabled, onCheckedChange = onLock, enabled = lockAvailable)
+            }
         }
 
         Spacer(Modifier.height(22.dp))
@@ -88,11 +113,12 @@ fun SettingsScreen(
         DvCard(Modifier.clickable(onClick = onExport)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Export everything", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
-                MonoLabel("JSON")
+                MonoLabel("JSON + AES-256")
             }
             Spacer(Modifier.height(4.dp))
-            Text("Readable text you can keep, move, or take to another app.",
-                 fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Two files: readable JSON you can take anywhere, and an AES-256-GCM backup sealed to this device.",
+                 fontSize = 12.sp, lineHeight = 18.sp,
+                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
         Spacer(Modifier.height(24.dp))
