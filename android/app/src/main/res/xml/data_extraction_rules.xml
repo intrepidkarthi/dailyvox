@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  API 31+ backup policy.
+
+  cloud-backup: EVERYTHING excluded. Android Auto Backup would otherwise copy
+  filesDir — the Room database and every .m4a recording — to the user's Google
+  Drive. The system does that itself, so it needs no INTERNET permission from
+  us: the app can hold zero network permissions, make zero calls, and still have
+  the entire journal sitting on a Google server. "Nothing you say leaves this
+  phone" would simply be false, and nobody would have had to write a line of
+  networking code for it to happen.
+
+  device-transfer: ALLOWED. This is the phone-to-phone copy during new-device
+  setup. It is a direct local transfer, so it does not contradict the claim, and
+  without it changing phones would silently mean losing years of diary. The
+  encrypted export exists for everything else.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+        <exclude domain="device_root" />
+        <exclude domain="device_file" />
+        <exclude domain="device_database" />
+        <exclude domain="device_sharedpref" />
+    </cloud-backup>
+
+    <device-transfer>
+        <include domain="file" path="." />
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>

@@ -104,7 +104,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     DailyVoxTheme(darkTheme = dark) {
         if (!onboarded) {
-            OnboardingScreen(onDone = {
+            OnboardingScreen(onDone = { text, secs, path ->
+                // The first star is persisted as a REAL entry, exactly as iOS
+                // does — so "that star is yours" is true and the app opens onto
+                // a sky that already holds something.
+                if (text.isNotBlank()) vm.add(text, secs, path)
                 prefs.edit().putBoolean("onboarded", true).apply()
                 onboarded = true
             })
@@ -229,6 +233,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     Destination.SPEAK -> SpeakScreen(
                         streak = streak,
                         resolution = resolution,
+                        firstEver = entries.isEmpty(),
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
@@ -245,6 +250,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     Destination.TWIN -> TwinScreen(
                         entries = entries, resolution = resolution,
                         onAsk = { current = Destination.ASK },
+                        onInsights = { overlay = Overlay.INSIGHTS },
                         modifier = inner,
                     )
                     Destination.ASK -> AskScreen(entries = entries, modifier = inner)

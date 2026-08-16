@@ -50,6 +50,7 @@ fun TwinScreen(
     entries: List<Entry>,
     resolution: Int,
     onAsk: () -> Unit = {},
+    onInsights: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val breath by rememberInfiniteTransition(label = "breath").animateFloat(
@@ -128,27 +129,43 @@ fun TwinScreen(
         // it. Having no route between them meant the obvious next question after
         // reading "Sarah x3" had to be found in the nav bar, which is a strange
         // place to look for a follow-up to something you are already staring at.
-        DvCard(Modifier.padding(horizontal = 20.dp).clickable(onClick = onAsk)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("Ask your Twin", fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
-                         color = MaterialTheme.colorScheme.onSurface)
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        if (entries.size < 3)
-                            "A few more nights and it will have something to say."
-                        else
-                            "Put a question to what it has read. Every answer cites the entries it used.",
-                        fontSize = 13.sp, lineHeight = 19.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Spacer(Modifier.width(12.dp))
-                Text("\u203A", fontSize = 26.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+        // Two routes out of this screen. Insights especially needed one: it was
+        // reachable ONLY by tapping the "6% resolved" badge on Speak, which is a
+        // percentage, not a signpost — a whole screen hidden behind a number.
+        Column(Modifier.padding(horizontal = 20.dp)) {
+            LinkCard(
+                title = "Ask your Twin",
+                body = if (entries.size < 3)
+                    "A few more nights and it will have something to say."
+                else
+                    "Put a question to what it has read. Every answer cites the entries it used.",
+                onClick = onAsk,
+            )
+            Spacer(Modifier.height(10.dp))
+            LinkCard(
+                title = "Insights",
+                body = "Streaks, the last thirty nights, your mood curve, and the patterns it has noticed.",
+                onClick = onInsights,
+            )
         }
         Spacer(Modifier.height(130.dp))
+    }
+}
+
+@Composable
+private fun LinkCard(title: String, body: String, onClick: () -> Unit) {
+    DvCard(Modifier.clickable(onClick = onClick)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(title, fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
+                     color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(4.dp))
+                Text(body, fontSize = 13.sp, lineHeight = 19.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Spacer(Modifier.width(12.dp))
+            Text("\u203A", fontSize = 26.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 

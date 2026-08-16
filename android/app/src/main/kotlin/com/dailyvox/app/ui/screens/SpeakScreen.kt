@@ -55,6 +55,7 @@ import kotlinx.coroutines.delay
 fun SpeakScreen(
     streak: Int,
     resolution: Int,
+    firstEver: Boolean = false,
     autoStart: Boolean = false,
     onAutoStarted: () -> Unit = {},
     onSaved: (String, Int, String?) -> Unit,
@@ -184,6 +185,7 @@ fun SpeakScreen(
             state = state,
             level = level,
             elapsed = elapsed,
+            firstEver = firstEver,
             onTap = {
                 if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
@@ -235,6 +237,7 @@ private fun RecordButton(
     state: SpeechCapture.State,
     level: Float,
     elapsed: Int,
+    firstEver: Boolean,
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
@@ -256,6 +259,34 @@ private fun RecordButton(
         else -> "Start recording"
     }
 
+    // The iOS button carries THREE animation layers and Android had one. Ported
+    // with the same numbers rather than approximations, because the timings are
+    // what make it read as the same object: rings expand to 1.8x over 1.8s and
+    // fade to nothing, staggered 0.6s apart so one is always mid-flight.
+    val ripple = rememberInfiniteTransition(label = "ripple")
+    val ringPhase = (0..2).map { i ->
+        ripple.animateFloat(
+            initialValue = 0f, targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1800, delayMillis = i * 600, easing = LinearOutSlowInEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
+            label = "ring$i",
+        )
+    }
+
+    // The first-time invitation: a single slow ring on an app with no entries
+    // yet. It is the only thing on the screen asking to be touched, and it stops
+    // for good once there is one star in the sky.
+    val invite = ripple.animateFloat(
+        initialValue = 0f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearOutSlowInEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "invite",
+    )
+
     Box(contentAlignment = Alignment.Center) {
         Canvas(
             Modifier
@@ -264,9 +295,32 @@ private fun RecordButton(
                 .pointerInput(state) { detectTapGestures { onTap() } }
         ) {
             val r = size.minDimension / 2f
+
             // Concentric rings, faint — the "instrument" read from the design.
             for (i in 1..3) {
                 drawCircle(color.copy(alpha = 0.06f), radius = r * (0.62f + i * 0.12f), style = Stroke(1.dp.toPx()))
+            }
+
+            // Layer 1: first-run invitation. 1.0 -> 1.3, fading out.
+            if (firstEver && state == SpeechCapture.State.IDLE) {
+                val t = invite.value
+                drawCircle(
+                    color = color.copy(alpha = 0.25f * (1f - t)),
+                    radius = r * 0.52f * (1f + 0.3f * t),
+                    style = Stroke(2.dp.toPx()),
+                )
+            }
+
+            // Layer 2: recording ripples. Three, expanding to 1.8x and fading.
+            if (state == SpeechCapture.State.RECORDING) {
+                ringPhase.forEach { phase ->
+                    val t = phase.value
+                    drawCircle(
+                        color = color.copy(alpha = 0.35f * (1f - t)),
+                        radius = r * 0.5f * (1f + 0.8f * t),
+                        style = Stroke(2.dp.toPx()),
+                    )
+                }
             }
             // 42-second arc: fills once, then keeps sweeping. A shape, not a limit.
             val progress = (elapsed % 42) / 42f
