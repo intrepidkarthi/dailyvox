@@ -97,6 +97,26 @@ fun AskScreen(entries: List<Entry>, modifier: Modifier = Modifier) {
                 )
             }
         }
+        Spacer(Modifier.height(28.dp))
+        // Below the chips the screen was empty to the nav bar on a tall phone.
+        // This is not filler: "why are there no free-form questions" is the
+        // first thing anyone asks here, and answering it once is cheaper than
+        // an FAQ entry nobody reads.
+        DvCard {
+            MonoLabel("what it can answer")
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Questions with a number behind them — how often, who with, what changed. Every answer names the entries it came from, so you can check it.",
+                fontSize = 13.sp, lineHeight = 20.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                "There is no free-form chat, and that is a choice rather than a gap: an on-device model small enough to ship here would guess, and a Twin that guesses about your own life is worse than one that stays quiet.",
+                fontSize = 13.sp, lineHeight = 20.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Spacer(Modifier.height(130.dp))
     }
 }

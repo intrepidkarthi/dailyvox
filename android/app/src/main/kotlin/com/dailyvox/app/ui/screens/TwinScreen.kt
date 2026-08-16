@@ -3,6 +3,7 @@ package com.dailyvox.app.ui.screens
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.ui.components.DvCard
 import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.components.valenceColor
 import com.dailyvox.app.ui.theme.*
@@ -44,7 +46,12 @@ import kotlin.math.*
  * and the cheap path -- RenderEffect would cost more and match less.
  */
 @Composable
-fun TwinScreen(entries: List<Entry>, resolution: Int, modifier: Modifier = Modifier) {
+fun TwinScreen(
+    entries: List<Entry>,
+    resolution: Int,
+    onAsk: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     val breath by rememberInfiniteTransition(label = "breath").animateFloat(
         initialValue = 0f, targetValue = (2 * PI).toFloat(),
         animationSpec = infiniteRepeatable(tween(9000, easing = LinearEasing)),
@@ -114,6 +121,31 @@ fun TwinScreen(entries: List<Entry>, resolution: Int, modifier: Modifier = Modif
                         MonoLabel("×$n")
                     }
                 }
+            }
+        }
+        Spacer(Modifier.height(20.dp))
+        // The Twin screen shows what the Twin KNOWS; Ask is where you interrogate
+        // it. Having no route between them meant the obvious next question after
+        // reading "Sarah x3" had to be found in the nav bar, which is a strange
+        // place to look for a follow-up to something you are already staring at.
+        DvCard(Modifier.padding(horizontal = 20.dp).clickable(onClick = onAsk)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Ask your Twin", fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
+                         color = MaterialTheme.colorScheme.onSurface)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        if (entries.size < 3)
+                            "A few more nights and it will have something to say."
+                        else
+                            "Put a question to what it has read. Every answer cites the entries it used.",
+                        fontSize = 13.sp, lineHeight = 19.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Spacer(Modifier.width(12.dp))
+                Text("\u203A", fontSize = 26.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Spacer(Modifier.height(130.dp))

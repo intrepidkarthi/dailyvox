@@ -32,6 +32,10 @@
             </intent-filter>
         </activity>
         <receiver
+            android:name=".system.Reminders$ReminderReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".system.StarWidget"
             android:exported="false">
             <intent-filter>

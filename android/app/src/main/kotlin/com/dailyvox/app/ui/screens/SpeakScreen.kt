@@ -121,6 +121,13 @@ fun SpeakScreen(
     // 200% non-linear font scale, where a fixed column silently clips its last
     // child. The privacy card was already being pushed off-screen at default
     // scale once the nav icons grew the bar.
+    // On a 426x952dp phone the fixed spacers left roughly a third of the screen
+    // empty below the privacy card, which read as an unfinished screen rather
+    // than a calm one. The column now grows into the space it is given: on tall
+    // devices the weights distribute it, on short ones they collapse to zero and
+    // the scroll takes over exactly as before.
+    val tall = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= 780
+
     Column(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -155,7 +162,7 @@ fun SpeakScreen(
             }
         }
 
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(if (tall) 56.dp else 28.dp))
         Text(
             when (state) {
                 SpeechCapture.State.RECORDING -> "Listening."
@@ -166,7 +173,7 @@ fun SpeakScreen(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(if (tall) 44.dp else 20.dp))
         // Scaled to the window. At a fixed 232dp the button plus the headline
         // filled a 640dp-tall phone on its own and pushed the airplane-mode card
         // below the fold -- that card is the product's entire argument, and
@@ -199,7 +206,7 @@ fun SpeakScreen(
             modifier = Modifier.widthIn(max = 420.dp),
         )
 
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(if (tall) 72.dp else 28.dp))
         // The privacy claim, in the one place a user can act on it. Not a badge
         // for its own sake: it is the product's whole argument, stated where the
         // recording happens.
@@ -218,7 +225,7 @@ fun SpeakScreen(
                  modifier = Modifier.weight(1f))
             MonoLabel("0 calls")
         }
-        Spacer(Modifier.height(112.dp))   // clears the floating nav pill
+        Spacer(Modifier.height(if (tall) 132.dp else 112.dp))   // clears the floating nav pill
     }
 }
 

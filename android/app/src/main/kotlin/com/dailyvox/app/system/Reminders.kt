@@ -1,52 +1,102 @@
 package com.dailyvox.app.system
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.work.*
+import androidx.core.app.NotificationManagerCompat
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 /**
- * The daily reminder — and on this product it is not a nicety. Retention is the
- * measured binding constraint, and the iOS reminder shipped defaulted OFF, which
- * is one of the few levers never actually pulled.
+ * The daily reminder. Not a nicety on this product: retention is the measured
+ * binding constraint, and the iOS reminder shipped defaulted OFF, which makes it
+ * one of the few levers never actually pulled.
  *
- * WINDOWED, NOT EXACT, and the copy has to match. USE_EXACT_ALARM is restricted
- * and Play blocks apps that do not qualify, so this promises "around 9pm", never
- * "at 9:00". Promising a minute and delivering a window is how an app teaches
- * people to distrust its notifications.
+ * AlarmManager, NOT WorkManager — and that is a permission decision, not a
+ * technical preference. Pulling in androidx.work adds four permissions to the
+ * merged manifest that this app has no use for:
+ *
+ *     ACCESS_NETWORK_STATE, WAKE_LOCK, RECEIVE_BOOT_COMPLETED, FOREGROUND_SERVICE
+ *
+ * ACCESS_NETWORK_STATE is the one that matters. The Settings ledger invites the
+ * user to go and check Android's app info, and a privacy-first journal listing a
+ * network permission there loses the argument before anyone reads the
+ * explanation — even though INTERNET is genuinely absent and no call is ever
+ * made. Paying four permissions for one nightly notification is a bad trade.
+ *
+ * setInexactRepeating needs no permission at all. It is also honest about what
+ * it delivers: a window, not a minute. USE_EXACT_ALARM is a restricted
+ * permission a journal does not qualify for, so the copy everywhere says
+ * "around 9pm" rather than "at 9:00".
+ *
+ * Reboot clears alarms and RECEIVE_BOOT_COMPLETED is deliberately not declared,
+ * so `rescheduleIfEnabled` runs on every app start instead. The cost is at most
+ * one missed reminder between a reboot and the next launch, which is the right
+ * side of the trade for a permission the ledger would have to explain.
  */
 object Reminders {
 
     private const val CHANNEL = "dailyvox.reminder"
-    private const val WORK = "dailyvox.daily-reminder"
+    private const val REQUEST = 4242
+    const val PREF_ENABLED = "reminder"
+    const val PREF_HOUR = "reminderHour"
 
     fun schedule(context: Context, hourOfDay: Int) {
         ensureChannel(context)
+        val app = context.applicationContext
+        val alarms = app.getSystemService(AlarmManager::class.java) ?: return
+
         val now = Calendar.getInstance()
         val next = (now.clone() as Calendar).apply {
-            set(Calendar.HOUR_OF_DAY, hourOfDay); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0)
+            set(Calendar.HOUR_OF_DAY, hourOfDay)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
             if (before(now)) add(Calendar.DAY_OF_YEAR, 1)
         }
-        val delay = next.timeInMillis - now.timeInMillis
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            WORK,
-            ExistingPeriodicWorkPolicy.UPDATE,
-            PeriodicWorkRequestBuilder<ReminderWorker>(1, TimeUnit.DAYS)
-                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .build(),
+        alarms.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            next.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pending(app),
         )
     }
 
     fun cancel(context: Context) {
-        WorkManager.getInstance(context).cancelUniqueWork(WORK)
+        val app = context.applicationContext
+        app.getSystemService(AlarmManager::class.java)?.cancel(pending(app))
     }
 
+    /** Called on every app start: alarms do not survive a reboot and we do not
+     *  ask for the permission that would let them. */
+    fun rescheduleIfEnabled(context: Context) {
+        val prefs = context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+        if (!prefs.getBoolean(PREF_ENABLED, false)) return
+        if (!canPostNotifications(context)) return
+        schedule(context, prefs.getInt(PREF_HOUR, 21))
+    }
+
+    /** On API 33+ a scheduled reminder with no permission is a switch that lies. */
+    fun canPostNotifications(context: Context): Boolean =
+        android.os.Build.VERSION.SDK_INT < 33 ||
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context, android.Manifest.permission.POST_NOTIFICATIONS
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+    private fun pending(context: Context): PendingIntent =
+        PendingIntent.getBroadcast(
+            context, REQUEST,
+            Intent(context, ReminderReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
     private fun ensureChannel(context: Context) {
-        val nm = context.getSystemService(NotificationManager::class.java)
+        val nm = context.getSystemService(NotificationManager::class.java) ?: return
         if (nm.getNotificationChannel(CHANNEL) == null) {
             nm.createNotificationChannel(
                 NotificationChannel(CHANNEL, "Daily reminder", NotificationManager.IMPORTANCE_DEFAULT)
@@ -55,21 +105,25 @@ object Reminders {
         }
     }
 
-    class ReminderWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
-        override fun doWork(): Result {
-            ensureChannel(applicationContext)
-            val n = NotificationCompat.Builder(applicationContext, CHANNEL)
+    class ReminderReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            ensureChannel(context)
+            val open = PendingIntent.getActivity(
+                context, 0,
+                Intent(context, com.dailyvox.app.MainActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            val n = NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(com.dailyvox.app.R.drawable.ic_nav_speak)
                 .setContentTitle("Tonight's forty-two seconds")
-                // No streak guilt. The iOS empty states make a point of this and
-                // a notification is the easiest place to break it.
+                // No streak guilt. The empty states make a point of this and a
+                // notification is the easiest place in the product to break it.
                 .setContentText("Whenever you're ready.")
+                .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()
-            runCatching {
-                androidx.core.app.NotificationManagerCompat.from(applicationContext).notify(42, n)
-            }
-            return Result.success()
+            runCatching { NotificationManagerCompat.from(context).notify(42, n) }
         }
     }
 }

@@ -80,8 +80,13 @@ fun JournalScreen(
                     cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary),
                     modifier = Modifier.weight(1f),
                 )
-                Text(
-                    "\uD83C\uDF99", fontSize = 15.sp,
+                // Vector, not the 🎙 emoji this used to be. A colour emoji in a
+                // monochrome ink/cream palette reads as a rendering bug, and it
+                // is the same mistake the hand-drawn nav icons were.
+                androidx.compose.material3.Icon(
+                    painter = androidx.compose.ui.res.painterResource(com.dailyvox.app.R.drawable.ic_nav_speak),
+                    contentDescription = "Search by voice",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .clickable {
@@ -95,16 +100,14 @@ fun JournalScreen(
                                         .putExtra(android.speech.RecognizerIntent.EXTRA_PROMPT, "Search your journal")
                                 )
                             }.onFailure {
-                                // No recognizer activity on this device. Silent
-                                // failure would look like a dead button.
                                 android.widget.Toast.makeText(
                                     context, "No voice input on this device.",
                                     android.widget.Toast.LENGTH_SHORT,
                                 ).show()
                             }
                         }
-                        .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
-                        .wrapContentSize(),
+                        .padding(10.dp)
+                        .size(22.dp),
                 )
             }
         }

@@ -49,14 +49,26 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val prefs = remember { context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE) }
 
     var onboarded by rememberSaveable { mutableStateOf(prefs.getBoolean("onboarded", false)) }
-    var lockEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("lock", false)) }
+    val lockAvailableNow = remember { com.dailyvox.app.security.AppLock.available(activity) }
+    // Lock defaults ON, but ONLY where the device can honour it. Defaulting true
+    // on a phone with no screen lock would gate the app behind a prompt that can
+    // never succeed — a self-inflicted lockout on first run.
+    var lockEnabled by rememberSaveable {
+        mutableStateOf(prefs.getBoolean("lock", lockAvailableNow))
+    }
     var unlocked by rememberSaveable { mutableStateOf(false) }
-    val lockAvailable = remember { com.dailyvox.app.security.AppLock.available(activity) }
+    val lockAvailable = lockAvailableNow
     var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SYSTEM")!!)) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
-    var reminderOn by rememberSaveable { mutableStateOf(prefs.getBoolean("reminder", false)) }
+    // Reminder defaults ON. Retention is the measured binding constraint and the
+    // iOS reminder shipped OFF, so this is the lever that was never pulled. It
+    // stays a switch the user can find in two taps, and the permission ask below
+    // is the real consent gate.
+    var reminderOn by rememberSaveable {
+        mutableStateOf(prefs.getBoolean(com.dailyvox.app.system.Reminders.PREF_ENABLED, true))
+    }
     var reminderHour by rememberSaveable { mutableStateOf(prefs.getInt("reminderHour", 21)) }
 
     // Launched from the widget or the Quick Settings tile. Read once and cleared,
@@ -99,9 +111,33 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             return@DailyVoxTheme
         }
 
+        // Bootstrap, once onboarding is done: persist the defaults and arm the
+        // alarm. Alarms do not survive a reboot and RECEIVE_BOOT_COMPLETED is
+        // deliberately not declared, so this also serves as the reschedule.
+        LaunchedEffect(onboarded, reminderOn, reminderHour) {
+            if (!onboarded) return@LaunchedEffect
+            prefs.edit()
+                .putBoolean(com.dailyvox.app.system.Reminders.PREF_ENABLED, reminderOn)
+                .putInt(com.dailyvox.app.system.Reminders.PREF_HOUR, reminderHour)
+                .putBoolean("lock", lockEnabled)
+                .apply()
+            if (!reminderOn) {
+                com.dailyvox.app.system.Reminders.cancel(context)
+            } else if (com.dailyvox.app.system.Reminders.canPostNotifications(context)) {
+                com.dailyvox.app.system.Reminders.schedule(context, reminderHour)
+            } else {
+                askNotifications.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
         // The lock gates EVERYTHING, before any entry text is composed. Prompting
         // over a screen that already rendered the journal would be theatre.
-        if (lockEnabled && !unlocked) {
+        //
+        // `lockAvailable` is re-checked here, not just at the toggle. Someone can
+        // enable the lock, then remove their screen lock in Android settings, and
+        // come back to an app that would otherwise be permanently unopenable —
+        // with no account and no cloud copy, that is unrecoverable data loss.
+        if (lockEnabled && lockAvailable && !unlocked) {
             LockScreen(onUnlock = {
                 com.dailyvox.app.security.AppLock.prompt(activity, onSuccess = { unlocked = true })
             })
@@ -206,7 +242,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSpeak = { current = Destination.SPEAK },
                         modifier = inner,
                     )
-                    Destination.TWIN -> TwinScreen(entries = entries, resolution = resolution, modifier = inner)
+                    Destination.TWIN -> TwinScreen(
+                        entries = entries, resolution = resolution,
+                        onAsk = { current = Destination.ASK },
+                        modifier = inner,
+                    )
                     Destination.ASK -> AskScreen(entries = entries, modifier = inner)
                 }
             }

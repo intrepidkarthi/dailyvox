@@ -51,9 +51,7 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.biometric)
     implementation("androidx.fragment:fragment-ktx:1.8.5")
-    implementation(libs.media3.exoplayer)
     implementation(libs.security.crypto)
-    implementation(libs.work.runtime)
     testImplementation(libs.junit)
     debugImplementation(libs.compose.ui.tooling)
 }

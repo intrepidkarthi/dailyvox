@@ -64,6 +64,20 @@ fun SettingsScreen(
                 fontSize = 12.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(Modifier.height(12.dp))
+            MonoLabel("every permission this app holds")
+            Spacer(Modifier.height(6.dp))
+            // The whole list, not a flattering subset. A ledger that omits a line
+            // is worth less than no ledger, and anyone can check it in app info.
+            Text(
+                "RECORD_AUDIO — to hear you.\n" +
+                    "POST_NOTIFICATIONS — the nightly reminder, nothing else.\n" +
+                    "VIBRATE — haptics.\n" +
+                    "USE_BIOMETRIC — the lock on this screen.\n\n" +
+                    "That is the complete list. There is no network permission of any kind, so there is no version of this app that could send your journal anywhere.",
+                fontSize = 12.sp, lineHeight = 19.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
 
         Spacer(Modifier.height(22.dp))

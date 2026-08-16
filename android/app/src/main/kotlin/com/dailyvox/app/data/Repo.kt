@@ -132,6 +132,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
 
     suspend fun seedIfEmpty(context: Context) {
+        Sentiment.ensureLoaded(context)
         if (db.entries().count() > 0) return
         DummyData.entries().forEach { db.entries().upsert(it) }
     }
@@ -139,6 +140,8 @@ class Repo private constructor(private val db: DailyVoxDb) {
     companion object {
         @Volatile private var INSTANCE: Repo? = null
         fun get(context: Context): Repo = INSTANCE ?: synchronized(this) {
+            // Before any write can score a valence.
+            Sentiment.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
                     .fallbackToDestructiveMigration()

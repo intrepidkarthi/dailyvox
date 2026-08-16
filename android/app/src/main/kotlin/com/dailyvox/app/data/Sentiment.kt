@@ -17,61 +17,72 @@ import kotlin.math.abs
  * 87.1% sign accuracy, against NLTagger's +0.594 and 79.8%. Both shuffled
  * controls collapsed to chance.
  *
- * THIS FILE IS NOT YET THAT RESULT. The measurement used the full VADER lexicon
- * (~7,500 entries, MIT). Bundling it as an asset is a tracked follow-up; what is
- * here is a compact high-frequency subset, so it is directionally right and
- * WILL score lower than +0.663 until the full table ships. Stated rather than
- * implied, because quoting the measured number against this implementation
- * would be quoting a number this code did not earn.
+ * THIS FILE IS NOW THAT RESULT. The full lexicon ships as `assets/vader.txt`
+ * — 7,517 entries, 101 KB of text that deflates to 30 KB inside the APK — so
+ * the scorer here is the one the +0.663 was measured on rather than a subset
+ * standing in for it.
+ *
+ * The lexicon is DATA, not code, and deliberately stays a plain sorted TSV: it
+ * shows up in a diff, anyone can check a word against the published table, and
+ * the APK compresses it anyway. A binary blob would save ~10 KB and cost that.
  */
 object Sentiment {
 
-    private val lexicon: Map<String, Float> = buildMap {
-        listOf(
-            "good" to 1.9f, "great" to 3.1f, "happy" to 2.7f, "love" to 3.2f, "loved" to 2.9f,
-            "wonderful" to 2.9f, "beautiful" to 2.9f, "calm" to 1.8f, "peaceful" to 2.2f,
-            "grateful" to 2.6f, "proud" to 2.5f, "excited" to 2.6f, "hopeful" to 2.3f,
-            "better" to 1.9f, "best" to 3.2f, "enjoyed" to 2.3f, "fun" to 2.3f, "glad" to 2.1f,
-            "relaxed" to 2.0f, "clear" to 1.2f, "steady" to 1.0f, "warm" to 1.4f,
-            "laughed" to 2.4f, "smile" to 2.2f, "thankful" to 2.6f, "achieved" to 2.2f,
-            "progress" to 1.7f, "win" to 2.8f, "won" to 2.7f, "helped" to 1.8f,
-            "bad" to -2.5f, "sad" to -2.1f, "angry" to -2.7f, "anxious" to -2.4f,
-            "tired" to -1.5f, "exhausted" to -2.2f, "worried" to -2.3f, "afraid" to -2.5f,
-            "hate" to -3.2f, "terrible" to -3.1f, "awful" to -3.0f, "hurt" to -2.4f,
-            "stressed" to -2.3f, "frustrated" to -2.4f, "disappointed" to -2.4f,
-            "lonely" to -2.4f, "struggle" to -1.9f, "struggling" to -2.0f, "pain" to -2.6f,
-            "difficult" to -1.7f, "hard" to -1.2f, "problem" to -1.8f, "worse" to -2.2f,
-            "worst" to -3.1f, "cried" to -2.3f, "loss" to -2.4f, "failed" to -2.6f,
-            "overwhelmed" to -2.2f, "nervous" to -1.8f, "guilty" to -2.2f, "ashamed" to -2.4f,
-            // Second pass, added after reading a real PDF export: three of twelve
-            // entries scored EXACTLY 0.00 -- "the review went sideways",
-            // "slept badly", "work is sitting on my chest" -- because the first
-            // pass covered emotion nouns and almost no everyday diary verbs.
-            // A mood curve pinned to zero looks broken rather than neutral.
-            "badly" to -2.0f, "sideways" to -1.5f, "wrong" to -2.0f, "mistake" to -1.9f,
-            "regret" to -2.2f, "annoyed" to -1.8f, "upset" to -2.2f, "hopeless" to -2.9f,
-            "drained" to -2.0f, "restless" to -1.4f, "heavy" to -1.3f, "stuck" to -1.6f,
-            "late" to -0.9f, "missed" to -1.4f, "argument" to -2.2f, "fight" to -2.2f,
-            "sick" to -2.1f, "sore" to -1.4f, "dread" to -2.6f, "doubt" to -1.5f,
-            "awkward" to -1.5f, "embarrassed" to -2.1f, "rushed" to -1.3f, "behind" to -1.1f,
-            "boring" to -1.5f, "dull" to -1.3f, "cold" to -0.8f, "quiet" to 0.6f,
-            "rested" to 1.8f, "easy" to 1.6f, "kind" to 2.0f, "gentle" to 1.8f,
-            "safe" to 2.0f, "light" to 1.2f, "bright" to 1.8f, "fresh" to 1.6f,
-            "generous" to 2.2f, "patient" to 1.7f, "honest" to 1.8f, "close" to 1.2f,
-            "surprised" to 0.9f, "curious" to 1.4f, "focused" to 1.6f, "finished" to 1.5f,
-            "solved" to 2.1f, "learned" to 1.5f, "enough" to 1.0f, "worth" to 1.6f,
-        ).forEach { (w, v) -> put(w, v) }
+    private const val ASSET = "vader.txt"
+    private const val TAG = "Sentiment"
+
+    @Volatile private var lexicon: Map<String, Float> = emptyMap()
+
+    /**
+     * Parses the bundled TSV. Kept separate from asset loading so a JVM unit
+     * test can read the very same file off disk — that test is what catches the
+     * only realistic failure here, which is the asset not being packaged.
+     */
+    fun parseLexicon(lines: Sequence<String>): Map<String, Float> {
+        val out = HashMap<String, Float>(8192)
+        lines.forEach { line ->
+            val tab = line.indexOf('\t')
+            if (tab <= 0) return@forEach
+            val word = line.substring(0, tab)
+            val score = line.substring(tab + 1).trim().toFloatOrNull() ?: return@forEach
+            out[word] = score
+        }
+        return out
     }
+
+    /** Idempotent; safe to call from anywhere that has a Context. */
+    fun ensureLoaded(context: android.content.Context) {
+        if (lexicon.isNotEmpty()) return
+        synchronized(this) {
+            if (lexicon.isNotEmpty()) return
+            lexicon = try {
+                context.applicationContext.assets.open(ASSET).bufferedReader().useLines {
+                    parseLexicon(it)
+                }
+            } catch (t: Throwable) {
+                // Loud, not silent. If this ever fires every entry scores 0.00
+                // and the mood curve flatlines, which is exactly the kind of
+                // failure that looks like "the user had a neutral month".
+                android.util.Log.e(TAG, "VADER lexicon failed to load; valence will be 0", t)
+                emptyMap()
+            }
+        }
+    }
+
+    val entryCount: Int get() = lexicon.size
 
     private val negators = setOf("not", "no", "never", "cannot", "cant", "can't", "didnt", "didn't", "wasnt", "wasn't", "dont", "don't")
     private val boosters = mapOf("very" to 1.3f, "really" to 1.3f, "so" to 1.2f, "extremely" to 1.5f, "quite" to 1.1f, "slightly" to 0.7f, "a" to 1f)
 
     /** Compound valence in -1..1, VADER's normalisation: x / sqrt(x^2 + 15). */
-    fun valence(text: String): Float {
+    fun valence(text: String): Float = valence(text, lexicon)
+
+    /** Testable overload — the scoring rules with an explicit table. */
+    fun valence(text: String, table: Map<String, Float>): Float {
         val tokens = text.lowercase().split(Regex("[^a-z']+")).filter { it.isNotEmpty() }
         var sum = 0f
         tokens.forEachIndexed { i, t ->
-            var v = lexicon[t] ?: return@forEachIndexed
+            var v = table[t] ?: return@forEachIndexed
             if (i > 0) {
                 boosters[tokens[i - 1]]?.let { v *= it }
                 if (tokens[i - 1] in negators) v *= -0.74f       // VADER's negation factor
