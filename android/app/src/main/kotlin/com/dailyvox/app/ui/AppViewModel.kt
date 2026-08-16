@@ -66,11 +66,40 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun importFrom(context: android.content.Context, uri: android.net.Uri) = viewModelScope.launch {
-        val text = runCatching {
-            context.contentResolver.openInputStream(uri)!!.bufferedReader().use { it.readText() }
+    fun importFrom(
+        context: android.content.Context,
+        uri: android.net.Uri,
+        passphrase: String? = null,
+        onPassphraseNeeded: (android.net.Uri) -> Unit = {},
+    ) = viewModelScope.launch {
+        val bytes = runCatching {
+            context.contentResolver.openInputStream(uri)!!.use { it.readBytes() }
         }.getOrNull()
-        if (text == null) { toast(context, "Could not read that file."); return@launch }
+        if (bytes == null) { toast(context, "Could not read that file."); return@launch }
+
+        // Sniff the container rather than trusting the extension. A backup the
+        // app cannot read back is not a backup, and .dvx is the format the
+        // "Back up my journal" button produces — restoring it has to be the
+        // same one tap.
+        val sealed = bytes.size > 4 &&
+            bytes.copyOfRange(0, 4).contentEquals("DVX1".toByteArray(Charsets.US_ASCII))
+        if (sealed && passphrase.isNullOrEmpty()) {
+            onPassphraseNeeded(uri)
+            return@launch
+        }
+        val text = if (sealed) {
+            try {
+                com.dailyvox.app.security.Vault.decrypt(bytes, passphrase!!)
+            } catch (e: com.dailyvox.app.security.Vault.WrongPassphrase) {
+                toast(context, "That passphrase does not open this backup.")
+                return@launch
+            } catch (e: Exception) {
+                toast(context, "That file is not a DailyVox backup.")
+                return@launch
+            }
+        } else {
+            String(bytes, Charsets.UTF_8)
+        }
         val added = runCatching { repo.importJson(text) }.getOrElse {
             toast(context, "That does not look like a DailyVox export."); return@launch
         }
@@ -83,32 +112,48 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private fun toast(context: android.content.Context, msg: String) =
         android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
 
-    fun export(context: android.content.Context) = viewModelScope.launch {
-        val all = entries.value
-        val json = buildString {
-            append("{\n  \"app\": \"DailyVox for Android\",\n  \"entries\": [\n")
-            all.forEachIndexed { i, e ->
-                append("    {\"date\": ${e.createdAt}, \"seconds\": ${e.durationSec}, ")
-                append("\"valence\": ${e.valence}, \"entities\": \"${e.entities}\", ")
-                append("\"text\": ${org.json.JSONObject.quote(e.text)}}")
-                if (i < all.size - 1) append(",")
-                append("\n")
-            }
-            append("  ]\n}\n")
+    /**
+     * Builds the two export payloads. Writing them is the CALLER's job, through
+     * the Storage Access Framework, because where they land is the whole point.
+     *
+     * The first version wrote to getExternalFilesDir(), which Android deletes
+     * when the app is uninstalled — so the "backup" disappeared at exactly the
+     * moment it was needed, and it was also invisible to every file manager. A
+     * backup you cannot find and that dies with the app is not a backup.
+     */
+    suspend fun buildExport(): String = renderJson(repo.observeAll().first())
+
+    private fun renderJson(all: List<Entry>): String = buildString {
+        append("{\n  \"app\": \"DailyVox for Android\",\n  \"entries\": [\n")
+        all.forEachIndexed { i, e ->
+            append("    {\"date\": ${e.createdAt}, \"seconds\": ${e.durationSec}, ")
+            append("\"valence\": ${e.valence}, \"entities\": \"${e.entities}\", ")
+            append("\"text\": ${org.json.JSONObject.quote(e.text)}}")
+            if (i < all.size - 1) append(",")
+            append("\n")
         }
-        // Two files, deliberately. The encrypted one is the backup and can only
-        // be read on this device; the plaintext one is the portability promise
-        // and is the whole point of "never locked in".
-        val plain = java.io.File(context.getExternalFilesDir(null), "dailyvox-export.json")
-        plain.writeText(json)
-        val sealed = runCatching {
-            com.dailyvox.app.security.Vault.encryptToFile(context, json, "dailyvox-backup.dvx")
-        }.getOrNull()
-        val msg = if (sealed != null)
-            "Exported ${all.size} entries — JSON + AES-256 backup"
-        else
-            "Exported ${all.size} entries as JSON (encryption unavailable on this device)"
-        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
+        append("  ]\n}\n")
+    }
+
+    fun writeExport(
+        context: android.content.Context,
+        uri: android.net.Uri,
+        passphrase: String?,
+    ) = viewModelScope.launch {
+        val json = buildExport()
+        val bytes = if (passphrase.isNullOrEmpty()) json.toByteArray(Charsets.UTF_8)
+                    else com.dailyvox.app.security.Vault.encrypt(json, passphrase)
+        val ok = runCatching {
+            context.contentResolver.openOutputStream(uri)!!.use { it.write(bytes) }
+        }.isSuccess
+        toast(
+            context,
+            when {
+                !ok -> "Could not write there."
+                passphrase.isNullOrEmpty() -> "Journal written as readable JSON."
+                else -> "Backup written. You will need that passphrase to restore it."
+            },
+        )
     }
 
     fun delete(id: String) = viewModelScope.launch {

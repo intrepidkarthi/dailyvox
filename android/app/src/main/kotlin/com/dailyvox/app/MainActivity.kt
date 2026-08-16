@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.ui.AppViewModel
@@ -28,7 +29,7 @@ import com.dailyvox.app.ui.screens.*
 import com.dailyvox.app.ui.theme.DailyVoxTheme
 
 /** Overlay routes: full screens that are not nav destinations. */
-private enum class Overlay { NONE, INSIGHTS, SETTINGS }
+private enum class Overlay { NONE, SETTINGS }
 
 class MainActivity : FragmentActivity() {
 
@@ -87,9 +88,25 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         else { reminderOn = false; prefs.edit().putBoolean("reminder", false).apply() }
     }
 
+    // A passphrase is asked for at the moment it is needed, not stored anywhere.
+    var pendingBackup by remember { mutableStateOf<android.net.Uri?>(null) }
+    var pendingRestore by remember { mutableStateOf<android.net.Uri?>(null) }
+
     val pickBackup = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
-    ) { uri -> if (uri != null) vm.importFrom(context, uri) }
+    ) { uri ->
+        if (uri != null) vm.importFrom(context, uri, onPassphraseNeeded = { pendingRestore = it })
+    }
+
+    // CreateDocument, so the user chooses the destination. Anything the app
+    // picks itself lands in storage Android wipes on uninstall.
+    val saveBackup = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/octet-stream")
+    ) { uri -> if (uri != null) pendingBackup = uri }
+
+    val saveJson = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/json")
+    ) { uri -> if (uri != null) vm.writeExport(context, uri, passphrase = null) }
 
     val entries by vm.entries.collectAsStateWithLifecycle()
     val query by vm.query.collectAsStateWithLifecycle()
@@ -118,8 +135,14 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         // Bootstrap, once onboarding is done: persist the defaults and arm the
         // alarm. Alarms do not survive a reboot and RECEIVE_BOOT_COMPLETED is
         // deliberately not declared, so this also serves as the reschedule.
-        LaunchedEffect(onboarded, reminderOn, reminderHour) {
+        // Gated on being UNLOCKED, not merely onboarded. Firing the notification
+        // dialog while BiometricPrompt is up cancels the prompt, and the user
+        // lands on a bare "DailyVox is locked" screen on their very first run —
+        // recoverable, but a stumble in the worst possible place. One dialog at
+        // a time: unlock, then ask.
+        LaunchedEffect(onboarded, unlocked, lockEnabled, reminderOn, reminderHour) {
             if (!onboarded) return@LaunchedEffect
+            if (lockEnabled && lockAvailable && !unlocked) return@LaunchedEffect
             prefs.edit()
                 .putBoolean(com.dailyvox.app.system.Reminders.PREF_ENABLED, reminderOn)
                 .putInt(com.dailyvox.app.system.Reminders.PREF_HOUR, reminderHour)
@@ -162,6 +185,34 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             current = Destination.SPEAK
         }
 
+        // Asked for at the moment it is needed, held only for this dialog, and
+        // never written to prefs — a passphrase saved next to the file it
+        // protects is decoration.
+        pendingBackup?.let { uri ->
+            PassphraseDialog(
+                title = "Choose a passphrase",
+                body = "This backup can be restored on any phone, including an iPhone, by anyone who knows this passphrase. There is no way to recover it — write it down somewhere safe.",
+                confirmLabel = "Back up",
+                requireLength = 8,
+                onConfirm = { pass -> vm.writeExport(context, uri, pass); pendingBackup = null },
+                onDismiss = { pendingBackup = null },
+            )
+        }
+
+        pendingRestore?.let { uri ->
+            PassphraseDialog(
+                title = "Passphrase",
+                body = "Enter the passphrase this backup was made with.",
+                confirmLabel = "Restore",
+                requireLength = 1,
+                onConfirm = { pass ->
+                    vm.importFrom(context, uri, passphrase = pass)
+                    pendingRestore = null
+                },
+                onDismiss = { pendingRestore = null },
+            )
+        }
+
         val chromeVisible = openEntry == null && overlay == Overlay.NONE
 
         Scaffold(
@@ -189,13 +240,6 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     modifier = inner,
                 )
 
-                overlay == Overlay.INSIGHTS ->
-                    InsightsScreen(
-                        entries = entries, streak = streak,
-                        onBack = { overlay = Overlay.NONE },
-                        modifier = inner,
-                    )
-
                 overlay == Overlay.SETTINGS -> run {
                     SettingsScreen(
                         onBack = { overlay = Overlay.NONE },
@@ -209,7 +253,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         },
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
-                        onExport = { vm.export(context) },
+                        onExport = { saveJson.launch("dailyvox-journal.json") },
+                        onExportEncrypted = { saveBackup.launch("dailyvox-backup.dvx") },
                         onExportPdf = { vm.exportPdf(context) },
                         onImport = { pickBackup.launch(arrayOf("application/json", "text/plain", "*/*")) },
                         reminderOn = reminderOn,
@@ -237,7 +282,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
-                        onInsights = { overlay = Overlay.INSIGHTS },
+                        onInsights = { current = Destination.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
                         modifier = inner,
                     )
@@ -247,10 +292,13 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSpeak = { current = Destination.SPEAK },
                         modifier = inner,
                     )
+                    Destination.INSIGHTS -> InsightsScreen(
+                        entries = entries, streak = streak, modifier = inner,
+                    )
                     Destination.TWIN -> TwinScreen(
                         entries = entries, resolution = resolution,
                         onAsk = { current = Destination.ASK },
-                        onInsights = { overlay = Overlay.INSIGHTS },
+                        onInsights = { current = Destination.INSIGHTS },
                         modifier = inner,
                     )
                     Destination.ASK -> AskScreen(entries = entries, modifier = inner)
@@ -258,6 +306,58 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             }
         }
     }
+}
+
+@Composable
+private fun PassphraseDialog(
+    title: String,
+    body: String,
+    confirmLabel: String,
+    requireLength: Int,
+    onConfirm: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var value by remember { mutableStateOf("") }
+    var visible by remember { mutableStateOf(false) }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { androidx.compose.material3.Text(title) },
+        text = {
+            Column {
+                androidx.compose.material3.Text(body, fontSize = 13.sp, lineHeight = 19.sp)
+                Spacer(Modifier.height(14.dp))
+                androidx.compose.material3.OutlinedTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    singleLine = true,
+                    label = { androidx.compose.material3.Text("Passphrase") },
+                    visualTransformation = if (visible)
+                        androidx.compose.ui.text.input.VisualTransformation.None
+                    else
+                        androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                    trailingIcon = {
+                        // Typing a long passphrase blind, twice, is how people end
+                        // up choosing a short one.
+                        androidx.compose.material3.TextButton(onClick = { visible = !visible }) {
+                            androidx.compose.material3.Text(if (visible) "Hide" else "Show")
+                        }
+                    },
+                )
+            }
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(
+                enabled = value.length >= requireLength,
+                onClick = { onConfirm(value) },
+            ) { androidx.compose.material3.Text(confirmLabel) }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                androidx.compose.material3.Text("Cancel")
+            }
+        },
+    )
 }
 
 /** Shown while locked. Deliberately says nothing about the journal's contents. */

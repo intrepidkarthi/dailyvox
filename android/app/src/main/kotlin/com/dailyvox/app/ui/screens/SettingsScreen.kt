@@ -36,6 +36,7 @@ fun SettingsScreen(
     theme: ThemeChoice,
     onTheme: (ThemeChoice) -> Unit,
     onExport: () -> Unit,
+    onExportEncrypted: () -> Unit = {},
     onExportPdf: () -> Unit = {},
     onImport: () -> Unit = {},
     reminderOn: Boolean = false,
@@ -179,13 +180,28 @@ fun SettingsScreen(
         Spacer(Modifier.height(22.dp))
         MonoLabel("Your data is yours")
         Spacer(Modifier.height(8.dp))
-        DvCard(Modifier.clickable(onClick = onExport)) {
+        DvCard(Modifier.clickable(onClick = onExportEncrypted)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Export everything", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
-                MonoLabel("JSON + AES-256")
+                Text("Back up my journal", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
+                MonoLabel("AES-256")
             }
             Spacer(Modifier.height(4.dp))
-            Text("Two files: readable JSON you can take anywhere, and an AES-256-GCM backup sealed to this device.",
+            // You choose where. That is not a convenience — an export the app
+            // filed somewhere of its own choosing was deleted on uninstall, which
+            // is precisely when a backup is supposed to exist.
+            Text("You pick where it goes — your Files app, an SD card, a USB drive, or a cloud folder if you want one. Locked with a passphrase you choose, and restorable on any phone that knows it, including an iPhone.",
+                 fontSize = 12.sp, lineHeight = 18.sp,
+                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+
+        Spacer(Modifier.height(10.dp))
+        DvCard(Modifier.clickable(onClick = onExport)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Export as readable JSON", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
+                MonoLabel("portable")
+            }
+            Spacer(Modifier.height(4.dp))
+            Text("Unencrypted and openable by anything, including the iPhone app. This is the never-locked-in path; keep it somewhere you would keep a diary.",
                  fontSize = 12.sp, lineHeight = 18.sp,
                  color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -210,7 +226,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(4.dp))
             // Stated up front, because the alternative is one mis-tap from
             // erasing a diary. Import never replaces what is already here.
-            Text("Reads a DailyVox JSON export from this phone or an iPhone. Entries are added; nothing already here is replaced or deleted.",
+            Text("Reads either file — a sealed .dvx backup from this phone, or a JSON export from here or an iPhone. Entries are added; nothing already here is replaced or deleted.",
                  fontSize = 12.sp, lineHeight = 18.sp,
                  color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

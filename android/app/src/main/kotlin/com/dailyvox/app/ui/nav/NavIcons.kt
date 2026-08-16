@@ -27,6 +27,7 @@ fun NavIcon(dest: Destination, active: Boolean, tint: Color, size: Int = 22) {
         Destination.SPEAK -> R.drawable.ic_nav_speak
         Destination.JOURNAL -> R.drawable.ic_nav_journal
         Destination.TWIN -> R.drawable.ic_nav_twin
+        Destination.INSIGHTS -> R.drawable.ic_nav_insights
         Destination.ASK -> R.drawable.ic_nav_ask
     }
     Icon(

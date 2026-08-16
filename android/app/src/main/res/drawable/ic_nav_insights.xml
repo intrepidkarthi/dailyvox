@@ -1,0 +1,7 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="960" android:viewportHeight="960">
+    <!-- Material Symbols Rounded "monitoring" (Apache-2.0), matching the set. -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M136,792Q123,779 123,760.5Q123,742 136,729L349,515Q358,506 369.5,501.5Q381,497 393,497Q405,497 416.5,501.5Q428,506 437,515L559,637L771,400L720,400Q703,400 691.5,388.5Q680,377 680,360Q680,343 691.5,331.5Q703,320 720,320L860,320Q877,320 888.5,331.5Q900,343 900,360L900,500Q900,517 888.5,528.5Q877,540 860,540Q843,540 831.5,528.5Q820,517 820,500L820,451L590,711Q581,721 569,725.5Q557,730 545,729Q533,728 522,723Q511,718 502,709L393,600L193,792Q180,805 164.5,805Q149,805 136,792Z" />
+</vector>
