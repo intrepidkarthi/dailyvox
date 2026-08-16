@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Long-press the launcher icon. Two static shortcuts, matching the two things
+  people open this app to do.
+
+  capability + shortcut is the App Actions binding, which is what lets an
+  assistant reach these without the app declaring any assistant SDK. There is no
+  Google Play services dependency here and no proprietary library: the built-in
+  intent below is a manifest declaration the system reads.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:tools="http://schemas.android.com/tools">
+
+    <capability android:name="actions.intent.CREATE_MESSAGE">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dailyvox.app"
+            android:targetClass="com.dailyvox.app.MainActivity">
+            <extra android:name="start_recording" android:value="true" />
+        </intent>
+    </capability>
+
+    <shortcut
+        android:shortcutId="speak"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_speak"
+        android:shortcutShortLabel="@string/shortcut_speak_short"
+        android:shortcutLongLabel="@string/shortcut_speak_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dailyvox.app"
+            android:targetClass="com.dailyvox.app.MainActivity">
+            <extra android:name="start_recording" android:value="true" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="journal"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_journal"
+        android:shortcutShortLabel="@string/shortcut_journal_short"
+        android:shortcutLongLabel="@string/shortcut_journal_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dailyvox.app"
+            android:targetClass="com.dailyvox.app.MainActivity">
+            <extra android:name="open_journal" android:value="true" />
+        </intent>
+    </shortcut>
+</shortcuts>

@@ -163,13 +163,35 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
 
     companion object {
+
+        /**
+         * Adds the prosody and ambient columns. All nullable, so existing rows
+         * take NULL and simply report "no prosody" — which is exactly what an
+         * entry recorded before the feature existed should say.
+         */
+        val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                listOf(
+                    "speakingRate REAL", "pitchMean REAL", "pitchVariability REAL",
+                    "energyMean REAL", "pauseRatio REAL", "longPauseCount INTEGER",
+                    "hourOfDay INTEGER", "dayOfWeek INTEGER",
+                ).forEach { column ->
+                    db.execSQL("ALTER TABLE entries ADD COLUMN $column")
+                }
+            }
+        }
+
         @Volatile private var INSTANCE: Repo? = null
         fun get(context: Context): Repo = INSTANCE ?: synchronized(this) {
             // Before any write can score a valence.
             Sentiment.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2)
+                    // NO fallbackToDestructiveMigration. On a journal app that
+                    // reads as "if the schema confuses us, delete their diary".
+                    // Every future schema change needs a real migration here;
+                    // failing loudly in development is the correct pressure.
                     .build()
             ).also { INSTANCE = it }
         }

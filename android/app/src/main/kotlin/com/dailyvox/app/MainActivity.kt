@@ -74,9 +74,22 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     // Launched from the widget or the Quick Settings tile. Read once and cleared,
     // so a configuration change does not re-arm the recorder behind the user.
-    var autoRecord by remember {
-        mutableStateOf(activity.intent?.getBooleanExtra("start_recording", false) == true)
-            .also { activity.intent?.removeExtra("start_recording") }
+    // A launcher shortcut's <extra android:value="true"/> arrives as the STRING
+    // "true", not a boolean, so getBooleanExtra alone reads false and the
+    // shortcut silently opens the app without recording. The widget and the tile
+    // put a real boolean here, so both shapes have to be accepted.
+    fun flag(name: String): Boolean {
+        val i = activity.intent ?: return false
+        val set = i.getBooleanExtra(name, false) || i.getStringExtra(name) == "true"
+        i.removeExtra(name)
+        return set
+    }
+
+    var autoRecord by remember { mutableStateOf(flag("start_recording")) }
+    val openJournalOnLaunch = remember { flag("open_journal") }
+
+    LaunchedEffect(openJournalOnLaunch) {
+        if (openJournalOnLaunch) current = Destination.JOURNAL
     }
 
     val askNotifications = rememberLauncherForActivityResult(

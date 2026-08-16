@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">DailyVox</string>
     <string name="widget_description">Tonight&#8217;s star, and the last seven nights. Never shows what you wrote.</string>
+    <string name="shortcut_speak_short">Speak</string>
+    <string name="shortcut_speak_long">Record tonight\'s entry</string>
+    <string name="shortcut_journal_short">Journal</string>
+    <string name="shortcut_journal_long">Open my journal</string>
 </resources>

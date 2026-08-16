@@ -36,6 +36,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Must live INSIDE the launcher activity: the framework reads
+                 shortcuts off the activity that declares MAIN/LAUNCHER, and at
+                 <application> level it is silently ignored. -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <receiver
             android:name=".system.Reminders$ReminderReceiver"

@@ -91,7 +91,16 @@ interface EntryDao {
     fun search(q: String): Flow<List<Entry>>
 }
 
-@Database(entities = [Entry::class], version = 1, exportSchema = true)
+/**
+ * Version 2 adds prosody (speakingRate, pitchMean, pitchVariability, energyMean,
+ * pauseRatio, longPauseCount) and ambient context (hourOfDay, dayOfWeek).
+ *
+ * The columns were added in v1's entity without touching this number, and Room
+ * refused to open the database: "cannot verify the data integrity". Every
+ * existing install crashed on launch. Bumping the number is only half the fix —
+ * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
+ */
+@Database(entities = [Entry::class], version = 2, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }
