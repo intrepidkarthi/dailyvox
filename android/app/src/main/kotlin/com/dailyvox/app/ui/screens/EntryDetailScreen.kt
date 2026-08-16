@@ -135,6 +135,48 @@ fun EntryDetailScreen(
             Spacer(Modifier.height(10.dp))
             FiledRow("Pace", "${(entry.text.split(" ").size * 60 / entry.durationSec.coerceAtLeast(1))} wpm",
                      MaterialTheme.colorScheme.onSurfaceVariant)
+
+            // Prosody, only when the recording could actually be analysed. An
+            // absent row is honest; a row of zeroes would read as "you spoke in
+            // a monotone at zero hertz".
+            entry.speakingRate?.let {
+                Spacer(Modifier.height(10.dp))
+                FiledRow("Voice", "%.1f words/sec spoken".format(it),
+                         MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            entry.pitchMean?.takeIf { it > 0f }?.let {
+                Spacer(Modifier.height(10.dp))
+                FiledRow(
+                    "Tone",
+                    "%.0f Hz%s".format(it, entry.pitchVariability
+                        ?.takeIf { v -> v > 0f }
+                        ?.let { v -> " · %.0f Hz range".format(v) } ?: ""),
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            entry.pauseRatio?.let { p ->
+                Spacer(Modifier.height(10.dp))
+                FiledRow(
+                    "Pauses",
+                    "%.0f%% quiet%s".format(p * 100,
+                        entry.longPauseCount?.takeIf { it > 0 }?.let { " · $it long" } ?: ""),
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            entry.hourOfDay?.let { h ->
+                Spacer(Modifier.height(10.dp))
+                FiledRow(
+                    "When",
+                    when {
+                        h < 5 -> "the small hours"
+                        h < 12 -> "morning"
+                        h < 17 -> "afternoon"
+                        h < 22 -> "evening"
+                        else -> "late night"
+                    },
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         Spacer(Modifier.height(20.dp))

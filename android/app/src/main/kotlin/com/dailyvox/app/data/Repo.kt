@@ -90,17 +90,42 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
     suspend fun delete(id: String) = db.entries().delete(id)
 
-    suspend fun add(text: String, durationSec: Int, audioPath: String? = null) {
+    suspend fun add(text: String, durationSec: Int, audioPath: String? = null) = withContext(Dispatchers.IO) {
         val entities = NameDetector.detect(text, corpus = db.entries().allOnce())
+        val now = System.currentTimeMillis()
+        val cal = java.util.Calendar.getInstance().apply { timeInMillis = now }
+
+        // Decoding and analysing the audio takes a few hundred ms, so it happens
+        // here on IO rather than on the way to the UI. An entry must never wait
+        // on its own prosody: if extraction fails the entry still saves, minus
+        // the numbers.
+        val prosody = audioPath
+            ?.let { java.io.File(it) }
+            ?.takeIf { it.exists() }
+            ?.let {
+                runCatching {
+                    com.dailyvox.app.audio.Prosody.analyse(it, text.split(" ").size)
+                }.getOrNull()
+            }
+            ?.takeIf { it.available }
+
         db.entries().upsert(
             Entry(
                 id = UUID.randomUUID().toString(),
                 text = text,
-                createdAt = System.currentTimeMillis(),
+                createdAt = now,
                 durationSec = durationSec,
                 valence = Sentiment.valence(text),
                 entities = entities.joinToString(","),
                 audioPath = audioPath,
+                speakingRate = prosody?.speakingRate?.toFloat(),
+                pitchMean = prosody?.pitchMean?.toFloat(),
+                pitchVariability = prosody?.pitchVariability?.toFloat(),
+                energyMean = prosody?.energyMean?.toFloat(),
+                pauseRatio = prosody?.pauseRatio?.toFloat(),
+                longPauseCount = prosody?.longPauseCount,
+                hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
+                dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
             )
         )
     }

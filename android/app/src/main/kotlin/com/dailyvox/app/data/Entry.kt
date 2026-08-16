@@ -32,6 +32,26 @@ data class Entry(
      * truth in it -- the one that makes an N=20 cohort worth running.
      */
     val selfLabel: String? = null,
+
+    /**
+     * Prosody, extracted from the recording. Null on text-only or unanalysable
+     * entries — the engine's contract calls that `.unavailable` and folds
+     * nothing, which is better than folding a zero and dragging the baseline.
+     */
+    val speakingRate: Float? = null,
+    val pitchMean: Float? = null,
+    val pitchVariability: Float? = null,
+    val energyMean: Float? = null,
+    val pauseRatio: Float? = null,
+    val longPauseCount: Int? = null,
+
+    /**
+     * Ambient context: WHEN this was spoken. Free, needs no sensor and no
+     * permission, and it is the signal the Insights day-of-week pattern already
+     * derives by re-parsing timestamps on every read. Stored once instead.
+     */
+    val hourOfDay: Int? = null,
+    val dayOfWeek: Int? = null,
 ) {
     val entityList: List<String>
         get() = entities.split(",").map { it.trim() }.filter { it.isNotEmpty() }

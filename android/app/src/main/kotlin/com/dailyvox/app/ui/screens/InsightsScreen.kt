@@ -227,6 +227,36 @@ private object Patterns {
             if (abs(gv - pv) > 0.2)
                 out += "After seven or more hours you write %+.2f; under seven, %+.2f. %d nights either side.".format(gv, pv, withSleep.size)
         }
+        // Voice effect: needs 4 entries with prosody on each side of the median.
+        val withRate = entries.filter { (it.speakingRate ?: 0f) > 0f }
+        if (withRate.size >= 8) {
+            val rates = withRate.map { it.speakingRate!! }.sorted()
+            val median = rates[rates.size / 2]
+            val fast = withRate.filter { it.speakingRate!! > median }
+            val slow = withRate.filter { it.speakingRate!! <= median }
+            if (fast.size >= 4 && slow.size >= 4) {
+                val fv = fast.map { it.valence }.average()
+                val sv = slow.map { it.valence }.average()
+                if (abs(fv - sv) > 0.2)
+                    out += "When you speak faster you read %+.2f; slower, %+.2f. Across %d recordings.".format(fv, sv, withRate.size)
+            }
+        }
+
+        // Time-of-day effect, from stored ambient context rather than re-parsed
+        // timestamps.
+        val byPartOfDay = entries.filter { it.hourOfDay != null }.groupBy { e ->
+            when (e.hourOfDay!!) {
+                in 0..4 -> "the small hours"; in 5..11 -> "mornings"
+                in 12..16 -> "afternoons"; in 17..21 -> "evenings"
+                else -> "late nights"
+            }
+        }
+        byPartOfDay.filter { it.value.size >= 4 }.forEach { (part, es) ->
+            val v = es.map { it.valence }.average()
+            if (abs(v - overall) > 0.22)
+                out += "Your %s read %+.2f against your %+.2f overall, across %d entries.".format(part, v, overall, es.size)
+        }
+
         return out.take(4)
     }
 }
