@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
-"""Play Store frames, 1242x2208.
+"""Play Store frames, 1242x2208 — matching the shipped iOS system.
 
-Rebuilt. The first pass was a flat cream card with a headline and a screenshot
-below it — technically correct, visually a template. The iOS set earns its
-attention with a big stat numeral, a handwritten accent, a gold-edged device and
-sticker callouts that overlap the screen. This has to do at least that.
+Two rebuilds got here. The first was a flat template. The second invented its own
+look — gradients, sparkles, film grain — because I had studied ONE iOS frame and
+extrapolated. Looking at the whole set shows a much stricter system, and the job
+was to match it, not to design a parallel one:
 
-Where it deliberately differs from iOS: the palette is the Android app's own
-(ink / cream / amber, sky always night), and frame 02 is a screenshot of
-ANDROID'S OWN SETTINGS — evidence no competitor can fake and no App Store
-listing can show at all. iOS has to assert its privacy claim. This one exhibits
-it, so the claim gets the hero numeral rather than a feature.
+  · SOLID saturated ground per frame. No gradient, no grain, no sparkles.
+  · A DIFFERENT accent colour per frame, used four times over: kicker, one word
+    in the headline, the stat numeral, and the device's top rim.
+  · Headline enormous and tight, cream, one word in the accent.
+  · Stat numeral huge in the accent, with a Caveat script line beside it.
+  · Device large and CROPPED by the bottom edge, so the frame feels like a
+    window rather than a poster with a picture on it.
+  · One or two stickers, tilted, overlapping the screen.
+
+What stays Android's own is the content: the palette is drawn from the app's
+ink/amber/sage tokens rather than iOS's, and frame 02 is a screenshot of
+ANDROID'S OWN SETTINGS — the one piece of evidence no competitor can fake and no
+App Store listing can show at all.
 """
 import os, subprocess, html
 
@@ -18,125 +26,93 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT  = os.path.join(os.path.dirname(HERE), "assets", "screenshots")
 os.makedirs(OUT, exist_ok=True)
 
-def sticker(text, sub, pos, rot, tone="light"):
+def stk(text, sub, pos, rot, tone="light"):
     return (f'<div class="stk {tone}" style="{pos};--r:{rot}deg">'
             f'<b>{html.escape(text)}</b><small>{html.escape(sub)}</small></div>')
 
+# bg, accent — one pairing per frame, drawn from the app's own tokens
+INK    = ("#0F140F", "#E0B15C")   # ink / amber
+FOREST = ("#14261C", "#8FCBA4")   # deep green / sage
+NIGHT  = ("#101A26", "#D6A84A")   # night blue / gold
+CLAY   = ("#241611", "#E0906A")   # deep clay / terracotta
+SLATE  = ("#111C22", "#6FC3D6")   # slate / cyan
+
 FRAMES = [
-    dict(img="01-speak.png", dark=False,
-         kick="just talk", head='that\'s the<br>whole <em>app</em>.',
-         stat="42", script="seconds a night",
-         stickers=sticker("no typing", "no blank page to fill", "left:20px;top:1120px", -5)
-                + sticker("works in airplane mode", "0 network calls", "right:52px;top:1560px", 4, "sage")),
+    dict(img="01-speak.png", theme=INK, kick="just talk",
+         head='42 seconds<br>is the <em>app</em>.', stat="0:42", script="the whole ritual",
+         stickers=stk("no typing", "no blank page to fill", "left:26px;top:1560px", -5)),
 
-    dict(img="10-permissions.png", dark=True,
-         kick="android's own settings — not ours", head='the permission<br>list, in <em>full</em>.',
-         stat="0", script="network permissions",
-         stickers=sticker("microphone", "that's it, plus notifications", "left:18px;top:1180px", -4, "gold")
-                + sticker("check it yourself", "settings › apps › dailyvox", "right:52px;top:1620px", 5)),
+    dict(img="10-permissions.png", theme=FOREST, kick="android's own settings",
+         head='the permission<br>list, in <em>full</em>.', stat="0", script="network permissions",
+         stickers=stk("microphone", "that's the whole list", "left:26px;top:1180px", -4, "accent")
+                + stk("check it yourself", "settings › apps › dailyvox", "right:40px;top:1560px", 5)),
 
-    dict(img="03-twin.png", dark=True,
-         kick="your digital twin", head='a sky made<br>of <em>you</em>.',
-         stat="12", script="stars in your sky",
-         stickers=sticker("people it knows", "sarah ×3 · james ×2", "left:18px;top:1200px", -5, "gold")
-                + sticker("100% on this phone", "no cloud, no account", "right:52px;top:1640px", 4, "sage")),
+    dict(img="03-twin.png", theme=NIGHT, kick="meet your twin",
+         head='a sky made<br>of <em>you</em>.', stat="12", script="stars in your sky",
+         stickers=stk("100% on this phone", "no cloud, no account", "right:40px;top:1720px", 4, "accent")),
 
-    dict(img="02-journal.png", dark=False,
-         kick="your journal", head='every night,<br><em>kept here</em>.',
-         stat=None, script=None,
-         stickers=sticker("search by meaning", "or just by voice", "left:20px;top:1180px", -4)
-                + sticker("nothing uploaded", "not one byte", "right:52px;top:1620px", 5, "sage")),
+    dict(img="05-ask.png", theme=SLATE, kick="ask your twin",
+         head='answers with<br><em>receipts</em>.', stat="0", script="calls to any server",
+         stickers=stk("cites your entries", "every single answer", "left:26px;top:1700px", -5, "accent")),
 
-    dict(img="05-ask.png", dark=False,
-         kick="ask your twin", head='answers with<br><em>receipts</em>.',
-         stat=None, script=None,
-         stickers=sticker("cites your entries", "every single answer", "left:20px;top:1160px", -5, "gold")
-                + sticker("no chatbot guessing", "real numbers only", "right:52px;top:1600px", 4)),
+    dict(img="04-insights.png", theme=CLAY, kick="your patterns",
+         head='it clocks you<br>before <em>you do</em>.', stat="30", script="nights, at a glance",
+         stickers=stk("only when proven", "nothing claimed early", "right:40px;top:1660px", 4)),
 
-    dict(img="04-insights.png", dark=False,
-         kick="patterns", head='it clocks you<br>before <em>you do</em>.',
-         stat=None, script=None,
-         stickers=sticker("only when proven", "nothing claimed early", "left:20px;top:1180px", -4)
-                + sticker("mood · sleep · pace", "all computed here", "right:52px;top:1620px", 5, "gold")),
+    dict(img="02-journal.png", theme=FOREST, kick="your journal",
+         head='every night,<br><em>kept here</em>.', stat="12", script="entries, on this phone",
+         stickers=stk("search by meaning", "or just by voice", "left:26px;top:1700px", -4, "accent")),
 
-    dict(img="06-filed.png", dark=False,
-         kick="nothing hidden", head='see exactly<br>what it <em>filed</em>.',
-         stat=None, script=None,
-         stickers=sticker("mood +0.42", "people, pace, body", "left:20px;top:1160px", -5, "gold")
-                + sticker("wrong? fix it", "you stay in charge", "right:52px;top:1600px", 4)),
+    dict(img="06-filed.png", theme=INK, kick="nothing hidden",
+         head='see what it<br><em>filed</em>.', stat=None, script=None,
+         stickers=stk("mood, people, pace", "wrong? fix it yourself", "left:26px;top:1620px", -5, "accent")),
 
-    dict(img="07-onboarding-ledger.png", dark=False,
-         kick="before you record anything", head='the ledger<br>comes <em>first</em>.',
-         stat=None, script=None,
-         stickers=sticker("internet", "NOT REQUESTED", "left:20px;top:1200px", -4, "sage")),
+    dict(img="07-onboarding-ledger.png", theme=NIGHT, kick="before you record anything",
+         head='the ledger<br>comes <em>first</em>.', stat=None, script=None,
+         stickers=stk("internet", "NOT REQUESTED", "right:40px;top:1640px", 4, "accent")),
 ]
 
 TPL = """<!doctype html><meta charset=utf-8>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
 <style>
 *{{margin:0;box-sizing:border-box}}
-.f{{width:1242px;height:2208px;position:relative;overflow:hidden;font-family:'Nunito',sans-serif;
-    background:{bg}}}
-.grain{{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:{grain};mix-blend-mode:{blend};
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}}
-.sp{{position:absolute;color:{amber};opacity:.5}}
-.top{{position:absolute;top:88px;left:64px;right:64px;z-index:6}}
-.k{{font-family:'DM Mono',monospace;font-size:21px;letter-spacing:.17em;text-transform:uppercase;color:{kick}}}
-h2{{margin-top:20px;font-weight:900;font-size:92px;line-height:.96;letter-spacing:-.035em;color:{ink}}}
-h2 em{{font-style:normal;color:{amber}}}
-.statrow{{margin-top:26px;display:flex;align-items:baseline;gap:22px}}
-.stat{{font-weight:900;font-size:132px;line-height:.8;color:{amber};letter-spacing:-.05em}}
-.script{{font-family:'Caveat',cursive;font-weight:700;font-size:46px;color:{scr};transform:rotate(-2deg)}}
-.stage{{position:absolute;left:50%;transform:translateX(-50%);top:{top}px;z-index:3}}
-.dev{{width:760px;padding:9px;border-radius:52px;background:{bez};
-      box-shadow:0 0 0 2px {edge}, 0 60px 120px -30px rgba(0,0,0,{sh})}}
-.dev .scr{{border-radius:44px;overflow:hidden;display:block}}
+.f{{width:1242px;height:2208px;position:relative;overflow:hidden;
+    font-family:'Nunito',sans-serif;background:{bg}}}
+.top{{position:absolute;top:96px;left:62px;right:62px;z-index:6}}
+.k{{font-family:'DM Mono',monospace;font-size:22px;letter-spacing:.22em;
+    text-transform:uppercase;color:{ac};font-weight:500}}
+h2{{margin-top:20px;font-weight:900;font-size:94px;line-height:.94;
+    letter-spacing:-.042em;color:#F6F1E6}}
+h2 em{{font-style:normal;color:{ac}}}
+.row{{margin-top:{gap}px;display:flex;align-items:baseline;gap:26px}}
+.stat{{font-weight:900;font-size:132px;line-height:.76;color:{ac};letter-spacing:-.055em}}
+.script{{font-family:'Caveat',cursive;font-weight:700;font-size:46px;
+         color:rgba(246,241,230,.80);transform:rotate(-2deg)}}
+/* Cropped by the bottom edge on purpose — a window, not a poster. */
+.stage{{position:absolute;left:50%;transform:translateX(-50%);top:{top}px;z-index:3;
+        width:830px}}
+.dev{{width:100%;border-radius:56px 56px 0 0;overflow:hidden;
+      border-top:5px solid {ac};
+      box-shadow:0 -12px 60px -12px rgba(0,0,0,.5)}}
 .dev img{{width:100%;display:block}}
-.stk{{position:absolute;z-index:7;border-radius:26px;padding:22px 28px;
-      transform:rotate(var(--r));box-shadow:0 26px 54px -14px rgba(0,0,0,.34);
-      max-width:390px}}
-.stk b{{display:block;font-weight:900;font-size:35px;line-height:1.1;color:#2B2520}}
-.stk small{{display:block;font-weight:700;font-size:24px;margin-top:5px;color:rgba(43,37,32,.55)}}
-.stk.light{{background:#fff}}
-.stk.gold{{background:#F6D88A}}
-.stk.gold small{{color:rgba(58,42,18,.62)}}
-.stk.sage{{background:#5B7C6B}}
-.stk.sage b{{color:#fff}} .stk.sage small{{color:rgba(255,255,255,.74)}}
+.stk{{position:absolute;z-index:7;border-radius:26px;padding:24px 30px;
+      transform:rotate(var(--r));box-shadow:0 26px 56px -14px rgba(0,0,0,.42);
+      max-width:400px}}
+.stk b{{display:block;font-weight:900;font-size:37px;line-height:1.08;color:#20211E}}
+.stk small{{display:block;font-weight:700;font-size:25px;margin-top:5px;color:rgba(32,33,30,.56)}}
+.stk.light{{background:#FBF7EE}}
+.stk.accent{{background:{ac}}}
+.stk.accent b{{color:#12160F}} .stk.accent small{{color:rgba(18,22,15,.62)}}
 </style>
 <div class=f>
-  {sparks}
   <div class=top>
     <div class=k>{kicker}</div>
     <h2>{head}</h2>
     {statblock}
   </div>
-  <div class=stage><div class=dev><div class=scr><img src="{img}"></div></div></div>
+  <div class=stage><div class=dev><img src="{img}"></div></div>
   {stickers}
-  <div class=grain></div>
 </div>"""
-
-LIGHT = dict(
-    bg=("radial-gradient(760px 620px at 88% 6%, rgba(224,177,92,.30), transparent 62%),"
-        "radial-gradient(680px 560px at 4% 84%, rgba(120,156,138,.24), transparent 60%),"
-        "linear-gradient(160deg,#FBF6EC 0%,#F5EEE0 58%,#EFE8DA 100%)"),
-    ink="#171310", amber="#B0762A", kick="#8A4A20", scr="#B26A3C",
-    bez="#0c0c0f", edge="rgba(224,177,92,.55)", sh=".30", grain=".09", blend="multiply")
-DARK = dict(
-    bg=("radial-gradient(800px 640px at 84% 8%, rgba(224,177,92,.22), transparent 62%),"
-        "radial-gradient(700px 580px at 6% 88%, rgba(120,156,138,.18), transparent 60%),"
-        "linear-gradient(158deg,#0F140F 0%,#141A14 58%,#0C100C 100%)"),
-    ink="#F5F1E8", amber="#E0B15C", kick="#E0B15C", scr="rgba(245,241,232,.62)",
-    bez="#000", edge="rgba(224,177,92,.42)", sh=".62", grain=".07", blend="overlay")
-
-def sparks(dark):
-    import math
-    s = 90210; out = []
-    for i in range(9):
-        s = (s * 1103515245 + 12345) & 0x7fffffff; x = (s / 0x7fffffff) * 1150 + 40
-        s = (s * 1103515245 + 12345) & 0x7fffffff; y = (s / 0x7fffffff) * 700 + 40
-        size = 24 + (i * 7) % 40
-        out.append(f'<div class=sp style="left:{x:.0f}px;top:{y:.0f}px;font-size:{size}px">&#10022;</div>')
-    return "".join(out)
 
 chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 made = 0
@@ -144,15 +120,15 @@ for i, fr in enumerate(FRAMES, 1):
     src = os.path.join(HERE, fr["img"])
     if not os.path.exists(src):
         print(f"  SKIP {fr['img']}"); continue
-    theme = DARK if fr["dark"] else LIGHT
-    statblock = ""
+    bg, ac = fr["theme"]
+    statblock, top, gap = "", 520, 0
     if fr.get("stat"):
-        statblock = (f'<div class=statrow><div class=stat>{fr["stat"]}</div>'
+        statblock = (f'<div class=row><div class=stat>{fr["stat"]}</div>'
                      f'<div class=script>{html.escape(fr["script"])}</div></div>')
-    top = 620 if fr.get("stat") else 520
+        top, gap = 570, 34
     page = TPL.format(img="file://" + src, kicker=fr["kick"], head=fr["head"],
-                      statblock=statblock, stickers=fr["stickers"], top=top,
-                      sparks=sparks(fr["dark"]), **theme)
+                      statblock=statblock, stickers=fr["stickers"],
+                      top=top, gap=gap, bg=bg, ac=ac)
     tmp = os.path.join(HERE, f".f{i:02d}.html")
     open(tmp, "w").write(page)
     out = os.path.join(OUT, f"{i:02d}.png")
