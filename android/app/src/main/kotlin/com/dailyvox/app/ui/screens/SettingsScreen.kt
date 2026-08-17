@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,7 +75,8 @@ fun SettingsScreen(
                 "RECORD_AUDIO — to hear you.\n" +
                     "POST_NOTIFICATIONS — the nightly reminder, nothing else.\n" +
                     "VIBRATE — haptics.\n" +
-                    "USE_BIOMETRIC — the lock on this screen.\n\n" +
+                    "USE_BIOMETRIC — the lock on this screen.\n" +
+                    "READ_SLEEP, READ_HEART_RATE_VARIABILITY, READ_RESTING_HEART_RATE, READ_STEPS — declared for Body signals, and requested only if you switch that on. Android will show them as \"not granted\" until then.\n\n" +
                     "That is the complete list. There is no network permission of any kind, so there is no version of this app that could send your journal anywhere.",
                 fontSize = 12.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -102,6 +104,11 @@ fun SettingsScreen(
                 Switch(checked = lockEnabled, onCheckedChange = onLock, enabled = lockAvailable)
             }
         }
+
+        Spacer(Modifier.height(22.dp))
+        MonoLabel("Body signals")
+        Spacer(Modifier.height(8.dp))
+        BodyCard(context)
 
         Spacer(Modifier.height(22.dp))
         MonoLabel("Daily reminder")
@@ -295,6 +302,91 @@ private fun ContributeCard(context: android.content.Context, entryCount: Int) {
         Text("Opens in your browser. Nothing from your journal is attached, ever — you write the report yourself.",
              fontSize = 12.sp, lineHeight = 18.sp,
              color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/**
+ * Health Connect, opt-in and read-only.
+ *
+ * The onboarding ledger says Health Connect is OPTIONAL, so this switch has to
+ * be genuinely optional: nothing is requested until it is turned on, and the
+ * app is fully usable forever if it never is. The card names the four record
+ * types out loud, because "health data" is not a thing a person can consent to
+ * — sleep, HRV, resting heart rate and steps is.
+ */
+@Composable
+private fun BodyCard(context: android.content.Context) {
+    val signals = remember { com.dailyvox.app.body.BodySignals(context) }
+    val availability = remember { signals.availability() }
+    val prefs = remember { context.getSharedPreferences("dailyvox", android.content.Context.MODE_PRIVATE) }
+    var enabled by remember { mutableStateOf(prefs.getBoolean("body", false)) }
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+
+    val ask = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.health.connect.client.PermissionController.createRequestPermissionResultContract()
+    ) { granted ->
+        // The switch reflects what was actually granted, never what was asked.
+        val ok = granted.containsAll(com.dailyvox.app.body.BodySignals.PERMISSIONS)
+        enabled = ok
+        prefs.edit().putBoolean("body", ok).apply()
+    }
+
+    DvCard {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    when (availability) {
+                        com.dailyvox.app.body.BodySignals.Availability.AVAILABLE ->
+                            "Let the Twin see your body"
+                        com.dailyvox.app.body.BodySignals.Availability.NEEDS_UPDATE ->
+                            "Health Connect needs updating"
+                        else -> "Health Connect is not on this phone"
+                    },
+                    fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    when (availability) {
+                        com.dailyvox.app.body.BodySignals.Availability.AVAILABLE ->
+                            "Sleep, morning HRV, resting heart rate and steps — read only, and only those four."
+                        com.dailyvox.app.body.BodySignals.Availability.NEEDS_UPDATE ->
+                            "Update Health Connect in the Play Store to use this."
+                        else -> "Everything else in DailyVox works exactly the same without it."
+                    },
+                    fontSize = 12.sp, lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(
+                checked = enabled,
+                enabled = availability == com.dailyvox.app.body.BodySignals.Availability.AVAILABLE,
+                onCheckedChange = { on ->
+                    if (!on) {
+                        enabled = false
+                        prefs.edit().putBoolean("body", false).apply()
+                    } else {
+                        scope.launch {
+                            if (signals.granted()) {
+                                enabled = true
+                                prefs.edit().putBoolean("body", true).apply()
+                            } else {
+                                ask.launch(com.dailyvox.app.body.BodySignals.PERMISSIONS)
+                            }
+                        }
+                    }
+                },
+            )
+        }
+        if (enabled) {
+            Spacer(Modifier.height(10.dp))
+            // Stated because it is the part people assume is untrue.
+            Text(
+                "Read when you record, stored on this phone with the entry, and never sent anywhere. Turning this off stops new readings; entries already filed keep what they were spoken with.",
+                fontSize = 12.sp, lineHeight = 18.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 

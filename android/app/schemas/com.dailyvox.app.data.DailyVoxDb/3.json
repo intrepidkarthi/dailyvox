@@ -1,0 +1,154 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "0ace47dbd7efc707f299469c194c7087",
+    "entities": [
+      {
+        "tableName": "entries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `text` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `durationSec` INTEGER NOT NULL, `valence` REAL NOT NULL, `entities` TEXT NOT NULL, `sleepHours` REAL, `audioPath` TEXT, `photoPath` TEXT, `selfLabel` TEXT, `speakingRate` REAL, `pitchMean` REAL, `pitchVariability` REAL, `energyMean` REAL, `pauseRatio` REAL, `longPauseCount` INTEGER, `hourOfDay` INTEGER, `dayOfWeek` INTEGER, `hrvMs` REAL, `restingHrBpm` REAL, `stepsToday` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationSec",
+            "columnName": "durationSec",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valence",
+            "columnName": "valence",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entities",
+            "columnName": "entities",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sleepHours",
+            "columnName": "sleepHours",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "audioPath",
+            "columnName": "audioPath",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "photoPath",
+            "columnName": "photoPath",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "selfLabel",
+            "columnName": "selfLabel",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "speakingRate",
+            "columnName": "speakingRate",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pitchMean",
+            "columnName": "pitchMean",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pitchVariability",
+            "columnName": "pitchVariability",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "energyMean",
+            "columnName": "energyMean",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pauseRatio",
+            "columnName": "pauseRatio",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longPauseCount",
+            "columnName": "longPauseCount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hourOfDay",
+            "columnName": "hourOfDay",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dayOfWeek",
+            "columnName": "dayOfWeek",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hrvMs",
+            "columnName": "hrvMs",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "restingHrBpm",
+            "columnName": "restingHrBpm",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "stepsToday",
+            "columnName": "stepsToday",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0ace47dbd7efc707f299469c194c7087')"
+    ]
+  }
+}

@@ -227,6 +227,21 @@ private object Patterns {
             if (abs(gv - pv) > 0.2)
                 out += "After seven or more hours you write %+.2f; under seven, %+.2f. %d nights either side.".format(gv, pv, withSleep.size)
         }
+        // Steps effect. Same gate as the rest: 4 either side of the median, and
+        // a difference big enough to be worth saying out loud.
+        val withSteps = entries.filter { (it.stepsToday ?: 0) > 0 }
+        if (withSteps.size >= 8) {
+            val median = withSteps.map { it.stepsToday!! }.sorted()[withSteps.size / 2]
+            val more = withSteps.filter { it.stepsToday!! > median }
+            val less = withSteps.filter { it.stepsToday!! <= median }
+            if (more.size >= 4 && less.size >= 4) {
+                val mv = more.map { it.valence }.average()
+                val lv = less.map { it.valence }.average()
+                if (abs(mv - lv) > 0.2)
+                    out += "On your more active days you read %+.2f; on quieter ones, %+.2f. Across %d days.".format(mv, lv, withSteps.size)
+            }
+        }
+
         // Voice effect: needs 4 entries with prosody on each side of the median.
         val withRate = entries.filter { (it.speakingRate ?: 0f) > 0f }
         if (withRate.size >= 8) {

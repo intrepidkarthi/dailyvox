@@ -52,6 +52,16 @@ data class Entry(
      */
     val hourOfDay: Int? = null,
     val dayOfWeek: Int? = null,
+
+    /**
+     * Body context from Health Connect, captured when the entry was written.
+     * All null unless the user turned Body signals on — the engine's
+     * HealthSnapshot treats every field as independently optional for the same
+     * reason: a phone with a pedometer but no wearable has steps and no HRV.
+     */
+    val hrvMs: Float? = null,
+    val restingHrBpm: Float? = null,
+    val stepsToday: Int? = null,
 ) {
     val entityList: List<String>
         get() = entities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -92,6 +102,9 @@ interface EntryDao {
 }
 
 /**
+ * Version 3 adds the Health Connect columns (hrvMs, restingHrBpm, stepsToday).
+ * sleepHours already existed from v1.
+ *
  * Version 2 adds prosody (speakingRate, pitchMean, pitchVariability, energyMean,
  * pauseRatio, longPauseCount) and ambient context (hourOfDay, dayOfWeek).
  *
@@ -100,7 +113,7 @@ interface EntryDao {
  * existing install crashed on launch. Bumping the number is only half the fix —
  * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
  */
-@Database(entities = [Entry::class], version = 2, exportSchema = true)
+@Database(entities = [Entry::class], version = 3, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }

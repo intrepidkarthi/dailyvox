@@ -14,6 +14,15 @@
          the whole app on the first haptic. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- Health Connect, OPTIONAL and read-only, exactly as the onboarding ledger
+         says. Declared is not held: nothing is requested until the user turns
+         Body signals on, and only these four are ever asked for — the four the
+         Twin actually correlates against. -->
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
+    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+
     <!-- Auto Backup is OFF. See res/xml/data_extraction_rules.xml: the default
          (true) would have shipped the journal and the raw audio to Google Drive
          without the app holding a single network permission. -->
@@ -35,6 +44,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Health Connect requires a rationale target, or the permission
+                 screen shows the app with no explanation of why it wants this. -->
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
             </intent-filter>
 
             <!-- Must live INSIDE the launcher activity: the framework reads

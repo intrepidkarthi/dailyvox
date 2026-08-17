@@ -33,8 +33,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setQuery(q: String) { _query.value = q }
 
+    private val body = com.dailyvox.app.body.BodySignals(app)
+
     fun add(text: String, durationSec: Int, audioPath: String? = null) = viewModelScope.launch {
-        repo.add(text, durationSec, audioPath)
+        val prefs = getApplication<Application>()
+            .getSharedPreferences("dailyvox", android.content.Context.MODE_PRIVATE)
+        val snapshot = if (prefs.getBoolean("body", false)) {
+            runCatching { body.read() }.getOrNull()
+        } else null
+
+        repo.add(text, durationSec, audioPath, snapshot)
         refreshStats()
         // The widget is the only surface that can go stale without anyone
         // noticing -- it has no lifecycle of its own and its update period is an

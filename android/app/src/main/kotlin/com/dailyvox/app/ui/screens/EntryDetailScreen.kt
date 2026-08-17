@@ -128,9 +128,24 @@ fun EntryDetailScreen(
                 Spacer(Modifier.height(10.dp))
                 FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)
             }
+            // Each body field is independently optional, so each gets its own
+            // row. Collapsing them would mean a phone with a pedometer and no
+            // wearable shows nothing at all.
             entry.sleepHours?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Body", "slept ${"%.1f".format(it)}h", MaterialTheme.colorScheme.tertiary)
+                FiledRow("Slept", "%.1f hours".format(it), MaterialTheme.colorScheme.tertiary)
+            }
+            entry.hrvMs?.let {
+                Spacer(Modifier.height(10.dp))
+                FiledRow("HRV", "%.0f ms this morning".format(it), MaterialTheme.colorScheme.tertiary)
+            }
+            entry.restingHrBpm?.let {
+                Spacer(Modifier.height(10.dp))
+                FiledRow("Resting pulse", "%.0f bpm".format(it), MaterialTheme.colorScheme.tertiary)
+            }
+            entry.stepsToday?.takeIf { it > 0 }?.let {
+                Spacer(Modifier.height(10.dp))
+                FiledRow("Steps", "%,d today".format(it), MaterialTheme.colorScheme.tertiary)
             }
             Spacer(Modifier.height(10.dp))
             FiledRow("Pace", "${(entry.text.split(" ").size * 60 / entry.durationSec.coerceAtLeast(1))} wpm",

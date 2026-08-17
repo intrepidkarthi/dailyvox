@@ -90,7 +90,12 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
     suspend fun delete(id: String) = db.entries().delete(id)
 
-    suspend fun add(text: String, durationSec: Int, audioPath: String? = null) = withContext(Dispatchers.IO) {
+    suspend fun add(
+        text: String,
+        durationSec: Int,
+        audioPath: String? = null,
+        body: com.dailyvox.app.body.BodySignals.Snapshot? = null,
+    ) = withContext(Dispatchers.IO) {
         val entities = NameDetector.detect(text, corpus = db.entries().allOnce())
         val now = System.currentTimeMillis()
         val cal = java.util.Calendar.getInstance().apply { timeInMillis = now }
@@ -126,6 +131,13 @@ class Repo private constructor(private val db: DailyVoxDb) {
                 longPauseCount = prosody?.longPauseCount,
                 hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
                 dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
+                // Captured at write time, so the entry keeps the body context it
+                // was actually spoken in. Reading it later would attach today's
+                // sleep to last week's entry.
+                sleepHours = body?.sleepHours?.toFloat(),
+                hrvMs = body?.morningHrvMs?.toFloat(),
+                restingHrBpm = body?.restingHrBpm?.toFloat(),
+                stepsToday = body?.stepsToday,
             )
         )
     }
@@ -181,13 +193,23 @@ class Repo private constructor(private val db: DailyVoxDb) {
             }
         }
 
+        /** Body context. Nullable, so pre-Health-Connect entries stay honest
+         *  about having none rather than reporting zero steps and no pulse. */
+        val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                listOf("hrvMs REAL", "restingHrBpm REAL", "stepsToday INTEGER").forEach {
+                    db.execSQL("ALTER TABLE entries ADD COLUMN $it")
+                }
+            }
+        }
+
         @Volatile private var INSTANCE: Repo? = null
         fun get(context: Context): Repo = INSTANCE ?: synchronized(this) {
             // Before any write can score a valence.
             Sentiment.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     // NO fallbackToDestructiveMigration. On a journal app that
                     // reads as "if the schema confuses us, delete their diary".
                     // Every future schema change needs a real migration here;
