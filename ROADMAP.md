@@ -100,22 +100,38 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.10 *(shipped 2026-08-11)* | v1.0 *(in development)* |
-| Voice journaling, on-device transcription | ✅ | planned v1.0 |
-| Digital Twin personality models | ✅ | planned v1.0 |
-| Entity graph + semantic memory | ✅ | planned v1.0 |
-| Encrypted export / `.twin` | ✅ | planned v1.0 |
-| Multi-language interface | ✅ 5 languages | English first |
-| Body Twin (health signals) | ✅ HealthKit | not in v1.0 |
+| **Current** | v1.10 *(shipped 2026-08-11)* | v1.0 *(built, unreleased)* |
+| Voice journaling, on-device transcription | ✅ | ✅ built |
+| Digital Twin personality models | ✅ | ✅ built |
+| Entity graph | ✅ | ✅ built *(heuristic NER, measured)* |
+| Semantic memory / search by meaning | ✅ `NLEmbedding` | ranked lexical only — no embedder yet |
+| Encrypted export / `.twin` | ✅ | ✅ built, **byte-compatible both directions** |
+| Multi-language interface | ✅ 5 languages | English only |
+| Body Twin (health signals) | ✅ HealthKit | ✅ built *(Health Connect, opt-in)* |
+| Prosody / voice biomarkers | ✅ | ✅ built |
 | Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
-| Widgets, Live Activities, Dynamic Island | ✅ | no direct analogue |
-| On-device LLM chat | ✅ Apple Intelligence | later, device-gated |
+| Widgets | ✅ WidgetKit | ✅ built *(RemoteViews)* |
+| Live Activities / Dynamic Island | ✅ | ongoing notification; no Island analogue |
+| Quick Settings tile | n/a | ✅ built |
+| On-device LLM chat | ✅ Apple Intelligence | **not planned** — structured Ask instead |
+
+**Built is not shipped.** Every ✅ in the Android column exists in a development
+build and has been exercised on an emulator. None of it has been tested across a
+range of physical devices, and none of it is on the Play Store. The blocking
+unknown is whether Android's speech recogniser capitalises names — the entity
+graph has no input if it does not, and no emulator can answer it.
 
 **Why the version numbers differ.** Android v1.0 is not a regression from iOS
 v1.10; it is a first release. Sharing one number across platforms would force
 publishing empty releases on whichever platform had nothing to ship that cycle,
 which is a promise the number cannot keep. Independent lines never lie about what
 a release contains.
+
+**Why there is no LLM chat on Android.** Not a scheduling decision. A model
+small enough to ship to the phones this audience actually owns would guess, and
+a Twin that guesses about your own life is worse than one that stays quiet. Ask
+answers structured questions from real statistics and cites the entries used —
+which works on every device rather than only the newest.
 
 **Sync is the honest gap.** iCloud gives iOS cross-device sync with no server on
 our side. Android has no equivalent that preserves "we run no server", so v1.0 is

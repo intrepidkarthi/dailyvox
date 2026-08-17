@@ -2,6 +2,51 @@
 
 All notable changes to DailyVox are documented here.
 
+## [Unreleased] — Android
+
+The Android app is **in development and not released**. There is no Play Store
+listing and no announced date. This section tracks it so the work is visible;
+nothing here has shipped to a user.
+
+### Added
+- Native Kotlin / Jetpack Compose app, feature-complete against iOS v1.10 in
+  development builds: record, transcribe, detect names, score mood, file, search,
+  Twin constellation, Ask, Insights, entry detail with audio playback, PDF and
+  JSON export, encrypted backup, photo attachments, self-labels, read-aloud,
+  daily reminder, home-screen widget, Quick Settings tile, app shortcuts,
+  biometric lock, prosody, and Health Connect body signals.
+- Full VADER lexicon bundled as an asset (7,517 entries, 30 KB deflated), so the
+  scorer is the one the measured r = +0.663 was earned on rather than a subset.
+- Prosody extraction: autocorrelation pitch, RMS energy, pause structure, and
+  speaking rate measured per second of *voiced* audio rather than wall clock.
+- Cross-platform encrypted backup, verified in both directions against Apple's
+  CryptoKit.
+
+### Fixed, before anyone was affected
+- **Android Auto Backup was enabled by default**, which would have copied the
+  journal database and every audio recording to the user's Google Drive. The
+  system performs that copy, so it required no INTERNET permission from the app:
+  every privacy claim would have remained technically true while the diary sat
+  on a server. Now explicitly disabled, with local device-transfer kept.
+- **The encrypted backup could only be restored to the install that wrote it.**
+  It keyed from the Android Keystore, whose entries die when app data is cleared
+  or the app is uninstalled — so reinstall, factory reset and new phone, every
+  real reason to hold a backup, produced an unreadable file, silently.
+- **A schema change crashed every existing install on launch.** Prosody columns
+  were added without bumping the Room version. `fallbackToDestructiveMigration`
+  was removed rather than used: on a journal it means "if the schema confuses us,
+  delete their diary."
+- **The recogniser failed in silence.** `onError` discarded the error code, so a
+  missing offline language pack was indistinguishable from successfully
+  recording silence, and the record button appeared permanently broken with no
+  explanation. The app cannot fetch that pack — it holds no network permission —
+  so it now names the Android setting that fixes it.
+
+### Known unverified
+- The entity graph depends on Android's speech recogniser capitalising names.
+  That has not been tested across a broad range of physical devices, and it is
+  why there is no release date.
+
 ## [1.10.0] — 2026-08-11
 
 ### Added

@@ -72,8 +72,41 @@ sites; the graph, retrieval and scoring code is Foundation-only.
 
 ## Module Overview
 
-App source files are in `ios/solyn/`. Engine source lives in the separate
-package described above.
+App source files are in `ios/solyn/` (Swift) and `android/app/src/main/kotlin/`
+(Kotlin). Engine source lives in the separate package described above.
+
+### Two apps, one set of contracts
+
+The Android app is a native port, not a wrapper, and it is deliberately NOT a
+line-by-line translation. Where Apple provides a framework, iOS calls it; where
+Android provides nothing equivalent, the Android app carries its own
+implementation and that implementation was **measured against the Apple one**
+before it shipped.
+
+| Capability | iOS | Android | How the substitution was justified |
+|---|---|---|---|
+| Transcription | `SFSpeechRecognizer` / `SpeechAnalyzer` | `createOnDeviceSpeechRecognizer` | Fails rather than falling back to a network; the error is surfaced with the Settings path that fixes it |
+| Sentiment | `NLTagger` sentiment | Bundled VADER, 7,517 entries | r = +0.663 vs NLTagger's +0.594 on 1,459 labelled entries |
+| Entities | `NLTagger` NER | Capitalisation heuristic | 99.1% recall vs 94.6% on 28 transcribed entries, 111 gold spans |
+| Prosody | AVFoundation + Accelerate | MediaCodec + autocorrelation | Same `ProsodyFeatures` field contract; DSP unit-tested against synthesised signals |
+| Storage | Core Data + CloudKit | Room, no sync | Same schema shape; encrypted export is byte-compatible in both directions |
+| Backup | iCloud (opt-out) | Manual export only | Android Auto Backup explicitly disabled — see below |
+| Lock | Face ID + Secure Enclave | `BiometricPrompt` + Keystore | — |
+| Body | HealthKit | Health Connect | Opt-in, read-only, four record types |
+
+**The Android backup decision is load-bearing.** `allowBackup` defaults to true,
+and Android Auto Backup copies `filesDir` — the Room database and every audio
+recording — to the user's Google Drive. The *system* performs that copy, so it
+needs no INTERNET permission from the app: every privacy claim could remain
+technically true while the journal sat on a server. It is disabled explicitly in
+`data_extraction_rules.xml`, with device-to-device transfer left enabled because
+that is local and losing a diary when changing phones is its own harm.
+
+**Encrypted exports are cross-platform by construction.** Both platforms write
+`[4-byte "DVX1"][32-byte salt][12-byte nonce][ciphertext+tag]`, AES-256-GCM with
+HKDF-SHA256 over a user passphrase. Verified in both directions across
+toolchains: a file written by Kotlin opens under Apple's CryptoKit, and a file
+written by CryptoKit is a test fixture the Kotlin suite opens.
 
 ### Core Pipeline
 

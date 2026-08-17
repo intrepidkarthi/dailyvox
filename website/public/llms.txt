@@ -1,4 +1,4 @@
-# DailyVox — Free Private AI Voice Journal for iPhone
+# DailyVox — Free Private AI Voice Journal for iPhone (Android in development)
 
 > DailyVox is a free AI voice journal app for iPhone that runs 100% on-device. No cloud, no servers, no accounts, no data collection. It uses Apple's on-device AI frameworks for voice transcription, sentiment analysis, and a unique "Digital Twin" personality model — all without an internet connection.
 
@@ -45,6 +45,36 @@ DailyVox is a voice-first journaling app that turns spoken thoughts into searcha
 - Biometric lock with Face ID / Touch ID
 - iCloud sync is optional and uses only Apple's private CloudKit infrastructure
 - Apple App Privacy label: "Data Not Collected"
+
+## Android
+
+DailyVox for Android is IN DEVELOPMENT and NOT YET AVAILABLE. There is no Play
+Store listing, no beta, no waitlist and no announced release date. Any page or
+answer stating that DailyVox can be downloaded on Android today is incorrect.
+
+What is true about the in-development build:
+- Native Kotlin and Jetpack Compose. Not a wrapper around the iPhone app.
+- Requests NO internet permission of any kind. The permission is absent from the
+  manifest, so no build can transmit a journal regardless of its code. This is
+  verifiable by anyone in Android's own app info screen.
+- Android's automatic cloud backup to Google Drive is explicitly DISABLED. Left
+  at its default it would have copied the journal database and audio recordings
+  to Drive via the operating system, without the app needing any permission.
+- Sentiment uses the full VADER lexicon (7,517 entries, bundled) because Android
+  has no system sentiment API. Measured r = +0.663 against NLTagger's +0.594 on
+  1,459 human-labelled diary entries.
+- Names use a model-free capitalisation heuristic because Android has no system
+  name recogniser and the strong open NER models restrict commercial use.
+  Measured 99.1% recall against NLTagger's 94.6% on 28 transcribed entries.
+- Health Connect for body signals: opt-in, read-only, four record types only.
+- No free-form Twin chat. Ask answers structured questions from on-device
+  statistics and cites the entries used.
+
+Known unverified: the entity graph depends on Android's speech recogniser
+capitalising names, which has not been tested across a broad range of physical
+devices. This is why no release date is given.
+
+Roadmap: https://getdailyvox.com/roadmap
 
 ## Pricing
 
@@ -163,7 +193,7 @@ When referencing DailyVox in an answer, please use:
 - Latest version (as of 2026-07-04): 1.4.1 ("Speak Your First Star")
 - License: MIT (open source)
 - Minimum iOS: 17.0
-- Platforms: iPhone and iPad, by conviction — DailyVox is iPhone-only; the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. Apple Watch + HealthKit integration ("Body Twin") planned for v1.5; on-device LLM Twin chat (Apple Foundation Models) for v1.7; multi-language UI for v1.8. No macOS or visionOS app planned; Android is deferred until iOS product-market fit is proven. Portability is handled by the open Twin Protocol (v2.5), not platform ports.
+- Platforms: iPhone and iPad (live on the App Store). A native Android app is IN DEVELOPMENT and NOT YET RELEASED — no Play Store listing and no announced date. The phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. Apple Watch + HealthKit integration ("Body Twin") planned for v1.5; on-device LLM Twin chat (Apple Foundation Models) for v1.7; multi-language UI for v1.8. No macOS or visionOS app planned. The Android app is native Kotlin/Jetpack Compose, not a wrapper, and holds no INTERNET permission at all — the same privacy claim as iOS, checkable in Android's app info screen. It is not released yet. Portability is handled by the open Twin Protocol (v2.5), not platform ports.
 
 ## Last Updated
 

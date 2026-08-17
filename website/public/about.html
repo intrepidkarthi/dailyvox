@@ -805,13 +805,14 @@
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§05</span>
-          <h2 class="sec-title">Why <em>iOS only.</em></h2>
+          <h2 class="sec-title">Why <em>iPhone first.</em></h2>
           <span class="sec-tag">platform</span>
         </div>
-        <p>DailyVox is on iPhone and iPad only. There's no Android version — yet.</p>
-        <p>That's a deliberate choice. Apple gives me strong security guarantees — the Secure Enclave, the Neural Engine, the privacy frameworks. The whole promise of DailyVox is that your data never leaves your device. I need to be absolutely sure I can keep that promise before putting it on another platform.</p>
-        <p>I'd rather be on one platform and keep your data safe than be on two platforms and compromise.</p>
-        <p>Android will come — after iOS is solid, after the user base grows, and after I'm confident the same privacy guarantees can hold.</p>
+        <p>DailyVox is on the App Store for iPhone and iPad. A native Android app is <strong>in development</strong> — not released yet, and no date announced.</p>
+        <p>iPhone came first deliberately. Apple hands you the Secure Enclave, the Neural Engine and a whole on-device AI stack, and the promise of DailyVox is that your data never leaves your device. I wanted to be certain I could keep that promise before taking it anywhere else.</p>
+        <p>Android turned out to be a harder version of the same problem, and a more interesting one. There is no system sentiment API and no system name recogniser, so both had to be rebuilt and then <em>measured</em> against the Apple frameworks they replace rather than assumed to be close enough. On the diary text I tested, both replacements came out ahead.</p>
+        <p>The condition was never negotiable: the Android app requests no internet permission at all. Not "we choose not to call a server" — the permission is absent, so no build could send your journal anywhere even if it tried. You can check that in Android's own app info screen without trusting a word of this page.</p>
+        <p>The <a href="/roadmap">roadmap</a> says where it actually stands, including what is still untested.</p>
       </section>
 
       <!-- §06 Values -->
@@ -1037,7 +1038,8 @@
       <div class="sf-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="/about">About</a></li>
+          <li><a href="/roadmap">Roadmap</a></li>
+        <li><a href="/about">About</a></li>
           <li><a href="/blog">Journal</a></li>
           <li><a href="/support">Support</a></li>
           <li><a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a></li>

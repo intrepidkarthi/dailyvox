@@ -126,6 +126,10 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 | Layer | Technology |
 |:--|:--|
+### iPhone — shipping
+
+| Layer | Technology |
+|:--|:--|
 | **Language** | Swift, SwiftUI |
 | **Data** | Core Data + CloudKit (optional iCloud sync) |
 | **AI/NLP** | Apple NaturalLanguage (NLTagger, NLEmbedding) |
@@ -133,6 +137,25 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **ML** | Neural Engine via CoreML |
 | **Minimum** | iOS 17.0+ |
 | **Devices** | iPhone, iPad (Universal) |
+
+### Android — in development, not released
+
+| Layer | Technology |
+|:--|:--|
+| **Language** | Kotlin, Jetpack Compose |
+| **Data** | Room (no cloud sync; Auto Backup deliberately disabled) |
+| **Sentiment** | Bundled VADER lexicon, 7,517 entries — Android has no system sentiment API |
+| **Entities** | Model-free capitalisation heuristic — Android has no system NER, and the strong open models restrict commercial use |
+| **Speech** | `createOnDeviceSpeechRecognizer` (API 33+), which fails rather than falling back to a network |
+| **Prosody** | MediaCodec + autocorrelation pitch/energy in plain Kotlin |
+| **Body** | Health Connect — opt-in, read-only, four record types |
+| **Minimum** | API 29 · targetSdk 36 |
+| **Permissions** | RECORD_AUDIO, POST_NOTIFICATIONS, VIBRATE, USE_BIOMETRIC. **No INTERNET permission of any kind.** |
+
+Both platforms are measured against each other rather than assumed equivalent: a
+cross-language conformance harness runs the same frozen fixtures through the
+Swift and Kotlin graph implementations, and the two substitutions above were
+scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
@@ -150,6 +173,13 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 ---
 
 ## Roadmap
+
+> **Platforms.** DailyVox is live on the App Store for iPhone and iPad. The
+> Android app is **in development and not released** — there is no Play Store
+> listing and no announced date. The single largest untested assumption is
+> whether Android's speech recogniser capitalises names, which the entity graph
+> depends on. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
+
 
 | Version | Focus | Status |
 |:--|:--|:--|

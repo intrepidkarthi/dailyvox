@@ -11,14 +11,14 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox Technology — On-Device AI Architecture</title>
-  <meta name="description" content="A technical breakdown of DailyVox's on-device AI pipeline: nine Apple frameworks, zero third-party SDKs, all inference on the Neural Engine. No cloud.">
-  <meta name="keywords" content="on-device AI, voice journaling, digital twin, Apple Foundation Models, NLTagger, SFSpeechRecognizer, privacy, iOS development">
+  <title>DailyVox Technology — On-Device AI Architecture (iOS &amp; Android)</title>
+  <meta name="description" content="A technical breakdown of DailyVox's on-device AI pipeline on iPhone and Android: zero third-party SDKs, zero network calls, and the measured numbers behind every substitution.">
+  <meta name="keywords" content="on-device AI, voice journaling, digital twin, Apple Foundation Models, NLTagger, SFSpeechRecognizer, privacy, iOS development, android voice journal, on-device android AI, Health Connect, Jetpack Compose">
   <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://getdailyvox.com/technology">
   <meta property="og:title" content="DailyVox Technology — On-Device AI Architecture">
-  <meta property="og:description" content="How DailyVox processes voice journals entirely on-device using Apple's Speech, NaturalLanguage, CoreML, and Foundation Models frameworks.">
+  <meta property="og:description" content="How DailyVox processes voice journals entirely on-device — on iPhone with Apple's frameworks, and on Android with measured replacements for the ones that do not exist.">
   <meta property="og:image" content="https://getdailyvox.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -357,6 +357,24 @@
     }
     .st-pill-shipped { background: var(--ink); color: var(--paper); }
     .st-pill-next    { background: var(--uv-soft); color: var(--uv); }
+    .st-pill-android { background: var(--uv-soft); color: var(--uv); }
+
+    /* Platform matrix — the iOS/Android mapping */
+    .pmx { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 14px; }
+    .pmx th, .pmx td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .pmx th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+    .pmx td:first-child { font-weight: 600; }
+    .pmx code { font-size: 12.5px; }
+    .pmx tr:last-child td { border-bottom: none; }
+    .pmx-note { font-size: 13px; color: var(--ink-3); margin-top: -6px; }
+    @media (max-width: 720px) {
+      .pmx, .pmx tbody, .pmx tr, .pmx td { display: block; width: 100%; }
+      .pmx thead { display: none; }
+      .pmx tr { border-bottom: 1px solid var(--rule); padding: 10px 0; }
+      .pmx td { border: none; padding: 3px 0; }
+      .pmx td:first-child { font-size: 15px; }
+      .pmx td:not(:first-child)::before { content: attr(data-l) "  "; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+    }
     .st-card h3 {
       font-family: var(--display);
       font-size: 17px; font-weight: 600;
@@ -979,6 +997,7 @@
       </a>
       <ul class="nav">
         <li><a href="/technology" class="active">Technology</a></li>
+        <li><a href="/roadmap">Roadmap</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/blog">Journal</a></li>
         <li><a href="/faq">FAQ</a></li>
@@ -1073,7 +1092,7 @@
           <h2 class="sec-title">The <em>on-device</em> stack.</h2>
           <span class="sec-tag">apple.frameworks[]</span>
         </div>
-        <p>DailyVox uses nine Apple frameworks to build a full AI pipeline without any third-party dependencies or server-side processing.</p>
+        <p>On iPhone, DailyVox uses nine Apple frameworks to build a full AI pipeline without any third-party dependencies or server-side processing. The Android build reaches the same result differently, and §03 sets the two side by side.</p>
 
         <div class="stack">
 
@@ -1228,10 +1247,88 @@
         </div>
       </section>
 
-      <!-- §03 Twin Engine -->
+
+      <!-- §03 Two platforms -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§03</span>
+          <h2 class="sec-title">Two platforms, <em>one</em> Twin.</h2>
+          <span class="sec-tag">port.mapping[]</span>
+        </div>
+
+        <p>DailyVox is live on iPhone. A native Android app is <strong>in development</strong> — not released, and not a wrapper around the iOS one. It is Kotlin and Jetpack Compose, built against the same Twin engine contracts, because the promise that has to survive the port is the one people actually chose the app for: <strong>nothing leaves the phone.</strong></p>
+
+        <p>That promise turned out to be the hard part, and not for the reason you would guess. Apple hands you a whole on-device AI stack for free. Android does not — there is no system sentiment API, no system name recogniser, and the strong open NER models inherit training corpora that restrict commercial use. So every gap had to be closed with something measurable rather than something convenient.</p>
+
+        <table class="pmx">
+          <thead>
+            <tr><th>Capability</th><th>iPhone</th><th>Android</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Transcription</td>
+              <td data-l="iPhone"><code>SFSpeechRecognizer</code> / <code>SpeechAnalyzer</code></td>
+              <td data-l="Android"><code>createOnDeviceSpeechRecognizer</code> — fails rather than falling back to a network</td>
+            </tr>
+            <tr>
+              <td>Sentiment</td>
+              <td data-l="iPhone"><code>NLTagger</code> sentiment score</td>
+              <td data-l="Android">Full VADER lexicon, 7,517 entries, bundled as a 30&nbsp;KB asset</td>
+            </tr>
+            <tr>
+              <td>Names &amp; places</td>
+              <td data-l="iPhone"><code>NLTagger</code> named entities</td>
+              <td data-l="Android">A model-free heuristic over capitalisation evidence</td>
+            </tr>
+            <tr>
+              <td>Storage</td>
+              <td data-l="iPhone">Core Data</td>
+              <td data-l="Android">Room, same schema shape so exports are portable</td>
+            </tr>
+            <tr>
+              <td>Lock</td>
+              <td data-l="iPhone">Face ID · Secure Enclave</td>
+              <td data-l="Android"><code>BiometricPrompt</code> · Keystore, StrongBox where present</td>
+            </tr>
+            <tr>
+              <td>Body signals</td>
+              <td data-l="iPhone">HealthKit</td>
+              <td data-l="Android">Health Connect — opt-in, read-only, four record types</td>
+            </tr>
+            <tr>
+              <td>Voice analysis</td>
+              <td data-l="iPhone">AVFoundation · Accelerate</td>
+              <td data-l="Android">MediaCodec, then autocorrelation pitch and energy in plain Kotlin</td>
+            </tr>
+            <tr>
+              <td>Home screen</td>
+              <td data-l="iPhone">WidgetKit · Live Activities</td>
+              <td data-l="Android">RemoteViews widget · Quick Settings tile · ongoing notification</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Two numbers we had to earn, not assume</h3>
+
+        <p>Replacing a first-party framework with your own code is only defensible if you measure the replacement against the thing it replaces. Both substitutions were scored on the same real diary text, transcribed from actual recordings.</p>
+
+        <p><strong>Sentiment.</strong> On 1,459 human-labelled entries, the VADER lexicon scored <strong>r = +0.663</strong> with 87.1% sign accuracy, against <code>NLTagger</code>'s +0.594 and 79.8%. Both shuffled controls collapsed to chance. The lexicon is not a compromise; on this register it reads the writer more accurately than the OS does.</p>
+
+        <p><strong>Names.</strong> On 28 transcribed entries with 111 hand-annotated spans, the heuristic found <strong>99.1%</strong> of them at 61.6% precision, against <code>NLTagger</code>'s 94.6% at 32.5%. Every one of the 43 person names in that corpus is non-Anglo, and the heuristic found <strong>100%</strong> of them where Apple's model found 97.7% — because it has no learned prior about what a name looks like, so it has none to be wrong about.</p>
+
+        <p class="pmx-note">Neither number is a marketing claim. The corpus is one author's diary, 28 entries is small enough that a handful of spans moves a percentage point, and the person who wrote the heuristic also wrote its gold labels. Both are stated here with those limits attached because that is what makes them checkable.</p>
+
+        <h3>What the port costs, stated plainly</h3>
+
+        <p>Android's on-device recogniser needs a language pack that this app <em>cannot download</em> — it holds no internet permission of any kind, which is the entire point. On a phone without the pack, recording fails and the app says so, and points at the Android setting that fixes it. It does not quietly transcribe over a network instead.</p>
+
+        <p>There is also no free-form conversational Twin on Android. A model small enough to ship to every phone in the target audience would guess, and a Twin that guesses about your own life is worse than one that stays quiet. Ask answers structured questions from real statistics and cites the entries it used — which works on every device rather than only the newest ones.</p>
+      </section>
+
+      <!-- §04 Twin Engine -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§04</span>
           <h2 class="sec-title">The <em>Twin Engine</em>.</h2>
           <span class="sec-tag">model card</span>
         </div>
@@ -1342,10 +1439,10 @@
         </div>
       </section>
 
-      <!-- §04 Privacy — DARK BLOCK -->
+      <!-- §05 Privacy — DARK BLOCK -->
       <section class="privacy-block">
         <div class="sec-head">
-          <span class="sec-num">§04</span>
+          <span class="sec-num">§05</span>
           <h2 class="sec-title">Privacy <em>architecture</em>.</h2>
           <span class="sec-tag">zero cloud</span>
         </div>
@@ -1384,14 +1481,14 @@
         </table>
       </section>
 
-      <!-- §05 Technical Roadmap -->
+      <!-- §06 Technical Roadmap -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§05</span>
+          <span class="sec-num">§06</span>
           <h2 class="sec-title">Technical <em>roadmap.</em></h2>
           <span class="sec-tag">build log</span>
         </div>
-        <p>Where DailyVox has been, what's being built now, and where it's going. Each version adds a layer to the on-device AI stack.</p>
+        <p>Where DailyVox has been, what's being built now, and where it's going. Each version adds a layer to the on-device AI stack. Shipped items are live on the App Store; everything below the line is honest about not being finished. The <a href="/roadmap">full roadmap</a> has the detail.</p>
 
         <div class="roadmap">
           <div class="rd-item">
@@ -1496,6 +1593,15 @@
           <div class="rd-item">
             <div class="rd-dot rd-next">○</div>
             <div class="rd-body">
+              <div class="rd-tag rd-next-txt">In development · Android</div>
+              <h3>The same Twin, on the other half of the world's phones</h3>
+              <p>A native Kotlin and Jetpack Compose app, not a wrapper. Every feature the iPhone app has, reached differently where Android gives you nothing to reach with: a bundled VADER lexicon instead of a system sentiment API, a model-free name detector instead of a licence-encumbered NER model, MediaCodec and plain arithmetic instead of Accelerate. Health Connect for body signals, opt-in and read-only. <strong>No internet permission of any kind</strong> — the same claim as iOS, verifiable the same way, in Android's own app info screen.</p>
+              <div class="rd-tags"><span>Kotlin</span><span>Jetpack Compose</span><span>Room</span><span>VADER</span><span>Health Connect</span><span>BiometricPrompt</span><span>Zero network permissions</span></div>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-next">○</div>
+            <div class="rd-body">
               <div class="rd-tag rd-next-txt">v2.0 · Apple Intelligence Native (iOS 27)</div>
               <h3>The Twin joins the system assistant — on your terms</h3>
               <p>Siri AI integration via App Intents: ask the system assistant and it consults your Twin. Cross-app context adoption as iOS 27 APIs open to third parties — context flows in, nothing flows out. Next-generation Foundation Models for deeper reasoning.</p>
@@ -1523,10 +1629,10 @@
         </div>
       </section>
 
-      <!-- §06 Research Context -->
+      <!-- §07 Research Context -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§06</span>
+          <span class="sec-num">§07</span>
           <h2 class="sec-title">Research <em>context.</em></h2>
           <span class="sec-tag">related work</span>
         </div>
@@ -1572,10 +1678,10 @@
         </div>
       </section>
 
-      <!-- §07 Open Source -->
+      <!-- §08 Open Source -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§07</span>
+          <span class="sec-num">§08</span>
           <h2 class="sec-title">Open <em>source.</em></h2>
           <span class="sec-tag">auditable</span>
         </div>
