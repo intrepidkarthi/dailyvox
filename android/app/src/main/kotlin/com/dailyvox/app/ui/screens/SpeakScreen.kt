@@ -77,6 +77,7 @@ fun SpeakScreen(
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
 
     val state by capture.state.collectAsState()
+    val captureError by capture.error.collectAsState()
     val partial by capture.partial.collectAsState()
     val level by capture.level.collectAsState()
     var elapsed by remember { mutableIntStateOf(0) }
@@ -84,7 +85,15 @@ fun SpeakScreen(
     LaunchedEffect(state) {
         if (state == SpeechCapture.State.RECORDING) {
             elapsed = 0
-            while (true) { delay(1000); elapsed++ }
+            com.dailyvox.app.system.RecordingLive.onFinishRequested = { capture.stop() }
+            while (true) {
+                com.dailyvox.app.system.RecordingLive.show(context, elapsed)
+                delay(1000)
+                elapsed++
+            }
+        } else {
+            com.dailyvox.app.system.RecordingLive.hide(context)
+            com.dailyvox.app.system.RecordingLive.onFinishRequested = null
         }
     }
 
@@ -116,7 +125,15 @@ fun SpeakScreen(
         }
     }
 
-    DisposableEffect(Unit) { onDispose { capture.release() } }
+    // Leaving the screen must take the notification with it, or a cancelled
+    // recording leaves a "Listening" chip that nothing will ever clear.
+    DisposableEffect(Unit) {
+        onDispose {
+            capture.release()
+            com.dailyvox.app.system.RecordingLive.hide(context)
+            com.dailyvox.app.system.RecordingLive.onFinishRequested = null
+        }
+    }
 
     // Scrollable, and not merely defensively: Play's pre-launch report tests at
     // 200% non-linear font scale, where a fixed column silently clips its last
@@ -189,7 +206,7 @@ fun SpeakScreen(
             onTap = {
                 if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
-                else { haptics.recordStart(); recorder.start(); capture.start() }
+                else { capture.clearError(); haptics.recordStart(); recorder.start(); capture.start() }
             },
         )
 
@@ -207,6 +224,64 @@ fun SpeakScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.widthIn(max = 420.dp),
         )
+
+        // The failure, where the user is looking when it happens. Silently
+        // returning to "Tap to start" taught people the button was broken.
+        captureError?.let { err ->
+            Spacer(Modifier.height(20.dp))
+            Column(
+                Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp),
+            ) {
+                Text(err.message, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                     color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(6.dp))
+                Text(err.fix, fontSize = 13.sp, lineHeight = 20.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (err.openLanguageSettings) {
+                        Text(
+                            "Open speech settings",
+                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .clickable {
+                                    // Deep-link where it exists; the general
+                                    // language screen is the fallback, since the
+                                    // voice-input screen is not on every OEM.
+                                    val tried = listOf(
+                                        "com.android.settings.VOICE_INPUT_SETTINGS",
+                                        android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
+                                        android.provider.Settings.ACTION_LOCALE_SETTINGS,
+                                    )
+                                    tried.firstOrNull { action ->
+                                        runCatching {
+                                            context.startActivity(
+                                                android.content.Intent(action)
+                                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            )
+                                        }.isSuccess
+                                    }
+                                }
+                                .padding(horizontal = 16.dp, vertical = 11.dp),
+                        )
+                    }
+                    Text(
+                        "Dismiss", fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable { capture.clearError() }
+                            .padding(horizontal = 16.dp, vertical = 11.dp),
+                    )
+                }
+            }
+        }
 
         Spacer(Modifier.height(if (tall) 72.dp else 28.dp))
         // The privacy claim, in the one place a user can act on it. Not a badge

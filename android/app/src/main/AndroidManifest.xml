@@ -45,6 +45,14 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <receiver
+            android:name=".system.RecordingLive$FinishReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.dailyvox.app.FINISH_RECORDING" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".system.Reminders$ReminderReceiver"
             android:exported="false" />
 

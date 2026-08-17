@@ -28,6 +28,13 @@ import kotlinx.coroutines.flow.StateFlow
  * does. Android's varies by OEM, and if it returns lowercase the entity graph
  * gets no input at all. This class is where that will first be observable.
  */
+/** A failure the user can act on, rather than a silent return to idle. */
+data class CaptureError(
+    val message: String,
+    val fix: String,
+    val openLanguageSettings: Boolean = false,
+)
+
 class SpeechCapture(private val context: Context) {
 
     enum class State { IDLE, RECORDING, PROCESSING }
@@ -40,6 +47,19 @@ class SpeechCapture(private val context: Context) {
 
     private val _level = MutableStateFlow(0f)
     val level: StateFlow<Float> = _level
+
+    /**
+     * Why the last attempt failed, in the user's language, or null.
+     *
+     * The recognizer used to fail SILENTLY: onError called finish("") and the
+     * button went back to idle with no message. On an emulator — and on any
+     * phone whose offline language pack is not installed — tapping record simply
+     * did nothing, forever, with no way to find out why.
+     */
+    private val _error = MutableStateFlow<CaptureError?>(null)
+    val error: StateFlow<CaptureError?> = _error
+
+    fun clearError() { _error.value = null }
 
     private val _finished = MutableSharedFlow<String>(
         replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST,
@@ -67,7 +87,10 @@ class SpeechCapture(private val context: Context) {
             override fun onRmsChanged(rms: Float) { _level.value = (rms / 10f).coerceIn(0f, 1f) }
             override fun onBufferReceived(buffer: ByteArray?) {}
             override fun onEndOfSpeech() { _state.value = State.PROCESSING }
-            override fun onError(error: Int) { finish("") }
+            override fun onError(error: Int) {
+                _error.value = describe(error)
+                finish("")
+            }
             override fun onResults(results: Bundle?) {
                 finish(results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty())
             }
@@ -108,4 +131,51 @@ class SpeechCapture(private val context: Context) {
     }
 
     fun release() { recognizer?.destroy(); recognizer = null }
+
+    /**
+     * The one that matters is ERROR_LANGUAGE_UNAVAILABLE (13): the language is
+     * supported but its offline pack is not downloaded. This app holds no
+     * INTERNET permission, so it CANNOT fetch that pack itself — by design. The
+     * message therefore has to point at the place the user can fix it, rather
+     * than apologise and leave them stuck.
+     *
+     * Observed on a clean Pixel emulator as "LANGUAGE_PACK_ERROR with error
+     * code 13", which is precisely the case the port plan flagged as untested.
+     */
+    private fun describe(code: Int): CaptureError = when (code) {
+        SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
+        SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> CaptureError(
+            message = "This phone has no offline speech pack for your language yet.",
+            fix = "Android Settings › System › Languages › Speech › Offline speech recognition. DailyVox cannot download it for you, because it has no internet permission at all.",
+            openLanguageSettings = true,
+        )
+        SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> CaptureError(
+            message = "The microphone permission was turned off.",
+            fix = "Android Settings › Apps › DailyVox › Permissions.",
+        )
+        SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> CaptureError(
+            message = "Something else is using the microphone.",
+            fix = "Close any other recording or call, then try again.",
+        )
+        SpeechRecognizer.ERROR_NO_MATCH,
+        SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> CaptureError(
+            message = "Nothing was heard.",
+            fix = "Tap again and speak a little closer to the phone.",
+        )
+        // Deliberately explicit: a NETWORK error means the platform recognizer
+        // tried to go online, which is the one thing this app promises never
+        // happens. Saying "check your connection" would endorse it.
+        SpeechRecognizer.ERROR_NETWORK,
+        SpeechRecognizer.ERROR_NETWORK_TIMEOUT,
+        SpeechRecognizer.ERROR_SERVER,
+        SpeechRecognizer.ERROR_SERVER_DISCONNECTED -> CaptureError(
+            message = "This phone's recogniser wanted to use the internet, so nothing was recorded.",
+            fix = "Turn on offline speech recognition in Android Settings › System › Languages › Speech. DailyVox will not transcribe over a network.",
+            openLanguageSettings = true,
+        )
+        else -> CaptureError(
+            message = "The recogniser stopped unexpectedly.",
+            fix = "Tap to try again.",
+        )
+    }
 }
