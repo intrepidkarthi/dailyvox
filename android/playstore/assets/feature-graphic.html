@@ -1,0 +1,52 @@
+<!doctype html><meta charset=utf-8>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
+<style>
+*{margin:0;box-sizing:border-box}
+/* Play feature graphic: exactly 1024x500. It sits at the very top of the
+   listing, above the screenshots, and it is the only asset with no iOS
+   equivalent — so it carries the claim rather than repeating the app name. */
+.f{width:1024px;height:500px;position:relative;overflow:hidden;font-family:'Nunito',sans-serif;
+   background:radial-gradient(700px 520px at 78% 18%, rgba(224,177,92,.22), transparent 62%),
+              radial-gradient(620px 480px at 12% 88%, rgba(120,156,138,.20), transparent 60%),
+              linear-gradient(158deg,#0F140F 0%,#141A14 60%,#0D110D 100%)}
+.stars{position:absolute;inset:0}
+.s{position:absolute;background:#E0B15C;border-radius:50%}
+.wrap{position:absolute;inset:0;padding:0 62px;display:flex;flex-direction:column;justify-content:center}
+h1{color:#F2EFE9;font-weight:900;font-size:60px;line-height:1.02;letter-spacing:-.025em;max-width:600px}
+h1 em{font-style:normal;color:#E0B15C}
+p{margin-top:20px;color:rgba(242,239,233,.72);font-size:22px;line-height:1.42;max-width:540px;font-weight:600}
+.chip{position:absolute;right:56px;top:50%;transform:translateY(-50%);
+      width:250px;height:250px;border-radius:50%;
+      border:1px solid rgba(224,177,92,.30);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:radial-gradient(circle,rgba(224,177,92,.13),transparent 68%)}
+.chip .n{font-family:'DM Mono',monospace;font-size:96px;color:#E0B15C;line-height:1;font-weight:500}
+.chip .l{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.19em;color:rgba(242,239,233,.62);
+         text-transform:uppercase;margin-top:12px;text-align:center;line-height:1.6}
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(224,177,92,.13)}
+</style>
+<div class=f>
+  <div class=stars id=st></div>
+  <div class="ring" style="right:31px;top:50%;transform:translateY(-50%);width:300px;height:300px"></div>
+  <div class="ring" style="right:6px;top:50%;transform:translateY(-50%);width:350px;height:350px"></div>
+  <div class=wrap>
+    <h1>Speak 42 seconds.<br>It never <em>leaves</em><br>your phone.</h1>
+    <p>A voice journal with no internet permission at all — check it yourself in app info.</p>
+  </div>
+  <div class=chip>
+    <div class=n>0</div>
+    <div class=l>network<br>permissions</div>
+  </div>
+</div>
+<script>
+// Deterministic scatter: the graphic must render identically on every run, or
+// "regenerate the asset" becomes "produce a different asset".
+let s=1337; const rnd=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
+let h='';
+for(let i=0;i<70;i++){
+  const x=rnd()*1024, y=rnd()*500, r=0.6+rnd()*1.7, o=0.10+rnd()*0.42;
+  if (x>700 && y>110 && y<390) continue;      // keep the counter clean
+  h+=`<div class=s style="left:${x}px;top:${y}px;width:${r*2}px;height:${r*2}px;opacity:${o}"></div>`;
+}
+document.getElementById('st').innerHTML=h;
+</script>
