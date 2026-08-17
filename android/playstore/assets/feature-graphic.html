@@ -1,52 +1,64 @@
 <!doctype html><meta charset=utf-8>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
 <style>
 *{margin:0;box-sizing:border-box}
-/* Play feature graphic: exactly 1024x500. It sits at the very top of the
-   listing, above the screenshots, and it is the only asset with no iOS
-   equivalent — so it carries the claim rather than repeating the app name. */
+/* 1024x500 exactly. Sits above everything on the Play listing and has no iOS
+   equivalent, so it carries the argument rather than repeating the app name.
+   First version was a flat dark box with a circle in it — this one is built the
+   way the App Store set is: night sky, gold accent word, script line, and the
+   product's own four-point star as the mark. */
 .f{width:1024px;height:500px;position:relative;overflow:hidden;font-family:'Nunito',sans-serif;
-   background:radial-gradient(700px 520px at 78% 18%, rgba(224,177,92,.22), transparent 62%),
-              radial-gradient(620px 480px at 12% 88%, rgba(120,156,138,.20), transparent 60%),
-              linear-gradient(158deg,#0F140F 0%,#141A14 60%,#0D110D 100%)}
-.stars{position:absolute;inset:0}
-.s{position:absolute;background:#E0B15C;border-radius:50%}
-.wrap{position:absolute;inset:0;padding:0 62px;display:flex;flex-direction:column;justify-content:center}
-h1{color:#F2EFE9;font-weight:900;font-size:60px;line-height:1.02;letter-spacing:-.025em;max-width:600px}
+   background:
+     radial-gradient(620px 460px at 74% 12%, rgba(224,177,92,.30), transparent 62%),
+     radial-gradient(560px 430px at 8% 92%, rgba(120,156,138,.22), transparent 60%),
+     linear-gradient(156deg,#0F140F 0%,#161D16 58%,#0B0F0B 100%)}
+.grain{position:absolute;inset:0;z-index:9;opacity:.08;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.sp{position:absolute;color:#E0B15C;opacity:.55}
+.wrap{position:absolute;left:64px;top:0;bottom:0;width:600px;display:flex;flex-direction:column;justify-content:center;z-index:5}
+.k{font-family:'DM Mono',monospace;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:#E0B15C;opacity:.9}
+h1{margin-top:16px;color:#F5F1E8;font-weight:900;font-size:62px;line-height:.99;letter-spacing:-.032em}
 h1 em{font-style:normal;color:#E0B15C}
-p{margin-top:20px;color:rgba(242,239,233,.72);font-size:22px;line-height:1.42;max-width:540px;font-weight:600}
-.chip{position:absolute;right:56px;top:50%;transform:translateY(-50%);
-      width:250px;height:250px;border-radius:50%;
-      border:1px solid rgba(224,177,92,.30);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      background:radial-gradient(circle,rgba(224,177,92,.13),transparent 68%)}
-.chip .n{font-family:'DM Mono',monospace;font-size:96px;color:#E0B15C;line-height:1;font-weight:500}
-.chip .l{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.19em;color:rgba(242,239,233,.62);
-         text-transform:uppercase;margin-top:12px;text-align:center;line-height:1.6}
-.ring{position:absolute;border-radius:50%;border:1px solid rgba(224,177,92,.13)}
+.script{margin-top:16px;font-family:'Caveat',cursive;font-weight:700;font-size:36px;
+        color:rgba(245,241,232,.66);transform:rotate(-1.5deg)}
+/* The claim as an object, not a sentence. */
+.badge{position:absolute;right:70px;top:50%;transform:translateY(-50%);z-index:6;
+       width:262px;height:262px;border-radius:50%;
+       background:radial-gradient(circle,rgba(224,177,92,.16),rgba(224,177,92,.03) 66%,transparent 72%);
+       border:1px solid rgba(224,177,92,.34);
+       display:flex;flex-direction:column;align-items:center;justify-content:center}
+.badge .n{font-weight:900;font-size:118px;line-height:.82;color:#E0B15C;letter-spacing:-.05em}
+.badge .l{font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:.19em;
+          color:rgba(245,241,232,.68);text-transform:uppercase;margin-top:14px;text-align:center;line-height:1.75}
+.ring{position:absolute;right:44px;top:50%;transform:translateY(-50%);width:314px;height:314px;
+      border-radius:50%;border:1px solid rgba(224,177,92,.13);z-index:4}
+.star{position:absolute;right:150px;top:74px;z-index:6}
 </style>
 <div class=f>
-  <div class=stars id=st></div>
-  <div class="ring" style="right:31px;top:50%;transform:translateY(-50%);width:300px;height:300px"></div>
-  <div class="ring" style="right:6px;top:50%;transform:translateY(-50%);width:350px;height:350px"></div>
+  <div id=st></div>
+  <div class=ring></div>
+  <svg class=star width="46" height="46" viewBox="0 0 24 24">
+    <path fill="#E0B15C" d="M12 1c.6 6.2 4.8 10.4 11 11-6.2.6-10.4 4.8-11 11-.6-6.2-4.8-10.4-11-11 6.2-.6 10.4-4.8 11-11z"/>
+  </svg>
   <div class=wrap>
+    <div class=k>private voice journal</div>
     <h1>Speak 42 seconds.<br>It never <em>leaves</em><br>your phone.</h1>
-    <p>A voice journal with no internet permission at all — check it yourself in app info.</p>
+    <div class=script>and you can check that yourself</div>
   </div>
-  <div class=chip>
+  <div class=badge>
     <div class=n>0</div>
     <div class=l>network<br>permissions</div>
   </div>
+  <div class=grain></div>
 </div>
 <script>
-// Deterministic scatter: the graphic must render identically on every run, or
-// "regenerate the asset" becomes "produce a different asset".
-let s=1337; const rnd=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
+let s=24601; const rnd=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
 let h='';
-for(let i=0;i<70;i++){
-  const x=rnd()*1024, y=rnd()*500, r=0.6+rnd()*1.7, o=0.10+rnd()*0.42;
-  if (x>700 && y>110 && y<390) continue;      // keep the counter clean
-  h+=`<div class=s style="left:${x}px;top:${y}px;width:${r*2}px;height:${r*2}px;opacity:${o}"></div>`;
+for(let i=0;i<58;i++){
+  const x=rnd()*1024, y=rnd()*500, r=0.6+rnd()*1.6, o=0.10+rnd()*0.40;
+  if (x>640 && y>90 && y<410) continue;          // keep the badge clean
+  if (x<680 && y>140 && y<420) continue;         // keep the headline clean
+  h+=`<div class=sp style="left:${x}px;top:${y}px;width:${r*2}px;height:${r*2}px;background:#E0B15C;border-radius:50%;opacity:${o}"></div>`;
 }
 document.getElementById('st').innerHTML=h;
 </script>
