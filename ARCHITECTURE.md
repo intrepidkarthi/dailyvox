@@ -75,6 +75,23 @@ sites; the graph, retrieval and scoring code is Foundation-only.
 App source files are in `ios/solyn/` (Swift) and `android/app/src/main/kotlin/`
 (Kotlin). Engine source lives in the separate package described above.
 
+### The engine boundary applies to BOTH platforms
+
+> **Anything that computes something about the user is private.
+> Anything that plumbs a platform API is public.**
+
+No exceptions, including for algorithms implementing published research. A
+boundary with exceptions requires a judgement call per file, and drifts.
+
+| | iOS | Android |
+|---|---|---|
+| Private engine | `Sources/DailyVoxTwinEngine` (SPM) | `kotlin/engine` (Gradle module) |
+| NER | `HeuristicNER.swift` | `NameDetector.kt` |
+| Prosody contract + DSP | `ProsodyFeatures.swift` | `Prosody.kt` |
+| Graph | `EntityGraph.swift` | `EntityGraph.kt` |
+| Sentiment | `NLTagger` (Apple's, not ours) | `Sentiment.kt` |
+| Public app holds | UI, AVFoundation capture, Core Data | UI, MediaCodec decode, Room, assets |
+
 ### Two apps, one set of contracts
 
 The Android app is a native port, not a wrapper, and it is deliberately NOT a

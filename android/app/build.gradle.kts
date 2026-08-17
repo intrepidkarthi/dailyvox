@@ -53,6 +53,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.5")
     implementation(libs.security.crypto)
     implementation(libs.health.connect)
+    implementation(project(":engine"))
     testImplementation(libs.junit)
     debugImplementation(libs.compose.ui.tooling)
 }

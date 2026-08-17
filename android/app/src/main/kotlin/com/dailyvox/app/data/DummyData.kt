@@ -39,15 +39,15 @@ object DummyData {
         val offsets = listOf(0L, 1, 2, 3, 5, 8, 11, 15, 19, 24, 29, 34)
         val corpus = mutableListOf<Entry>()
         texts.forEachIndexed { i, (text, dur) ->
-            val (mid, lower) = NameDetector.vocabulary(texts.map { it.first })
+            val (mid, lower) = com.dailyvox.twin.NameDetector.vocabulary(texts.map { it.first })
             corpus.add(
                 Entry(
                     id = UUID.randomUUID().toString(),
                     text = text,
                     createdAt = now - offsets[i] * day - (i * 3_600_000L),
                     durationSec = dur,
-                    valence = Sentiment.valence(text),
-                    entities = NameDetector.extract(text, mid, lower).joinToString(","),
+                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    entities = com.dailyvox.twin.NameDetector.extract(text, mid, lower).joinToString(","),
                     sleepHours = listOf(7.2f, 6.1f, null, 7.9f, 4.8f, 7.0f, 8.1f, null, 6.4f, 7.5f, 6.8f, 7.2f)[i],
                 )
             )

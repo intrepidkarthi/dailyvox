@@ -80,7 +80,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     // Recompute rather than trust the file: a valence written by
                     // iOS came from a different lexicon, and mixing two scales in
                     // one mood curve would make the chart quietly meaningless.
-                    valence = Sentiment.valence(text),
+                    valence = com.dailyvox.twin.Sentiment.valence(text),
                     entities = o.optString("entities", ""),
                 )
             )
@@ -96,7 +96,9 @@ class Repo private constructor(private val db: DailyVoxDb) {
         audioPath: String? = null,
         body: com.dailyvox.app.body.BodySignals.Snapshot? = null,
     ) = withContext(Dispatchers.IO) {
-        val entities = NameDetector.detect(text, corpus = db.entries().allOnce())
+        val entities = com.dailyvox.twin.NameDetector.detect(
+            text, corpus = db.entries().allOnce().map { it.text },
+        )
         val now = System.currentTimeMillis()
         val cal = java.util.Calendar.getInstance().apply { timeInMillis = now }
 
@@ -109,7 +111,9 @@ class Repo private constructor(private val db: DailyVoxDb) {
             ?.takeIf { it.exists() }
             ?.let {
                 runCatching {
-                    com.dailyvox.app.audio.Prosody.analyse(it, text.split(" ").size)
+                    com.dailyvox.app.audio.AudioDecoder.toPcm(it)?.let { (pcm, rate) ->
+                        com.dailyvox.twin.Prosody.analyse(pcm, rate, text.split(" ").size)
+                    }
                 }.getOrNull()
             }
             ?.takeIf { it.available }
@@ -120,7 +124,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                 text = text,
                 createdAt = now,
                 durationSec = durationSec,
-                valence = Sentiment.valence(text),
+                valence = com.dailyvox.twin.Sentiment.valence(text),
                 entities = entities.joinToString(","),
                 audioPath = audioPath,
                 speakingRate = prosody?.speakingRate?.toFloat(),
@@ -169,7 +173,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
 
     suspend fun seedIfEmpty(context: Context) {
-        Sentiment.ensureLoaded(context)
+        Lexicon.ensureLoaded(context)
         if (db.entries().count() > 0) return
         DummyData.entries().forEach { db.entries().upsert(it) }
     }
@@ -206,7 +210,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
         @Volatile private var INSTANCE: Repo? = null
         fun get(context: Context): Repo = INSTANCE ?: synchronized(this) {
             // Before any write can score a valence.
-            Sentiment.ensureLoaded(context)
+            Lexicon.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
