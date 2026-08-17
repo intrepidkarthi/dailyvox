@@ -92,6 +92,19 @@ boundary with exceptions requires a judgement call per file, and drifts.
 | Sentiment | `NLTagger` (Apple's, not ours) | `Sentiment.kt` |
 | Public app holds | UI, AVFoundation capture, Core Data | UI, MediaCodec decode, Room, assets |
 
+#### A note on the history of this repository
+
+`NameDetector.kt` and `Sentiment.kt` were committed to this public repository
+before the boundary above was applied, and they remain in its **git history**.
+
+That is a deliberate, recorded decision, not an oversight. Scrubbing history
+requires a force-push that invalidates every existing clone and every commit
+reference, and the practical exposure is low: both files are ports whose method
+is already described in public write-ups, and the current HEAD is correct.
+
+**Do not rewrite this history to "fix" it.** If the exposure ever needs closing,
+the answer is a fresh repository, not a rewritten one.
+
 ### Two apps, one set of contracts
 
 The Android app is a native port, not a wrapper, and it is deliberately NOT a
