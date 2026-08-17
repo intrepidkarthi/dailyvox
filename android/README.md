@@ -34,3 +34,22 @@ Contributors without access can still build everything else by creating a local
 stub module that satisfies the same signatures. The app calls exactly four
 entry points: `NameDetector.detect/vocabulary/extract`, `Sentiment.valence/
 parseLexicon/install`, `Prosody.analyse`, and `EntityGraph`.
+
+## Tools
+
+```bash
+tools/capitalisation-probe.sh    # the release blocker, answered on a real phone
+tools/make-engine-stub.sh        # build without engine access
+```
+
+`capitalisation-probe.sh` answers the one question no emulator can: does this
+phone's recogniser capitalise names? The entity graph is built entirely from
+capitalisation evidence, so on a device that returns lowercase the Twin screen
+is empty however many entries are recorded. Speak the three sentences it prints,
+and it reads the entries back out of the app's own database and shows the raw
+transcript so the casing is visible directly.
+
+`make-engine-stub.sh` generates a non-functional stub of the private engine so
+the app compiles without it. Name detection returns nothing and every mood
+scores 0.0 — it exists to typecheck the app, and CI uses it for pull requests
+from forks.

@@ -1,0 +1,107 @@
+name: Build & Test (Android)
+
+# The Android app is android/; the engine it depends on is PRIVATE and lives in a
+# separate repository, which is the whole difficulty here. See the two paths in
+# the build job.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - '.github/workflows/android.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & Test (Android)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # JDK 21 specifically. The Kotlin compiler in this toolchain cannot parse a
+      # JDK 26 version string and dies with `IllegalArgumentException: 26.0.2`.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # The engine is proprietary. With a deploy key it is checked out and the
+      # build is real; without one — a fork, or an outside pull request — a stub
+      # is generated so the APP still typechecks. A contributor breaking app code
+      # should fail CI; a contributor without engine access should not.
+      - name: Check out the Twin engine
+        id: engine
+        if: ${{ env.ENGINE_KEY != '' }}
+        env:
+          ENGINE_KEY: ${{ secrets.ENGINE_DEPLOY_KEY }}
+        uses: actions/checkout@v4
+        with:
+          repository: intrepidkarthi/DailyVoxTwin
+          ssh-key: ${{ secrets.ENGINE_DEPLOY_KEY }}
+          path: DailyVoxTwin
+
+      - name: Generate an engine stub (no engine access)
+        if: ${{ steps.engine.outcome == 'skipped' }}
+        run: |
+          echo "::notice::Building against a STUB engine — app compilation only."
+          echo "::notice::Name detection, sentiment and prosody are not exercised."
+          android/tools/make-engine-stub.sh
+
+      - name: Assemble
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+
+      # Only meaningful with the real engine: the app-side tests read the shipped
+      # VADER asset and assert real scores, which a stub cannot satisfy.
+      - name: Unit tests
+        if: ${{ steps.engine.outcome == 'success' }}
+        working-directory: android
+        run: ./gradlew --no-daemon testDebugUnitTest
+
+      # The permission ledger is the product's central claim, and it lives in a
+      # file a careless dependency can silently change. Fail the build rather
+      # than discover it in a store listing.
+      - name: Assert no network permission
+        working-directory: android
+        run: |
+          MANIFEST=$(find app/build -name AndroidManifest.xml -path '*merged*' -path '*debug*' | head -1)
+          echo "Checking $MANIFEST"
+          if grep -qE 'android\.permission\.(INTERNET|ACCESS_NETWORK_STATE|ACCESS_WIFI_STATE)' "$MANIFEST"; then
+            echo "::error::A network permission entered the merged manifest."
+            grep -oE 'uses-permission android:name="[^"]*"' "$MANIFEST" | sort -u
+            exit 1
+          fi
+          echo "No network permission. Full list:"
+          grep -oE 'uses-permission android:name="[^"]*"' "$MANIFEST" | sort -u
+
+      - name: Assert Auto Backup stays disabled
+        working-directory: android
+        run: |
+          MANIFEST=$(find app/build -name AndroidManifest.xml -path '*merged*' -path '*debug*' | head -1)
+          if ! grep -q 'android:allowBackup="false"' "$MANIFEST"; then
+            echo "::error::allowBackup is not false — Android would copy the journal and audio to Google Drive."
+            exit 1
+          fi
+          echo "Auto Backup disabled."
+
+      - name: Report APK size
+        working-directory: android
+        run: |
+          ./gradlew --no-daemon assembleRelease
+          APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
+          SIZE=$(( $(stat -c%s "$APK") / 1024 ))
+          echo "::notice::Release APK ${SIZE} KB"
+          # The <10MB budget is a product commitment, not a nice-to-have.
+          if [ "$SIZE" -gt 10240 ]; then
+            echo "::error::APK is ${SIZE} KB, over the 10 MB budget."
+            exit 1
+          fi
