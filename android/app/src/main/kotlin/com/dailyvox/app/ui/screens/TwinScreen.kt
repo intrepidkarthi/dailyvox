@@ -51,6 +51,7 @@ fun TwinScreen(
     resolution: Int,
     onAsk: () -> Unit = {},
     onInsights: () -> Unit = {},
+    onShare: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val sky = rememberInfiniteTransition(label = "sky")
@@ -142,12 +143,23 @@ fun TwinScreen(
         ) {
             Text("Your sky", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
-            // Star count, not a percentage. The number is what the user made.
-            Text(
-                "${entries.size} ✦ · $depth",
-                fontSize = 13.sp, fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 0.5.sp, color = goldText,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Star count, not a percentage. The number is what the user made.
+                Text(
+                    "${entries.size} ✦ · $depth",
+                    fontSize = 13.sp, fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.5.sp, color = goldText,
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "↗", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = goldText,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable(onClick = onShare)
+                        .defaultMinSize(minWidth = 40.dp, minHeight = 40.dp)
+                        .wrapContentSize(),
+                )
+            }
         }
 
         // Grows into whatever the phone gives it. A fixed 300dp left a third of

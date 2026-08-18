@@ -254,6 +254,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             )
         }
 
+        var showShare by remember { mutableStateOf(false) }
+        if (showShare) ShareSheet(entries = entries, onDismiss = { showShare = false })
+
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
 
         // Twin used to force navy in every theme, so the Scaffold container and
@@ -371,6 +374,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         modifier = inner,
                     )
                     Destination.TWIN -> TwinScreen(
+                        onShare = { showShare = true },
                         entries = entries, resolution = resolution,
                         onAsk = { current = Destination.ASK },
                         onInsights = { overlay = Overlay.INSIGHTS },
