@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 // Dynamic colour is deliberately absent, not forgotten.
 //
@@ -17,34 +18,41 @@ import androidx.compose.runtime.Composable
 // When the opt-in ships it belongs behind a user preference, and it must never
 // reach the sky.
 
-private val LightColors = lightColorScheme(
-    primary = LightText,                 // ink is the primary action in Light
-    onPrimary = LightBackground,
-    secondary = LightAccent,
-    background = LightBackground,
-    onBackground = LightText,
-    surface = LightSurface,
-    onSurface = LightText,
-    surfaceVariant = LightSurfaceVariant,
-    onSurfaceVariant = LightTextSecondary,
-    outline = LightOutline,
-    // error is coral/terracotta, NOT Material red: on iOS this colour means
-    // RECORDING, not failure, and that mapping is an authored decision
-    // (ThemeManager.swift:142-147 refuses `.red` in a comment).
-    error = LightAccentNegative,
+// Day: green acts. Gold is NOT mapped to primary here on purpose — mapping it
+// would let Material hand gold to any component that asks for the action colour,
+// and the grammar says gold is only ever for what the user made.
+private val DayColors = lightColorScheme(
+    primary = DayAction,
+    onPrimary = DayOnAction,
+    secondary = Gold,                    // rewards: stars, streaks, insights
+    onSecondary = DayText,
+    background = DayBackground,
+    onBackground = DayText,
+    surface = DaySurface,
+    onSurface = DayText,
+    surfaceVariant = DayGreenTint,
+    onSurfaceVariant = DayTextSecondary,
+    tertiary = DayPositive,
+    // Recording is the only red in the product, and it means RECORDING rather
+    // than failure — the design draws "Stop & keep" as a red disc.
+    error = Color(0xFFC5533F),
 )
 
-private val DarkColors = darkColorScheme(
-    primary = DarkAccent,                // amber is the primary action in Dark
-    onPrimary = DarkBackground,
-    secondary = DarkAccent,
-    background = DarkBackground,
-    onBackground = DarkText,
-    surface = DarkSurface,
-    onSurface = DarkText,
-    surfaceVariant = DarkSurface,
-    onSurfaceVariant = DarkTextSecondary,
-    error = DarkAccentNegative,
+// Night: gold acts, by the one documented exception in the grammar. Green has
+// no presence on navy, so the actor role moves rather than the rule bending.
+private val NightColors = darkColorScheme(
+    primary = NightAction,
+    onPrimary = NightOnAction,
+    secondary = Gold,
+    onSecondary = NightBackground,
+    background = NightBackground,
+    onBackground = NightText,
+    surface = NightSurface,
+    onSurface = NightText,
+    surfaceVariant = NightSurface,
+    onSurfaceVariant = NightTextSecondary,
+    tertiary = NightPositive,
+    error = Color(0xFFC5533F),
 )
 
 @Composable
@@ -53,7 +61,7 @@ fun DailyVoxTheme(
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
+        colorScheme = if (darkTheme) NightColors else DayColors,
         typography = DailyVoxTypography,
         content = content,
     )

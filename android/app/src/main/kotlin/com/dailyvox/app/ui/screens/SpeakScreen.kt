@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.ui.components.MonoLabel
+import com.dailyvox.app.ui.theme.Gold
 import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
 
@@ -316,54 +317,41 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    // In Dark, primary IS amber, so idle is already the bright disc direction 1c
-    // draws. The old build ran Light by default, where primary is ink — which is
-    // how the app's single most important control ended up a flat black circle
-    // on cream.
-    val target = when (state) {
-        SpeechCapture.State.RECORDING -> scheme.error          // coral
-        SpeechCapture.State.PROCESSING -> StarGold
-        else -> scheme.primary
-    }
-    val color by animateColorAsState(target, spring(stiffness = Spring.StiffnessLow), label = "recColor")
-    // Underdamped on purpose. 0.52 is what makes it pop; a default spring is limp.
-    val pulse by animateFloatAsState(
-        if (state == SpeechCapture.State.RECORDING) 1f + level * 0.16f else 1f,
-        spring(dampingRatio = 0.52f, stiffness = Spring.StiffnessMediumLow),
-        label = "pulse",
-    )
     val label = when (state) {
         SpeechCapture.State.RECORDING -> "Stop recording"
         SpeechCapture.State.PROCESSING -> "Processing"
         else -> "Start recording"
     }
 
-    // The iOS button carries THREE animation layers and Android had one. Ported
-    // with the same numbers rather than approximations, because the timings are
-    // what make it read as the same object: rings expand to 1.8x over 1.8s and
-    // fade to nothing, staggered 0.6s apart so one is always mid-flight.
-    val ripple = rememberInfiniteTransition(label = "ripple")
-    val ringPhase = (0..2).map { i ->
-        ripple.animateFloat(
-            initialValue = 0f, targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1800, delayMillis = i * 600, easing = LinearOutSlowInEasing),
-                repeatMode = RepeatMode.Restart,
-            ),
-            label = "ring$i",
-        )
-    }
-
-    // The first-time invitation: a single slow ring on an app with no entries
-    // yet. It is the only thing on the screen asking to be touched, and it stops
-    // for good once there is one star in the sky.
-    val invite = ripple.animateFloat(
-        initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearOutSlowInEasing),
-            repeatMode = RepeatMode.Restart,
+    // FINAL-SPEC §2.2, read off the design's own markup rather than eyeballed:
+    //   ring   r=70 in a 150 box, stroke 4.5, dasharray "0.1 10.37" -> 42 dots
+    //   drift  120s / revolution
+    //   star   9px gold, orbiting at 16s, inset -12
+    //   mic    112dp disc, forest green, cream capsule glyph
+    //
+    // The dots are drawn individually rather than as a dashed stroke: Compose
+    // has no stroke-linecap on a PathEffect dash, so a dashed circle renders as
+    // 42 tiny rectangles instead of 42 round ticks.
+    val spin = rememberInfiniteTransition(label = "ring")
+    val drift by spin.animateFloat(
+        0f, 360f,
+        infiniteRepeatable(tween(120_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "drift",
+    )
+    val orbit by spin.animateFloat(
+        0f, 360f,
+        infiniteRepeatable(
+            tween(if (state == SpeechCapture.State.RECORDING) 12_000 else 16_000,
+                  easing = LinearEasing),
+            RepeatMode.Restart,
         ),
-        label = "invite",
+        label = "orbit",
+    )
+    // Record start: mic scales 1 -> 1.08 on a spring (§4).
+    val press by animateFloatAsState(
+        if (state == SpeechCapture.State.RECORDING) 1.08f else 1f,
+        spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow),
+        label = "press",
     )
 
     Box(contentAlignment = Alignment.Center) {
@@ -373,120 +361,62 @@ private fun RecordButton(
                 .semantics { contentDescription = label }
                 .pointerInput(state) { detectTapGestures { onTap() } }
         ) {
-            val r = size.minDimension / 2f
+            val c = center
+            val ringR = size.minDimension * 0.467f      // 70/150
+            val litTicks = elapsed.coerceAtMost(42)
 
-            // Concentric rings, faint — the "instrument" read from the design.
-            for (i in 1..3) {
-                drawCircle(color.copy(alpha = 0.06f), radius = r * (0.62f + i * 0.12f), style = Stroke(1.dp.toPx()))
-            }
-
-            // Layer 1: first-run invitation. 1.0 -> 1.3, fading out.
-            if (firstEver && state == SpeechCapture.State.IDLE) {
-                val t = invite.value
+            // 42 ticks. Gold and lit for each elapsed second while recording;
+            // faint and evenly spaced at rest.
+            repeat(42) { i ->
+                val a = Math.toRadians((drift + i * (360.0 / 42.0)) - 90.0)
+                val p = Offset(
+                    c.x + (ringR * kotlin.math.cos(a)).toFloat(),
+                    c.y + (ringR * kotlin.math.sin(a)).toFloat(),
+                )
+                val on = state == SpeechCapture.State.RECORDING && i < litTicks
                 drawCircle(
-                    color = color.copy(alpha = 0.25f * (1f - t)),
-                    radius = r * 0.52f * (1f + 0.3f * t),
-                    style = Stroke(2.dp.toPx()),
+                    color = if (on) Gold else Gold.copy(alpha = 0.28f),
+                    radius = 2.25.dp.toPx(),
+                    center = p,
                 )
             }
 
-            // Layer 2: recording ripples. Three, expanding to 1.8x and fading.
-            if (state == SpeechCapture.State.RECORDING) {
-                ringPhase.forEach { phase ->
-                    val t = phase.value
-                    drawCircle(
-                        color = color.copy(alpha = 0.35f * (1f - t)),
-                        radius = r * 0.5f * (1f + 0.8f * t),
-                        style = Stroke(2.dp.toPx()),
-                    )
-                }
-            }
-            // 42-second arc: fills once, then keeps sweeping. A shape, not a limit.
-            val progress = (elapsed % 42) / 42f
-            if (elapsed > 0) {
-                drawArc(
-                    color = StarGold.copy(alpha = 0.9f),
-                    startAngle = -90f,
-                    sweepAngle = 360f * progress,
-                    useCenter = false,
-                    style = Stroke(3.dp.toPx()),
-                    topLeft = Offset(r * 0.10f, r * 0.10f),
-                    size = androidx.compose.ui.geometry.Size(size.width - r * 0.20f, size.height - r * 0.20f),
-                )
-            }
-            // Glow, then core. Stacked translucent circles rather than a blur —
-            // the same technique the iOS constellation uses, and far cheaper.
-            //
-            // Three stacked passes rather than one: a single 34% wash reads as a
-            // smudge on a dark ground, where 1c's disc has a real bloom around
-            // it. Widest and faintest first so the falloff is smooth.
+            // The orbiting star — the "solar-system idle" the spec asks for.
+            val oa = Math.toRadians(orbit - 90.0)
+            val op = Offset(
+                c.x + ((ringR + 6.dp.toPx()) * kotlin.math.cos(oa)).toFloat(),
+                c.y + ((ringR + 6.dp.toPx()) * kotlin.math.sin(oa)).toFloat(),
+            )
+            drawCircle(Gold.copy(alpha = 0.35f), radius = 7.dp.toPx(), center = op)
+            drawCircle(Gold, radius = 4.5.dp.toPx(), center = op)
+
+            // The disc. Green acts in Day; at night the actor is gold, which is
+            // already what colorScheme.primary resolves to.
+            val discR = size.minDimension * 0.373f * press   // 112/300 of the box
             drawCircle(
                 brush = Brush.radialGradient(
-                    listOf(color.copy(alpha = 0.22f), Color.Transparent),
-                    center = center, radius = r * 1.02f * pulse,
+                    listOf(scheme.primary.copy(alpha = 0.30f), Color.Transparent),
+                    center = Offset(c.x, c.y + discR * 0.18f), radius = discR * 1.5f,
                 ),
-                radius = r * 1.02f * pulse,
+                radius = discR * 1.5f,
+                center = Offset(c.x, c.y + discR * 0.18f),
             )
             drawCircle(
-                brush = Brush.radialGradient(
-                    listOf(color.copy(alpha = 0.38f), Color.Transparent),
-                    center = center, radius = r * 0.78f * pulse,
-                ),
-                radius = r * 0.78f * pulse,
-            )
-            // The disc itself, with a warmer centre so it reads as lit rather
-            // than filled.
-            drawCircle(
-                brush = Brush.radialGradient(
-                    listOf(
-                        Color.White.copy(alpha = 0.28f),
-                        color,
-                        color.copy(alpha = 0.92f),
-                    ),
-                    center = Offset(center.x - r * 0.10f, center.y - r * 0.12f),
-                    radius = r * 0.52f * pulse,
-                ),
-                radius = r * 0.48f * pulse,
-            )
-            // A crisp rim, so the disc has an edge against the glow.
-            drawCircle(
-                color = Color.White.copy(alpha = 0.16f),
-                radius = r * 0.48f * pulse,
-                style = Stroke(1.5.dp.toPx()),
+                color = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary,
+                radius = discR,
+                center = c,
             )
         }
-        // The mic glyph, drawn rather than an icon font, so it needs no asset.
-        // Always ink: the disc is bright in every state now.
-        val micColor = Color(0xFF14180F)
-        // A real mic silhouette: capsule, stand and base. The single rounded
-        // rect read as a dark smudge in the middle of a bright disc.
-        Canvas(Modifier.size(diameter * 0.30f)) {
+
+        // Cream capsule glyph, 24x40 at the design's 112 disc.
+        Canvas(Modifier.size(diameter * 0.21f)) {
             val w = size.width
-            val stroke = w * 0.075f
             drawRoundRect(
-                color = micColor,
-                topLeft = Offset(w * 0.36f, w * 0.10f),
-                size = androidx.compose.ui.geometry.Size(w * 0.28f, w * 0.46f),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.14f),
-            )
-            // Cradle
-            drawArc(
-                color = micColor,
-                startAngle = 0f, sweepAngle = 180f, useCenter = false,
-                topLeft = Offset(w * 0.24f, w * 0.34f),
-                size = androidx.compose.ui.geometry.Size(w * 0.52f, w * 0.42f),
-                style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round),
-            )
-            // Stem
-            drawLine(
-                color = micColor,
-                start = Offset(w * 0.50f, w * 0.72f),
-                end = Offset(w * 0.50f, w * 0.88f),
-                strokeWidth = stroke,
-                cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                color = scheme.onPrimary,
+                topLeft = Offset(w * 0.30f, 0f),
+                size = androidx.compose.ui.geometry.Size(w * 0.40f, size.height),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.20f),
             )
         }
     }
 }
-
-

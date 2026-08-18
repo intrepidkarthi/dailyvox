@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Inter:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#ECEAE5;font-family:Inter,system-ui,sans-serif}
+a{color:#2E5B44;text-decoration:none}a:hover{color:#1E3E2E}
+.fs-sec{padding:44px 48px 36px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.fs-h{display:flex;align-items:baseline;gap:10px;margin:0 0 22px}
+.fs-id{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1E2A26;color:#fff;border-radius:4px;text-decoration:none}
+.fs-t{font:800 17px Nunito,sans-serif;color:#1a1a1a}
+.fs-row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.fs-cap{font:500 10px/1.4 "DM Mono",ui-monospace,monospace;color:rgba(0,0,0,.45);letter-spacing:.04em;text-transform:uppercase;padding-left:2px;margin-top:10px}
+.ph{position:relative;width:360px;height:780px;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 14px 34px rgba(20,16,10,.16),0 0 0 1px rgba(0,0,0,.07)}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font-size:12px;font-weight:600;flex:none}
+.sbi{display:flex;gap:5px;align-items:center}
+.nav{flex:none;display:flex;justify-content:center;padding:8px 0 10px}
+.pill{width:118px;height:4px;border-radius:2px}
+.scr{flex:1;overflow:hidden;display:flex;flex-direction:column}
+@keyframes fsSpin{to{transform:rotate(360deg)}}
+@keyframes fsPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.18);opacity:.15}}
+@keyframes fsWave{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes fsBlink{0%,100%{opacity:1}50%{opacity:.35}}
+</style></helmet>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#101B2D"></rect><circle cx="50" cy="46" r="12" fill="#D9A441"></circle><circle cx="28" cy="28" r="3" fill="#F1EDE2"></circle><circle cx="74" cy="32" r="2.5" fill="#F1EDE2"></circle><circle cx="70" cy="70" r="2.5" fill="#F1EDE2"></circle></svg></template>
+
+<section class="fs-sec" id="tokens">
+<div class="fs-h"><a class="fs-id" href="#tokens">A</a><span class="fs-t">DailyVox — Final System "Evergreen &amp; Gold Hour" · tokens &amp; colour grammar</span></div>
+<div class="fs-row">
+<div style="width:380px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:22px 24px;box-sizing:border-box">
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">COLOUR GRAMMAR — THE ONE RULE</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;font:400 12.5px/1.55 Inter;color:#1a1a1a">
+<div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:10px;background:#2E5B44;flex:none"></div><div><strong>Green acts.</strong> Record, send, save, confirm. Never decoration.</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:10px;background:#D9A441;flex:none"></div><div><strong>Gold rewards.</strong> Stars, streaks, insights, the Twin — what the user made.</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:10px;background:#101B2D;flex:none"></div><div><strong>Navy is the sky.</strong> The Twin screen and the night theme. Always night.</div></div>
+<div style="display:flex;gap:10px;align-items:center"><div style="width:34px;height:34px;border-radius:10px;background:#F7F3EA;border:1px solid rgba(0,0,0,.1);flex:none"></div><div><strong>Cream is paper.</strong> Day surfaces. Nothing else gets colour.</div></div>
+</div>
+</div>
+<div style="width:420px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:22px 24px;box-sizing:border-box;font-family:Inter,sans-serif;color:#1a1a1a">
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">TOKENS</div>
+<div style="display:flex;flex-direction:column;gap:7px;margin-top:12px;font:400 11.5px/1.5 Inter">
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">bg / day · night</div><div>#F7F3EA · #101B2D</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">surface</div><div>#FFFFFF (day, soft shadow) · #1C2A42 (night, no border)</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">text</div><div>#1E2A26 · #F1EDE2 (secondary 60%)</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">action green</div><div>#2E5B44 (day) · positive #4A7C59 / #8FBF77</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">gold</div><div>#D9A441 · tint #F3E7CD (day) / rgba(217,164,65,.16) (night) · text-on-cream #8A6A1F</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">type</div><div>Nunito 800 display · Inter 400/500/600 UI · DM Mono 500 data labels (shipped with app, never Roboto)</div></div>
+<div style="display:flex;gap:8px;border-bottom:1px solid rgba(0,0,0,.07);padding-bottom:7px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">shape</div><div>cards 18–22 · nav pill 24 · buttons 15–19 · mic circle full</div></div>
+<div style="display:flex;gap:8px"><div style="width:120px;flex:none;font-family:'DM Mono',monospace;font-size:10px;color:rgba(0,0,0,.55)">motion</div><div>M3 Expressive springs (Android) mapped to UIKit springs (iOS); predictive back; star-flies-home 600ms matched-geometry on save</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="fs-sec" id="day">
+<div class="fs-h"><a class="fs-id" href="#day">B</a><span class="fs-t">Core screens — Day theme</span></div>
+<div class="fs-row">
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:41<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:26px 26px 0"><div style="font:800 30px/1.18 Nunito">Nothing you say<br>leaves this phone.</div><div style="font:400 13.5px/1.6 Inter;color:rgba(30,42,38,.7);margin-top:10px">No account. No cloud. Free forever. Your Twin is built here, on this device.</div></div>
+<div style="margin:18px 16px 0;background:#fff;border-radius:20px;padding:4px 16px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid rgba(30,42,38,.08)"><div style="width:30px;height:30px;border-radius:10px;background:#E4EDE4;display:flex;align-items:center;justify-content:center;flex:none"><div style="width:8px;height:13px;border-radius:4px;background:#2E5B44"></div></div><div style="flex:1;font:600 12.5px/1.3 Inter">Microphone</div><div style="font:600 9.5px/1 'DM Mono',monospace;color:#2E5B44">REQUIRED</div></div>
+<div style="display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid rgba(30,42,38,.08)"><div style="width:30px;height:30px;border-radius:10px;background:#F3E7CD;display:flex;align-items:center;justify-content:center;flex:none"><div style="font:800 14px/1 Nunito;color:#8A6A1F">+</div></div><div style="flex:1;font:600 12.5px/1.3 Inter">Health Connect <span style="font-weight:400;color:rgba(30,42,38,.55)">· sleep, HRV</span></div><div style="font:600 9.5px/1 'DM Mono',monospace;color:#8A6A1F">OPTIONAL</div></div>
+<div style="display:flex;align-items:center;gap:11px;padding:12px 0"><div style="width:30px;height:30px;border-radius:10px;background:rgba(30,42,38,.06);display:flex;align-items:center;justify-content:center;flex:none"><div style="width:12px;height:12px;border-radius:6px;border:2px solid rgba(30,42,38,.45)"></div></div><div style="flex:1;font:600 12.5px/1.3 Inter">Internet</div><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(30,42,38,.5)">NOT REQUESTED</div></div>
+</div>
+<div style="margin:12px 16px 0;background:#101B2D;border-radius:20px;padding:14px 16px;color:#F1EDE2;display:flex;gap:11px;align-items:center">
+<div style="width:18px;height:18px;border-radius:9px;border:2px solid #D9A441;position:relative;flex:none"><div style="position:absolute;left:-2px;top:6px;width:18px;height:2px;background:#D9A441;transform:rotate(-45deg)"></div></div>
+<div style="flex:1;font:500 12px/1.45 Inter">Don't trust us? Turn on airplane mode and try it. Everything works.</div>
+</div>
+<div style="flex:1"></div>
+<div style="margin:0 16px 8px;background:#2E5B44;border-radius:19px;padding:15px 0;text-align:center;font:800 14px/1 Nunito;color:#F7F3EA;box-shadow:0 8px 20px rgba(46,91,68,.3)">Speak your first star</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B1 · Onboarding — permission ledger + airplane proof</div>
+</div>
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:40<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 0"><div style="font:600 12px/1 Inter;color:#4A7C59">Good morning</div><div style="font:800 30px/1.15 Nunito;margin-top:6px">Sunday,<br>June 14</div><div style="display:flex;gap:7px;margin-top:12px"><div style="background:#E4EDE4;border-radius:13px;padding:7px 12px;font:600 10.5px/1 Inter;color:#2E5B44">32-day streak</div><div style="background:#F3E7CD;border-radius:13px;padding:7px 12px;font:600 10.5px/1 Inter;color:#8A6A1F">✦ 35 this year</div></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+<div style="font:800 22px/1.25 Nunito;text-align:center">How was your<br>day, really?</div>
+<div style="position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center">
+<svg viewBox="0 0 150 150" style="position:absolute;inset:0;animation:fsSpin 120s linear infinite"><circle cx="75" cy="75" r="70" fill="none" stroke="#D9A441" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0.1 10.37"></circle></svg><div style="position:absolute;inset:-12px;animation:fsSpin 16s linear infinite"><div style="position:absolute;left:50%;top:0;width:9px;height:9px;margin-left:-4.5px;border-radius:5px;background:#D9A441;box-shadow:0 0 10px rgba(217,164,65,.9)"></div></div>
+<div style="width:112px;height:112px;border-radius:56px;background:#2E5B44;box-shadow:0 12px 28px rgba(46,91,68,.35);display:flex;align-items:center;justify-content:center"><div style="width:24px;height:40px;border-radius:12px;background:#F7F3EA"></div></div>
+</div>
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.12em;color:rgba(30,42,38,.5)">TAP TO RECORD · 42 SECONDS</div>
+</div>
+<div style="margin:0 16px 10px;background:#fff;border-radius:20px;padding:12px 15px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#8A6A1F">TODAY ✦ · 8:43 AM</div><div style="background:#E4EDE4;border-radius:11px;padding:6px 10px;font:800 10px/1 Nunito;color:#2E5B44">▶ 2:00</div></div>
+<div style="font:400 12px/1.5 Inter;margin-top:7px;color:rgba(30,42,38,.85)">Morning walk, cherry blossoms… <span style="color:#4A7C59;font-weight:600">peaceful +0.6</span></div>
+</div>
+<div style="margin:0 16px;background:#fff;border-radius:20px;padding:12px 15px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="width:9px;height:9px;border-radius:5px;background:#4A7C59"></div>
+<div style="font:500 12px/1.4 Inter;color:rgba(30,42,38,.85)">Transcribed on this phone · 0 network calls, ever</div>
+</div>
+<div style="display:flex;gap:6px;margin:12px 18px 4px;background:#fff;border-radius:24px;padding:6px;box-shadow:0 2px 10px rgba(30,42,38,.07)">
+<div style="flex:1;background:#2E5B44;border-radius:18px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#F7F3EA">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B2 · Record — today's star surfaces once spoken</div>
+</div>
+
+<div>
+<div class="ph" style="background:#101B2D;font-family:Inter,sans-serif;color:#F1EDE2">
+<div class="sb" style="color:#F1EDE2">11:12<div class="sbi"><div style="background:#D9A441;border-radius:8px;padding:3px 8px;font:600 9px/1 'DM Mono',monospace;color:#101B2D">● 0:28</div><div style="width:20px;height:10px;border:1.5px solid #F1EDE2;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:16px 24px 0;text-align:center"><div style="display:inline-block;font:600 10px/1 'DM Mono',monospace;letter-spacing:.16em;color:#D9A441;animation:fsBlink 1.6s ease-in-out infinite">● RECORDING · ON-DEVICE · 0 B OUT</div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
+<div style="position:relative;width:230px;height:230px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle,rgba(217,164,65,.2),transparent 65%);animation:fsPulse 2.4s ease-in-out infinite"></div>
+<svg viewBox="0 0 230 230" style="position:absolute;inset:0">
+<circle cx="115" cy="115" r="104" fill="none" stroke="rgba(241,237,226,.16)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.1 15.46"></circle>
+<circle cx="115" cy="115" r="104" fill="none" stroke="#D9A441" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="435 218.5" transform="rotate(-90 115 115)"></circle>
+</svg>
+<div style="position:absolute;inset:-10px;animation:fsSpin 12s linear infinite"><div style="position:absolute;left:50%;top:0;width:10px;height:10px;margin-left:-5px;border-radius:5px;background:#D9A441;box-shadow:0 0 12px rgba(217,164,65,.9)"></div></div>
+<div style="position:absolute;inset:24px;animation:fsSpin 22s linear infinite reverse"><div style="position:absolute;left:50%;top:0;width:6px;height:6px;margin-left:-3px;border-radius:3px;background:#F1EDE2;opacity:.8"></div></div>
+<div style="text-align:center"><div style="font:800 46px/1 Nunito">0:28</div><div style="font:600 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(241,237,226,.55);margin-top:7px">OF 0:42 · 28 TICKS LIT</div></div>
+</div>
+<div style="display:flex;gap:3px;align-items:center;height:26px">
+<div style="width:4px;height:12px;border-radius:2px;background:rgba(217,164,65,.6);animation:fsWave 1s ease-in-out 0s infinite"></div>
+<div style="width:4px;height:20px;border-radius:2px;background:#D9A441;animation:fsWave 1s ease-in-out .12s infinite"></div>
+<div style="width:4px;height:15px;border-radius:2px;background:rgba(241,237,226,.7);animation:fsWave 1s ease-in-out .24s infinite"></div>
+<div style="width:4px;height:24px;border-radius:2px;background:#D9A441;animation:fsWave 1s ease-in-out .36s infinite"></div>
+<div style="width:4px;height:13px;border-radius:2px;background:rgba(217,164,65,.7);animation:fsWave 1s ease-in-out .48s infinite"></div>
+<div style="width:4px;height:22px;border-radius:2px;background:rgba(241,237,226,.8);animation:fsWave 1s ease-in-out .6s infinite"></div>
+<div style="width:4px;height:16px;border-radius:2px;background:#D9A441;animation:fsWave 1s ease-in-out .72s infinite"></div>
+<div style="width:4px;height:24px;border-radius:2px;background:rgba(217,164,65,.8);animation:fsWave 1s ease-in-out .84s infinite"></div>
+<div style="width:4px;height:12px;border-radius:2px;background:rgba(241,237,226,.6);animation:fsWave 1s ease-in-out .96s infinite"></div>
+<div style="width:4px;height:19px;border-radius:2px;background:#D9A441;animation:fsWave 1s ease-in-out 1.08s infinite"></div>
+<div style="width:4px;height:14px;border-radius:2px;background:rgba(217,164,65,.6);animation:fsWave 1s ease-in-out 1.2s infinite"></div>
+</div>
+<div style="font:400 12.5px/1.5 Inter;color:rgba(241,237,226,.75);text-align:center;padding:0 40px">“…Sarah's flight lands tonight and I'm more nervous than—”</div>
+<div style="background:rgba(217,164,65,.16);border:1px solid rgba(217,164,65,.4);border-radius:12px;padding:7px 12px;font:800 10px/1 Nunito;color:#EDCB86;animation:fsBlink 2.4s ease-in-out infinite">SARAH ✦ FILED TO YOUR SKY</div>
+</div>
+<div style="display:flex;gap:20px;justify-content:center;align-items:center;margin:0 16px 10px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:48px;height:48px;border-radius:24px;border:1.5px solid rgba(241,237,226,.3);display:flex;align-items:center;justify-content:center;font:600 15px/1 Inter;color:rgba(241,237,226,.7)">✕</div><div style="font:700 10px/1 Nunito;color:rgba(241,237,226,.55)">Discard</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:76px;height:76px;border-radius:38px;background:#C85C4A;display:flex;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(200,92,74,.45)"><div style="width:23px;height:23px;border-radius:6px;background:#F1EDE2"></div></div><div style="font:800 10px/1 Nunito;color:#F1EDE2">Stop &amp; keep ✦</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:48px;height:48px;border-radius:24px;border:1.5px solid rgba(241,237,226,.3);display:flex;align-items:center;justify-content:center;gap:4px"><div style="width:4px;height:15px;border-radius:1.5px;background:rgba(241,237,226,.8)"></div><div style="width:4px;height:15px;border-radius:1.5px;background:rgba(241,237,226,.8)"></div></div><div style="font:700 10px/1 Nunito;color:rgba(241,237,226,.55)">Pause</div></div>
+</div>
+<div class="nav"><div class="pill" style="background:#F1EDE2;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B2b · Recording live — 42-tick dial fills gold, orbiting stars, breathing waveform</div>
+</div>
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:12<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px;display:flex;justify-content:space-between;align-items:center"><div style="font:800 28px/1.1 Nunito">Journal</div><div style="background:#2E5B44;border-radius:15px;padding:9px 13px;display:flex;align-items:center;gap:7px"><div style="width:0;height:0;border-left:8px solid #F7F3EA;border-top:5px solid transparent;border-bottom:5px solid transparent"></div><div style="font:800 10.5px/1 Nunito;color:#F7F3EA">Play today · 3:12</div></div></div>
+<div style="margin:0 16px;background:#fff;border-radius:18px;padding:12px 15px;display:flex;gap:9px;align-items:center;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="width:13px;height:13px;border-radius:7px;border:2px solid rgba(30,42,38,.45);position:relative;flex:none"><div style="position:absolute;width:6px;height:2px;background:rgba(30,42,38,.45);transform:rotate(45deg);right:-5px;bottom:-1px"></div></div>
+<div style="font:400 12.5px/1 Inter;color:rgba(30,42,38,.5)">Describe it — search what you meant</div>
+</div>
+<div style="display:flex;gap:7px;margin:10px 16px 0">
+<div style="background:#2E5B44;color:#F7F3EA;border-radius:13px;padding:7px 12px;font:700 10.5px/1 Nunito">All</div>
+<div style="background:#fff;border-radius:13px;padding:7px 12px;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.65);box-shadow:0 1px 6px rgba(30,42,38,.06)">People</div>
+<div style="background:#fff;border-radius:13px;padding:7px 12px;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.65);box-shadow:0 1px 6px rgba(30,42,38,.06)">Mood</div>
+<div style="background:#fff;border-radius:13px;padding:7px 12px;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.65);box-shadow:0 1px 6px rgba(30,42,38,.06)">Body</div>
+</div>
+<div style="margin:12px 16px 0;display:flex;flex-direction:column;gap:10px">
+<div style="background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;justify-content:space-between"><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(30,42,38,.5)">TONIGHT · 2M 0S · 58 WORDS</div><div style="color:#D9A441;font-size:12px;line-height:1">✦</div></div>
+<div style="font:400 13px/1.55 Inter;margin-top:8px">Had a wonderful morning walk in the park today. The cherry blossoms are starting to bloom…</div>
+<div style="display:flex;gap:6px;margin-top:10px"><div style="background:#E4EDE4;border-radius:10px;padding:5px 9px;font:600 9.5px/1 'DM Mono',monospace;color:#2E5B44">PARK</div><div style="background:#F3E7CD;border-radius:10px;padding:5px 9px;font:600 9.5px/1 'DM Mono',monospace;color:#8A6A1F">PEACEFUL</div><div style="background:rgba(16,27,45,.07);border-radius:10px;padding:5px 9px;font:600 9.5px/1 'DM Mono',monospace;color:#101B2D">7H12 SLEEP</div></div>
+</div>
+<div style="background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;justify-content:space-between"><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(30,42,38,.5)">SAT · 0:51</div><div style="color:rgba(30,42,38,.3);font-size:12px;line-height:1">✦</div></div>
+<div style="font:400 13px/1.55 Inter;margin-top:8px">Deep conversation with Lisa over video call tonight. She's starting therapy and was brave…</div>
+<div style="display:flex;gap:6px;margin-top:10px"><div style="background:#E4EDE4;border-radius:10px;padding:5px 9px;font:600 9.5px/1 'DM Mono',monospace;color:#2E5B44">LISA</div><div style="background:#F3E7CD;border-radius:10px;padding:5px 9px;font:600 9.5px/1 'DM Mono',monospace;color:#8A6A1F">PROUD</div></div>
+</div>
+<div style="background:#F3E7CD;border-radius:20px;padding:13px 16px;display:flex;gap:10px;align-items:center">
+<div style="font:800 16px/1 Nunito;color:#8A6A1F">✦</div>
+<div style="font:500 11.5px/1.45 Inter;color:#5B4715">Twin noticed: Lisa-weeks read braver. Ask about it.</div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:6px;margin:10px 18px 4px;background:#fff;border-radius:24px;padding:6px;box-shadow:0 2px 10px rgba(30,42,38,.07)">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Speak</div>
+<div style="flex:1;background:#2E5B44;border-radius:18px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#F7F3EA">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B3 · Journal — semantic search + timeline</div>
+</div>
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:14<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px;display:flex;align-items:center;gap:12px"><div style="width:30px;height:30px;border-radius:15px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 6px rgba(30,42,38,.1)"><div style="width:8px;height:8px;border-left:2px solid #1E2A26;border-bottom:2px solid #1E2A26;transform:rotate(45deg);margin-left:3px"></div></div><div><div style="font:800 18px/1.1 Nunito">Sunday, June 14</div><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(30,42,38,.5);margin-top:4px">8:43 AM · 2M 0S · 58 WORDS</div></div></div>
+<div style="margin:0 16px;background:#101B2D;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;color:#F1EDE2">
+<div style="width:36px;height:36px;border-radius:18px;background:#D9A441;display:flex;align-items:center;justify-content:center;flex:none"><div style="width:0;height:0;border-left:11px solid #101B2D;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px"></div></div>
+<div style="flex:1"><div style="display:flex;gap:2px;align-items:flex-end;height:18px"><div style="flex:1;height:7px;background:rgba(241,237,226,.35);border-radius:1px"></div><div style="flex:1;height:12px;background:rgba(241,237,226,.5);border-radius:1px"></div><div style="flex:1;height:16px;background:#D9A441;border-radius:1px"></div><div style="flex:1;height:9px;background:rgba(241,237,226,.4);border-radius:1px"></div><div style="flex:1;height:14px;background:rgba(241,237,226,.55);border-radius:1px"></div><div style="flex:1;height:6px;background:rgba(241,237,226,.3);border-radius:1px"></div><div style="flex:1;height:11px;background:rgba(241,237,226,.45);border-radius:1px"></div><div style="flex:1;height:8px;background:rgba(241,237,226,.35);border-radius:1px"></div></div></div>
+<div style="font:600 10px/1 'DM Mono',monospace;color:rgba(241,237,226,.7)">0:36</div>
+</div>
+<div style="margin:12px 16px 0;background:#fff;border-radius:20px;padding:16px 17px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="font:400 13.5px/1.7 Inter">Had a wonderful morning walk in the <span style="border-bottom:2px solid #D9A441;font-weight:600">park</span> today. The cherry blossoms are starting to bloom and there's something magical about seeing the first signs of spring. Stopped at my favorite <span style="border-bottom:2px solid #D9A441;font-weight:600">coffee shop</span> on the way back… These small moments of peace are what I treasure most.</div>
+</div>
+<div style="margin:12px 16px 0;background:#fff;border-radius:20px;padding:14px 17px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#8A6A1F">WHAT YOUR TWIN FILED ✦</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;font:400 12px/1.5 Inter">
+<div style="display:flex;gap:8px"><div style="width:96px;flex:none;font:600 9.5px/1.5 'DM Mono',monospace;color:rgba(30,42,38,.5)">MOOD</div><div>Peaceful, warm <span style="color:#4A7C59;font-weight:600">+0.6</span></div></div>
+<div style="display:flex;gap:8px"><div style="width:96px;flex:none;font:600 9.5px/1.5 'DM Mono',monospace;color:rgba(30,42,38,.5)">PLACES</div><div>park · coffee shop</div></div>
+<div style="display:flex;gap:8px"><div style="width:96px;flex:none;font:600 9.5px/1.5 'DM Mono',monospace;color:rgba(30,42,38,.5)">BODY</div><div>7h12 sleep the night before</div></div>
+<div style="display:flex;gap:8px"><div style="width:96px;flex:none;font:600 9.5px/1.5 'DM Mono',monospace;color:rgba(30,42,38,.5)">PACE</div><div>118 wpm — calmer than your average</div></div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:9px;margin:0 16px 8px">
+<div style="flex:1;background:#fff;border-radius:17px;padding:12px 0;text-align:center;font:800 12px/1 Nunito;color:#2E5B44;box-shadow:0 2px 10px rgba(30,42,38,.07)">Edit</div>
+<div style="flex:1;background:#2E5B44;border-radius:17px;padding:12px 0;text-align:center;font:800 12px/1 Nunito;color:#F7F3EA">Ask about this</div>
+</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B4 · Entry detail — transcript + Twin ledger</div>
+</div>
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:04<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px"><div style="font:800 28px/1.1 Nunito">Ask Your Twin</div><div style="font:600 10px/1 'DM Mono',monospace;letter-spacing:.12em;color:#4A7C59;margin-top:6px">ANSWERS WITH RECEIPTS · 0 NETWORK CALLS</div></div>
+<div style="margin:0 16px;display:flex;flex-direction:column;gap:10px">
+<div style="align-self:flex-end;background:#2E5B44;color:#F7F3EA;border-radius:18px 18px 5px 18px;padding:11px 15px;font:500 13px/1.4 Inter;max-width:85%">What do I say about my morning walks?</div>
+<div style="background:#fff;border-radius:18px 18px 18px 5px;padding:13px 16px;box-shadow:0 2px 10px rgba(30,42,38,.06);max-width:92%">
+<div style="font:400 12.5px/1.55 Inter;color:rgba(30,42,38,.9)">From your journal, the closest is Aug 3: <em>“Lunch with Sarah again today…”</em> Also close, Jul 29: <em>“Evening run along the river cleared my head.”</em></div>
+<div style="display:flex;gap:6px;margin-top:11px;flex-wrap:wrap">
+<div style="background:#E4EDE4;border-radius:11px;padding:6px 10px;font:600 10px/1 'DM Mono',monospace;color:#2E5B44">AUG 3 · 57%</div>
+<div style="background:#E4EDE4;border-radius:11px;padding:6px 10px;font:600 10px/1 'DM Mono',monospace;color:#2E5B44">JUL 29 · 39%</div>
+<div style="background:#F3E7CD;border-radius:11px;padding:6px 10px;font:600 10px/1 'DM Mono',monospace;color:#8A6A1F">3 CITED ✦</div>
+</div>
+</div>
+<div style="display:flex;gap:7px;flex-wrap:wrap">
+<div style="border:1.5px solid #2E5B44;border-radius:15px;padding:8px 13px;font:700 11px/1 Nunito;color:#2E5B44">How was my week?</div>
+<div style="border:1.5px solid #2E5B44;border-radius:15px;padding:8px 13px;font:700 11px/1 Nunito;color:#2E5B44">Who lifts my mood?</div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="margin:0 16px;background:#fff;border-radius:22px;padding:6px 6px 6px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 10px rgba(30,42,38,.08)">
+<div style="flex:1;font:400 12.5px/1 Inter;color:rgba(30,42,38,.45)">Ask anything…</div>
+<div style="width:38px;height:38px;border-radius:19px;background:#2E5B44;display:flex;align-items:center;justify-content:center"><div style="width:9px;height:15px;border-radius:5px;background:#F7F3EA"></div></div>
+</div>
+<div style="display:flex;gap:6px;margin:10px 18px 4px;background:#fff;border-radius:24px;padding:6px;box-shadow:0 2px 10px rgba(30,42,38,.07)">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Twin</div>
+<div style="flex:1;background:#2E5B44;border-radius:18px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#F7F3EA">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B5 · Ask Your Twin — cited answers, suggestion chips</div>
+</div>
+
+<div>
+<div class="ph" style="background:#F7F3EA;font-family:Inter,sans-serif;color:#1E2A26">
+<div class="sb" style="color:#1E2A26">9:37<div class="sbi"><div style="width:13px;height:9px;background:#1E2A26;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #1E2A26;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px"><div style="font:800 28px/1.1 Nunito">Insights</div></div>
+<div style="margin:0 16px;background:#fff;border-radius:22px;padding:15px 17px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;align-items:baseline;gap:8px"><div style="font:800 36px/1 Nunito;color:#8A6A1F">32</div><div style="font:700 13px/1 Nunito;color:rgba(30,42,38,.6)">days in a row — your longest</div></div>
+<div style="display:flex;gap:4px;margin-top:12px">
+<div style="flex:1;height:6px;border-radius:3px;background:#EAD9AC"></div><div style="flex:1;height:6px;border-radius:3px;background:#E2C57F"></div><div style="flex:1;height:6px;border-radius:3px;background:#EAD9AC"></div><div style="flex:1;height:6px;border-radius:3px;background:#D9A441"></div><div style="flex:1;height:6px;border-radius:3px;background:#E2C57F"></div><div style="flex:1;height:6px;border-radius:3px;background:#D9A441"></div><div style="flex:1;height:6px;border-radius:3px;background:#8A6A1F"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:11px;font:600 9.5px/1 'DM Mono',monospace;color:rgba(30,42,38,.55)"><div>LONGEST 32</div><div>THIS MONTH 14</div><div>TOTAL 35</div></div>
+</div>
+<div style="margin:10px 16px 0;background:#fff;border-radius:22px;padding:15px 17px 8px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="display:flex;justify-content:space-between"><div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:rgba(30,42,38,.5)">MOOD · LAST 7 DAYS</div><div style="font:600 9.5px/1 'DM Mono',monospace;color:#4A7C59">▲ +0.4</div></div>
+<svg viewBox="0 0 296 96" style="width:100%;display:block;margin-top:4px">
+<defs><linearGradient id="fsIm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9A441" stop-opacity=".3"></stop><stop offset="1" stop-color="#D9A441" stop-opacity="0"></stop></linearGradient></defs>
+<path d="M10,44 C28,44 42,52 58,52 C76,52 88,58 104,58 C122,58 134,40 150,40 C168,40 180,28 196,28 C214,28 226,34 242,34 C258,34 272,40 286,40 L286,84 L10,84 Z" fill="url(#fsIm)"></path>
+<path d="M10,44 C28,44 42,52 58,52 C76,52 88,58 104,58 C122,58 134,40 150,40 C168,40 180,28 196,28 C214,28 226,34 242,34 C258,34 272,40 286,40" fill="none" stroke="#D9A441" stroke-width="2" stroke-linecap="round"></path>
+<circle cx="286" cy="40" r="6" fill="#D9A441" fill-opacity=".25"></circle><circle cx="286" cy="40" r="3.5" fill="#D9A441"></circle>
+</svg>
+</div>
+<div style="margin:10px 16px 0;background:#fff;border-radius:22px;padding:14px 17px;box-shadow:0 2px 10px rgba(30,42,38,.06)">
+<div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#8A6A1F">YOUR TWIN NOTICED ✦</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:10px;font:400 12.5px/1.5 Inter">
+<div style="display:flex;gap:9px"><div style="width:26px;height:26px;border-radius:9px;background:#F3E7CD;display:flex;align-items:center;justify-content:center;flex:none"><div style="font:800 12px/1 Nunito;color:#8A6A1F">✦</div></div><div><strong>Longest streak.</strong> 32 days in a row — your record.</div></div>
+<div style="display:flex;gap:9px"><div style="width:26px;height:26px;border-radius:9px;background:#E4EDE4;display:flex;align-items:center;justify-content:center;flex:none"><div style="font:800 12px/1 Nunito;color:#2E5B44">▲</div></div><div><strong>Positive week.</strong> Entries after 7h+ sleep run +0.3 warmer.</div></div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:6px;margin:10px 18px 4px;background:#fff;border-radius:24px;padding:6px;box-shadow:0 2px 10px rgba(30,42,38,.07)">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Journal</div>
+<div style="flex:1;background:#2E5B44;border-radius:18px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#F7F3EA">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(30,42,38,.55)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#1E2A26;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">B6 · Insights — streak, mood curve, patterns (lives inside Twin tab)</div>
+</div>
+
+</div>
+</section>
+
+<section class="fs-sec" id="night">
+<div class="fs-h"><a class="fs-id" href="#night">C</a><span class="fs-t">Core screens — Night theme (auto after sunset or system dark)</span></div>
+<div class="fs-row">
+
+<div>
+<div class="ph" style="background:#101B2D;font-family:Inter,sans-serif;color:#F1EDE2">
+<div class="sb" style="color:#F1EDE2">11:11<div class="sbi"><div style="width:13px;height:9px;background:#F1EDE2;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #F1EDE2;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 0"><div style="font:600 12px/1 Inter;color:#D9A441">Good night</div><div style="font:800 30px/1.15 Nunito;margin-top:6px">Sunday,<br>June 14</div><div style="display:flex;gap:7px;margin-top:12px"><div style="background:rgba(217,164,65,.16);border-radius:13px;padding:7px 12px;font:600 10.5px/1 Inter;color:#EDCB86">✦ Tonight's star waiting</div></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+<div style="font:800 22px/1.25 Nunito;text-align:center">How was your<br>day, really?</div>
+<div style="position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center">
+<svg viewBox="0 0 150 150" style="position:absolute;inset:0;animation:fsSpin 120s linear infinite"><circle cx="75" cy="75" r="70" fill="none" stroke="#D9A441" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="0.1 10.37"></circle></svg><div style="position:absolute;inset:-12px;animation:fsSpin 16s linear infinite"><div style="position:absolute;left:50%;top:0;width:9px;height:9px;margin-left:-4.5px;border-radius:5px;background:#D9A441;box-shadow:0 0 10px rgba(217,164,65,.9)"></div></div>
+<div style="width:112px;height:112px;border-radius:56px;background:#D9A441;box-shadow:0 0 50px rgba(217,164,65,.4);display:flex;align-items:center;justify-content:center"><div style="width:24px;height:40px;border-radius:12px;background:#101B2D"></div></div>
+</div>
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.12em;color:rgba(241,237,226,.5)">TAP TO RECORD · 42 SECONDS</div>
+</div>
+<div style="margin:0 16px;background:#1C2A42;border-radius:20px;padding:12px 15px;display:flex;align-items:center;gap:10px">
+<div style="width:9px;height:9px;border-radius:5px;background:#8FBF77"></div>
+<div style="font:500 12px/1.4 Inter;color:rgba(241,237,226,.85)">Airplane mode on? Works exactly the same.</div>
+</div>
+<div style="display:flex;gap:6px;margin:12px 18px 4px;background:#1C2A42;border-radius:24px;padding:6px">
+<div style="flex:1;background:#D9A441;border-radius:18px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#101B2D">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#F1EDE2;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">C1 · Record · Night</div>
+</div>
+
+<div>
+<div class="ph" style="background:#101B2D;font-family:Inter,sans-serif;color:#F1EDE2">
+<div class="sb" style="color:#F1EDE2">9:37<div class="sbi"><div style="width:13px;height:9px;background:#F1EDE2;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #F1EDE2;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 0;display:flex;justify-content:space-between;align-items:flex-end"><div style="font:800 28px/1.1 Nunito">Your sky</div><div style="font:800 13px/1 'DM Mono',monospace;color:#D9A441">140 ✦ · DEEP</div></div>
+<div style="position:relative;height:300px">
+<svg viewBox="0 0 360 300" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
+<defs><radialGradient id="fsTw" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#D9A441" stop-opacity=".22"></stop><stop offset="100%" stop-color="#D9A441" stop-opacity="0"></stop></radialGradient></defs>
+<circle cx="180" cy="140" r="140" fill="url(#fsTw)"><animate attributeName="opacity" values=".7;1;.7" dur="5s" repeatCount="indefinite"></animate></circle>
+<g><animateTransform attributeName="transform" type="rotate" from="0 180 140" to="360 180 140" dur="80s" repeatCount="indefinite"></animateTransform><circle cx="180" cy="140" r="58" fill="none" stroke="#F1EDE2" stroke-opacity=".16" stroke-dasharray="1 6"></circle></g>
+<g><animateTransform attributeName="transform" type="rotate" from="360 180 140" to="0 180 140" dur="130s" repeatCount="indefinite"></animateTransform><circle cx="180" cy="140" r="96" fill="none" stroke="#F1EDE2" stroke-opacity=".1" stroke-dasharray="1 8"></circle></g>
+<g><animateTransform attributeName="transform" type="rotate" from="0 180 140" to="360 180 140" dur="18s" repeatCount="indefinite"></animateTransform><circle cx="180" cy="44" r="6" fill="#D9A441" opacity=".25"></circle><circle cx="180" cy="44" r="2.6" fill="#D9A441"></circle></g>
+<g><animateTransform attributeName="transform" type="rotate" from="0 180 140" to="-360 180 140" dur="30s" repeatCount="indefinite"></animateTransform><circle cx="180" cy="82" r="2" fill="#9DC1E4"></circle></g>
+<path d="M180,140 Q134,102 98,78" fill="none" stroke="#D9A441" stroke-opacity=".5" stroke-width="1.4"></path>
+<path d="M180,140 Q232,110 268,92" fill="none" stroke="#D9A441" stroke-opacity=".38" stroke-width="1.4"></path>
+<path d="M180,140 Q146,196 120,224" fill="none" stroke="#D9A441" stroke-opacity=".38" stroke-width="1.4"></path>
+<path d="M180,140 Q228,186 260,208" fill="none" stroke="#D9A441" stroke-opacity=".3" stroke-width="1.4"></path>
+<circle cx="180" cy="140" r="18" fill="#D9A441" fill-opacity=".2"></circle><circle cx="180" cy="140" r="11" fill="#D9A441"></circle>
+<circle cx="98" cy="78" r="11" fill="#F1EDE2" fill-opacity=".15"></circle><circle cx="98" cy="78" r="6" fill="#F1EDE2"></circle>
+<circle cx="268" cy="92" r="5" fill="#9DC1E4"></circle>
+<circle cx="120" cy="224" r="5" fill="#F1EDE2" fill-opacity=".9"></circle>
+<circle cx="260" cy="208" r="4.5" fill="#D9A441" fill-opacity=".85"></circle>
+<circle cx="50" cy="146" r="2" fill="#F1EDE2" fill-opacity=".5"><animate attributeName="fill-opacity" values=".5;.12;.5" dur="3.2s" repeatCount="indefinite"></animate></circle><circle cx="316" cy="156" r="2.2" fill="#F1EDE2" fill-opacity=".45"><animate attributeName="fill-opacity" values=".45;.1;.45" dur="4.1s" begin="1s" repeatCount="indefinite"></animate></circle><circle cx="212" cy="44" r="2.2" fill="#F1EDE2" fill-opacity=".5"><animate attributeName="fill-opacity" values=".5;.15;.5" dur="2.7s" begin=".4s" repeatCount="indefinite"></animate></circle><circle cx="70" cy="258" r="2" fill="#F1EDE2" fill-opacity=".4"><animate attributeName="fill-opacity" values=".4;.1;.4" dur="3.6s" begin="1.6s" repeatCount="indefinite"></animate></circle><circle cx="300" cy="252" r="2.4" fill="#D9A441" fill-opacity=".55"><animate attributeName="fill-opacity" values=".55;.2;.55" dur="3s" begin=".8s" repeatCount="indefinite"></animate></circle><circle cx="142" cy="62" r="1.7" fill="#F1EDE2" fill-opacity=".4"><animate attributeName="fill-opacity" values=".4;.1;.4" dur="2.9s" begin="1.2s" repeatCount="indefinite"></animate></circle><circle cx="252" cy="248" r="1.8" fill="#F1EDE2" fill-opacity=".4"><animate attributeName="fill-opacity" values=".4;.12;.4" dur="3.8s" begin=".2s" repeatCount="indefinite"></animate></circle><circle cx="36" cy="66" r="1.6" fill="#F1EDE2" fill-opacity=".35"><animate attributeName="fill-opacity" values=".35;.1;.35" dur="3.4s" begin="2s" repeatCount="indefinite"></animate></circle>
+</svg>
+<div style="position:absolute;left:62px;top:44px;background:rgba(217,164,65,.16);border:1px solid rgba(217,164,65,.4);border-radius:11px;padding:6px 10px;font:800 10px/1 Nunito;color:#EDCB86">SARAH</div>
+<div style="position:absolute;right:36px;top:64px;font:800 10px/1 Nunito;color:rgba(241,237,226,.6)">JAMES</div>
+<div style="position:absolute;left:90px;bottom:40px;font:800 10px/1 Nunito;color:rgba(241,237,226,.6)">WORK</div>
+</div>
+<div style="margin:0 16px;background:#1C2A42;border-radius:20px;padding:13px 16px;display:flex;gap:11px;align-items:center">
+<div style="width:34px;height:34px;border-radius:17px;background:#D9A441;display:flex;align-items:center;justify-content:center;flex:none;font:800 14px/1 Nunito;color:#101B2D">✦</div>
+<div style="font:500 12px/1.45 Inter;color:rgba(241,237,226,.9)">Who you are: reserved, direct, articulate — from 140 data points.</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;margin:10px 16px 4px;background:#1C2A42;border-radius:22px;padding:5px">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Journal</div>
+<div style="flex:1;background:#D9A441;border-radius:17px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#101B2D">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#F1EDE2;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">C2 · Twin — living sky: orbits drift, stars twinkle, a comet circles</div>
+</div>
+
+<div>
+<div class="ph" style="background:#101B2D;font-family:Inter,sans-serif;color:#F1EDE2">
+<div class="sb" style="color:#F1EDE2">9:40<div class="sbi"><div style="width:13px;height:9px;background:#F1EDE2;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #F1EDE2;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px"><div style="font:800 28px/1.1 Nunito">Journal</div><div style="font:600 10px/1 'DM Mono',monospace;letter-spacing:.12em;color:#D9A441;margin-top:6px">35 THIS YEAR · EVERY WORD STAYS HERE</div></div>
+<div style="margin:0 16px;display:flex;flex-direction:column;gap:10px">
+<div style="background:#1C2A42;border-radius:20px;padding:14px 16px">
+<div style="display:flex;justify-content:space-between"><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(241,237,226,.5)">TONIGHT · 2M 0S · 58 WORDS</div><div style="color:#D9A441;font-size:12px;line-height:1">✦</div></div>
+<div style="font:400 13px/1.55 Inter;margin-top:8px;color:rgba(241,237,226,.92)">Had a wonderful morning walk in the park today. The cherry blossoms are starting to bloom…</div>
+</div>
+<div style="background:#1C2A42;border-radius:20px;padding:14px 16px">
+<div style="display:flex;justify-content:space-between"><div style="font:600 9.5px/1 'DM Mono',monospace;color:rgba(241,237,226,.5)">SAT · 0:51</div><div style="color:rgba(241,237,226,.35);font-size:12px;line-height:1">✦</div></div>
+<div style="font:400 13px/1.55 Inter;margin-top:8px;color:rgba(241,237,226,.92)">Deep conversation with Lisa over video call tonight. She's starting therapy and was brave…</div>
+</div>
+<div style="background:linear-gradient(135deg,rgba(217,164,65,.22),rgba(217,164,65,.08));border:1px solid rgba(217,164,65,.4);border-radius:20px;padding:13px 16px;display:flex;gap:10px;align-items:center">
+<div style="font:800 20px/1 Nunito;color:#D9A441">✦</div>
+<div style="font:500 12px/1.45 Inter">Tonight's star is waiting — 42 seconds before bed.</div>
+</div>
+</div>
+<div style="flex:1"></div>
+<div style="display:flex;margin:0 16px 4px;background:#1C2A42;border-radius:22px;padding:5px">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Speak</div>
+<div style="flex:1;background:#D9A441;border-radius:17px;padding:9px 0;text-align:center;font:800 10.5px/1 Nunito;color:#101B2D">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#F1EDE2;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">C3 · Journal · Night</div>
+</div>
+
+<div>
+<div class="ph" style="background:#101B2D;font-family:Inter,sans-serif;color:#F1EDE2">
+<div class="sb" style="color:#F1EDE2">9:08<div class="sbi"><div style="width:13px;height:9px;background:#F1EDE2;border-radius:1.5px"></div><div style="width:20px;height:10px;border:1.5px solid #F1EDE2;border-radius:3px"></div></div></div>
+<div class="scr">
+<div style="padding:14px 24px 10px"><div style="font:800 28px/1.1 Nunito">Settings</div></div>
+<div style="margin:0 16px;background:#1C2A42;border-radius:20px;padding:15px 17px">
+<div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#8FBF77">DATA SHIELD</div>
+<div style="display:flex;flex-direction:column;gap:9px;margin-top:11px;font:500 12px/1.4 Inter">
+<div style="display:flex;justify-content:space-between"><div>Network calls made</div><div style="font:600 11px/1.4 'DM Mono',monospace;color:#8FBF77">0 · EVER</div></div>
+<div style="display:flex;justify-content:space-between"><div>Encryption at rest</div><div style="font:600 11px/1.4 'DM Mono',monospace;color:rgba(241,237,226,.6)">AES-256</div></div>
+<div style="display:flex;justify-content:space-between"><div>Biometric lock</div><div style="width:36px;height:20px;border-radius:10px;background:#8FBF77;position:relative"><div style="position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:8px;background:#101B2D"></div></div></div>
+<div style="display:flex;justify-content:space-between"><div>Health Connect</div><div style="font:600 11px/1.4 'DM Mono',monospace;color:#EDCB86">REVIEW QUEUE</div></div>
+</div>
+</div>
+<div style="margin:10px 16px 0;background:#1C2A42;border-radius:20px;padding:15px 17px">
+<div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:rgba(241,237,226,.5)">THEME</div>
+<div style="display:flex;gap:8px;margin-top:11px">
+<div style="flex:1;border:1.5px solid rgba(241,237,226,.25);border-radius:15px;padding:10px 0;text-align:center;font:700 11px/1 Nunito;color:rgba(241,237,226,.7)">Day</div>
+<div style="flex:1;background:#D9A441;border-radius:15px;padding:10px 0;text-align:center;font:800 11px/1 Nunito;color:#101B2D">Night</div>
+<div style="flex:1;border:1.5px solid rgba(241,237,226,.25);border-radius:15px;padding:10px 0;text-align:center;font:700 11px/1 Nunito;color:rgba(241,237,226,.7)">Sunset</div>
+</div>
+<div style="font:400 11px/1.5 Inter;color:rgba(241,237,226,.55);margin-top:9px">Sunset follows the real sun — paper by day, sky by night.</div>
+</div>
+<div style="margin:10px 16px 0;background:#1C2A42;border-radius:20px;padding:15px 17px">
+<div style="font:600 9.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:rgba(241,237,226,.5)">BACKUP &amp; EXPORT</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:11px;font:500 12px/1.4 Inter">
+<div style="display:flex;justify-content:space-between"><div>Export data <span style="color:rgba(241,237,226,.5)">· PDF, JSON, MD, CSV</span></div><div style="color:rgba(241,237,226,.4)">›</div></div>
+<div style="display:flex;justify-content:space-between"><div>Import backup</div><div style="color:rgba(241,237,226,.4)">›</div></div>
+<div style="display:flex;justify-content:space-between"><div>Encrypted phone-to-phone transfer</div><div style="color:rgba(241,237,226,.4)">›</div></div>
+</div>
+</div>
+<div style="margin:10px 16px 0;display:flex;justify-content:space-between;padding:0 4px;font:400 11px/1.5 Inter;color:rgba(241,237,226,.5)"><div>Version 2.0.0 · open source</div><div>35 entries</div></div>
+<div style="flex:1"></div>
+<div style="display:flex;margin:0 16px 4px;background:#1C2A42;border-radius:22px;padding:5px">
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Speak</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Journal</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Twin</div>
+<div style="flex:1;padding:9px 0;text-align:center;font:700 10.5px/1 Nunito;color:rgba(241,237,226,.6)">Ask</div>
+</div>
+<div class="nav"><div class="pill" style="background:#F1EDE2;opacity:.5"></div></div>
+</div>
+</div>
+<div class="fs-cap">C4 · Settings — Data Shield ledger, theme, export</div>
+</div>
+
+</div>
+</section>
+
+<section class="fs-sec" id="surfaces">
+<div class="fs-h"><a class="fs-id" href="#surfaces">D</a><span class="fs-t">System surfaces — widgets, Quick Settings, Live Update (final palette)</span></div>
+<div class="fs-row">
+<div style="width:400px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:20px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">HOME WIDGET 4×2 · DAY + NIGHT</div>
+<div style="background:#F7F3EA;border:1px solid rgba(30,42,38,.1);border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:13px">
+<div style="width:48px;height:48px;border-radius:24px;background:#2E5B44;display:flex;align-items:center;justify-content:center;flex:none"><div style="width:11px;height:19px;border-radius:6px;background:#F7F3EA"></div></div>
+<div style="flex:1"><div style="font:600 13px/1.3 Inter;color:#1E2A26">Day 32 · speak tonight</div><div style="display:flex;gap:4px;margin-top:6px"><div style="width:7px;height:7px;border-radius:4px;background:#E2C57F"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;background:#E2C57F"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;background:#E2C57F"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;border:1.5px solid #D9A441;box-sizing:border-box"></div></div></div>
+<div style="font:600 10px/1.4 'DM Mono',monospace;color:rgba(30,42,38,.5);text-align:right">SKY<br><span style="color:#8A6A1F">140 ✦</span></div>
+</div>
+<div style="background:#101B2D;border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:13px">
+<div style="width:48px;height:48px;border-radius:24px;background:#D9A441;display:flex;align-items:center;justify-content:center;flex:none"><div style="width:11px;height:19px;border-radius:6px;background:#101B2D"></div></div>
+<div style="flex:1"><div style="font:600 13px/1.3 Inter;color:#F1EDE2">Day 32 · speak tonight</div><div style="display:flex;gap:4px;margin-top:6px"><div style="width:7px;height:7px;border-radius:4px;background:rgba(217,164,65,.6)"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;background:rgba(217,164,65,.7)"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;background:rgba(217,164,65,.65)"></div><div style="width:7px;height:7px;border-radius:4px;background:#D9A441"></div><div style="width:7px;height:7px;border-radius:4px;border:1.5px solid #D9A441;box-sizing:border-box"></div></div></div>
+<div style="font:600 10px/1.4 'DM Mono',monospace;color:rgba(241,237,226,.5);text-align:right">SKY<br><span style="color:#D9A441">140 ✦</span></div>
+</div>
+<div style="font:400 11px/1.5 Inter;color:rgba(0,0,0,.55)">Last 7 nights as stars, tonight hollow. Never shows entry text — it sits on a lock screen.</div>
+</div>
+
+<div style="width:400px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:20px 22px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px">
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">QUICK SETTINGS TILE · IDLE / RECORDING</div>
+<div style="display:flex;gap:10px">
+<div style="flex:1;background:rgba(16,27,45,.08);border-radius:20px;padding:13px 15px;display:flex;align-items:center;gap:10px"><div style="width:10px;height:17px;border-radius:6px;background:rgba(16,27,45,.5)"></div><div style="font:600 12px/1.25 Inter;color:#1E2A26">DailyVox<br><span style="font-weight:400;font-size:10.5px;color:rgba(30,42,38,.6)">tap to speak</span></div></div>
+<div style="flex:1;background:#2E5B44;border-radius:20px;padding:13px 15px;display:flex;align-items:center;gap:10px"><div style="width:10px;height:17px;border-radius:6px;background:#F7F3EA"></div><div style="font:600 12px/1.25 Inter;color:#F7F3EA">DailyVox<br><span style="font-weight:400;font-size:10.5px;opacity:.8">0:28 · recording</span></div></div>
+</div>
+<div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45);margin-top:4px">LIVE UPDATE · CHIP → NOTIFICATION</div>
+<div style="display:flex;justify-content:center"><div style="background:#101B2D;border-radius:16px;padding:7px 14px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:4px;background:#D9A441"></div><div style="font:600 11px/1 'DM Mono',monospace;color:#F1EDE2">0:28</div></div></div>
+<div style="background:#101B2D;border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+<div style="position:relative;width:44px;height:44px;flex:none"><svg viewBox="0 0 44 44" style="width:44px;height:44px"><circle cx="22" cy="22" r="19" fill="#1C2A42"></circle><circle cx="22" cy="22" r="19" fill="none" stroke="#D9A441" stroke-width="3" stroke-linecap="round" stroke-dasharray="79.6 119.4" transform="rotate(-90 22 22)"></circle></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:9px;height:15px;border-radius:5px;background:#D9A441"></div></div></div>
+<div style="flex:1"><div style="font:600 13px/1.3 Inter;color:#F1EDE2">Listening · 0:28 of 0:42</div><div style="font:400 11px/1.4 Inter;color:rgba(241,237,226,.6)">on-device · 0 bytes out</div></div>
+<div style="background:#D9A441;border-radius:14px;padding:9px 14px;font:800 11.5px/1 Nunito;color:#101B2D">Finish</div>
+</div>
+<div style="font:400 11px/1.5 Inter;color:rgba(0,0,0,.55)">Ring fills to 42s then counts up quietly. On save, the star flies into the status chip (600ms) and the chip glows gold for a minute. iOS: identical states on Live Activity / Dynamic Island.</div>
+</div>
+</div>
+</section>
+
+
+<section class="fs-sec" id="island">
+<div class="fs-h"><a class="fs-id" href="#island">E</a><span class="fs-t">Dynamic Island (iOS) · same choreography on Android's status chip</span></div>
+<div class="fs-row">
+
+<div style="width:340px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:18px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:11px">
+<div style="font:500 9.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">1 · COMPACT — LISTENING</div>
+<div style="display:flex;justify-content:center;padding:6px 0"><div style="background:#000;border-radius:22px;padding:9px 16px;display:flex;align-items:center;gap:10px;min-width:190px">
+<div style="width:8px;height:8px;border-radius:4px;background:#D9A441;animation:fsBlink 1.6s ease-in-out infinite"></div>
+<div style="display:flex;gap:2.5px;align-items:center;height:14px;flex:1;justify-content:center">
+<div style="width:2.5px;height:7px;background:rgba(217,164,65,.6);border-radius:2px;animation:fsWave 1s ease-in-out 0s infinite"></div>
+<div style="width:2.5px;height:12px;background:#D9A441;border-radius:2px;animation:fsWave 1s ease-in-out .15s infinite"></div>
+<div style="width:2.5px;height:9px;background:rgba(217,164,65,.75);border-radius:2px;animation:fsWave 1s ease-in-out .3s infinite"></div>
+<div style="width:2.5px;height:14px;background:#D9A441;border-radius:2px;animation:fsWave 1s ease-in-out .45s infinite"></div>
+<div style="width:2.5px;height:8px;background:rgba(217,164,65,.6);border-radius:2px;animation:fsWave 1s ease-in-out .6s infinite"></div>
+<div style="width:2.5px;height:11px;background:rgba(217,164,65,.85);border-radius:2px;animation:fsWave 1s ease-in-out .75s infinite"></div>
+</div>
+<div style="position:relative;width:22px;height:22px"><svg viewBox="0 0 22 22" style="width:22px;height:22px"><circle cx="11" cy="11" r="9" fill="none" stroke="rgba(241,237,226,.2)" stroke-width="2.5"></circle><circle cx="11" cy="11" r="9" fill="none" stroke="#D9A441" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="37.7 56.5" transform="rotate(-90 11 11)"></circle></svg></div>
+</div></div>
+<div style="font:400 11px/1.55 Inter;color:rgba(0,0,0,.6)">Waveform breathes with the real voice; the ring is the 42s dial wrapped around the camera.</div>
+</div>
+
+<div style="width:340px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:18px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:11px">
+<div style="font:500 9.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">2 · A STAR IS CAUGHT</div>
+<div style="display:flex;justify-content:center;padding:6px 0"><div style="background:#000;border-radius:22px;padding:9px 16px;display:flex;align-items:center;gap:10px;min-width:230px">
+<div style="width:8px;height:8px;border-radius:4px;background:#D9A441"></div>
+<div style="font:600 12px/1 Inter;color:#F1EDE2">Sarah</div>
+<svg viewBox="0 0 14 14" style="width:14px;height:14px;animation:fsPulse 1.4s ease-in-out infinite"><path d="M7,0 L8.6,5.4 L14,7 L8.6,8.6 L7,14 L5.4,8.6 L0,7 L5.4,5.4 Z" fill="#D9A441"></path></svg>
+<div style="font:400 11px/1 Inter;color:rgba(241,237,226,.55)">filed to your sky</div>
+</div></div>
+<div style="font:400 11px/1.55 Inter;color:rgba(0,0,0,.6)">Each person, place or feeling the on-device NER catches blinks a four-point star with the name — half a second, then back to listening. A live audience of one: your Twin.</div>
+</div>
+
+<div style="width:340px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:18px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:11px">
+<div style="font:500 9.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">3 · LONG-PRESS — EXPANDED</div>
+<div style="display:flex;justify-content:center;padding:2px 0"><div style="background:#000;border-radius:28px;padding:14px 18px;width:290px;box-sizing:border-box">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:4px;background:#D9A441;animation:fsBlink 1.6s ease-in-out infinite"></div><div style="font:500 10px/1 'DM Mono',monospace;color:rgba(241,237,226,.6)">0:28 / 0:42</div></div><div style="font:500 9.5px/1 'DM Mono',monospace;color:#8FBF77">0 BYTES OUT</div></div>
+<div style="font:400 12.5px/1.55 Inter;color:#F1EDE2;margin-top:9px">“…Sarah's flight lands tonight and I'm more nervous than—”</div>
+<div style="height:3px;border-radius:2px;background:rgba(241,237,226,.12);margin-top:10px;overflow:hidden"><div style="width:74%;height:3px;background:linear-gradient(90deg,rgba(217,164,65,.5),#D9A441)"></div></div>
+<div style="display:flex;gap:8px;margin-top:11px"><div style="flex:1;background:#D9A441;border-radius:13px;padding:9px 0;text-align:center;font:800 11.5px/1 Nunito;color:#101B2D">Finish ✦</div><div style="flex:1;border:1px solid rgba(241,237,226,.25);border-radius:13px;padding:9px 0;text-align:center;font:700 11.5px/1 Nunito;color:rgba(241,237,226,.8)">Discard</div></div>
+</div></div>
+<div style="font:400 11px/1.55 Inter;color:rgba(0,0,0,.6)">Last transcribed phrase, live — proof it writes itself on the phone. The gradient bar is today's valence tinting warmer as you talk.</div>
+</div>
+
+<div style="width:340px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:18px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:11px">
+<div style="font:500 9.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:rgba(0,0,0,.45)">4 · SAVED — THE STAR FLIES HOME</div>
+<div style="display:flex;justify-content:center;padding:6px 0"><div style="background:#000;border-radius:22px;padding:9px 18px;display:flex;align-items:center;gap:11px;min-width:220px;box-shadow:0 0 18px rgba(217,164,65,.35);animation:fsBlink 3s ease-in-out infinite">
+<svg viewBox="0 0 14 14" style="width:14px;height:14px"><path d="M7,0 L8.6,5.4 L14,7 L8.6,8.6 L7,14 L5.4,8.6 L0,7 L5.4,5.4 Z" fill="#D9A441"></path></svg>
+<div style="font:600 12px/1 Inter;color:#F1EDE2">Star 141 kept</div>
+<div style="font:500 11px/1 'DM Mono',monospace;color:rgba(241,237,226,.5)">140→<span style="color:#D9A441">141 ✦</span></div>
+</div></div>
+<div style="font:400 11px/1.55 Inter;color:rgba(0,0,0,.6)">On save, the star arcs from screen centre into the island (~600ms matched-geometry), the count ticks up, and the island glows a gold ember for a minute — the day is banked. Android mirrors this as the Live Update collapsing into the status chip.</div>
+</div>
+
+</div>
+</section></x-dc>
+</body>
+</html>

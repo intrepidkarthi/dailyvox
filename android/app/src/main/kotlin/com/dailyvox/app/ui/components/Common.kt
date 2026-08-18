@@ -25,13 +25,13 @@ import com.dailyvox.app.ui.theme.*
  */
 @Composable
 fun DvCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val dark = MaterialTheme.colorScheme.background == DarkBackground
+    val dark = MaterialTheme.colorScheme.background == NightBackground
     Column(
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .then(if (dark) Modifier else Modifier.border(1.dp, LightOutline, RoundedCornerShape(24.dp)))
+            .then(if (dark) Modifier else Modifier.border(1.dp, DayTextSecondary, RoundedCornerShape(24.dp)))
             .padding(18.dp),
         content = content,
     )

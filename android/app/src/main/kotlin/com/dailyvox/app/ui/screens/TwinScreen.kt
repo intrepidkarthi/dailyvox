@@ -70,7 +70,7 @@ fun TwinScreen(
             Modifier
                 .fillMaxWidth()
                 .height(skyHeight)
-                .background(Brush.verticalGradient(listOf(SkyTop, SkyBottom)))
+                .background(Brush.verticalGradient(listOf(SkyBackground, SkySurface)))
         ) {
             Canvas(Modifier.fillMaxSize()) { drawSky(entries, breath) }
 
@@ -79,10 +79,10 @@ fun TwinScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("Your Twin", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = DarkText)
+                Text("Your Twin", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = NightText)
                 Text(
                     "$resolution%",
-                    fontSize = 13.sp, fontWeight = FontWeight.Bold, color = DarkBackground,
+                    fontSize = 13.sp, fontWeight = FontWeight.Bold, color = NightBackground,
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(StarGold)
@@ -91,7 +91,7 @@ fun TwinScreen(
             }
             Text(
                 "${entries.size} stars · your inner sky deepens",
-                fontSize = 11.sp, color = DarkTextSecondary,
+                fontSize = 11.sp, color = NightTextSecondary,
                 modifier = Modifier.align(Alignment.BottomStart).padding(20.dp),
             )
         }
@@ -213,7 +213,7 @@ private fun DrawScope.drawSky(entries: List<Entry>, breath: Float) {
     repeat(40) { i ->
         val x = hash(i * 7L + 1) * w
         val y = hash(i * 13L + 2) * h
-        drawCircle(DarkText.copy(alpha = 0.05f + hash(i * 3L) * 0.05f), radius = 1.1f, center = Offset(x, y))
+        drawCircle(NightText.copy(alpha = 0.05f + hash(i * 3L) * 0.05f), radius = 1.1f, center = Offset(x, y))
     }
 
     val maturity = min(1f, entries.size / 30f)
@@ -257,7 +257,7 @@ private fun DrawScope.drawSky(entries: List<Entry>, breath: Float) {
     )
     drawCircle(StarGold.copy(alpha = 0.22f), radius = core * 1.7f, center = Offset(cx, cy))
     drawCircle(StarGold, radius = core, center = Offset(cx, cy))
-    drawCircle(DarkBackground, radius = core * 0.42f, center = Offset(cx, cy))
+    drawCircle(NightBackground, radius = core * 0.42f, center = Offset(cx, cy))
     drawCircle(StarGold.copy(alpha = 0.5f), radius = core * 2.5f, center = Offset(cx, cy),
                style = Stroke(1f))
 }

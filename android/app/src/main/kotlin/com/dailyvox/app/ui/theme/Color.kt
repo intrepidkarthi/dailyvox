@@ -2,48 +2,55 @@ package com.dailyvox.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Design tokens from research/design/package/DESIGN-SPEC.md system 3a.
-// Light = cream paper, Dark = night sky, and the constellation is dark in both:
-// "the sky is always night."
-//
-// NOTE, and it needs a decision: these differ from the SHIPPED iOS palette,
-// which is sage #5B7C6B primary + gold #D4A547 (DesignSystem.swift:40-58, and
-// carried on the website as --brand:#5B7C6B). The design spec's own §9 asks for
-// exactly this sanity check, having been built without access to the real app.
-// Building to the design package as given; see docs/android/05-palette-divergence.md.
+/**
+ * "Evergreen & Gold Hour" — research/design/final/FINAL-SPEC.md §1.
+ *
+ * Replaces the earlier ink/amber tokens wholesale. The colour grammar is the
+ * point and it is strict:
+ *
+ *     GREEN ACTS.    Record, send, save, confirm. Never decoration.
+ *     GOLD REWARDS.  Stars, streaks, insights, the Twin — what the user made.
+ *     NAVY IS SKY.   The Twin screen and the night theme. Always night.
+ *     CREAM IS PAPER. Day surfaces. Nothing else gets colour.
+ *
+ * Never swap green and gold. The one exception is written into the spec: at
+ * night gold becomes the actor, because green on navy has no presence.
+ *
+ * No pure black and no pure white text, anywhere.
+ */
 
-// ── Light: cream paper ───────────────────────────────────────────────────────
-val LightBackground     = Color(0xFFFAF8F5)
-val LightSurface        = Color(0xFFFFFFFF)
-val LightSurfaceVariant = Color(0xFFF1EDE6)   // nav
-val LightOutline        = Color(0x170F140F)   // hairline, ~9% ink
-val LightText           = Color(0xFF0F140F)
-val LightTextSecondary  = Color(0x990F140F)   // 60%
-val LightAccent         = Color(0xFF8A4A20)   // terracotta — amber fails contrast on cream
-val LightAccentNegative = Color(0xFFB0533A)
-val LightPositive       = Color(0xFF4F7A3E)
+// ── Day: cream paper + forest green ─────────────────────────────────────────
+val DayBackground     = Color(0xFFF7F3EA)
+val DaySurface        = Color(0xFFFFFFFF)
+val DayText           = Color(0xFF1E2A26)
+val DayTextSecondary  = Color(0x991E2A26)   // 60%
+val DayAction         = Color(0xFF2E5B44)   // forest green — ACTIONS ONLY
+val DayOnAction       = Color(0xFFF7F3EA)
+val DayPositive       = Color(0xFF4A7C59)
+val DayGreenTint      = Color(0xFFE4EDE4)   // chips
+/** Gold on cream is decorative; gold TEXT on cream must use this for AA. */
+val DayGoldText       = Color(0xFF8A6A1F)
+val DayGoldTint       = Color(0xFFF3E7CD)
 
-// ── Dark: night sky ──────────────────────────────────────────────────────────
-//
-// Retuned for CONTRAST. The first pass was technically the spec's values and
-// rendered as mud: cards at #1A211A sat almost on top of a #0F140F ground, so
-// nothing had edges, and every accent was used at low opacity. Direction 1c —
-// the design package's actual recommendation — is not subtle. It has a bright
-// amber record disc, a solid amber nav pill and clearly lifted surfaces.
-//
-// The ground goes darker and the surfaces lighter so they separate; amber gets
-// brighter so it reads as the action colour rather than a tint.
-val DarkBackground      = Color(0xFF0A0D0A)   // deeper, so surfaces can lift
-val DarkSurface         = Color(0xFF1C241C)   // clearly above the ground
-val DarkSurfaceHigh     = Color(0xFF273127)   // pressed / active states
-val DarkText            = Color(0xFFF4F1E8)
-val DarkTextSecondary   = Color(0xB3F4F1E8)   // 70%, was 60% and read as grey mush
-val DarkAccent          = Color(0xFFF0BE63)   // brighter amber — this is the ACTION colour
-val DarkAccentDim       = Color(0xFF8A6E33)
-val DarkAccentNegative  = Color(0xFFD4816A)
-val DarkPositive        = Color(0xFFA8D98C)
+// ── Night: navy sky + gold ──────────────────────────────────────────────────
+val NightBackground    = Color(0xFF101B2D)
+val NightSurface       = Color(0xFF1C2A42)   // tonal, no border
+val NightText          = Color(0xFFF1EDE2)
+val NightTextSecondary = Color(0x99F1EDE2)   // 60%
+val NightAction        = Color(0xFFD9A441)   // gold is the actor at night
+val NightOnAction      = Color(0xFF101B2D)
+val NightPositive      = Color(0xFF8FBF77)
+val NightGoldText      = Color(0xFFEDCB86)
+val NightGoldTint      = Color(0x29D9A441)   // 16%
 
-// ── Constellation: dark in BOTH themes, never wallpaper-themed ───────────────
-val SkyTop    = Color(0xFF0F140F)
-val SkyBottom = Color(0xFF16211A)
-val StarGold  = Color(0xFFF0BE63)
+// ── Shared ──────────────────────────────────────────────────────────────────
+/** The one gold. Stars, streaks, ticks, anything the user made. */
+val Gold        = Color(0xFFD9A441)
+/** Constellation only — never UI chrome. */
+val StarBlue    = Color(0xFF9DC1E4)
+val StarGold    = Gold
+
+/** The Twin screen renders night tokens under BOTH themes: the sky is always
+ *  night (FINAL-SPEC §8.4). */
+val SkyBackground = NightBackground
+val SkySurface    = NightSurface
