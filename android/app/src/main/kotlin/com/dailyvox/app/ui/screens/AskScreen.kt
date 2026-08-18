@@ -35,6 +35,26 @@ import kotlin.math.abs
  * have; structured questions over real statistics need none, work everywhere, and
  * cannot hallucinate. Capability tiers become unnecessary rather than disclosed.
  */
+/** B5 citation chip. Gold tint, DM Mono, and a solid variant for the count. */
+@Composable
+private fun CiteChip(text: String, solid: Boolean = false) {
+    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
+                   else com.dailyvox.app.ui.theme.DayGoldText
+    Text(
+        text,
+        fontSize = 9.5.sp, letterSpacing = 0.6.sp, fontWeight = FontWeight.SemiBold,
+        color = if (solid && !night) com.dailyvox.app.ui.theme.DayGoldText else goldText,
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                if (solid) com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.28f else 0.38f)
+                else com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.16f else 0.20f)
+            )
+            .padding(horizontal = 9.dp, vertical = 5.dp),
+    )
+}
+
 @Composable
 fun AskScreen(entries: List<Entry>, modifier: Modifier = Modifier) {
     var asked by remember { mutableStateOf<Question?>(null) }
@@ -59,7 +79,7 @@ fun AskScreen(entries: List<Entry>, modifier: Modifier = Modifier) {
                 color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(horizontal = 14.dp, vertical = 10.dp),
             )
             Spacer(Modifier.height(14.dp))
@@ -69,13 +89,21 @@ fun AskScreen(entries: List<Entry>, modifier: Modifier = Modifier) {
                 val cites = q.cites(entries)
                 if (cites.isNotEmpty()) {
                     Spacer(Modifier.height(14.dp))
-                    MonoLabel("From your entries")
-                    Spacer(Modifier.height(8.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    // The receipts. A cited entry is something the user MADE, so
+                    // the chips are gold — and the count is stated so the claim
+                    // "answers with receipts" is checkable at a glance.
+                    androidx.compose.foundation.layout.FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
                         cites.take(3).forEach {
-                            Chip(SimpleDateFormat("EEE d MMM", Locale.getDefault()).format(Date(it.createdAt)))
+                            CiteChip(
+                                SimpleDateFormat("MMM d", Locale.getDefault())
+                                    .format(Date(it.createdAt)).uppercase()
+                            )
                         }
-                        if (cites.size > 3) Chip("+${cites.size - 3}")
+                        if (cites.size > 3) CiteChip("+${cites.size - 3}")
+                        CiteChip("${cites.size} CITED ✦", solid = true)
                     }
                 }
             }

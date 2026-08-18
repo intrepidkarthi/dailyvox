@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.ui.theme.Gold
+import androidx.compose.ui.text.font.FontWeight
 import com.dailyvox.app.ui.components.*
 import com.dailyvox.app.ui.theme.StarGold
 import java.util.*
@@ -51,11 +53,56 @@ fun InsightsScreen(
             it.createdAt in (System.currentTimeMillis() - 14L * 86_400_000)..(System.currentTimeMillis() - 7L * 86_400_000)
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            Stat("Streak", "$streak", "days", Modifier.weight(1f))
-            Stat("This week", "${week.size}", "entries", Modifier.weight(1f))
-            val delta = if (prior.isEmpty()) null else week.size - prior.size
-            Stat("vs last", delta?.let { "${if (it >= 0) "+" else ""}$it" } ?: "—", "entries", Modifier.weight(1f))
+        // B6 streak card: giant gold numeral, a 7-day bar strip, and the three
+        // totals in DM Mono. The number is the reward, so it is gold — and gold
+        // TEXT on cream must use the AA-safe tone, not the accent itself.
+        val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+        val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
+                       else com.dailyvox.app.ui.theme.DayGoldText
+        DvCard {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text("$streak", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold,
+                     color = goldText)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    if (streak > 0) "days in a row — your longest" else "no streak yet",
+                    fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 3.dp),
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            // Seven bars, one per night. Intensity carries whether that night
+            // was spoken and how it read — a night with nothing stays palest.
+            val today = System.currentTimeMillis() / 86_400_000L
+            val byDay = entries.groupBy { it.createdAt / 86_400_000L }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                (6 downTo 0).forEach { back ->
+                    val e = byDay[today - back]?.firstOrNull()
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(6.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(
+                                when {
+                                    e == null -> Gold.copy(alpha = 0.18f)
+                                    e.valence > 0.2f -> Gold
+                                    e.valence > -0.2f -> Gold.copy(alpha = 0.62f)
+                                    else -> goldText.copy(alpha = 0.75f)
+                                }
+                            )
+                    )
+                }
+            }
+            Spacer(Modifier.height(11.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                MonoLabel("longest $streak")
+                MonoLabel("this month ${entries.count {
+                    it.createdAt > System.currentTimeMillis() - 30L * 86_400_000
+                }}")
+                MonoLabel("total ${entries.size}")
+            }
         }
 
         Spacer(Modifier.height(20.dp))

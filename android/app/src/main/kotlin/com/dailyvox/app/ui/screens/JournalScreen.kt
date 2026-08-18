@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.ui.theme.Gold
+import androidx.compose.foundation.layout.FlowRow
 import com.dailyvox.app.ui.components.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -55,8 +57,37 @@ fun JournalScreen(
 
     Column(modifier.fillMaxSize().padding(horizontal = 20.dp)) {
         Spacer(Modifier.height(12.dp))
-        ScreenTitle("Journal") {
-            MonoLabel("${entries.size} entries")
+        Row(
+            Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Journal", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+                 color = MaterialTheme.colorScheme.onBackground)
+            // Queues today's recordings back to back. Green, because playing is
+            // an action — the pill is the one green thing on this screen.
+            val todays = entries.filter {
+                it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+            }
+            if (todays.isNotEmpty()) {
+                val total = todays.sumOf { it.durationSec }
+                Row(
+                    Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable { todays.firstOrNull()?.let(onOpen) }
+                        .padding(horizontal = 13.dp, vertical = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                ) {
+                    Text("▶", fontSize = 10.sp, color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        "Play today · %d:%02d".format(total / 60, total % 60),
+                        fontSize = 10.5.sp, fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+            }
         }
 
         // "Search by meaning" is the design's phrasing and the eventual engine
@@ -70,7 +101,7 @@ fun JournalScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             if (query.isEmpty()) {
-                Text("Search by meaning", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 15.sp)
+                Text("Describe it — search what you meant", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.5.sp)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicTextField(
@@ -120,10 +151,13 @@ fun JournalScreen(
                     f, fontSize = 13.sp,
                     color = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(if (on) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceVariant)
+                        .clip(RoundedCornerShape(13.dp))
+                        .background(
+                            if (on) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.surface
+                        )
                         .clickable { filter = f }
-                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                        .padding(horizontal = 12.dp, vertical = 7.dp)
                 )
             }
         }
@@ -167,32 +201,61 @@ fun JournalScreen(
 @Composable
 private fun EntryCard(e: Entry, onClick: () -> Unit) {
     DvCard(Modifier.clickable(onClick = onClick)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            ValenceDot(e.valence)
-            Spacer(Modifier.width(8.dp))
-            Text(
-                dateLabel(e.createdAt),
-                fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
+        // B3: DM Mono meta line, gold star on the right for a made thing.
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            MonoLabel(
+                "${dateLabel(e.createdAt).uppercase()} · ${durationLabel(e.durationSec)} · ${e.text.split(" ").size} WORDS"
             )
-            Spacer(Modifier.weight(1f))
-            MonoLabel(durationLabel(e.durationSec))
+            Text("✦", fontSize = 12.sp, color = Gold)
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            e.text, fontSize = 15.sp, lineHeight = 23.sp,
-            maxLines = 3,
+            e.text, fontSize = 13.sp, lineHeight = 20.sp,
+            maxLines = 2,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onSurface,
         )
         if (e.entityList.isNotEmpty() || e.sleepHours != null) {
             Spacer(Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                e.entityList.take(3).forEach { Chip(it) }
-                e.sleepHours?.let { Chip("slept ${"%.1f".format(it)}h", MaterialTheme.colorScheme.tertiary) }
+            // Entity chips are GREEN-tinted; body chips are GOLD-tinted. The
+            // split is the grammar again: a name is something the Twin found in
+            // what you said, a body reading is something it was given.
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                e.entityList.take(3).forEach { SpecChip(it.uppercase(), gold = false) }
+                e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
             }
         }
     }
+}
+
+/** The design's chip: DM Mono 9.5, radius 10, green tint or gold tint. */
+@Composable
+private fun SpecChip(text: String, gold: Boolean) {
+    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+    Text(
+        text,
+        fontSize = 9.5.sp,
+        letterSpacing = 0.6.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = when {
+            gold && night -> com.dailyvox.app.ui.theme.NightGoldText
+            gold -> com.dailyvox.app.ui.theme.DayGoldText
+            night -> MaterialTheme.colorScheme.onSurface
+            else -> com.dailyvox.app.ui.theme.DayAction
+        },
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(
+                when {
+                    gold && night -> Gold.copy(alpha = 0.16f)
+                    gold -> com.dailyvox.app.ui.theme.DayGoldTint
+                    night -> Gold.copy(alpha = 0.10f)
+                    else -> com.dailyvox.app.ui.theme.DayGreenTint
+                }
+            )
+            .padding(horizontal = 9.dp, vertical = 5.dp),
+    )
 }
 
 private fun dateLabel(ts: Long): String =

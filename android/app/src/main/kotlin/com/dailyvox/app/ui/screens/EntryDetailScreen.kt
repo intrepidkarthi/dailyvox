@@ -19,6 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.TextDecoration
 import com.dailyvox.app.ui.components.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,7 +110,39 @@ fun EntryDetailScreen(
         }
 
         Spacer(Modifier.height(18.dp))
-        Text(entry.text, fontSize = 16.sp, lineHeight = 26.sp,
+        // B4: the entities the Twin found are underlined in gold, inside the
+        // transcript. Seeing them in place is the point — it is the difference
+        // between "the app says it found Sarah" and "here is where."
+        val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+        val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
+                       else com.dailyvox.app.ui.theme.DayGoldText
+        val marked = remember(entry.text, entry.entities) {
+            buildAnnotatedString {
+                var rest = entry.text
+                val names = entry.entityList.sortedByDescending { it.length }
+                if (names.isEmpty()) { append(rest); return@buildAnnotatedString }
+                var idx = 0
+                while (idx < rest.length) {
+                    val hit = names
+                        .mapNotNull { n ->
+                            val at = rest.indexOf(n, idx, ignoreCase = true)
+                            if (at >= 0) at to n else null
+                        }
+                        .minByOrNull { it.first }
+                    if (hit == null) { append(rest.substring(idx)); break }
+                    append(rest.substring(idx, hit.first))
+                    withStyle(
+                        SpanStyle(
+                            color = goldTone,
+                            fontWeight = FontWeight.SemiBold,
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    ) { append(rest.substring(hit.first, hit.first + hit.second.length)) }
+                    idx = hit.first + hit.second.length
+                }
+            }
+        }
+        Text(marked, fontSize = 16.sp, lineHeight = 26.sp,
              color = MaterialTheme.colorScheme.onSurface)
 
         Spacer(Modifier.height(16.dp))
@@ -120,7 +156,7 @@ fun EntryDetailScreen(
         SelfLabelRow(current = entry.selfLabel, onPick = onSelfLabel)
 
         Spacer(Modifier.height(22.dp))
-        MonoLabel("What your Twin filed")
+        MonoLabel("What your Twin filed ✦")
         Spacer(Modifier.height(8.dp))
         DvCard {
             FiledRow("Mood", valenceLabel(entry.valence), valenceColor(entry.valence))
