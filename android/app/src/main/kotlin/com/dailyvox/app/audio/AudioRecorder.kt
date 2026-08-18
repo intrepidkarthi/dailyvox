@@ -52,6 +52,50 @@ class AudioRecorder(private val context: Context) {
     }
 }
 
+/**
+ * Plays a list of recordings back to back — the Journal's "Play today".
+ *
+ * Sequential rather than concatenated: joining the files would mean decoding and
+ * re-encoding AAC to produce something the user never asked to keep, and a gap
+ * between two entries is honest anyway. They were two separate moments.
+ */
+class AudioQueue {
+    private var player: MediaPlayer? = null
+    private var queue: List<String> = emptyList()
+    private var index = 0
+    var isPlaying = false
+        private set
+
+    fun play(paths: List<String>, onFinished: () -> Unit = {}) {
+        stop()
+        queue = paths.filter { java.io.File(it).exists() }
+        if (queue.isEmpty()) { onFinished(); return }
+        index = 0
+        isPlaying = true
+        advance(onFinished)
+    }
+
+    private fun advance(onFinished: () -> Unit) {
+        if (index >= queue.size) { stop(); onFinished(); return }
+        player = MediaPlayer().apply {
+            runCatching {
+                setDataSource(queue[index])
+                setOnCompletionListener { index++; advance(onFinished) }
+                prepare(); start()
+            }.onFailure {
+                // A missing or unreadable file must not strand the queue.
+                index++; advance(onFinished)
+            }
+        }
+    }
+
+    fun stop() {
+        runCatching { player?.stop(); player?.release() }
+        player = null
+        isPlaying = false
+    }
+}
+
 /** Playback for the entry detail scrubber. One player, released on dispose. */
 class AudioPlayback {
     private var player: MediaPlayer? = null

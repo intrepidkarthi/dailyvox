@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
 import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.theme.Gold
 import com.dailyvox.app.ui.theme.StarGold
@@ -339,18 +342,24 @@ fun SpeakScreen(
                     )
                 }
                 Spacer(Modifier.height(7.dp))
-                Row {
-                    Text(
-                        e.text.take(46).let { if (e.text.length > 46) "$it… " else "$it " },
-                        fontSize = 12.sp, lineHeight = 18.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
-                    )
-                    Text(
-                        "%+.1f".format(e.valence),
-                        fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
-                }
+                // One flowing line, not two Texts side by side. The previous
+                // version put the summary and the valence in a Row, so a long
+                // summary pushed the score off the edge and a short one left it
+                // stranded mid-line — neither aligned with anything.
+                Text(
+                    buildAnnotatedString {
+                        append(e.text.take(44).trim())
+                        if (e.text.length > 44) append("… ") else append(" ")
+                        withStyle(
+                            SpanStyle(
+                                color = MaterialTheme.colorScheme.tertiary,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        ) { append("%+.1f".format(e.valence)) }
+                    },
+                    fontSize = 12.sp, lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
+                )
             }
         }
 

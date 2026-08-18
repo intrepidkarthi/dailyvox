@@ -34,6 +34,9 @@ fun JournalScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    val queue = remember { com.dailyvox.app.audio.AudioQueue() }
+    var playingToday by remember { mutableStateOf(false) }
+    DisposableEffect(Unit) { onDispose { queue.stop() } }
     // Voice search. Same recogniser as the journal itself -- searching a voice
     // journal by typing was always the odd part.
     val voiceSearch = androidx.activity.compose.rememberLauncherForActivityResult(
@@ -75,14 +78,32 @@ fun JournalScreen(
                     Modifier
                         .clip(RoundedCornerShape(15.dp))
                         .background(MaterialTheme.colorScheme.primary)
-                        .clickable { todays.firstOrNull()?.let(onOpen) }
+                        .clickable {
+                            if (playingToday) { queue.stop(); playingToday = false }
+                            else {
+                                val paths = todays.sortedBy { it.createdAt }
+                                    .mapNotNull { it.audioPath }
+                                if (paths.isEmpty()) {
+                                    android.widget.Toast.makeText(
+                                        context,
+                                        "Today's entries have no audio saved.",
+                                        android.widget.Toast.LENGTH_SHORT,
+                                    ).show()
+                                } else {
+                                    playingToday = true
+                                    queue.play(paths) { playingToday = false }
+                                }
+                            }
+                        }
                         .padding(horizontal = 13.dp, vertical = 9.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                 ) {
-                    Text("▶", fontSize = 10.sp, color = MaterialTheme.colorScheme.onPrimary)
+                    Text(if (playingToday) "■" else "▶", fontSize = 10.sp,
+                         color = MaterialTheme.colorScheme.onPrimary)
                     Text(
-                        "Play today · %d:%02d".format(total / 60, total % 60),
+                        if (playingToday) "Playing · %d:%02d".format(total / 60, total % 60)
+                        else "Play today · %d:%02d".format(total / 60, total % 60),
                         fontSize = 10.5.sp, fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onPrimary,
                     )

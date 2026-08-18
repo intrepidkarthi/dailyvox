@@ -246,17 +246,14 @@ fun EntryDetailScreen(
         }
         Spacer(Modifier.height(10.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            OutlinedButton(
-                onClick = {
-                    if (entry.photoPath != null) onPhoto(null)
-                    else pickPhoto.launch(
-                        androidx.activity.result.PickVisualMediaRequest(
-                            androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
-                    )
-                },
-                modifier = Modifier.weight(1f),
-            ) { Text(if (entry.photoPath != null) "Remove photo" else "Add photo") }
+            // Photo attachments are OUT OF SCOPE for v1 (FINAL-SPEC §9), so the
+            // button is gone. The column, the storage and the picker are all
+            // still here and working — deleting them would mean rebuilding the
+            // feature rather than un-hiding it, and any photo an early build
+            // already saved still renders above.
+            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f)) {
+                Text("Close")
+            }
             OutlinedButton(onClick = onDelete, modifier = Modifier.weight(1f)) {
                 Text("Delete", color = MaterialTheme.colorScheme.error)
             }
