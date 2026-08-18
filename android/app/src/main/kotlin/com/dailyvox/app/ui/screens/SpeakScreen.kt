@@ -56,6 +56,7 @@ import kotlinx.coroutines.delay
 fun SpeakScreen(
     streak: Int,
     resolution: Int,
+    todayEntry: com.dailyvox.app.data.Entry? = null,
     firstEver: Boolean = false,
     autoStart: Boolean = false,
     onAutoStarted: () -> Unit = {},
@@ -82,6 +83,15 @@ fun SpeakScreen(
     val partial by capture.partial.collectAsState()
     val level by capture.level.collectAsState()
     var elapsed by remember { mutableIntStateOf(0) }
+    // The name most recently caught in the live partial, for the "filed to your
+    // sky" chip. Recomputed from the partial rather than stored, so it always
+    // reflects what is actually on screen.
+    val caughtEntity = remember(partial) {
+        if (partial.isBlank()) null
+        else com.dailyvox.twin.NameDetector
+            .detect(partial, corpus = listOf(partial))
+            .lastOrNull()
+    }
 
     LaunchedEffect(state) {
         if (state == SpeechCapture.State.RECORDING) {
@@ -134,6 +144,22 @@ fun SpeakScreen(
             com.dailyvox.app.system.RecordingLive.hide(context)
             com.dailyvox.app.system.RecordingLive.onFinishRequested = null
         }
+    }
+
+    // Recording is a full-screen moment, not a state of this screen. The design
+    // gives it its own navy dial (B2b), so hand off entirely rather than trying
+    // to morph the idle layout around it.
+    if (state == SpeechCapture.State.RECORDING) {
+        RecordingDial(
+            elapsed = elapsed,
+            level = level,
+            partial = partial,
+            lastEntity = caughtEntity,
+            onStop = { haptics.recordStop(); capture.stop() },
+            onDiscard = { capture.stop(); recorder.stop() },
+            modifier = modifier,
+        )
+        return
     }
 
     // Scrollable, and not merely defensively: Play's pre-launch report tests at
@@ -284,7 +310,46 @@ fun SpeakScreen(
             }
         }
 
-        Spacer(Modifier.height(if (tall) 72.dp else 28.dp))
+        // Today's entry, once it exists (B2). The design surfaces the star the
+        // moment it has been made rather than waiting for the Journal tab.
+        todayEntry?.let { e ->
+            Spacer(Modifier.height(if (tall) 40.dp else 22.dp))
+            Column(
+                Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 15.dp, vertical = 12.dp),
+            ) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    MonoLabel("today ✦ · ${java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date(e.createdAt))}")
+                    Text(
+                        "▶ %d:%02d".format(e.durationSec / 60, e.durationSec % 60),
+                        fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(11.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                    )
+                }
+                Spacer(Modifier.height(7.dp))
+                Row {
+                    Text(
+                        e.text.take(46).let { if (e.text.length > 46) "$it… " else "$it " },
+                        fontSize = 12.sp, lineHeight = 18.sp,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
+                    )
+                    Text(
+                        "%+.1f".format(e.valence),
+                        fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(if (tall) 48.dp else 24.dp))
         // The privacy claim, in the one place a user can act on it. Not a badge
         // for its own sake: it is the product's whole argument, stated where the
         // recording happens.

@@ -65,6 +65,45 @@ fun TwinScreen(
     val skyHeight = androidx.compose.ui.platform.LocalConfiguration.current
         .screenHeightDp.dp.times(0.52f).coerceIn(280.dp, 430.dp)
 
+    // The sky is ALIVE (FINAL-SPEC §2.5). Every period is the spec's own.
+    val sky = rememberInfiniteTransition(label = "sky")
+    val orbitOuter by sky.animateFloat(
+        0f, 360f,
+        infiniteRepeatable(tween(80_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "orbitOuter",
+    )
+    val orbitInner by sky.animateFloat(
+        360f, 0f,   // counter-rotating
+        infiniteRepeatable(tween(130_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "orbitInner",
+    )
+    val comet by sky.animateFloat(
+        0f, 360f,
+        infiniteRepeatable(tween(18_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "comet",
+    )
+    val innerBody by sky.animateFloat(
+        360f, 0f,
+        infiniteRepeatable(tween(30_000, easing = LinearEasing), RepeatMode.Restart),
+        label = "innerBody",
+    )
+    val coreBreath by sky.animateFloat(
+        0f, 1f,
+        infiniteRepeatable(tween(5_000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "coreBreath",
+    )
+    // Twinkle phases, staggered 3-4s so no two stars pulse together.
+    val twinkle = (0 until 6).map { i ->
+        sky.animateFloat(
+            0.55f, 1f,
+            infiniteRepeatable(
+                tween(3000 + i * 200, delayMillis = i * 480, easing = FastOutSlowInEasing),
+                RepeatMode.Reverse,
+            ),
+            label = "tw$i",
+        )
+    }
+
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Box(
             Modifier
@@ -72,7 +111,15 @@ fun TwinScreen(
                 .height(skyHeight)
                 .background(Brush.verticalGradient(listOf(SkyBackground, SkySurface)))
         ) {
-            Canvas(Modifier.fillMaxSize()) { drawSky(entries, breath) }
+            Canvas(Modifier.fillMaxSize()) {
+                drawSky(
+                    entries, breath,
+                    orbitOuter = orbitOuter, orbitInner = orbitInner,
+                    comet = comet, innerBody = innerBody,
+                    coreBreath = coreBreath,
+                    twinkle = twinkle.map { it.value },
+                )
+            }
 
             Row(
                 Modifier.fillMaxWidth().padding(20.dp),
@@ -205,7 +252,16 @@ private fun hash(seed: Long): Float {
     return ((z ushr 11).toDouble() / (1L shl 53).toDouble()).toFloat()
 }
 
-private fun DrawScope.drawSky(entries: List<Entry>, breath: Float) {
+private fun DrawScope.drawSky(
+    entries: List<Entry>,
+    breath: Float,
+    orbitOuter: Float = 0f,
+    orbitInner: Float = 0f,
+    comet: Float = 0f,
+    innerBody: Float = 0f,
+    coreBreath: Float = 0f,
+    twinkle: List<Float> = emptyList(),
+) {
     val w = size.width; val h = size.height
     val cx = w / 2f; val cy = h / 2f
 
@@ -235,10 +291,69 @@ private fun DrawScope.drawSky(entries: List<Entry>, breath: Float) {
         }
     }
 
+    // Two dashed orbit rings, counter-rotating. These are the structure the
+    // comet and the inner body travel on, and they are what makes the sky read
+    // as a system rather than a scatter.
+    val cx0 = size.width / 2f
+    val cy0 = size.height / 2f
+    val rOuter = size.minDimension * 0.40f
+    val rInner = size.minDimension * 0.255f
+    listOf(rOuter to orbitOuter, rInner to orbitInner).forEach { (rad, rot) ->
+        // The dash phase carries the rotation: spinning a perfect circle is a
+        // no-op, so the ring only appears to drift if the dashes move along it.
+        val circumference = (2.0 * Math.PI * rad).toFloat()
+        drawCircle(
+            color = StarGold.copy(alpha = 0.13f),
+            radius = rad,
+            center = Offset(cx0, cy0),
+            style = Stroke(
+                1.dp.toPx(),
+                pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(
+                    floatArrayOf(3.dp.toPx(), 9.dp.toPx()),
+                    circumference * (rot / 360f),
+                ),
+            ),
+        )
+    }
+
+    // The comet: gold, on the outer ring, with a short tail.
+    val ca = Math.toRadians(comet - 90.0)
+    val cp = Offset(
+        cx0 + (rOuter * cos(ca)).toFloat(),
+        cy0 + (rOuter * sin(ca)).toFloat(),
+    )
+    repeat(6) { k ->
+        val ta = Math.toRadians(comet - 90.0 - k * 2.4)
+        drawCircle(
+            color = StarGold.copy(alpha = 0.30f * (1f - k / 6f)),
+            radius = (3.2f - k * 0.42f).coerceAtLeast(0.6f).dp.toPx(),
+            center = Offset(
+                cx0 + (rOuter * cos(ta)).toFloat(),
+                cy0 + (rOuter * sin(ta)).toFloat(),
+            ),
+        )
+    }
+    drawCircle(StarGold.copy(alpha = 0.5f), radius = 7.dp.toPx(), center = cp)
+    drawCircle(StarGold, radius = 3.2.dp.toPx(), center = cp)
+
+    // A small blue body on the inner ring, travelling the other way.
+    val ba = Math.toRadians(innerBody - 90.0)
+    drawCircle(
+        StarBlue.copy(alpha = 0.85f),
+        radius = 2.6.dp.toPx(),
+        center = Offset(
+            cx0 + (rInner * cos(ba)).toFloat(),
+            cy0 + (rInner * sin(ba)).toFloat(),
+        ),
+    )
+
     // Stars: four concentric passes per star. Not a blur — stacked alpha.
-    positions.forEach { (p, e, base) ->
+    positions.forEachIndexed { idx, (p, e, base) ->
         val c = valenceColor(e.valence)
-        val r = base * (0.55f + maturity * 0.45f)
+        // Staggered twinkle. Without it the sky is a static diagram; the spec
+        // asks for 3-4s cycles that never land in phase.
+        val tw = if (twinkle.isEmpty()) 1f else twinkle[idx % twinkle.size]
+        val r = base * (0.55f + maturity * 0.45f) * tw
         drawCircle(c.copy(alpha = 0.08f), radius = r * 4f, center = p)
         drawCircle(c.copy(alpha = 0.15f), radius = r * 2.2f, center = p)
         drawCircle(c.copy(alpha = 0.90f), radius = r, center = p)
@@ -246,7 +361,7 @@ private fun DrawScope.drawSky(entries: List<Entry>, breath: Float) {
     }
 
     // The Twin: breathing core star, sage-gold, always at centre.
-    val pulse = 1f + sin(breath) * 0.06f
+    val pulse = 1f + sin(breath) * 0.06f + coreBreath * 0.05f
     val core = 26f * pulse
     drawCircle(
         brush = Brush.radialGradient(

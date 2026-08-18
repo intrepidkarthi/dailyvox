@@ -58,7 +58,12 @@ fun DailyVoxNavBar(
             val selected = dest == current
             // .22 in Dark, .14 in Light -- the design spec's tint values.
             val tint by animateColorAsState(
-                if (selected) scheme.secondary.copy(alpha = 0.22f) else Color.Transparent,
+                // FINAL-SPEC §3: active tab is a FILLED pill — green in day,
+                // gold at night. `primary` already resolves to the right one, and
+                // using `secondary` here handed gold the active state in daylight,
+                // which breaks the grammar: gold is for what the user made, not
+                // for where they are.
+                if (selected) scheme.primary else Color.Transparent,
                 label = "navTint",
             )
             Column(
@@ -75,13 +80,14 @@ fun DailyVoxNavBar(
                 NavIcon(
                     dest = dest,
                     active = selected,
-                    tint = if (selected) scheme.secondary else scheme.onSurfaceVariant,
+                    tint = if (selected) scheme.onPrimary else scheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
                     dest.label,
                     fontSize = 11.sp,
-                    color = if (selected) scheme.onSurface else scheme.onSurfaceVariant,
+                    color = if (selected) scheme.onPrimary else scheme.onSurfaceVariant,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 )
             }
         }

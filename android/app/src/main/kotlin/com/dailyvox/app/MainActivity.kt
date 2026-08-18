@@ -29,7 +29,7 @@ import com.dailyvox.app.ui.screens.*
 import com.dailyvox.app.ui.theme.DailyVoxTheme
 
 /** Overlay routes: full screens that are not nav destinations. */
-private enum class Overlay { NONE, SETTINGS }
+private enum class Overlay { NONE, SETTINGS, INSIGHTS }
 
 class MainActivity : FragmentActivity() {
 
@@ -258,6 +258,13 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     modifier = inner,
                 )
 
+                overlay == Overlay.INSIGHTS ->
+                    InsightsScreen(
+                        entries = entries, streak = streak,
+                        onBack = { overlay = Overlay.NONE },
+                        modifier = inner,
+                    )
+
                 overlay == Overlay.SETTINGS -> run {
                     SettingsScreen(
                         onBack = { overlay = Overlay.NONE },
@@ -297,10 +304,13 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         streak = streak,
                         resolution = resolution,
                         firstEver = entries.isEmpty(),
+                        todayEntry = entries.firstOrNull {
+                            it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+                        },
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
-                        onInsights = { current = Destination.INSIGHTS },
+                        onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
                         modifier = inner,
                     )
@@ -310,13 +320,10 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSpeak = { current = Destination.SPEAK },
                         modifier = inner,
                     )
-                    Destination.INSIGHTS -> InsightsScreen(
-                        entries = entries, streak = streak, modifier = inner,
-                    )
                     Destination.TWIN -> TwinScreen(
                         entries = entries, resolution = resolution,
                         onAsk = { current = Destination.ASK },
-                        onInsights = { current = Destination.INSIGHTS },
+                        onInsights = { overlay = Overlay.INSIGHTS },
                         modifier = inner,
                     )
                     Destination.ASK -> AskScreen(entries = entries, modifier = inner)
