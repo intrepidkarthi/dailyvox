@@ -61,6 +61,7 @@ fun SpeakScreen(
     autoStart: Boolean = false,
     onAutoStarted: () -> Unit = {},
     onSaved: (String, Int, String?) -> Unit,
+    onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -92,6 +93,8 @@ fun SpeakScreen(
             .detect(partial, corpus = listOf(partial))
             .lastOrNull()
     }
+
+    LaunchedEffect(state) { onRecordingChanged(state == SpeechCapture.State.RECORDING) }
 
     LaunchedEffect(state) {
         if (state == SpeechCapture.State.RECORDING) {
@@ -149,6 +152,8 @@ fun SpeakScreen(
     // Recording is a full-screen moment, not a state of this screen. The design
     // gives it its own navy dial (B2b), so hand off entirely rather than trying
     // to morph the idle layout around it.
+    LaunchedEffect(state) { onRecordingChanged(state == SpeechCapture.State.RECORDING) }
+
     if (state == SpeechCapture.State.RECORDING) {
         RecordingDial(
             elapsed = elapsed,

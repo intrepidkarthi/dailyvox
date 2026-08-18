@@ -64,10 +64,13 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     // default because the app is used at night". Defaulting to SYSTEM meant most
     // phones opened this on cream, which is the Light theme — technically in the
     // spec, and the reason the app read as beige and lifeless.
-    var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SYSTEM")!!)) }
+    var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SUNSET")!!)) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
+    // Recording takes the whole screen (B2b) — the tab bar would offer an exit
+    // that silently discards what is being said.
+    var isRecording by remember { mutableStateOf(false) }
     // Reminder defaults ON. Retention is the measured binding constraint and the
     // iOS reminder shipped OFF, so this is the lever that was never pulled. It
     // stays a switch the user can find in two taps, and the permission ask below
@@ -134,7 +137,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val dark = when (theme) {
         ThemeChoice.LIGHT -> false
         ThemeChoice.DARK -> true
-        ThemeChoice.SYSTEM -> isSystemInDarkTheme()
+        // Re-read on every recomposition rather than cached: the theme should
+        // change when the evening arrives, not only on next launch.
+        ThemeChoice.SUNSET -> java.util.Calendar.getInstance()
+            .get(java.util.Calendar.HOUR_OF_DAY)
+            .let { it >= 19 || it < 6 }
     }
 
     DailyVoxTheme(darkTheme = dark) {
@@ -231,7 +238,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             )
         }
 
-        val chromeVisible = openEntry == null && overlay == Overlay.NONE
+        val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -310,6 +317,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
+                        onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
                         modifier = inner,

@@ -221,15 +221,23 @@ fun RecordingDial(
         Row(
             Modifier.fillMaxWidth().padding(bottom = 28.dp),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            // Top-aligned: the discs are 48/76/48, so centring them left the
+            // three captions on three different baselines.
+            verticalAlignment = Alignment.Top,
         ) {
-            DialAction("Discard", onDiscard) {
-                Text("✕", fontSize = 15.sp, color = NightText.copy(alpha = 0.7f))
+            Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
+                DialAction("Discard", onDiscard) {
+                    Text("✕", fontSize = 15.sp, color = NightText.copy(alpha = 0.7f))
+                }
             }
             Spacer(Modifier.width(20.dp))
             // Stop is 76dp and red — the only red in the product, and it means
             // RECORDING rather than failure.
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.height(96.dp),
+                verticalArrangement = Arrangement.Bottom,
+            ) {
                 Box(
                     Modifier
                         .size(76.dp)
@@ -249,13 +257,15 @@ fun RecordingDial(
                      fontWeight = FontWeight.ExtraBold, color = NightText)
             }
             Spacer(Modifier.width(20.dp))
-            DialAction("Pause", onStop) {
+            Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
+                DialAction("Pause", onStop) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     repeat(2) {
                         Box(Modifier.size(4.dp, 15.dp)
                             .clip(RoundedCornerShape(1.5.dp))
                             .background(NightText.copy(alpha = 0.8f)))
                     }
+                }
                 }
             }
         }

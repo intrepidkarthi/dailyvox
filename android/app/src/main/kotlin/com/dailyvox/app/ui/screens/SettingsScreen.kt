@@ -17,7 +17,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.ui.components.*
 
-enum class ThemeChoice { LIGHT, DARK, SYSTEM }
+/**
+ * Day · Night · Sunset — FINAL-SPEC §2.8. Sunset is the default and follows the
+ * real sun.
+ *
+ * "Real" here means the clock, not an almanac. A true solar calculation needs
+ * latitude and longitude, and this app holds no location permission and is never
+ * going to ask for one to decide a background colour. Evening is taken as 19:00
+ * to 06:00, which is wrong by up to about an hour at the solstices and wrong in
+ * the right direction: the app is used at night.
+ */
+enum class ThemeChoice { LIGHT, DARK, SUNSET }
 
 /**
  * Settings, led by the Data Shield ledger.
