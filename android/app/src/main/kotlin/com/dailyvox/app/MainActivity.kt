@@ -243,7 +243,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
-                if (chromeVisible) DailyVoxNavBar(current = current, onSelect = { current = it })
+                if (chromeVisible) DailyVoxNavBar(
+                    night = current == Destination.TWIN,
+                    current = current,
+                    onSelect = { current = it },
+                )
             },
         ) { padding ->
             val inner = Modifier.padding(padding)

@@ -18,6 +18,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import com.dailyvox.app.ui.theme.Gold
+import com.dailyvox.app.ui.theme.NightBackground
+import com.dailyvox.app.ui.theme.NightSurface
+import com.dailyvox.app.ui.theme.NightText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -34,6 +38,10 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun DailyVoxNavBar(
+    /** True while the Twin tab is showing. The Twin screen is ALWAYS night
+     *  (§8.4), and leaving a cream nav bar under a navy screen is what made it
+     *  look broken rather than deliberate — the bar follows the screen. */
+    night: Boolean = false,
     current: Destination,
     onSelect: (Destination) -> Unit,
     modifier: Modifier = Modifier,
@@ -48,9 +56,13 @@ fun DailyVoxNavBar(
             .fillMaxWidth()
             .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp)
-            .clip(RoundedCornerShape(26.dp))
-            .background(scheme.surfaceVariant)
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .clip(RoundedCornerShape(24.dp))
+            // Container is WHITE in day and #1C2A42 at night (§3). It was the
+            // green chip tint, which is why the bar read as a different app
+            // from everything above it: nothing else on a day screen is green
+            // except the one thing you are meant to press.
+            .background(if (night) NightSurface else scheme.surface)
+            .padding(horizontal = 5.dp, vertical = 5.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -63,7 +75,7 @@ fun DailyVoxNavBar(
                 // using `secondary` here handed gold the active state in daylight,
                 // which breaks the grammar: gold is for what the user made, not
                 // for where they are.
-                if (selected) scheme.primary else Color.Transparent,
+                if (selected) (if (night) Gold else scheme.primary) else Color.Transparent,
                 label = "navTint",
             )
             Column(
@@ -80,13 +92,23 @@ fun DailyVoxNavBar(
                 NavIcon(
                     dest = dest,
                     active = selected,
-                    tint = if (selected) scheme.onPrimary else scheme.onSurfaceVariant,
+                    tint = when {
+                        selected && night -> NightBackground
+                        selected -> scheme.onPrimary
+                        night -> NightText.copy(alpha = 0.6f)
+                        else -> scheme.onSurfaceVariant
+                    },
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
                     dest.label,
                     fontSize = 11.sp,
-                    color = if (selected) scheme.onPrimary else scheme.onSurfaceVariant,
+                    color = when {
+                        selected && night -> NightBackground
+                        selected -> scheme.onPrimary
+                        night -> NightText.copy(alpha = 0.6f)
+                        else -> scheme.onSurfaceVariant
+                    },
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 )
             }
