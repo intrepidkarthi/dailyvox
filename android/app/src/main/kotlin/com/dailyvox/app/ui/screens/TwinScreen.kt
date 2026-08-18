@@ -3,7 +3,9 @@ package com.dailyvox.app.ui.screens
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -45,6 +47,7 @@ import kotlin.math.sin
  * was cream. The design has none of that. It is a title, a star count, a sky
  * whose links CURVE out from the core, and one sentence about who you are.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TwinScreen(
     entries: List<Entry>,
@@ -168,6 +171,10 @@ fun TwinScreen(
             Modifier
                 .fillMaxWidth()
                 .height(skyHeight)
+                // §F: the sky is a share target in its own right, not only via
+                // the header arrow. Long-press rather than tap, so exploring
+                // the constellation never fires a share sheet by accident.
+                .combinedClickable(onClick = {}, onLongClick = onShare)
         ) {
             Canvas(Modifier.fillMaxSize()) {
                 drawSky(

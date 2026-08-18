@@ -93,6 +93,50 @@ class ShareablesTest {
     }
 
     @Test
+    fun `the milestone gate opens only on a listed night`() {
+        val today = System.currentTimeMillis() / day
+        fun nights(n: Int) = (0 until n).map {
+            entry(it, "Spoke.").copy(createdAt = (today - it) * day + 60_000L)
+        }
+        assertNull(Shareables.milestoneReached(nights(41)))
+        assertEquals(42, Shareables.milestoneReached(nights(42)))
+        assertEquals(42, Shareables.milestoneReached(nights(99)))
+        assertEquals(100, Shareables.milestoneReached(nights(100)))
+    }
+
+    @Test
+    fun `milestone counts nights, not entries`() {
+        // Two entries in one evening is one night of showing up. Counting
+        // entries would mint the card early and cheapen the only thing on it.
+        val today = System.currentTimeMillis() / day
+        val twicePerNight = (0 until 30).flatMap { d ->
+            listOf(
+                entry(d * 2, "Morning.").copy(createdAt = (today - d) * day + 60_000L),
+                entry(d * 2 + 1, "Evening.").copy(createdAt = (today - d) * day + 70_000_00L),
+            )
+        }
+        assertEquals(60, twicePerNight.size)
+        assertNull("60 entries over 30 nights must not mint night 42",
+                   Shareables.milestoneReached(twicePerNight))
+    }
+
+    @Test
+    fun `every milestone has a headline that matches its number`() {
+        // A probe with the gate forced open rendered a seal reading 1 under a
+        // headline reading "Forty-two nights." The headline must be derived
+        // from the figure, so adding a milestone can never ship a card that
+        // contradicts itself.
+        val m = call("milestoneHeadline", Int::class.javaPrimitiveType!!)
+        Shareables.MILESTONES.forEach { n ->
+            val headline = m.invoke(Shareables, n) as String
+            val spelled = mapOf(42 to "Forty-two", 100 to "One hundred", 365 to "A year")
+            assertTrue("night $n headline was: $headline",
+                       headline.startsWith(spelled.getValue(n)))
+        }
+        assertEquals("7 nights.", m.invoke(Shareables, 7))
+    }
+
+    @Test
     fun `card titles and captions exist for every card`() {
         // The sheet renders these unconditionally; a missing branch would be a
         // crash in the one flow that is meant to be shown off.
@@ -100,6 +144,6 @@ class ShareablesTest {
             assertTrue(Shareables.title(c).isNotBlank())
             assertTrue(Shareables.caption(c).isNotBlank())
         }
-        assertEquals(3, Shareables.Card.entries.size)
+        assertEquals(6, Shareables.Card.entries.size)
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -40,14 +41,25 @@ import com.dailyvox.app.system.Shareables
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun ShareSheet(entries: List<Entry>, onDismiss: () -> Unit) {
+fun ShareSheet(
+    entries: List<Entry>,
+    initial: Shareables.Card = Shareables.Card.MY_SKY,
+    onDismiss: () -> Unit,
+) {
     val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
     val night = scheme.background == com.dailyvox.app.ui.theme.NightBackground
     val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
                    else com.dailyvox.app.ui.theme.DayGoldText
 
-    var card by remember { mutableStateOf(Shareables.Card.MY_SKY) }
+    // The milestone card is only offered once it exists. Showing a locked
+    // "night 42" chip to someone on night 9 turns a reward into a nag, which is
+    // the gamification guilt the design explicitly rules out.
+    val milestone = remember(entries) { Shareables.milestoneReached(entries) }
+    val cards = remember(milestone) {
+        Shareables.Card.entries.filter { it != Shareables.Card.MILESTONE || milestone != null }
+    }
+    var card by remember { mutableStateOf(if (initial in cards) initial else cards.first()) }
     var includeNames by remember { mutableStateOf(false) }
 
     // Re-rendered only when something that changes the pixels changes. The
@@ -79,14 +91,17 @@ fun ShareSheet(entries: List<Entry>, onDismiss: () -> Unit) {
             )
 
             Spacer(Modifier.height(14.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Shareables.Card.entries.forEach { c ->
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                cards.forEach { c ->
                     val on = c == card
                     Text(
                         Shareables.title(c), fontSize = 12.sp,
                         fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
                         color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
                             .clip(RoundedCornerShape(15.dp))
                             .then(
                                 if (on) Modifier.background(scheme.primary)
@@ -95,8 +110,7 @@ fun ShareSheet(entries: List<Entry>, onDismiss: () -> Unit) {
                                     RoundedCornerShape(15.dp))
                             )
                             .clickable { card = c }
-                            .padding(vertical = 11.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally),
+                            .padding(horizontal = 16.dp, vertical = 11.dp),
                     )
                 }
             }
@@ -106,8 +120,18 @@ fun ShareSheet(entries: List<Entry>, onDismiss: () -> Unit) {
                 Image(
                     bitmap.asImageBitmap(), contentDescription = Shareables.title(card),
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f)
-                        .clip(RoundedCornerShape(20.dp)),
+                    // The portrait card is sized by HEIGHT and lets width
+                    // follow. Constraining width first and then applying a 9:16
+                    // ratio makes the ratio win, which produced a preview twice
+                    // the height of the sheet drawn over its own buttons —
+                    // heightIn cannot clamp a size the ratio has already fixed.
+                    modifier = (
+                        if (card == Shareables.Card.WALLPAPER)
+                            Modifier.height(380.dp).aspectRatio(9f / 16f)
+                        else Modifier.fillMaxWidth().aspectRatio(1f)
+                    )
+                        .clip(RoundedCornerShape(20.dp))
+                        .align(Alignment.CenterHorizontally),
                 )
             } else {
                 Box(
@@ -162,13 +186,36 @@ fun ShareSheet(entries: List<Entry>, onDismiss: () -> Unit) {
             }
 
             Spacer(Modifier.height(16.dp))
+            if (card == Shareables.Card.WALLPAPER) {
+                Text(
+                    "Set as wallpaper", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                    color = scheme.onPrimary,
+                    modifier = Modifier.fillMaxWidth()
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(if (file == null) scheme.primary.copy(alpha = 0.4f)
+                                    else scheme.primary)
+                        .clickable(enabled = file != null) {
+                            file?.let { Shareables.setAsWallpaper(context, it) }
+                        }
+                        .padding(vertical = 15.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                )
+                Spacer(Modifier.height(8.dp))
+            }
             Text(
-                "Share", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
-                color = scheme.onPrimary,
+                if (card == Shareables.Card.WALLPAPER) "Share the image instead" else "Share",
+                fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                color = if (card == Shareables.Card.WALLPAPER) scheme.primary
+                        else scheme.onPrimary,
                 modifier = Modifier.fillMaxWidth()
                     .clip(RoundedCornerShape(20.dp))
-                    .background(if (file == null) scheme.primary.copy(alpha = 0.4f)
-                                else scheme.primary)
+                    .then(
+                        if (card == Shareables.Card.WALLPAPER)
+                            Modifier.border(1.5.dp, scheme.primary.copy(alpha = 0.45f),
+                                            RoundedCornerShape(20.dp))
+                        else Modifier.background(
+                            if (file == null) scheme.primary.copy(alpha = 0.4f) else scheme.primary)
+                    )
                     .clickable(enabled = file != null) {
                         file?.let { Shareables.share(context, it) }
                     }

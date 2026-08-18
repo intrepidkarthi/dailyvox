@@ -57,6 +57,7 @@ fun SettingsScreen(
     reminderOn: Boolean = false,
     reminderHour: Int = 21,
     onReminder: (Boolean, Int) -> Unit = { _, _ -> },
+    onShareReceipt: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -116,6 +117,18 @@ fun SettingsScreen(
                     "biometrics. No network permission of any kind — check it in " +
                     "Android Settings › Apps › DailyVox.",
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(11.dp))
+            // This card is the privacy receipt, so it is also where you take a
+            // copy of it. §F: the screenshot does the arguing.
+            Text(
+                "Share this as a receipt", fontSize = 11.5.sp,
+                fontWeight = FontWeight.SemiBold, color = goldText,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.14f))
+                    .clickable(onClick = onShareReceipt)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
             )
         }
 

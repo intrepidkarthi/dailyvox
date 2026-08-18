@@ -48,12 +48,22 @@ object Shareables {
     private const val GOLD = "#D9A441"
     private const val GOLD_TEXT = "#EDCB86"
 
-    enum class Card { MY_SKY, RECEIPT, YEAR_ONE }
+    enum class Card { MY_SKY, RECEIPT, YEAR_ONE, MILESTONE, WALLPAPER, GIFT }
+
+    /** Nights that mint a one-time card. Scarcity without gamification guilt. */
+    val MILESTONES = listOf(42, 100, 365)
+
+    /** Portrait for the lock screen, square for feeds. */
+    private fun size(card: Card): Pair<Int, Int> =
+        if (card == Card.WALLPAPER) 1080 to 1920 else S to S
 
     fun title(card: Card): String = when (card) {
         Card.MY_SKY -> "My Sky"
-        Card.RECEIPT -> "Privacy receipt"
+        Card.RECEIPT -> "Receipt"
         Card.YEAR_ONE -> "Year One"
+        Card.MILESTONE -> "Milestone"
+        Card.WALLPAPER -> "Wallpaper"
+        Card.GIFT -> "Gift a star"
     }
 
     fun caption(card: Card): String = when (card) {
@@ -61,6 +71,21 @@ object Shareables {
             "beautiful and private at the same time."
         Card.RECEIPT -> "Everything costs zero, itemised. It argues better than a feature list."
         Card.YEAR_ONE -> "Your year, computed by this phone alone."
+        Card.MILESTONE -> "Minted once, at nights 42, 100 and 365. You cannot buy it or " +
+            "rush it — you can only have spoken that many times."
+        Card.WALLPAPER -> "Your constellation, sized for a lock screen. The one surface " +
+            "you look at forty times a day, and nobody else can read it."
+        Card.GIFT -> "A referral card with no tracking link, because there is nothing " +
+            "here that could carry one."
+    }
+
+    /**
+     * The highest milestone this journal has passed, or null. Nights, not
+     * entries: two entries in one evening is one night of showing up.
+     */
+    fun milestoneReached(entries: List<Entry>): Int? {
+        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+        return MILESTONES.filter { it <= nights }.maxOrNull()
     }
 
     /**
@@ -74,12 +99,16 @@ object Shareables {
         }.getOrDefault(false)
 
     fun render(context: Context, card: Card, entries: List<Entry>, includeNames: Boolean): File {
-        val bmp = Bitmap.createBitmap(S, S, Bitmap.Config.ARGB_8888)
+        val (w, h) = size(card)
+        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
         when (card) {
             Card.MY_SKY -> drawMySky(context, c, entries)
             Card.RECEIPT -> drawReceipt(c, entries)
             Card.YEAR_ONE -> drawYearOne(c, entries, includeNames)
+            Card.MILESTONE -> drawMilestone(c, entries)
+            Card.WALLPAPER -> drawWallpaper(c, entries, h)
+            Card.GIFT -> drawGift(c, entries)
         }
         val out = File(context.getExternalFilesDir(null), "dailyvox-${card.name.lowercase()}.png")
         out.outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -88,6 +117,32 @@ object Shareables {
     }
 
     fun share(context: Context, file: File) = Exporters.share(context, file, "image/png")
+
+    /**
+     * Hands the image to whatever can set a wallpaper, via ACTION_ATTACH_DATA.
+     *
+     * Deliberately NOT WallpaperManager.setBitmap: that needs SET_WALLPAPER in
+     * the manifest, and the Data Shield card lists this app's permissions in
+     * full as a claim the user can check in Android Settings. Adding a fourth
+     * permission to save one tap would cost more than it buys.
+     */
+    fun setAsWallpaper(context: Context, file: File) {
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            context, "${context.packageName}.files", file)
+        val intent = android.content.Intent(android.content.Intent.ACTION_ATTACH_DATA).apply {
+            setDataAndType(uri, "image/png")
+            putExtra("mimeType", "image/png")
+            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        runCatching {
+            context.startActivity(
+                android.content.Intent.createChooser(intent, "Set as wallpaper").apply {
+                    addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            )
+        }.onFailure { share(context, file) }
+    }
 
     // ── F1 · My Sky ────────────────────────────────────────────────────────
 
@@ -269,6 +324,149 @@ object Shareables {
         }
 
         footer(c, "YEAR ONE · 0 NETWORK CALLS")
+    }
+
+    // ── F · milestone stamp ────────────────────────────────────────────────
+
+    /**
+     * Nights 42, 100, 365. Scarcity without gamification guilt: there is no
+     * streak to protect and nothing is taken away for missing a night — the
+     * card simply cannot exist until you have actually spoken that many times.
+     */
+    private fun drawMilestone(c: Canvas, entries: List<Entry>) {
+        val night = milestoneReached(entries) ?: 42
+        c.drawColor(Color.parseColor(INK))
+
+        val rng = Random(night.toLong() * 7919L)
+        val dot = paint()
+        repeat(110) {
+            dot.color = Color.argb(16 + rng.nextInt(64), 241, 237, 226)
+            c.drawCircle(rng.nextFloat() * S, rng.nextFloat() * S, 1f + rng.nextFloat() * 2f, dot)
+        }
+
+        val cx = S / 2f
+        val cy = S * 0.40f
+
+        // A gold seal: concentric rings around the number.
+        val ring = paint().apply { style = Paint.Style.STROKE }
+        listOf(230f to 3f, 265f to 2f, 300f to 1.5f).forEach { (r, w) ->
+            ring.strokeWidth = w
+            ring.color = Color.argb((90 - (r - 230) / 2).toInt(), 217, 164, 65)
+            c.drawCircle(cx, cy, r, ring)
+        }
+        c.drawCircle(cx, cy, 196f, paint().apply { color = Color.argb(28, 217, 164, 65) })
+
+        val number = display(150f, GOLD).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("$night", cx, cy + 52f, number)
+
+        val label = mono(24f, GOLD_TEXT).apply { textAlign = Paint.Align.CENTER }
+        c.drawText(if (night == 1) "NIGHT SPOKEN" else "NIGHTS SPOKEN", cx, cy + 128f, label)
+
+        val big = display(52f, CREAM).apply { textAlign = Paint.Align.CENTER }
+        // Derived from the number on the seal, never a fallback string. A probe
+        // with the gate forced open rendered a seal reading 1 under a headline
+        // reading "Forty-two nights." — the else branch could disagree with the
+        // figure above it, and adding a milestone would have shipped that.
+        c.drawText(milestoneHeadline(night), cx, S - 236f, big)
+        val sub = body(26f).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("Nobody sold me this. I just kept talking.", cx, S - 178f, sub)
+
+        footer(c, "MINTED ON THIS PHONE · GETDAILYVOX.COM")
+    }
+
+    private fun milestoneHeadline(night: Int): String = when (night) {
+        365 -> "A year of showing up."
+        100 -> "One hundred nights."
+        42 -> "Forty-two nights."
+        1 -> "One night."
+        else -> "$night nights."
+    }
+
+    // ── F · sky wallpaper ──────────────────────────────────────────────────
+
+    /**
+     * Portrait, and deliberately quieter than the share card: this one lives
+     * behind clock and notifications, so the constellation sits low and there
+     * is no headline to be covered up.
+     */
+    private fun drawWallpaper(c: Canvas, entries: List<Entry>, h: Int) {
+        c.drawColor(Color.parseColor(INK))
+        val rng = Random(entries.firstOrNull()?.createdAt ?: 42L)
+        val dot = paint()
+        repeat(240) {
+            dot.color = Color.argb(14 + rng.nextInt(64), 241, 237, 226)
+            c.drawCircle(rng.nextFloat() * S, rng.nextFloat() * h, 1f + rng.nextFloat() * 2.2f, dot)
+        }
+
+        val cx = S / 2f
+        // Low, so the clock and the notification stack sit on empty sky.
+        val cy = h * 0.63f
+
+        val ring = paint().apply {
+            style = Paint.Style.STROKE; strokeWidth = 2f
+            color = Color.argb(30, 241, 237, 226)
+            pathEffect = android.graphics.DashPathEffect(floatArrayOf(3f, 20f), 0f)
+        }
+        c.drawCircle(cx, cy, S * 0.20f, ring)
+        c.drawCircle(cx, cy, S * 0.32f, ring)
+
+        val link = paint().apply { style = Paint.Style.STROKE; strokeWidth = 3f }
+        val node = paint()
+        entries.take(5).forEachIndexed { i, _ ->
+            val a = Math.toRadians(-70.0 + i * 72.0)
+            val r = S * (0.26f + (i % 2) * 0.06f)
+            val px = cx + (r * cos(a)).toFloat()
+            val py = cy + (r * sin(a)).toFloat()
+            link.color = Color.argb(90 - i * 10, 217, 164, 65)
+            c.drawPath(Path().apply {
+                moveTo(cx, cy)
+                val mx = (cx + px) / 2f; val my = (cy + py) / 2f
+                val dx = px - cx; val dy = py - cy
+                val len = kotlin.math.sqrt(dx * dx + dy * dy).coerceAtLeast(1f)
+                val bow = if (i % 2 == 0) 0.18f else -0.15f
+                quadTo(mx + (-dy / len) * len * bow, my + (dx / len) * len * bow, px, py)
+            }, link)
+            node.color = Color.parseColor(if (i == 2) "#9DC1E4" else CREAM)
+            c.drawCircle(px, py, 13f - i, node)
+        }
+        node.color = Color.argb(56, 217, 164, 65)
+        c.drawCircle(cx, cy, 52f, node)
+        node.color = Color.parseColor(GOLD)
+        c.drawCircle(cx, cy, 28f, node)
+
+        // No wordmark, no claim, no count. A wallpaper that advertises at its
+        // owner is one they take off within a week.
+        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+        val quiet = mono(20f, "#66F1EDE2").apply { textAlign = Paint.Align.CENTER }
+        c.drawText("$nights", cx, h - 108f, quiet)
+    }
+
+    // ── F · gift a star ────────────────────────────────────────────────────
+
+    private fun drawGift(c: Canvas, entries: List<Entry>) {
+        c.drawColor(Color.parseColor(INK_SOFT))
+        val cx = S / 2f
+
+        star(c, cx, 300f, 74f, Color.parseColor(GOLD))
+
+        val big = display(60f, CREAM).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("I kept ${entries.size} stars.", cx, 490f, big)
+        c.drawText("Start yours.", cx, 566f, big)
+
+        val sub = body(27f).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("Forty-two seconds a night, spoken not typed.", cx, 648f, sub)
+        c.drawText("Free, open source, and it never goes online.", cx, 694f, sub)
+
+        // Said out loud because it is unusual and checkable: there is no
+        // referral code on this card, and no way to add one -- the app cannot
+        // phone home to attribute anything.
+        val note = mono(21f, GOLD_TEXT).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("NO TRACKING LINK · NOTHING TO ATTRIBUTE", cx, S - 300f, note)
+
+        val url = display(34f, CREAM).apply { textAlign = Paint.Align.CENTER }
+        c.drawText("getdailyvox.com", cx, S - 220f, url)
+
+        footer(c, "A SKY MADE OF YOU")
     }
 
     // ── shared bits ────────────────────────────────────────────────────────

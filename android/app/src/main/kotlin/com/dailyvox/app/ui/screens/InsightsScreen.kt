@@ -1,7 +1,9 @@
 package com.dailyvox.app.ui.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,11 +39,13 @@ import kotlin.math.abs
  * and it is worse here than anywhere else in the app because it is phrased as
  * something the Twin noticed about the user.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun InsightsScreen(
     entries: List<Entry>,
     streak: Int,
     onBack: () -> Unit = {},
+    onShareMilestone: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
@@ -59,7 +63,12 @@ fun InsightsScreen(
         val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
         val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
                        else com.dailyvox.app.ui.theme.DayGoldText
-        DvCard {
+        DvCard(
+            // §F: the streak card is the milestone, so long-pressing it opens
+            // the stamp. Nothing is minted here -- the card only exists once
+            // the nights do.
+            Modifier.combinedClickable(onClick = {}, onLongClick = onShareMilestone)
+        ) {
             Row(verticalAlignment = Alignment.Bottom) {
                 Text("$streak", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold,
                      color = goldText)

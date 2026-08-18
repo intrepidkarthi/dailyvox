@@ -254,8 +254,13 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             )
         }
 
-        var showShare by remember { mutableStateOf(false) }
-        if (showShare) ShareSheet(entries = entries, onDismiss = { showShare = false })
+        // Null when closed; otherwise the card the share sheet should open on.
+        var shareCard by remember {
+            mutableStateOf<com.dailyvox.app.system.Shareables.Card?>(null)
+        }
+        shareCard?.let { c ->
+            ShareSheet(entries = entries, initial = c, onDismiss = { shareCard = null })
+        }
 
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
 
@@ -304,6 +309,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                 overlay == Overlay.INSIGHTS ->
                     InsightsScreen(
                         entries = entries, streak = streak,
+                        onShareMilestone = { shareCard = com.dailyvox.app.system.Shareables.Card.MILESTONE },
                         onBack = { overlay = Overlay.NONE },
                         modifier = inner,
                     )
@@ -321,6 +327,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         },
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
+                        onShareReceipt = { shareCard = com.dailyvox.app.system.Shareables.Card.RECEIPT },
                         onExport = { saveJson.launch("dailyvox-journal.json") },
                         onExportMarkdown = { saveMd.launch("dailyvox-journal.md") },
                         onExportCsv = { saveCsv.launch("dailyvox-journal.csv") },
@@ -374,7 +381,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         modifier = inner,
                     )
                     Destination.TWIN -> TwinScreen(
-                        onShare = { showShare = true },
+                        onShare = { shareCard = com.dailyvox.app.system.Shareables.Card.MY_SKY },
                         entries = entries, resolution = resolution,
                         onAsk = { current = Destination.ASK },
                         onInsights = { overlay = Overlay.INSIGHTS },
