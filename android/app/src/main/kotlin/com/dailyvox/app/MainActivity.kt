@@ -256,28 +256,24 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
 
-        // The Twin tab is the one screen that is navy in every theme, and the
-        // Scaffold's container is what shows through behind the status bar and
-        // around the floating nav bar. Left at the theme background it framed
-        // the night sky in two cream bands, which read as an unfinished screen
-        // rather than a deliberate one.
-        val twinNight = current == Destination.TWIN && chromeVisible
+        // Twin used to force navy in every theme, so the Scaffold container and
+        // the nav bar had to be special-cased to match it. Now that the sky
+        // follows the theme like every other screen, the special case is gone
+        // and only the real theme drives the system bars.
         val view = androidx.compose.ui.platform.LocalView.current
         val darkTheme = androidx.compose.material3.MaterialTheme.colorScheme.background ==
             com.dailyvox.app.ui.theme.NightBackground
         androidx.compose.runtime.SideEffect {
             val window = (view.context as android.app.Activity).window
             androidx.core.view.WindowCompat.getInsetsController(window, view)
-                .isAppearanceLightStatusBars = !(twinNight || darkTheme)
+                .isAppearanceLightStatusBars = !darkTheme
         }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = if (twinNight) com.dailyvox.app.ui.theme.NightBackground
-                             else androidx.compose.material3.MaterialTheme.colorScheme.background,
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
-                    night = current == Destination.TWIN,
+                    night = darkTheme,
                     current = current,
                     onSelect = { current = it },
                 )
@@ -380,7 +376,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onInsights = { overlay = Overlay.INSIGHTS },
                         modifier = inner,
                     )
-                    Destination.ASK -> AskScreen(entries = entries, modifier = inner)
+                    Destination.ASK -> AskScreen(
+                        entries = entries,
+                        onOpenEntry = { openEntry = it },
+                        modifier = inner,
+                    )
                 }
             }
         }

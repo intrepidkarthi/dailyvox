@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -115,10 +116,22 @@ fun TwinScreen(
     val skyHeight = (androidx.compose.ui.platform.LocalConfiguration.current
         .screenHeightDp.dp - 405.dp).coerceIn(280.dp, 620.dp)
 
+    val scheme = MaterialTheme.colorScheme
+    val night = scheme.background == NightBackground
+    // On cream the thin link strokes and orbit rings need the darker gold and
+    // the page ink; plain Gold at 1.4dp all but vanishes on #F7F3EA.
+    val palette = SkyPalette(
+        ink = if (night) NightText else scheme.onBackground,
+        line = if (night) Gold else DayGoldText,
+        core = Gold,
+        accent = if (night) StarBlue else Color(0xFF4C7BA6),
+    )
+    val goldText = if (night) NightGoldText else DayGoldText
+
     Column(
         modifier
             .fillMaxSize()
-            .background(NightBackground)          // navy, whatever the theme
+            .background(scheme.background)
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(14.dp))
@@ -128,12 +141,12 @@ fun TwinScreen(
             verticalAlignment = Alignment.Bottom,
         ) {
             Text("Your sky", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
-                 color = NightText)
+                 color = scheme.onBackground)
             // Star count, not a percentage. The number is what the user made.
             Text(
                 "${entries.size} ✦ · $depth",
                 fontSize = 13.sp, fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 0.5.sp, color = Gold,
+                letterSpacing = 0.5.sp, color = goldText,
             )
         }
 
@@ -146,7 +159,7 @@ fun TwinScreen(
         ) {
             Canvas(Modifier.fillMaxSize()) {
                 drawSky(
-                    entries, orbitInner, orbitOuter, comet, innerBody, coreGlow,
+                    palette, entries, orbitInner, orbitOuter, comet, innerBody, coreGlow,
                     twinkle.map { it.value },
                 )
             }
@@ -155,7 +168,7 @@ fun TwinScreen(
             named.getOrNull(0)?.let { (n, _) ->
                 Text(
                     n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                    color = NightGoldText,
+                    color = goldText,
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .offset(x = 26.dp, y = skyHeight * 0.13f)
@@ -166,13 +179,13 @@ fun TwinScreen(
             }
             named.getOrNull(1)?.let { (n, _) ->
                 Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightText.copy(alpha = 0.6f),
+                     color = scheme.onSurfaceVariant,
                      modifier = Modifier.align(Alignment.TopEnd)
                          .offset(x = (-26).dp, y = skyHeight * 0.19f))
             }
             named.getOrNull(2)?.let { (n, _) ->
                 Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightText.copy(alpha = 0.6f),
+                     color = scheme.onSurfaceVariant,
                      modifier = Modifier.align(Alignment.BottomStart)
                          .offset(x = 34.dp, y = -skyHeight * 0.10f))
             }
@@ -183,7 +196,7 @@ fun TwinScreen(
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(NightSurface)
+                .background(scheme.surface)
                 .padding(horizontal = 16.dp, vertical = 13.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -193,12 +206,12 @@ fun TwinScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 Text("✦", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightBackground)
+                     color = NightBackground)   // ink on the gold disc, both themes
             }
             Text(
                 summary(entries),
                 fontSize = 12.sp, lineHeight = 17.sp, fontWeight = FontWeight.Medium,
-                color = NightText.copy(alpha = 0.9f),
+                color = scheme.onSurface,
             )
         }
 
@@ -232,21 +245,42 @@ private fun SkyLink(title: String, sub: String, onClick: () -> Unit, modifier: M
     Column(
         modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(NightSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(onClick = onClick)
             .padding(horizontal = 15.dp, vertical = 14.dp),
     ) {
-        Text(title, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, color = NightText)
+        Text(title, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+             color = MaterialTheme.colorScheme.onSurface)
         Spacer(Modifier.height(3.dp))
-        Text(sub, fontSize = 11.sp, color = NightText.copy(alpha = 0.6f))
+        Text(sub, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
+
+/**
+ * Every colour the sky draws with, so the constellation follows the app theme
+ * instead of being navy on a cream app.
+ *
+ * The design spec calls the Twin tab "always night". Shipped that way it was
+ * the one screen in a different world from the other three, and read as a bug
+ * rather than a mood — which is the note that came back twice. Night is now a
+ * theme, not a property of this screen.
+ */
+private data class SkyPalette(
+    /** Orbit rings and unnamed stars — the ink of the sky. */
+    val ink: Color,
+    /** Link strokes and the comet tail. Thin, so it needs contrast. */
+    val line: Color,
+    /** The core disc and comet head: the user, and a made thing, so gold. */
+    val core: Color,
+    val accent: Color,
+)
 
 /**
  * The sky itself. Links CURVE out of the core as quadratic beziers, which is
  * what makes it read as a constellation rather than a network diagram.
  */
 private fun DrawScope.drawSky(
+    palette: SkyPalette,
     entries: List<Entry>,
     orbitInner: Float,
     orbitOuter: Float,
@@ -262,7 +296,7 @@ private fun DrawScope.drawSky(
     // Centre glow, breathing at 5s.
     drawCircle(
         brush = Brush.radialGradient(
-            listOf(Gold.copy(alpha = 0.22f * coreGlow), Color.Transparent),
+            listOf(palette.core.copy(alpha = 0.22f * coreGlow), Color.Transparent),
             center = core, radius = size.minDimension * 0.62f,
         ),
         radius = size.minDimension * 0.62f, center = core,
@@ -277,7 +311,7 @@ private fun DrawScope.drawSky(
     ).forEach { (rad, rot) ->
         val circumference = (2.0 * Math.PI * rad).toFloat()
         drawCircle(
-            color = NightText.copy(alpha = if (rad < size.minDimension * 0.25f) 0.16f else 0.10f),
+            color = palette.ink.copy(alpha = if (rad < size.minDimension * 0.25f) 0.16f else 0.10f),
             radius = rad, center = core,
             style = Stroke(
                 1.dp.toPx(),
@@ -317,27 +351,27 @@ private fun DrawScope.drawSky(
                 moveTo(core.x, core.y)
                 quadraticBezierTo(controls[i].x, controls[i].y, p.x, p.y)
             },
-            color = Gold.copy(alpha = 0.5f - i * 0.06f),
+            color = palette.line.copy(alpha = 0.5f - i * 0.06f),
             style = Stroke(1.4.dp.toPx()),
         )
-        val c = if (i == 1) StarBlue else NightText
+        val c = if (i == 1) palette.accent else palette.ink
         drawCircle(c.copy(alpha = 0.15f), radius = (11 - i).dp.toPx(), center = p)
         drawCircle(
-            if (i == 3) Gold.copy(alpha = 0.85f) else c,
+            if (i == 3) palette.core.copy(alpha = 0.85f) else c,
             radius = (6 - i * 0.5f).dp.toPx(), center = p,
         )
     }
 
     // The core: a soft disc under a solid one.
-    drawCircle(Gold.copy(alpha = 0.2f), radius = 18.dp.toPx() * coreGlow, center = core)
-    drawCircle(Gold, radius = 11.dp.toPx(), center = core)
+    drawCircle(palette.core.copy(alpha = 0.2f), radius = 18.dp.toPx() * coreGlow, center = core)
+    drawCircle(palette.core, radius = 11.dp.toPx(), center = core)
 
     // Comet on the outer ring, with a tail.
     val rOuter = size.minDimension * 0.33f
     repeat(6) { k ->
         val a = Math.toRadians(comet - 90.0 - k * 2.6)
         drawCircle(
-            Gold.copy(alpha = 0.28f * (1f - k / 6f)),
+            palette.line.copy(alpha = 0.28f * (1f - k / 6f)),
             radius = (3.0f - k * 0.4f).coerceAtLeast(0.6f).dp.toPx(),
             center = Offset(
                 cx + (rOuter * cos(a)).toFloat(),
@@ -347,14 +381,14 @@ private fun DrawScope.drawSky(
     }
     val ca = Math.toRadians(comet - 90.0)
     val cp = Offset(cx + (rOuter * cos(ca)).toFloat(), cy + (rOuter * sin(ca)).toFloat())
-    drawCircle(Gold.copy(alpha = 0.25f), radius = 6.dp.toPx(), center = cp)
-    drawCircle(Gold, radius = 2.6.dp.toPx(), center = cp)
+    drawCircle(palette.core.copy(alpha = 0.25f), radius = 6.dp.toPx(), center = cp)
+    drawCircle(palette.core, radius = 2.6.dp.toPx(), center = cp)
 
     // A blue body on the inner ring, the other way.
     val rInner = size.minDimension * 0.20f
     val ba = Math.toRadians(innerBody - 90.0)
     drawCircle(
-        StarBlue, radius = 2.dp.toPx(),
+        palette.accent, radius = 2.dp.toPx(),
         center = Offset(cx + (rInner * cos(ba)).toFloat(), cy + (rInner * sin(ba)).toFloat()),
     )
 
