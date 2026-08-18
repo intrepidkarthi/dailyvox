@@ -85,11 +85,15 @@ fun InsightsScreen(
                             .height(6.dp)
                             .clip(RoundedCornerShape(3.dp))
                             .background(
-                                when {
-                                    e == null -> Gold.copy(alpha = 0.18f)
-                                    e.valence > 0.2f -> Gold
-                                    e.valence > -0.2f -> Gold.copy(alpha = 0.62f)
-                                    else -> goldText.copy(alpha = 0.75f)
+                                // valenceColor, not a gold ramp. The previous
+                                // low-night colour was DayGoldText at 75% — a
+                                // dark brown that read as mud against the golds
+                                // beside it, and as a rendering fault rather
+                                // than a bad day.
+                                when (e) {
+                                    null -> Gold.copy(alpha = 0.18f)
+                                    else -> valenceColor(e.valence)
+                                        .copy(alpha = 0.5f + (e.valence + 1f) / 2f * 0.5f)
                                 }
                             )
                     )
@@ -113,10 +117,31 @@ fun InsightsScreen(
         Spacer(Modifier.height(10.dp))
         NightStrip(entries)
 
-        Spacer(Modifier.height(24.dp))
-        MonoLabel("Mood · last 14 days")
-        Spacer(Modifier.height(10.dp))
-        MoodCurve(entries)
+        Spacer(Modifier.height(20.dp))
+        DvCard {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                MonoLabel("Mood · last 14 days")
+                // The design puts a delta beside this label. Stated against the
+                // fortnight before, so it answers "compared to what" without the
+                // reader having to guess.
+                val cutoff = System.currentTimeMillis() - 14L * 86_400_000
+                val recent = entries.filter { it.createdAt >= cutoff }
+                val prior = entries.filter {
+                    it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
+                }
+                if (recent.size >= 3 && prior.size >= 3) {
+                    val d = recent.map { it.valence }.average() - prior.map { it.valence }.average()
+                    Text(
+                        "%s %+.1f".format(if (d >= 0) "\u25B2" else "\u25BC", d),
+                        fontSize = 11.sp, fontWeight = FontWeight.Bold,
+                        color = if (d >= 0) goldText else MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            MoodCurve(entries)
+        }
 
         Spacer(Modifier.height(24.dp))
         MonoLabel("Patterns your Twin noticed")
@@ -134,8 +159,25 @@ fun InsightsScreen(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 patterns.forEach { p ->
                     DvCard {
-                        Text(p, fontSize = 14.sp, lineHeight = 22.sp,
-                             color = MaterialTheme.colorScheme.onSurface)
+                        Row(verticalAlignment = Alignment.Top) {
+                            Box(
+                                Modifier.size(28.dp)
+                                    .clip(RoundedCornerShape(9.dp))
+                                    .background(Gold.copy(alpha = 0.16f)),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text("\u2726", fontSize = 13.sp, color = goldText)
+                            }
+                            Spacer(Modifier.width(11.dp))
+                            Column {
+                                Text(p.lead, fontSize = 14.sp, lineHeight = 21.sp,
+                                     fontWeight = FontWeight.Bold,
+                                     color = MaterialTheme.colorScheme.onSurface)
+                                Spacer(Modifier.height(2.dp))
+                                Text(p.detail, fontSize = 13.sp, lineHeight = 20.sp,
+                                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
                     }
                 }
             }
@@ -234,27 +276,45 @@ private fun MoodCurve(entries: List<Entry>) {
  * deliberately conservative: it is better to show nothing than to tell someone
  * something about themselves that the data does not carry.
  */
-private object Patterns {
-    fun find(entries: List<Entry>): List<String> {
-        if (entries.size < 8) return emptyList()
-        val out = mutableListOf<String>()
+/** One finding: a short lead, the numbers behind it, and how big the effect is. */
+internal data class Pattern(val lead: String, val detail: String, val effect: Double)
 
-        // Day-of-week effect: needs 3+ entries on the day and a real gap.
+/**
+ * Patterns, each gated on enough support to be worth stating. The thresholds are
+ * deliberately conservative: it is better to show nothing than to tell someone
+ * something about themselves that the data does not carry.
+ *
+ * Findings are ranked by effect size and the day-of-week family is capped at
+ * two. Before that, `out.take(4)` returned whatever was appended first, and
+ * weekdays are appended first and can produce seven — so the sleep, person and
+ * voice findings, which are the ones only this app can make, were computed
+ * every time and never once shown.
+ */
+internal object Patterns {
+    private const val DOW_CAP = 2
+
+    fun find(entries: List<Entry>): List<Pattern> {
+        if (entries.size < 8) return emptyList()
+        val dow = mutableListOf<Pattern>()
+        val out = mutableListOf<Pattern>()
+
         val cal = Calendar.getInstance()
         val byDow = entries.groupBy { e ->
             cal.timeInMillis = e.createdAt; cal.get(Calendar.DAY_OF_WEEK)
         }
         val overall = entries.map { it.valence }.average()
-        byDow.filter { it.value.size >= 3 }.forEach { (dow, es) ->
+        byDow.filter { it.value.size >= 3 }.forEach { (d, es) ->
             val v = es.map { it.valence }.average()
             if (abs(v - overall) > 0.22) {
-                val name = SimpleNames.dow(dow)
-                out += if (v < overall)
-                    "%ss read lower than your average — %+.2f against %+.2f, across %d entries.".format(name, v, overall, es.size)
-                else
-                    "%ss read higher than your average — %+.2f against %+.2f, across %d entries.".format(name, v, overall, es.size)
+                val name = SimpleNames.dow(d)
+                dow += Pattern(
+                    if (v < overall) "${name}s run low." else "${name}s run high.",
+                    "%+.2f against your %+.2f average, across %d entries.".format(v, overall, es.size),
+                    abs(v - overall),
+                )
             }
         }
+        out += dow.sortedByDescending { it.effect }.take(DOW_CAP)
 
         // Person effect: needs 3+ entries mentioning them.
         entries.flatMap { it.entityList }.groupingBy { it }.eachCount()
@@ -262,7 +322,12 @@ private object Patterns {
             .forEach { (name, n) ->
                 val v = entries.filter { name in it.entityList }.map { it.valence }.average()
                 if (v - overall > 0.2)
-                    out += "Entries mentioning $name average %+.2f, above your %+.2f overall — across %d of them.".format(v, overall, n)
+                    out += Pattern(
+                        "$name lifts you.",
+                        "Entries mentioning them average %+.2f against your %+.2f overall, across %d of them."
+                            .format(v, overall, n),
+                        v - overall,
+                    )
             }
 
         // Sleep effect: needs 3 nights on each side of 7 hours.
@@ -272,8 +337,14 @@ private object Patterns {
         if (good.size >= 3 && poor.size >= 3) {
             val gv = good.map { it.valence }.average(); val pv = poor.map { it.valence }.average()
             if (abs(gv - pv) > 0.2)
-                out += "After seven or more hours you write %+.2f; under seven, %+.2f. %d nights either side.".format(gv, pv, withSleep.size)
+                out += Pattern(
+                    if (gv > pv) "Sleep shows up." else "Sleep runs the other way.",
+                    "After seven or more hours you write %+.2f; under seven, %+.2f. %d nights either side."
+                        .format(gv, pv, withSleep.size),
+                    abs(gv - pv),
+                )
         }
+
         // Steps effect. Same gate as the rest: 4 either side of the median, and
         // a difference big enough to be worth saying out loud.
         val withSteps = entries.filter { (it.stepsToday ?: 0) > 0 }
@@ -285,7 +356,12 @@ private object Patterns {
                 val mv = more.map { it.valence }.average()
                 val lv = less.map { it.valence }.average()
                 if (abs(mv - lv) > 0.2)
-                    out += "On your more active days you read %+.2f; on quieter ones, %+.2f. Across %d days.".format(mv, lv, withSteps.size)
+                    out += Pattern(
+                        if (mv > lv) "Moving helps." else "Busy days cost you.",
+                        "On your more active days you read %+.2f; on quieter ones, %+.2f. Across %d days."
+                            .format(mv, lv, withSteps.size),
+                        abs(mv - lv),
+                    )
             }
         }
 
@@ -300,7 +376,12 @@ private object Patterns {
                 val fv = fast.map { it.valence }.average()
                 val sv = slow.map { it.valence }.average()
                 if (abs(fv - sv) > 0.2)
-                    out += "When you speak faster you read %+.2f; slower, %+.2f. Across %d recordings.".format(fv, sv, withRate.size)
+                    out += Pattern(
+                        "Your pace tracks it.",
+                        "When you speak faster you read %+.2f; slower, %+.2f. Across %d recordings."
+                            .format(fv, sv, withRate.size),
+                        abs(fv - sv),
+                    )
             }
         }
 
@@ -316,14 +397,18 @@ private object Patterns {
         byPartOfDay.filter { it.value.size >= 4 }.forEach { (part, es) ->
             val v = es.map { it.valence }.average()
             if (abs(v - overall) > 0.22)
-                out += "Your %s read %+.2f against your %+.2f overall, across %d entries.".format(part, v, overall, es.size)
+                out += Pattern(
+                    "Your $part " + if (v > overall) "read warmer." else "read cooler.",
+                    "%+.2f against your %+.2f overall, across %d entries.".format(v, overall, es.size),
+                    abs(v - overall),
+                )
         }
 
-        return out.take(4)
+        return out.sortedByDescending { it.effect }.take(4)
     }
 }
 
-private object SimpleNames {
+internal object SimpleNames {
     fun dow(c: Int) = when (c) {
         Calendar.MONDAY -> "Monday"; Calendar.TUESDAY -> "Tuesday"
         Calendar.WEDNESDAY -> "Wednesday"; Calendar.THURSDAY -> "Thursday"

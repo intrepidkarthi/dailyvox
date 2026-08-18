@@ -104,8 +104,16 @@ fun TwinScreen(
         else -> "NEW"
     }
 
-    val skyHeight = androidx.compose.ui.platform.LocalConfiguration.current
-        .screenHeightDp.dp.times(0.46f).coerceIn(280.dp, 440.dp)
+    // Sized against what is BELOW it rather than as a fraction of the screen.
+    // At 46% capped to 440dp, a 950dp phone showed the sky ending two thirds of
+    // the way down with a band of empty navy under the cards — the one screen
+    // where empty space reads as a failure to render rather than as room.
+    // ~405dp is the header, summary card, link row, gaps and the nav pill,
+    // measured on a 952dp screen rather than estimated. At 460 the sky stopped
+    // two thirds down and left a band of empty navy; at 358 the link row sat
+    // under the nav pill.
+    val skyHeight = (androidx.compose.ui.platform.LocalConfiguration.current
+        .screenHeightDp.dp - 405.dp).coerceIn(280.dp, 620.dp)
 
     Column(
         modifier

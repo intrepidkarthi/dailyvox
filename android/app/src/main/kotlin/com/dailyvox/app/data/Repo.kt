@@ -29,19 +29,10 @@ class Repo private constructor(private val db: DailyVoxDb) {
     fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all ->
         val terms = contentWords(q)
         if (terms.isEmpty()) return@map all
-        all.map { e ->
-            val hay = contentWords(e.text) + e.entityList.map { it.lowercase() }
-            val overlap = terms.count { t -> hay.any { it.startsWith(t) || t.startsWith(it) } }
-            e to overlap / terms.size.toFloat()
-        }.filter { it.second > 0f }
-         .sortedByDescending { it.second }
-         .map { it.first }
+        rank(q, all).map { it.first }
     }
 
-    private fun contentWords(t: String): Set<String> =
-        t.lowercase().split(Regex("[^a-z0-9']+"))
-            .filter { it.length >= 3 && it !in STOP }
-            .toSet()
+    private fun contentWords(t: String): Set<String> = rankWords(t)
     fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
 
@@ -179,6 +170,29 @@ class Repo private constructor(private val db: DailyVoxDb) {
     }
 
     companion object {
+
+        /**
+         * The same scoring the journal search uses, with the score kept rather
+         * than thrown away. Ask needs it to show each citation's match strength,
+         * and a second implementation of the scoring would drift from this one
+         * the first time either is touched.
+         */
+        fun rank(q: String, all: List<Entry>): List<Pair<Entry, Float>> {
+            val terms = rankWords(q)
+            if (terms.isEmpty()) return emptyList()
+            return all.map { e ->
+                val hay = rankWords(e.text) + e.entityList.map { it.lowercase() }
+                val overlap = terms.count { t -> hay.any { it.startsWith(t) || t.startsWith(it) } }
+                e to overlap / terms.size.toFloat()
+            }.filter { it.second > 0f }
+             .sortedByDescending { it.second }
+        }
+
+        fun rankWords(t: String): Set<String> =
+            t.lowercase().split(Regex("[^a-z0-9']+"))
+                .filter { it.length >= 3 && it !in STOP }
+                .toSet()
+
 
         /**
          * Adds the prosody and ambient columns. All nullable, so existing rows

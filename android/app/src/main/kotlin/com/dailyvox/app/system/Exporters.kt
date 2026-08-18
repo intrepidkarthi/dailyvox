@@ -100,6 +100,52 @@ object Exporters {
      * should be — the share worked, it just looked broken, which for a card whose
      * entire purpose is to be looked at is the same thing.
      */
+    /**
+     * Markdown: one heading per entry, chronological, front-matter-free. This is
+     * the format that opens in Obsidian, Bear and every plain-text editor
+     * without a converter, which is the whole reason it is here.
+     */
+    fun markdown(entries: List<Entry>): String {
+        val day = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
+        val time = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val sb = StringBuilder("# DailyVox journal\n\n")
+        sb.append("_${entries.size} entries, exported ${day.format(Date())}._\n\n")
+        entries.sortedBy { it.createdAt }.forEach { e ->
+            val d = Date(e.createdAt)
+            sb.append("## ${day.format(d)} · ${time.format(d)}\n\n")
+            sb.append(e.text.trim()).append("\n\n")
+            val meta = buildList {
+                add("valence %+.2f".format(e.valence))
+                add("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
+                e.sleepHours?.let { add("%.1fh sleep".format(it)) }
+                if (e.entities.isNotBlank()) add(e.entityList.joinToString(", "))
+            }
+            sb.append("`").append(meta.joinToString(" · ")).append("`\n\n")
+        }
+        return sb.toString()
+    }
+
+    /**
+     * CSV for spreadsheets. RFC 4180 quoting: every field is quoted and inner
+     * quotes are doubled, because transcripts contain commas, quotation marks
+     * and newlines as a matter of course — an unquoted writer corrupts the file
+     * on the first entry that quotes someone.
+     */
+    fun csv(entries: List<Entry>): String {
+        val iso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+        fun q(v: String) = "\"" + v.replace("\"", "\"\"") + "\""
+        val sb = StringBuilder("date,seconds,valence,sleep_hours,people,text\n")
+        entries.sortedBy { it.createdAt }.forEach { e ->
+            sb.append(q(iso.format(Date(e.createdAt)))).append(',')
+                .append(e.durationSec).append(',')
+                .append("%.4f".format(e.valence)).append(',')
+                .append(e.sleepHours?.let { "%.2f".format(it) } ?: "").append(',')
+                .append(q(e.entityList.joinToString("; "))).append(',')
+                .append(q(e.text)).append('\n')
+        }
+        return sb.toString()
+    }
+
     fun share(context: Context, file: File, mime: String) {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.files", file)
         val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {

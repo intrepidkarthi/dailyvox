@@ -129,7 +129,23 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/json")
     ) { uri -> if (uri != null) vm.writeExport(context, uri, passphrase = null) }
 
+
     val entries by vm.entries.collectAsStateWithLifecycle()
+
+    // Plain-text exports write straight through the resolver: no temp file, so
+    // nothing readable is left in app storage after the share.
+    fun writeText(uri: android.net.Uri, body: String) {
+        runCatching {
+            context.contentResolver.openOutputStream(uri)?.use { it.write(body.toByteArray()) }
+        }
+    }
+    val saveMd = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/markdown")
+    ) { uri -> if (uri != null) writeText(uri, com.dailyvox.app.system.Exporters.markdown(entries)) }
+    val saveCsv = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri -> if (uri != null) writeText(uri, com.dailyvox.app.system.Exporters.csv(entries)) }
+
     val query by vm.query.collectAsStateWithLifecycle()
     val streak by vm.streak.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
@@ -240,8 +256,25 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
 
+        // The Twin tab is the one screen that is navy in every theme, and the
+        // Scaffold's container is what shows through behind the status bar and
+        // around the floating nav bar. Left at the theme background it framed
+        // the night sky in two cream bands, which read as an unfinished screen
+        // rather than a deliberate one.
+        val twinNight = current == Destination.TWIN && chromeVisible
+        val view = androidx.compose.ui.platform.LocalView.current
+        val darkTheme = androidx.compose.material3.MaterialTheme.colorScheme.background ==
+            com.dailyvox.app.ui.theme.NightBackground
+        androidx.compose.runtime.SideEffect {
+            val window = (view.context as android.app.Activity).window
+            androidx.core.view.WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !(twinNight || darkTheme)
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            containerColor = if (twinNight) com.dailyvox.app.ui.theme.NightBackground
+                             else androidx.compose.material3.MaterialTheme.colorScheme.background,
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
                     night = current == Destination.TWIN,
@@ -290,6 +323,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
                         onExport = { saveJson.launch("dailyvox-journal.json") },
+                        onExportMarkdown = { saveMd.launch("dailyvox-journal.md") },
+                        onExportCsv = { saveCsv.launch("dailyvox-journal.csv") },
                         onExportEncrypted = { saveBackup.launch("dailyvox-backup.dvx") },
                         onExportPdf = { vm.exportPdf(context) },
                         onImport = { pickBackup.launch(arrayOf("application/json", "text/plain", "*/*")) },
@@ -314,6 +349,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     Destination.SPEAK -> SpeakScreen(
                         streak = streak,
                         resolution = resolution,
+                        yearCount = entries.count {
+                            val c = java.util.Calendar.getInstance()
+                            val thisYear = c.get(java.util.Calendar.YEAR)
+                            c.timeInMillis = it.createdAt
+                            c.get(java.util.Calendar.YEAR) == thisYear
+                        },
                         firstEver = entries.isEmpty(),
                         todayEntry = entries.firstOrNull {
                             it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
@@ -327,6 +368,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         modifier = inner,
                     )
                     Destination.JOURNAL -> JournalScreen(
+                        onAsk = { current = Destination.ASK },
                         entries = entries, query = query, onQuery = vm::setQuery,
                         onOpen = { openEntry = it },
                         onSpeak = { current = Destination.SPEAK },

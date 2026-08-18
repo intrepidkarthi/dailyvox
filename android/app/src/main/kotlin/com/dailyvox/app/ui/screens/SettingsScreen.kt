@@ -50,6 +50,8 @@ fun SettingsScreen(
     onTheme: (ThemeChoice) -> Unit,
     onExport: () -> Unit,
     onExportPdf: () -> Unit = {},
+    onExportMarkdown: () -> Unit = {},
+    onExportCsv: () -> Unit = {},
     onExportEncrypted: () -> Unit = {},
     onImport: () -> Unit = {},
     reminderOn: Boolean = false,
@@ -94,7 +96,20 @@ fun SettingsScreen(
                     modifier = Modifier.height(20.dp),
                 )
             }
-            LedgerRow("Health Connect") { Mono("REVIEW QUEUE", goldText) }
+            // The design mock reads "REVIEW QUEUE"; that is placeholder text. A
+            // ledger whose rows are decorative is worse than no ledger, so this
+            // one reports what Health Connect actually is on THIS phone.
+            var hcState by remember { mutableStateOf("CHECKING") }
+            LaunchedEffect(Unit) {
+                val body = com.dailyvox.app.body.BodySignals(context)
+                hcState = when (body.availability()) {
+                    com.dailyvox.app.body.BodySignals.Availability.UNSUPPORTED -> "NOT INSTALLED"
+                    com.dailyvox.app.body.BodySignals.Availability.NEEDS_UPDATE -> "NEEDS UPDATE"
+                    com.dailyvox.app.body.BodySignals.Availability.AVAILABLE ->
+                        if (body.granted()) "CONNECTED" else "NOT LINKED"
+                }
+            }
+            LedgerRow("Health Connect") { Mono(hcState, goldText) }
             Spacer(Modifier.height(11.dp))
             Text(
                 "The complete permission list: microphone, notifications, vibration, " +
@@ -133,25 +148,50 @@ fun SettingsScreen(
                     )
                 }
             }
-            Spacer(Modifier.height(9.dp))
-            Text(
-                "Sunset follows the real sun — paper by day, sky by night.",
-                fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
-            )
         }
 
         // ── REMINDER ───────────────────────────────────────────────────────
         SettingsCard {
-            SectionLabel("EVENING REMINDER", scheme.onSurfaceVariant)
-            Spacer(Modifier.height(11.dp))
-            LedgerRow("Remind me around ${hourLabel(reminderHour)}") {
+            // Label and switch share one row, per the design. The switch is the
+            // only control that is always visible; the time hides behind its own
+            // chip so the card reads as a sentence rather than a form.
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SectionLabel("DAILY REMINDER · LOCAL ONLY", scheme.onSurfaceVariant)
                 Switch(
                     checked = reminderOn,
                     onCheckedChange = { onReminder(it, reminderHour) },
                     modifier = Modifier.height(20.dp),
                 )
             }
-            if (reminderOn) {
+            Spacer(Modifier.height(11.dp))
+            var picking by remember { mutableStateOf(false) }
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "\u201CTonight\u2019s star is waiting\u201D",
+                    fontSize = 12.sp, lineHeight = 17.sp,
+                    fontWeight = FontWeight.Medium, color = scheme.onSurface,
+                )
+                Text(
+                    hourLabel(reminderHour), fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold, color = goldText,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                        .border(1.dp, com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.4f),
+                                RoundedCornerShape(11.dp))
+                        .clickable { picking = !picking }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                )
+            }
+            if (picking) {
                 Spacer(Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(18, 20, 21, 22).forEach { h ->
@@ -167,20 +207,19 @@ fun SettingsScreen(
                                         scheme.onSurfaceVariant.copy(alpha = 0.25f),
                                         RoundedCornerShape(13.dp))
                                 )
-                                .clickable { onReminder(true, h) }
+                                .clickable { onReminder(true, h); picking = false }
                                 .padding(vertical = 9.dp)
                                 .wrapContentWidth(Alignment.CenterHorizontally),
                         )
                     }
                 }
             }
-            Spacer(Modifier.height(9.dp))
-            // "Around", not "at": this is a windowed alarm, and promising a
-            // minute you cannot deliver teaches people to distrust the app.
+            Spacer(Modifier.height(8.dp))
+            // Both halves are claims the app has to actually honour: the receiver
+            // reads today's entries and returns without notifying if one exists,
+            // and there is no network permission for a push server to arrive on.
             Text(
-                "One notification, no streak guilt. Delivered in a window rather " +
-                    "than on the minute — exact alarms are a restricted permission " +
-                    "a journal does not qualify for.",
+                "Skips once you\u2019ve spoken · scheduled on-device, no push servers.",
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
             )
         }
@@ -191,6 +230,8 @@ fun SettingsScreen(
             Spacer(Modifier.height(11.dp))
             ChevronRow("Export as PDF", "· printable, shareable", onExportPdf)
             ChevronRow("Export as JSON", "· readable, portable", onExport)
+            ChevronRow("Export as Markdown", "· Obsidian, Bear, anything", onExportMarkdown)
+            ChevronRow("Export as CSV", "· spreadsheets", onExportCsv)
             ChevronRow("Encrypted backup", "· opens on any phone", onExportEncrypted)
             ChevronRow("Import backup", "· adds, never replaces", onImport)
         }
@@ -250,6 +291,58 @@ fun SettingsScreen(
             Text(
                 "These make the recogniser more likely to hear the word. A nudge, not a guarantee.",
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+            )
+        }
+
+        // ── REVIEW PROMPT ──────────────────────────────────────────────────
+        // Asking here rather than interrupting the app is deliberate: the iOS
+        // build's rating prompt is gated behind [3, 12, 40] entries because a
+        // prompt shown to someone who has not used the app yet buys a one-star.
+        // A settings row is the version of that with zero interruptions.
+        Spacer(Modifier.height(10.dp))
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(scheme.surface)
+                .padding(horizontal = 17.dp, vertical = 11.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text("Enjoying DailyVox?", fontSize = 12.sp,
+                     fontWeight = FontWeight.Medium, color = scheme.onSurface)
+                Text("A review helps more than you\u2019d think.", fontSize = 10.5.sp,
+                     lineHeight = 15.sp, color = scheme.onSurfaceVariant)
+            }
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "Rate \u2726", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold,
+                color = com.dailyvox.app.ui.theme.NightBackground,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(com.dailyvox.app.ui.theme.Gold)
+                    // A market:// intent, not the Play in-app review library.
+                    // That library is a closed-source Google dependency for a
+                    // build that ships zero network permissions and is trying to
+                    // stay under 10 MB; handing the Play Store app the deep link
+                    // costs nothing and works the same.
+                    .clickable {
+                        val uri = android.net.Uri.parse(
+                            "market://details?id=" + context.packageName)
+                        val store = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW, uri)
+                        val web = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse(
+                                "https://play.google.com/store/apps/details?id=" +
+                                    context.packageName))
+                        // Phones without Play (and every emulator image without
+                        // Play Services) throw ActivityNotFound on market://.
+                        if (runCatching { context.startActivity(store) }.isFailure) {
+                            runCatching { context.startActivity(web) }
+                        }
+                    }
+                    .padding(horizontal = 14.dp, vertical = 9.dp),
             )
         }
 

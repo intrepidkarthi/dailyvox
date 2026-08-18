@@ -141,6 +141,12 @@ private fun SpeakBeat(
     val recorder = remember { AudioRecorder(context) }
     val state by capture.state.collectAsState()
     val level by capture.level.collectAsState()
+    // SpeechCapture has raised a real CaptureError since the silent-failure fix,
+    // but this beat never read it — so a phone whose recogniser is missing,
+    // busy, or has no language pack sat on "Listening" forever with Done as the
+    // only control and no way into the app at all. Onboarding is the one screen
+    // where swallowing this is fatal rather than annoying.
+    val captureError by capture.error.collectAsState()
     var elapsed by remember { mutableIntStateOf(0) }
     var phase by remember { mutableStateOf(Phase.IDLE) }
     var text by remember { mutableStateOf("") }
@@ -154,7 +160,7 @@ private fun SpeakBeat(
             SpeechCapture.State.RECORDING -> { phase = Phase.RECORDING; elapsed = 0
                 while (true) { delay(1000); elapsed++ } }
             SpeechCapture.State.PROCESSING -> phase = Phase.PROCESSING
-            else -> Unit
+            SpeechCapture.State.IDLE -> if (phase != Phase.BORN) phase = Phase.IDLE
         }
     }
     LaunchedEffect(Unit) {
@@ -213,8 +219,66 @@ private fun SpeakBeat(
             }
             phase == Phase.RECORDING -> {
                 FilledAction("%d:%02d  ·  Done".format(elapsed / 60, elapsed % 60)) { capture.stop() }
+                Spacer(Modifier.height(12.dp))
+                // Even mid-recording. If the recogniser dies without calling
+                // onError — and OEM implementations do — this is the only exit.
+                QuietAction("Skip for now") { capture.stop(); onSkip() }
             }
             else -> Spacer(Modifier.height(56.dp))
+        }
+
+        captureError?.let { err ->
+            Spacer(Modifier.height(22.dp))
+            Column(
+                Modifier.fillMaxWidth().widthIn(max = 420.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp),
+            ) {
+                Text(err.message, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                     color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(6.dp))
+                Text(err.fix, fontSize = 13.sp, lineHeight = 20.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    if (err.openLanguageSettings) {
+                        Text(
+                            "Open speech settings",
+                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .clickable {
+                                    val tried = listOf(
+                                        "com.android.settings.VOICE_INPUT_SETTINGS",
+                                        android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
+                                        android.provider.Settings.ACTION_LOCALE_SETTINGS,
+                                    )
+                                    tried.firstOrNull { action ->
+                                        runCatching {
+                                            context.startActivity(
+                                                android.content.Intent(action)
+                                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            )
+                                        }.isSuccess
+                                    }
+                                }
+                                .padding(horizontal = 16.dp, vertical = 11.dp),
+                        )
+                    }
+                    Text(
+                        "Continue anyway", fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable { capture.clearError(); onSkip() }
+                            .padding(horizontal = 16.dp, vertical = 11.dp),
+                    )
+                }
+            }
         }
     }
 }

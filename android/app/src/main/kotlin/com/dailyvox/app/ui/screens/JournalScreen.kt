@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
@@ -22,6 +23,7 @@ import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.foundation.layout.FlowRow
 import com.dailyvox.app.ui.components.*
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.*
 
 @Composable
@@ -31,9 +33,14 @@ fun JournalScreen(
     onQuery: (String) -> Unit,
     onOpen: (Entry) -> Unit,
     onSpeak: () -> Unit = {},
+    onAsk: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    // The strongest finding the Twin has, computed from the same code Insights
+    // uses rather than a second copy of the thresholds. Null until the data
+    // carries one, which is the point of the gates in Patterns.
+    val noticed = remember(entries) { Patterns.find(entries).firstOrNull() }
     val queue = remember { com.dailyvox.app.audio.AudioQueue() }
     var playingToday by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { queue.stop() } }
@@ -213,7 +220,15 @@ fun JournalScreen(
             }
         }
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(shown, key = { it.id }) { e -> EntryCard(e) { onOpen(e) } }
+            itemsIndexed(shown, key = { _, e -> e.id }) { i, e ->
+                EntryCard(e) { onOpen(e) }
+                // Sits under the newest entry rather than at the top: it is a
+                // remark about the timeline, and above it, it reads as chrome.
+                if (i == 0) noticed?.let { n ->
+                    Spacer(Modifier.height(12.dp))
+                    TwinNoticedCard(n, onAsk)
+                }
+            }
             item { Spacer(Modifier.height(120.dp)) }   // clears the floating nav
         }
     }
@@ -279,7 +294,48 @@ private fun SpecChip(text: String, gold: Boolean) {
     )
 }
 
-private fun dateLabel(ts: Long): String =
-    SimpleDateFormat("EEE d · h:mm a", Locale.getDefault()).format(Date(ts))
+private fun dateLabel(ts: Long): String {
+    val day = 86_400_000L
+    val today = System.currentTimeMillis() / day
+    val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(ts))
+    return when (ts / day) {
+        today -> {
+            val hour = Calendar.getInstance().apply { timeInMillis = ts }
+                .get(Calendar.HOUR_OF_DAY)
+            if (hour >= 17 || hour < 4) "Tonight · $time" else "Today · $time"
+        }
+        today - 1 -> "Yesterday · $time"
+        else -> SimpleDateFormat("EEE d · h:mm a", Locale.getDefault()).format(Date(ts))
+    }
+}
 
 private fun durationLabel(s: Int): String = "%d:%02d".format(s / 60, s % 60)
+
+/**
+ * B3's gold-tint remark in the timeline. It is a pointer, not a finding: the
+ * numbers live in Insights, and repeating them here would make the journal
+ * argue with itself.
+ */
+@Composable
+private fun TwinNoticedCard(p: Pattern, onAsk: () -> Unit) {
+    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
+                   else com.dailyvox.app.ui.theme.DayGoldText
+    Row(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.14f else 0.13f))
+            .clickable(onClick = onAsk)
+            .padding(15.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("\u2726", fontSize = 14.sp, color = goldText)
+        Spacer(Modifier.width(11.dp))
+        Text(
+            "Twin noticed: ${p.lead.trimEnd('.').replaceFirstChar { it.lowercase() }}. Ask about it.",
+            fontSize = 13.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f),
+        )
+        Text("\u203A", fontSize = 18.sp, color = goldText)
+    }
+}

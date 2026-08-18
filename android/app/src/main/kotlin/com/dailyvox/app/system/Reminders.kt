@@ -107,6 +107,31 @@ object Reminders {
 
     class ReminderReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            // SKIP IF ALREADY SPOKEN — FINAL-SPEC C4, "Skips once you've spoken".
+            //
+            // This is the difference between a reminder and a nag. Firing at
+            // 9:30 to tell someone to do the thing they did at 8:15 is how an
+            // app teaches people to swipe its notifications away without
+            // reading them, and this product's binding constraint is retention.
+            //
+            // goAsync because the Room read cannot happen on the broadcast
+            // thread — the same trap the widget fell into.
+            val pending = goAsync()
+            io.execute {
+                try {
+                    val spokenToday = runCatching {
+                        val today = System.currentTimeMillis() / 86_400_000L
+                        com.dailyvox.app.data.Repo.get(context).allBlocking()
+                            .any { it.createdAt / 86_400_000L == today }
+                    }.getOrDefault(false)
+                    if (!spokenToday) notify(context)
+                } finally {
+                    pending.finish()
+                }
+            }
+        }
+
+        private fun notify(context: Context) {
             ensureChannel(context)
             val open = PendingIntent.getActivity(
                 context, 0,
@@ -116,14 +141,18 @@ object Reminders {
             )
             val n = NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(com.dailyvox.app.R.drawable.ic_nav_speak)
-                .setContentTitle("Tonight's forty-two seconds")
+                .setContentTitle("Tonight's star is waiting")
                 // No streak guilt. The empty states make a point of this and a
                 // notification is the easiest place in the product to break it.
-                .setContentText("Whenever you're ready.")
+                .setContentText("Whenever you're ready. Forty-two seconds.")
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()
             runCatching { NotificationManagerCompat.from(context).notify(42, n) }
+        }
+
+        companion object {
+            private val io = java.util.concurrent.Executors.newSingleThreadExecutor()
         }
     }
 }

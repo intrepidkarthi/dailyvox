@@ -59,6 +59,8 @@ import kotlinx.coroutines.delay
 fun SpeakScreen(
     streak: Int,
     resolution: Int,
+    /** Stars filed since 1 January — the right-hand chip in spec §2.2. */
+    yearCount: Int = 0,
     todayEntry: com.dailyvox.app.data.Entry? = null,
     firstEver: Boolean = false,
     autoStart: Boolean = false,
@@ -70,6 +72,9 @@ fun SpeakScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val goldText = if (MaterialTheme.colorScheme.background ==
+                       com.dailyvox.app.ui.theme.NightBackground)
+        com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText
     val capture = remember { SpeechCapture(context) }
     val recorder = remember { AudioRecorder(context) }
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
@@ -186,23 +191,47 @@ fun SpeakScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(14.dp))
+        // Spec §2.2: greeting + date on the left, streak and star chips on the
+        // right. This read "Day 21 · 17% resolved" — a progress figure that
+        // belongs to the Twin tab, on the screen whose whole job is to make
+        // tonight feel unhurried.
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(StarGold))
-                Spacer(Modifier.width(8.dp))
-                Text("Day ${streak.coerceAtLeast(1)}", fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onBackground)
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                MonoLabel(
-                    "$resolution% resolved",
-                    Modifier.clip(RoundedCornerShape(10.dp))
-                        .clickable(onClick = onInsights)
-                        .defaultMinSize(minHeight = 44.dp)
-                        .padding(horizontal = 8.dp, vertical = 13.dp),
+            verticalAlignment = Alignment.Top) {
+            Column {
+                val cal = java.util.Calendar.getInstance()
+                Text(
+                    when (cal.get(java.util.Calendar.HOUR_OF_DAY)) {
+                        in 0..4 -> "Still up"
+                        in 5..11 -> "Good morning"
+                        in 12..16 -> "Good afternoon"
+                        else -> "Good evening"
+                    },
+                    fontSize = 15.sp, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault())
+                        .format(java.util.Date()),
+                    fontSize = 12.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Row(verticalAlignment = Alignment.Top) {
+                Column(horizontalAlignment = Alignment.End,
+                       modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                           .clickable(onClick = onInsights)
+                           .padding(horizontal = 8.dp, vertical = 6.dp)) {
+                    Text(
+                        if (streak > 0) "$streak-day streak" else "no streak yet",
+                        fontSize = 12.5.sp, fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        "\u2726 $yearCount this year", fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold, color = goldText,
+                    )
+                }
                 Text(
                     "\u22EF",
                     fontSize = 20.sp,
@@ -220,7 +249,7 @@ fun SpeakScreen(
             when (state) {
                 SpeechCapture.State.RECORDING -> "Listening."
                 SpeechCapture.State.PROCESSING -> "Filing it."
-                else -> "Tonight's forty-two seconds."
+                else -> "How was your day,\nreally?"
             },
             fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
@@ -248,7 +277,7 @@ fun SpeakScreen(
         Spacer(Modifier.height(22.dp))
         Text(
             if (state == SpeechCapture.State.RECORDING) "%d:%02d".format(elapsed / 60, elapsed % 60)
-            else if (!granted) "Allow the microphone to begin" else "Tap to start",
+            else if (!granted) "Allow the microphone to begin" else "Tap to record \u00B7 42 seconds",
             fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
