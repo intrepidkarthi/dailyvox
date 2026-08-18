@@ -24,15 +24,26 @@ val LightAccentNegative = Color(0xFFB0533A)
 val LightPositive       = Color(0xFF4F7A3E)
 
 // ── Dark: night sky ──────────────────────────────────────────────────────────
-val DarkBackground      = Color(0xFF0F140F)
-val DarkSurface         = Color(0xFF1A211A)   // tonal, no borders
-val DarkText            = Color(0xFFF2EFE9)
-val DarkTextSecondary   = Color(0x99F2EFE9)
-val DarkAccent          = Color(0xFFE0B15C)   // amber — dark-only
-val DarkAccentNegative  = Color(0xFFC0705A)
-val DarkPositive        = Color(0xFF9CCB85)
+//
+// Retuned for CONTRAST. The first pass was technically the spec's values and
+// rendered as mud: cards at #1A211A sat almost on top of a #0F140F ground, so
+// nothing had edges, and every accent was used at low opacity. Direction 1c —
+// the design package's actual recommendation — is not subtle. It has a bright
+// amber record disc, a solid amber nav pill and clearly lifted surfaces.
+//
+// The ground goes darker and the surfaces lighter so they separate; amber gets
+// brighter so it reads as the action colour rather than a tint.
+val DarkBackground      = Color(0xFF0A0D0A)   // deeper, so surfaces can lift
+val DarkSurface         = Color(0xFF1C241C)   // clearly above the ground
+val DarkSurfaceHigh     = Color(0xFF273127)   // pressed / active states
+val DarkText            = Color(0xFFF4F1E8)
+val DarkTextSecondary   = Color(0xB3F4F1E8)   // 70%, was 60% and read as grey mush
+val DarkAccent          = Color(0xFFF0BE63)   // brighter amber — this is the ACTION colour
+val DarkAccentDim       = Color(0xFF8A6E33)
+val DarkAccentNegative  = Color(0xFFD4816A)
+val DarkPositive        = Color(0xFFA8D98C)
 
 // ── Constellation: dark in BOTH themes, never wallpaper-themed ───────────────
 val SkyTop    = Color(0xFF0F140F)
 val SkyBottom = Color(0xFF16211A)
-val StarGold  = Color(0xFFE0B15C)
+val StarGold  = Color(0xFFF0BE63)

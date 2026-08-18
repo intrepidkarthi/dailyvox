@@ -316,6 +316,10 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
+    // In Dark, primary IS amber, so idle is already the bright disc direction 1c
+    // draws. The old build ran Light by default, where primary is ink — which is
+    // how the app's single most important control ended up a flat black circle
+    // on cream.
     val target = when (state) {
         SpeechCapture.State.RECORDING -> scheme.error          // coral
         SpeechCapture.State.PROCESSING -> StarGold
@@ -412,24 +416,74 @@ private fun RecordButton(
             }
             // Glow, then core. Stacked translucent circles rather than a blur —
             // the same technique the iOS constellation uses, and far cheaper.
+            //
+            // Three stacked passes rather than one: a single 34% wash reads as a
+            // smudge on a dark ground, where 1c's disc has a real bloom around
+            // it. Widest and faintest first so the falloff is smooth.
             drawCircle(
                 brush = Brush.radialGradient(
-                    listOf(color.copy(alpha = 0.34f), Color.Transparent),
-                    center = center, radius = r * 0.92f * pulse,
+                    listOf(color.copy(alpha = 0.22f), Color.Transparent),
+                    center = center, radius = r * 1.02f * pulse,
                 ),
-                radius = r * 0.92f * pulse,
+                radius = r * 1.02f * pulse,
             )
-            drawCircle(color, radius = r * 0.46f * pulse)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    listOf(color.copy(alpha = 0.38f), Color.Transparent),
+                    center = center, radius = r * 0.78f * pulse,
+                ),
+                radius = r * 0.78f * pulse,
+            )
+            // The disc itself, with a warmer centre so it reads as lit rather
+            // than filled.
+            drawCircle(
+                brush = Brush.radialGradient(
+                    listOf(
+                        Color.White.copy(alpha = 0.28f),
+                        color,
+                        color.copy(alpha = 0.92f),
+                    ),
+                    center = Offset(center.x - r * 0.10f, center.y - r * 0.12f),
+                    radius = r * 0.52f * pulse,
+                ),
+                radius = r * 0.48f * pulse,
+            )
+            // A crisp rim, so the disc has an edge against the glow.
+            drawCircle(
+                color = Color.White.copy(alpha = 0.16f),
+                radius = r * 0.48f * pulse,
+                style = Stroke(1.5.dp.toPx()),
+            )
         }
         // The mic glyph, drawn rather than an icon font, so it needs no asset.
-        val micColor = if (state == SpeechCapture.State.IDLE) scheme.onPrimary else Color(0xFF0F140F)
-        Canvas(Modifier.size(diameter * 0.20f)) {
+        // Always ink: the disc is bright in every state now.
+        val micColor = Color(0xFF14180F)
+        // A real mic silhouette: capsule, stand and base. The single rounded
+        // rect read as a dark smudge in the middle of a bright disc.
+        Canvas(Modifier.size(diameter * 0.30f)) {
             val w = size.width
+            val stroke = w * 0.075f
             drawRoundRect(
                 color = micColor,
-                topLeft = Offset(w * 0.34f, w * 0.16f),
-                size = androidx.compose.ui.geometry.Size(w * 0.32f, w * 0.50f),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.16f),
+                topLeft = Offset(w * 0.36f, w * 0.10f),
+                size = androidx.compose.ui.geometry.Size(w * 0.28f, w * 0.46f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.14f),
+            )
+            // Cradle
+            drawArc(
+                color = micColor,
+                startAngle = 0f, sweepAngle = 180f, useCenter = false,
+                topLeft = Offset(w * 0.24f, w * 0.34f),
+                size = androidx.compose.ui.geometry.Size(w * 0.52f, w * 0.42f),
+                style = Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+            )
+            // Stem
+            drawLine(
+                color = micColor,
+                start = Offset(w * 0.50f, w * 0.72f),
+                end = Offset(w * 0.50f, w * 0.88f),
+                strokeWidth = stroke,
+                cap = androidx.compose.ui.graphics.StrokeCap.Round,
             )
         }
     }

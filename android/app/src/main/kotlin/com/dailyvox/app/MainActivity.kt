@@ -59,7 +59,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     var unlocked by rememberSaveable { mutableStateOf(false) }
     val lockAvailable = lockAvailableNow
-    var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SYSTEM")!!)) }
+    // DARK by default, not SYSTEM. The design package's recommended direction
+    // (1c, "the middle path, and my recommendation") says it plainly: "dark by
+    // default because the app is used at night". Defaulting to SYSTEM meant most
+    // phones opened this on cream, which is the Light theme — technically in the
+    // spec, and the reason the app read as beige and lifeless.
+    var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "DARK")!!)) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
