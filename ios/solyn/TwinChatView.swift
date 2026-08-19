@@ -109,6 +109,20 @@ struct TwinChatView: View {
             questionChips
         }
         .navigationTitle("Ask Your Twin")
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top) {
+            // §2.6's subtitle. It is a claim the user can check — airplane mode,
+            // and the answers still arrive — so it belongs on the screen making
+            // the claim rather than buried in Settings.
+            Text("ANSWERS WITH RECEIPTS \u{00B7} 0 NETWORK CALLS")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(0.8)
+                .foregroundColor(themeManager.secondaryTextColor)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 6)
+                .background(themeManager.backgroundColor)
+        }
         .background(themeManager.backgroundColor.ignoresSafeArea())
         .task {
             // The chat's grounding depends on index freshness — the save path

@@ -51,7 +51,15 @@ struct ContentView: View {
         animation: .default)
     private var entries: FetchedResults<DiaryEntry>
 
-    @State private var current: Destination = .speak
+    /// `-StartTab twin` opens straight onto a destination. Screenshot runs need
+    /// to reach a tab without driving taps, and the simulator has no reliable
+    /// way to tap a hand-built bar from the command line.
+    @State private var current: Destination = {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-StartTab"), i + 1 < args.count,
+              let d = Destination(rawValue: args[i + 1]) else { return .speak }
+        return d
+    }()
     /// Hidden while recording, so the dial owns the whole screen (spec §2.2).
     @State private var chromeVisible = true
 
@@ -71,13 +79,11 @@ struct ContentView: View {
                     NavigationStack { TwinChatView() }
                 }
             }
-            // One inset for every destination rather than bottom padding in
-            // four screens. The hand-built bar floats OVER content — a system
-            // tab bar laid out around it — so without this the last row of
-            // each screen sits under the pill.
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 74)
-            }
+            // NOTE: clearance for the floating bar is applied per screen, on
+            // the scroll content itself (`.dailyVoxBarClearance()`). Both
+            // `safeAreaInset` and `contentMargins` were tried here first and
+            // neither survives the NavigationStack in between — the scroll
+            // views kept running under the pill.
 
             if chromeVisible {
                 DailyVoxTabBar(current: $current)
@@ -106,6 +112,10 @@ extension Notification.Name {
 /// from the screen edge, and on iOS 26 it renders Liquid Glass that ignores the
 /// container colour entirely, so the two would never have matched.
 struct DailyVoxTabBar: View {
+    /// What the bar occupies, so screens can inset by it rather than by a
+    /// number someone eyeballed once and nobody re-checked.
+    static let reservedHeight: CGFloat = 96
+
     @Binding var current: Destination
     @ObservedObject private var theme = ThemeManager.shared
 
@@ -171,4 +181,13 @@ struct DailyVoxTabBar: View {
     ContentView()
         .environment(\.managedObjectContext,
                      PersistenceController.preview.container.viewContext)
+}
+
+extension View {
+    /// Bottom room for the floating tab bar. Applied to a screen's scroll
+    /// CONTENT rather than to the container: modifiers on the container do not
+    /// reach through the NavigationStack that each destination sits in.
+    func dailyVoxBarClearance() -> some View {
+        padding(.bottom, DailyVoxTabBar.reservedHeight)
+    }
 }

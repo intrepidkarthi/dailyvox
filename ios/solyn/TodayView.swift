@@ -294,28 +294,40 @@ struct TodayView: View {
 
     // MARK: - Normal View
 
+    /// Spec §2.2 order: header, then the mic inside its tick ring, then the
+    /// Today card UNDER the mic.
+    ///
+    /// The mic used to be docked in a fixed bar below the ScrollView. That is
+    /// what put the button and its ring behind the floating tab bar — a docked
+    /// bar and a floating bar are both trying to own the bottom of the screen,
+    /// and no amount of inset fixes two things competing for the same strip.
+    /// In the scroll flow the mic sits where the design puts it, at the centre
+    /// of the screen, and nothing overlaps.
     private var normalView: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    headerSection
-                    // Body Twin idle-state slot: today's one-line body whisper,
-                    // or the one-time Health invite — never both, never while
-                    // recording, never in the first-run zero-state.
-                    if recordingState == .idle {
-                        BodyTwinIdleCards()
-                    }
-                    entryCardSection
-                    if recordingState == .idle && latestEntry == nil {
-                        promptsSection
-                    }
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                headerSection
+
+                recordingSection
+                    .frame(maxWidth: .infinity)
+
+                entryCardSection
+
+                // Body Twin idle-state slot: today's one-line body whisper, or
+                // the one-time Health invite — never both, never while
+                // recording, never in the first-run zero-state.
+                if recordingState == .idle {
+                    BodyTwinIdleCards()
                 }
-                .padding()
-                .frame(maxWidth: isIPad ? 700 : .infinity)
-                .frame(maxWidth: .infinity)
+
+                if recordingState == .idle && latestEntry == nil {
+                    promptsSection
+                }
             }
-            Spacer(minLength: 0)
-            recordingSection
+            .padding()
+            .dailyVoxBarClearance()
+            .frame(maxWidth: isIPad ? 700 : .infinity)
+            .frame(maxWidth: .infinity)
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
@@ -692,10 +704,7 @@ struct TodayView: View {
                 }
             }
         }
-        .padding(.top, 20)
-        .padding(.bottom, 8)   // the bar's clearance is a safeAreaInset in ContentView
-        .padding(.horizontal)
-        .background(ThemeManager.shared.backgroundColor)
+        .padding(.vertical, 8)
         .animation(.spring(response: 0.4), value: recordingState)
     }
 

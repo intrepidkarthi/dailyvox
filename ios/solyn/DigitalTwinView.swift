@@ -322,7 +322,7 @@ struct DigitalTwinView: View {
             // user made; a completion figure invites them to finish something
             // that has no end, and reads as a progress bar on their own life.
             HStack(spacing: 8) {
-                Text("\(entries.count) \u{2726}")
+                Text("\(starCount) \u{2726}")
                     .font(.system(size: 15, weight: .heavy, design: .rounded))
                     .foregroundColor(themeManager.goldText)
                 Text("\u{00B7}")
@@ -342,8 +342,14 @@ struct DigitalTwinView: View {
 
     /// The same thresholds the Android sky uses, so a screenshot from either
     /// phone reports the same depth for the same journal.
+    /// The Twin's own count, not `entries.count`. Those disagree — the badge
+    /// showed 35 while the line directly beneath it showed 140 stars, because
+    /// one counted Core Data rows and the other the Twin's accumulated state.
+    /// A header that contradicts its own subtitle is worse than either number.
+    private var starCount: Int { twin.behavioralPatterns.totalEntries }
+
     private var skyDepth: String {
-        switch entries.count {
+        switch starCount {
         case 200...: return "Deep"
         case 100..<200: return "Established"
         case 40..<100: return "Forming"
@@ -375,13 +381,15 @@ struct DigitalTwinView: View {
         return (people + topics).map { ($0.label, $0.mentions) }
     }
 
+    /// No count here any more — the badge above owns the number, and printing
+    /// it twice in two type sizes made the header look like a data problem.
     private var constellationSubtitle: String {
-        let count = twin.behavioralPatterns.totalEntries
+        let count = starCount
         if count == 0 { return "Speak to plant your first star" }
-        if count < 5 { return "\(count) stars · your constellation is forming" }
-        if count < 15 { return "\(count) stars · patterns emerging" }
-        if count < 30 { return "\(count) stars · your inner sky deepens" }
-        return "\(count) stars · \(twin.summary.maturityLevel.rawValue.lowercased())"
+        if count < 5 { return "Your constellation is forming" }
+        if count < 15 { return "Patterns emerging" }
+        if count < 30 { return "Your inner sky deepens" }
+        return "A sky made of you"
     }
 
     // MARK: - Ask Your Twin Button

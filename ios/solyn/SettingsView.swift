@@ -25,6 +25,7 @@ struct SettingsView: View {
     private var entries: FetchedResults<DiaryEntry>
 
     @State private var showPermissionDeniedAlert = false
+    @State private var showShareReceipt = false
     @State private var selectedReminderPreset: String = "evening"
 
     // Export states
@@ -79,7 +80,11 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            // Daily-use preferences first; PDF export lives with its sibling
+            // Spec §2.8 puts the Data Shield ledger first: the strongest claim
+            // this app makes, itemised, and every line checkable in Android or
+            // iOS Settings rather than taken on trust.
+            dataShieldSection
+            // Daily-use preferences next; PDF export lives with its sibling
             // backup/export tools near the bottom instead of greeting the
             // user with a "Your name" field as the first thing in Settings.
             appearanceSection
@@ -220,6 +225,35 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
+    private var dataShieldSection: some View {
+        Section {
+            LabeledContent("Network calls made") {
+                Text("0 \u{00B7} EVER")
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(DS.Palette.sage)
+            }
+            LabeledContent("Encryption at rest") {
+                Text("AES-256")
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(themeManager.secondaryTextColor)
+            }
+            Button {
+                showShareReceipt = true
+            } label: {
+                Label("Share this as a receipt", systemImage: "square.and.arrow.up")
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundColor(themeManager.goldText)
+            }
+        } header: {
+            Text("Data Shield")
+        } footer: {
+            Text("The complete permission list: microphone, notifications, speech. No networking code of any kind \u{2014} check it in Settings \u{203A} DailyVox.")
+        }
+        .sheet(isPresented: $showShareReceipt) {
+            ShareSheetView()
+        }
+    }
+
     private var appearanceSection: some View {
         Section {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: horizontalSizeClass == .regular ? 6 : 4), spacing: 12) {

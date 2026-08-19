@@ -58,6 +58,23 @@ class ScreenshotTests: XCTestCase {
         XCTFail("Could not find tab: \(name)")
     }
 
+    /// Insights is a segment of the Twin tab now (spec §3), reached from its
+    /// toolbar rather than a tab of its own.
+    private func openInsights() {
+        navigateToTab("Twin")
+        let button = app.buttons["Insights"].firstMatch
+        if button.waitForExistence(timeout: 3) { button.tap(); return }
+        XCTFail("Could not open Insights from the Twin tab")
+    }
+
+    /// Settings moved behind the Speak header for the same reason.
+    private func openSettings() {
+        navigateToTab("Speak")
+        let button = app.buttons["Settings"].firstMatch
+        if button.waitForExistence(timeout: 3) { button.tap(); return }
+        XCTFail("Could not open Settings from the Speak tab")
+    }
+
     // MARK: - Screenshot 0: Onboarding — "Speak your first star" (voice-first)
 
     func test00_OnboardingFlow() throws {
@@ -78,7 +95,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 1: Today View
 
     func test01_TodayView() throws {
-        navigateToTab("Record")
+        navigateToTab("Speak")
         sleep(2)
         takeScreenshot(named: "01_TodayView")
     }
@@ -94,7 +111,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 3: Insights
 
     func test03_Insights() throws {
-        navigateToTab("Insights")
+        openInsights()
         sleep(2)
 
         // Dismiss the milestone overlay if it appears
@@ -174,7 +191,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 8: Settings
 
     func test08_Settings() throws {
-        navigateToTab("Settings")
+        openSettings()
         sleep(2)
         takeScreenshot(named: "08_Settings")
     }
@@ -213,7 +230,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 12: Settings — Health section
 
     func test12_SettingsHealth() throws {
-        navigateToTab("Settings")
+        openSettings()
         sleep(2)
 
         // Anchor on the section's last row, then nudge so the master toggle
@@ -231,7 +248,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 13: Today idle — body whisper
 
     func test13_TodayWhisper() throws {
-        navigateToTab("Record")
+        navigateToTab("Speak")
         sleep(3)   // whisper computes in TodayView's .task
         takeScreenshot(named: "13_Today_Whisper")
     }
@@ -239,7 +256,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Screenshot 14: Insights — Body & Mood card
 
     func test14_InsightsBodyMood() throws {
-        navigateToTab("Insights")
+        openInsights()
         sleep(2)
 
         let keepGoingButton = app.buttons["Keep Going"]
@@ -267,7 +284,7 @@ class ScreenshotTests: XCTestCase {
                                "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
 
-        navigateToTab("Record")
+        navigateToTab("Speak")
         sleep(2)
         XCTAssertTrue(app.staticTexts["Your Twin can learn what your body felt"]
             .waitForExistence(timeout: 5), "Invite card not shown under -BodyTwinInviteDemo")
@@ -358,7 +375,7 @@ class ScreenshotTests: XCTestCase {
     // not our UI, and not something to put on a store page. Capturing the real
     // Privacy & Security settings instead.
     func test22_PrivacySettings() throws {
-        navigateToTab("Settings")
+        openSettings()
         sleep(2)
 
         // Anchor on a privacy row so the whole section is framed, rather than the
