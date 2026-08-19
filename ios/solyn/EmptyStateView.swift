@@ -124,9 +124,9 @@ struct WelcomeCard: View {
 
             // Features list
             VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(icon: "mic.fill", color: Color(red: 0.831, green: 0.647, blue: 0.278), text: "Just 42 seconds — that's all it takes")
-                FeatureRow(icon: "text.quote", color: Color(red: 0.357, green: 0.486, blue: 0.420), text: "Transcribed and understood on-device")
-                FeatureRow(icon: "lock.fill", color: Color(red: 0.420, green: 0.620, blue: 0.482), text: "100% private, stored locally")
+                FeatureRow(icon: "mic.fill", color: DS.Palette.gold, text: "Just 42 seconds — that's all it takes")
+                FeatureRow(icon: "text.quote", color: DS.Palette.sage, text: "Transcribed and understood on-device")
+                FeatureRow(icon: "lock.fill", color: DS.Palette.forest, text: "100% private, stored locally")
             }
             .padding(.top, 8)
         }

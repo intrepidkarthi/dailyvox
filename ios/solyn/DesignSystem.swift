@@ -36,23 +36,48 @@ enum DS {
         static let pill: CGFloat = 999
     }
 
-    /// Fixed brand palette (matches ThemeManager Ivory + ShareCardTheme).
+    /// The Evergreen & Gold Hour palette (design system v2.0).
+    ///
+    /// COLOUR GRAMMAR, and it is the whole system: **green acts, gold rewards,
+    /// navy is sky, cream is paper.** Green is every action the user takes —
+    /// record, send, save. Gold is every thing they have made — stars, streaks,
+    /// insights. They are never swapped, which is why `gold` is deliberately not
+    /// reachable as a day accent: if it were, a Material-style component could
+    /// request it for a button and the grammar would break silently.
+    ///
+    /// Token NAMES are unchanged from the sage palette on purpose. Twenty files
+    /// read them, and renaming would have meant twenty diffs where the real
+    /// change is a set of hex values.
     enum Palette {
-        static let ink        = Color(red: 0.169, green: 0.145, blue: 0.125)   // #2B2520 warm near-black
-        static let inkSoft    = Color(red: 0.361, green: 0.325, blue: 0.290)   // #5C534A
-        static let inkMute    = Color(red: 0.592, green: 0.545, blue: 0.490)   // #978B7D
-        static let ivory      = Color(red: 0.980, green: 0.973, blue: 0.961)   // #FAF8F5
-        static let ivory2     = Color(red: 0.957, green: 0.937, blue: 0.910)   // #F4EFE8
-        static let sage       = Color(red: 0.357, green: 0.486, blue: 0.420)   // #5B7C6B primary
-        static let sageDeep   = Color(red: 0.286, green: 0.388, blue: 0.325)   // #496353
-        static let gold       = Color(red: 0.831, green: 0.647, blue: 0.278)   // #D4A547 constellation
+        // Day — cream paper, forest ink.
+        static let ink        = Color(red: 0.118, green: 0.165, blue: 0.149)   // #1E2A26
+        static let inkSoft    = Color(red: 0.361, green: 0.416, blue: 0.392)   // #5C6A64
+        static let inkMute    = Color(red: 0.545, green: 0.588, blue: 0.565)   // #8B9690
+        static let ivory      = Color(red: 0.969, green: 0.953, blue: 0.918)   // #F7F3EA page
+        static let ivory2     = Color(red: 1.0,   green: 1.0,   blue: 1.0)     // #FFFFFF card
+
+        // Green ACTS.
+        static let sage       = Color(red: 0.180, green: 0.357, blue: 0.267)   // #2E5B44 action
+        static let sageDeep   = Color(red: 0.129, green: 0.267, blue: 0.196)   // #214432
+        static let forest     = Color(red: 0.561, green: 0.749, blue: 0.467)   // #8FBF77 positive
+
+        // Gold REWARDS. Never an action colour.
+        static let gold       = Color(red: 0.851, green: 0.643, blue: 0.255)   // #D9A441
+        static let goldDay    = Color(red: 0.541, green: 0.416, blue: 0.122)   // #8A6A1F on cream
+        static let goldNight  = Color(red: 0.929, green: 0.796, blue: 0.525)   // #EDCB86 on navy
+
+        // Navy is SKY.
+        static let navy       = Color(red: 0.063, green: 0.106, blue: 0.176)   // #101B2D
+        static let navySurface = Color(red: 0.110, green: 0.165, blue: 0.259)  // #1C2A42
+        static let navyText   = Color(red: 0.945, green: 0.929, blue: 0.886)   // #F1EDE2
+        static let starBlue   = Color(red: 0.616, green: 0.757, blue: 0.894)   // #9DC1E4
+
         static let terracotta = Color(red: 0.769, green: 0.584, blue: 0.416)   // #C4956A
-        static let coral      = Color(red: 0.831, green: 0.388, blue: 0.294)   // #D4634B recording
-        static let forest     = Color(red: 0.420, green: 0.620, blue: 0.482)   // #6B9E7B
+        static let coral      = Color(red: 0.831, green: 0.310, blue: 0.271)   // #D44F45 recording
 
         // Soft card tints
-        static let tintSage   = Color(red: 0.914, green: 0.941, blue: 0.922)
-        static let tintGold   = Color(red: 0.969, green: 0.937, blue: 0.851)
+        static let tintSage   = Color(red: 0.894, green: 0.929, blue: 0.894)   // #E4EDE4
+        static let tintGold   = Color(red: 0.953, green: 0.906, blue: 0.804)   // #F3E7CD
         static let tintTerra  = Color(red: 0.953, green: 0.910, blue: 0.863)
         static let tintCoral  = Color(red: 0.973, green: 0.898, blue: 0.875)
     }

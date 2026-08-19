@@ -25,16 +25,16 @@ struct OnboardingFirstEntry {
 // MARK: - Palette
 
 private enum OB {
-    static let paper   = Color(red: 0.980, green: 0.972, blue: 0.961)
-    static let paper2  = Color(red: 0.949, green: 0.929, blue: 0.910)
+    static let paper   = DS.Palette.ivory
+    static let paper2  = DS.Palette.tintSage
     static let card    = Color.white
-    static let ink     = Color(red: 0.102, green: 0.102, blue: 0.180)
-    static let inkDim  = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.62)
-    static let inkMute = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.40)
-    static let rule    = Color(red: 0.102, green: 0.102, blue: 0.180).opacity(0.10)
-    static let gold    = Color(red: 0.831, green: 0.647, blue: 0.278)
-    static let sage    = Color(red: 0.357, green: 0.486, blue: 0.420)
-    static let forest  = Color(red: 0.420, green: 0.620, blue: 0.482)
+    static let ink     = DS.Palette.navy
+    static let inkDim  = DS.Palette.navy.opacity(0.62)
+    static let inkMute = DS.Palette.navy.opacity(0.40)
+    static let rule    = DS.Palette.navy.opacity(0.10)
+    static let gold    = DS.Palette.gold
+    static let sage    = DS.Palette.sage
+    static let forest  = DS.Palette.forest
 }
 
 // MARK: - Container
@@ -694,13 +694,13 @@ struct PrivacyBadge: View {
         HStack(spacing: 6) {
             Image(systemName: "lock.shield.fill")
                 .font(compact ? .caption : .subheadline)
-                .foregroundColor(Color(red: 0.420, green: 0.620, blue: 0.482))
+                .foregroundColor(DS.Palette.forest)
             if !compact {
                 Text("100% Private").font(.caption.weight(.medium)).foregroundColor(.secondary)
             }
         }
         .padding(.horizontal, compact ? 8 : 12).padding(.vertical, compact ? 4 : 6)
-        .background(Color(red: 0.420, green: 0.620, blue: 0.482).opacity(0.1))
+        .background(DS.Palette.forest.opacity(0.1))
         .clipShape(Capsule())
     }
 }
@@ -708,7 +708,7 @@ struct PrivacyBadge: View {
 struct OfflineIndicator: View {
     var body: some View {
         HStack(spacing: 4) {
-            Circle().fill(Color(red: 0.420, green: 0.620, blue: 0.482)).frame(width: 6, height: 6)
+            Circle().fill(DS.Palette.forest).frame(width: 6, height: 6)
             Text("Offline").font(.caption2.weight(.medium)).foregroundColor(.secondary)
         }
         .padding(.horizontal, 8).padding(.vertical, 4)

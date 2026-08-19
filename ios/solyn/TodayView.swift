@@ -36,6 +36,7 @@ struct TodayView: View {
 
     @StateObject private var recorder = AudioRecorder()
     @State private var recordingState: RecordingState = .idle
+    @State private var showSettings = false
     @State private var errorMessage: String?
     @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
@@ -84,6 +85,22 @@ struct TodayView: View {
                 // NORMAL VIEW (existing)
                 normalView
             }
+        }
+        // Settings lost its tab in the four-destination restructure, so it
+        // lives here — reachable from the screen you are on when you want it.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showSettings = true } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(ThemeManager.shared.secondaryTextColor)
+                        .frame(width: 44, height: 44)
+                }
+                .accessibilityLabel("Settings")
+            }
+        }
+        .sheet(isPresented: $showSettings) {
+            NavigationStack { SettingsView() }
         }
         // "Saved" fallbacks (offline / failed transcription) aren't errors —
         // don't greet a successfully kept recording with "Recording Error".
@@ -677,8 +694,8 @@ struct TodayView: View {
         .padding(.vertical, 20)
         .padding(.horizontal)
         .background(
-            ThemeManager.shared.selectedTheme == .ivory
-                ? Color(red: 0.980, green: 0.973, blue: 0.961)
+            !ThemeManager.shared.isNight
+                ? DS.Palette.ivory
                 : Color(.systemGroupedBackground)
         )
         .animation(.spring(response: 0.4), value: recordingState)

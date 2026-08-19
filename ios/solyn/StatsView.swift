@@ -627,12 +627,12 @@ struct StatsView: View {
     private func colorFromName(_ name: String) -> Color {
         switch name {
         case "orange": return DS.Palette.terracotta  // terracotta
-        case "green": return Color(red: 0.420, green: 0.620, blue: 0.482)   // forest green
-        case "blue": return Color(red: 0.357, green: 0.486, blue: 0.420)    // sage green
-        case "yellow": return Color(red: 0.831, green: 0.647, blue: 0.278)  // warm gold
-        case "pink": return Color(red: 0.741, green: 0.486, blue: 0.498)    // dusty rose
-        case "purple": return Color(red: 0.557, green: 0.467, blue: 0.592)  // muted plum
-        case "indigo": return Color(red: 0.420, green: 0.451, blue: 0.580)  // twilight blue
+        case "green": return DS.Palette.forest   // forest green
+        case "blue": return DS.Palette.sage    // sage green
+        case "yellow": return DS.Palette.gold  // warm gold
+        case "pink": return DS.Palette.terracotta    // dusty rose
+        case "purple": return DS.Palette.terracotta  // muted plum
+        case "indigo": return DS.Palette.starBlue  // twilight blue
         default: return .secondary
         }
     }

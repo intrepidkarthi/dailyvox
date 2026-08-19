@@ -57,15 +57,15 @@ struct ConstellationView: View {
         : Timer.publish(every: 1.0 / 30.0, on: .main, in: .common).autoconnect().eraseToAnyPublisher()
 
     // Palette
-    private let warmGold   = Color(red: 0.831, green: 0.647, blue: 0.278)  // #D4A547
-    private let coolBlue   = Color(red: 0.482, green: 0.643, blue: 0.780)  // #7BA4C7
-    private let softCoral  = Color(red: 0.769, green: 0.451, blue: 0.420)  // #C4736B
-    private let sageGreen  = Color(red: 0.420, green: 0.620, blue: 0.482)  // #6B9E7B
-    private let ivoryGlow  = Color(red: 0.957, green: 0.933, blue: 0.878)  // #F4EEE0
+    private let warmGold   = DS.Palette.gold  // #D4A547
+    private let coolBlue   = DS.Palette.starBlue  // #7BA4C7
+    private let softCoral  = DS.Palette.coral  // #C4736B
+    private let sageGreen  = DS.Palette.forest  // #6B9E7B
+    private let ivoryGlow  = DS.Palette.tintGold  // #F4EEE0
 
-    private let bgDeep     = Color(red: 0.102, green: 0.102, blue: 0.180)  // #1A1A2E
-    private let bgMid      = Color(red: 0.086, green: 0.129, blue: 0.243)  // #16213E
-    private let bgWarm     = Color(red: 0.141, green: 0.118, blue: 0.180)  // #241E2E
+    private let bgDeep     = DS.Palette.navy  // #1A1A2E
+    private let bgMid      = DS.Palette.navySurface  // #16213E
+    private let bgWarm     = DS.Palette.navy  // #241E2E
 
     var body: some View {
         GeometryReader { geo in

@@ -182,12 +182,12 @@ struct BodyTwinIdleCards: View {
     @ObservedObject private var theme = ThemeManager.shared
     @State private var showInviteSheet = false
 
-    // Fixed warm inks belong to the ivory theme only; every other theme sits
-    // on system backgrounds, so text must use system adaptive colors or it
-    // vanishes in Dark (ThemeManager's own `ivory ? warm : system` pattern).
-    private var inkPrimary: Color   { theme.selectedTheme == .ivory ? DS.Palette.ink : .primary }
-    private var inkSecondary: Color { theme.selectedTheme == .ivory ? DS.Palette.inkSoft : .primary }
-    private var inkMuted: Color     { theme.selectedTheme == .ivory ? DS.Palette.inkMute : .secondary }
+    // The palette now owns both grounds, so these route through ThemeManager
+    // rather than falling back to system colours on anything that is not Ivory.
+    // Under the old branch a Night entry drew #1E2A26 ink on #101B2D navy.
+    private var inkPrimary: Color   { theme.textColor }
+    private var inkSecondary: Color { theme.textColor.opacity(0.85) }
+    private var inkMuted: Color     { theme.secondaryTextColor }
 
     var body: some View {
         // Absent entirely on devices without HealthKit, matching Settings.

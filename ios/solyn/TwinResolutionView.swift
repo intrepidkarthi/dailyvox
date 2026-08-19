@@ -10,10 +10,10 @@
 import SwiftUI
 
 private enum TR {
-    static let gold = Color(red: 0.831, green: 0.647, blue: 0.278)
-    static let sage = Color(red: 0.357, green: 0.486, blue: 0.420)
-    static let forest = Color(red: 0.420, green: 0.620, blue: 0.482)
-    static let coral = Color(red: 0.769, green: 0.451, blue: 0.420)
+    static let gold = DS.Palette.gold
+    static let sage = DS.Palette.sage
+    static let forest = DS.Palette.forest
+    static let coral = DS.Palette.coral
 }
 
 // MARK: - Card (embedded in the Twin tab)

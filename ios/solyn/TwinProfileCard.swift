@@ -278,8 +278,8 @@ struct TwinProfileCardContent: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(red: 0.08, green: 0.08, blue: 0.12),
-                            Color(red: 0.10, green: 0.10, blue: 0.16)
+                            DS.Palette.navy,
+                            DS.Palette.navy
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -433,8 +433,8 @@ private struct TwinProfileCardExport: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color(red: 0.06, green: 0.06, blue: 0.10),
-                            Color(red: 0.10, green: 0.08, blue: 0.14)
+                            DS.Palette.navy,
+                            DS.Palette.navy
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing

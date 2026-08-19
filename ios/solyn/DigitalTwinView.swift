@@ -22,6 +22,8 @@ struct DigitalTwinView: View {
         ProcessInfo.processInfo.arguments.contains("-UITesting") ||
         ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
     @State private var selectedSection: TwinSection = .overview
+    @State private var showInsights = false
+    @State private var showShare = false
     @State private var showingDetail = false
     @State private var animateOrb = false
     @State private var showTwinShareSheet = false
@@ -93,8 +95,37 @@ struct DigitalTwinView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("Your Digital Twin")
+        .navigationTitle("Your sky")
         .background { WarmBackground() }
+        // Insights is a SEGMENT of this tab (spec §3), not a fifth destination:
+        // it is a reading of the Twin rather than a peer of it.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack(spacing: 2) {
+                    Button { showInsights = true } label: {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(ThemeManager.shared.goldText)
+                            .frame(width: 44, height: 44)
+                    }
+                    .accessibilityLabel("Insights")
+
+                    Button { showShare = true } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(ThemeManager.shared.goldText)
+                            .frame(width: 44, height: 44)
+                    }
+                    .accessibilityLabel("Share your sky")
+                }
+            }
+        }
+        .sheet(isPresented: $showInsights) {
+            NavigationStack { StatsView() }
+        }
+        .sheet(isPresented: $showShare) {
+            ShareSheetView()
+        }
     }
 
     // MARK: - First-Time Twin Introduction
@@ -111,8 +142,8 @@ struct DigitalTwinView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color(red: 0.075, green: 0.075, blue: 0.175),
-                                Color(red: 0.10, green: 0.08, blue: 0.20)
+                                DS.Palette.navy,
+                                DS.Palette.navy
                             ],
                             startPoint: .top,
                             endPoint: .bottom
@@ -141,13 +172,13 @@ struct DigitalTwinView: View {
                             .fill(DS.Palette.gold.opacity(0.3))
                             .frame(width: 24, height: 24)
                         Circle()
-                            .fill(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.7))
+                            .fill(DS.Palette.tintGold.opacity(0.7))
                             .frame(width: 8, height: 8)
                     }
 
                     Text("Your sky is empty — for now")
                         .font(.system(.caption, design: .rounded).weight(.medium))
-                        .foregroundColor(Color(red: 0.957, green: 0.933, blue: 0.878).opacity(0.5))
+                        .foregroundColor(DS.Palette.tintGold.opacity(0.5))
                 }
             }
             .padding(.horizontal)
@@ -189,7 +220,7 @@ struct DigitalTwinView: View {
                     icon: "brain.head.profile",
                     title: "Your Twin learns",
                     description: "Four models — Mind, Heart, Voice, Graph — build your personality profile.",
-                    color: Color(red: 0.769, green: 0.451, blue: 0.420),
+                    color: DS.Palette.coral,
                     isLast: false
                 )
                 twinIntroStep(

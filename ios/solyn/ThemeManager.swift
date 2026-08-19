@@ -9,53 +9,59 @@ import SwiftUI
 
 // MARK: - App Theme
 
+/// Day · Night · **Sunset** (design spec §2.8). Sunset is the default and
+/// follows the real sun: paper by day, sky by night.
+///
+/// The old cases (`system`, `ivory`, `light`, `dark`) are still decodable so an
+/// upgrade does not throw away a stored preference and silently reset someone's
+/// app — `ivory`/`light` land on `.day`, `dark` on `.night`, `system` on the
+/// closest thing we now have to it, which is Sunset.
 enum AppTheme: String, CaseIterable, Identifiable {
-    case system = "System"
-    case ivory = "Ivory"    // Warm, premium default
-    case light = "Light"
-    case dark = "Dark"
+    case day = "Day"
+    case night = "Night"
+    case sunset = "Sunset"
 
     var id: String { rawValue }
 
-    /// Display icon for theme picker
+    /// Only the three current cases are offered in Settings.
+    static var allCases: [AppTheme] { [.day, .night, .sunset] }
+
+    static func decode(_ raw: String) -> AppTheme {
+        switch raw {
+        case "Day", "Ivory", "Light": return .day
+        case "Night", "Dark": return .night
+        default: return .sunset
+        }
+    }
+
     var icon: String {
         switch self {
-        case .system: return "circle.lefthalf.filled"
-        case .ivory: return "leaf.fill"
-        case .light: return "sun.max"
-        case .dark: return "moon.stars"
+        case .day: return "sun.max"
+        case .night: return "moon.stars"
+        case .sunset: return "circle.lefthalf.filled"
         }
     }
 
-    var colorScheme: ColorScheme? {
+    /// Re-read on every access rather than cached: Sunset should turn over when
+    /// the evening arrives, not on next launch.
+    var isNight: Bool {
         switch self {
-        case .system: return nil
-        case .ivory, .light: return .light
-        case .dark: return .dark
+        case .day: return false
+        case .night: return true
+        case .sunset:
+            let h = Calendar.current.component(.hour, from: Date())
+            return h >= 19 || h < 6
         }
     }
 
-    /// Primary accent color for buttons and highlights
-    var accentColor: Color {
-        switch self {
-        case .system, .light:
-            return Color(red: 0.357, green: 0.486, blue: 0.420)  // Sage green (updated from blue-gray)
-        case .ivory:
-            return Color(red: 0.357, green: 0.486, blue: 0.420)  // #5B7C6B sage green
-        case .dark:
-            return Color(red: 0.557, green: 0.698, blue: 0.604)  // Lightened sage — warm + on-brand on dark (was soft blue)
-        }
-    }
+    var colorScheme: ColorScheme? { isNight ? .dark : .light }
 
-    /// Secondary color for subtle accents
-    var secondaryAccent: Color {
-        accentColor.opacity(0.15)
-    }
+    /// GREEN ACTS. Gold is never returned here — see DS.Palette.
+    var accentColor: Color { isNight ? DS.Palette.gold : DS.Palette.sage }
 
-    /// Preview color for theme picker
-    var previewColor: Color {
-        accentColor
-    }
+    var secondaryAccent: Color { DS.Palette.terracotta }
+
+    var previewColor: Color { isNight ? DS.Palette.navy : DS.Palette.ivory }
 }
 
 final class ThemeManager: ObservableObject {
@@ -71,88 +77,45 @@ final class ThemeManager: ObservableObject {
     }
 
     private init() {
-        let saved = defaults.string(forKey: themeKey) ?? AppTheme.ivory.rawValue
-        self.selectedTheme = AppTheme(rawValue: saved) ?? .ivory
+        let saved = defaults.string(forKey: themeKey) ?? AppTheme.sunset.rawValue
+        self.selectedTheme = AppTheme.decode(saved)
     }
+
+    /// Every screen asks this rather than reading the case, so Sunset works
+    /// everywhere without each view re-deriving the hour.
+    var isNight: Bool { selectedTheme.isNight }
 
     // MARK: - Semantic Colors
 
-    var backgroundColor: Color {
-        // Route through the warm palette so every screen that uses the
-        // semantic color (chat, settings, sheets) matches the branded tabs —
-        // non-ivory themes still fall back to the system color inside.
-        warmBackground
-    }
-
-    var textColor: Color {
-        Color(.label)
-    }
-
+    var backgroundColor: Color { isNight ? DS.Palette.navy : DS.Palette.ivory }
+    var textColor: Color { isNight ? DS.Palette.navyText : DS.Palette.ink }
     var secondaryTextColor: Color {
-        Color(.secondaryLabel)
+        isNight ? DS.Palette.navyText.opacity(0.6) : DS.Palette.inkSoft
     }
+    var cardBackgroundColor: Color { isNight ? DS.Palette.navySurface : DS.Palette.ivory2 }
 
-    var cardBackgroundColor: Color {
-        warmCardBackground
-    }
+    /// The action colour. Green by day, gold by night — the one place the
+    /// grammar allows gold to act, because on navy there is no green that reads.
+    var accentColor: Color { selectedTheme.accentColor }
 
-    /// Theme-aware accent color for UI elements
-    var accentColor: Color {
-        selectedTheme.accentColor
-    }
+    /// Gold TEXT, which differs by ground: #8A6A1F has contrast on cream,
+    /// #EDCB86 has contrast on navy. Using one for both fails legibility on the
+    /// other, and it is the mistake the Android build shipped first.
+    var goldText: Color { isNight ? DS.Palette.goldNight : DS.Palette.goldDay }
 
-    /// Data visualization color (charts, meters, bars)
-    var dataColor: Color {
-        DS.Palette.sage
-    }
+    var dataColor: Color { DS.Palette.sage }
 
-    /// Warm background for Ivory theme, system default for others
-    var warmBackground: Color {
-        if selectedTheme == .ivory {
-            return Color(red: 0.980, green: 0.973, blue: 0.961)  // #FAF8F5 warm ivory
-        }
-        return Color(.systemGroupedBackground)
-    }
-
-    /// Warm card background
-    var warmCardBackground: Color {
-        if selectedTheme == .ivory {
-            return Color.white
-        }
-        return Color(.secondarySystemGroupedBackground)
-    }
-
-    /// Warm subtle fill for sections
+    var warmBackground: Color { backgroundColor }
+    var warmCardBackground: Color { cardBackgroundColor }
     var warmSubtleFill: Color {
-        if selectedTheme == .ivory {
-            return Color(red: 0.949, green: 0.929, blue: 0.910)  // #F2EDE8 warm beige
-        }
-        return Color(.tertiarySystemGroupedBackground)
+        isNight ? DS.Palette.navyText.opacity(0.08) : DS.Palette.tintSage
     }
+    var warmSecondaryAccent: Color { DS.Palette.terracotta }
 
-    /// Secondary accent (terracotta for ivory, muted for others)
-    var warmSecondaryAccent: Color {
-        if selectedTheme == .ivory {
-            return Color(red: 0.769, green: 0.584, blue: 0.416)  // #C4956A warm terracotta
-        }
-        return selectedTheme.accentColor.opacity(0.7)
-    }
+    /// Recording is coral in both themes: stop has to read as stop.
+    var recordingColor: Color { DS.Palette.coral }
 
-    /// Recording button color (warm coral for ivory, red for others)
-    var recordingColor: Color {
-        if selectedTheme == .ivory {
-            return Color(red: 0.831, green: 0.388, blue: 0.294)  // #D4634B warm coral
-        }
-        return .red
-    }
-
-    /// Success/confirmation color
-    var successColor: Color {
-        if selectedTheme == .ivory {
-            return Color(red: 0.420, green: 0.620, blue: 0.482)  // #6B9E7B soft forest green
-        }
-        return .green
-    }
+    var successColor: Color { DS.Palette.forest }
 }
 
 // MARK: - Premium Warm Background
@@ -161,52 +124,34 @@ struct WarmBackground: View {
     @ObservedObject private var themeManager = ThemeManager.shared
 
     var body: some View {
-        if themeManager.selectedTheme == .ivory {
-            ZStack {
-                // Base warm ivory
-                Color(red: 0.980, green: 0.973, blue: 0.961)
+        ZStack {
+            themeManager.backgroundColor
 
-                // Subtle radial warmth at top-right (like sunlight)
-                RadialGradient(
-                    colors: [
-                        Color(red: 0.957, green: 0.929, blue: 0.878).opacity(0.4),
-                        Color.clear
-                    ],
-                    center: UnitPoint(x: 0.85, y: 0.05),
-                    startRadius: 20,
-                    endRadius: 400
-                )
+            // One warm bloom, placed where the light would come from. Night gets
+            // gold at low alpha (the sky glowing), day gets a paper warmth.
+            RadialGradient(
+                colors: [
+                    (themeManager.isNight ? DS.Palette.gold : DS.Palette.terracotta)
+                        .opacity(themeManager.isNight ? 0.10 : 0.16),
+                    Color.clear,
+                ],
+                center: UnitPoint(x: 0.85, y: 0.05),
+                startRadius: 20,
+                endRadius: 420
+            )
 
-                // Very subtle warm wash at bottom-left
-                RadialGradient(
-                    colors: [
-                        Color(red: 0.357, green: 0.486, blue: 0.420).opacity(0.03),
-                        Color.clear
-                    ],
-                    center: UnitPoint(x: 0.1, y: 0.95),
-                    startRadius: 10,
-                    endRadius: 300
-                )
-            }
-            .ignoresSafeArea()
-        } else if themeManager.selectedTheme == .dark {
-            // Dark mode gets a subtle deep warmth instead of pure black
-            ZStack {
-                Color(.systemBackground)
-                RadialGradient(
-                    colors: [
-                        Color(red: 0.12, green: 0.10, blue: 0.16).opacity(0.5),
-                        Color.clear
-                    ],
-                    center: UnitPoint(x: 0.5, y: 0.3),
-                    startRadius: 50,
-                    endRadius: 500
-                )
-            }
-            .ignoresSafeArea()
-        } else {
-            Color(.systemGroupedBackground)
-                .ignoresSafeArea()
+            RadialGradient(
+                colors: [
+                    (themeManager.isNight ? DS.Palette.starBlue : DS.Palette.sage)
+                        .opacity(themeManager.isNight ? 0.06 : 0.04),
+                    Color.clear,
+                ],
+                center: UnitPoint(x: 0.1, y: 0.95),
+                startRadius: 10,
+                endRadius: 320
+            )
         }
+        .ignoresSafeArea()
     }
 }
+

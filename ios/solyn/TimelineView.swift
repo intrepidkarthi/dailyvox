@@ -30,8 +30,8 @@ enum LifeArea: String, CaseIterable {
         switch self {
         case .work: return DS.Palette.sage
         case .health: return DS.Palette.forest
-        case .relationships: return Color(red: 0.741, green: 0.486, blue: 0.498) // dusty rose
-        case .growth: return Color(red: 0.557, green: 0.467, blue: 0.592)        // muted plum
+        case .relationships: return DS.Palette.terracotta // dusty rose
+        case .growth: return DS.Palette.terracotta        // muted plum
         case .family: return DS.Palette.terracotta
         case .creativity: return DS.Palette.gold
         }
@@ -133,12 +133,12 @@ struct TimelineView: View {
                         Section(header: HStack(alignment: .firstTextBaseline) {
                             Text(sectionTitle(for: key))
                                 .font(.dsTitle2)
-                                .foregroundColor(theme.selectedTheme == .ivory ? DS.Palette.ink : Color.primary)
+                                .foregroundColor(theme.textColor)
                                 .textCase(nil)
                             Spacer()
                             Text(sectionSummary(for: sectionEntries))
                                 .font(.dsCaption)
-                                .foregroundColor(theme.selectedTheme == .ivory ? DS.Palette.inkMute : Color.secondary)
+                                .foregroundColor(theme.secondaryTextColor)
                                 .textCase(nil)
                         }
                         .padding(.top, DS.Space.xs)
@@ -600,10 +600,9 @@ struct EntryRowView: View {
     let dateString: String
     @ObservedObject private var theme = ThemeManager.shared
 
-    // Fixed warm inks belong to the ivory theme only; on system dark cards
-    // they disappear (same `ivory ? warm : system` pattern as BodyTwinIdleCards).
-    private var inkPrimary: Color { theme.selectedTheme == .ivory ? DS.Palette.ink : .primary }
-    private var inkMuted: Color   { theme.selectedTheme == .ivory ? DS.Palette.inkMute : .secondary }
+    // Both grounds live in the palette now, so these come from ThemeManager.
+    private var inkPrimary: Color { theme.textColor }
+    private var inkMuted: Color   { theme.secondaryTextColor }
 
     private var wordCount: Int {
         guard let text = entry.text, !text.isEmpty else { return 0 }
