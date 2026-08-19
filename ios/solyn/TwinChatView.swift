@@ -108,6 +108,11 @@ struct TwinChatView: View {
             // Suggested questions chips
             questionChips
         }
+        // Ask pins its input bar and chips to the bottom, so it collides with
+        // the floating tab bar exactly as the record button did — the field was
+        // half-covered and the chips fully hidden. This screen is not a scroll
+        // view, so the clearance goes on the container.
+        .dailyVoxBarClearance()
         .navigationTitle("Ask Your Twin")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .top) {

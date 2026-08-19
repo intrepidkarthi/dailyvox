@@ -223,8 +223,19 @@ struct StatsView: View {
 
     private var moodTrendsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Mood Trends")
-                .font(.system(.headline, design: .rounded))
+            HStack {
+                Text("Mood Trends")
+                    .font(.system(.headline, design: .rounded))
+                Spacer()
+                // §2.7's delta badge. Stated against the fortnight BEFORE, so it
+                // answers "compared to what" instead of leaving the reader to
+                // guess — a bare arrow is a mood ring, not a measurement.
+                if let d = moodDelta {
+                    Text("\(d >= 0 ? "\u{25B2}" : "\u{25BC}") \(String(format: "%+.1f", d))")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundColor(d >= 0 ? ThemeManager.shared.goldText : DS.Palette.coral)
+                }
+            }
 
             if moodData.isEmpty {
                 Text("Record entries with moods to see trends")
@@ -712,6 +723,29 @@ struct StatsView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return String(formatter.string(from: date).prefix(1))
+    }
+
+    /// Last fortnight against the one before it, on the 1–5 mood scale remapped
+    /// to −1…1. Nil until BOTH windows have three entries: a delta computed
+    /// from one day on either side is noise wearing a decimal point.
+    private var moodDelta: Double? {
+        let cal = Calendar.current
+        let now = Date()
+        guard let cutoff = cal.date(byAdding: .day, value: -14, to: now),
+              let priorStart = cal.date(byAdding: .day, value: -28, to: now)
+        else { return nil }
+
+        func mean(_ window: [(date: Date, mood: Mood?)]) -> Double? {
+            let values = window.compactMap { $0.mood }.map { (Double($0.moodValue) - 3) / 2 }
+            guard values.count >= 3 else { return nil }
+            return values.reduce(0, +) / Double(values.count)
+        }
+
+        let all = moodChartData
+        let recent = all.filter { $0.date >= cutoff }
+        let prior = all.filter { $0.date < cutoff && $0.date >= priorStart }
+        guard let r = mean(recent), let p = mean(prior) else { return nil }
+        return r - p
     }
 
     private var moodData: [(mood: Mood, count: Int)] {

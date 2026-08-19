@@ -202,7 +202,16 @@ struct TimelineView: View {
                 if filteredEntries.isEmpty {
                     emptySearchState
                 }
-            }
+            
+                // Clearance for the floating tab bar. A List does not take
+                // container padding as scroll room, so the space has to be a
+                // row the list can actually scroll to — otherwise the last
+                // entry stays permanently under the pill.
+                Color.clear
+                    .frame(height: DailyVoxTabBar.reservedHeight)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+}
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
             .contentMargins(.top, DS.Space.xs, for: .scrollContent)

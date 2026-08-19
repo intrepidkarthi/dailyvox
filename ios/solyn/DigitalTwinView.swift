@@ -91,6 +91,7 @@ struct DigitalTwinView: View {
                     privacyBadge
                 }
                 .padding()
+                .dailyVoxBarClearance()
                 .frame(maxWidth: isIPad ? 700 : .infinity)
                 .frame(maxWidth: .infinity)
             }
