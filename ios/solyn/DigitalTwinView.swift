@@ -312,13 +312,12 @@ struct DigitalTwinView: View {
 
     private var twinOrbHeader: some View {
         VStack(spacing: 16) {
-            // Constellation visualization
-            ConstellationView.fromTwin(
-                entryCount: twin.behavioralPatterns.totalEntries,
-                moods: recentMoods,
-                knowledgeNodes: topKnowledgeNodes
-            )
-            .frame(height: isIPad ? 360 : 280)
+            // The sky, full-bleed and animated — the same object Android
+            // draws (SkyView is a port of its `drawSky`). ConstellationView
+            // put it in a bordered navy card that did not move, which made the
+            // two platforms visibly different products on their hero screen.
+            SkyView(entries: skyEntries, named: topKnowledgeNodes.map(\.0))
+                .frame(height: isIPad ? 420 : 340)
 
             // Spec C2: a STAR COUNT, not a percentage. The number is what the
             // user made; a completion figure invites them to finish something
@@ -357,6 +356,22 @@ struct DigitalTwinView: View {
         case 40..<100: return "Forming"
         case 10..<40: return "Early"
         default: return "Seed"
+        }
+    }
+
+    /// Newest first, as the sky expects: the four biggest become named stars
+    /// and the rest twinkle.
+    private var skyEntries: [SkyEntry] {
+        entries.prefix(SkyView.maxDrawnTwinkles + 4).enumerated().map { i, entry in
+            let mood = Mood(rawValue: entry.value(forKey: "mood") as? String ?? "") ?? Mood.none
+            return SkyEntry(
+                id: entry.objectID.uriRepresentation().absoluteString,
+                valence: (Double(mood.moodValue) - 3) / 2,
+                // Seeded off the date so the same journal always draws the same
+                // sky — one that reshuffled between launches would look broken.
+                seed: UInt64(bitPattern: Int64((entry.date ?? Date()).timeIntervalSince1970))
+                    ^ UInt64(i &* 7919)
+            )
         }
     }
 

@@ -294,6 +294,10 @@ private data class SkyPalette(
     val accent: Color,
 )
 
+/** Matches ConstellationView.maxDrawnStars on iOS, so both skies saturate at
+ *  the same density. */
+private const val MAX_DRAWN_TWINKLES = 156
+
 /**
  * The sky itself. Links CURVE out of the core as quadratic beziers, which is
  * what makes it read as a constellation rather than a network diagram.
@@ -413,7 +417,14 @@ private fun DrawScope.drawSky(
 
     // The rest of the journal as small twinkling stars, seeded off each entry so
     // the same sky is drawn every time.
-    entries.drop(4).forEachIndexed { i, e ->
+    //
+    // CAPPED. One twinkle per entry meant an 875-entry journal drew 871 circles
+    // on every animation frame, and it got worse the longer someone used the
+    // app — precisely backwards. Past a couple of hundred the additions are not
+    // visible anyway: they land on top of each other in the same disc. The
+    // COUNT stays honest; only the rendering is bounded. iOS caps at the same
+    // number in ConstellationView.maxDrawnStars.
+    entries.drop(4).take(MAX_DRAWN_TWINKLES).forEachIndexed { i, e ->
         var s = (e.createdAt xor (i * 7919L))
         fun rnd(): Float { s = s * 6364136223846793005L + 1442695040888963407L
                            return ((s ushr 33) % 10000) / 10000f }

@@ -87,7 +87,7 @@ struct ConstellationView: View {
                 drawStars(context: context, size: canvasSize, stars: stars, time: t)
 
                 // Layer 5: Core star (Digital Twin center)
-                if starCount > 0 {
+                if drawnStarCount > 0 {
                     drawCoreStar(context: context, size: canvasSize, time: t)
                 }
             }
@@ -128,13 +128,27 @@ struct ConstellationView: View {
         starConnections = buildConnections(stars: newStars)
     }
 
+    /// The most stars the sky will DRAW, whatever the journal holds.
+    ///
+    /// One node per entry meant an 875-entry journal animated 875 stars every
+    /// frame inside a TimelineView — and it gets worse the longer someone uses
+    /// the app, which is precisely backwards. The design's own reference sky is
+    /// 140 stars, and past a couple of hundred points the additions are not
+    /// visible anyway: they land on top of each other in the same disc.
+    ///
+    /// The COUNT stays honest — the badge reads the real total. Only the
+    /// rendering is bounded.
+    static let maxDrawnStars = 160
+
+    private var drawnStarCount: Int { min(starCount, Self.maxDrawnStars) }
+
     private func generateStars() -> [ConstellationStar] {
         guard starCount > 0 else { return [] }
 
         var stars: [ConstellationStar] = []
         let seed: UInt64 = 42  // The answer, naturally
 
-        for i in 0..<starCount {
+        for i in 0..<drawnStarCount {
             // Pseudo-random but deterministic positioning
             let hash = pseudoRandom(seed: seed &+ UInt64(i))
             let hash2 = pseudoRandom(seed: seed &+ UInt64(i) &+ 1000)
@@ -147,7 +161,9 @@ struct ConstellationView: View {
             let y = 0.5 + sin(angle) * radius
 
             let mood = i < starMoods.count ? starMoods[i] : 0.0
-            let maturityScale = min(1.0, Double(starCount) / 30.0)  // Denser with more entries
+            // Density still grows with the REAL count, so a deep journal reads
+            // fuller even though the node count is capped.
+            let maturityScale = min(1.0, Double(starCount) / 30.0)
 
             let star = ConstellationStar(
                 id: i,

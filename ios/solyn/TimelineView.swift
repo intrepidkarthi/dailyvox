@@ -211,9 +211,10 @@ struct TimelineView: View {
             
             // Entry list
             List {
-                ForEach(sectionKeys, id: \.self) { key in
-                    if let sectionEntries = groupedEntries[key] {
-                        Section(header: HStack(alignment: .firstTextBaseline) {
+                ForEach(sections, id: \.key) { section in
+                    let key = section.key
+                    let sectionEntries = section.entries
+                    Section(header: HStack(alignment: .firstTextBaseline) {
                             Text(sectionTitle(for: key))
                                 .font(.dsTitle2)
                                 .foregroundColor(theme.textColor)
@@ -241,9 +242,8 @@ struct TimelineView: View {
                                 delete(entries: sectionEntries, at: indexSet)
                             }
                         }
-                    }
                 }
-                
+
                 // Empty state
                 if filteredEntries.isEmpty {
                     emptySearchState
@@ -257,7 +257,7 @@ struct TimelineView: View {
                     .frame(height: DailyVoxTabBar.reservedHeight)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-}
+            }
             .listStyle(.insetGrouped)
             .listSectionSpacing(.compact)
             .scrollContentBackground(.hidden)
@@ -611,23 +611,35 @@ struct TimelineView: View {
         }
     }
 
-    private var groupedEntries: [SectionKey: [DiaryEntry]] {
+    /// Months, newest first, each with its entries — computed in ONE pass and
+    /// read once by `body`.
+    ///
+    /// This replaces a `groupedEntries` dictionary and a `sectionKeys` list
+    /// that were both computed properties. `sectionKeys` called
+    /// `groupedEntries`, which called `filteredEntries`, which filtered the
+    /// whole fetch — and then the ForEach called `groupedEntries[key]` again
+    /// for EVERY section, re-running the filter, the grouping and a sort each
+    /// time. At 875 entries across thirty months that is roughly 26,000 filter
+    /// passes and thirty full re-groupings per render, on the main thread,
+    /// while the list is scrolling.
+    ///
+    /// SwiftUI does not memoise computed properties. The fix is not caching —
+    /// it is not asking three times.
+    private var sections: [(key: SectionKey, entries: [DiaryEntry])] {
         let calendar = Calendar.current
         let groups = Dictionary(grouping: filteredEntries) { (entry: DiaryEntry) -> SectionKey in
             let date = entry.date ?? Date.distantPast
             let comps = calendar.dateComponents([.year, .month], from: date)
             return SectionKey(year: comps.year ?? 0, month: comps.month ?? 0)
         }
-        return groups.mapValues { entries in
-            entries.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
-        }
-    }
-
-    private var sectionKeys: [SectionKey] {
-        groupedEntries.keys.sorted { lhs, rhs in
-            if lhs.year != rhs.year { return lhs.year > rhs.year }
-            return lhs.month > rhs.month
-        }
+        return groups
+            .map { (key: $0.key, entries: $0.value.sorted {
+                ($0.date ?? .distantPast) > ($1.date ?? .distantPast)
+            }) }
+            .sorted { lhs, rhs in
+                if lhs.key.year != rhs.key.year { return lhs.key.year > rhs.key.year }
+                return lhs.key.month > rhs.key.month
+            }
     }
 
     private func sectionTitle(for key: SectionKey) -> String {
