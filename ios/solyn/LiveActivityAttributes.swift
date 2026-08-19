@@ -31,6 +31,18 @@ struct RecordingActivityAttributes: ActivityAttributes {
         public var passedSoftTarget: Bool
     }
 
+    // NOT IMPLEMENTED, and the reason is architectural rather than cosmetic.
+    //
+    // Design §E state 2 — "a star is caught" — blinks a gold star with each
+    // name the NER recognises WHILE you speak. iOS DailyVox cannot do that:
+    // `SpeechTranscriber` runs over the finished audio file after recording
+    // stops, so there is no partial transcript to run NER against while the
+    // Island is on screen. The field and its rendering were built and then
+    // removed rather than shipped as a state nothing could ever populate.
+    //
+    // It needs a streaming recogniser feeding partial results, which is a real
+    // change to the capture path, not a Live Activity change.
+
     /// Wall-clock time recording began, for the timeline-based timer.
     public var startedAt: Date
     /// The soft target the user is encouraged to hit (default 42s).

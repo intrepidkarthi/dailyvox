@@ -16,8 +16,8 @@ struct StarBirthLiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: StarBirthActivityAttributes.self) { context in
             StarBirthLockScreenView(context: context)
-                .activityBackgroundTint(Color(red: 0.96, green: 0.94, blue: 0.89))
-                .activitySystemActionForegroundColor(Color(red: 0.32, green: 0.40, blue: 0.36))
+                .activityBackgroundTint(WP.cream)
+                .activitySystemActionForegroundColor(WP.inkSoft)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
@@ -115,6 +115,6 @@ func starColor(for moodRaw: String) -> Color {
     case "anxious": return .indigo
     case "sad": return .blue
     case "angry": return .red
-    default: return Color(red: 0.831, green: 0.647, blue: 0.278) // warm gold
+    default: return WP.gold // warm gold
     }
 }

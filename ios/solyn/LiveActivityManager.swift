@@ -58,7 +58,8 @@ final class LiveActivityManager {
         guard recordingActivity == nil else { return }
 
         let attributes = RecordingActivityAttributes(startedAt: Date(), softTargetSeconds: softTarget)
-        let initialState = RecordingActivityAttributes.ContentState(elapsed: 0, level: 0, passedSoftTarget: false)
+        let initialState = RecordingActivityAttributes.ContentState(
+            elapsed: 0, level: 0, passedSoftTarget: false)
         let content = ActivityContent(state: initialState, staleDate: nil)
 
         do {

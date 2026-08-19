@@ -11,6 +11,7 @@
 		75DE459501509DE910BB3865 /* ConstellationLockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */; };
 		831B65A52B5BE386B4795110 /* StarBirthLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */; };
 		AECC8CE3F0CB6D7010555F79 /* RecordingLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */; };
+		9A11B2C3D4E5F60718293A4C /* WidgetPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A11B2C3D4E5F60718293A4B /* WidgetPalette.swift */; };
 		AF0EBC2FED7AFC90BDA6654C /* StreakLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */; };
 		B7EDDB5B7F09E36FFA05C0D9 /* SolynWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0987F76F9C9410B7407713F /* SolynWidget.swift */; };
 		C57AB08B73E27F7100545751 /* DailyVoxWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -58,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordingLiveActivity.swift; sourceTree = "<group>"; };
+		9A11B2C3D4E5F60718293A4B /* WidgetPalette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetPalette.swift; sourceTree = "<group>"; };
 		6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StreakLiveActivity.swift; sourceTree = "<group>"; };
 		6CAC25CC7DD69AACADCF1BD5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LiveActivityAttributes.swift; path = solyn/LiveActivityAttributes.swift; sourceTree = SOURCE_ROOT; };
@@ -164,6 +166,7 @@
 			children = (
 				C0987F76F9C9410B7407713F /* SolynWidget.swift */,
 				281C0A33D096F1E9CE0C8100 /* RecordingLiveActivity.swift */,
+				9A11B2C3D4E5F60718293A4B /* WidgetPalette.swift */,
 				F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */,
 				6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */,
 				9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */,
@@ -372,6 +375,7 @@
 			files = (
 				B7EDDB5B7F09E36FFA05C0D9 /* SolynWidget.swift in Sources */,
 				AECC8CE3F0CB6D7010555F79 /* RecordingLiveActivity.swift in Sources */,
+				9A11B2C3D4E5F60718293A4C /* WidgetPalette.swift in Sources */,
 				831B65A52B5BE386B4795110 /* StarBirthLiveActivity.swift in Sources */,
 				AF0EBC2FED7AFC90BDA6654C /* StreakLiveActivity.swift in Sources */,
 				75DE459501509DE910BB3865 /* ConstellationLockScreenWidget.swift in Sources */,

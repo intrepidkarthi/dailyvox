@@ -79,6 +79,12 @@ struct DailyVoxApp: App {
                     WidgetCenter.shared.reloadAllTimelines()
                     runAudioCleanup()
                 case .active:
+                    // Re-arm reminders against what has actually been spoken.
+                    // The window is armed a week ahead, so coming forward is
+                    // where a day that got journalled elsewhere (Siri, the
+                    // widget, an import) gets its reminder withdrawn.
+                    ReminderManager.shared.refresh(
+                        in: persistenceController.container.viewContext)
                     // Check if launched from Siri shortcut to record
                     checkForSiriRecordingIntent()
                     // Refresh the persistent streak Live Activity (if opted in)

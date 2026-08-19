@@ -16,9 +16,9 @@ import SwiftUI
 // Warm dark text for the light ivory Lock-Screen background. The system renders
 // Live Activity `.primary`/`.secondary` text as white by default, which is
 // unreadable on the ivory tint — so the Lock Screen views set these explicitly.
-let lsWarmInk = Color(red: 0.169, green: 0.145, blue: 0.125)      // warm near-black
-let lsWarmInkMute = Color(red: 0.42, green: 0.38, blue: 0.34)     // warm muted
-let lsWarmSage = Color(red: 0.32, green: 0.40, blue: 0.36)        // sage
+let lsWarmInk = WP.ink      // warm near-black
+let lsWarmInkMute = WP.inkSoft     // warm muted
+let lsWarmSage = WP.inkSoft        // sage
 
 @available(iOS 16.2, *)
 struct RecordingLiveActivityWidget: Widget {
@@ -26,15 +26,14 @@ struct RecordingLiveActivityWidget: Widget {
         ActivityConfiguration(for: RecordingActivityAttributes.self) { context in
             // Lock Screen / Notification banner presentation
             RecordingLockScreenView(context: context)
-                .activityBackgroundTint(Color(red: 0.96, green: 0.94, blue: 0.89)) // ivory
-                .activitySystemActionForegroundColor(Color(red: 0.32, green: 0.40, blue: 0.36)) // sage
+                .activityBackgroundTint(WP.cream) // ivory
+                .activitySystemActionForegroundColor(WP.inkSoft) // sage
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 6) {
-                        Image(systemName: "mic.fill")
-                            .foregroundStyle(.red)
-                        Text("Recording")
+                        Image(systemName: "mic.fill").foregroundStyle(WP.coral)
+                        Text("Listening")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.primary)
                     }
@@ -48,15 +47,25 @@ struct RecordingLiveActivityWidget: Widget {
                     VStack(spacing: 6) {
                         WaveformGlyph(level: CGFloat(context.state.level), bars: 22)
                             .frame(height: 28)
-                        Text(progressLine(state: context.state, attributes: context.attributes))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                        HStack {
+                            Text(progressLine(state: context.state,
+                                              attributes: context.attributes))
+                            Spacer()
+                            // §E state 3 carries this line. It is the product's
+                            // whole claim, on the surface a user sees without
+                            // unlocking — and it is true because the target has
+                            // no networking code at all.
+                            Text("0 BYTES OUT")
+                                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        }
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                     }
                     .padding(.top, 4)
                 }
             } compactLeading: {
                 Image(systemName: "mic.fill")
-                    .foregroundStyle(.red)
+                    .foregroundStyle(WP.coral)
             } compactTrailing: {
                 Text(elapsedString(context.state.elapsed))
                     .font(.caption2.monospacedDigit().weight(.semibold))
@@ -65,7 +74,7 @@ struct RecordingLiveActivityWidget: Widget {
                 Image(systemName: "mic.fill")
                     .foregroundStyle(.red)
             }
-            .keylineTint(Color(red: 0.831, green: 0.647, blue: 0.278)) // warm gold
+            .keylineTint(WP.gold) // warm gold
         }
     }
 }
@@ -149,7 +158,7 @@ struct WaveformGlyph: View {
                     let envelope = 1 - distance * distance
                     let amplitude = max(0.15, level) * envelope
                     Capsule()
-                        .fill(Color(red: 0.831, green: 0.647, blue: 0.278)) // warm gold
+                        .fill(WP.gold) // warm gold
                         .frame(width: barWidth, height: max(3, proxy.size.height * amplitude))
                 }
             }

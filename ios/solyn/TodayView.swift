@@ -981,6 +981,10 @@ struct TodayView: View {
             // Clear any selected prompt once an entry has been saved
             selectedPrompt = nil
             WidgetCenter.shared.reloadAllTimelines()
+            // Tonight is spoken for, so drop tonight's reminder. The Settings
+            // card promises "skips once you've spoken" and this is the moment
+            // that makes it true.
+            ReminderManager.shared.refresh(in: viewContext)
             // Body Twin: offer this moment's body signals to the review queue.
             // Fire-and-forget — never delays or fails the save, and this is the
             // ONLY capture site (onboarding seeds, Siri, imports and edits

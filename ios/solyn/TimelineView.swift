@@ -142,12 +142,58 @@ struct TimelineView: View {
         }
     }
 
+    @ViewBuilder
+    private func headerAction(_ symbol: String, _ label: String,
+                              tint: Color? = nil,
+                              action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(tint ?? DS.Palette.sage)
+                .frame(width: 30, height: 30)
+        }
+        .accessibilityLabel(label)
+    }
+
     static func clock(_ t: TimeInterval) -> String {
         String(format: "%d:%02d", Int(t) / 60, Int(t) % 60)
     }
 
     var body: some View {
         VStack(spacing: 0) {
+            // Inline header, like every other destination. A large navigation
+            // title reserved a band above the list AND insetGrouped adds its
+            // own top inset to the first section — together that was the gap
+            // between "Journal" and the first entry.
+            HStack(spacing: 10) {
+                Text("Journal")
+                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .foregroundColor(theme.textColor)
+                Spacer(minLength: 6)
+                playTodayPill
+                // The toolbar actions come with the header: hiding the
+                // navigation bar took search, voice and filter with it, and a
+                // journal you cannot search is a worse trade than a tall title.
+                // EditButton is the one casualty — swipe-to-delete still works
+                // via .onDelete, so nothing became unreachable.
+                headerAction("sparkle.magnifyingglass", "Search by meaning") {
+                    showSemanticSearch = true
+                }
+                headerAction(isListening ? "mic.fill" : "mic", "Voice search",
+                             tint: isListening ? theme.recordingColor : nil) {
+                    toggleVoiceSearch()
+                }
+                headerAction(hasActiveFilters
+                             ? "line.3.horizontal.decrease.circle.fill"
+                             : "line.3.horizontal.decrease.circle", "Filters") {
+                    withAnimation(.easeInOut(duration: 0.2)) { showFilters.toggle() }
+                    HapticManager.shared.buttonTap()
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 4)
+            .padding(.bottom, 6)
+
             // Quick filter chips (when search is empty)
             if searchText.isEmpty && !showFilters {
                 quickFilterChips
@@ -213,6 +259,7 @@ struct TimelineView: View {
                     .listRowSeparator(.hidden)
 }
             .listStyle(.insetGrouped)
+            .listSectionSpacing(.compact)
             .scrollContentBackground(.hidden)
             .contentMargins(.top, DS.Space.xs, for: .scrollContent)
             .background { WarmBackground().ignoresSafeArea() }
@@ -262,8 +309,6 @@ struct TimelineView: View {
                 }
             }
             #endif
-            ToolbarItem(placement: .navigationBarLeading) { playTodayPill }
-
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     showStarredOnly.toggle()
@@ -276,7 +321,7 @@ struct TimelineView: View {
             }
         }
         .background { WarmBackground() }
-        .navigationTitle("Journal")
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear { todayDuration = TodayAudioQueue.todayDuration(in: viewContext) }
         .onDisappear { todayQueue.stop() }
         #if os(iOS)
@@ -347,7 +392,8 @@ struct TimelineView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.vertical, 8)
+                    .padding(.top, 2)
+                    .padding(.bottom, 6)
                 }
             }
         }

@@ -15,14 +15,14 @@ struct StreakLiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: StreakActivityAttributes.self) { context in
             StreakLockScreenView(context: context)
-                .activityBackgroundTint(Color(red: 0.96, green: 0.94, blue: 0.89))
-                .activitySystemActionForegroundColor(Color(red: 0.32, green: 0.40, blue: 0.36))
+                .activityBackgroundTint(WP.cream)
+                .activitySystemActionForegroundColor(WP.inkSoft)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 6) {
                         Image(systemName: "star.fill")
-                            .foregroundStyle(Color(red: 0.831, green: 0.647, blue: 0.278))
+                            .foregroundStyle(WP.gold)
                         Text("Day \(context.state.streak)")
                             .font(.headline)
                             .foregroundStyle(.primary)
@@ -49,15 +49,15 @@ struct StreakLiveActivityWidget: Widget {
                 }
             } compactLeading: {
                 Image(systemName: "star.fill")
-                    .foregroundStyle(Color(red: 0.831, green: 0.647, blue: 0.278))
+                    .foregroundStyle(WP.gold)
             } compactTrailing: {
                 Text("Day \(context.state.streak)")
                     .font(.caption2.weight(.semibold))
             } minimal: {
                 Image(systemName: "star.fill")
-                    .foregroundStyle(Color(red: 0.831, green: 0.647, blue: 0.278))
+                    .foregroundStyle(WP.gold)
             }
-            .keylineTint(Color(red: 0.831, green: 0.647, blue: 0.278))
+            .keylineTint(WP.gold)
         }
     }
 }
@@ -70,10 +70,10 @@ private struct StreakLockScreenView: View {
         HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(Color(red: 0.831, green: 0.647, blue: 0.278).opacity(0.18))
+                    .fill(WP.gold.opacity(0.18))
                     .frame(width: 44, height: 44)
                 Image(systemName: "star.fill")
-                    .foregroundStyle(Color(red: 0.831, green: 0.647, blue: 0.278))
+                    .foregroundStyle(WP.gold)
                     .font(.title3)
             }
 
