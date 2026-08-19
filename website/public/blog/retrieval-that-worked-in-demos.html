@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Retrieval Worked In Demos And Failed On Real Diaries</title>
+<meta name="description" content="v1.7 shipped semantic retrieval that scored 0.02-0.25 on real diary questions against a 0.37 abstention threshold. It abstained on almost everything. Here is how the eval missed it.">
+<link rel="canonical" href="https://getdailyvox.com/blog/retrieval-that-worked-in-demos">
+<meta name="theme-color" content="#FAF8F5">
+<meta property="og:type" content="article"><meta property="og:title" content="Our Retrieval Worked In Demos And Failed On Real Diaries">
+<meta property="og:description" content="v1.7 shipped semantic retrieval that scored 0.02-0.25 on real diary questions against a 0.37 abstention threshold. It abstained on almost everything. Here is how the eval missed it."><meta property="og:url" content="https://getdailyvox.com/blog/retrieval-that-worked-in-demos">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Our Retrieval Worked In Demos And Failed On Real Diaries", "description": "v1.7 shipped semantic retrieval that scored 0.02-0.25 on real diary questions against a 0.37 abstention threshold. It abstained on almost everything. Here is how the eval missed it.", "url": "https://getdailyvox.com/blog/retrieval-that-worked-in-demos", "author": {"@type": "Organization", "name": "DailyVox"}, "publisher": {"@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"}, {"@type": "ListItem", "position": 3, "name": "Our Retrieval Worked In Demos And Failed On Real Diaries"}]}</script>
+<style>
+:root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
+*{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
+header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
+h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
+.bc{font-size:14px;color:#8a8175;margin-top:14px}.bc a{color:#8a8175}
+ol{padding-left:22px}ol li{margin:6px 0}
+.cta{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}
+.cta a{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}
+details{border-top:1px solid #e7e0d6;padding:13px 0}summary{font-weight:700;cursor:pointer}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
+.related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
+footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
+a{color:var(--terra)}
+</style></head>
+<body>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<main>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
+<h1>Our Retrieval Worked In Demos And Failed On Real Diaries</h1>
+<p>In v1.7 we shipped a Twin that could answer free-text questions about your journal using retrieval over your own entries. It demoed well. Then people asked it real questions and it said "I have not found anything about that" to almost all of them.</p>
+<p>The retrieval was not broken. It was scoring correctly and the threshold was wrong, and the eval that should have caught it was testing the wrong thing.</p>
+<h2>The numbers</h2>
+<p>Realistic diary questions scored cosine similarity 0.02 to 0.25 against the entries that actually answered them. The abstention threshold was 0.37.</p>
+<p>So the system was working exactly as designed, and the design abstained on every real question. A user with three months of entries asking "how was I feeling before the interview" got told there was nothing about it, while the entry describing the interview sat two swipes away.</p>
+<h2>Why the demo passed</h2>
+<p>Demo questions and diary questions are different objects, and we had only ever measured the first kind.</p>
+<p>A demo question is written by someone who knows what is in the corpus. It reuses the corpus vocabulary: "what did I write about my anxiety at work". That phrasing shares words and structure with the entry, so the embeddings land close together and the score clears any reasonable threshold.</p>
+<p>A real question is written by someone who does not remember what they wrote. "Have I been sleeping badly?" against an entry that says "woke up at 3 again, third time this week, did not mention it to anyone." Those mean the same thing and share almost no surface. Whole-entry cosine on a paragraph like that gets diluted by every sentence not about sleep.</p>
+<p>Our eval was built from demo-shaped questions. It measured the case we already knew worked.</p>
+<h2>What fixed it</h2>
+<p>Two changes, and the second one is the one that mattered.</p>
+<p>Retrieval became hybrid. Per-sentence max cosine rather than whole-entry, plus content-word overlap. Per-sentence matters because a diary entry is not about one thing. It is about the commute, then a meeting, then not sleeping. Scoring the whole paragraph averages the sleep sentence away. Scoring the best sentence finds it.</p>
+<p>Then the threshold was re-measured on a new eval leg authored from this exact failure, by someone who had not read the entries. Re-measured rather than re-tuned. τ landed at 0.29 with 98.2% balanced accuracy. Balanced, because both errors are real. Surfacing an unrelated entry is a Twin that makes things up. Abstaining on a journaled topic is a Twin that is useless. A metric that only counts one of those would have let us ship the same bug with a lower number.</p>
+<h2>The part worth stealing</h2>
+<p>The eval leg is the artefact, not the threshold. 0.29 is specific to our embeddings and our corpus and will not transfer to yours.</p>
+<p>What transfers is the method: <strong>write your eval questions before you look at the corpus, or have someone write them who has not read it.</strong> Every retrieval eval built by the person who built the index inherits their memory of what is in it, and that memory is the exact thing your users do not have.</p>
+<p>We shipped a system that abstained on almost everything and did not find out from our own tests. We found out from people using it. The eval leg that would have caught it took an afternoon to write, after it was too late to matter.</p>
+<p>DailyVox is a free, open-source voice journal that runs its AI on the device. The retrieval described here is what powers search-by-meaning and the Twin's answers, and it runs entirely on the phone.</p>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
+</main>
+<footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.<div class="container"><p class="agent-note"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p></div>
+</footer>
+</body></html>
