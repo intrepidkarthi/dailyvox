@@ -32,14 +32,6 @@ enum Destination: String, CaseIterable, Identifiable {
         }
     }
 
-    var icon: String {
-        switch self {
-        case .speak: return "mic.fill"
-        case .journal: return "book.closed.fill"
-        case .twin: return "sparkles"
-        case .ask: return "bubble.left.and.bubble.right.fill"
-        }
-    }
 }
 
 struct ContentView: View {
@@ -112,9 +104,15 @@ extension Notification.Name {
 /// from the screen edge, and on iOS 26 it renders Liquid Glass that ignores the
 /// container colour entirely, so the two would never have matched.
 struct DailyVoxTabBar: View {
-    /// What the bar occupies, so screens can inset by it rather than by a
-    /// number someone eyeballed once and nobody re-checked.
-    static let reservedHeight: CGFloat = 96
+    /// The pill itself: 10.5pt label + 18 vertical padding + 10 container
+    /// padding + 4 bottom inset.
+    static let barHeight: CGFloat = 62
+
+    /// What SCROLL CONTENT must clear — the bar plus the home-indicator strip
+    /// it floats above. A docked view is already inside the safe area, so it
+    /// wants `barHeight`; adding this to it stacks the safe area twice and
+    /// leaves a visible band of nothing.
+    static let reservedHeight: CGFloat = barHeight + 34
 
     @Binding var current: Destination
     @ObservedObject private var theme = ThemeManager.shared
@@ -135,6 +133,10 @@ struct DailyVoxTabBar: View {
     /// compiler reported it as unable to type-check in reasonable time — the
     /// same failure TimelineView hit, and it does not announce itself until
     /// some unrelated edit tips it over.
+    ///
+    /// LABELS ONLY. The spec's bar is four words in a pill and nothing else;
+    /// the SF Symbols here before were mine, not the design's, and they made a
+    /// quiet bar look like a stock tab bar wearing a costume.
     @ViewBuilder
     private func tab(_ d: Destination) -> some View {
         let active = d == current
@@ -143,37 +145,51 @@ struct DailyVoxTabBar: View {
             : theme.secondaryTextColor
 
         Button {
-            // Feedback lives here rather than in each screen, so every tab
-            // change feels identical.
             HapticManager.shared.selectionChanged()
             withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
                 current = d
             }
         } label: {
-            VStack(spacing: 3) {
-                Image(systemName: d.icon)
-                    .font(.system(size: 17, weight: .semibold))
-                Text(d.title)
-                    .font(.system(size: 10.5, weight: .bold, design: .rounded))
-            }
-            .foregroundColor(fg)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 9)
-            .background(
-                RoundedRectangle(cornerRadius: 17, style: .continuous)
-                    .fill(active ? theme.accentColor : Color.clear)
-            )
+            Text(d.title)
+                .font(.system(size: 10.5, weight: active ? .heavy : .bold, design: .rounded))
+                .foregroundColor(fg)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 9)
+                .background(
+                    RoundedRectangle(cornerRadius: 17, style: .continuous)
+                        .fill(active ? theme.accentColor : Color.clear)
+                )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(d.title)
         .accessibilityAddTraits(active ? [.isSelected, .isButton] : .isButton)
     }
 
+    /// Liquid Glass on iOS 26, a tinted solid before it.
+    ///
+    /// The glass is tinted rather than clear: the design specifies a white
+    /// container by day and #1C2A42 by night, and plain `.regular` glass over a
+    /// cream page renders near-white anyway by day but goes muddy over the navy
+    /// sky. Tinting keeps the spec's two grounds while still refracting what
+    /// scrolls underneath.
+    @ViewBuilder
     private var container: some View {
-        RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(theme.isNight ? DS.Palette.navySurface : Color.white)
-            .shadow(color: Color.black.opacity(theme.isNight ? 0.32 : 0.10),
-                    radius: 18, x: 0, y: 6)
+        let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+        if #available(iOS 26.0, *) {
+            shape
+                .fill(.clear)
+                .glassEffect(
+                    .regular.tint(theme.isNight
+                                  ? DS.Palette.navySurface.opacity(0.72)
+                                  : Color.white.opacity(0.72)),
+                    in: .rect(cornerRadius: 22)
+                )
+        } else {
+            shape
+                .fill(theme.isNight ? DS.Palette.navySurface : Color.white)
+                .shadow(color: Color.black.opacity(theme.isNight ? 0.32 : 0.10),
+                        radius: 18, x: 0, y: 6)
+        }
     }
 }
 

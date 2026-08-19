@@ -294,40 +294,47 @@ struct TodayView: View {
 
     // MARK: - Normal View
 
-    /// Spec §2.2 order: header, then the mic inside its tick ring, then the
-    /// Today card UNDER the mic.
+    /// Header and today's content scroll; the mic is DOCKED at the bottom.
     ///
-    /// The mic used to be docked in a fixed bar below the ScrollView. That is
-    /// what put the button and its ring behind the floating tab bar — a docked
-    /// bar and a floating bar are both trying to own the bottom of the screen,
-    /// and no amount of inset fixes two things competing for the same strip.
-    /// In the scroll flow the mic sits where the design puts it, at the centre
-    /// of the screen, and nothing overlaps.
+    /// The spec's B2 frame draws the mic mid-screen with the Today card beneath
+    /// it, and that is how this was built first. On a real phone it is the
+    /// wrong call: the one control you press every day sat under your index
+    /// finger instead of your thumb, and it moved down the screen as the
+    /// journal grew. Karthik asked for it back at the bottom and he is right —
+    /// reachability beats frame fidelity for the primary action.
+    ///
+    /// Docking it is what put it behind the floating tab bar the first time.
+    /// The fix is the bar's own reserved height, so the two stack instead of
+    /// competing for the same strip.
     private var normalView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                headerSection
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerSection
 
-                recordingSection
-                    .frame(maxWidth: .infinity)
+                    entryCardSection
 
-                entryCardSection
+                    // Body Twin idle-state slot: today's one-line body whisper,
+                    // or the one-time Health invite — never both, never while
+                    // recording, never in the first-run zero-state.
+                    if recordingState == .idle {
+                        BodyTwinIdleCards()
+                    }
 
-                // Body Twin idle-state slot: today's one-line body whisper, or
-                // the one-time Health invite — never both, never while
-                // recording, never in the first-run zero-state.
-                if recordingState == .idle {
-                    BodyTwinIdleCards()
+                    if recordingState == .idle && latestEntry == nil {
+                        promptsSection
+                    }
                 }
-
-                if recordingState == .idle && latestEntry == nil {
-                    promptsSection
-                }
+                .padding()
+                .frame(maxWidth: isIPad ? 700 : .infinity)
+                .frame(maxWidth: .infinity)
             }
-            .padding()
-            .dailyVoxBarClearance()
-            .frame(maxWidth: isIPad ? 700 : .infinity)
-            .frame(maxWidth: .infinity)
+
+            recordingSection
+                // barHeight, not reservedHeight: this is docked inside the safe
+                // area already, and the larger value counted the home-indicator
+                // strip twice and left a band of dead space under the caption.
+                .padding(.bottom, DailyVoxTabBar.barHeight)
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
