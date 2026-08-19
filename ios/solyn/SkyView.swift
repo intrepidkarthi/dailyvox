@@ -85,8 +85,18 @@ struct SkyView: View {
         // 5s breathe, eased — 0.7…1.0.
         let coreGlow = 0.85 + 0.15 * Foundation.sin(t * .pi * 2 / 5)
 
-        // Centre glow.
-        let glowR = minDim * 0.62
+        // Centre glow — sized to FIT.
+        //
+        // This is what "the sky still has borders" was, and it was never the
+        // background or the padding. A Canvas clips to its bounds, so Android's
+        // 0.62-of-min-dimension glow (fine there, where the sky is ~550pt tall)
+        // became a 211pt circle inside a 340pt frame and got sliced flat on all
+        // four sides. A radial gradient clipped to a rectangle IS a rectangle.
+        //
+        // Never larger than the distance to the nearest edge, so the gradient
+        // always reaches transparent before it reaches a boundary.
+        let fits = min(centre.x, size.width - centre.x, centre.y, size.height - centre.y)
+        let glowR = min(minDim * 0.62, fits * 0.98)
         context.fill(
             Circle().path(in: CGRect(x: centre.x - glowR, y: centre.y - glowR,
                                      width: glowR * 2, height: glowR * 2)),
@@ -116,7 +126,14 @@ struct SkyView: View {
                 rng = rng &* 6364136223846793005 &+ 1442695040888963407
                 return Double((rng >> 33) % 10000) / 10000
             }
-            let pt = CGPoint(x: next() * size.width, y: next() * size.height)
+            // Very slow parallax — a full pass takes over three minutes, and
+            // near stars drift further than far ones. Too slow to watch happen,
+            // fast enough that the field is never quite where you left it.
+            let depth = 0.35 + Double(i % 5) * 0.16
+            let drift = CGFloat((t / 200).truncatingRemainder(dividingBy: 1.0) * depth)
+            var x = next() + drift
+            if x > 1 { x -= 1 }
+            let pt = CGPoint(x: CGFloat(x) * size.width, y: next() * size.height)
             // Keep the core legible.
             if abs(pt.x - centre.x) < size.width * 0.10,
                abs(pt.y - centre.y) < size.height * 0.12 { continue }
@@ -208,6 +225,57 @@ struct SkyView: View {
                          y: centre.y + rInner * CGFloat(Foundation.sin(ba)))
         context.fill(Circle().path(in: CGRect(x: bp.x - 2, y: bp.y - 2, width: 4, height: 4)),
                      with: .color(p.accent))
+
+        drawShootingStar(context: context, size: size, t: t, palette: p)
+    }
+
+    /// A shooting star, rarely.
+    ///
+    /// The honest answer to "how do I make this interesting to watch for a long
+    /// time": you cannot, with loops alone. Everything else here is periodic,
+    /// so after a minute a viewer has seen the whole vocabulary and the motion
+    /// becomes wallpaper. What holds attention is the possibility that
+    /// SOMETHING MIGHT HAPPEN — so once every 47 seconds, for 1.4 of them, a
+    /// star crosses.
+    ///
+    /// 47 is deliberately not a round number and shares no factor with the
+    /// orbit periods (80, 130, 18, 30, 5). Nothing ever lines up twice, so the
+    /// composition genuinely does not repeat rather than merely looking busy.
+    private func drawShootingStar(context: GraphicsContext, size: CGSize,
+                                  t: TimeInterval, palette p: (ink: Color, line: Color,
+                                                               core: Color, accent: Color)) {
+        let period = 47.0
+        let duration = 1.4
+        let cycle = t.truncatingRemainder(dividingBy: period)
+        guard cycle < duration else { return }
+
+        let progress = cycle / duration
+        // A different entry angle each pass, from the cycle index, so it is not
+        // the same streak on a timer.
+        let index = Int(t / period)
+        let seedAngle = Double((index &* 2654435761) % 360)
+        let a = (seedAngle - 25) * .pi / 180
+
+        // Travels a diagonal of the frame, entering off-screen.
+        let span = CGFloat(Foundation.sqrt(Double(size.width * size.width
+                                                  + size.height * size.height)))
+        let dir = CGPoint(x: CGFloat(Foundation.cos(a)), y: CGFloat(Foundation.sin(a)))
+        let entry = CGPoint(x: size.width / 2 - dir.x * span * 0.6,
+                            y: size.height / 2 - dir.y * span * 0.6)
+        let head = CGPoint(x: entry.x + dir.x * span * 1.2 * progress,
+                           y: entry.y + dir.y * span * 1.2 * progress)
+
+        // Fades in and out rather than popping; a hard cut reads as a glitch.
+        let fade = Foundation.sin(progress * .pi)
+
+        for k in 0..<10 {
+            let back = Double(k) * 7.0
+            let pt = CGPoint(x: head.x - dir.x * back, y: head.y - dir.y * back)
+            let r = max(2.0 - Double(k) * 0.18, 0.4)
+            context.fill(
+                Circle().path(in: CGRect(x: pt.x - r, y: pt.y - r, width: r * 2, height: r * 2)),
+                with: .color(p.core.opacity(0.55 * fade * (1 - Double(k) / 10))))
+        }
     }
 
     /// Names sit in SwiftUI text above the Canvas — the sky is only meaningful

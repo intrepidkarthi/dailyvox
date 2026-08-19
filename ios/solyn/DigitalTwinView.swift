@@ -317,7 +317,7 @@ struct DigitalTwinView: View {
             // put it in a bordered navy card that did not move, which made the
             // two platforms visibly different products on their hero screen.
             SkyView(entries: skyEntries, named: topKnowledgeNodes.map(\.0))
-                .frame(height: isIPad ? 420 : 340)
+                .frame(height: isIPad ? 520 : 430)
                 // Escapes the column's 16pt padding so the sky runs edge to
                 // edge. Inset, its glow ended on a straight vertical line down
                 // both sides — which is exactly what a border looks like.
