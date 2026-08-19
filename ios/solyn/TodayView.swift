@@ -37,6 +37,7 @@ struct TodayView: View {
     @StateObject private var recorder = AudioRecorder()
     @State private var recordingState: RecordingState = .idle
     @State private var showSettings = false
+    @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
     @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
@@ -324,41 +325,41 @@ struct TodayView: View {
 
     // MARK: - Header Section
 
+    /// Spec §2.2: greeting + date on the left, streak and star chips on the
+    /// right, then "How was your day, really?" as the headline.
+    ///
+    /// This was a big date with a privacy badge beside it and the stats on
+    /// their own row below — three stacked bands before the screen said
+    /// anything. The date is demoted to a subtitle because you know what day it
+    /// is; the question is the only thing on this screen that needs answering.
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Top row with greeting and privacy badge
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 22) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(greeting)
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.textColor)
                     Text(formattedToday)
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(.system(size: 12.5))
+                        .foregroundColor(theme.secondaryTextColor)
                 }
                 Spacer()
-                PrivacyBadge(compact: true)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(streakCount > 0 ? "\(streakCount)-day streak" : "no streak yet")
+                        .font(.system(size: 12.5, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.textColor)
+                    // GOLD REWARDS: the year count is a made thing, so it is
+                    // the one figure up here allowed to be gold.
+                    Text("\u{2726} \(daysRecordedThisYear) this year")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .foregroundColor(theme.goldText)
+                }
             }
 
-            // Stats row
-            HStack(spacing: 12) {
-                if streakCount > 0 {
-                    StatBadge(
-                        icon: "flame.fill",
-                        value: "\(streakCount) day streak",
-                        color: DS.Palette.terracotta
-                    )
-                }
-
-                if daysRecordedThisYear > 0 {
-                    StatBadge(
-                        icon: "calendar",
-                        value: "\(daysRecordedThisYear) this year",
-                        color: DS.Palette.sage
-                    )
-                }
-
-                Spacer()
-            }
+            Text("How was your day,\nreally?")
+                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .foregroundColor(theme.textColor)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -691,13 +692,10 @@ struct TodayView: View {
                 }
             }
         }
-        .padding(.vertical, 20)
+        .padding(.top, 20)
+        .padding(.bottom, 8)   // the bar's clearance is a safeAreaInset in ContentView
         .padding(.horizontal)
-        .background(
-            !ThemeManager.shared.isNight
-                ? DS.Palette.ivory
-                : Color(.systemGroupedBackground)
-        )
+        .background(ThemeManager.shared.backgroundColor)
         .animation(.spring(response: 0.4), value: recordingState)
     }
 
@@ -748,10 +746,18 @@ struct TodayView: View {
                     .fill(buttonColor)
                     .frame(width: recordButtonSize, height: recordButtonSize)
 
-                // Outer ring (subtle)
-                Circle()
-                    .stroke(buttonColor.opacity(0.3), lineWidth: 4)
-                    .frame(width: recordButtonOuterSize, height: recordButtonOuterSize)
+                // The 42-dot tick ring (spec §2.2): one dot per second of the
+                // ritual, drifting at 120s/rev with one gold star orbiting at
+                // 16s — a solar-system idle rather than a progress indicator.
+                //
+                // THE RING IS A SHAPE, NOT A CUTOFF. It fills to 42s and keeps
+                // counting quietly; a ring that stopped there would invert the
+                // meaning of the whole motif.
+                TickRing(
+                    diameter: recordButtonOuterSize + 34,
+                    elapsed: recordingState == .recording ? Int(recorder.currentTime) : 0,
+                    recording: recordingState == .recording
+                )
 
                 // Icon
                 Group {
@@ -1295,4 +1301,55 @@ func hasEntryToday(in context: NSManagedObjectContext) -> Bool {
     request.predicate = NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
     request.fetchLimit = 1
     return ((try? context.count(for: request)) ?? 0) > 0
+}
+
+/// 42 ticks around the record button, drawn as individual capsules so each one
+/// has a round cap — a dashed stroke gives square ends and reads as a gear.
+private struct TickRing: View {
+    let diameter: CGFloat
+    let elapsed: Int
+    let recording: Bool
+
+    @ObservedObject private var theme = ThemeManager.shared
+    @State private var drift: Double = 0
+    @State private var orbit: Double = 0
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<42, id: \.self) { i in
+                Capsule()
+                    .fill(colour(for: i))
+                    .frame(width: 2.5, height: 7)
+                    .offset(y: -diameter / 2)
+                    .rotationEffect(.degrees(Double(i) / 42 * 360 + drift))
+            }
+
+            // One small gold star, orbiting. Faster while recording: the solar
+            // system speeds up while you speak.
+            Circle()
+                .fill(DS.Palette.gold)
+                .frame(width: 7, height: 7)
+                .offset(y: -diameter / 2)
+                .rotationEffect(.degrees(orbit))
+        }
+        .frame(width: diameter, height: diameter)
+        .onAppear {
+            withAnimation(.linear(duration: 120).repeatForever(autoreverses: false)) {
+                drift = 360
+            }
+            withAnimation(.linear(duration: recording ? 12 : 16).repeatForever(autoreverses: false)) {
+                orbit = 360
+            }
+        }
+    }
+
+    /// Lit ticks are gold — a second spoken is a thing made. Past 42 the ring
+    /// stays full rather than wrapping, because it is a shape, not a cutoff.
+    private func colour(for i: Int) -> Color {
+        let lit = recording && i < min(elapsed, 42)
+        if lit { return DS.Palette.gold }
+        return theme.isNight
+            ? DS.Palette.navyText.opacity(0.22)
+            : DS.Palette.gold.opacity(0.35)
+    }
 }

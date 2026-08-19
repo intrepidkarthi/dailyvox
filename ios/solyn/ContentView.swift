@@ -71,6 +71,13 @@ struct ContentView: View {
                     NavigationStack { TwinChatView() }
                 }
             }
+            // One inset for every destination rather than bottom padding in
+            // four screens. The hand-built bar floats OVER content — a system
+            // tab bar laid out around it — so without this the last row of
+            // each screen sits under the pill.
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 74)
+            }
 
             if chromeVisible {
                 DailyVoxTabBar(current: $current)

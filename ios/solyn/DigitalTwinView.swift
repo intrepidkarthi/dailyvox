@@ -318,13 +318,37 @@ struct DigitalTwinView: View {
             )
             .frame(height: isIPad ? 360 : 280)
 
-            Text("Your Digital Twin")
-                .font(.system(.title2, design: .rounded).weight(.bold))
-                .foregroundColor(themeManager.textColor)
+            // Spec C2: a STAR COUNT, not a percentage. The number is what the
+            // user made; a completion figure invites them to finish something
+            // that has no end, and reads as a progress bar on their own life.
+            HStack(spacing: 8) {
+                Text("\(entries.count) \u{2726}")
+                    .font(.system(size: 15, weight: .heavy, design: .rounded))
+                    .foregroundColor(themeManager.goldText)
+                Text("\u{00B7}")
+                    .foregroundColor(themeManager.secondaryTextColor)
+                Text(skyDepth.uppercased())
+                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .tracking(0.6)
+                    .foregroundColor(themeManager.goldText)
+            }
 
             Text(constellationSubtitle)
                 .font(.system(.subheadline, design: .rounded).weight(.regular))
                 .foregroundColor(themeManager.secondaryTextColor)
+                .multilineTextAlignment(.center)
+        }
+    }
+
+    /// The same thresholds the Android sky uses, so a screenshot from either
+    /// phone reports the same depth for the same journal.
+    private var skyDepth: String {
+        switch entries.count {
+        case 200...: return "Deep"
+        case 100..<200: return "Established"
+        case 40..<100: return "Forming"
+        case 10..<40: return "Early"
+        default: return "Seed"
         }
     }
 
