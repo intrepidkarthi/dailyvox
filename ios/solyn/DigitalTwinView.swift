@@ -318,6 +318,10 @@ struct DigitalTwinView: View {
             // two platforms visibly different products on their hero screen.
             SkyView(entries: skyEntries, named: topKnowledgeNodes.map(\.0))
                 .frame(height: isIPad ? 420 : 340)
+                // Escapes the column's 16pt padding so the sky runs edge to
+                // edge. Inset, its glow ended on a straight vertical line down
+                // both sides — which is exactly what a border looks like.
+                .padding(.horizontal, -DS.Space.md)
 
             // Spec C2: a STAR COUNT, not a percentage. The number is what the
             // user made; a completion figure invites them to finish something

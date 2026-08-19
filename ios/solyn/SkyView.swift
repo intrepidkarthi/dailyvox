@@ -65,8 +65,9 @@ struct SkyView: View {
             }
             .overlay(alignment: .topLeading) { labels(t: t) }
         }
-        // No card, no border, no clip. The sky IS the screen here.
-        .background(theme.backgroundColor)
+        // NO background of its own. Painting one — even in the page colour —
+        // gives the sky a rectangle, and the radial glow terminating at that
+        // rectangle's edge is what read as a border. The page shows through.
     }
 
     // MARK: - Drawing
