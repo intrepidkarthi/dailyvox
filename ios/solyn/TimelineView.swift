@@ -94,6 +94,8 @@ struct TimelineView: View {
     // MARK: - Search State
     
     @State private var searchText: String = ""
+    @StateObject private var todayQueue = TodayAudioQueue()
+    @State private var todayDuration: TimeInterval?
     @State private var showSemanticSearch: Bool = false
     @State private var showStarredOnly: Bool = false
     @State private var showFilters: Bool = false
@@ -108,6 +110,41 @@ struct TimelineView: View {
     #endif
 
     private var twin: DigitalTwinEngine { DigitalTwinEngine.shared }
+
+    /// §2.3's Play-today pill, extracted from `body`. Inline it tipped the
+    /// toolbar over the compiler's type-check budget — the same failure this
+    /// file hit once already, and it surfaces as a timeout on `body` rather
+    /// than an error where the cost actually is.
+    @ViewBuilder
+    private var playTodayPill: some View {
+        if let total = todayDuration {
+            let label = todayQueue.isPlaying
+                ? "\(todayQueue.index + 1) of \(todayQueue.count)"
+                : "Play today \u{00B7} \(Self.clock(total))"
+            Button {
+                todayQueue.toggle(in: viewContext)
+                HapticManager.shared.buttonTap()
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: todayQueue.isPlaying ? "stop.fill" : "play.fill")
+                        .font(.system(size: 10, weight: .bold))
+                    Text(label)
+                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(Capsule().fill(DS.Palette.sage))
+            }
+            .accessibilityLabel(todayQueue.isPlaying
+                                ? "Stop playing today"
+                                : "Play today's recordings")
+        }
+    }
+
+    static func clock(_ t: TimeInterval) -> String {
+        String(format: "%d:%02d", Int(t) / 60, Int(t) % 60)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -216,6 +253,8 @@ struct TimelineView: View {
                 }
             }
             #endif
+            ToolbarItem(placement: .navigationBarLeading) { playTodayPill }
+
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                     showStarredOnly.toggle()
@@ -229,6 +268,8 @@ struct TimelineView: View {
         }
         .background { WarmBackground() }
         .navigationTitle("Journal")
+        .onAppear { todayDuration = TodayAudioQueue.todayDuration(in: viewContext) }
+        .onDisappear { todayQueue.stop() }
         #if os(iOS)
         .onChange(of: voiceSearch.transcribedText) { _, newValue in
             if !newValue.isEmpty {
