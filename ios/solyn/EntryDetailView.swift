@@ -482,8 +482,11 @@ struct EntryDetailView: View {
             }
             #endif
 
-            // Photo picker
-            PhotosPicker(
+            // Photo picker — withheld while FeatureFlags.photoAttachments is
+            // off. Existing photos below still render and still export: this
+            // hides the way to ADD one, never anybody's attachments.
+            if FeatureFlags.photoAttachments {
+                PhotosPicker(
                 selection: $selectedPhotos,
                 maxSelectionCount: 5,
                 matching: .images
@@ -499,6 +502,7 @@ struct EntryDetailView: View {
                 .padding(.vertical, 6)
                 .background(Color.accentColor.opacity(0.1))
                 .clipShape(Capsule())
+                }
             }
 
             if !photoFileNames.isEmpty {

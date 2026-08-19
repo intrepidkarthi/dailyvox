@@ -87,19 +87,11 @@ struct TodayView: View {
                 normalView
             }
         }
-        // Settings lost its tab in the four-destination restructure, so it
-        // lives here — reachable from the screen you are on when you want it.
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { showSettings = true } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(ThemeManager.shared.secondaryTextColor)
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Settings")
-            }
-        }
+        // No system navigation bar. Every destination draws its own header, so
+        // the bar was reserving a full band of empty space above content that
+        // already had a title — the gap Karthik flagged between the status bar
+        // and "Good afternoon". Settings moves into the greeting row instead.
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
@@ -373,6 +365,14 @@ struct TodayView: View {
                         .font(.system(size: 11, weight: .semibold, design: .rounded))
                         .foregroundColor(theme.goldText)
                 }
+                Button { showSettings = true } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(theme.secondaryTextColor)
+                        .frame(width: 34, height: 34)
+                }
+                .accessibilityLabel("Settings")
+                .padding(.leading, 2)
             }
 
             Text("How was your day,\nreally?")
@@ -659,12 +659,15 @@ struct TodayView: View {
                 .transition(.scale.combined(with: .opacity))
             }
 
-            // Record button stays dead-centre; photo-add is a secondary side action
-            // (it used to share the row and push the mic off-centre to the right).
+            // Record button stays dead-centre; photo-add was a secondary side
+            // action beside it (it used to share the row and push the mic
+            // off-centre to the right). Withheld behind FeatureFlags — this is
+            // a voice journal, and a picker did not earn space on the one
+            // screen whose job is to get you talking in a few seconds.
             ZStack {
                 recordButton
 
-                if recordingState == .idle {
+                if FeatureFlags.photoAttachments && recordingState == .idle {
                     HStack {
                         Spacer()
                         PhotosPicker(

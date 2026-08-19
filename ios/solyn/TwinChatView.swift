@@ -109,24 +109,30 @@ struct TwinChatView: View {
             questionChips
         }
         // Ask pins its input bar and chips to the bottom, so it collides with
-        // the floating tab bar exactly as the record button did — the field was
-        // half-covered and the chips fully hidden. This screen is not a scroll
-        // view, so the clearance goes on the container.
-        .dailyVoxBarClearance()
-        .navigationTitle("Ask Your Twin")
-        .navigationBarTitleDisplayMode(.inline)
+        // the floating tab bar exactly as the record button did. barHeight, not
+        // reservedHeight: this content is already inside the safe area, and the
+        // larger value counted the home-indicator strip twice — that was the
+        // band of dead space above the bar.
+        .padding(.bottom, DailyVoxTabBar.barHeight)
+        .toolbar(.hidden, for: .navigationBar)
         .safeAreaInset(edge: .top) {
             // §2.6's subtitle. It is a claim the user can check — airplane mode,
             // and the answers still arrive — so it belongs on the screen making
             // the claim rather than buried in Settings.
-            Text("ANSWERS WITH RECEIPTS \u{00B7} 0 NETWORK CALLS")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(0.8)
-                .foregroundColor(themeManager.secondaryTextColor)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 6)
-                .background(themeManager.backgroundColor)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Ask your Twin")
+                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .foregroundColor(themeManager.textColor)
+                Text("ANSWERS WITH RECEIPTS \u{00B7} 0 NETWORK CALLS")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(0.8)
+                    .foregroundColor(themeManager.secondaryTextColor)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20)
+            .padding(.top, 8)
+            .padding(.bottom, 10)
+            .background(themeManager.backgroundColor)
         }
         .background(themeManager.backgroundColor.ignoresSafeArea())
         .task {

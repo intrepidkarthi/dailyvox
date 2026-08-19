@@ -1010,7 +1010,14 @@ struct SettingsView: View {
                 }
             } else {
                 StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
-                StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
+                // Shown only when there is something to report. Photo
+                // attachment is withheld (FeatureFlags.photoAttachments), but
+                // anyone who attached photos before still needs to see what
+                // they are using — hiding a storage figure is not the same as
+                // hiding a button.
+                if photoStorageBytes > 0 || FeatureFlags.photoAttachments {
+                    StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
+                }
                 StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
 
                 HStack {

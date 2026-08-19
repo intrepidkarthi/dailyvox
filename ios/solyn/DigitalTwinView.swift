@@ -50,6 +50,27 @@ struct DigitalTwinView: View {
                 firstTimeTwinView
             } else {
                 VStack(spacing: 24) {
+                    HStack(alignment: .center) {
+                        Text("Your sky")
+                            .font(.system(size: 28, weight: .heavy, design: .rounded))
+                            .foregroundColor(themeManager.textColor)
+                        Spacer()
+                        Button { showInsights = true } label: {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(themeManager.goldText)
+                                .frame(width: 34, height: 34)
+                        }
+                        .accessibilityLabel("Insights")
+                        Button { showShare = true } label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundColor(themeManager.goldText)
+                                .frame(width: 34, height: 34)
+                        }
+                        .accessibilityLabel("Share your sky")
+                    }
+
                     // Digital Twin Orb Header
                     twinOrbHeader
 
@@ -96,31 +117,11 @@ struct DigitalTwinView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("Your sky")
+        // No system navigation bar: the screen draws "Your sky" itself, and the
+        // bar was reserving an empty band above it. Insights and Share move
+        // onto that same row.
+        .toolbar(.hidden, for: .navigationBar)
         .background { WarmBackground() }
-        // Insights is a SEGMENT of this tab (spec §3), not a fifth destination:
-        // it is a reading of the Twin rather than a peer of it.
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                HStack(spacing: 2) {
-                    Button { showInsights = true } label: {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(ThemeManager.shared.goldText)
-                            .frame(width: 44, height: 44)
-                    }
-                    .accessibilityLabel("Insights")
-
-                    Button { showShare = true } label: {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(ThemeManager.shared.goldText)
-                            .frame(width: 44, height: 44)
-                    }
-                    .accessibilityLabel("Share your sky")
-                }
-            }
-        }
         .sheet(isPresented: $showInsights) {
             NavigationStack { StatsView() }
         }
