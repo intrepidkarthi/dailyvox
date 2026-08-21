@@ -78,11 +78,18 @@ final class TodayAudioQueueTests: XCTestCase {
         try writeSilentClip("b.m4a")
         try writeSilentClip("c.m4a")
         // Two entries today, the first carrying two recordings.
+        //
+        // Anchored to the START OF TODAY rather than offset back from "now".
+        // `Date() - 3h` is yesterday whenever the clock reads before 03:00, so
+        // this test failed every night between midnight and 3am and passed every
+        // other hour — the worst kind of red, since it looks like whatever you
+        // happened to change that evening.
         let cal = Calendar.current
+        let startOfToday = cal.startOfDay(for: Date())
         let e1 = entry(daysAgo: 0, audio: ["a.m4a", "b.m4a"])
-        e1.date = cal.date(byAdding: .hour, value: -3, to: Date())
+        e1.date = startOfToday
         let e2 = entry(daysAgo: 0, audio: ["c.m4a"])
-        e2.date = Date()
+        e2.date = startOfToday.addingTimeInterval(60)
         try context.save()
 
         let urls = TodayAudioQueue.todayURLs(in: context)

@@ -10,6 +10,7 @@ import DailyVoxTwinEngine
 import CoreData
 
 struct StatsView: View {
+    @Environment(\.dvTheme) private var theme
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var goalManager = GoalManager.shared
@@ -68,6 +69,11 @@ struct StatsView: View {
                         bodyCorrelationsCard
                     }
 
+                    // B6: "Your Twin noticed ✦" — the list the spec puts at the
+                    // bottom of Insights, and the only part of this screen that
+                    // makes a claim rather than reporting a number.
+                    twinNoticedSection
+
                     // Stats Summary
                     statsSummaryCard
 
@@ -106,15 +112,15 @@ struct StatsView: View {
                     .fill(Color.accentColor.opacity(0.08))
                     .frame(width: 80, height: 80)
                 Image(systemName: "chart.bar.xaxis")
-                    .font(.system(size: 32))
+                    .font(.dv(size: 32))
                     .foregroundColor(.accentColor)
             }
 
             Text("Your patterns will appear here")
-                .font(.system(.headline, design: .rounded))
+                .font(.dv(.headline, design: .rounded))
 
             Text("Record a few entries and DailyVox will show streaks, mood trends, and gentle summaries of your writing.")
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -131,19 +137,19 @@ struct StatsView: View {
         VStack(spacing: 16) {
             HStack {
                 Image(systemName: "flame.fill")
-                    .font(.title2)
+                    .font(.dv(.title2))
                     .foregroundColor(DS.Palette.terracotta)
                 Text("Writing Streak")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.dv(.headline, design: .rounded))
                 Spacer()
             }
 
             HStack(alignment: .bottom, spacing: 4) {
                 Text("\(currentStreak)")
-                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .font(.dv(size: 48, weight: .bold, design: .rounded))
                     .foregroundColor(DS.Palette.terracotta)
                 Text(currentStreak == 1 ? "day" : "days")
-                    .font(.title3)
+                    .font(.dv(.title3))
                     .foregroundColor(.secondary)
                     .padding(.bottom, 8)
                 Spacer()
@@ -153,10 +159,10 @@ struct StatsView: View {
             HStack(spacing: 20) {
                 VStack(alignment: .leading) {
                     Text("Longest")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                     Text("\(longestStreak) days")
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                 }
 
                 Divider()
@@ -164,10 +170,10 @@ struct StatsView: View {
 
                 VStack(alignment: .leading) {
                     Text("This Month")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                     Text("\(entriesThisMonth) entries")
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                 }
 
                 Divider()
@@ -175,10 +181,10 @@ struct StatsView: View {
 
                 VStack(alignment: .leading) {
                     Text("Total")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                     Text("\(entries.count) entries")
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                 }
 
                 Spacer()
@@ -192,7 +198,7 @@ struct StatsView: View {
     private var weekActivityCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("This Week")
-                .font(.system(.headline, design: .rounded))
+                .font(.dv(.headline, design: .rounded))
 
             HStack(spacing: 8) {
                 ForEach(last7Days, id: \.self) { date in
@@ -204,12 +210,12 @@ struct StatsView: View {
                             .overlay {
                                 if hasEntry {
                                     Image(systemName: "checkmark")
-                                        .font(.caption.weight(.bold))
+                                        .font(.dv(.caption, weight: .bold))
                                         .foregroundColor(.white)
                                 }
                             }
                         Text(dayAbbreviation(date))
-                            .font(.caption2)
+                            .font(.dv(.caption2))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -219,27 +225,84 @@ struct StatsView: View {
         .dsCard()
     }
 
+    // MARK: - Your Twin noticed
+
+    @ViewBuilder
+    private var twinNoticedSection: some View {
+        let patterns = TwinPatterns.find(
+            Array(entries),
+            people: DigitalTwinEngine.shared.knowledgeGraph
+                .topNodes(ofType: .person, limit: 6)
+                .map(\.label)
+        )
+
+        VStack(alignment: .leading, spacing: 10) {
+            Text("YOUR TWIN NOTICED \u{2726}")
+                .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(1.2)
+                .foregroundColor(ThemeManager.shared.secondaryTextColor)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if patterns.isEmpty {
+                Text("Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.")
+                    .font(.dv(.subheadline))
+                    .foregroundColor(ThemeManager.shared.secondaryTextColor)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(ThemeManager.shared.cardBackgroundColor))
+            } else {
+                ForEach(patterns) { pattern in
+                    HStack(alignment: .top, spacing: 11) {
+                        // A tinted square with the four-point mark, matching
+                        // Android's list exactly — gold, because a pattern is
+                        // something the journal MADE.
+                        Text("\u{2726}")
+                            .font(.dv(size: 13, weight: .bold, design: .rounded))
+                            .foregroundColor(ThemeManager.shared.goldText)
+                            .frame(width: 28, height: 28)
+                            .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .fill(DS.Palette.gold.opacity(0.16)))
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(pattern.lead)
+                                .font(.dv(size: 14, weight: .bold, design: .rounded))
+                                .foregroundColor(ThemeManager.shared.textColor)
+                            Text(pattern.detail)
+                                .font(.dv(size: 13))
+                                .foregroundColor(ThemeManager.shared.secondaryTextColor)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    .padding(16)
+                    .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(ThemeManager.shared.cardBackgroundColor))
+                }
+            }
+        }
+    }
+
     // MARK: - Mood Trends Card
 
     private var moodTrendsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Mood Trends")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.dv(.headline, design: .rounded))
                 Spacer()
                 // §2.7's delta badge. Stated against the fortnight BEFORE, so it
                 // answers "compared to what" instead of leaving the reader to
                 // guess — a bare arrow is a mood ring, not a measurement.
                 if let d = moodDelta {
                     Text("\(d >= 0 ? "\u{25B2}" : "\u{25BC}") \(String(format: "%+.1f", d))")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .font(.dv(size: 11, weight: .bold, design: .rounded))
                         .foregroundColor(d >= 0 ? ThemeManager.shared.goldText : DS.Palette.coral)
                 }
             }
 
             if moodData.isEmpty {
                 Text("Record entries with moods to see trends")
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 20)
@@ -249,14 +312,14 @@ struct StatsView: View {
                     ForEach(topMoods, id: \.mood) { item in
                         VStack(spacing: 6) {
                             Image(systemName: item.mood.icon)
-                                .font(.system(.body).weight(.semibold))
+                                .font(.dv(.body, weight: .semibold))
                                 .foregroundColor(item.mood.color)
                                 .frame(width: 40, height: 40)
                                 .background(
                                     Circle().fill(item.mood.color.opacity(0.14))
                                 )
                             Text("\(item.count)")
-                                .font(.system(.title3, design: .rounded).weight(.bold))
+                                .font(.dv(.title3, design: .rounded, weight: .bold))
                                 .foregroundColor(item.mood.color)
                             Text(item.mood.displayName)
                                 .font(.dsCaption)
@@ -321,13 +384,13 @@ struct StatsView: View {
                 Image(systemName: "figure.mind.and.body")
                     .foregroundColor(DS.Palette.terracotta)
                 Text("Body & Mood")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.dv(.headline, design: .rounded))
             }
 
             ForEach(bodyInsights) { insight in
                 HStack(alignment: .top, spacing: DS.Space.md) {
                     Image(systemName: bodyInsightIcon(insight.kind))
-                        .font(.system(.subheadline).weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                         .foregroundColor(bodyInsightColor(insight.kind))
                         .frame(width: 38, height: 38)
                         .background(
@@ -459,7 +522,7 @@ struct StatsView: View {
     private var statsSummaryCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Writing Stats")
-                .font(.system(.headline, design: .rounded))
+                .font(.dv(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
                 StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: DS.Palette.sage)
@@ -483,13 +546,13 @@ struct StatsView: View {
                         Image(systemName: "sparkles")
                             .foregroundColor(DS.Palette.gold)
                         Text("AI Insights")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.dv(.headline, design: .rounded))
                     }
 
                     ForEach(insights.prefix(3)) { insight in
                         HStack(alignment: .top, spacing: DS.Space.md) {
                             Image(systemName: insight.icon)
-                                .font(.system(.subheadline).weight(.semibold))
+                                .font(.dv(.subheadline, weight: .semibold))
                                 .foregroundColor(colorFromName(insight.color))
                                 .frame(width: 38, height: 38)
                                 .background(
@@ -523,13 +586,13 @@ struct StatsView: View {
         return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "calendar")
-                    .foregroundColor(DS.Palette.sage)
+                    .foregroundColor(theme.accentColor)
                 Text("Weekly reflection")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.dv(.headline, design: .rounded))
             }
 
             Text(summary)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(.secondary)
         }
         .dsCard()
@@ -545,14 +608,14 @@ struct StatsView: View {
         return VStack(spacing: 16) {
             HStack {
                 Image(systemName: "target")
-                    .font(.title2)
-                    .foregroundColor(DS.Palette.sage)
+                    .font(.dv(.title2))
+                    .foregroundColor(theme.accentColor)
                 Text("Weekly Goal")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.dv(.headline, design: .rounded))
                 Spacer()
                 Text("\(count)/\(goalManager.weeklyTarget)")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundColor(DS.Palette.sage)
+                    .font(.dv(.subheadline, weight: .medium))
+                    .foregroundColor(theme.accentColor)
             }
 
             ZStack {
@@ -566,10 +629,10 @@ struct StatsView: View {
 
                 VStack(spacing: 2) {
                     Text("\(Int(progress * 100))%")
-                        .font(.title2.bold())
-                        .foregroundColor(DS.Palette.sage)
+                        .font(.dv(.title2, weight: .bold))
+                        .foregroundColor(theme.accentColor)
                     Text("\(remaining) days left")
-                        .font(.caption2)
+                        .font(.dv(.caption2))
                         .foregroundColor(.secondary)
                 }
             }
@@ -577,7 +640,7 @@ struct StatsView: View {
 
             if progress >= 1.0 {
                 Text("Goal reached! Great work this week.")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(DS.Palette.forest)
             }
         }
@@ -598,18 +661,18 @@ struct StatsView: View {
 
             VStack(spacing: 20) {
                 Image(systemName: "trophy.fill")
-                    .font(.system(size: 60))
+                    .font(.dv(size: 60))
                     .foregroundColor(DS.Palette.gold)
 
                 Text("Milestone!")
-                    .font(.largeTitle.bold())
+                    .font(.dv(.largeTitle, weight: .bold))
 
                 Text("\(days)-Day Streak")
-                    .font(.title2)
+                    .font(.dv(.title2))
                     .foregroundColor(DS.Palette.gold)
 
                 Text("You've journaled for \(days) consecutive days. Your dedication to self-reflection is paying off.")
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
@@ -619,7 +682,7 @@ struct StatsView: View {
                         showMilestone = nil
                     }
                 }
-                .font(.headline)
+                .font(.dv(.headline))
                 .padding(.horizontal, 32)
                 .padding(.vertical, 12)
                 .background(DS.Palette.sage)
@@ -819,7 +882,7 @@ struct StatItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Space.xs) {
             Image(systemName: icon)
-                .font(.system(.subheadline).weight(.semibold))
+                .font(.dv(.subheadline, weight: .semibold))
                 .foregroundColor(color)
                 .frame(width: 34, height: 34)
                 .background(
@@ -827,7 +890,7 @@ struct StatItem: View {
                         .fill(color.opacity(0.14))
                 )
             Text(value)
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(.dv(size: 26, weight: .bold, design: .rounded))
                 .foregroundColor(color)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

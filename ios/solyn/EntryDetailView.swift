@@ -15,6 +15,7 @@ import WidgetKit
 /// Detail view for a single diary entry.
 /// Allows viewing, editing text, setting mood, playing back audio, and attaching photos.
 struct EntryDetailView: View {
+    @Environment(\.dvTheme) private var theme
     @ObservedObject var entry: DiaryEntry
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -25,6 +26,9 @@ struct EntryDetailView: View {
     @State private var showMoodPicker = false
     @State private var isEditing = false
     @State private var showAIInsights = false
+    /// B4's "Ask about this" — opens the Twin already pointed at this entry.
+    @State private var askAboutThis = false
+    @State private var showShareSheet = false
     @State private var aiAnalysis: AIAnalysisResult?
 
     // Photo state
@@ -55,11 +59,49 @@ struct EntryDetailView: View {
                         .padding(.horizontal)
                         .padding(.top, 8)
 
-                    // Audio players — one per recording made that day (multi-recording aware)
-                    ForEach(localAudioURLs(), id: \.self) { url in
-                        AudioPlayerView(audioURL: url)
-                            .padding(.horizontal)
-                            .padding(.top, 4)
+                    // Audio, in ONE surface however many recordings a day holds.
+                    //
+                    // Each player draws its own card, so a day with two takes
+                    // rendered two identical full-width cards with two shadows —
+                    // which reads as a duplicate bug rather than as "you spoke
+                    // twice". Grouped, with a count when it is more than one,
+                    // they read as this entry's audio.
+                    let urls = localAudioURLs()
+                    if !urls.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            if urls.count > 1 {
+                                Text("\(urls.count) RECORDINGS")
+                                    .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                                    .tracking(1.2)
+                                    .foregroundColor(theme.secondaryTextColor)
+                                    .padding(.horizontal, 4)
+                            }
+                            ForEach(urls, id: \.self) { url in
+                                AudioPlayerView(audioURL: url)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                    } else if hasRecordedAudio {
+                        // The entry HAS a recording, just not on this device —
+                        // it arrived over iCloud sync and the audio stayed home.
+                        //
+                        // This state used to live in the metadata card, which was
+                        // removed for being mostly administrivia. Taking the
+                        // indicator with it meant a synced entry showed nothing
+                        // about its audio at all, which reads as the recording
+                        // having been lost.
+                        HStack(spacing: 8) {
+                            Image(systemName: "icloud")
+                                .font(.dv(size: 12, weight: .semibold))
+                            Text("AUDIO STAYED ON THE PHONE THAT RECORDED IT")
+                                .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                                .tracking(1.0)
+                        }
+                        .foregroundColor(theme.secondaryTextColor)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .padding(.top, 10)
                     }
 
                     // Photo section
@@ -68,30 +110,11 @@ struct EntryDetailView: View {
                         .padding(.horizontal)
                         .padding(.top, 4)
 
-                    // Life area tags
-                    if let text = entry.text, !text.isEmpty {
-                        let areas = detectLifeAreas(from: text)
-                        if !areas.isEmpty {
-                            HStack(spacing: 8) {
-                                ForEach(areas, id: \.self) { area in
-                                    HStack(spacing: 4) {
-                                        Image(systemName: area.icon)
-                                            .font(.caption2)
-                                        Text(area.rawValue)
-                                            .font(.caption2.weight(.medium))
-                                    }
-                                    .foregroundColor(area.color)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 5)
-                                    .background(area.color.opacity(0.1))
-                                    .clipShape(Capsule())
-                                }
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal)
-                            .padding(.top, 4)
-                        }
-                    }
+                    // The life-area chip ("Work") used to float on its own
+                    // between the audio and the transcript — one lone capsule in
+                    // its own band of the page, belonging to nothing. It is a
+                    // fact the machine derived, so it belongs where the other
+                    // derived facts are: the Twin ledger, as a TOPICS row.
 
                     // Main content area
                     if isEditing {
@@ -99,9 +122,27 @@ struct EntryDetailView: View {
                     } else {
                         readingView
 
-                        if !text.isEmpty {
-                            aiInsightsSection
-                        }
+                        // The ledger goes directly under the transcript it is a
+                        // receipt for — B4's order, and the only order where the
+                        // gold underlines above and the rows below read as the
+                        // same statement.
+                        twinFiledSection
+
+                        // No "AI Insights" card. It was a second name for what
+                        // "What your Twin filed" already says — the machine's
+                        // reading of this entry — and "AI" is the category this
+                        // product defines itself against. Two names on one screen
+                        // teach people the Twin is a skin over something generic.
+                        // The section's code stays; nothing composes it.
+
+                        entryActions
+
+                        // The floating tab bar overlays every screen in the
+                        // ZStack, pushed detail views included — so without this
+                        // the two actions at the foot of an entry sat UNDER it
+                        // and could not be pressed at all.
+                        Color.clear
+                            .frame(height: DailyVoxTabBar.reservedHeight)
                     }
                 }
             }
@@ -119,18 +160,24 @@ struct EntryDetailView: View {
         }
         .navigationTitle(formattedShortDate)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheetView().appThemedSheet()
+        }
+        .sheet(isPresented: $askAboutThis) {
+            NavigationStack {
+                TwinChatView(seedQuestion: seedQuestion)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 16) {
-                    Button(action: toggleStar) {
-                        Image(systemName: entry.isStarred ? "star.fill" : "star")
-                            .foregroundColor(entry.isStarred ? .yellow : .secondary)
-                    }
-
-                    Button(action: { isEditing.toggle() }) {
-                        Text(isEditing ? "Done" : "Edit")
-                    }
+                // The star alone. Edit moved to the action row at the foot of
+                // the entry (B4), which also splits two unrelated actions that
+                // were sharing one pill.
+                Button(action: toggleStar) {
+                    Image(systemName: entry.isStarred ? "star.fill" : "star")
+                        .foregroundColor(entry.isStarred ? DS.Palette.gold : theme.secondaryTextColor)
                 }
+                .accessibilityLabel(entry.isStarred ? "Unstar this entry" : "Star this entry")
             }
         }
         .onDisappear(perform: saveIfNeeded)
@@ -152,78 +199,49 @@ struct EntryDetailView: View {
 
     // MARK: - Header Card
 
+    /// B4 puts the entry's facts as a MONO LINE under the date, not in a card.
+    ///
+    /// The card repeated the navigation title ("Aug 21" above "Friday, August
+    /// 21, 2026"), then spent a full surface on a timestamp and a word count.
+    /// On a screen whose job is to show you what you said, the first thing you
+    /// met was a box of administrivia.
     private var headerCard: some View {
-        VStack(spacing: 12) {
-            // Date and time
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(formattedFullDate)
-                        .font(.system(.subheadline, design: .rounded).weight(.medium))
-                    if let updatedAt = entry.updatedAt {
-                        Text("Updated \(formattedTime(updatedAt))")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                Spacer()
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(entryMetaLine)
+                .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                .tracking(1.2)
+                .foregroundColor(theme.secondaryTextColor)
 
-                // Mood badge
-                Button(action: { showMoodPicker = true }) {
-                    if selectedMood == .none {
-                        Label("Add mood", systemImage: "plus.circle")
-                            .font(.caption)
-                            .foregroundColor(.accentColor)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(Color.accentColor.opacity(0.1))
-                            .clipShape(Capsule())
-                    } else {
-                        HStack(spacing: 6) {
-                            Image(systemName: selectedMood.icon)
-                                .font(.caption)
-                            Text(selectedMood.displayName)
-                                .font(.caption)
-                        }
+            Spacer(minLength: 0)
+
+            // Mood stays: it is the one thing here you can still change.
+            Button { showMoodPicker = true } label: {
+                if selectedMood == .none {
+                    Text("ADD MOOD")
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .tracking(1.1)
+                        .foregroundColor(theme.accentColor)
+                } else {
+                    Text(selectedMood.displayName.uppercased())
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .tracking(1.1)
                         .foregroundColor(selectedMood.color)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(selectedMood.color.opacity(0.15))
-                        .clipShape(Capsule())
-                    }
-                }
-                .buttonStyle(.plain)
-            }
-
-            // Stats row
-            HStack(spacing: 20) {
-                Label("\(wordCount) words", systemImage: "text.word.spacing")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
-                if let duration = entry.value(forKey: "duration") as? Double, duration > 0 {
-                    Label(formattedDuration(duration), systemImage: "waveform")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                // Audio playback or "on other device" note
-                if audioOnOtherDevice {
-                    // Audio exists but on another device
-                    HStack(spacing: 4) {
-                        Image(systemName: "icloud")
-                            .font(.caption)
-                        Text("Audio on original device")
-                            .font(.caption2)
-                    }
-                    .foregroundColor(.secondary)
                 }
             }
+            .buttonStyle(.plain)
+            .frame(minHeight: 44)
         }
-        .padding()
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+
+    /// "5:28 PM · 0:04 · 17 WORDS"
+    private var entryMetaLine: String {
+        var parts: [String] = []
+        if let updatedAt = entry.updatedAt { parts.append(formattedTime(updatedAt).uppercased()) }
+        let seconds = Int(entry.duration.rounded())
+        if seconds > 0 { parts.append(String(format: "%d:%02d", seconds / 60, seconds % 60)) }
+        let words = text.split { $0.isWhitespace || $0.isNewline }.count
+        if words > 0 { parts.append("\(words) WORDS") }
+        return parts.joined(separator: " \u{00B7} ")
     }
 
     // MARK: - Reading View
@@ -240,7 +258,7 @@ struct EntryDetailView: View {
                         ProgressView()
                             .scaleEffect(1.2)
                         Text("Transcribing your recording...")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(.secondary)
                     }
                     .frame(maxWidth: .infinity)
@@ -248,22 +266,26 @@ struct EntryDetailView: View {
                 } else {
                     VStack(spacing: 12) {
                         Image(systemName: "text.cursor")
-                            .font(.system(size: 32))
+                            .font(.dv(size: 32))
                             .foregroundColor(.secondary.opacity(0.5))
                         Text("No text yet")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(.secondary)
                         Button("Add text") {
                             isEditing = true
                         }
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 60)
                 }
             } else {
-                Text(text)
-                    .font(.body)
+                // B4: the entities the Twin found are underlined in gold, in
+                // place. It is the cheapest possible proof that something read
+                // this — the ledger below says WHAT was filed, the underline
+                // says WHERE it came from.
+                Text(underlined(text))
+                    .font(.dv(.body))
                     .lineSpacing(5)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -282,6 +304,219 @@ struct EntryDetailView: View {
         }
     }
 
+    /// What "Ask about this" actually asks.
+    ///
+    /// Dated rather than quoted: the retrieval path already finds the entry from
+    /// its date, and pasting the transcript into the question would make the
+    /// answer echo the entry back instead of relating it to the rest.
+    private var seedQuestion: String {
+        let when = formattedShortDate
+        if let subject = filedEntities.first?.label {
+            return "What do my entries say about \(subject), around \(when)?"
+        }
+        return "What was going on for me around \(when)?"
+    }
+
+    // MARK: - Entity underlining
+
+    /// Names the knowledge graph already knows, marked up where they appear.
+    ///
+    /// Matched against the graph rather than re-detected here: the graph has
+    /// already decided what counts as a person or a place, and a second opinion
+    /// in the view would underline things the Twin never filed — which would
+    /// make the ledger below look wrong when it is right.
+    private func underlined(_ source: String) -> AttributedString {
+        var attributed = AttributedString(source)
+        let labels = filedEntities.map(\.label)
+        guard !labels.isEmpty else { return attributed }
+
+        for label in labels where !label.isEmpty {
+            var searchRange = attributed.startIndex..<attributed.endIndex
+            while let found = attributed[searchRange].range(of: label, options: [.caseInsensitive]) {
+                attributed[found].underlineStyle = .single
+                attributed[found].underlineColor = UIColor(DS.Palette.gold)
+                attributed[found].foregroundColor = UIColor(ThemeManager.shared.goldText)
+                guard found.upperBound < attributed.endIndex else { break }
+                searchRange = found.upperBound..<attributed.endIndex
+            }
+        }
+        return attributed
+    }
+
+    /// Graph nodes whose label actually occurs in this entry.
+    private var filedEntities: [PersonalKnowledgeGraph.KnowledgeNode] {
+        let haystack = text.lowercased()
+        guard !haystack.isEmpty else { return [] }
+        return DigitalTwinEngine.shared.knowledgeGraph
+            .topNodes(ofType: .person, limit: 40)
+            .filter { haystack.contains($0.label.lowercased()) }
+    }
+
+    private var filedPlaces: [PersonalKnowledgeGraph.KnowledgeNode] {
+        let haystack = text.lowercased()
+        guard !haystack.isEmpty else { return [] }
+        return DigitalTwinEngine.shared.knowledgeGraph
+            .topNodes(ofType: .place, limit: 20)
+            .filter { haystack.contains($0.label.lowercased()) }
+    }
+
+    // MARK: - What your Twin filed (B4)
+
+    /// The ledger.
+    ///
+    /// Not a summary and not an interpretation — a receipt. Every row is
+    /// something the Twin took from this entry and will use later, stated in the
+    /// same words it stored. If a row here is wrong, the user can see it is
+    /// wrong, which is the only way an on-device model earns any trust at all.
+    @ViewBuilder
+    private var twinFiledSection: some View {
+        let people = filedEntities
+        let places = filedPlaces
+        let words = text.split(whereSeparator: \.isWhitespace).count
+        let pace: String? = {
+            let seconds = entry.duration
+            guard seconds > 5, words > 0 else { return nil }
+            let wpm = Double(words) / (Double(seconds) / 60)
+            guard wpm.isFinite, wpm > 20, wpm < 400 else { return nil }
+            return "\(Int(wpm.rounded())) words a minute"
+        }()
+
+        // Shown only when the Twin actually filed something. With nothing
+        // detected it rendered a full card whose single row read "MOOD not set"
+        // — a heading, a surface and a shadow to tell you nothing happened.
+        let hasAnything = selectedMood != .none || !people.isEmpty || !places.isEmpty
+            || bodyLine != nil || pace != nil || !detectLifeAreas(from: text).isEmpty
+
+        if !text.isEmpty && hasAnything {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("WHAT YOUR TWIN FILED \u{2726}")
+                    .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.2)
+                    .foregroundColor(ThemeManager.shared.secondaryTextColor)
+
+                // B4's rows, in B4's order: MOOD, PLACES, BODY, PACE. People
+                // fold into PLACES' line when there are any — the canvas lists
+                // what was in the entry, not which detector found it.
+                filedRow("Mood", moodLine)
+                let named = (people + places).map(\.label)
+                if !named.isEmpty {
+                    filedRow("Places", named.joined(separator: " \u{00B7} "))
+                }
+                if let body = bodyLine {
+                    filedRow("Body", body)
+                }
+                if let pace {
+                    filedRow("Pace", pace)
+                }
+                // Topics, where the floating "Work" chip went.
+                let areas = detectLifeAreas(from: text)
+                if !areas.isEmpty {
+                    filedRow("Topics", areas.map(\.rawValue).joined(separator: " \u{00B7} "))
+                }
+
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+        }
+    }
+
+    /// Mood the way the canvas writes it: the word and the number together.
+    private var moodLine: String {
+        guard selectedMood != .none else { return "not set" }
+        let v = (Double(selectedMood.moodValue) - 3.0) / 2.0
+        return String(format: "%@ %+.1f", selectedMood.displayName, v)
+    }
+
+    /// Body context for the day this entry was spoken, if any was kept.
+    private var bodyLine: String? {
+        guard let date = entry.date else { return nil }
+        let day = Calendar.current.startOfDay(for: date)
+        let kept = KeptSnapshotStore.shared.loadAll().first {
+            Calendar.current.startOfDay(for: $0.keptAt) == day
+        }
+        guard let hours = kept?.snapshot.sleepHours else { return nil }
+        let h = Int(hours)
+        let m = Int((hours - Double(h)) * 60)
+        return String(format: "%dh%02d sleep the night before", h, m)
+    }
+
+    /// B4's two actions, as a row at the foot of the entry.
+    ///
+    /// Edit used to live in the navigation bar sharing a pill with the star —
+    /// two unrelated actions in one container — and Ask-about-this was a chip
+    /// inside the ledger. The canvas gives them equal weight at the bottom,
+    /// which is where you are once you have finished reading.
+    private var entryActions: some View {
+        HStack(spacing: 10) {
+            Button { isEditing = true } label: {
+                Text("Edit")
+                    .font(.dv(size: 15, weight: .bold, design: .rounded))
+                    .foregroundColor(theme.textColor)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .background(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .stroke(theme.textColor.opacity(0.18), lineWidth: 1)
+                    )
+            }
+            .buttonStyle(.plain)
+
+            Button { askAboutThis = true } label: {
+                HStack(spacing: 6) {
+                    Text("\u{2726}")
+                    Text("Ask about this")
+                }
+                .font(.dv(size: 15, weight: .bold, design: .rounded))
+                .foregroundColor(theme.isNight ? DS.Palette.navy : .white)
+                .frame(maxWidth: .infinity, minHeight: 48)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(theme.accentColor)
+                )
+            }
+            .buttonStyle(.plain)
+
+            // Share, where the thing worth sharing is.
+            //
+            // §F is the whole marketing thesis — "the app that can't post is the
+            // app worth posting about" — and it was reachable from exactly one
+            // place: a 34pt unlabelled glyph in the corner of the Twin tab.
+            // An entry you have just read is the most likely moment anyone ever
+            // wants to make a card.
+            Button { showShareSheet = true } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.dv(size: 16, weight: .semibold))
+                    .foregroundColor(theme.goldText)
+                    .frame(width: 52, height: 48)
+                    .background(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(DS.Palette.gold.opacity(0.16))
+                    )
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Share this entry")
+        }
+        .padding(.horizontal)
+        .padding(.top, 16)
+    }
+
+    private func filedRow(_ label: String, _ value: String) -> some View {
+        HStack(alignment: .top) {
+            Text(label.uppercased())
+                .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                .tracking(1.0)
+                .foregroundColor(ThemeManager.shared.secondaryTextColor)
+                .frame(width: 62, alignment: .leading)
+            Text(value)
+                .font(.dv(size: 13.5))
+                .foregroundColor(ThemeManager.shared.textColor)
+            Spacer(minLength: 0)
+        }
+    }
+
     // MARK: - AI Insights Section
     
     private var aiInsightsSection: some View {
@@ -296,12 +531,12 @@ struct EntryDetailView: View {
             }) {
                 HStack {
                     Image(systemName: "brain.head.profile")
-                        .foregroundColor(DS.Palette.sage)
+                        .foregroundColor(theme.accentColor)
                     Text("AI Insights")
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                     Spacer()
                     Image(systemName: showAIInsights ? "chevron.up" : "chevron.down")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
                 .padding()
@@ -316,16 +551,16 @@ struct EntryDetailView: View {
                     HStack(spacing: 16) {
                         VStack(spacing: 4) {
                             Image(systemName: analysis.dominantEmotion.emoji)
-                                .font(.title)
+                                .font(.dv(.title))
                             Text(analysis.dominantEmotion.rawValue.capitalized)
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                         }
                         .frame(width: 70)
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Sentiment")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
@@ -339,7 +574,7 @@ struct EntryDetailView: View {
                             .frame(height: 8)
                             
                             Text(analysis.sentiment > 0.2 ? "Positive" : (analysis.sentiment < -0.2 ? "Negative" : "Neutral"))
-                                .font(.caption2)
+                                .font(.dv(.caption2))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -349,13 +584,13 @@ struct EntryDetailView: View {
                     // Intent
                     HStack {
                         Image(systemName: "quote.bubble")
-                            .foregroundColor(DS.Palette.sage)
+                            .foregroundColor(theme.accentColor)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Intent")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                             Text(analysis.intent.description)
-                                .font(.subheadline)
+                                .font(.dv(.subheadline))
                         }
                     }
                     
@@ -363,13 +598,13 @@ struct EntryDetailView: View {
                     if !analysis.topics.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Topics")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                             
                             FlowLayout(spacing: 6) {
                                 ForEach(analysis.topics.prefix(5), id: \.self) { topic in
                                     Text(topic)
-                                        .font(.caption2)
+                                        .font(.dv(.caption2))
                                         .padding(.horizontal, 8)
                                         .padding(.vertical, 4)
                                         .background(DS.Palette.sage.opacity(0.1))
@@ -383,13 +618,13 @@ struct EntryDetailView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 4) {
                             Image(systemName: "bubble.left.fill")
-                                .font(.caption)
+                                .font(.dv(.caption))
                             Text("Reflection")
                         }
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                         Text(analysis.suggestedResponse)
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                             .italic()
                     }
@@ -413,7 +648,7 @@ struct EntryDetailView: View {
     private var editingView: some View {
         VStack(spacing: 0) {
             TextEditor(text: $text)
-                .font(.body)
+                .font(.dv(.body))
                 .lineSpacing(6)
                 .focused($isTextFocused)
                 .scrollContentBackground(.hidden)
@@ -428,7 +663,7 @@ struct EntryDetailView: View {
             if isTextFocused {
                 HStack {
                     Text("\(wordCount) words · \(characterCount) chars")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
 
                     Spacer()
@@ -437,7 +672,7 @@ struct EntryDetailView: View {
                         isTextFocused = false
                         isEditing = false
                     }
-                    .font(.subheadline.weight(.medium))
+                    .font(.dv(.subheadline, weight: .medium))
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
@@ -471,7 +706,7 @@ struct EntryDetailView: View {
                                     removePhoto(at: index)
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
-                                        .font(.system(.title3))
+                                        .font(.dv(.title3))
                                         .foregroundStyle(.white, .red)
                                 }
                                 .offset(x: 6, y: -6)
@@ -493,9 +728,9 @@ struct EntryDetailView: View {
             ) {
                 HStack(spacing: 6) {
                     Image(systemName: "photo.badge.plus")
-                        .font(.caption)
+                        .font(.dv(.caption))
                     Text(photoFileNames.isEmpty ? "Add Photos" : "Add More")
-                        .font(.caption.weight(.medium))
+                        .font(.dv(.caption, weight: .medium))
                 }
                 .foregroundColor(.accentColor)
                 .padding(.horizontal, 10)
@@ -507,7 +742,7 @@ struct EntryDetailView: View {
 
             if !photoFileNames.isEmpty {
                 Text("Photos stay on this device")
-                    .font(.caption2)
+                    .font(.dv(.caption2))
                     .foregroundColor(.secondary)
             }
         }
@@ -629,6 +864,11 @@ struct EntryDetailView: View {
     }
 
     /// Local URLs for the recordings that actually exist on this device.
+    /// True when the entry names a recording, whether or not this device has it.
+    private var hasRecordedAudio: Bool {
+        !audioFileNamesList().isEmpty
+    }
+
     private func localAudioURLs() -> [URL] {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let recordingsDir = base.appendingPathComponent("Recordings", isDirectory: true)
@@ -738,7 +978,7 @@ struct MoodPickerSheet: View {
                     }) {
                         HStack(spacing: 12) {
                             Image(systemName: "circle.dashed")
-                                .font(.title3)
+                                .font(.dv(.title3))
                                 .foregroundColor(.secondary)
                                 .frame(width: 28)
                             Text("No mood")
@@ -761,7 +1001,7 @@ struct MoodPickerSheet: View {
                         }) {
                             HStack(spacing: 12) {
                                 Image(systemName: mood.icon)
-                                    .font(.title3)
+                                    .font(.dv(.title3))
                                     .foregroundColor(mood.color)
                                     .frame(width: 28)
                                 Text(mood.displayName)

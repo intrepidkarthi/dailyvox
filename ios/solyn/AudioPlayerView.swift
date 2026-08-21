@@ -89,46 +89,96 @@ final class AudioPlaybackController: NSObject, ObservableObject, AVAudioPlayerDe
 // MARK: - Audio Player View
 
 struct AudioPlayerView: View {
+    @Environment(\.dvTheme) private var theme
     let audioURL: URL
+
+    private static let barCount = 26
+
+    /// A fixed, plausible waveform rather than a decoded one.
+    ///
+    /// Reading the real envelope means decoding every clip on every appearance;
+    /// the bars exist to make the track scrubbable and to say "this is a voice",
+    /// and a stable shape does both without the cost. Deterministic, so a clip
+    /// looks the same every time you open it.
+    private static func barHeight(_ i: Int) -> CGFloat {
+        let a = Foundation.sin(Double(i) * 1.7) * 0.5 + 0.5
+        let b = Foundation.sin(Double(i) * 0.6 + 1.1) * 0.5 + 0.5
+        return 6 + CGFloat(a * 0.6 + b * 0.4) * 18
+    }
 
     @StateObject private var controller = AudioPlaybackController()
     @State private var loadError: String?
 
     var body: some View {
-        // Compact single-row player: play · scrubber · tap-to-cycle speed.
-        HStack(spacing: DS.Space.sm) {
+        // B4's player: a NAVY card with a gold play disc, a waveform track and
+        // the elapsed time. It was a light card with a green circle, a system
+        // Slider and a speed pill — an iOS media control sitting inside a design
+        // that draws its own.
+        //
+        // Navy in BOTH themes, like the sky and the recording dial: playing your
+        // own voice back is a night moment wherever it happens.
+        HStack(spacing: 14) {
             Button {
                 controller.togglePlayback()
                 HapticManager.shared.buttonTap()
             } label: {
-                Image(systemName: controller.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                    .font(.system(size: 34))
-                    .foregroundColor(DS.Palette.sage)
-            }
-            .buttonStyle(.plain)
-
-            VStack(spacing: 3) {
-                Slider(
-                    value: Binding(
-                        get: { controller.currentTime },
-                        set: { controller.seek(to: $0) }
-                    ),
-                    in: 0...max(0.01, controller.duration)
-                )
-                .tint(DS.Palette.sage)
-
-                HStack {
-                    Text(formatTime(controller.currentTime))
-                        .font(.caption2.monospacedDigit())
-                        .foregroundColor(DS.Palette.inkMute)
-                    Spacer()
-                    Text(formatTime(controller.duration))
-                        .font(.caption2.monospacedDigit())
-                        .foregroundColor(DS.Palette.inkMute)
+                ZStack {
+                    Circle()
+                        .fill(DS.Palette.gold)
+                        .frame(width: 44, height: 44)
+                    if controller.isPlaying {
+                        HStack(spacing: 4) {
+                            ForEach(0..<2, id: \.self) { _ in
+                                RoundedRectangle(cornerRadius: 1.5)
+                                    .fill(DS.Palette.navy)
+                                    .frame(width: 4, height: 15)
+                            }
+                        }
+                    } else {
+                        PlayTriangle()
+                            .fill(DS.Palette.navy)
+                            .frame(width: 14, height: 16)
+                            .offset(x: 1)
+                    }
                 }
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel(controller.isPlaying ? "Pause" : "Play")
 
-            // Speed — one pill that cycles 0.5x … 2x on tap (was a 6-chip row)
+            // The waveform IS the scrubber. Bars fill gold as the audio passes
+            // them; dragging seeks.
+            GeometryReader { geo in
+                let progress = controller.duration > 0
+                    ? controller.currentTime / controller.duration : 0
+                HStack(spacing: 3) {
+                    ForEach(0..<Self.barCount, id: \.self) { i in
+                        let lit = Double(i) / Double(Self.barCount) <= progress
+                        Capsule()
+                            .fill(lit ? DS.Palette.gold
+                                      : DS.Palette.navyText.opacity(0.22))
+                            .frame(height: Self.barHeight(i))
+                    }
+                }
+                .frame(maxHeight: .infinity, alignment: .center)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 0).onChanged { value in
+                        let fraction = min(max(value.location.x / geo.size.width, 0), 1)
+                        controller.seek(to: fraction * controller.duration)
+                    }
+                )
+            }
+            .frame(height: 30)
+
+            Text(formatTime(controller.isPlaying || controller.currentTime > 0
+                            ? controller.currentTime : controller.duration))
+                .font(.dv(size: 12, weight: .semibold, design: .monospaced))
+                .foregroundColor(DS.Palette.navyText.opacity(0.7))
+                .monospacedDigit()
+
+            // Speed stays — it is genuinely useful on a long entry — but as a
+            // quiet mono label rather than a tinted pill competing with the play
+            // button for the eye.
             Button {
                 let opts = AudioPlaybackController.speedOptions
                 let idx = opts.firstIndex(of: controller.playbackRate) ?? opts.firstIndex(of: 1.0) ?? 0
@@ -136,23 +186,20 @@ struct AudioPlayerView: View {
                 HapticManager.shared.selectionChanged()
             } label: {
                 Text(speedLabel(controller.playbackRate))
-                    .font(.caption.weight(.semibold).monospacedDigit())
-                    .foregroundColor(DS.Palette.sageDeep)
-                    .frame(minWidth: 38)
-                    .padding(.vertical, 7)
-                    .padding(.horizontal, 4)
-                    .background(Capsule().fill(DS.Palette.sage.opacity(0.14)))
+                    .font(.dv(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundColor(DS.Palette.goldNight)
+                    .frame(minWidth: 34, minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Playback speed \(speedLabel(controller.playbackRate))")
         }
-        .padding(.vertical, DS.Space.sm)
-        .padding(.horizontal, DS.Space.md)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 14)
         .background(
-            RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                .fill(ThemeManager.shared.warmCardBackground)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(DS.Palette.navySurface)
         )
-        .dsShadowSoft()
         .onAppear {
             do {
                 try controller.load(url: audioURL)
@@ -163,7 +210,7 @@ struct AudioPlayerView: View {
         .overlay {
             if let error = loadError {
                 Text(error)
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(DS.Palette.coral)
             }
         }
@@ -179,5 +226,19 @@ struct AudioPlayerView: View {
         if speed == 1.0 { return "1x" }
         if speed == floor(speed) { return "\(Int(speed))x" }
         return String(format: "%.1fx", speed).replacingOccurrences(of: ".0x", with: "x")
+    }
+}
+
+
+/// The play glyph, drawn — SF's `play.fill` sits optically off-centre inside a
+/// circle and no amount of offset fixes it at every size.
+private struct PlayTriangle: Shape {
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        p.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        p.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
+        p.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+        p.closeSubpath()
+        return p
     }
 }

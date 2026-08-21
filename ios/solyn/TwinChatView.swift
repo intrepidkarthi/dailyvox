@@ -38,6 +38,13 @@ struct TwinChatMessage: Identifiable {
 // MARK: - Twin Chat View
 
 struct TwinChatView: View {
+    /// A question to ask on open, from B4's "Ask about this".
+    ///
+    /// The chat is the same chat either way — seeding it just means the user
+    /// arrives at an answer instead of at an empty box, which is the entire
+    /// argument for the suggestion chips too.
+    var seedQuestion: String? = nil
+
     @ObservedObject private var themeManager = ThemeManager.shared
     @ObservedObject private var brain = TwinBrainManager.shared
     @ObservedObject private var twinVoice = TwinVoiceService.shared
@@ -113,18 +120,19 @@ struct TwinChatView: View {
         // reservedHeight: this content is already inside the safe area, and the
         // larger value counted the home-indicator strip twice — that was the
         // band of dead space above the bar.
-        .padding(.bottom, DailyVoxTabBar.barHeight)
+        .dailyVoxDockedBarClearance()
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear { askSeedIfNeeded() }
         .safeAreaInset(edge: .top) {
             // §2.6's subtitle. It is a claim the user can check — airplane mode,
             // and the answers still arrive — so it belongs on the screen making
             // the claim rather than buried in Settings.
             VStack(alignment: .leading, spacing: 2) {
                 Text("Ask your Twin")
-                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 28, weight: .heavy, design: .rounded))
                     .foregroundColor(themeManager.textColor)
                 Text("ANSWERS WITH RECEIPTS \u{00B7} 0 NETWORK CALLS")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.dv(size: 10, weight: .semibold, design: .monospaced))
                     .tracking(0.8)
                     .foregroundColor(themeManager.secondaryTextColor)
             }
@@ -173,18 +181,18 @@ struct TwinChatView: View {
                     .frame(width: 80, height: 80)
 
                 Image(systemName: "person.crop.circle.fill")
-                    .font(.system(size: 30))
+                    .font(.dv(size: 30))
                     .foregroundStyle(.white)
             }
 
             Text("Ask me anything about your journal")
-                .font(.headline)
+                .font(.dv(.headline))
                 .foregroundColor(themeManager.textColor)
 
             Text(brain.isActive
                  ? "Ask in your own words, or tap a question below. Answers come from your entries, on this device — and show which entries they drew from."
                  : "Ask in your own words and I'll surface the closest entries from your journal, or tap a question below. Everything stays on this iPhone.")
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -205,7 +213,7 @@ struct TwinChatView: View {
 
             VStack(alignment: message.isUser ? .trailing : .leading, spacing: 4) {
                 Text(message.text)
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(message.isUser ? .white : themeManager.textColor)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
@@ -248,7 +256,7 @@ struct TwinChatView: View {
                 Image(systemName: speakingThis ? "stop.circle.fill" : "speaker.wave.2.fill")
                 Text(speakingThis ? "Stop" : "Read aloud")
             }
-            .font(.caption2)
+            .font(.dv(.caption2))
             .foregroundColor(themeManager.secondaryTextColor)
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
@@ -276,7 +284,7 @@ struct TwinChatView: View {
                 .frame(width: 28, height: 28)
 
             Image(systemName: "person.crop.circle.fill")
-                .font(.system(.caption))
+                .font(.dv(.caption))
                 .foregroundStyle(.white)
         }
     }
@@ -289,7 +297,7 @@ struct TwinChatView: View {
                 ProgressView()
                     .controlSize(.small)
                 Text("Thinking…")
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
             .padding(.horizontal, 14)
@@ -306,20 +314,34 @@ struct TwinChatView: View {
 
     private func citationRow(for citations: [TwinChatEvidence]) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("From your journal")
-                .font(.caption2)
+            Text("FROM YOUR ENTRIES")
+                .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                .tracking(1.1)
                 .foregroundColor(themeManager.secondaryTextColor)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
+                    // The solid count chip that leads the row in B5. It is the
+                    // claim the whole screen is making — an answer with a number
+                    // of receipts behind it — so it is stated once, filled,
+                    // rather than left for the reader to count the chips.
+                    Text("\(citations.count) CITED \u{2726}")
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .tracking(0.8)
+                        .foregroundColor(themeManager.isNight ? DS.Palette.navy : Color.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(themeManager.goldText))
+                        .accessibilityLabel("\(citations.count) entries cited")
+
                     ForEach(citations) { citation in
                         Button {
                             citationEntry = entry(for: citation.entryId)
                         } label: {
                             HStack(spacing: 4) {
                                 Image(systemName: "book.closed.fill")
-                                    .font(.system(.caption2))
+                                    .font(.dv(.caption2))
                                 Text("\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%")
-                                    .font(.caption2)
+                                    .font(.dv(.caption2))
                             }
                             .foregroundColor(themeManager.accentColor)
                             .padding(.horizontal, 8)
@@ -341,7 +363,7 @@ struct TwinChatView: View {
     private var inputBar: some View {
         HStack(spacing: 10) {
             TextField("Ask your twin anything…", text: $inputText, axis: .vertical)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .lineLimit(1...4)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
@@ -355,7 +377,7 @@ struct TwinChatView: View {
                 sendFreeText()
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
-                    .font(.system(size: 30))
+                    .font(.dv(size: 30))
                     .foregroundColor(canSend ? themeManager.accentColor : themeManager.secondaryTextColor.opacity(0.4))
             }
             .disabled(!canSend)
@@ -373,7 +395,7 @@ struct TwinChatView: View {
         Text(brain.status == .modelNotReady
              ? "Classic mode — Apple Intelligence is still preparing the on-device model."
              : "Classic mode — turn on Apple Intelligence in Settings for conversational answers.")
-            .font(.caption2)
+            .font(.dv(.caption2))
             .foregroundColor(themeManager.secondaryTextColor)
             .padding(.top, 6)
     }
@@ -384,7 +406,7 @@ struct TwinChatView: View {
         VStack(spacing: 8) {
             if !brain.isActive && availableQuestions.isEmpty {
                 Text("You've asked all the questions! Tap any to ask again.")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .padding(.top, 8)
             }
@@ -398,9 +420,9 @@ struct TwinChatView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: "arrow.turn.down.right")
-                                    .font(.system(.caption2))
+                                    .font(.dv(.caption2))
                                 Text(followUp)
-                                    .font(.caption)
+                                    .font(.dv(.caption))
                                     .lineLimit(1)
                             }
                             .foregroundColor(themeManager.accentColor)
@@ -423,9 +445,9 @@ struct TwinChatView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: question.icon)
-                                    .font(.system(.caption2))
+                                    .font(.dv(.caption2))
                                 Text(question.rawValue)
-                                    .font(.caption)
+                                    .font(.dv(.caption))
                                     .lineLimit(1)
                             }
                             .foregroundColor(askedQuestions.contains(question)
@@ -469,6 +491,13 @@ struct TwinChatView: View {
         let unasked = TwinQuestion.allCases.filter { !askedQuestions.contains($0) }
         let asked = TwinQuestion.allCases.filter { askedQuestions.contains($0) }
         return unasked + asked
+    }
+
+    /// Runs once. `messages.isEmpty` rather than a flag, because the sheet is
+    /// rebuilt on every presentation and a `@State` bool would survive it.
+    private func askSeedIfNeeded() {
+        guard let seedQuestion, messages.isEmpty else { return }
+        send(text: seedQuestion)
     }
 
     private func askQuestion(_ question: TwinQuestion) {

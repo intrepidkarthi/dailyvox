@@ -59,8 +59,14 @@ struct OnboardingView: View {
             Group {
                 switch screen {
                 case 0:
-                    InviteScreen(demo: demo) { advance() }
+                    // B1. It goes FIRST because it is the only claim the user
+                    // can check independently, and checking it costs one swipe
+                    // down and a tap. Everything after this is easier to believe
+                    // once someone has watched the app work in airplane mode.
+                    LedgerScreen { advance() }
                 case 1:
+                    InviteScreen(demo: demo) { advance() }
+                case 2:
                     SpeakScreen(demo: demo) { entry in
                         firstEntry = entry
                         transcript = entry.transcript
@@ -116,6 +122,124 @@ struct OnboardingView: View {
 
 // MARK: - Beat 1: Invite
 
+/// B1 — the permission ledger and the airplane-mode proof.
+///
+/// The original iOS onboarding opened with "Your sky starts with your voice",
+/// which is the promise. This is the evidence, and the design package is blunt
+/// about which one was missing: the airplane-mode proof is called "the site's
+/// strongest argument, currently absent from the app" (§8.1 of the brief).
+///
+/// The row that carries the whole thing is INTERNET · NOT REQUESTED. Android can
+/// say it structurally — the app holds no INTERNET permission at all — and iOS
+/// cannot make that exact claim while CloudKit is linked for optional sync, so
+/// the wording here is what is true on this platform: nothing is sent to
+/// DailyVox, because there is no DailyVox server. Overclaiming on the one screen
+/// whose job is to be checkable would be the worst possible place to do it.
+private struct LedgerScreen: View {
+    let onNext: () -> Void
+
+    @State private var appear = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Spacer(minLength: 40)
+
+            Text("01 / 04 \u{00B7} PERMISSION")
+                .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(1.4)
+                .foregroundColor(OB.inkMute)
+
+            Spacer().frame(height: 16)
+
+            Text("Nothing you say\nleaves this phone.")
+                .font(.dv(size: 30, weight: .heavy, design: .rounded))
+                .foregroundColor(OB.ink)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer().frame(height: 14)
+
+            Text("Your voice is transcribed by this iPhone. No account, no analytics, and no DailyVox server — there isn't one to send anything to.")
+                .font(.dv(size: 15))
+                .lineSpacing(4)
+                .foregroundColor(OB.inkDim)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer().frame(height: 26)
+
+            VStack(spacing: 8) {
+                LedgerRow(label: "Microphone", state: "REQUIRED", dot: OB.gold)
+                LedgerRow(label: "Speech recognition", state: "ON DEVICE", dot: OB.sage)
+                LedgerRow(label: "Apple Health", state: "OPTIONAL", dot: OB.inkMute)
+                LedgerRow(label: "Sent to DailyVox", state: "NOTHING, EVER", dot: OB.sage)
+            }
+
+            Spacer().frame(height: 20)
+
+            // The proof card. Navy on cream, per B1 — it is the one dark object
+            // on the screen because it is the one thing being pointed at.
+            HStack(alignment: .top, spacing: 13) {
+                ZStack {
+                    Circle().fill(OB.gold.opacity(0.18)).frame(width: 38, height: 38)
+                    Image(systemName: "airplane")
+                        .font(.dv(size: 15, weight: .bold))
+                        .foregroundColor(OB.gold)
+                }
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Try it in airplane mode")
+                        .font(.dv(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(DS.Palette.navyText)
+                    Text("Turn the radios off before you speak your first entry. Everything still works — the transcript, the mood, the star. That is the whole product, demonstrated in ten seconds.")
+                        .font(.dv(size: 13))
+                        .lineSpacing(3)
+                        .foregroundColor(DS.Palette.navyText.opacity(0.72))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(DS.Palette.navy))
+
+            Spacer(minLength: 28)
+
+            // One green CTA. B1 has exactly one thing to do.
+            PrimaryButton(title: "Speak your first star", filled: true, action: onNext)
+
+            Spacer().frame(height: 22)
+        }
+        .padding(.horizontal, 26)
+        .opacity(appear ? 1 : 0)
+        .offset(y: appear ? 0 : 12)
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.5)) { appear = true }
+        }
+    }
+}
+
+private struct LedgerRow: View {
+    let label: String
+    let state: String
+    let dot: Color
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Circle().fill(dot).frame(width: 8, height: 8)
+            Text(label)
+                .font(.dv(size: 15))
+                .foregroundColor(OB.ink)
+            Spacer(minLength: 8)
+            Text(state)
+                .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                .tracking(1.1)
+                .foregroundColor(OB.inkDim)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(OB.card))
+    }
+}
+
 private struct InviteScreen: View {
     let demo: Bool
     let onBegin: () -> Void
@@ -128,20 +252,20 @@ private struct InviteScreen: View {
                 Circle().fill(OB.gold.opacity(appear ? 0.14 : 0)).frame(width: 140, height: 140)
                 Circle().fill(OB.gold.opacity(appear ? 0.22 : 0)).frame(width: 84, height: 84)
                 Image(systemName: "waveform")
-                    .font(.system(size: 34, weight: .semibold))
+                    .font(.dv(size: 34, weight: .semibold))
                     .foregroundColor(OB.gold)
             }
             .scaleEffect(appear ? 1 : 0.7)
 
             VStack(spacing: 14) {
                 Text("Your sky starts\nwith your voice")
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
+                    .font(.dv(size: 36, weight: .bold, design: .rounded))
                     .tracking(-0.5)
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("No forms, no sign-up. Just talk about\nyour day — and watch your voice become\nthe first star in a sky only you can see.")
-                    .font(.system(.callout, design: .rounded).weight(.regular))
+                    .font(.dv(.callout, design: .rounded, weight: .regular))
                     .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
                     .lineSpacing(5)
@@ -207,12 +331,12 @@ private struct SpeakScreen: View {
 
             VStack(spacing: 10) {
                 Text(headline)
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .font(.dv(size: 30, weight: .bold, design: .rounded))
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(subhead)
-                    .font(.system(.subheadline, design: .rounded).weight(.regular))
+                    .font(.dv(.subheadline, design: .rounded, weight: .regular))
                     .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
             }
@@ -276,14 +400,14 @@ private struct SpeakScreen: View {
                                                      startPoint: .top, endPoint: .bottom))
                             .frame(width: 76, height: 76)
                             .shadow(color: OB.sage.opacity(0.35), radius: 14, y: 6)
-                        Image(systemName: "mic.fill").font(.system(size: 28, weight: .semibold))
+                        Image(systemName: "mic.fill").font(.dv(size: 28, weight: .semibold))
                             .foregroundColor(.white)
                     }
                 }
-                Text("Tap to speak").font(.system(.footnote, design: .rounded).weight(.medium))
+                Text("Tap to speak").font(.dv(.footnote, design: .rounded, weight: .medium))
                     .foregroundColor(OB.inkMute)
                 Button("I can't talk right now") { typing = true }
-                    .font(.system(.footnote, design: .rounded).weight(.medium))
+                    .font(.dv(.footnote, design: .rounded, weight: .medium))
                     .foregroundColor(OB.sage)
                     .padding(.top, 2)
             }
@@ -292,7 +416,7 @@ private struct SpeakScreen: View {
                 HStack(spacing: 8) {
                     Circle().fill(OB.forest).frame(width: 8, height: 8)
                     Text("Done · \(Int(elapsed))s")
-                        .font(.system(.callout, design: .rounded).weight(.semibold))
+                        .font(.dv(.callout, design: .rounded, weight: .semibold))
                 }
                 .foregroundColor(.white)
                 .padding(.vertical, 15).padding(.horizontal, 34)
@@ -301,7 +425,7 @@ private struct SpeakScreen: View {
         case .processing:
             HStack(spacing: 10) {
                 ProgressView().tint(OB.sage)
-                Text("finding your words…").font(.system(.subheadline, design: .rounded))
+                Text("finding your words…").font(.dv(.subheadline, design: .rounded))
                     .foregroundColor(OB.inkMute)
             }
         case .born:
@@ -390,23 +514,23 @@ private struct TypeFirstEntryView: View {
                 Button("Cancel", action: onCancel).foregroundColor(OB.inkMute)
                 Spacer()
                 Text("Your first star")
-                    .font(.system(.subheadline, design: .rounded).weight(.semibold)).foregroundColor(OB.ink)
+                    .font(.dv(.subheadline, design: .rounded, weight: .semibold)).foregroundColor(OB.ink)
                 Spacer()
                 Button("Save", action: onSave)
                     .fontWeight(.semibold)
                     .foregroundColor(isEmpty ? OB.inkMute : OB.sage)
                     .disabled(isEmpty)
             }
-            .font(.system(.subheadline, design: .rounded))
+            .font(.dv(.subheadline, design: .rounded))
             .padding()
 
             Text("How was your day, really?")
-                .font(.system(.title2, design: .rounded).weight(.bold))
+                .font(.dv(.title2, design: .rounded, weight: .bold))
                 .foregroundColor(OB.ink)
                 .padding(.top, 4)
 
             TextEditor(text: $text)
-                .font(.system(.body, design: .rounded))
+                .font(.dv(.body, design: .rounded))
                 .foregroundColor(OB.ink)
                 .scrollContentBackground(.hidden)
                 .padding(12)
@@ -418,7 +542,7 @@ private struct TypeFirstEntryView: View {
                 .focused($focused)
 
             Text("Stored only on your phone.")
-                .font(.system(.caption, design: .rounded)).foregroundColor(OB.inkMute)
+                .font(.dv(.caption, design: .rounded)).foregroundColor(OB.inkMute)
 
             Spacer()
         }
@@ -551,12 +675,12 @@ private struct ClaimScreen: View {
 
             VStack(spacing: 16) {
                 Text("That star is yours.")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(.dv(size: 32, weight: .bold, design: .rounded))
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
 
                 Text("“\(words)”")
-                    .font(.system(.callout, design: .rounded).weight(.medium))
+                    .font(.dv(.callout, design: .rounded, weight: .medium))
                     .italic()
                     .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
@@ -569,7 +693,7 @@ private struct ClaimScreen: View {
                     .padding(.horizontal, 26)
 
                 Text("It lives on your phone — nowhere else.\nSpeak again tomorrow, and your sky grows.")
-                    .font(.system(.subheadline, design: .rounded).weight(.regular))
+                    .font(.dv(.subheadline, design: .rounded, weight: .regular))
                     .foregroundColor(OB.inkDim)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -586,14 +710,14 @@ private struct ClaimScreen: View {
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: remindDaily ? "checkmark.circle.fill" : "circle")
-                        .font(.system(.title2))
+                        .font(.dv(.title2))
                         .foregroundColor(remindDaily ? OB.sage : OB.inkDim.opacity(0.45))
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Remind me each evening")
-                            .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                            .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                             .foregroundColor(OB.ink)
                         Text("One nudge at \(reminderTimeText). Change it any time in Settings.")
-                            .font(.system(.footnote, design: .rounded).weight(.regular))
+                            .font(.dv(.footnote, design: .rounded, weight: .regular))
                             .foregroundColor(OB.inkDim)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -632,7 +756,7 @@ private struct PrimaryButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(.body, design: .rounded).weight(.semibold))
+                .font(.dv(.body, design: .rounded, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
@@ -693,10 +817,10 @@ struct PrivacyBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: "lock.shield.fill")
-                .font(compact ? .caption : .subheadline)
+                .font(compact ? .dv(.caption) : .dv(.subheadline))
                 .foregroundColor(DS.Palette.forest)
             if !compact {
-                Text("100% Private").font(.caption.weight(.medium)).foregroundColor(.secondary)
+                Text("100% Private").font(.dv(.caption, weight: .medium)).foregroundColor(.secondary)
             }
         }
         .padding(.horizontal, compact ? 8 : 12).padding(.vertical, compact ? 4 : 6)
@@ -709,7 +833,7 @@ struct OfflineIndicator: View {
     var body: some View {
         HStack(spacing: 4) {
             Circle().fill(DS.Palette.forest).frame(width: 6, height: 6)
-            Text("Offline").font(.caption2.weight(.medium)).foregroundColor(.secondary)
+            Text("Offline").font(.dv(.caption2, weight: .medium)).foregroundColor(.secondary)
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
         .background(Color(.tertiarySystemBackground)).clipShape(Capsule())

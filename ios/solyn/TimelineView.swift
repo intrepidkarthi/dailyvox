@@ -81,10 +81,31 @@ func detectLifeAreas(from text: String) -> [LifeArea] {
 
 /// Displays all diary entries grouped by month.
 /// Supports search, starred filter, mood filter, date range, and pull-to-refresh.
+/// B3's four filter chips: All · People · Mood · Body.
+///
+/// The screen already had filters — starred, a mood picker, a date range — but
+/// not THESE, and the difference is not cosmetic. The spec's four are the four
+/// dimensions the Twin files against, so the chips double as a statement of what
+/// it is paying attention to. Mood-by-mood pickers answer "show me the sad
+/// ones"; these answer "show me the ones with people in".
+enum JournalFilter: String, CaseIterable, Identifiable {
+    case all = "All"
+    case people = "People"
+    case mood = "Mood"
+    case body = "Body"
+
+    var id: String { rawValue }
+}
+
 struct TimelineView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var theme = ThemeManager.shared
+    @Environment(\.dailyVoxKeyboardVisible) private var keyboardVisible
+    @State private var showShareSheet = false
+    /// Search is opened, not always present.
+    @State private var showSearch = false
+    @FocusState private var searchFocused: Bool
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: false)],
@@ -100,6 +121,7 @@ struct TimelineView: View {
     @State private var showStarredOnly: Bool = false
     @State private var showFilters: Bool = false
     @State private var selectedMoodFilter: Mood? = nil
+    @State private var journalFilter: JournalFilter = .all
     @State private var startDate: Date? = nil
     @State private var endDate: Date? = nil
     @State private var isListening: Bool = false
@@ -127,9 +149,9 @@ struct TimelineView: View {
             } label: {
                 HStack(spacing: 5) {
                     Image(systemName: todayQueue.isPlaying ? "stop.fill" : "play.fill")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.dv(size: 10, weight: .bold))
                     Text(label)
-                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                        .font(.dv(size: 12, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(.white)
                 .padding(.horizontal, 12)
@@ -148,10 +170,17 @@ struct TimelineView: View {
                               action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(tint ?? DS.Palette.sage)
-                .frame(width: 30, height: 30)
+                .font(.dv(size: 16, weight: .semibold))
+                // `theme.accentColor`, not a pinned `sage`. Forest green on navy
+                // is the exact combination §1 says has no presence — these three
+                // icons were nearly invisible at night — and the grammar's own
+                // exception covers it: at night gold is the actor.
+                .foregroundColor(tint ?? theme.accentColor)
+                // 30pt was under the 44pt floor, on the same row as the title.
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(label)
     }
 
@@ -167,7 +196,7 @@ struct TimelineView: View {
             // between "Journal" and the first entry.
             HStack(spacing: 10) {
                 Text("Journal")
-                    .font(.system(size: 28, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 28, weight: .heavy, design: .rounded))
                     .foregroundColor(theme.textColor)
                 Spacer(minLength: 6)
                 playTodayPill
@@ -176,13 +205,27 @@ struct TimelineView: View {
                 // journal you cannot search is a worse trade than a tall title.
                 // EditButton is the one casualty — swipe-to-delete still works
                 // via .onDelete, so nothing became unreachable.
-                headerAction("sparkle.magnifyingglass", "Search by meaning") {
-                    showSemanticSearch = true
+                headerAction(showSearch ? "magnifyingglass.circle.fill" : "magnifyingglass",
+                             showSearch ? "Close search" : "Search what you meant") {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
+                        showSearch.toggle()
+                    }
+                    if !showSearch { searchText = "" }
+                    searchFocused = showSearch
+                    HapticManager.shared.buttonTap()
                 }
-                headerAction(isListening ? "mic.fill" : "mic", "Voice search",
-                             tint: isListening ? theme.recordingColor : nil) {
-                    toggleVoiceSearch()
+                // §F reaches the Journal as well. Three surfaces now offer a
+                // card — an entry, the sky, and the timeline — instead of one
+                // corner of one tab.
+                headerAction("square.and.arrow.up", "Share a card") {
+                    showShareSheet = true
                 }
+                // Kept always visible. Hiding it unless a filter was already
+                // on would have made mood and date filters unreachable — the
+                // chips filter, they do not open anything — and losing function
+                // to save one glyph is a bad trade. The duplication worth fixing
+                // is that Mood should open the mood row itself; that is a real
+                // change, not a deletion.
                 headerAction(hasActiveFilters
                              ? "line.3.horizontal.decrease.circle.fill"
                              : "line.3.horizontal.decrease.circle", "Filters") {
@@ -194,10 +237,41 @@ struct TimelineView: View {
             .padding(.top, 4)
             .padding(.bottom, 6)
 
-            // Quick filter chips (when search is empty)
-            if searchText.isEmpty && !showFilters {
-                quickFilterChips
+            // On demand. You browse constantly and search occasionally, so the
+            // field earned its permanent band only while it was also teaching
+            // the feature.
+            //
+            // The teaching still happens, in the one place it has to: the
+            // placeholder still reads "Describe it — search what you meant", so
+            // opening search explains itself the first time. What is NOT
+            // repeated is the earlier mistake — the glyph that opens this is
+            // labelled for VoiceOver and there is no second, competing search
+            // anywhere in the app.
+            if searchIsActive {
+                searchField
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
+
+            // No chip row.
+            //
+            // All / People / Mood / Body was the least-used band on the screen
+            // and it duplicated the field above it with less precision — typing
+            // a name beats tapping People and then scanning. "All" gave it away:
+            // a control whose job is to represent the absence of a control.
+            //
+            // Filtering still exists, through the glyph in the header, which is
+            // where an occasional action belongs. `specFilterChips` is kept
+            // below in case this is worth reversing.
+
+            // The entity chip row is gone. It was a SECOND filter bar directly
+            // under the first — six names at the same visual weight as All /
+            // People / Mood / Body, with nothing to say they were a different
+            // kind of thing. Title, search field, two chip rows and a month
+            // header meant a third of the screen went by before a word of
+            // journal.
+            //
+            // Nothing is lost: each chip only typed its own label into the
+            // search box, and the search box is now a field you can type in.
 
             // Filter bar (when active)
             if showFilters {
@@ -214,29 +288,39 @@ struct TimelineView: View {
                 ForEach(sections, id: \.key) { section in
                     let key = section.key
                     let sectionEntries = section.entries
-                    Section(header: HStack(alignment: .firstTextBaseline) {
-                            Text(sectionTitle(for: key))
-                                .font(.dsTitle2)
-                                .foregroundColor(theme.textColor)
-                                .textCase(nil)
-                            Spacer()
-                            Text(sectionSummary(for: sectionEntries))
-                                .font(.dsCaption)
+                    // A quiet mono rule, not a headline with statistics beside
+                    // it. The canvas has no month headers at all; they earn
+                    // their place on a journal this long, but as a divider you
+                    // scan past — not a second title competing with "Journal"
+                    // and a per-month word count nobody asked for.
+                    Section(header:
+                            Text(sectionTitle(for: key).uppercased())
+                                .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                                .tracking(1.3)
                                 .foregroundColor(theme.secondaryTextColor)
                                 .textCase(nil)
-                        }
-                        .padding(.top, DS.Space.xs)
+                                .padding(.top, DS.Space.xs)
                         ) {
                             ForEach(sectionEntries) { entry in
-                                NavigationLink {
-                                    EntryDetailView(entry: entry)
-                                } label: {
+                                // ZStack + opacity-0 link rather than a plain
+                                // NavigationLink: in a List a NavigationLink
+                                // draws a disclosure chevron on every row, and
+                                // the canvas has none. A chevron on every entry
+                                // of a journal is 137 arrows telling you what
+                                // tapping already tells you.
+                                ZStack {
+                                    NavigationLink {
+                                        EntryDetailView(entry: entry)
+                                    } label: { EmptyView() }
+                                        .opacity(0)
+
                                     EntryRowView(
                                         entry: entry,
                                         searchText: searchText,
                                         dateString: entryDateString(entry)
                                     )
                                 }
+                                .listRowSeparator(.hidden)
                             }
                             .onDelete { indexSet in
                                 delete(entries: sectionEntries, at: indexSet)
@@ -254,7 +338,7 @@ struct TimelineView: View {
                 // row the list can actually scroll to — otherwise the last
                 // entry stays permanently under the pill.
                 Color.clear
-                    .frame(height: DailyVoxTabBar.reservedHeight)
+                    .frame(height: keyboardVisible ? 0 : DailyVoxTabBar.reservedHeight)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
             }
@@ -264,7 +348,12 @@ struct TimelineView: View {
             .contentMargins(.top, DS.Space.xs, for: .scrollContent)
             .background { WarmBackground().ignoresSafeArea() }
         }
-        .searchable(text: $searchText, prompt: "Search entries")
+        // `.searchable` is gone — it was the SECOND search on this screen, and
+        // the one that got the discoverable position while meaning-search hid
+        // behind an icon. `searchField` above is now the only one.
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheetView().appThemedSheet()
+        }
         .sheet(isPresented: $showSemanticSearch) {
             SemanticSearchView()
         }
@@ -322,6 +411,7 @@ struct TimelineView: View {
         }
         .background { WarmBackground() }
         .toolbar(.hidden, for: .navigationBar)
+        .dailyVoxStatusBarScrim()
         .onAppear { todayDuration = TodayAudioQueue.todayDuration(in: viewContext) }
         .onDisappear { todayQueue.stop() }
         #if os(iOS)
@@ -378,9 +468,9 @@ struct TimelineView: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Image(systemName: node.type == .person ? "person.fill" : "tag.fill")
-                                        .font(.caption2)
+                                        .font(.dv(.caption2))
                                     Text(node.label)
-                                        .font(.caption)
+                                        .font(.dv(.caption))
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 6)
@@ -401,13 +491,137 @@ struct TimelineView: View {
 
     // MARK: - Filter Bar
 
+    private var searchField: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .font(.dv(size: 15, weight: .semibold))
+                .foregroundColor(theme.secondaryTextColor)
+
+            TextField("", text: $searchText, prompt:
+                Text("Describe it — search what you meant")
+                    .foregroundColor(theme.secondaryTextColor)
+            )
+            .font(.dv(size: 15))
+            .foregroundColor(theme.textColor)
+            .focused($searchFocused)
+            .submitLabel(.search)
+            .onSubmit { if !searchText.isEmpty { showSemanticSearch = true } }
+
+            if !searchText.isEmpty {
+                Button {
+                    searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.dv(size: 15))
+                        .foregroundColor(theme.secondaryTextColor)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Clear search")
+            }
+
+            // Voice search lives IN the field now. It was a separate header
+            // glyph competing with two others; here it is obviously part of the
+            // thing it fills in.
+            Button { toggleVoiceSearch() } label: {
+                Image(systemName: isListening ? "mic.fill" : "mic")
+                    .font(.dv(size: 15, weight: .semibold))
+                    .foregroundColor(isListening ? theme.recordingColor : theme.accentColor)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Search by voice")
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 4)
+        // 44, not 48. It was sized as the first of two stacked bands; alone
+        // above the entries it can sit closer to the title.
+        .frame(minHeight: 44)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(theme.warmSubtleFill)
+        )
+        .padding(.horizontal)
+    }
+
+    private var specFilterChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 7) {
+                ForEach(JournalFilter.allCases) { filter in
+                    let on = journalFilter == filter
+                    Button {
+                        withAnimation(.spring(response: 0.28, dampingFraction: 0.85)) {
+                            journalFilter = filter
+                        }
+                        HapticManager.shared.selectionChanged()
+                    } label: {
+                        Text(filter.rawValue)
+                            .font(.dv(size: 11.5, weight: on ? .heavy : .bold, design: .rounded))
+                            // Green tint, per §1: these select, they do not
+                            // reward, so gold would be the wrong colour.
+                            .foregroundColor(on
+                                ? (theme.isNight ? DS.Palette.navy : Color.white)
+                                : theme.secondaryTextColor)
+                            .padding(.horizontal, 13)
+                            .padding(.vertical, 8)
+                            .frame(minHeight: 34)
+                            .background(
+                                Capsule().fill(on
+                                    ? theme.accentColor
+                                    : theme.warmSubtleFill)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(on ? [.isSelected, .isButton] : .isButton)
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+
+    /// People the graph knows, lowercased once rather than per entry.
+    private var knownPeople: [String] {
+        DigitalTwinEngine.shared.knowledgeGraph
+            .topNodes(ofType: .person, limit: 40)
+            .map { $0.label.lowercased() }
+            .filter { !$0.isEmpty }
+    }
+
+    /// Days on which the user kept a body snapshot. Matching by CALENDAR DAY
+    /// rather than by id: body signals are a property of the day an entry was
+    /// spoken, and they are captured on their own schedule, not per entry.
+    private var bodyDays: Set<Date> {
+        Set(KeptSnapshotStore.shared.loadAll().map {
+            Calendar.current.startOfDay(for: $0.keptAt)
+        })
+    }
+
+    private func matchesJournalFilter(_ entry: DiaryEntry) -> Bool {
+        switch journalFilter {
+        case .all:
+            return true
+        case .people:
+            let text = (entry.text ?? "").lowercased()
+            guard !text.isEmpty else { return false }
+            return knownPeople.contains { text.contains($0) }
+        case .mood:
+            let mood = entry.value(forKey: "mood") as? String ?? ""
+            return !mood.isEmpty && mood != Mood.none.rawValue
+        case .body:
+            guard let date = entry.date else { return false }
+            return bodyDays.contains(Calendar.current.startOfDay(for: date))
+        }
+    }
+
     private var filterBar: some View {
         VStack(spacing: 12) {
             // Mood filter
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     Text("Mood:")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                     
                     ForEach(Mood.allCases.filter { $0 != .none }, id: \.self) { mood in
@@ -425,7 +639,7 @@ struct TimelineView: View {
                                 Image(systemName: mood.icon)
                                 Text(mood.rawValue)
                             }
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
                             .background(selectedMoodFilter == mood ? mood.color.opacity(0.2) : Color(.tertiarySystemFill))
@@ -453,7 +667,7 @@ struct TimelineView: View {
                         }
                         HapticManager.shared.buttonTap()
                     }
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(DS.Palette.coral)
                 }
             }
@@ -496,7 +710,7 @@ struct TimelineView: View {
                     Button("Clear All") {
                         clearAllFilters()
                     }
-                    .font(.caption.weight(.medium))
+                    .font(.dv(.caption, weight: .medium))
                     .foregroundColor(DS.Palette.coral)
                     .padding(.leading, 8)
                 }
@@ -512,18 +726,18 @@ struct TimelineView: View {
     private var emptySearchState: some View {
         VStack(spacing: 16) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 40))
+                .font(.dv(size: 40))
                 .foregroundColor(.secondary.opacity(0.5))
             
             Text("No entries found")
-                .font(.headline)
+                .font(.dv(.headline))
                 .foregroundColor(.secondary)
             
             if hasActiveFilters {
                 Button("Clear Filters") {
                     clearAllFilters()
                 }
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(.accentColor)
             }
         }
@@ -577,10 +791,17 @@ struct TimelineView: View {
         let month: Int
     }
 
+    /// Search stays open while a query is live, so a filtered list can never be
+    /// showing results with nothing on screen to say why.
+    private var searchIsActive: Bool { showSearch || !searchText.isEmpty }
+
     private var filteredEntries: [DiaryEntry] {
         entries.filter { entry in
             guard let entryDate = entry.date else { return false }
             
+            // B3's chips first — they are the coarse cut.
+            if !matchesJournalFilter(entry) { return false }
+
             // Starred filter
             if showStarredOnly && !entry.isStarred { return false }
             
@@ -712,6 +933,37 @@ struct EntryRowView: View {
     private var inkPrimary: Color { theme.textColor }
     private var inkMuted: Color   { theme.secondaryTextColor }
 
+    /// "TONIGHT · 2M 05 · 58 WORDS".
+    ///
+    /// Relative where relative is more useful than exact — you know what today
+    /// was — and it carries the DURATION, which the row never showed. In a voice
+    /// journal how long you spoke is a fact about the entry, not metadata.
+    private var metaLine: String {
+        var parts: [String] = [relativeDay]
+        if entry.duration > 0 {
+            let total = Int(entry.duration.rounded())
+            parts.append(total >= 60
+                         ? String(format: "%dM %02d", total / 60, total % 60)
+                         : "0:\(String(format: "%02d", total))")
+        }
+        if wordCount > 0 { parts.append("\(wordCount) WORDS") }
+        return parts.joined(separator: " \u{00B7} ")
+    }
+
+    private var relativeDay: String {
+        guard let date = entry.date else { return dateString.uppercased() }
+        let cal = Calendar.current
+        if cal.isDateInToday(date) { return "TONIGHT" }
+        if cal.isDateInYesterday(date) { return "YESTERDAY" }
+        // Within the last week, the weekday alone locates it.
+        if let days = cal.dateComponents([.day], from: cal.startOfDay(for: date),
+                                         to: cal.startOfDay(for: Date())).day, days < 7 {
+            let f = DateFormatter(); f.dateFormat = "EEE"
+            return f.string(from: date).uppercased()
+        }
+        return dateString.uppercased()
+    }
+
     private var wordCount: Int {
         guard let text = entry.text, !text.isEmpty else { return 0 }
         return text.split { $0.isWhitespace || $0.isNewline }.count
@@ -733,33 +985,27 @@ struct EntryRowView: View {
     var body: some View {
         HStack(spacing: DS.Space.md) {
             // Mood accent — scan your journal by feeling
-            RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+            // A hairline. At 4pt against a white card it read as a border on
+            // every row; its job is to be noticed while scanning, not while
+            // reading.
+            RoundedRectangle(cornerRadius: 1.5, style: .continuous)
                 .fill(moodColor)
-                .frame(width: 4)
+                .frame(width: 3)
 
             VStack(alignment: .leading, spacing: 5) {
+                // B3's meta line: one DM Mono run, uppercase and tracked —
+                // "TONIGHT · 2M 05 · 58 WORDS". It was body-size mixed type with
+                // a coloured mood glyph in the middle of it, which read as a
+                // sentence rather than as data.
                 HStack(spacing: 6) {
-                    Text(dateString)
-                        .font(.dsCaption)
+                    Text(metaLine)
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .tracking(1.1)
                         .foregroundColor(inkMuted)
-
-                    if let moodString = entry.value(forKey: "mood") as? String,
-                       let mood = Mood(rawValue: moodString),
-                       mood != .none {
-                        Image(systemName: mood.icon)
-                            .font(.system(.caption2).weight(.semibold))
-                            .foregroundColor(mood.color)
-                    }
-
-                    if wordCount > 0 {
-                        Text("\(wordCount) words")
-                            .font(.dsCaption2)
-                            .foregroundColor(inkMuted.opacity(0.8))
-                    }
 
                     if hasPhotos {
                         Image(systemName: "photo")
-                            .font(.system(.caption2))
+                            .font(.dv(.caption2))
                             .foregroundColor(inkMuted.opacity(0.8))
                     }
                 }
@@ -798,9 +1044,13 @@ struct EntryRowView: View {
             }
             Spacer(minLength: 0)
             if entry.isStarred {
-                Image(systemName: "star.fill")
+                // The app's four-point mark, not SF's five-point rating star —
+                // "gold ✦ = starred" is the spec's own wording, and it is the
+                // same glyph the sky and the share cards draw.
+                Text("\u{2726}")
+                    .font(.dv(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(DS.Palette.gold)
-                    .font(.system(.footnote))
+                    .accessibilityLabel("Starred")
             }
         }
         .padding(.vertical, DS.Space.xs)
@@ -847,9 +1097,9 @@ struct FilterChip: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.caption2)
+                .font(.dv(.caption2))
             Text(label)
-                .font(.caption)
+                .font(.dv(.caption))
             Button {
                 withAnimation {
                     onRemove()
@@ -857,7 +1107,7 @@ struct FilterChip: View {
                 HapticManager.shared.buttonTap()
             } label: {
                 Image(systemName: "xmark.circle.fill")
-                    .font(.caption)
+                    .font(.dv(.caption))
             }
         }
         .padding(.horizontal, 10)
@@ -884,13 +1134,13 @@ struct DateRangeButton: View {
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "calendar")
-                    .font(.caption)
+                    .font(.dv(.caption))
                 if let date = date {
                     Text("\(title): \(formatDate(date))")
-                        .font(.caption)
+                        .font(.dv(.caption))
                 } else {
                     Text(title)
-                        .font(.caption)
+                        .font(.dv(.caption))
                 }
             }
             .padding(.horizontal, 12)

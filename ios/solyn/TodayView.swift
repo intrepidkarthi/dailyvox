@@ -30,6 +30,50 @@ enum RecordingState {
 
 /// Main view for recording and viewing today's diary entry.
 /// Provides voice recording with real-time audio level visualization.
+
+/// Everything the record screen has to hear from outside itself.
+///
+/// Bundled into one modifier because four chained observers on top of an already
+/// long chain tipped `body` past the type-checker's budget — the failure that
+/// reports as "unable to type-check this expression in reasonable time" and
+/// names a line that is not the problem.
+///
+/// The sources are the Dynamic Island's two buttons, the audio session's
+/// interruptions, and the tab bar, which needs to get out of the way.
+private struct RecordingSignals: ViewModifier {
+    let isRecording: Bool
+    let onFinish: () -> Void
+    let onDiscard: () -> Void
+    let onInterrupted: (Bool) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            // The floating tab bar hides while the dial is up. It already
+            // listens for this; nothing was posting it from the iOS record path.
+            .onChange(of: isRecording) { _, recording in
+                NotificationCenter.default.post(name: .dailyVoxRecordingChanged,
+                                                object: recording)
+            }
+            // §E state ③'s Finish and Discard. The intents run in this process
+            // while the app is backgrounded, so they are the same two actions as
+            // the dial's, reached without unlocking.
+            .onReceive(NotificationCenter.default.publisher(for: .dailyVoxFinishRecording)) { _ in
+                guard isRecording else { return }
+                onFinish()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .dailyVoxDiscardRecording)) { _ in
+                guard isRecording else { return }
+                onDiscard()
+            }
+            // A call or an alarm paused us. Show it as paused rather than
+            // leaving a dial that looks live over a microphone the system has
+            // taken away.
+            .onReceive(NotificationCenter.default.publisher(for: .dailyVoxRecordingInterrupted)) { note in
+                onInterrupted((note.object as? Bool) ?? false)
+            }
+    }
+}
+
 struct TodayView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -47,6 +91,9 @@ struct TodayView: View {
     @State private var showFirstEntryMoment: Bool = false
     @State private var firstTimePulse: Bool = false
     @State private var recordingRingPulse: Bool = false
+    /// B2b. True between Pause and Resume — the recording is open but not
+    /// listening, which is a third state the screen never had.
+    @State private var isPaused = false
 
     // Research pilot: optional post-recording self-label picker (Settings → Research).
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
@@ -75,11 +122,49 @@ struct TodayView: View {
         todayEntries.first
     }
 
+    /// B2b: recording gets the whole screen. Handing off entirely rather than
+    /// morphing the idle layout around it — the same decision the Android build
+    /// made, and for the same reason.
+    ///
+    /// Extracted from `body` because inline it tipped the type-checker over
+    /// ("unable to type-check this expression in reasonable time"), which is a
+    /// failure that does not announce itself until some unrelated edit adds the
+    /// last straw.
+    private var recordingDial: some View {
+        RecordingDialView(
+            elapsed: Int(recorder.currentTime),
+            level: CGFloat(recorder.level),
+            paused: isPaused,
+            live: recorder.live,
+            onStop: {
+                isPaused = false
+                stopRecording()
+            },
+            onDiscard: {
+                HapticManager.shared.recordingStopped()
+                recorder.discardRecording()
+                isPaused = false
+                recordingState = .idle
+            },
+            onPause: {
+                recorder.pauseRecording()
+                isPaused = true
+            },
+            onResume: {
+                recorder.resumeRecording()
+                isPaused = false
+            }
+        )
+        .transition(.opacity)
+    }
+
     var body: some View {
         ZStack {
             WarmBackground()
 
-            if allEntries.isEmpty && recordingState == .idle && latestEntry == nil {
+            if recordingState == .recording {
+                recordingDial
+            } else if allEntries.isEmpty && recordingState == .idle && latestEntry == nil {
                 // FIRST-TIME FOCUSED EXPERIENCE
                 firstTimeView
             } else {
@@ -92,6 +177,25 @@ struct TodayView: View {
         // already had a title — the gap Karthik flagged between the status bar
         // and "Good afternoon". Settings moves into the greeting row instead.
         .toolbar(.hidden, for: .navigationBar)
+        // NOT while the dial is up. The scrim paints the APP's ground behind the
+        // status bar, and the dial is navy under both themes — so in daylight it
+        // laid a cream gradient across the top of a night screen. The dial
+        // reaches the status bar itself and needs no help.
+        .dailyVoxStatusBarScrim(enabled: recordingState != .recording)
+        .modifier(RecordingSignals(
+            isRecording: recordingState == .recording,
+            onFinish: {
+                isPaused = false
+                stopRecording()
+            },
+            onDiscard: {
+                HapticManager.shared.recordingStopped()
+                recorder.discardRecording()
+                isPaused = false
+                recordingState = .idle
+            },
+            onInterrupted: { paused in isPaused = paused }
+        ))
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
@@ -118,14 +222,14 @@ struct TodayView: View {
 
                     VStack(spacing: 16) {
                         Image(systemName: "sparkles")
-                            .font(.system(size: 56))
+                            .font(.dv(size: 56))
                             .foregroundColor(DS.Palette.gold)
 
                         Text("Your first star")
-                            .font(.system(.title2, design: .rounded).weight(.bold))
+                            .font(.dv(.title2, design: .rounded, weight: .bold))
 
                         Text("Your constellation has begun. Every entry adds a new star to your inner sky.")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
 
@@ -135,7 +239,7 @@ struct TodayView: View {
                             }
                         } label: {
                             Text("Continue")
-                                .font(.body.weight(.semibold))
+                                .font(.dv(.body, weight: .semibold))
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                                 .background(Color.accentColor)
@@ -205,17 +309,17 @@ struct TodayView: View {
                         .fill(DS.Palette.gold.opacity(0.2))
                         .frame(width: 40, height: 40)
                     Image(systemName: "sparkle")
-                        .font(.system(.title3).weight(.semibold))
+                        .font(.dv(.title3, weight: .semibold))
                         .foregroundColor(DS.Palette.gold)
                 }
 
                 VStack(spacing: 12) {
                     Text("What's on your mind?")
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .font(.dv(size: 26, weight: .bold, design: .rounded))
                         .foregroundColor(.primary)
 
                     Text("Tap the mic and speak for 42 seconds — or longer.\nYour first star will appear.")
-                        .font(.system(.subheadline, design: .rounded).weight(.regular))
+                        .font(.dv(.subheadline, design: .rounded, weight: .regular))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
@@ -257,7 +361,7 @@ struct TodayView: View {
 
                         // Mic icon
                         Image(systemName: "mic.fill")
-                            .font(.system(size: 32))
+                            .font(.dv(size: 32))
                             .foregroundColor(.white)
                     }
                 }
@@ -265,16 +369,16 @@ struct TodayView: View {
                 .onAppear { firstTimePulse = true }
 
                 Text("Your voice stays on this device")
-                    .font(.system(.caption, design: .rounded).weight(.medium))
+                    .font(.dv(.caption, design: .rounded, weight: .medium))
                     .foregroundColor(.secondary)
 
                 // Privacy assurance
                 HStack(spacing: 6) {
                     Image(systemName: "lock.shield.fill")
-                        .font(.caption2)
+                        .font(.dv(.caption2))
                         .foregroundColor(DS.Palette.forest)
                     Text("No servers. No accounts. 100% private.")
-                        .font(.system(.caption2, design: .rounded).weight(.medium))
+                        .font(.dv(.caption2, design: .rounded, weight: .medium))
                         .foregroundColor(.secondary.opacity(0.7))
                 }
             }
@@ -299,34 +403,43 @@ struct TodayView: View {
     /// The fix is the bar's own reserved height, so the two stack instead of
     /// competing for the same strip.
     private var normalView: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    headerSection
+        // B2/C1's composition: header, air, the question-and-mic as one centred
+        // object, air, then what the day produced and the claim underneath it.
+        //
+        // What this replaces: a scroll of stacked cards with the mic docked
+        // beneath it. That layout put an inert mic-illustration card ("Add a
+        // star to today's sky") and a prompt row between the question and the
+        // real button — so the first microphone on the screen did nothing, and
+        // the scroll area was squeezed until its last row always clipped.
+        ScrollView {
+            VStack(spacing: 0) {
+                headerSection
 
+                Spacer(minLength: 28)
+
+                questionAndMic
+
+                Spacer(minLength: 28)
+
+                if recordingState == .idle {
+                    // Today's star, once it exists. The canvas surfaces it here
+                    // rather than making you open the Journal for it.
+                    //
+                    // BodyTwinIdleCards is NOT here any more. It added a third
+                    // card under the mic ("7,002 steps already — your day is in
+                    // motion") on a screen the design gives two. Body context
+                    // already appears where it means something: the BODY row of
+                    // an entry's ledger, and the Body card on the Twin tab.
                     entryCardSection
-
-                    // Body Twin idle-state slot: today's one-line body whisper,
-                    // or the one-time Health invite — never both, never while
-                    // recording, never in the first-run zero-state.
-                    if recordingState == .idle {
-                        BodyTwinIdleCards()
-                    }
-
-                    if recordingState == .idle && latestEntry == nil {
-                        promptsSection
-                    }
                 }
-                .padding()
-                .frame(maxWidth: isIPad ? 700 : .infinity)
-                .frame(maxWidth: .infinity)
-            }
 
-            recordingSection
-                // barHeight, not reservedHeight: this is docked inside the safe
-                // area already, and the larger value counted the home-indicator
-                // strip twice and left a band of dead space under the caption.
-                .padding(.bottom, DailyVoxTabBar.barHeight)
+                Spacer(minLength: 22)
+            }
+            .padding()
+            .frame(maxWidth: isIPad ? 700 : .infinity)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: minCanvasHeight, alignment: .top)
+            .dailyVoxBarClearance()
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
@@ -347,27 +460,30 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 22) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
+                    // Green by day, gold by night — the canvas colours the
+                    // greeting and leaves the date quiet. It is the one warm
+                    // word on the screen before you speak.
                     Text(greeting)
-                        .font(.system(size: 15, weight: .bold, design: .rounded))
-                        .foregroundColor(theme.textColor)
+                        .font(.dv(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.isNight ? theme.goldText : theme.accentColor)
                     Text(formattedToday)
-                        .font(.system(size: 12.5))
+                        .font(.dv(size: 12.5))
                         .foregroundColor(theme.secondaryTextColor)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(streakCount > 0 ? "\(streakCount)-day streak" : "no streak yet")
-                        .font(.system(size: 12.5, weight: .bold, design: .rounded))
+                        .font(.dv(size: 12.5, weight: .bold, design: .rounded))
                         .foregroundColor(theme.textColor)
                     // GOLD REWARDS: the year count is a made thing, so it is
                     // the one figure up here allowed to be gold.
                     Text("\u{2726} \(daysRecordedThisYear) this year")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .font(.dv(size: 11, weight: .semibold, design: .rounded))
                         .foregroundColor(theme.goldText)
                 }
                 Button { showSettings = true } label: {
                     Image(systemName: "ellipsis")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.dv(size: 16, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)
                         .frame(width: 34, height: 34)
                 }
@@ -375,11 +491,79 @@ struct TodayView: View {
                 .padding(.leading, 2)
             }
 
-            Text("How was your day,\nreally?")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
-                .foregroundColor(theme.textColor)
-                .fixedSize(horizontal: false, vertical: true)
         }
+    }
+
+    /// B2/C1: the question sits CENTRED, directly above the mic, as one object.
+    ///
+    /// It used to be left-aligned at the top of the header, which made it a page
+    /// title — the screen then read as heading, cards, and a control somewhere
+    /// below. In the canvas the question and the mic are a single centred unit
+    /// with air above and below, so the thing being asked and the thing you
+    /// answer it with are one gesture apart.
+    private var questionAndMic: some View {
+        VStack(spacing: 26) {
+            Text("How was your day,\nreally?")
+                .font(.dv(size: 30, weight: .bold, design: .rounded))
+                .foregroundColor(theme.textColor)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            recordButton
+
+            // "TAP TO RECORD · 42 SECONDS" — DM Mono, uppercase, tracked. The
+            // canvas gives this line the data register, not body copy: it is a
+            // caption on an instrument. It replaces two stacked sentences that
+            // said the same thing twice.
+            Text(micCaption)
+                .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(1.4)
+                .foregroundColor(theme.secondaryTextColor)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var micCaption: String {
+        switch recordingState {
+        case .idle: return "TAP TO RECORD \u{00B7} 42 SECONDS"
+        case .recording: return "TAP TO STOP"
+        case .processing: return "FINDING YOUR WORDS\u{2026}"
+        }
+    }
+
+    /// The canvas's own line, and it changes with the ground: by day it states
+    /// the fact, by night it dares you to check it.
+    private var privacyLine: String {
+        theme.isNight
+            ? "Airplane mode on? Works exactly the same."
+            : "Transcribed on this phone \u{00B7} 0 network calls, ever"
+    }
+
+    /// Kept, and deliberately not composed on the idle screen.
+    ///
+    /// It is static text making a claim you have already read, on the screen you
+    /// open most — and the claim is redundant exactly where it matters, because
+    /// the recording dial says "RECORDING · ON-DEVICE · 0 B OUT" while you are
+    /// speaking. Reassurance belongs at the moment of risk. The onboarding
+    /// ledger, the Data Shield in Settings and the shareable receipt all still
+    /// make the argument to anyone who wants it.
+    private var privacyCard: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(theme.successColor)
+                .frame(width: 9, height: 9)
+            Text(privacyLine)
+                .font(.dv(size: 12.5))
+                .foregroundColor(theme.textColor.opacity(0.85))
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 15)
+        .padding(.vertical, 13)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(theme.cardBackgroundColor)
+        )
     }
 
     private var greeting: String {
@@ -418,7 +602,7 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("A starting thought")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.dv(.subheadline, weight: .semibold))
                 Spacer()
             }
 
@@ -452,50 +636,37 @@ struct TodayView: View {
                 NavigationLink {
                     EntryDetailView(entry: entry)
                 } label: {
-                    VStack(alignment: .leading, spacing: 12) {
-                        // Header row
-                        HStack {
-                            Label("Today's Entry", systemImage: "doc.text")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundColor(.secondary.opacity(0.6))
-                        }
-
-                        // Entry content or processing state
+                    VStack(alignment: .leading, spacing: 8) {
+                        // B2's Today card is ONE compact row: when, how long, one
+                        // line of what you said. It was rendering the entry in
+                        // full — an unbounded transcript with a titled header row
+                        // and a footer of three stats — so the card grew with
+                        // whatever you happened to say and pushed everything
+                        // below it off the screen. The whole entry is one tap
+                        // away; this is a receipt, not a copy.
                         if let text = entry.text, !text.isEmpty {
-                            Text(text)
-                                .font(.body)
-                                .lineSpacing(4)
-                                .foregroundColor(.primary)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(nil)
-
-                            // Meta info
-                            HStack(spacing: 16) {
+                            HStack(spacing: 8) {
+                                Text(todayMetaLine(for: entry))
+                                    .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                                    .tracking(1.1)
+                                    .foregroundColor(theme.secondaryTextColor)
+                                Spacer(minLength: 0)
                                 if let duration = entry.value(forKey: "duration") as? Double, duration > 0 {
-                                    Label(formatDuration(duration), systemImage: "waveform")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-
-                                let words = wordCount(for: text)
-                                if words > 0 {
-                                    Label("\(words) words", systemImage: "text.word.spacing")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-
-                                Spacer()
-
-                                if let updatedAt = entry.updatedAt {
-                                    Text(formattedTime(updatedAt))
-                                        .font(.caption)
-                                        .foregroundColor(.secondary.opacity(0.6))
+                                    Text("\u{25B6} " + formatDuration(duration))
+                                        .font(.dv(size: 10, weight: .heavy, design: .rounded))
+                                        .foregroundColor(theme.accentColor)
+                                        .padding(.horizontal, 9)
+                                        .padding(.vertical, 5)
+                                        .background(Capsule().fill(theme.warmSubtleFill))
                                 }
                             }
+
+                            Text(text)
+                                .font(.dv(size: 13.5))
+                                .lineSpacing(3)
+                                .foregroundColor(theme.textColor.opacity(0.88))
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(1)
                         } else {
                             // Entry exists but no text yet
                             VStack(alignment: .leading, spacing: 8) {
@@ -504,17 +675,17 @@ struct TodayView: View {
                                         ProgressView()
                                             .scaleEffect(0.8)
                                         Text("Understanding your words...")
-                                            .font(.subheadline)
+                                            .font(.dv(.subheadline))
                                             .foregroundColor(.secondary)
                                     }
                                 } else {
                                     // Recording saved but no transcription (offline or failed)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Recording saved")
-                                            .font(.subheadline)
+                                            .font(.dv(.subheadline))
                                             .foregroundColor(.primary)
                                         Text("Tap to add text or play your recording")
-                                            .font(.caption)
+                                            .font(.dv(.caption))
                                             .foregroundColor(.secondary)
                                     }
                                 }
@@ -539,10 +710,10 @@ struct TodayView: View {
                         // First-time guided hint
                         HStack(spacing: 12) {
                             Image(systemName: "arrow.down")
-                                .font(.system(.subheadline).weight(.semibold))
+                                .font(.dv(.subheadline, weight: .semibold))
                                 .foregroundColor(DS.Palette.gold)
                             Text("Tap the mic below to plant your first star")
-                                .font(.system(.subheadline, design: .rounded).weight(.medium))
+                                .font(.dv(.subheadline, design: .rounded, weight: .medium))
                                 .foregroundColor(.secondary)
                         }
                         .padding(.vertical, 12)
@@ -550,32 +721,15 @@ struct TodayView: View {
                         .background(DS.Palette.gold.opacity(0.08))
                         .clipShape(Capsule())
                     }
-                } else {
-                    // Has entries but none today
-                    VStack(spacing: 16) {
-                        ZStack {
-                            Circle()
-                                .fill(DS.Palette.sage.opacity(0.1))
-                                .frame(width: 80, height: 80)
-                            Image(systemName: "mic.circle.fill")
-                                .font(.system(size: 36))
-                                .foregroundColor(DS.Palette.sage)
-                        }
-
-                        VStack(spacing: 4) {
-                            Text("Add a star to today's sky")
-                                .font(.system(.title3, design: .rounded).weight(.semibold))
-                            Text("Just 42 seconds — your constellation grows with every entry")
-                                .font(.system(.subheadline, design: .rounded).weight(.regular))
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 32)
-                    .background(Color(.secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 }
+                // No "Add a star to today's sky" card when today is empty.
+                //
+                // It drew an 80pt circle with a mic glyph and read as a record
+                // button — the first microphone on the screen, forty points
+                // above the real one, and not tappable. On the one screen whose
+                // job is to get someone talking in a few seconds, that is the
+                // worst possible thing to put first. The canvas has no such
+                // card: an empty day is a day with no star card yet.
             }
         }
     }
@@ -607,7 +761,7 @@ struct TodayView: View {
                             value: pulseScale
                         )
                     Text(processingPhaseMessage)
-                        .font(.subheadline.weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                         .foregroundColor(.secondary)
                         .animation(.easeInOut(duration: 0.3), value: processingPhase)
                 }
@@ -639,7 +793,7 @@ struct TodayView: View {
                 VStack(spacing: 12) {
                     // Recording time
                     Text(formatTime(recorder.currentTime))
-                        .font(.system(size: 42, weight: .light, design: .rounded))
+                        .font(.dv(size: 42, weight: .light, design: .rounded))
                         .foregroundColor(ThemeManager.shared.recordingColor)
 
                     // Waveform-style level indicator
@@ -653,7 +807,7 @@ struct TodayView: View {
                     .frame(height: isIPad ? 40 : 30)
 
                     Text("Speaking... tap when you're done")
-                        .font(.system(.footnote, design: .rounded).weight(.medium))
+                        .font(.dv(.footnote, design: .rounded, weight: .medium))
                         .foregroundColor(.secondary)
                 }
                 .transition(.scale.combined(with: .opacity))
@@ -680,7 +834,7 @@ struct TodayView: View {
                                     .fill(ThemeManager.shared.warmSubtleFill)
                                     .frame(width: isIPad ? 52 : 44, height: isIPad ? 52 : 44)
                                 Image(systemName: "photo.badge.plus")
-                                    .font(.system(size: isIPad ? 20 : 17))
+                                    .font(.dv(size: isIPad ? 20 : 17))
                                     .foregroundColor(DS.Palette.inkMute)
                             }
                         }
@@ -698,15 +852,15 @@ struct TodayView: View {
             if recordingState == .idle {
                 VStack(spacing: 6) {
                     Text(statusText)
-                        .font(.system(.subheadline, design: .rounded).weight(.medium))
+                        .font(.dv(.subheadline, design: .rounded, weight: .medium))
                         .foregroundColor(.primary)
                     Text("Your voice stays on this device")
-                        .font(.caption.weight(.medium))
+                        .font(.dv(.caption, weight: .medium))
                         .foregroundColor(.secondary)
 
                     if let prompt = selectedPrompt {
                         Text(prompt.detail)
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.top, 4)
@@ -716,6 +870,17 @@ struct TodayView: View {
         }
         .padding(.vertical, 8)
         .animation(.spring(response: 0.4), value: recordingState)
+    }
+
+    /// Enough height that the centred unit sits in air on a tall phone and the
+    /// screen still scrolls on a short one, rather than the mic being pinned to
+    /// the bottom of a squeezed scroll view.
+    private var minCanvasHeight: CGFloat { isIPad ? 760 : 560 }
+
+    /// "TODAY ✦ · 8:43 AM" — the canvas's own meta line for this card.
+    private func todayMetaLine(for entry: DiaryEntry) -> String {
+        let when = entry.updatedAt ?? entry.date ?? Date()
+        return "TODAY \u{2726} \u{00B7} " + formattedTime(when).uppercased()
     }
 
     private var recordButtonSize: CGFloat { isIPad ? 88 : 72 }
@@ -792,7 +957,7 @@ struct TodayView: View {
                     } else {
                         // Mic icon
                         Image(systemName: "mic.fill")
-                            .font(.system(size: isIPad ? 34 : 28))
+                            .font(.dv(size: isIPad ? 34 : 28))
                             .foregroundColor(.white)
                             .transition(.scale.combined(with: .opacity))
                     }
@@ -1173,7 +1338,7 @@ struct StatBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(.caption).weight(.semibold))
+                .font(.dv(.caption, weight: .semibold))
             Text(value)
                 .font(.dsCaption2)
         }
@@ -1237,15 +1402,25 @@ struct PromptChip: View {
     let isSelected: Bool
     let onTap: () -> Void
 
+    /// The card underneath is `warmCardBackground`, which is navy at night —
+    /// but the title was pinned to `DS.Palette.ink` and the detail to
+    /// `inkMute`, both DAY tokens. At night the prompt titles rendered
+    /// near-black on navy and simply were not there.
+    @Environment(\.dvTheme) private var theme
+
     var body: some View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(prompt.title)
                     .font(.dsCallout)
-                    .foregroundColor(isSelected ? DS.Palette.sageDeep : DS.Palette.ink)
+                    .foregroundColor(isSelected
+                                     ? (theme.isNight ? DS.Palette.navy : DS.Palette.sageDeep)
+                                     : theme.textColor)
                 Text(prompt.detail)
                     .font(.dsCaption)
-                    .foregroundColor(DS.Palette.inkMute)
+                    .foregroundColor(isSelected
+                                     ? (theme.isNight ? DS.Palette.navy.opacity(0.7) : DS.Palette.inkMute)
+                                     : theme.secondaryTextColor)
                     .lineLimit(2)
             }
             .padding(.horizontal, DS.Space.md)
@@ -1253,11 +1428,15 @@ struct PromptChip: View {
             .frame(maxWidth: 280, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .fill(isSelected ? DS.Palette.tintSage : ThemeManager.shared.warmCardBackground)
+                    .fill(isSelected
+                          ? (theme.isNight ? DS.Palette.gold : DS.Palette.tintSage)
+                          : theme.cardBackgroundColor)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .stroke(isSelected ? DS.Palette.sage.opacity(0.40) : DS.Palette.ink.opacity(0.05), lineWidth: 1)
+                    .stroke(isSelected
+                            ? theme.accentColor.opacity(0.40)
+                            : theme.textColor.opacity(0.06), lineWidth: 1)
             )
             .dsShadowSoft()
         }
@@ -1333,7 +1512,9 @@ private struct TickRing: View {
     let elapsed: Int
     let recording: Bool
 
-    @ObservedObject private var theme = ThemeManager.shared
+    @Environment(\.dvTheme) private var theme
+    /// §8.8. Ambient loops are the first thing that has to stop.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var drift: Double = 0
     @State private var orbit: Double = 0
 
@@ -1356,13 +1537,25 @@ private struct TickRing: View {
                 .rotationEffect(.degrees(orbit))
         }
         .frame(width: diameter, height: diameter)
-        .onAppear {
-            withAnimation(.linear(duration: 120).repeatForever(autoreverses: false)) {
-                drift = 360
-            }
-            withAnimation(.linear(duration: recording ? 12 : 16).repeatForever(autoreverses: false)) {
-                orbit = 360
-            }
+        .onAppear { restartSpin() }
+        // The spin used to be started in `onAppear` alone, so the spec's
+        // 16s → 12s acceleration on record never happened: this view is not
+        // recreated when recording starts, and nothing re-read the flag.
+        .onChange(of: recording) { _, _ in restartSpin() }
+        .onChange(of: reduceMotion) { _, _ in restartSpin() }
+    }
+
+    private func restartSpin() {
+        guard !reduceMotion else {
+            // Park it, rather than freezing mid-rotation at a random angle.
+            withAnimation(.linear(duration: 0.2)) { drift = 0; orbit = 0 }
+            return
+        }
+        withAnimation(.linear(duration: 120).repeatForever(autoreverses: false)) {
+            drift = 360
+        }
+        withAnimation(.linear(duration: recording ? 12 : 16).repeatForever(autoreverses: false)) {
+            orbit = 360
         }
     }
 
