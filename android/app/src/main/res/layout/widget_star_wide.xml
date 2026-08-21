@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The 4x2 "Tonight's star" widget (FINAL-SPEC §5).
+
+  IT NEVER RENDERS ENTRY TEXT, in any state. Widgets are visible on the lock
+  screen, so a journal that shows a sentence there has broken its own privacy
+  claim in the most public place on the device. Mic, day line, dots, count.
+
+  Fonts are set in code rather than here: `android:fontFamily` on a RemoteViews
+  TextView resolves at inflate time in the HOST process (the launcher), which
+  has no access to this app's bundled font resources. `setTextViewText` with a
+  spanned string is the only way to get Nunito onto a home screen.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="16dp"
+    android:background="@drawable/widget_bg">
+
+    <ImageView
+        android:id="@+id/widget_mic"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="Speak"
+        android:src="@drawable/widget_mic_disc" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#F1EDE2"
+            android:text="Speak tonight" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:orientation="horizontal">
+            <ImageView android:id="@+id/d0" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d1" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d2" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d3" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d4" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d5" android:layout_width="8dp" android:layout_height="8dp" android:layout_marginEnd="5dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+            <ImageView android:id="@+id/d6" android:layout_width="8dp" android:layout_height="8dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="10sp"
+            android:letterSpacing="0.12"
+            android:textColor="#EDCB86"
+            android:text="0 IN YOUR SKY" />
+    </LinearLayout>
+</LinearLayout>

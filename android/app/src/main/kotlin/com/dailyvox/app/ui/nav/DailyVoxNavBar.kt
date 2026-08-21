@@ -89,17 +89,13 @@ fun DailyVoxNavBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                NavIcon(
-                    dest = dest,
-                    active = selected,
-                    tint = when {
-                        selected && night -> NightBackground
-                        selected -> scheme.onPrimary
-                        night -> NightText.copy(alpha = 0.6f)
-                        else -> scheme.onSurfaceVariant
-                    },
-                )
-                Spacer(Modifier.height(5.dp))
+                // LABELS ONLY.
+                //
+                // The design's bar is four words in a pill and nothing else —
+                // there are no icons in the B2/C1 markup at all, and iOS ships
+                // it that way. Icons went in here to replace hand-drawn Canvas
+                // shapes that looked as crude as they were, which fixed the
+                // wrong problem: the answer to a bad icon was no icon.
                 Text(
                     dest.label,
                     fontSize = 11.sp,

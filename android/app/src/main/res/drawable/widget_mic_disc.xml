@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gold disc with a cream capsule glyph: the record button, at widget size.
+     Gold rather than green because the widget draws on the night ground. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#D9A441" />
+        </shape>
+    </item>
+    <item android:gravity="center">
+        <shape android:shape="rectangle">
+            <size android:width="11dp" android:height="19dp" />
+            <corners android:radius="6dp" />
+            <solid android:color="#101B2D" />
+        </shape>
+    </item>
+</layer-list>

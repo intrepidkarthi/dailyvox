@@ -82,6 +82,19 @@
                 android:resource="@xml/widget_star_info" />
         </receiver>
 
+        <!-- The 4x2 variant (FINAL-SPEC §5). Its own provider because the two
+             sizes show different things: 2x2 is a star, 4x2 is the strip. -->
+        <receiver
+            android:name=".system.WideStarWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_star_wide_info" />
+        </receiver>
+
         <service
             android:name=".system.SpeakTile"
             android:exported="true"

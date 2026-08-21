@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <!-- The sky is always night: the widget keeps the dark theme in both modes,
          matching the Twin constellation rule from the design spec. -->
-    <solid android:color="#0F140F" />
+    <solid android:color="#101B2D" />
     <corners android:radius="24dp" />
 </shape>

@@ -37,7 +37,12 @@ data class CaptureError(
 
 class SpeechCapture(private val context: Context) {
 
-    enum class State { IDLE, RECORDING, PROCESSING }
+    /**
+     * PAUSED is a real state, not a label on a stopped recording. The button
+     * that says Pause used to call the same handler as Stop, so the only
+     * difference between the two controls was the glyph.
+     */
+    enum class State { IDLE, RECORDING, PAUSED, PROCESSING }
 
     private val _state = MutableStateFlow(State.IDLE)
     val state: StateFlow<State> = _state
@@ -68,16 +73,53 @@ class SpeechCapture(private val context: Context) {
 
     private var recognizer: SpeechRecognizer? = null
 
+    /**
+     * Transcript from the segments before the current one.
+     *
+     * SpeechRecognizer has no pause: a session that stops is over, and resuming
+     * means starting a new one. So pausing banks what has been heard so far and
+     * the next segment appends to it — the user gets one entry, the recogniser
+     * gets several sessions, and nobody has to know.
+     */
+    private val kept = StringBuilder()
+
+    /** True while a `stopListening` is on its way to PAUSED, not to a saved entry. */
+    @Volatile private var pausing = false
+
+    /**
+     * Set by [cancel]: whatever the recogniser says next is thrown away.
+     *
+     * A flag rather than just destroying the recognizer, because `onResults`
+     * can already be queued on the main thread when the user taps Discard —
+     * and an entry that arrives after you discarded it is the worst kind.
+     */
+    @Volatile private var abandoned = false
+
     val onDeviceAvailable: Boolean
         get() = Build.VERSION.SDK_INT >= 33 && SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
 
     fun start() {
         if (_state.value != State.IDLE) return
+        kept.setLength(0)
+        abandoned = false
+        beginSession()
+    }
+
+    /** Pick up where a pause left off. The kept transcript survives. */
+    fun resume() {
+        if (_state.value != State.PAUSED) return
+        // If the recogniser has gone away mid-entry, save what was already said
+        // rather than dropping the user back to idle with their words in limbo.
+        if (!beginSession()) finish("")
+    }
+
+    private fun beginSession(): Boolean {
         _partial.value = ""
+        pausing = false
         val r = when {
             onDeviceAvailable -> SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
             SpeechRecognizer.isRecognitionAvailable(context) -> SpeechRecognizer.createSpeechRecognizer(context)
-            else -> { _state.value = State.IDLE; return }
+            else -> { _state.value = State.IDLE; return false }
         }
         recognizer = r
         r.setRecognitionListener(object : RecognitionListener {
@@ -86,9 +128,16 @@ class SpeechCapture(private val context: Context) {
             // 0..10 dB-ish; normalised for the button's pulse.
             override fun onRmsChanged(rms: Float) { _level.value = (rms / 10f).coerceIn(0f, 1f) }
             override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() { _state.value = State.PROCESSING }
+            // Not while pausing or discarding: the session is ending because we
+            // asked it to, and flipping to PROCESSING would drop the dial for a
+            // frame on its way to PAUSED.
+            override fun onEndOfSpeech() {
+                if (!pausing && !abandoned) _state.value = State.PROCESSING
+            }
             override fun onError(error: Int) {
-                _error.value = describe(error)
+                // A discarded session raises ERROR_CLIENT on its way out. That
+                // is us, not the phone, and an error card for it would be a lie.
+                if (!abandoned && !pausing) _error.value = describe(error)
                 finish("")
             }
             override fun onResults(results: Bundle?) {
@@ -113,21 +162,78 @@ class SpeechCapture(private val context: Context) {
             }
         })
         _state.value = State.RECORDING
+        return true
     }
 
     fun stop() {
+        when (_state.value) {
+            State.RECORDING -> {
+                _state.value = State.PROCESSING
+                recognizer?.stopListening()
+            }
+            // Nothing is listening, so there is no result to wait for: what was
+            // kept before the pause IS the entry.
+            State.PAUSED -> finish("")
+            else -> return
+        }
+    }
+
+    /** Bank the current segment and stop listening, without ending the entry. */
+    fun pause() {
         if (_state.value != State.RECORDING) return
-        _state.value = State.PROCESSING
+        pausing = true
+        _state.value = State.PAUSED
         recognizer?.stopListening()
+    }
+
+    /**
+     * Throw the whole recording away — no `finished`, no kept text, no error
+     * card for the ERROR_CLIENT the recogniser raises on its way out.
+     */
+    fun cancel() {
+        abandoned = true
+        pausing = false
+        kept.setLength(0)
+        _partial.value = ""
+        _level.value = 0f
+        _state.value = State.IDLE
+        val r = recognizer
+        recognizer = null
+        runCatching { r?.cancel() }
+        runCatching { r?.destroy() }
     }
 
     private fun finish(text: String) {
         _level.value = 0f
-        _state.value = State.IDLE
         val out = text.ifBlank { _partial.value }
         _partial.value = ""
         recognizer?.destroy(); recognizer = null
-        if (out.isNotBlank()) _finished.tryEmit(out)
+
+        if (abandoned) {
+            abandoned = false
+            kept.setLength(0)
+            _state.value = State.IDLE
+            return
+        }
+
+        if (pausing) {
+            pausing = false
+            if (out.isNotBlank()) {
+                if (kept.isNotEmpty()) kept.append(' ')
+                kept.append(out)
+            }
+            _state.value = State.PAUSED
+            return
+        }
+
+        _state.value = State.IDLE
+        val whole = buildString {
+            append(kept)
+            if (isNotEmpty() && out.isNotBlank()) append(' ')
+            append(out)
+        }.trim()
+        kept.setLength(0)
+        if (whole.isNotBlank()) _finished.tryEmit(whole)
     }
 
     fun release() { recognizer?.destroy(); recognizer = null }

@@ -5,4 +5,6 @@
     <string name="shortcut_speak_long">Record tonight\'s entry</string>
     <string name="shortcut_journal_short">Journal</string>
     <string name="shortcut_journal_long">Open my journal</string>
+    <string name="shortcut_ask_short">Ask Twin</string>
+    <string name="shortcut_ask_long">Ask your Twin about your journal</string>
 </resources>

@@ -26,7 +26,8 @@ import com.dailyvox.app.ui.components.*
  * "Real" here means the clock, not an almanac. A true solar calculation needs
  * latitude and longitude, and this app holds no location permission and is never
  * going to ask for one to decide a background colour. Evening is taken as 19:00
- * to 06:00, which is wrong by up to about an hour at the solstices and wrong in
+ * the real sun via SolarClock, rather than the fixed 19:00-06:00 window it used
+ * to assume, which was wrong by about an hour at the solstices and wrong in
  * the right direction: the app is used at night.
  */
 enum class ThemeChoice { LIGHT, DARK, SUNSET }

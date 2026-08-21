@@ -50,40 +50,53 @@ fun RecordingDial(
     level: Float,
     partial: String,
     lastEntity: String?,
+    /** True between Pause and Resume. The dial stays; the life goes out of it. */
+    paused: Boolean,
     onStop: () -> Unit,
     onDiscard: () -> Unit,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // §8.8. The dial keeps every piece of information — ticks, arc, elapsed —
+    // and stops orbiting, breathing and blinking. None of the meaning was in
+    // the movement.
+    val still = com.dailyvox.app.ui.components.reduceMotion()
     val t = rememberInfiniteTransition(label = "dial")
 
     // fsPulse — 2.4s, scale 1 -> 1.18, opacity .55 -> .15
-    val glow by t.animateFloat(
+    val glowRaw by t.animateFloat(
         0f, 1f,
         infiniteRepeatable(tween(2400, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "glow",
+        label = "glowRaw",
     )
+    val glow = if (still) 0.5f else glowRaw
     // fsSpin — 12s forward, 22s reverse
-    val orbitA by t.animateFloat(
+    val orbitARaw by t.animateFloat(
         0f, 360f,
         infiniteRepeatable(tween(12_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "orbitA",
+        label = "orbitARaw",
     )
-    val orbitB by t.animateFloat(
+    val orbitA = if (still) 0f else orbitARaw
+    val orbitBRaw by t.animateFloat(
         360f, 0f,
         infiniteRepeatable(tween(22_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "orbitB",
+        label = "orbitBRaw",
     )
+    val orbitB = if (still) 180f else orbitBRaw
     // fsBlink — 1.6s on the status line, 2.4s on the entity chip
-    val blink by t.animateFloat(
+    val blinkRaw by t.animateFloat(
         1f, 0.35f,
         infiniteRepeatable(tween(1600, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "blink",
+        label = "blinkRaw",
     )
-    val chipBlink by t.animateFloat(
+    val blink = if (still) 0.8f else blinkRaw
+    val chipBlinkRaw by t.animateFloat(
         1f, 0.35f,
         infiniteRepeatable(tween(2400, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "chipBlink",
+        label = "chipBlinkRaw",
     )
+    val chipBlink = if (still) 0.8f else chipBlinkRaw
 
     Column(
         modifier
@@ -94,11 +107,13 @@ fun RecordingDial(
     ) {
         Spacer(Modifier.height(20.dp))
         Text(
-            "● RECORDING · ON-DEVICE · 0 B OUT",
+            if (paused) "❙❙ PAUSED · ON-DEVICE · 0 B OUT" else "● RECORDING · ON-DEVICE · 0 B OUT",
             fontSize = 10.sp,
             letterSpacing = 1.6.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Gold.copy(alpha = blink),
+            // Paused holds steady. The blink means "live", so a paused dial that
+            // kept pulsing would say the mic was still open.
+            color = Gold.copy(alpha = if (paused) 0.55f else blink),
         )
 
         Spacer(Modifier.weight(1f))
@@ -192,7 +207,11 @@ fun RecordingDial(
 
         Spacer(Modifier.height(18.dp))
         Text(
-            if (partial.isBlank()) "Listening…" else "“…$partial”",
+            when {
+                paused -> "Paused. Tap resume and keep going."
+                partial.isBlank() -> "Listening…"
+                else -> "“…$partial”"
+            },
             fontSize = 12.5.sp, lineHeight = 19.sp,
             color = NightText.copy(alpha = 0.75f),
             textAlign = TextAlign.Center,
@@ -258,14 +277,33 @@ fun RecordingDial(
             }
             Spacer(Modifier.width(20.dp))
             Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
-                DialAction("Pause", onStop) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    repeat(2) {
-                        Box(Modifier.size(4.dp, 15.dp)
-                            .clip(RoundedCornerShape(1.5.dp))
-                            .background(NightText.copy(alpha = 0.8f)))
+                // This was wired to `onStop` — the same handler as Stop & keep,
+                // so the pause glyph ended the recording.
+                DialAction(
+                    if (paused) "Resume" else "Pause",
+                    if (paused) onResume else onPause,
+                ) {
+                    if (paused) {
+                        // A right-pointing triangle, drawn rather than typed:
+                        // ▶ in a text run sits off-centre in its own box.
+                        Canvas(Modifier.size(15.dp)) {
+                            val p = androidx.compose.ui.graphics.Path().apply {
+                                moveTo(size.width * 0.18f, 0f)
+                                lineTo(size.width, size.height / 2f)
+                                lineTo(size.width * 0.18f, size.height)
+                                close()
+                            }
+                            drawPath(p, NightText.copy(alpha = 0.8f))
+                        }
+                    } else {
+                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            repeat(2) {
+                                Box(Modifier.size(4.dp, 15.dp)
+                                    .clip(RoundedCornerShape(1.5.dp))
+                                    .background(NightText.copy(alpha = 0.8f)))
+                            }
+                        }
                     }
-                }
                 }
             }
         }

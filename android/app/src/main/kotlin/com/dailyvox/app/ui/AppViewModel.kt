@@ -51,6 +51,18 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         com.dailyvox.app.system.StarWidget.refresh(getApplication())
     }
 
+    /**
+     * Correct what the recogniser heard (B4's Edit).
+     *
+     * Re-derives valence and entities from the corrected text rather than
+     * keeping the originals: the whole point of fixing a transcript is that the
+     * Twin was working from the wrong words, and leaving the derived fields
+     * alone would fix what the user reads and not what the Twin knows.
+     */
+    fun editText(id: String, text: String) = viewModelScope.launch {
+        repo.updateText(id, text)
+    }
+
     fun setSelfLabel(id: String, label: String?) = viewModelScope.launch {
         repo.setSelfLabel(id, label)
     }

@@ -66,6 +66,15 @@ import java.util.Locale
 fun AskScreen(
     entries: List<Entry>,
     onOpenEntry: (Entry) -> Unit = {},
+    /**
+     * A question to ask on arrival, from B4's "Ask about this".
+     *
+     * The chat is the same chat either way — seeding it just means you land on
+     * an answer instead of an empty box, which is the same argument the
+     * suggestion chips are making.
+     */
+    seedQuestion: String? = null,
+    onSeedConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -101,6 +110,14 @@ fun AskScreen(
         push(Msg(seq, q, isUser = true))
         TwinQuestion.matching(q)?.let { asked = asked + it }
         thinking = true
+    }
+
+    // Fires once per seed. Keyed on the seed itself rather than a flag, so
+    // asking about a second entry works without the screen being torn down.
+    LaunchedEffect(seedQuestion) {
+        val seed = seedQuestion ?: return@LaunchedEffect
+        if (messages.isEmpty()) send(seed)
+        onSeedConsumed()
     }
 
     // The answer is produced in an effect rather than inline so the user's

@@ -24,6 +24,29 @@ import com.dailyvox.app.data.Repo
  * journal that shows a sentence there has broken its own privacy claim in the
  * most public place on the device. Star, dots, counts. Nothing readable.
  */
+/**
+ * The 4x2 variant (§5): mic circle, day line, seven-night strip, sky count.
+ *
+ * A separate provider rather than a resize of the 2x2, because the two show
+ * different things — the small one is a star and nothing else, which is the
+ * spec's own split.
+ */
+class WideStarWidget : AppWidgetProvider() {
+    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+        val pending = goAsync()
+        StarWidget.io.execute {
+            try {
+                val views = StarWidget.buildWide(context)
+                ids.forEach { manager.updateAppWidget(it, views) }
+            } catch (t: Throwable) {
+                android.util.Log.e("WideStarWidget", "widget update failed", t)
+            } finally {
+                pending.finish()
+            }
+        }
+    }
+}
+
 class StarWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
@@ -46,17 +69,23 @@ class StarWidget : AppWidgetProvider() {
 
     companion object {
         private const val TAG = "StarWidget"
-        private val io = java.util.concurrent.Executors.newSingleThreadExecutor()
+        internal val io = java.util.concurrent.Executors.newSingleThreadExecutor()
 
         /** Called after every write. Callers are on the main thread
          *  (viewModelScope), so the read is handed off here rather than there. */
         fun refresh(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val ids = manager.getAppWidgetIds(ComponentName(context, StarWidget::class.java))
-            if (ids.isEmpty()) return
+            val wideIds = manager.getAppWidgetIds(ComponentName(context, WideStarWidget::class.java))
+            if (ids.isEmpty() && wideIds.isEmpty()) return
             val app = context.applicationContext
             io.execute {
                 try {
+                    if (wideIds.isNotEmpty()) {
+                        val wideViews = build(app, wide = true)
+                        wideIds.forEach { manager.updateAppWidget(it, wideViews) }
+                    }
+                    if (ids.isEmpty()) return@execute
                     val views = build(app)
                     ids.forEach { manager.updateAppWidget(it, views) }
                 } catch (t: Throwable) {
@@ -65,8 +94,36 @@ class StarWidget : AppWidgetProvider() {
             }
         }
 
-        private fun build(context: Context): RemoteViews {
-            val views = RemoteViews(context.packageName, R.layout.widget_star)
+        /**
+         * Bundled type on a RemoteViews surface.
+         *
+         * `android:fontFamily` in the layout does not work here: a widget is
+         * inflated in the LAUNCHER's process, which cannot resolve this app's
+         * font resources, so it silently falls back to Roboto — which is what
+         * the widget had been rendering in, against a spec that says the three
+         * faces ship on both platforms and nothing falls back (§8.2).
+         *
+         * A `TypefaceSpan` carrying a real `Typeface` crosses the process
+         * boundary inside the parcelled `Spanned`, so this is the only way.
+         * API 28+ for the Typeface constructor; below that it degrades to the
+         * platform face rather than failing.
+         */
+        private fun styled(context: Context, text: String, fontRes: Int): CharSequence {
+            if (android.os.Build.VERSION.SDK_INT < 28) return text
+            val typeface = runCatching {
+                androidx.core.content.res.ResourcesCompat.getFont(context, fontRes)
+            }.getOrNull() ?: return text
+            return android.text.SpannableString(text).apply {
+                setSpan(android.text.style.TypefaceSpan(typeface), 0, length,
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+
+        private fun build(context: Context, wide: Boolean = false): RemoteViews {
+            val views = RemoteViews(
+                context.packageName,
+                if (wide) R.layout.widget_star_wide else R.layout.widget_star,
+            )
 
             // Deliberately NOT wrapped. An earlier version swallowed the read
             // into an empty list, which turned a main-thread violation into a
@@ -78,17 +135,36 @@ class StarWidget : AppWidgetProvider() {
             val days = entries.map { it.createdAt / 86_400_000L }.toSet()
             val spokenTonight = today in days
 
-            views.setImageViewResource(
-                R.id.widget_star,
-                if (spokenTonight) R.drawable.ic_star_filled else R.drawable.ic_star_hollow,
-            )
+            if (!wide) {
+                views.setImageViewResource(
+                    R.id.widget_star,
+                    if (spokenTonight) R.drawable.ic_star_filled else R.drawable.ic_star_hollow,
+                )
+            }
+
             // No guilt copy. An empty night is stated, never scolded — the same
             // rule the in-app empty states follow.
+            val streak = generateSequence(if (spokenTonight) today else today - 1) { it - 1 }
+                .takeWhile { it in days }
+                .count()
+            val label = when {
+                spokenTonight && streak > 0 -> "Day $streak · spoken"
+                spokenTonight -> "Spoken tonight"
+                streak > 0 -> "Day ${streak + 1} · speak tonight"
+                else -> "Speak tonight"
+            }
             views.setTextViewText(
                 R.id.widget_label,
-                if (spokenTonight) "Tonight is filed" else "Tonight is waiting",
+                styled(context, if (wide) label else
+                    if (spokenTonight) "Tonight is filed" else "Tonight is waiting",
+                    R.font.nunito_variable),
             )
-            views.setTextViewText(R.id.widget_count, "${entries.size}")
+            views.setTextViewText(
+                R.id.widget_count,
+                styled(context,
+                       if (wide) "${entries.size} IN YOUR SKY" else "${entries.size}",
+                       R.font.dm_mono_medium),
+            )
 
             val dots = intArrayOf(R.id.d0, R.id.d1, R.id.d2, R.id.d3, R.id.d4, R.id.d5, R.id.d6)
             (0..6).forEach { i ->
@@ -110,5 +186,7 @@ class StarWidget : AppWidgetProvider() {
             )
             return views
         }
+
+        internal fun buildWide(context: Context): RemoteViews = build(context, wide = true)
     }
 }

@@ -36,6 +36,34 @@
         <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
     </shortcut>
 
+    <!-- "Ask my Twin how my week was" (FINAL-SPEC §5). GET_THING is the
+         built-in intent for retrieving something from an app, which is what
+         asking your own journal a question is. The answer is composed on the
+         device by the same retrieval path the Ask screen uses. -->
+    <capability android:name="actions.intent.GET_THING">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dailyvox.app"
+            android:targetClass="com.dailyvox.app.MainActivity">
+            <extra android:name="open_ask" android:value="true" />
+        </intent>
+    </capability>
+
+    <shortcut
+        android:shortcutId="ask"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_journal"
+        android:shortcutShortLabel="@string/shortcut_ask_short"
+        android:shortcutLongLabel="@string/shortcut_ask_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.dailyvox.app"
+            android:targetClass="com.dailyvox.app.MainActivity">
+            <extra android:name="open_ask" android:value="true" />
+        </intent>
+        <capability-binding android:key="actions.intent.GET_THING" />
+    </shortcut>
+
     <shortcut
         android:shortcutId="journal"
         android:enabled="true"

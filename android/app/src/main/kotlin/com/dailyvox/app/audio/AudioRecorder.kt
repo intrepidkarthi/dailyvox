@@ -50,6 +50,27 @@ class AudioRecorder(private val context: Context) {
             recorder = null; null
         } finally { current = null }
     }
+
+    /** Hold the file open but stop writing to it. API 24+; minSdk here is 26. */
+    fun pause() { runCatching { recorder?.pause() } }
+
+    fun resume() { runCatching { recorder?.resume() } }
+
+    /**
+     * Stop and DELETE.
+     *
+     * Discard has to leave nothing behind, and the audio file is the part that
+     * survives a discarded transcript. `stop()` on a recorder that has captured
+     * almost nothing throws, which is why the delete sits outside the catch —
+     * a half-written m4a is exactly the file that must not be kept.
+     */
+    fun discard() {
+        val f = current
+        runCatching { recorder?.apply { stop(); release() } }
+        recorder = null
+        current = null
+        runCatching { f?.delete() }
+    }
 }
 
 /**

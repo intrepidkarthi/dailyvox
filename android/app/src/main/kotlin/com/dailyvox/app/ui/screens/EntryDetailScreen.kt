@@ -41,9 +41,25 @@ fun EntryDetailScreen(
     onDelete: () -> Unit,
     onSelfLabel: (String?) -> Unit = {},
     onPhoto: (String?) -> Unit = {},
+    /** B4: correct what the recogniser heard. Transcription is good, not right. */
+    onEdit: (String) -> Unit = {},
+    /** B4: open the Twin with this entry as the question. */
+    onAsk: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    var editing by remember { mutableStateOf(false) }
+
+    // What "Ask about this" actually asks. Dated rather than quoted: retrieval
+    // finds the entry from its date anyway, and pasting the transcript into the
+    // question makes the answer echo the entry back instead of relating it to
+    // everything around it.
+    val askSeed = remember(entry.id) {
+        val on = SimpleDateFormat("MMMM d", Locale.getDefault()).format(Date(entry.createdAt))
+        val who = entry.entityList.firstOrNull()
+        if (who != null) "What do my entries say about $who, around $on?"
+        else "What was going on for me around $on?"
+    }
     val speaker = remember { com.dailyvox.app.system.Speaker(context) }
     var speaking by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { speaker.release() } }
@@ -245,6 +261,18 @@ fun EntryDetailScreen(
             ) { Text("Share") }
         }
         Spacer(Modifier.height(10.dp))
+        // B4's own two actions. They were missing entirely: the row underneath
+        // offered Close and Delete, which are ways OUT of the entry, and none of
+        // the three things the design asks you to be able to do with it.
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            OutlinedButton(onClick = { editing = true }, modifier = Modifier.weight(1f)) {
+                Text("Edit")
+            }
+            OutlinedButton(onClick = { onAsk(askSeed) }, modifier = Modifier.weight(1f)) {
+                Text("Ask about this")
+            }
+        }
+        Spacer(Modifier.height(10.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             // Photo attachments are OUT OF SCOPE for v1 (FINAL-SPEC §9), so the
             // button is gone. The column, the storage and the picker are all
@@ -258,6 +286,14 @@ fun EntryDetailScreen(
                 Text("Delete", color = MaterialTheme.colorScheme.error)
             }
         }
+
+        if (editing) {
+            EntryTextEditor(
+                initial = entry.text,
+                onCancel = { editing = false },
+                onSave = { edited -> editing = false; onEdit(edited) },
+            )
+        }
         Spacer(Modifier.height(120.dp))
     }
 }
@@ -265,6 +301,43 @@ fun EntryDetailScreen(
 /** The seven labels are the iOS self-label set, unchanged, so a cohort's
  *  responses stay comparable across platforms. */
 private val SELF_LABELS = listOf("joy", "calm", "sad", "angry", "anxious", "tired", "neutral")
+
+/**
+ * The transcript editor.
+ *
+ * A dialog rather than an inline field: editing is a deliberate act on a thing
+ * the machine got wrong, and the entry stays readable behind it so you can see
+ * what you are correcting against.
+ */
+@Composable
+private fun EntryTextEditor(
+    initial: String,
+    onCancel: () -> Unit,
+    onSave: (String) -> Unit,
+) {
+    var draft by remember { mutableStateOf(initial) }
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text("Edit transcript") },
+        text = {
+            androidx.compose.material3.OutlinedTextField(
+                value = draft,
+                onValueChange = { draft = it },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 5,
+            )
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(
+                onClick = { onSave(draft.trim()) },
+                enabled = draft.isNotBlank() && draft.trim() != initial,
+            ) { Text("Save") }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onCancel) { Text("Cancel") }
+        },
+    )
+}
 
 @Composable
 private fun SelfLabelRow(current: String?, onPick: (String?) -> Unit) {

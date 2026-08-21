@@ -36,6 +36,21 @@ class Repo private constructor(private val db: DailyVoxDb) {
     fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
 
+    /** Re-analyses the corrected text so the Twin learns from the fix, not the flub. */
+    suspend fun updateText(id: String, text: String) {
+        db.entries().byId(id)?.let {
+            db.entries().upsert(
+                it.copy(
+                    text = text,
+                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    entities = com.dailyvox.twin.NameDetector
+                        .detect(text, corpus = listOf(text))
+                        .joinToString(","),
+                )
+            )
+        }
+    }
+
     suspend fun setSelfLabel(id: String, label: String?) {
         db.entries().byId(id)?.let { db.entries().upsert(it.copy(selfLabel = label)) }
     }

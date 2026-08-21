@@ -32,6 +32,10 @@ import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.ui.components.MonoLabel
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import com.dailyvox.app.ui.theme.NightBackground
+import com.dailyvox.app.ui.theme.NightText
 import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
 
@@ -90,7 +94,9 @@ private fun LedgerBeat(onNext: () -> Unit) {
     }
 
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 26.dp),
+        Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 26.dp, vertical = 28.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         MonoLabel("01 / 03 · permission")
@@ -114,10 +120,50 @@ private fun LedgerBeat(onNext: () -> Unit) {
         Spacer(Modifier.height(8.dp))
         LedgerRow("Health Connect", "optional", MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(8.dp))
-        LedgerRow("Internet", "not requested", Color(0xFF4F7A3E))
+        LedgerRow("Internet", "not requested", MaterialTheme.colorScheme.tertiary)
 
-        Spacer(Modifier.height(30.dp))
-        FilledAction("Allow microphone") {
+        Spacer(Modifier.height(18.dp))
+        // The proof card (B1). Navy on cream — the one dark object on the
+        // screen, because it is the one thing being pointed at.
+        //
+        // The claim was a sentence in the body copy before this. That is the
+        // difference between telling someone the app works offline and handing
+        // them a way to check in ten seconds, and the design package calls this
+        // "the site's strongest argument, currently absent from the app".
+        Row(
+            Modifier.fillMaxWidth().widthIn(max = 520.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(NightBackground)
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            Box(
+                Modifier.size(38.dp).clip(CircleShape).background(StarGold.copy(alpha = 0.18f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("\u2708", fontSize = 15.sp, color = StarGold)
+            }
+            Spacer(Modifier.width(13.dp))
+            Column {
+                Text(
+                    "Try it in airplane mode",
+                    fontSize = 15.sp, fontWeight = FontWeight.Bold,
+                    color = NightText,
+                )
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    "Turn the radios off before you speak your first entry. Everything still works — the transcript, the mood, the star. That is the whole product, demonstrated in ten seconds.",
+                    fontSize = 13.sp, lineHeight = 19.sp,
+                    color = NightText.copy(alpha = 0.72f),
+                )
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+        // One green CTA. B1 has exactly one thing to do, and "Allow microphone"
+        // named the permission dialog rather than the thing on the other side
+        // of it.
+        FilledAction("Speak your first star") {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
                 PackageManager.PERMISSION_GRANTED
             ) onNext() else ask.launch(Manifest.permission.RECORD_AUDIO)
@@ -161,6 +207,9 @@ private fun SpeakBeat(
                 while (true) { delay(1000); elapsed++ } }
             SpeechCapture.State.PROCESSING -> phase = Phase.PROCESSING
             SpeechCapture.State.IDLE -> if (phase != Phase.BORN) phase = Phase.IDLE
+            // Onboarding offers no pause control; the branch exists so the
+            // `when` stays exhaustive over the enum.
+            SpeechCapture.State.PAUSED -> Unit
         }
     }
     LaunchedEffect(Unit) {
@@ -222,7 +271,7 @@ private fun SpeakBeat(
                 Spacer(Modifier.height(12.dp))
                 // Even mid-recording. If the recogniser dies without calling
                 // onError — and OEM implementations do — this is the only exit.
-                QuietAction("Skip for now") { capture.stop(); onSkip() }
+                QuietAction("Skip for now") { capture.cancel(); recorder.discard(); onSkip() }
             }
             else -> Spacer(Modifier.height(56.dp))
         }

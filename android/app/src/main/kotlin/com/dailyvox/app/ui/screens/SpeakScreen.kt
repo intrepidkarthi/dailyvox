@@ -77,6 +77,10 @@ fun SpeakScreen(
         com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText
     val capture = remember { SpeechCapture(context) }
     val recorder = remember { AudioRecorder(context) }
+    // The Today card's play chip. Same AudioQueue the Journal's "Play today"
+    // pill uses, so the two behave identically.
+    val todayQueue = remember { com.dailyvox.app.audio.AudioQueue() }
+    var playingToday by remember { mutableStateOf(false) }
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
     var audioPath by remember { mutableStateOf<String?>(null) }
     var granted by remember {
@@ -102,20 +106,35 @@ fun SpeakScreen(
             .lastOrNull()
     }
 
-    LaunchedEffect(state) { onRecordingChanged(state == SpeechCapture.State.RECORDING) }
+    LaunchedEffect(state) {
+        onRecordingChanged(
+            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED
+        )
+    }
 
     LaunchedEffect(state) {
-        if (state == SpeechCapture.State.RECORDING) {
-            elapsed = 0
-            com.dailyvox.app.system.RecordingLive.onFinishRequested = { capture.stop() }
-            while (true) {
-                com.dailyvox.app.system.RecordingLive.show(context, elapsed)
-                delay(1000)
-                elapsed++
+        when (state) {
+            SpeechCapture.State.RECORDING -> {
+                // `elapsed` is reset where recording STARTS, not here. Resuming
+                // from a pause re-enters this branch, and zeroing it there would
+                // have thrown away the seconds already spoken.
+                com.dailyvox.app.system.RecordingLive.onFinishRequested = { capture.stop() }
+                while (true) {
+                    com.dailyvox.app.system.RecordingLive.show(context, elapsed)
+                    delay(1000)
+                    elapsed++
+                }
             }
-        } else {
-            com.dailyvox.app.system.RecordingLive.hide(context)
-            com.dailyvox.app.system.RecordingLive.onFinishRequested = null
+            SpeechCapture.State.PAUSED -> {
+                // The chip stays, frozen. A recording that is paused has not
+                // ended, and clearing the notification would say it had.
+                com.dailyvox.app.system.RecordingLive.onFinishRequested = { capture.stop() }
+                com.dailyvox.app.system.RecordingLive.show(context, elapsed)
+            }
+            else -> {
+                com.dailyvox.app.system.RecordingLive.hide(context)
+                com.dailyvox.app.system.RecordingLive.onFinishRequested = null
+            }
         }
     }
 
@@ -141,6 +160,7 @@ fun SpeakScreen(
         if (autoStart && granted && state == SpeechCapture.State.IDLE) {
             onAutoStarted()
             haptics.recordStart()
+            elapsed = 0
             recorder.start(); capture.start()
         } else if (autoStart && !granted) {
             onAutoStarted()
@@ -151,6 +171,12 @@ fun SpeakScreen(
     // recording leaves a "Listening" chip that nothing will ever clear.
     DisposableEffect(Unit) {
         onDispose {
+            todayQueue.stop()
+            // `capture.release()` only ends the recogniser. A recording still
+            // open when the screen goes away would leave MediaRecorder holding
+            // the microphone — and now that Pause exists, "still open" includes
+            // a paused entry the user walked away from.
+            if (capture.state.value != SpeechCapture.State.IDLE) recorder.discard()
             capture.release()
             com.dailyvox.app.system.RecordingLive.hide(context)
             com.dailyvox.app.system.RecordingLive.onFinishRequested = null
@@ -160,16 +186,31 @@ fun SpeakScreen(
     // Recording is a full-screen moment, not a state of this screen. The design
     // gives it its own navy dial (B2b), so hand off entirely rather than trying
     // to morph the idle layout around it.
-    LaunchedEffect(state) { onRecordingChanged(state == SpeechCapture.State.RECORDING) }
+    LaunchedEffect(state) {
+        onRecordingChanged(
+            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED
+        )
+    }
 
-    if (state == SpeechCapture.State.RECORDING) {
+    if (state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED) {
         RecordingDial(
             elapsed = elapsed,
             level = level,
             partial = partial,
             lastEntity = caughtEntity,
+            paused = state == SpeechCapture.State.PAUSED,
             onStop = { haptics.recordStop(); capture.stop() },
-            onDiscard = { capture.stop(); recorder.stop() },
+            // Discard used to call `capture.stop()`, which emits `finished`,
+            // which the collector below SAVES. The entry the user threw away
+            // was filed anyway, audio and all.
+            onDiscard = {
+                haptics.recordStop()
+                capture.cancel()
+                recorder.discard()
+                elapsed = 0
+            },
+            onPause = { capture.pause(); recorder.pause() },
+            onResume = { capture.resume(); recorder.resume() },
             modifier = modifier,
         )
         return
@@ -270,7 +311,7 @@ fun SpeakScreen(
             onTap = {
                 if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
-                else { capture.clearError(); haptics.recordStart(); recorder.start(); capture.start() }
+                else { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
             },
         )
 
@@ -360,15 +401,53 @@ fun SpeakScreen(
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
                     MonoLabel("today ✦ · ${java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date(e.createdAt))}")
-                    Text(
-                        "▶ %d:%02d".format(e.durationSec / 60, e.durationSec % 60),
-                        fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(11.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                    )
+                    // It looked like a play button and was a label: no
+                    // clickable, no player, nothing behind the triangle.
+                    //
+                    // The touch target sits on the Box, not on the chip. The
+                    // chip is drawn at the design's size and would be a ~20dp
+                    // target on its own — under the 48dp §8.6 asks for, and the
+                    // one Play's pre-launch report measures.
+                    Box(
+                        Modifier
+                            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                            .clickable {
+                                if (playingToday) {
+                                    todayQueue.stop(); playingToday = false
+                                } else {
+                                    val path = e.audioPath
+                                    if (path.isNullOrBlank()) {
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "This entry has no audio saved.",
+                                            android.widget.Toast.LENGTH_SHORT,
+                                        ).show()
+                                    } else {
+                                        playingToday = true
+                                        todayQueue.play(listOf(path)) { playingToday = false }
+                                    }
+                                }
+                            }
+                            .semantics {
+                                contentDescription =
+                                    if (playingToday) "Stop playing today's entry"
+                                    else "Play today's entry"
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            "%s %d:%02d".format(
+                                if (playingToday) "■" else "▶",
+                                e.durationSec / 60, e.durationSec % 60,
+                            ),
+                            fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(11.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .padding(horizontal = 10.dp, vertical = 6.dp),
+                        )
+                    }
                 }
                 Spacer(Modifier.height(7.dp))
                 // One flowing line, not two Texts side by side. The previous
@@ -403,8 +482,9 @@ fun SpeakScreen(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // scheme.tertiary, not the v1.0 hex this was pinned to.
             Box(Modifier.size(7.dp).clip(RoundedCornerShape(4.dp))
-                .background(Color(0xFF4F7A3E)))
+                .background(MaterialTheme.colorScheme.tertiary))
             Spacer(Modifier.width(10.dp))
             Text("Works in airplane mode. Nothing leaves this phone.",
                  fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface,
@@ -440,21 +520,25 @@ private fun RecordButton(
     // The dots are drawn individually rather than as a dashed stroke: Compose
     // has no stroke-linecap on a PathEffect dash, so a dashed circle renders as
     // 42 tiny rectangles instead of 42 round ticks.
+    // §8.8: the solar-system idle is ambient, so it parks.
+    val still = com.dailyvox.app.ui.components.reduceMotion()
     val spin = rememberInfiniteTransition(label = "ring")
-    val drift by spin.animateFloat(
+    val driftRaw by spin.animateFloat(
         0f, 360f,
         infiniteRepeatable(tween(120_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "drift",
+        label = "driftRaw",
     )
-    val orbit by spin.animateFloat(
+    val drift = if (still) 0f else driftRaw
+    val orbitRaw by spin.animateFloat(
         0f, 360f,
         infiniteRepeatable(
             tween(if (state == SpeechCapture.State.RECORDING) 12_000 else 16_000,
                   easing = LinearEasing),
             RepeatMode.Restart,
         ),
-        label = "orbit",
+        label = "orbitRaw",
     )
+    val orbit = if (still) 0f else orbitRaw
     // Record start: mic scales 1 -> 1.08 on a spring (§4).
     val press by animateFloatAsState(
         if (state == SpeechCapture.State.RECORDING) 1.08f else 1f,

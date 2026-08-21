@@ -65,6 +65,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     // phones opened this on cream, which is the Light theme — technically in the
     // spec, and the reason the app read as beige and lifeless.
     var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SUNSET")!!)) }
+    /** Set by B4's "Ask about this"; consumed by the Ask screen on arrival. */
+    var askSeed by rememberSaveable { mutableStateOf<String?>(null) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
     var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
@@ -95,9 +97,15 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     var autoRecord by remember { mutableStateOf(flag("start_recording")) }
     val openJournalOnLaunch = remember { flag("open_journal") }
+    /** "Ask my Twin…" via the assistant or the launcher shortcut (§5). */
+    val openAskOnLaunch = remember { flag("open_ask") }
 
     LaunchedEffect(openJournalOnLaunch) {
         if (openJournalOnLaunch) current = Destination.JOURNAL
+    }
+
+    LaunchedEffect(openAskOnLaunch) {
+        if (openAskOnLaunch) current = Destination.ASK
     }
 
     val askNotifications = rememberLauncherForActivityResult(
@@ -155,9 +163,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         ThemeChoice.DARK -> true
         // Re-read on every recomposition rather than cached: the theme should
         // change when the evening arrives, not only on next launch.
-        ThemeChoice.SUNSET -> java.util.Calendar.getInstance()
-            .get(java.util.Calendar.HOUR_OF_DAY)
-            .let { it >= 19 || it < 6 }
+        // Follows the real sun (§2.8), not a fixed clock window.
+        ThemeChoice.SUNSET -> com.dailyvox.app.system.SolarClock.isAfterSunset()
     }
 
     DailyVoxTheme(darkTheme = dark) {
@@ -271,17 +278,23 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         val view = androidx.compose.ui.platform.LocalView.current
         val darkTheme = androidx.compose.material3.MaterialTheme.colorScheme.background ==
             com.dailyvox.app.ui.theme.NightBackground
+        // The Twin tab is navy under BOTH themes (§8.4), so the surface behind
+        // the status bar is dark there even in daylight. Driving the icons off
+        // the theme alone painted dark glyphs on the night sky.
+        val nightSurface = darkTheme || current == com.dailyvox.app.ui.nav.Destination.TWIN
         androidx.compose.runtime.SideEffect {
             val window = (view.context as android.app.Activity).window
             androidx.core.view.WindowCompat.getInsetsController(window, view)
-                .isAppearanceLightStatusBars = !darkTheme
+                .isAppearanceLightStatusBars = !nightSurface
         }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
-                    night = darkTheme,
+                    // Follows the SCREEN, not the theme — a cream bar under the
+                    // navy sky is the seam that made always-night look broken.
+                    night = nightSurface,
                     current = current,
                     onSelect = { current = it },
                 )
@@ -302,6 +315,18 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     onPhoto = { path ->
                         vm.attachPhoto(detail.id, path)
                         openEntry = detail.copy(photoPath = path)
+                    },
+                    onEdit = { edited ->
+                        vm.editText(detail.id, edited)
+                        openEntry = detail.copy(text = edited)
+                    },
+                    onAsk = { question ->
+                        // Close the entry and land on Ask with the question
+                        // already sent — B4's action is a destination, not a
+                        // dialog on top of the entry it is about.
+                        askSeed = question
+                        openEntry = null
+                        current = com.dailyvox.app.ui.nav.Destination.ASK
                     },
                     modifier = inner,
                 )
@@ -390,6 +415,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     Destination.ASK -> AskScreen(
                         entries = entries,
                         onOpenEntry = { openEntry = it },
+                        seedQuestion = askSeed,
+                        onSeedConsumed = { askSeed = null },
                         modifier = inner,
                     )
                 }

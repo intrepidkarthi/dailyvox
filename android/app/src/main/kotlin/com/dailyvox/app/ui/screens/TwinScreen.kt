@@ -40,6 +40,13 @@ import kotlin.math.sin
  * whole surface is night, including under the sky, because this is the one
  * screen the spec makes unconditional.
  *
+ * This screen briefly followed the app theme instead. The reasoning was that a
+ * navy screen among three cream ones read as a bug rather than as a mood, and
+ * that note came back twice. It is reverted here because the spec states the
+ * rule three times — §1 colour rules, §2.5, and acceptance criterion §8.4 —
+ * and because the seam it was really describing was the cream NAV BAR sitting
+ * under a navy sky, which the bar's `night` flag now fixes instead.
+ *
  * The earlier build got the structure wrong in four ways worth naming, since
  * each was a decision rather than an oversight: it was titled "Your Twin" with
  * a resolution percentage badge, it drew straight lines between arbitrary
@@ -57,34 +64,45 @@ fun TwinScreen(
     onShare: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    // §8.8. The sky still DRAWS everything under reduced motion — the
+    // constellation is the content, not the animation — it just stops drifting,
+    // twinkling and running a comet.
+    val still = com.dailyvox.app.ui.components.reduceMotion()
     val sky = rememberInfiniteTransition(label = "sky")
-    val orbitInner by sky.animateFloat(
+    val orbitInnerRaw by sky.animateFloat(
         0f, 360f,
         infiniteRepeatable(tween(80_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "orbitInner",
+        label = "orbitInnerRaw",
     )
-    val orbitOuter by sky.animateFloat(
+    val orbitInner = if (still) 21f else orbitInnerRaw
+    val orbitOuterRaw by sky.animateFloat(
         360f, 0f,
         infiniteRepeatable(tween(130_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "orbitOuter",
+        label = "orbitOuterRaw",
     )
-    val comet by sky.animateFloat(
+    val orbitOuter = if (still) 88f else orbitOuterRaw
+    val cometRaw by sky.animateFloat(
         0f, 360f,
         infiniteRepeatable(tween(18_000, easing = LinearEasing), RepeatMode.Restart),
-        label = "comet",
+        label = "cometRaw",
     )
-    val innerBody by sky.animateFloat(
+    val comet = if (still) 140f else cometRaw
+    val innerBodyRaw by sky.animateFloat(
         360f, 0f,
         infiniteRepeatable(tween(30_000, easing = LinearEasing), RepeatMode.Restart),
         label = "innerBody",
     )
-    val coreGlow by sky.animateFloat(
+    val innerBody = if (still) 200f else innerBodyRaw
+    val coreGlowRaw by sky.animateFloat(
         0.7f, 1f,
         infiniteRepeatable(tween(5_000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "coreGlow",
     )
+    val coreGlow = if (still) 0.5f else coreGlowRaw
     // Nine twinkle phases at the spec's 2.7-4.1s, each offset so no two land
     // together — that stagger is what stops it reading as a pulsing diagram.
+    // Twinkles are the one loop that is purely decorative, so under reduced
+    // motion they simply sit at full brightness.
     val twinkle = List(9) { i ->
         sky.animateFloat(
             1f, 0.22f,
@@ -120,22 +138,21 @@ fun TwinScreen(
     val skyHeight = (androidx.compose.ui.platform.LocalConfiguration.current
         .screenHeightDp.dp - 405.dp).coerceIn(280.dp, 620.dp)
 
-    val scheme = MaterialTheme.colorScheme
-    val night = scheme.background == NightBackground
-    // On cream the thin link strokes and orbit rings need the darker gold and
-    // the page ink; plain Gold at 1.4dp all but vanishes on #F7F3EA.
+    // NIGHT TOKENS, UNDER BOTH THEMES (FINAL-SPEC §1 rules, §8.4). This screen
+    // does not read `MaterialTheme.colorScheme` for anything it paints: the sky
+    // is always night, so a day-theme variant of it is not a thing that exists.
     val palette = SkyPalette(
-        ink = if (night) NightText else scheme.onBackground,
-        line = if (night) Gold else DayGoldText,
+        ink = NightText,
+        line = Gold,
         core = Gold,
-        accent = if (night) StarBlue else Color(0xFF4C7BA6),
+        accent = StarBlue,
     )
-    val goldText = if (night) NightGoldText else DayGoldText
+    val goldText = NightGoldText
 
     Column(
         modifier
             .fillMaxSize()
-            .background(scheme.background)
+            .background(NightBackground)
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(14.dp))
@@ -145,7 +162,7 @@ fun TwinScreen(
             verticalAlignment = Alignment.Bottom,
         ) {
             Text("Your sky", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
-                 color = scheme.onBackground)
+                 color = NightText)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Star count, not a percentage. The number is what the user made.
                 Text(
@@ -179,7 +196,7 @@ fun TwinScreen(
             Canvas(Modifier.fillMaxSize()) {
                 drawSky(
                     palette, entries, orbitInner, orbitOuter, comet, innerBody, coreGlow,
-                    twinkle.map { it.value },
+                    if (still) List(9) { 1f } else twinkle.map { it.value },
                 )
             }
             // Named stars, labelled in place — the sky is only meaningful if you
@@ -198,13 +215,13 @@ fun TwinScreen(
             }
             named.getOrNull(1)?.let { (n, _) ->
                 Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = scheme.onSurfaceVariant,
+                     color = NightTextSecondary,
                      modifier = Modifier.align(Alignment.TopEnd)
                          .offset(x = (-26).dp, y = skyHeight * 0.19f))
             }
             named.getOrNull(2)?.let { (n, _) ->
                 Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = scheme.onSurfaceVariant,
+                     color = NightTextSecondary,
                      modifier = Modifier.align(Alignment.BottomStart)
                          .offset(x = 34.dp, y = -skyHeight * 0.10f))
             }
@@ -215,7 +232,7 @@ fun TwinScreen(
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(scheme.surface)
+                .background(NightSurface)
                 .padding(horizontal = 16.dp, vertical = 13.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -230,7 +247,7 @@ fun TwinScreen(
             Text(
                 summary(entries),
                 fontSize = 12.sp, lineHeight = 17.sp, fontWeight = FontWeight.Medium,
-                color = scheme.onSurface,
+                color = NightText,
             )
         }
 
@@ -264,25 +281,28 @@ private fun SkyLink(title: String, sub: String, onClick: () -> Unit, modifier: M
     Column(
         modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            // Night, like everything else on this screen. These two cards sit
+            // directly under the sky; a cream pair below a navy constellation
+            // is the seam that made the old always-night build look broken.
+            .background(NightSurface)
             .clickable(onClick = onClick)
             .padding(horizontal = 15.dp, vertical = 14.dp),
     ) {
         Text(title, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
-             color = MaterialTheme.colorScheme.onSurface)
+             color = NightText)
         Spacer(Modifier.height(3.dp))
-        Text(sub, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(sub, fontSize = 11.sp, color = NightTextSecondary)
     }
 }
 
 /**
- * Every colour the sky draws with, so the constellation follows the app theme
- * instead of being navy on a cream app.
+ * Every colour the sky draws with.
  *
- * The design spec calls the Twin tab "always night". Shipped that way it was
- * the one screen in a different world from the other three, and read as a bug
- * rather than a mood — which is the note that came back twice. Night is now a
- * theme, not a property of this screen.
+ * All four are night tokens and none of them branch on the theme: "the sky is
+ * always night" is a rule about this screen, not a preference. The struct stays
+ * rather than inlining the constants because `drawSky` is a long function and
+ * naming what each colour MEANS — ink, line, core, accent — is what keeps it
+ * readable.
  */
 private data class SkyPalette(
     /** Orbit rings and unnamed stars — the ink of the sky. */

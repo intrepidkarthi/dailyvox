@@ -1,6 +1,6 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="40dp" android:height="40dp" android:viewportWidth="24" android:viewportHeight="24">
     <!-- The four-point star, the app's own mark — not Material's five-point rating star. -->
-    <path android:fillColor="#E0B15C"
+    <path android:fillColor="#D9A441"
         android:pathData="M12,1 C12.6,7.2 16.8,11.4 23,12 C16.8,12.6 12.6,16.8 12,23 C11.4,16.8 7.2,12.6 1,12 C7.2,11.4 11.4,7.2 12,1 Z" />
 </vector>
