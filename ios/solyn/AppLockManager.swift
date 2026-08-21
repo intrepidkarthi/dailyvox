@@ -63,7 +63,23 @@ final class AppLockManager: ObservableObject {
     }
 
     /// Authenticate the user using Face ID / Touch ID, with passcode as fallback.
-    func authenticate(completion: @escaping (Bool) -> Void) {
+    /// Why an unlock attempt ended.
+    ///
+    /// A Bool could not tell "you are not who you say you are" apart from "you
+    /// pressed Cancel", and the lock screen was reporting both as
+    /// "Authentication failed. Please try again." Telling someone their face was
+    /// rejected when they simply dismissed the sheet is alarming on any app and
+    /// worse on one whose entire pitch is that it guards a diary.
+    enum Outcome {
+        case success
+        /// The user dismissed the sheet, tapped Cancel, or the system pulled it
+        /// away. Nothing failed; nothing was attempted.
+        case cancelled
+        /// A genuine mismatch, lockout, or unavailable biometry.
+        case failed
+    }
+
+    func authenticate(completion: @escaping (Outcome) -> Void) {
         let context = LAContext()
         let reason = "Unlock DailyVox to access your diary."
 
@@ -75,12 +91,22 @@ final class AppLockManager: ObservableObject {
                 DispatchQueue.main.async {
                     if success {
                         self.isUnlocked = true
-                        completion(true)
-                    } else if let error = authError as? LAError, error.code == .userFallback {
-                        // User tapped "Enter Password" - fall back to passcode
+                        completion(.success)
+                        return
+                    }
+
+                    let code = (authError as? LAError)?.code
+                    switch code {
+                    case .userFallback:
+                        // "Enter Password" — an escalation, not a refusal.
                         self.authenticateWithPasscode(completion: completion)
-                    } else {
-                        // Biometrics failed - try passcode
+                    case .userCancel, .systemCancel, .appCancel:
+                        // Deliberately NOT escalated to passcode. Someone who
+                        // dismissed Face ID does not want a passcode sheet
+                        // thrown at them next; they want the screen to wait.
+                        completion(.cancelled)
+                    default:
+                        // A real mismatch or lockout. Passcode is the way out.
                         self.authenticateWithPasscode(completion: completion)
                     }
                 }
@@ -91,14 +117,20 @@ final class AppLockManager: ObservableObject {
         }
     }
 
-    private func authenticateWithPasscode(completion: @escaping (Bool) -> Void) {
+    private func authenticateWithPasscode(completion: @escaping (Outcome) -> Void) {
         let context = LAContext()
         let reason = "Enter your passcode to unlock DailyVox."
 
-        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, _ in
+        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
             DispatchQueue.main.async {
                 self.isUnlocked = success
-                completion(success)
+                if success {
+                    completion(.success)
+                    return
+                }
+                let code = (authError as? LAError)?.code
+                let cancelled = code == .userCancel || code == .systemCancel || code == .appCancel
+                completion(cancelled ? .cancelled : .failed)
             }
         }
     }

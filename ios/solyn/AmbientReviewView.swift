@@ -30,12 +30,12 @@ struct AmbientReviewView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "sparkles")
-                .font(.system(size: 32))
+                .font(.dv(size: 32))
                 .foregroundColor(.secondary)
             Text("Nothing waiting")
-                .font(.headline)
+                .font(.dv(.headline))
             Text("When DailyVox notices context from your day — the kind of photos you took, the music you reached for — it waits here for you to keep or let go.")
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
@@ -69,17 +69,17 @@ struct AmbientReviewView: View {
     private func signalRow(_ item: AmbientSignal) -> some View {
         HStack(spacing: 14) {
             Image(systemName: item.kind == .photo ? "photo.on.rectangle.angled" : "music.note")
-                .font(.system(.title3))
+                .font(.dv(.title3))
                 .foregroundColor(.accentColor)
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.label)
-                    .font(.system(.subheadline).weight(.medium))
+                    .font(.dv(.subheadline, weight: .medium))
                     .fixedSize(horizontal: false, vertical: true)
                 if let detail = item.detail {
                     Text(detail)
-                        .font(.system(.footnote))
+                        .font(.dv(.footnote))
                         .foregroundColor(.secondary)
                 }
             }
@@ -90,7 +90,7 @@ struct AmbientReviewView: View {
                 keep(item)
             } label: {
                 Text("Keep")
-                    .font(.system(.subheadline).weight(.semibold))
+                    .font(.dv(.subheadline, weight: .semibold))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)

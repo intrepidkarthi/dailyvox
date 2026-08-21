@@ -39,7 +39,7 @@ struct BodyTwinReviewView: View {
     private var reviewList: some View {
         VStack(spacing: 18) {
             Text("These signals arrived with your recent entries. Keep what feels true — your Twin learns nothing until you do. Let go, and it's deleted.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.dv(.subheadline, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20).padding(.top, 8)
@@ -54,7 +54,7 @@ struct BodyTwinReviewView: View {
                     keepAll()
                 } label: {
                     Text("Keep all \(queue.count)")
-                        .font(.system(.callout, design: .rounded).weight(.semibold))
+                        .font(.dv(.callout, design: .rounded, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
@@ -72,7 +72,7 @@ struct BodyTwinReviewView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text(item.snapshot.capturedAt.formatted(date: .abbreviated, time: .shortened))
-                    .font(.system(.footnote, design: .rounded).weight(.semibold))
+                    .font(.dv(.footnote, design: .rounded, weight: .semibold))
                     .foregroundColor(.primary)
                 Spacer()
                 contextTag(item.snapshot.activityContext)
@@ -82,11 +82,11 @@ struct BodyTwinReviewView: View {
                 ForEach(signals(in: item.snapshot), id: \.text) { signal in
                     HStack(spacing: 8) {
                         Image(systemName: signal.icon)
-                            .font(.system(.caption).weight(.semibold))
+                            .font(.dv(.caption, weight: .semibold))
                             .foregroundColor(signal.color)
                             .frame(width: 18)
                         Text(signal.text)
-                            .font(.system(.footnote, design: .rounded))
+                            .font(.dv(.footnote, design: .rounded))
                             .foregroundColor(.primary)
                     }
                 }
@@ -99,7 +99,7 @@ struct BodyTwinReviewView: View {
                     }
                 } label: {
                     Text("Let go")
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                        .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                         .foregroundColor(DS.Palette.coral)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
@@ -112,7 +112,7 @@ struct BodyTwinReviewView: View {
                     HapticManager.shared.entrySaved()
                 } label: {
                     Text("Keep")
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                        .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
@@ -131,13 +131,13 @@ struct BodyTwinReviewView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "sparkles")
-                .font(.system(size: 34))
+                .font(.dv(size: 34))
                 .foregroundColor(DS.Palette.gold)
             Text("Nothing waiting")
-                .font(.system(.callout, design: .rounded).weight(.semibold))
+                .font(.dv(.callout, design: .rounded, weight: .semibold))
                 .foregroundColor(.primary)
             Text("When your body has something to add after an entry, it will rest here until you decide.")
-                .font(.system(.footnote, design: .rounded))
+                .font(.dv(.footnote, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)

@@ -59,16 +59,16 @@ struct SemanticSearchView: View {
     private func resultRow(entry: DiaryEntry, score: Double) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(entry.text ?? "")
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .lineLimit(2)
             HStack(spacing: 8) {
                 if let date = entry.date {
                     Text(date, style: .date)
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
                 Text("· \(Int(score * 100))% match")
-                    .font(.caption2)
+                    .font(.dv(.caption2))
                     .foregroundColor(.secondary)
             }
         }

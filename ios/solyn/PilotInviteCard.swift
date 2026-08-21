@@ -21,7 +21,8 @@
 import SwiftUI
 
 struct PilotInviteCard: View {
-    @ObservedObject private var themeManager = ThemeManager.shared
+    /// Shown only on the Twin screen, which is always night.
+    @Environment(\.dvTheme) private var themeManager
     @Environment(\.openURL) private var openURL
     @AppStorage("pilotInviteDismissed") private var dismissed = false
 
@@ -47,17 +48,17 @@ struct PilotInviteCard: View {
                             .fill(DS.Palette.gold.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: "testtube.2")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(DS.Palette.gold)
                     }
                     Text("Help make the Twin honest")
-                        .font(.headline)
+                        .font(.dv(.headline))
                         .foregroundColor(themeManager.textColor)
                     Spacer()
                 }
 
                 Text("DailyVox's Twin is validated against real, consented diaries — and there are only a handful so far. If you'd share yours for research, it would genuinely matter. Nothing leaves this app without your explicit, informed consent; participation happens over email, on your terms.")
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -68,7 +69,7 @@ struct PilotInviteCard: View {
                         }
                     } label: {
                         Text("Learn more")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                             .foregroundColor(.white)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
@@ -81,7 +82,7 @@ struct PilotInviteCard: View {
                         }
                     } label: {
                         Text("No thanks")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(themeManager.secondaryTextColor)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)

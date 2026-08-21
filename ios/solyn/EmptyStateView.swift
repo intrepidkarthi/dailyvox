@@ -27,7 +27,7 @@ struct EmptyStateView: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: icon)
-                    .font(.system(size: 48))
+                    .font(.dv(size: 48))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [.accentColor, .accentColor.opacity(0.7)],
@@ -39,11 +39,11 @@ struct EmptyStateView: View {
 
             VStack(spacing: 8) {
                 Text(title)
-                    .font(.system(.title2, design: .rounded).weight(.semibold))
+                    .font(.dv(.title2, design: .rounded, weight: .semibold))
                     .multilineTextAlignment(.center)
 
                 Text(subtitle)
-                    .font(.subheadline)
+                    .font(.dv(.subheadline))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 400)
@@ -53,7 +53,7 @@ struct EmptyStateView: View {
             if let actionTitle = actionTitle, let action = action {
                 Button(action: action) {
                     Text(actionTitle)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                         .foregroundColor(.white)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 12)
@@ -112,11 +112,11 @@ struct WelcomeCard: View {
 
             VStack(spacing: 12) {
                 Text("Your constellation begins here")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .font(.dv(size: 24, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
 
                 Text("Speak your thoughts. Every word becomes a star in your inner sky. All AI runs on your device — private by design.")
-                    .font(.system(.subheadline, design: .rounded).weight(.regular))
+                    .font(.dv(.subheadline, design: .rounded, weight: .regular))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -145,12 +145,12 @@ struct FeatureRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(color)
                 .frame(width: 24)
 
             Text(text)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(.primary)
         }
     }

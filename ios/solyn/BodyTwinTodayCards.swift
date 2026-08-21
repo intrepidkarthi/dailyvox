@@ -208,7 +208,7 @@ struct BodyTwinIdleCards: View {
     private func whisperCard(_ whisper: BodyWhisper) -> some View {
         HStack(spacing: 10) {
             Image(systemName: whisper.icon)
-                .font(.system(.footnote).weight(.semibold))
+                .font(.dv(.footnote, weight: .semibold))
                 .foregroundColor(whisper.tint)
             Text(whisper.text)
                 .font(.dsCallout)
@@ -239,7 +239,7 @@ struct BodyTwinIdleCards: View {
                         .fill(DS.Palette.tintTerra)
                         .frame(width: 40, height: 40)
                     Image(systemName: "figure.mind.and.body")
-                        .font(.system(.body).weight(.semibold))
+                        .font(.dv(.body, weight: .semibold))
                         .foregroundColor(DS.Palette.terracotta)
                 }
                 VStack(alignment: .leading, spacing: 2) {
@@ -254,7 +254,7 @@ struct BodyTwinIdleCards: View {
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
-                    .font(.system(.caption).weight(.semibold))
+                    .font(.dv(.caption, weight: .semibold))
                     .foregroundColor(inkMuted.opacity(0.6))
             }
             .padding(DS.Space.md)
@@ -325,15 +325,15 @@ struct BodyTwinInviteSheet: View {
                     .fill(DS.Palette.terracotta.opacity(0.15))
                     .frame(width: 64, height: 64)
                 Image(systemName: "figure.mind.and.body")
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.dv(size: 28, weight: .semibold))
                     .foregroundColor(DS.Palette.terracotta)
             }
             Text("Your Twin can learn what your body felt")
-                .font(.system(.title3, design: .rounded).weight(.bold))
+                .font(.dv(.title3, design: .rounded, weight: .bold))
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.center)
             Text("Some days the body speaks first — short sleep, a long walk, a quiet morning. Connect Health and your Twin can hear that side of you too.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.dv(.subheadline, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
@@ -361,15 +361,15 @@ struct BodyTwinInviteSheet: View {
     private func signalRow(icon: String, color: Color, name: String, detail: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(.subheadline).weight(.semibold))
+                .font(.dv(.subheadline, weight: .semibold))
                 .foregroundColor(color)
                 .frame(width: 22)
             VStack(alignment: .leading, spacing: 1) {
                 Text(name)
-                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                    .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                     .foregroundColor(.primary)
                 Text(detail)
-                    .font(.system(.caption, design: .rounded))
+                    .font(.dv(.caption, design: .rounded))
                     .foregroundColor(.secondary)
             }
         }
@@ -391,11 +391,11 @@ struct BodyTwinInviteSheet: View {
     private func promiseRow(icon: String, color: Color, text: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
-                .font(.system(.subheadline).weight(.semibold))
+                .font(.dv(.subheadline, weight: .semibold))
                 .foregroundColor(color)
                 .frame(width: 22)
             Text(text)
-                .font(.system(.footnote, design: .rounded))
+                .font(.dv(.footnote, design: .rounded))
                 .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }

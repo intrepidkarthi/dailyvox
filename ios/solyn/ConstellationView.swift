@@ -444,11 +444,11 @@ struct ConstellationView: View {
 
             VStack(spacing: 8) {
                 Text("Your first star")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .font(.dv(size: 20, weight: .semibold, design: .rounded))
                     .foregroundColor(ivoryGlow.opacity(0.8))
 
                 Text("Every journal entry adds a star to your constellation.\nSpeak for 42 seconds — or as long as you need.")
-                    .font(.system(size: 14, weight: .regular, design: .rounded))
+                    .font(.dv(size: 14, weight: .regular, design: .rounded))
                     .foregroundColor(ivoryGlow.opacity(0.4))
                     .multilineTextAlignment(.center)
                     .lineSpacing(3)
@@ -473,7 +473,7 @@ struct ConstellationView: View {
                     // either. 11pt at 0.75 measures 8.75:1 while still reading as delicate against
                     // the dark sky. The shadow keeps it legible where a bright nebula sits behind.
                     Text(label.uppercased())
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .font(.dv(size: 11, weight: .semibold, design: .rounded))
                         .tracking(2)
                         .foregroundColor(ivoryGlow.opacity(0.75))
                         .shadow(color: bgDeep.opacity(0.8), radius: 3, y: 1)

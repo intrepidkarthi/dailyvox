@@ -72,23 +72,23 @@ private struct ShareablePersonalityCardExport: View {
             // Top branding
             HStack(spacing: 6) {
                 Image(systemName: "waveform.circle.fill")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.dv(size: 14, weight: .semibold))
                     .foregroundColor(ShareCardTheme.gold)
                 Text("DailyVox")
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .font(.dv(size: 14, weight: .bold, design: .rounded))
                     .foregroundColor(.white.opacity(0.5))
             }
             .padding(.bottom, 20)
 
             // Header
             Text("MY DIGITAL TWIN")
-                .font(.system(size: 13, weight: .heavy, design: .rounded))
+                .font(.dv(size: 13, weight: .heavy, design: .rounded))
                 .tracking(2.5)
                 .foregroundColor(ShareCardTheme.gold.opacity(0.9))
                 .padding(.bottom, 6)
 
             Text(profile.maturityLevel)
-                .font(.system(size: 11, weight: .medium))
+                .font(.dv(size: 11, weight: .medium))
                 .foregroundColor(.white.opacity(0.3))
                 .padding(.bottom, 20)
 
@@ -113,13 +113,13 @@ private struct ShareablePersonalityCardExport: View {
                     .fill(ShareCardTheme.gold)
                     .frame(width: 8, height: 8)
                 Text("Dominant Mood")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.dv(size: 10, weight: .semibold))
                     .foregroundColor(.white.opacity(0.4))
                     .textCase(.uppercase)
                     .tracking(1.0)
                 Spacer()
                 Text(profile.dominantMood)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.dv(size: 14, weight: .bold))
                     .foregroundColor(.white.opacity(0.9))
             }
             .padding(.bottom, 14)
@@ -130,13 +130,13 @@ private struct ShareablePersonalityCardExport: View {
                     .fill(ShareCardTheme.sage)
                     .frame(width: 8, height: 8)
                 Text("Communication")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.dv(size: 10, weight: .semibold))
                     .foregroundColor(.white.opacity(0.4))
                     .textCase(.uppercase)
                     .tracking(1.0)
                 Spacer()
                 Text(profile.communicationStyle)
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.dv(size: 14, weight: .bold))
                     .foregroundColor(.white.opacity(0.9))
             }
             .padding(.bottom, 20)
@@ -145,14 +145,14 @@ private struct ShareablePersonalityCardExport: View {
             if !profile.signatureWords.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("SIGNATURE WORDS")
-                        .font(.system(size: 10, weight: .semibold, design: .rounded))
+                        .font(.dv(size: 10, weight: .semibold, design: .rounded))
                         .tracking(1.2)
                         .foregroundColor(.white.opacity(0.35))
 
                     HStack(spacing: 8) {
                         ForEach(Array(profile.signatureWords.prefix(3)), id: \.self) { word in
                             Text(word)
-                                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                .font(.dv(size: 13, weight: .semibold, design: .monospaced))
                                 .foregroundColor(ShareCardTheme.gold.opacity(0.9))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
@@ -168,7 +168,7 @@ private struct ShareablePersonalityCardExport: View {
 
             // Entry count
             Text("Built from \(profile.totalEntries) journal entries")
-                .font(.system(size: 11, weight: .medium))
+                .font(.dv(size: 11, weight: .medium))
                 .foregroundColor(.white.opacity(0.25))
                 .padding(.bottom, 8)
 
@@ -176,15 +176,15 @@ private struct ShareablePersonalityCardExport: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("DailyVox")
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .font(.dv(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(.white.opacity(0.35))
                     Text("AI Voice Journal")
-                        .font(.system(size: 10, weight: .regular))
+                        .font(.dv(size: 10, weight: .regular))
                         .foregroundColor(.white.opacity(0.18))
                 }
                 Spacer()
                 Text("getdailyvox.com")
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .font(.dv(size: 10, weight: .medium, design: .monospaced))
                     .foregroundColor(.white.opacity(0.18))
             }
         }
@@ -214,15 +214,15 @@ private struct ShareablePersonalityCardExport: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 6) {
                     Image(systemName: "waveform.circle.fill")
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(.dv(size: 10, weight: .semibold))
                         .foregroundColor(ShareCardTheme.gold)
                     Text("DailyVox")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
+                        .font(.dv(size: 10, weight: .bold, design: .rounded))
                         .foregroundColor(.white.opacity(0.4))
                 }
 
                 Text("MY DIGITAL TWIN")
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 11, weight: .heavy, design: .rounded))
                     .tracking(2.0)
                     .foregroundColor(ShareCardTheme.gold.opacity(0.9))
 
@@ -237,14 +237,14 @@ private struct ShareablePersonalityCardExport: View {
                     HStack(spacing: 6) {
                         ForEach(Array(profile.signatureWords.prefix(3)), id: \.self) { word in
                             Text(word)
-                                .font(.system(size: 9, weight: .medium, design: .monospaced))
+                                .font(.dv(size: 9, weight: .medium, design: .monospaced))
                                 .foregroundColor(ShareCardTheme.gold.opacity(0.8))
                         }
                     }
                 }
 
                 Text("Built from \(profile.totalEntries) entries")
-                    .font(.system(size: 8, weight: .medium))
+                    .font(.dv(size: 8, weight: .medium))
                     .foregroundColor(.white.opacity(0.2))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -259,11 +259,11 @@ private struct ShareablePersonalityCardExport: View {
 
                 HStack {
                     Text(profile.dominantMood)
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.dv(size: 10, weight: .bold))
                         .foregroundColor(.white.opacity(0.8))
                     Spacer()
                     Text("getdailyvox.com")
-                        .font(.system(size: 8, weight: .medium, design: .monospaced))
+                        .font(.dv(size: 8, weight: .medium, design: .monospaced))
                         .foregroundColor(.white.opacity(0.18))
                 }
             }
@@ -291,7 +291,7 @@ private struct ShareablePersonalityCardExport: View {
 
     private func exportBadge(_ text: String, color: Color, compact: Bool = false) -> some View {
         Text(text)
-            .font(.system(size: compact ? 9 : 12, weight: .semibold, design: .rounded))
+            .font(.dv(size: compact ? 9 : 12, weight: .semibold, design: .rounded))
             .foregroundColor(color)
             .padding(.horizontal, compact ? 8 : 12)
             .padding(.vertical, compact ? 4 : 6)
@@ -303,11 +303,11 @@ private struct ShareablePersonalityCardExport: View {
         VStack(spacing: 3) {
             HStack {
                 Text(trait.label)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.dv(size: 11, weight: .medium))
                     .foregroundColor(.white.opacity(0.45))
                 Spacer()
                 Text(trait.displayLabel)
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.dv(size: 12, weight: .bold))
                     .foregroundColor(.white.opacity(0.85))
             }
             GeometryReader { geo in
@@ -328,11 +328,11 @@ private struct ShareablePersonalityCardExport: View {
             .frame(height: 6)
             HStack {
                 Text(trait.lowLabel)
-                    .font(.system(size: 8))
+                    .font(.dv(size: 8))
                     .foregroundColor(.white.opacity(0.2))
                 Spacer()
                 Text(trait.highLabel)
-                    .font(.system(size: 8))
+                    .font(.dv(size: 8))
                     .foregroundColor(.white.opacity(0.2))
             }
         }
@@ -342,11 +342,11 @@ private struct ShareablePersonalityCardExport: View {
         VStack(spacing: 2) {
             HStack {
                 Text(trait.label)
-                    .font(.system(size: 9, weight: .medium))
+                    .font(.dv(size: 9, weight: .medium))
                     .foregroundColor(.white.opacity(0.4))
                 Spacer()
                 Text(trait.displayLabel)
-                    .font(.system(size: 9, weight: .bold))
+                    .font(.dv(size: 9, weight: .bold))
                     .foregroundColor(.white.opacity(0.8))
             }
             GeometryReader { geo in

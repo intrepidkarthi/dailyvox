@@ -24,9 +24,9 @@ struct ShareableInsightCardView: View {
             Button(action: onShare) {
                 HStack(spacing: 6) {
                     Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.dv(size: 14, weight: .semibold))
                     Text("Share")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.dv(size: 14, weight: .semibold))
                 }
                 .foregroundColor(.white.opacity(0.9))
                 .padding(.horizontal, 20)
@@ -41,9 +41,9 @@ struct ShareableInsightCardView: View {
             // Category badge
             HStack(spacing: 6) {
                 Image(systemName: insight.category.icon)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.dv(size: 11, weight: .semibold))
                 Text("Weekly Insight")
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .font(.dv(size: 11, weight: .semibold, design: .rounded))
                     .textCase(.uppercase)
                     .tracking(1.2)
             }
@@ -51,14 +51,14 @@ struct ShareableInsightCardView: View {
 
             // Headline
             Text(insight.headline)
-                .font(.system(size: 22, weight: .bold, design: .default))
+                .font(.dv(size: 22, weight: .bold))
                 .foregroundColor(.white)
                 .lineSpacing(4)
                 .fixedSize(horizontal: false, vertical: true)
 
             // Subtext
             Text(insight.subtext)
-                .font(.system(size: 15, weight: .regular))
+                .font(.dv(size: 15, weight: .regular))
                 .foregroundColor(.white.opacity(0.6))
                 .lineSpacing(2)
 
@@ -69,7 +69,7 @@ struct ShareableInsightCardView: View {
                         .fill(categoryColor)
                         .frame(width: 6, height: 6)
                     Text(dataPoint)
-                        .font(.system(size: 12, weight: .medium, design: .monospaced))
+                        .font(.dv(size: 12, weight: .medium, design: .monospaced))
                         .foregroundColor(.white.opacity(0.5))
                 }
             }
@@ -80,7 +80,7 @@ struct ShareableInsightCardView: View {
             HStack {
                 Spacer()
                 Text("DailyVox")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .font(.dv(size: 11, weight: .medium, design: .rounded))
                     .foregroundColor(.white.opacity(0.25))
             }
         }
@@ -131,9 +131,9 @@ private struct ShareableCardForExport: View {
             // Category badge
             HStack(spacing: 6) {
                 Image(systemName: insight.category.icon)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.dv(size: 12, weight: .semibold))
                 Text("Weekly Insight")
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .font(.dv(size: 12, weight: .semibold, design: .rounded))
                     .textCase(.uppercase)
                     .tracking(1.2)
             }
@@ -143,13 +143,13 @@ private struct ShareableCardForExport: View {
 
             // Headline
             Text(insight.headline)
-                .font(.system(size: 26, weight: .bold))
+                .font(.dv(size: 26, weight: .bold))
                 .foregroundColor(.white)
                 .lineSpacing(6)
 
             // Subtext
             Text(insight.subtext)
-                .font(.system(size: 16, weight: .regular))
+                .font(.dv(size: 16, weight: .regular))
                 .foregroundColor(.white.opacity(0.6))
                 .lineSpacing(3)
 
@@ -160,7 +160,7 @@ private struct ShareableCardForExport: View {
                         .fill(categoryColor)
                         .frame(width: 6, height: 6)
                     Text(dataPoint)
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .font(.dv(size: 13, weight: .medium, design: .monospaced))
                         .foregroundColor(.white.opacity(0.5))
                 }
             }
@@ -171,15 +171,15 @@ private struct ShareableCardForExport: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("DailyVox")
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .font(.dv(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(.white.opacity(0.4))
                     Text("AI Voice Diary")
-                        .font(.system(size: 10, weight: .regular))
+                        .font(.dv(size: 10, weight: .regular))
                         .foregroundColor(.white.opacity(0.2))
                 }
                 Spacer()
                 Text("getdailyvox.com")
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .font(.dv(size: 10, weight: .medium, design: .monospaced))
                     .foregroundColor(.white.opacity(0.2))
             }
         }
@@ -231,11 +231,11 @@ struct WeeklyInsightsSection: View {
                 Image(systemName: "sparkles")
                     .foregroundColor(ShareCardTheme.gold)
                 Text("Your Week, Decoded")
-                    .font(.headline)
+                    .font(.dv(.headline))
                 Spacer()
                 if insights.count > 1 {
                     Text("\(currentIndex + 1)/\(insights.count)")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             }

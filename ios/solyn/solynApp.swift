@@ -68,6 +68,11 @@ struct DailyVoxApp: App {
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .animation(.easeInOut(duration: 0.3), value: hasCompletedOnboarding)
             .preferredColorScheme(themeManager.selectedTheme.colorScheme)
+            // The app theme, as a value the tree can carry. The Twin screen
+            // overrides it with `.night`; everywhere else this is what
+            // `@Environment(\.dvTheme)` resolves to, and it re-injects on
+            // change because this view observes the manager.
+            .environment(\.dvTheme, themeManager.palette)
             .tint(themeManager.selectedTheme.accentColor)
             .onChange(of: scenePhase) { _, newPhase in
                 switch newPhase {

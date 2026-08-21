@@ -89,10 +89,10 @@ struct SelfLabelPickerCard: View {
     var body: some View {
         VStack(spacing: 14) {
             Text("How did that feel?")
-                .font(.system(.title3, design: .rounded).weight(.bold))
+                .font(.dv(.title3, design: .rounded, weight: .bold))
 
             Text("One tap — this stays on your phone and helps the research pilot.")
-                .font(.footnote)
+                .font(.dv(.footnote))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
 
@@ -103,11 +103,11 @@ struct SelfLabelPickerCard: View {
                     } label: {
                         VStack(spacing: 6) {
                             Image(systemName: emotion.icon)
-                                .font(.system(.title3))
+                                .font(.dv(.title3))
                                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                                 .foregroundColor(emotion.color)
                             Text(emotion.displayName)
-                                .font(.caption2.weight(.medium))
+                                .font(.dv(.caption2, weight: .medium))
                                 .foregroundColor(.primary)
                         }
                         .frame(maxWidth: .infinity)
@@ -123,7 +123,7 @@ struct SelfLabelPickerCard: View {
             // Intensity 1–3, applied to whichever emotion is tapped next.
             HStack(spacing: 14) {
                 Text("How strongly?")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(.secondary)
                 ForEach(1...3, id: \.self) { level in
                     Button {
@@ -141,7 +141,7 @@ struct SelfLabelPickerCard: View {
             Button("Skip") {
                 onDone()
             }
-            .font(.subheadline.weight(.medium))
+            .font(.dv(.subheadline, weight: .medium))
             .foregroundColor(.secondary)
         }
         .padding(20)

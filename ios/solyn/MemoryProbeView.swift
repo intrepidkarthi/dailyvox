@@ -110,17 +110,17 @@ struct MemoryProbeView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
                         Text(result.label)
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                         Spacer()
                         Text(MemoryProbeResult.format(bytes: result.peakDelta))
-                            .font(.subheadline.monospacedDigit())
+                            .font(.dv(.subheadline, design: .monospaced))
                             .foregroundColor(DS.Palette.gold)
                     }
                     Text(result.confidence.summary)
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(result.confidence == .exact ? .secondary : .orange)
                     Text("baseline \(MemoryProbeResult.format(bytes: result.baseline)) · retained \(MemoryProbeResult.format(bytes: result.retained)) · \(result.sampleCount) samples · \(String(format: "%.2fs", result.duration))")
-                        .font(.caption2)
+                        .font(.dv(.caption2))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 2)
@@ -147,9 +147,9 @@ struct MemoryProbeView: View {
     private var guidanceSection: some View {
         Section {
             Text("Running a model measurement")
-                .font(.subheadline.weight(.semibold))
+                .font(.dv(.subheadline, weight: .semibold))
             Text("1. Force-quit and relaunch DailyVox, so the lifetime peak is low and the reading comes back exact rather than sampled.\n2. Run a calibration at roughly the size you expect, and confirm the error is small.\n3. Run the model workload once, cold.\n4. Export before doing anything else — a second run's baseline includes whatever the first one retained.")
-                .font(.caption)
+                .font(.dv(.caption))
                 .foregroundColor(.secondary)
         } header: {
             Text("Protocol")
@@ -165,7 +165,7 @@ struct MemoryProbeView: View {
             Text(label)
             Spacer()
             Text(value)
-                .font(.body.monospacedDigit())
+                .font(.dv(.body, design: .monospaced))
                 .foregroundColor(.secondary)
         }
     }

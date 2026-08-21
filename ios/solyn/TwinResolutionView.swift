@@ -28,16 +28,16 @@ struct TwinResolutionCard: View {
                 meter
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Twin Resolution")
-                        .font(.system(.callout, design: .rounded).weight(.bold))
+                        .font(.dv(.callout, design: .rounded, weight: .bold))
                         .foregroundColor(.primary)
                     Text(subtitle)
-                        .font(.system(.footnote, design: .rounded).weight(.regular))
+                        .font(.dv(.footnote, design: .rounded, weight: .regular))
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(.footnote).weight(.semibold))
+                    .font(.dv(.footnote, weight: .semibold))
                     .foregroundColor(.secondary.opacity(0.5))
             }
             .padding(16)
@@ -48,7 +48,7 @@ struct TwinResolutionCard: View {
                 .fill(Color(.secondarySystemGroupedBackground)))
         }
         .buttonStyle(.plain)
-        .sheet(isPresented: $showSheet) { TwinResolutionSheet() }
+        .sheet(isPresented: $showSheet) { TwinResolutionSheet().appThemedSheet() }
     }
 
     private var subtitle: String {
@@ -78,11 +78,11 @@ struct TwinResolutionCard: View {
                     .rotationEffect(.degrees(-90))
                     .frame(width: 58, height: 58)
                 Text("\(Int((r * 100).rounded()))%")
-                    .font(.system(.subheadline, design: .rounded).weight(.bold))
+                    .font(.dv(.subheadline, design: .rounded, weight: .bold))
                     .foregroundColor(.primary)
             } else {
                 Image(systemName: "questionmark")
-                    .font(.system(.title3).weight(.bold))
+                    .font(.dv(.title3, weight: .bold))
                     .foregroundColor(TR.sage)
             }
         }
@@ -127,7 +127,7 @@ struct TwinResolutionSheet: View {
     private var questionsView: some View {
         VStack(spacing: 18) {
             Text("Answer honestly about yourself. Then see what your Twin — built only from your entries — guessed about you.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.dv(.subheadline, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20).padding(.top, 8)
@@ -135,7 +135,7 @@ struct TwinResolutionSheet: View {
             ForEach(manager.questions) { q in
                 VStack(alignment: .leading, spacing: 10) {
                     Text(q.prompt)
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                        .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                         .foregroundColor(.primary)
                     Slider(value: Binding(
                         get: { draft[q.id] ?? 0.5 },
@@ -145,7 +145,7 @@ struct TwinResolutionSheet: View {
                     HStack {
                         Text(q.lowLabel); Spacer(); Text(q.highLabel)
                     }
-                    .font(.system(.caption, design: .rounded))
+                    .font(.dv(.caption, design: .rounded))
                     .foregroundColor(.secondary)
                 }
                 .padding(16)
@@ -159,7 +159,7 @@ struct TwinResolutionSheet: View {
                 withAnimation(.spring(response: 0.5)) { revealed = true }
             } label: {
                 Text("Reveal how well your Twin knows you")
-                    .font(.system(.callout, design: .rounded).weight(.semibold))
+                    .font(.dv(.callout, design: .rounded, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
@@ -185,13 +185,13 @@ struct TwinResolutionSheet: View {
                         .rotationEffect(.degrees(-90)).frame(width: 150, height: 150)
                     VStack(spacing: 2) {
                         Text("\(Int((r * 100).rounded()))%")
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
-                        Text("match").font(.system(.footnote, design: .rounded)).foregroundColor(.secondary)
+                            .font(.dv(size: 40, weight: .bold, design: .rounded))
+                        Text("match").font(.dv(.footnote, design: .rounded)).foregroundColor(.secondary)
                     }
                 }
                 .padding(.top, 12)
                 Text(verdict(r))
-                    .font(.system(.callout, design: .rounded).weight(.semibold))
+                    .font(.dv(.callout, design: .rounded, weight: .semibold))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
             }
@@ -202,7 +202,7 @@ struct TwinResolutionSheet: View {
             .padding(.horizontal, 16)
 
             Text("Your Twin sharpens with every entry. Come back after journaling to watch this climb.")
-                .font(.system(.footnote, design: .rounded))
+                .font(.dv(.footnote, design: .rounded))
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24).padding(.top, 4)
@@ -217,18 +217,18 @@ struct TwinResolutionSheet: View {
         let twinGuess = twinVal >= 0.5 ? q.highLabel : q.lowLabel
         return HStack(spacing: 12) {
             Image(systemName: agree >= 0.75 ? "checkmark.circle.fill" : agree >= 0.5 ? "circle.lefthalf.filled" : "xmark.circle")
-                .font(.system(.title3))
+                .font(.dv(.title3))
                 .foregroundColor(agree >= 0.75 ? TR.forest : agree >= 0.5 ? TR.gold : TR.coral)
             VStack(alignment: .leading, spacing: 2) {
-                Text(q.prompt).font(.system(.footnote, design: .rounded).weight(.medium))
+                Text(q.prompt).font(.dv(.footnote, design: .rounded, weight: .medium))
                     .foregroundColor(.primary)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("Twin guessed: \(twinGuess.lowercased())")
-                    .font(.system(.caption, design: .rounded)).foregroundColor(.secondary)
+                    .font(.dv(.caption, design: .rounded)).foregroundColor(.secondary)
             }
             Spacer()
             Text("\(Int((agree * 100).rounded()))%")
-                .font(.system(.subheadline, design: .rounded).weight(.bold))
+                .font(.dv(.subheadline, design: .rounded, weight: .bold))
                 .foregroundColor(agree >= 0.75 ? TR.forest : .secondary)
         }
         .padding(14)

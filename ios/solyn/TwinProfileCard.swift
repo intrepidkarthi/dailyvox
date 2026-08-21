@@ -187,7 +187,7 @@ struct TwinProfileCardSection: View {
                         Image(systemName: "person.text.rectangle")
                             .foregroundColor(DS.Palette.gold)
                         Text("Your Personality Card")
-                            .font(.headline)
+                            .font(.dv(.headline))
                         Spacer()
                         Button {
                             shareProfile(profile, format: .story)
@@ -196,7 +196,7 @@ struct TwinProfileCardSection: View {
                                 Image(systemName: "square.and.arrow.up")
                                 Text("Share")
                             }
-                            .font(.caption.weight(.semibold))
+                            .font(.dv(.caption, weight: .semibold))
                             .foregroundColor(DS.Palette.gold)
                         }
                     }
@@ -248,14 +248,14 @@ struct TwinProfileCardContent: View {
             if !profile.signatureWords.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("YOUR WORDS")
-                        .font(.system(.caption2, design: .rounded).weight(.semibold))
+                        .font(.dv(.caption2, design: .rounded, weight: .semibold))
                         .tracking(1.2)
                         .foregroundColor(.secondary)
 
                     HStack(spacing: 8) {
                         ForEach(profile.signatureWords, id: \.self) { word in
                             Text(word)
-                                .font(.system(.caption, design: .monospaced).weight(.medium))
+                                .font(.dv(.caption, design: .monospaced, weight: .medium))
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
                                 .background(DS.Palette.gold.opacity(0.15))
@@ -294,7 +294,7 @@ struct TwinProfileCardContent: View {
 
     private func styleBadge(_ text: String, color: Color) -> some View {
         Text(text)
-            .font(.system(.caption2, design: .rounded).weight(.semibold))
+            .font(.dv(.caption2, design: .rounded, weight: .semibold))
             .foregroundColor(color)
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
@@ -306,11 +306,11 @@ struct TwinProfileCardContent: View {
         VStack(spacing: 3) {
             HStack {
                 Text(trait.label)
-                    .font(.system(.caption2).weight(.medium))
+                    .font(.dv(.caption2, weight: .medium))
                     .foregroundColor(.white.opacity(0.5))
                 Spacer()
                 Text(trait.displayLabel)
-                    .font(.system(.caption2).weight(.semibold))
+                    .font(.dv(.caption2, weight: .semibold))
                     .foregroundColor(.white.opacity(0.8))
             }
             GeometryReader { geo in
@@ -331,11 +331,11 @@ struct TwinProfileCardContent: View {
             .frame(height: 6)
             HStack {
                 Text(trait.lowLabel)
-                    .font(.system(.caption2))
+                    .font(.dv(.caption2))
                     .foregroundColor(.white.opacity(0.25))
                 Spacer()
                 Text(trait.highLabel)
-                    .font(.system(.caption2))
+                    .font(.dv(.caption2))
                     .foregroundColor(.white.opacity(0.25))
             }
         }
@@ -344,10 +344,10 @@ struct TwinProfileCardContent: View {
     private func miniStat(value: String, label: String) -> some View {
         VStack(spacing: 3) {
             Text(value)
-                .font(.system(.footnote).weight(.bold))
+                .font(.dv(.footnote, weight: .bold))
                 .foregroundColor(.white.opacity(0.9))
             Text(label)
-                .font(.system(.caption2))
+                .font(.dv(.caption2))
                 .foregroundColor(.white.opacity(0.35))
         }
         .frame(maxWidth: .infinity)
@@ -364,9 +364,9 @@ private struct TwinProfileCardExport: View {
             // Header
             HStack(spacing: 8) {
                 Image(systemName: "person.text.rectangle")
-                    .font(.system(.caption).weight(.semibold))
+                    .font(.dv(.caption, weight: .semibold))
                 Text("My Personality Profile")
-                    .font(.system(.caption, design: .rounded).weight(.semibold))
+                    .font(.dv(.caption, design: .rounded, weight: .semibold))
                     .textCase(.uppercase)
                     .tracking(1.0)
             }
@@ -387,14 +387,14 @@ private struct TwinProfileCardExport: View {
             if !profile.signatureWords.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("MY WORDS")
-                        .font(.system(.caption2, design: .rounded).weight(.semibold))
+                        .font(.dv(.caption2, design: .rounded, weight: .semibold))
                         .tracking(1.2)
                         .foregroundColor(.white.opacity(0.4))
 
                     HStack(spacing: 8) {
                         ForEach(profile.signatureWords, id: \.self) { word in
                             Text(word)
-                                .font(.system(.caption, design: .monospaced).weight(.medium))
+                                .font(.dv(.caption, design: .monospaced, weight: .medium))
                                 .foregroundColor(DS.Palette.gold.opacity(0.8))
                         }
                     }
@@ -415,15 +415,15 @@ private struct TwinProfileCardExport: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("DailyVox")
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                        .font(.dv(.subheadline, design: .rounded, weight: .semibold))
                         .foregroundColor(.white.opacity(0.4))
                     Text("AI Voice Diary")
-                        .font(.system(.caption2).weight(.regular))
+                        .font(.dv(.caption2, weight: .regular))
                         .foregroundColor(.white.opacity(0.2))
                 }
                 Spacer()
                 Text("getdailyvox.com")
-                    .font(.system(.caption2, design: .monospaced).weight(.medium))
+                    .font(.dv(.caption2, design: .monospaced, weight: .medium))
                     .foregroundColor(.white.opacity(0.2))
             }
         }
@@ -449,7 +449,7 @@ private struct TwinProfileCardExport: View {
 
     private func exportBadge(_ text: String, color: Color) -> some View {
         Text(text)
-            .font(.system(.caption, design: .rounded).weight(.semibold))
+            .font(.dv(.caption, design: .rounded, weight: .semibold))
             .foregroundColor(color)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
@@ -461,11 +461,11 @@ private struct TwinProfileCardExport: View {
         VStack(spacing: 2) {
             HStack {
                 Text(trait.label)
-                    .font(.system(.caption2).weight(.medium))
+                    .font(.dv(.caption2, weight: .medium))
                     .foregroundColor(.white.opacity(0.5))
                 Spacer()
                 Text(trait.displayLabel)
-                    .font(.system(.caption2).weight(.bold))
+                    .font(.dv(.caption2, weight: .bold))
                     .foregroundColor(.white.opacity(0.85))
             }
             GeometryReader { geo in
@@ -484,10 +484,10 @@ private struct TwinProfileCardExport: View {
     private func exportStat(value: String, label: String) -> some View {
         VStack(spacing: 3) {
             Text(value)
-                .font(.system(.subheadline).weight(.bold))
+                .font(.dv(.subheadline, weight: .bold))
                 .foregroundColor(.white.opacity(0.9))
             Text(label)
-                .font(.system(.caption2))
+                .font(.dv(.caption2))
                 .foregroundColor(.white.opacity(0.3))
         }
         .frame(maxWidth: .infinity)

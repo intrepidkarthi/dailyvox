@@ -9,6 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct BackupExportView: View {
+    @Environment(\.dvTheme) private var theme
     let entries: [DiaryEntry]
     
     @Environment(\.dismiss) private var dismiss
@@ -66,10 +67,10 @@ struct BackupExportView: View {
                             
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(format.rawValue)
-                                    .font(.subheadline)
+                                    .font(.dv(.subheadline))
                                     .foregroundColor(.primary)
                                 Text(format.description)
-                                    .font(.caption)
+                                    .font(.dv(.caption))
                                     .foregroundColor(.secondary)
                             }
                             
@@ -116,7 +117,7 @@ struct BackupExportView: View {
 
                     if !encryptionPassword.isEmpty && !confirmPassword.isEmpty && encryptionPassword != confirmPassword {
                         Text("Passwords do not match")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.red)
                     }
                 } header: {
@@ -132,9 +133,9 @@ struct BackupExportView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .foregroundColor(DS.Palette.forest)
-                            .font(.caption)
+                            .font(.dv(.caption))
                         Text("Can be imported back into DailyVox")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -143,19 +144,19 @@ struct BackupExportView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "lock.shield.fill")
                             .foregroundColor(DS.Palette.forest)
-                            .font(.caption)
+                            .font(.dv(.caption))
                         Text("AES-256 encrypted with your password")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
                 
                 HStack(spacing: 8) {
                     Image(systemName: "lock.fill")
-                        .foregroundColor(DS.Palette.sage)
-                        .font(.caption)
+                        .foregroundColor(theme.accentColor)
+                        .font(.dv(.caption))
                     Text("File saved to your device only")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             } header: {
@@ -268,6 +269,7 @@ struct BackupExportView: View {
 // MARK: - Import Backup View
 
 struct ImportBackupView: View {
+    @Environment(\.dvTheme) private var theme
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
 
@@ -293,15 +295,15 @@ struct ImportBackupView: View {
                             .fill(DS.Palette.sage.opacity(0.1))
                             .frame(width: 80, height: 80)
                         Image(systemName: "doc.badge.plus")
-                            .font(.system(size: 32))
-                            .foregroundColor(DS.Palette.sage)
+                            .font(.dv(size: 32))
+                            .foregroundColor(theme.accentColor)
                     }
                     
                     Text("Import JSON Backup")
-                        .font(.headline)
+                        .font(.dv(.headline))
                     
                     Text("Select a JSON backup file exported from DailyVox to restore your entries.")
-                        .font(.subheadline)
+                        .font(.dv(.subheadline))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -313,27 +315,27 @@ struct ImportBackupView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(DS.Palette.forest)
-                        .font(.caption)
+                        .font(.dv(.caption))
                     Text("Duplicate entries are automatically skipped")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.triangle.merge")
-                        .foregroundColor(DS.Palette.sage)
-                        .font(.caption)
+                        .foregroundColor(theme.accentColor)
+                        .font(.dv(.caption))
                     Text("Existing entries are preserved")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack(spacing: 8) {
                     Image(systemName: "icloud.and.arrow.up")
                         .foregroundColor(DS.Palette.terracotta)
-                        .font(.caption)
+                        .font(.dv(.caption))
                     Text("Imported entries sync to iCloud")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             } header: {
