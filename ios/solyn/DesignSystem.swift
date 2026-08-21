@@ -59,7 +59,12 @@ enum DS {
         // Green ACTS.
         static let sage       = Color(red: 0.180, green: 0.357, blue: 0.267)   // #2E5B44 action
         static let sageDeep   = Color(red: 0.129, green: 0.267, blue: 0.196)   // #214432
+        /// NIGHT positive. On cream it has no contrast — use `sagePositive`.
         static let forest     = Color(red: 0.561, green: 0.749, blue: 0.467)   // #8FBF77 positive
+        /// DAY positive. The canvas names #4A7C59, which measures 4.39:1 on
+        /// cream — under the 4.5 AA floor §8.6 asks for. Darkened to #446F51
+        /// (4.72:1); indistinguishable at these sizes and correct for body text.
+        static let sagePositive = Color(red: 0.267, green: 0.435, blue: 0.318)
 
         // Gold REWARDS. Never an action colour.
         static let gold       = Color(red: 0.851, green: 0.643, blue: 0.255)   // #D9A441
@@ -83,19 +88,29 @@ enum DS {
     }
 }
 
-// MARK: - Typography (SF Rounded display for warmth; system body for legibility)
+// MARK: - Typography (FINAL-SPEC §1: Nunito display, Inter UI, DM Mono data)
 
 extension Font {
-    static func dsDisplay(_ size: CGFloat = 32) -> Font { .system(size: size, weight: .bold, design: .rounded) }
-    static let dsTitle    = Font.system(size: 24, weight: .bold,     design: .rounded)
-    static let dsTitle2   = Font.system(size: 19, weight: .semibold, design: .rounded)
-    static let dsHeadline = Font.system(size: 17, weight: .semibold, design: .rounded)
-    static let dsBody     = Font.system(size: 16, weight: .regular)
-    static let dsCallout  = Font.system(size: 15, weight: .medium,   design: .rounded)
-    static let dsCaption  = Font.system(size: 13, weight: .medium,   design: .rounded)
-    static let dsCaption2 = Font.system(size: 11, weight: .semibold, design: .rounded)
-    static let dsStat      = Font.system(size: 30, weight: .bold,    design: .rounded)
-    static let dsMono     = Font.system(size: 12, weight: .medium,   design: .monospaced)
+    // These were SF Rounded — "soft warm geometric-rounded display at bold",
+    // which is a description of Nunito rather than Nunito. The three real faces
+    // are bundled now (see DVFont.swift); the roles below are unchanged, only
+    // what draws them.
+    //
+    // Sizes stay exactly as they were so no screen re-lays-out on this commit.
+
+    /// Nunito 700 — screen titles and big numbers.
+    static func dsDisplay(_ size: CGFloat = 32) -> Font { .dv(size: size, weight: .bold, design: .rounded) }
+    static let dsTitle    = Font.dv(size: 24, weight: .bold,     design: .rounded)
+    static let dsTitle2   = Font.dv(size: 19, weight: .semibold, design: .rounded)
+    static let dsHeadline = Font.dv(size: 17, weight: .semibold, design: .rounded)
+    /// Inter — body copy, where a display face would tire the eye.
+    static let dsBody     = Font.dv(size: 16, weight: .regular)
+    static let dsCallout  = Font.dv(size: 15, weight: .medium,   design: .rounded)
+    static let dsCaption  = Font.dv(size: 13, weight: .medium,   design: .rounded)
+    static let dsCaption2 = Font.dv(size: 11, weight: .semibold, design: .rounded)
+    static let dsStat     = Font.dv(size: 30, weight: .bold,     design: .rounded)
+    /// DM Mono — data labels, timestamps, privacy facts.
+    static let dsMono     = Font.dv(size: 12, weight: .medium,   design: .monospaced)
 }
 
 // MARK: - Shadows (warm-tinted, soft, layered — the "smooth" feel)
@@ -178,12 +193,13 @@ struct DSStatCard: View {
 // MARK: - Section header
 
 struct DSSectionHeader: View {
+    @Environment(\.dvTheme) private var theme
     let title: String
     var subtitle: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Space.xxs) {
-            Text(title).font(.dsTitle2).foregroundColor(DS.Palette.ink)
+            Text(title).font(.dsTitle2).foregroundColor(theme.textColor)
             if let subtitle {
                 Text(subtitle).font(.dsCaption).foregroundColor(DS.Palette.inkMute)
             }
@@ -219,7 +235,7 @@ struct DSSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.dsHeadline)
-            .foregroundColor(DS.Palette.ink)
+            .foregroundColor(theme.textColor)
             .padding(.vertical, 15)
             .padding(.horizontal, DS.Space.xl)
             .frame(maxWidth: .infinity)

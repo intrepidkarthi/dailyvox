@@ -6,6 +6,8 @@
 	<string>DailyVox Diary</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>With your permission, DailyVox reads your recent music listening on this iPhone to derive a one-line mood note (like "reached for calm music") for your Twin. You review every note before it is kept; only the derived label is produced, and nothing about your music leaves this device.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>DailyVox uses Face ID to lock and unlock access to your private diary entries.</string>
 	<key>NSHealthShareUsageDescription</key>
@@ -16,8 +18,6 @@
 	<string>DailyVox needs microphone access to record your voice diary entries.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>DailyVox uses motion activity to tell whether you were moving when a journal entry was made, so body signals are read in the right context. Activity context stays on this iPhone.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>With your permission, DailyVox reads your recent music listening on this iPhone to derive a one-line mood note (like "reached for calm music") for your Twin. You review every note before it is kept; only the derived label is produced, and nothing about your music leaves this device.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries, and — only if you turn on Photo context — reads the day's photos on this iPhone to derive a one-line scene note (like "mostly trail photos") for your Twin. You review every note before it is kept. Photos are analyzed on-device and never leave your iPhone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
@@ -26,6 +26,12 @@
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Nunito-Variable.ttf</string>
+		<string>Inter-Variable.ttf</string>
+		<string>DMMono-Medium.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
