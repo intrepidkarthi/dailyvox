@@ -47,6 +47,74 @@ nothing here has shipped to a user.
   That has not been tested across a broad range of physical devices, and it is
   why there is no release date.
 
+## [1.11.0] — unreleased
+
+### Fixed, and this one matters most
+- **Voice recordings were being sent to Apple's speech servers.** The
+  transcriber read "prefer on-device recognition when offline", which meant that
+  on a connected iPhone — nearly every user, nearly always — the recording was
+  uploaded for better punctuation. Every claim the product makes rested on that
+  not happening: "nothing you say leaves this phone", the 0-calls ledger, the
+  0 BYTES OUT on the Dynamic Island, the shareable privacy receipt. On-device
+  recognition is now unconditional; where it is unavailable, transcription fails
+  and says why rather than reaching for the network. Voice search had the same
+  fault and the same fix.
+- **Settings claimed "Network calls made: 0 · EVER" while the app linked
+  CloudKit and offered a sync toggle.** A claim nothing can falsify is not a
+  claim. The Data Shield panel now reports what is actually true — including
+  when iCloud sync is on — and the shareable receipt prints the sync setting
+  instead of a zero it could not vouch for.
+- The lock screen reported "Authentication failed" to anyone who dismissed the
+  Face ID prompt, and kept reporting it for the rest of the session. Cancelling
+  is not failing.
+- Tab bar targets were 31pt against a 44pt floor, and the bar sat inside the
+  home-indicator strip — so tabs often needed pressing twice. With a keyboard
+  up, taps fell through the bar entirely.
+- Entry actions sat underneath the floating tab bar and could not be pressed.
+- Recording is no longer lost to a phone call: an interruption pauses and keeps
+  what was captured, rather than ending the entry silently.
+
+### Added
+- **Live transcription.** The recording dial and the Dynamic Island now show
+  what is being heard as it is heard, with a gold star when a name is caught.
+  On-device only; if it cannot run, the recording is unaffected.
+- **Dynamic Island**, in full: the 42-second ring, the caught name, the live
+  phrase, a mood bar, and Finish / Discard from the Lock Screen.
+- **A Control Centre control** — the iOS answer to Android's Quick Settings
+  tile. Assignable to the Action Button.
+- **The three faces ship with the app** — Nunito, Inter, DM Mono — replacing the
+  system font everywhere, and text now scales with Dynamic Type.
+- **The constellation encodes the journal.** Distance from the centre is how
+  long ago; angle is the hour it was spoken; size is how long you spoke; colour
+  is mood. Named people sit close and bright when they are recent and frequent,
+  and drift out as they fade. Before this, position came from a hash and size
+  from a list index — it had the grammar of a chart and said nothing.
+- **A "Tonight" share card**, different every night by construction. Everything
+  else was occasional; there was nothing to post on an ordinary Tuesday.
+- Full-screen recording dial with Discard, Stop & keep, and a real Pause.
+- "What your Twin filed" on an entry, with gold-underlined names, plus Edit and
+  Ask about this.
+- A visible semantic search field in the Journal, in the product's own words.
+- Ask your Twin as a Siri intent, answered on the device with its citation count.
+- Reduced-motion support, and a real sunset that follows the sun.
+
+### Changed
+- Sharing reaches three surfaces — an entry, the Journal and the sky — rather
+  than one glyph in one corner. Insights is a named action, not an icon.
+- The Record screen is the question and the microphone, centred, with today's
+  star beneath. The inert "Add a star" card — which drew a microphone that did
+  nothing, above the real one — is gone.
+- Fewer surfaces throughout: the second filter row, the permanent privacy card,
+  the duplicate metadata card, per-row chevrons and the "AI Insights" panel have
+  all been removed. "AI Insights" and "What your Twin filed" were two names for
+  the same thing.
+
+### Known
+- Recording still stops if the app is backgrounded. This is deliberate: a
+  microphone foreground service would add permissions to a ledger the product
+  invites people to audit.
+- App Store screenshots have not been regenerated for this release.
+
 ## [1.10.0] — 2026-08-11
 
 ### Added
