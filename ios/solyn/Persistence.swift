@@ -161,6 +161,17 @@ struct PersistenceController {
         FileManager.default.ubiquityIdentityToken != nil
     }
 
+    /// Whether entries are actually leaving this device right now.
+    ///
+    /// Public because the privacy ledger and the shareable receipt both have to
+    /// state it. They used to print "0 BYTES UPLOADED" as a constant while this
+    /// very class was syncing to CloudKit; a claim nothing can falsify is not a
+    /// claim. Mirrors `shouldEnableCloudKit`, which stays private because it is
+    /// also the one place allowed to write the migration default.
+    static var isCloudSyncActive: Bool {
+        UserDefaults.standard.bool(forKey: "iCloudSyncEnabled") && isCloudAvailable
+    }
+
     /// Enable or disable CloudKit sync at runtime
     func setCloudSyncEnabled(_ enabled: Bool) {
         guard let store = container.persistentStoreCoordinator.persistentStores.first,

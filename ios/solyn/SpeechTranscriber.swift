@@ -12,7 +12,6 @@
 #if os(iOS)
 import Foundation
 import Speech
-import Network
 import AVFoundation
 
 /// Transcribes audio recordings to text using Apple's Speech framework.
@@ -25,8 +24,6 @@ final class SpeechTranscriber {
 
     // MARK: - Private Properties
     
-    private let networkMonitor = NWPathMonitor()
-    private var isOnline = true
     
     // MARK: - Error Types
 
@@ -34,7 +31,7 @@ final class SpeechTranscriber {
         case notAuthorized
         case recognizerUnavailable
         case noFinalResult
-        case offlineNoTranscription
+        case onDeviceUnavailable
 
         var errorDescription: String? {
             switch self {
@@ -44,25 +41,10 @@ final class SpeechTranscriber {
                 return "Speech recognizer is not available."
             case .noFinalResult:
                 return "No final transcription result."
-            case .offlineNoTranscription:
-                return "You're offline. Your recording is saved—tap Edit to add text manually, or transcription will happen when you're back online."
+            case .onDeviceUnavailable:
+                return "No on-device speech model is installed yet, so this one is saved as audio. Turn on Settings > General > Keyboard > Dictation and iOS will fetch the model once; every entry after that transcribes here. Tap Edit to write this one yourself. DailyVox will not transcribe over a network."
             }
         }
-    }
-
-    init() {
-        networkMonitor.pathUpdateHandler = { [weak self] path in
-            self?.isOnline = path.status == .satisfied
-        }
-        networkMonitor.start(queue: DispatchQueue.global(qos: .background))
-    }
-
-    deinit {
-        networkMonitor.cancel()
-    }
-
-    var hasNetworkConnection: Bool {
-        isOnline
     }
 
     // MARK: - Transcription
@@ -145,6 +127,46 @@ final class SpeechTranscriber {
         return text
     }
 
+    /// A recogniser that can work WITHOUT the network, trying more than one
+    /// locale before giving up.
+    ///
+    /// The rule is unchanged — nothing is ever sent to a server — but the first
+    /// version of it asked only `SFSpeechRecognizer()`, i.e. the device's exact
+    /// current locale. Plenty of people run a regional English (en-IN, en-GB,
+    /// en-AU) with only the base en-US speech model installed, and for them
+    /// transcription simply stopped working: the recording saved, the entry
+    /// stayed blank, and the alert told them to go and install something.
+    ///
+    /// So: try the current locale, then plain-language variants, then en-US.
+    /// Every candidate must support on-device recognition to be returned, which
+    /// keeps the promise intact — this widens where it can be KEPT, it does not
+    /// weaken it.
+    static func onDeviceRecognizer() -> SFSpeechRecognizer? {
+        var seen = Set<String>()
+        var candidates: [Locale] = []
+
+        func add(_ locale: Locale?) {
+            guard let locale, seen.insert(locale.identifier).inserted else { return }
+            candidates.append(locale)
+        }
+
+        add(Locale.current)
+        // "en" from "en_IN" — the base model, which most devices do have.
+        if let lang = Locale.current.language.languageCode?.identifier {
+            add(Locale(identifier: lang))
+            add(Locale(identifier: "\(lang)-US"))
+        }
+        add(Locale(identifier: "en-US"))
+
+        for locale in candidates {
+            guard let candidate = SFSpeechRecognizer(locale: locale),
+                  candidate.supportsOnDeviceRecognition,
+                  candidate.isAvailable else { continue }
+            return candidate
+        }
+        return nil
+    }
+
     // MARK: - SFSpeechRecognizer path (iOS < 26, and the fallback)
 
     private func transcribeWithSFSpeech(from audioURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
@@ -155,7 +177,7 @@ final class SpeechTranscriber {
                     return
                 }
 
-                guard let recognizer = SFSpeechRecognizer() else {
+                guard let recognizer = Self.onDeviceRecognizer() else {
                     completion(.failure(TranscriptionError.recognizerUnavailable))
                     return
                 }
@@ -177,23 +199,34 @@ final class SpeechTranscriber {
                     request.contextualStrings = vocabulary
                 }
 
-                // Privacy: Prefer on-device recognition when offline
-                // When online, Apple's servers provide better punctuation
-                // Note: Even server-based recognition goes through Apple, not third parties
-                if recognizer.supportsOnDeviceRecognition && !self.isOnline {
-                    request.requiresOnDeviceRecognition = true
-                } else {
-                    request.addsPunctuation = true
-                }
+                // ON-DEVICE, ALWAYS.
+                //
+                // This used to read "prefer on-device recognition when offline",
+                // which meant that on a normal connected iPhone the recording
+                // was UPLOADED to Apple's speech servers for better punctuation.
+                // Every claim the product makes rested on that not happening:
+                // "nothing you say leaves this phone", the 0-calls ledger, the
+                // 0 BYTES OUT on the Dynamic Island, the shareable receipt.
+                //
+                // Punctuation is not worth the only promise this app has. Where
+                // on-device recognition is unavailable it FAILS and says why,
+                // exactly as the Android build does, instead of quietly
+                // reaching for the network.
+                request.requiresOnDeviceRecognition = true
+                // Supported alongside on-device recognition since iOS 16, and
+                // ignored where it is not.
+                request.addsPunctuation = true
 
                 _ = recognizer.recognitionTask(with: request) { result, error in
                     DispatchQueue.main.async {
                         if let error = error {
-                            // Check if it's a network error
+                            // The speech framework's own domain, which now means
+                            // the on-device model could not do the job. It never
+                            // means "you are offline": offline is the expected
+                            // way to run this app, not a failure mode.
                             let nsError = error as NSError
-                            if nsError.domain == "kAFAssistantErrorDomain" || !self.isOnline {
-                                // Offline or network error - inform user
-                                completion(.failure(TranscriptionError.offlineNoTranscription))
+                            if nsError.domain == "kAFAssistantErrorDomain" {
+                                completion(.failure(TranscriptionError.onDeviceUnavailable))
                             } else {
                                 completion(.failure(error))
                             }

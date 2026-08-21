@@ -76,7 +76,18 @@ final class VoiceSearchManager: ObservableObject {
         // Cancel any existing task
         recognitionTask?.cancel()
         recognitionTask = nil
-        
+
+        // ON-DEVICE, ALWAYS — the same rule as entry transcription, and checked
+        // before the microphone is opened rather than after.
+        //
+        // "Prefer on-device" meant a recogniser without on-device support sent
+        // what you spoke into the search field to Apple. A search box is a diary
+        // query; it leaks the same things the entries do.
+        guard speechRecognizer?.supportsOnDeviceRecognition == true else {
+            errorMessage = "Voice search needs an on-device speech model. Add your language under Settings > General > Keyboard > Dictation Languages — DailyVox will not send your voice to a server."
+            return
+        }
+
         // Configure audio session
         let audioSession = AVAudioSession.sharedInstance()
         do {
@@ -104,10 +115,7 @@ final class VoiceSearchManager: ObservableObject {
         // Configure for real-time results
         recognitionRequest.shouldReportPartialResults = true
         
-        // Prefer on-device recognition for privacy
-        if speechRecognizer?.supportsOnDeviceRecognition == true {
-            recognitionRequest.requiresOnDeviceRecognition = true
-        }
+        recognitionRequest.requiresOnDeviceRecognition = true
         
         // Start recognition task
         guard let speechRecognizer = speechRecognizer else {

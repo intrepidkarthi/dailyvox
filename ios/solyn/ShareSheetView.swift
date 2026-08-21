@@ -9,8 +9,14 @@ import SwiftUI
 import CoreData
 
 /// The card is rendered on this device and handed to the system share sheet.
-/// The app never sends it anywhere — with no networking code in the target it
-/// could not, which is exactly the claim the cards are making.
+/// The app never sends it anywhere itself — where it goes next is the user's
+/// choice, made in the share sheet.
+///
+/// "No networking code in the target" is what this comment used to say, and it
+/// was wrong: the app links CloudKit for optional iCloud sync. The cards state
+/// what is actually true instead — nothing is sent to DailyVox, because there
+/// is no DailyVox server — and the receipt prints the sync setting rather than
+/// a zero it cannot vouch for.
 ///
 /// NAMES ARE OFF BY DEFAULT. The toggle exists because some people do want to
 /// post "Sarah · 61 nights", but the default has to be the safe one: a shared
@@ -26,7 +32,9 @@ struct ShareSheetView: View {
         animation: .default)
     private var entries: FetchedResults<DiaryEntry>
 
-    @State private var card: Shareables.Card = .mySky
+    // Opens on Tonight: it is the only card that is different every day, so it
+    // is the one someone is most likely to have come here for.
+    @State private var card: Shareables.Card = .tonight
     @State private var includeNames = false
     @State private var airplaneDeclared = false
     @State private var shareURL: URL?
@@ -99,7 +107,9 @@ struct ShareSheetView: View {
             ForEach(cards) { c in
                 let active = c == card
                 Text(c.title)
-                    .font(.system(size: 12, weight: active ? .heavy : .bold, design: .rounded))
+                    // Weight restored: the typography sweep dropped conditional
+                    // weights, and this chip's selected state was one of two.
+                    .font(.dv(size: 12, weight: active ? .heavy : .bold, design: .rounded))
                     .foregroundColor(active
                                      ? (theme.isNight ? DS.Palette.navy : .white)
                                      : theme.secondaryTextColor)
@@ -164,7 +174,7 @@ struct ShareSheetView: View {
                 if let url = Shareables.pngURL(card, image: image) { shareURL = url }
             } label: {
                 Text(card == .wallpaper ? "Save or share the image" : "Share")
-                    .font(.system(size: 15, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 15, weight: .heavy, design: .rounded))
                     .foregroundColor(theme.isNight ? DS.Palette.navy : .white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 15)

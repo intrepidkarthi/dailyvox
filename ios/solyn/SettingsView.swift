@@ -7,6 +7,7 @@ import UIKit
 #endif
 
 struct SettingsView: View {
+    @Environment(\.dvTheme) private var theme
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var reminderManager = ReminderManager.shared
@@ -224,34 +225,64 @@ struct SettingsView: View {
         }
     }
 
+    /// The Data Shield ledger.
+    ///
+    /// It used to print "0 \u{00B7} EVER" and "no networking code of any kind" as
+    /// constants, on a screen that also carries an iCloud Sync toggle. Two of
+    /// those three things could not be true at once. A ledger that cannot be
+    /// falsified is not a ledger, it is a slogan \u{2014} so every row here now reads
+    /// the state it is describing.
     @ViewBuilder
     private var dataShieldSection: some View {
         Section {
-            LabeledContent("Network calls made") {
-                Text("0 \u{00B7} EVER")
-                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                    .foregroundColor(DS.Palette.sage)
+            LabeledContent("Your words, off this phone") {
+                Text(iCloudSyncEnabled && PersistenceController.isCloudAvailable
+                     ? "YOUR ICLOUD ONLY" : "NEVER")
+                    .font(.dv(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(iCloudSyncEnabled && PersistenceController.isCloudAvailable
+                                     ? themeManager.goldText : DS.Palette.sage)
+            }
+            LabeledContent("Transcription") {
+                Text("ON DEVICE")
+                    .font(.dv(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(theme.accentColor)
+            }
+            LabeledContent("DailyVox servers") {
+                Text("NONE EXIST")
+                    .font(.dv(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundColor(theme.accentColor)
             }
             LabeledContent("Encryption at rest") {
                 Text("AES-256")
-                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .font(.dv(size: 12, weight: .semibold, design: .monospaced))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
             Button {
                 showShareReceipt = true
             } label: {
                 Label("Share this as a receipt", systemImage: "square.and.arrow.up")
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .font(.dv(size: 14, weight: .semibold, design: .rounded))
                     .foregroundColor(themeManager.goldText)
             }
         } header: {
             Text("Data Shield")
         } footer: {
-            Text("The complete permission list: microphone, notifications, speech. No networking code of any kind \u{2014} check it in Settings \u{203A} DailyVox.")
+            Text(dataShieldFooter)
         }
         .sheet(isPresented: $showShareReceipt) {
             ShareSheetView()
         }
+    }
+
+    /// Says the same thing either way \u{2014} DailyVox has nowhere to send anything
+    /// \u{2014} but stops short of claiming nothing moves when the user has asked
+    /// iCloud to move it.
+    private var dataShieldFooter: String {
+        let base = "Speech is transcribed by this iPhone; no recording and no transcript is ever sent to DailyVox, because there is no DailyVox server to send it to. Permissions used: microphone, speech, notifications."
+        guard iCloudSyncEnabled && PersistenceController.isCloudAvailable else {
+            return base + " Nothing leaves this device."
+        }
+        return base + " iCloud Sync is ON, so your entries are copied to your own iCloud account \u{2014} Apple's, not ours. Turn it off below and this device stops talking to anything."
     }
 
     private var appearanceSection: some View {
@@ -393,7 +424,7 @@ struct SettingsView: View {
                 } label: {
                     Label(twinVoice.isSpeaking ? "Stop" : "Hear a sample",
                           systemImage: twinVoice.isSpeaking ? "stop.circle" : "play.circle")
-                        .font(.caption)
+                        .font(.dv(.caption))
                 }
             }
         } header: {
@@ -414,7 +445,7 @@ struct SettingsView: View {
                 case .modelNotReady:
                     Label("Apple Intelligence is still preparing the on-device model — DailyVox switches automatically when it's ready.",
                           systemImage: "hourglass")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 case .appleIntelligenceOff:
                     #if os(iOS)
@@ -424,7 +455,7 @@ struct SettingsView: View {
                         }
                     } label: {
                         Label("Turn on Apple Intelligence in Settings", systemImage: "gear")
-                            .font(.caption)
+                            .font(.dv(.caption))
                     }
                     #endif
                 default:
@@ -475,13 +506,13 @@ struct SettingsView: View {
 
             if lockManager.isEnabled {
                 Text("DailyVox will require \(lockManager.biometryTypeName) or your device passcode to open.")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(.secondary)
             }
 
             if !lockManager.biometricsAvailable {
                 Text("Your device will use your passcode to unlock DailyVox.")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(.secondary)
             }
         }
@@ -589,14 +620,14 @@ struct SettingsView: View {
                             .fill(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? DS.Palette.sage.opacity(0.15) : DS.Palette.inkMute.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: iCloudSyncEnabled && PersistenceController.isCloudAvailable ? "icloud.fill" : "icloud.slash")
-                            .font(.body)
+                            .font(.dv(.body))
                             .foregroundColor(iCloudSyncEnabled && PersistenceController.isCloudAvailable ? DS.Palette.sage : DS.Palette.inkMute)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("iCloud Sync")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                         Text(syncStatusText)
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -610,17 +641,17 @@ struct SettingsView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(DS.Palette.forest)
-                            .font(.caption)
+                            .font(.dv(.caption))
                         Text("Entries sync automatically via your personal iCloud")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                     HStack(spacing: 8) {
                         Image(systemName: "lock.fill")
                             .foregroundColor(DS.Palette.forest)
-                            .font(.caption)
+                            .font(.dv(.caption))
                         Text("End-to-end encrypted with your Apple ID")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -674,14 +705,14 @@ struct SettingsView: View {
                                 .fill(twin.bodyTwin.isActive ? DS.Palette.terracotta.opacity(0.15) : DS.Palette.inkMute.opacity(0.15))
                                 .frame(width: 36, height: 36)
                             Image(systemName: "figure.mind.and.body")
-                                .font(.body)
+                                .font(.dv(.body))
                                 .foregroundColor(twin.bodyTwin.isActive ? DS.Palette.terracotta : DS.Palette.inkMute)
                         }
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Body Twin")
-                                .font(.subheadline.weight(.semibold))
+                                .font(.dv(.subheadline, weight: .semibold))
                             Text(bodyTwinStatusText)
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -726,21 +757,21 @@ struct SettingsView: View {
                                 .fill(DS.Palette.gold.opacity(0.15))
                                 .frame(width: 36, height: 36)
                             Image(systemName: "sparkles")
-                                .font(.body)
+                                .font(.dv(.body))
                                 .foregroundColor(DS.Palette.gold)
                         }
                         VStack(alignment: .leading, spacing: 2) {
                             Text(pendingSnapshots.count == 1
                                  ? "1 signal waiting for review"
                                  : "\(pendingSnapshots.count) signals waiting for review")
-                                .font(.subheadline.weight(.semibold))
+                                .font(.dv(.subheadline, weight: .semibold))
                             // The Twin tab opens the queue even while Body
                             // Twin is off (BodyTwinCard) — the caption tracks
                             // that so it never points at a door that won't open.
                             Text(twin.bodyTwin.isActive
                                  ? "Your Twin tab holds them — nothing is learned until you tap Keep."
                                  : "Body Twin is off, but the Twin tab still holds them — Keep or Let go anytime.")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -828,14 +859,14 @@ struct SettingsView: View {
                         .fill(DS.Palette.forest.opacity(0.15))
                         .frame(width: 44, height: 44)
                     Image(systemName: "lock.shield.fill")
-                        .font(.title3)
+                        .font(.dv(.title3))
                         .foregroundColor(DS.Palette.forest)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Privacy First")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                     Text("Your data is encrypted and private")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             }
@@ -878,20 +909,20 @@ struct SettingsView: View {
                             .fill(DS.Palette.gold.opacity(0.15))
                             .frame(width: 44, height: 44)
                         Image(systemName: "testtube.2")
-                            .font(.title3)
+                            .font(.dv(.title3))
                             .foregroundColor(DS.Palette.gold)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Join the research pilot")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                             .foregroundColor(.primary)
                         Text("Help measure how well the Twin knows you")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                     Spacer()
                     Image(systemName: "arrow.up.right")
-                        .font(.caption.weight(.semibold))
+                        .font(.dv(.caption, weight: .semibold))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 4)
@@ -900,9 +931,9 @@ struct SettingsView: View {
             Toggle(isOn: $pilotLabelingEnabled) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Label my entries after recording")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                     Text("For pilot participants — a one-tap feeling check after each recording")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             }
@@ -914,14 +945,14 @@ struct SettingsView: View {
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: "square.and.arrow.up")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(DS.Palette.gold)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Export research data")
-                                .font(.subheadline.weight(.semibold))
+                                .font(.dv(.subheadline, weight: .semibold))
                                 .foregroundColor(.primary)
                             Text("Your labeled entries as JSON — you choose where it goes")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -958,14 +989,14 @@ struct SettingsView: View {
                             .fill(DS.Palette.terracotta.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: "square.and.arrow.up")
-                            .font(.subheadline)
+                            .font(.dv(.subheadline))
                             .foregroundColor(DS.Palette.terracotta)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Export Data")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                         Text("JSON, Text, Markdown, CSV")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -980,14 +1011,14 @@ struct SettingsView: View {
                             .fill(DS.Palette.sage.opacity(0.15))
                             .frame(width: 36, height: 36)
                         Image(systemName: "square.and.arrow.down")
-                            .font(.subheadline)
-                            .foregroundColor(DS.Palette.sage)
+                            .font(.dv(.subheadline))
+                            .foregroundColor(theme.accentColor)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Import Backup")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                         Text("Restore from JSON backup")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -1057,7 +1088,7 @@ struct SettingsView: View {
                     calculateStorage()
                 } label: {
                     Image(systemName: "arrow.clockwise")
-                        .font(.caption)
+                        .font(.dv(.caption))
                 }
             }
         } footer: {
@@ -1217,13 +1248,13 @@ struct SettingsView: View {
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: "memorychip")
-                        .font(.subheadline)
+                        .font(.dv(.subheadline))
                         .foregroundColor(DS.Palette.gold)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Memory probe")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.dv(.subheadline, weight: .semibold))
                         Text("Measure what a workload costs this process")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
                 }
@@ -1348,6 +1379,8 @@ struct ShareSheet: UIViewControllerRepresentable {
 // MARK: - Theme Button
 
 struct ThemeButton: View {
+    /// The theme this button OFFERS, not the one in force — the swatch has to
+    /// show you what you would be picking.
     let theme: AppTheme
     let isSelected: Bool
     let action: () -> Void
@@ -1365,7 +1398,7 @@ struct ThemeButton: View {
                         .frame(width: 32, height: 32)
                     
                     Image(systemName: theme.icon)
-                        .font(.system(.subheadline).weight(.medium))
+                        .font(.dv(.subheadline, weight: .medium))
                         .foregroundColor(.white)
                 }
                 .overlay {
@@ -1377,7 +1410,7 @@ struct ThemeButton: View {
                 }
                 
                 Text(theme.rawValue)
-                    .font(.caption2)
+                    .font(.dv(.caption2))
                     .foregroundColor(isSelected ? theme.accentColor : .secondary)
             }
         }
@@ -1400,7 +1433,7 @@ struct StorageRow: View {
                     .fill(color.opacity(0.15))
                     .frame(width: 32, height: 32)
                 Image(systemName: icon)
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(color)
             }
             Text(label)
@@ -1420,6 +1453,7 @@ struct StorageRow: View {
 // MARK: - Reminder Preset Row
 
 struct ReminderPresetRow: View {
+    @Environment(\.dvTheme) private var theme
     let icon: String
     let title: String
     let time: String?
@@ -1435,7 +1469,7 @@ struct ReminderPresetRow: View {
                         .fill(isSelected ? DS.Palette.sage.opacity(0.16) : DS.Palette.inkMute.opacity(0.10))
                         .frame(width: 38, height: 38)
                     Image(systemName: icon)
-                        .font(.system(.subheadline).weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                         .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute)
                 }
 
@@ -1443,7 +1477,7 @@ struct ReminderPresetRow: View {
                     HStack(spacing: 6) {
                         Text(title)
                             .font(.dsHeadline)
-                            .foregroundColor(DS.Palette.ink)
+                            .foregroundColor(theme.textColor)
                         if let time = time {
                             Text(time)
                                 .font(.dsCaption)
@@ -1458,7 +1492,7 @@ struct ReminderPresetRow: View {
                 Spacer()
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(.body))
+                    .font(.dv(.body))
                     .foregroundColor(isSelected ? DS.Palette.sage : DS.Palette.inkMute.opacity(0.4))
             }
             .padding(.vertical, DS.Space.xs)
@@ -1486,13 +1520,13 @@ struct HealthSignalToggle: View {
                         .fill(color.opacity(0.15))
                         .frame(width: 32, height: 32)
                     Image(systemName: icon)
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(color)
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(label)
                     Text(detail)
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                 }
             }
@@ -1510,15 +1544,15 @@ struct PrivacyInfoRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(DS.Palette.forest)
                 .frame(width: 20)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.subheadline.weight(.medium))
+                    .font(.dv(.subheadline, weight: .medium))
                 Text(description)
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(.secondary)
             }
         }

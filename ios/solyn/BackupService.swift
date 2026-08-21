@@ -288,16 +288,15 @@ final class BackupService {
             let date = entry.date ?? Date()
             let text = entry.text ?? "(No text)"
             let mood = entry.value(forKey: "mood") as? String ?? ""
-            let starred = entry.isStarred ? " ⭐" : ""
+            let starred = entry.isStarred ? " \u{2726}" : ""
             
             textContent += """
             ───────────────────────────────────────────────────────────────
-            📅 \(dateFormatter.string(from: date))\(starred)
+            \(dateFormatter.string(from: date))\(starred)
             """
             
             if !mood.isEmpty {
-                let moodEmoji = moodToEmoji(mood)
-                textContent += "\n\(moodEmoji) Mood: \(mood.capitalized)"
+                textContent += "\nMood: \(moodLabel(mood))"
             }
             
             textContent += """
@@ -385,7 +384,7 @@ final class BackupService {
                     let date = entry.date ?? Date()
                     let text = entry.text ?? "(No text)"
                     let mood = entry.value(forKey: "mood") as? String ?? ""
-                    let starred = entry.isStarred ? " ⭐" : ""
+                    let starred = entry.isStarred ? " \u{2726}" : ""
                     
                     let dayFormatter = DateFormatter()
                     dayFormatter.dateFormat = "EEEE, MMMM d"
@@ -631,18 +630,12 @@ final class BackupService {
         return formatter.string(from: date)
     }
     
-    private func moodToEmoji(_ mood: String) -> String {
-        switch mood.lowercased() {
-        case "happy": return "☀️"
-        case "calm": return "🍃"
-        case "grateful": return "💗"
-        case "excited": return "⭐"
-        case "tired": return "🌙"
-        case "anxious": return "💨"
-        case "sad": return "🌧️"
-        case "angry": return "🔥"
-        default: return "📝"
-        }
+    /// §8.9: no emoji anywhere in the product, and an export is the product in
+    /// someone else's hands — it is the copy most likely to be read years from
+    /// now, in an app whose emoji font we do not control. The mood is written
+    /// out as the word it always was.
+    private func moodLabel(_ mood: String) -> String {
+        mood.isEmpty ? "" : mood.capitalized
     }
 }
 
