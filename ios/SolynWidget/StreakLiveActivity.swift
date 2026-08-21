@@ -24,25 +24,25 @@ struct StreakLiveActivityWidget: Widget {
                         Image(systemName: "star.fill")
                             .foregroundStyle(WP.gold)
                         Text("Day \(context.state.streak)")
-                            .font(.headline)
+                            .font(.dv(.headline))
                             .foregroundStyle(.primary)
                     }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     if context.state.hasEntryToday {
                         Label("Today done", systemImage: "checkmark.circle.fill")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundStyle(.green)
                     } else {
                         Label("Today open", systemImage: "circle")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundStyle(.secondary)
                     }
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
                         Text("\(context.state.totalEntries) stars in your inner sky")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundStyle(.secondary)
                         Spacer()
                     }
@@ -52,7 +52,7 @@ struct StreakLiveActivityWidget: Widget {
                     .foregroundStyle(WP.gold)
             } compactTrailing: {
                 Text("Day \(context.state.streak)")
-                    .font(.caption2.weight(.semibold))
+                    .font(.dv(.caption2, weight: .semibold))
             } minimal: {
                 Image(systemName: "star.fill")
                     .foregroundStyle(WP.gold)
@@ -74,17 +74,17 @@ private struct StreakLockScreenView: View {
                     .frame(width: 44, height: 44)
                 Image(systemName: "star.fill")
                     .foregroundStyle(WP.gold)
-                    .font(.title3)
+                    .font(.dv(.title3))
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Day \(context.state.streak)")
-                    .font(.headline)
+                    .font(.dv(.headline))
                     .foregroundStyle(lsWarmInk)
                 Text(context.state.hasEntryToday
                      ? "Today's entry is in. \(context.state.totalEntries) stars total."
                      : "Open today — keep the streak alive.")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundStyle(lsWarmInkMute)
             }
 
@@ -92,7 +92,7 @@ private struct StreakLockScreenView: View {
 
             Image(systemName: context.state.hasEntryToday ? "checkmark.circle.fill" : "circle.dashed")
                 .foregroundStyle(context.state.hasEntryToday ? lsWarmSage : lsWarmInkMute)
-                .font(.title2)
+                .font(.dv(.title2))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

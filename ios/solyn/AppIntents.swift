@@ -7,6 +7,8 @@
 
 import AppIntents
 import CoreData
+import Foundation
+import DailyVoxTwinEngine
 
 // MARK: - Add Diary Entry Intent
 
@@ -116,6 +118,61 @@ struct GetTodayEntryIntent: AppIntent {
 // MARK: - App Shortcuts Provider
 
 @available(iOS 16.0, *)
+
+// MARK: - Ask your Twin
+
+/// "Hey Siri, ask my Twin how my week was."
+///
+/// FINAL-SPEC §5 lists this alongside the recording intent, and it was the one
+/// missing on both platforms. It matters more than it looks: an assistant answer
+/// is the only place the product's claim gets tested by someone who never opened
+/// the app — so it runs the SAME retrieval-and-compose path the Ask screen uses,
+/// returns the citation count out loud, and never reaches the network.
+struct AskYourTwinIntent: AppIntent {
+    static var title: LocalizedStringResource = "Ask Your Twin"
+    /// No hardware names here: ITMS-90626 rejects them, and Siri reads this copy
+    /// on whichever device you asked from, so naming one would be wrong as often
+    /// as it was right. "On device" is the promise; "iPhone" was never the part
+    /// carrying it.
+    static var description = IntentDescription(
+        "Ask your Digital Twin about your journal. Answered on device, from your own entries."
+    )
+
+    /// No `openAppWhenRun` — the whole point is an answer without a screen.
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "Question", requestValueDialog: "What would you like to ask your Twin?")
+    var question: String
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let trimmed = question.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            return .result(dialog: "Ask me something about your journal.")
+        }
+
+        let evidence = await TwinChatEvidenceAdapter().recall(query: trimmed, topK: 3, dateRange: nil)
+        let turn = RetrievalAnswerComposer.compose(
+            question: trimmed,
+            evidence: evidence,
+            twin: DigitalTwinEngine.shared,
+            profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+
+        let answer = turn.answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !answer.isEmpty else {
+            return .result(dialog: "I don't have enough entries to answer that yet.")
+        }
+
+        // The receipt, spoken. A cited answer that does not say it is cited is
+        // indistinguishable from a guess.
+        let count = turn.citations.count
+        let receipt = count == 0
+            ? ""
+            : (count == 1 ? " From one of your entries." : " From \(count) of your entries.")
+        return .result(dialog: IntentDialog(stringLiteral: answer + receipt))
+    }
+}
+
 struct DailyVoxShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -150,6 +207,17 @@ struct DailyVoxShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Read Entry",
             systemImageName: "book.fill"
+        )
+
+        AppShortcut(
+            intent: AskYourTwinIntent(),
+            phrases: [
+                "Ask my Twin in \(.applicationName)",
+                "Ask my \(.applicationName) Twin",
+                "What does my \(.applicationName) Twin think"
+            ],
+            shortTitle: "Ask Your Twin",
+            systemImageName: "sparkle"
         )
     }
 }

@@ -112,9 +112,9 @@ struct ConstellationRectangular: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("Day \(entry.streak)")
-                    .font(.headline)
+                    .font(.dv(.headline))
                 Text("\(entry.stars.count) stars")
-                    .font(.caption2)
+                    .font(.dv(.caption2))
                     .foregroundStyle(.secondary)
             }
         }

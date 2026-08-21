@@ -70,13 +70,23 @@ final class LiveActivityManager {
         #endif
     }
 
-    func updateRecordingActivity(elapsed: TimeInterval, level: Float, softTarget: TimeInterval = 42) {
+    func updateRecordingActivity(elapsed: TimeInterval,
+                                 level: Float,
+                                 softTarget: TimeInterval = 42,
+                                 phrase: String = "",
+                                 caughtName: String? = nil,
+                                 valence: Double = 0,
+                                 paused: Bool = false) {
         #if os(iOS)
         guard #available(iOS 16.2, *), let activity = recordingActivity else { return }
         let state = RecordingActivityAttributes.ContentState(
             elapsed: elapsed,
             level: level,
-            passedSoftTarget: elapsed >= softTarget
+            passedSoftTarget: elapsed >= softTarget,
+            phrase: phrase,
+            caughtName: caughtName,
+            valence: valence,
+            paused: paused
         )
         Task {
             await activity.update(ActivityContent(state: state, staleDate: nil))
@@ -103,7 +113,13 @@ final class LiveActivityManager {
 
     /// Fires a short-lived celebratory Live Activity after an entry is saved.
     /// Auto-dismisses after `dismissAfter` seconds.
-    func fireStarBirthActivity(streak: Int, totalStars: Int, moodRaw: String, dismissAfter: TimeInterval = 8) {
+    ///
+    /// Sixty, not eight. §E state ④ has the island "settle to an amber ember"
+    /// after the star lands — the point of the ember is that it is still there
+    /// when you put the phone down and pick it up again, which is the whole
+    /// difference between a notification and a keepsake. Eight seconds made it
+    /// a notification.
+    func fireStarBirthActivity(streak: Int, totalStars: Int, moodRaw: String, dismissAfter: TimeInterval = 60) {
         #if os(iOS)
         guard #available(iOS 16.2, *), areActivitiesEnabled else { return }
 

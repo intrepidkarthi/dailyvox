@@ -29,9 +29,23 @@ struct RecordingActivityAttributes: ActivityAttributes {
         public var level: Float
         /// True after elapsed has crossed the 42-second soft target.
         public var passedSoftTarget: Bool
+
+        /// The tail of what is being heard, live. §E state ③'s transcript line.
+        /// Empty when live transcription is unavailable — see `LiveTranscriber`.
+        public var phrase: String = ""
+        /// A name just caught by the graph. §E state ②. Nil most of the time;
+        /// it is a moment, not a field.
+        public var caughtName: String?
+        /// -1…1 running valence. §E state ③'s gradient bar.
+        public var valence: Double = 0
+        /// True while paused, so the Island stops claiming to listen.
+        public var paused: Bool = false
     }
 
-    // NOT IMPLEMENTED, and the reason is architectural rather than cosmetic.
+    // IMPLEMENTED as of the live-transcription work; this note is kept because
+    // the reasoning explains the shape of the fix.
+    //
+    // WAS NOT IMPLEMENTED, and the reason was architectural rather than cosmetic.
     //
     // Design §E state 2 — "a star is caught" — blinks a gold star with each
     // name the NER recognises WHILE you speak. iOS DailyVox cannot do that:
@@ -40,8 +54,11 @@ struct RecordingActivityAttributes: ActivityAttributes {
     // Island is on screen. The field and its rendering were built and then
     // removed rather than shipped as a state nothing could ever populate.
     //
-    // It needs a streaming recogniser feeding partial results, which is a real
-    // change to the capture path, not a Live Activity change.
+    // It needed a streaming recogniser feeding partial results, which was a real
+    // change to the capture path, not a Live Activity change. `LiveTranscriber`
+    // is that change: an `AVAudioEngine` tap into an on-device
+    // `SFSpeechAudioBufferRecognitionRequest`, running alongside the file
+    // recorder and degrading silently to no live text if it cannot start.
 
     /// Wall-clock time recording began, for the timeline-based timer.
     public var startedAt: Date

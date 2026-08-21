@@ -20,6 +20,66 @@ let lsWarmInk = WP.ink      // warm near-black
 let lsWarmInkMute = WP.inkSoft     // warm muted
 let lsWarmSage = WP.inkSoft        // sage
 
+
+/// The 42-second ring — §E state ①.
+///
+/// Gold fills clockwise for the first 42 seconds and then simply stays full: a
+/// ring that emptied, flashed, or turned red past the target would tell someone
+/// mid-sentence that they had run over, which is the opposite of what a journal
+/// with a "soft target" is for.
+
+/// §E state ③'s valence bar.
+///
+/// A gradient from the negative end to the positive with a marker on it, rather
+/// than a coloured fill: a bar that turned red would tell someone having a hard
+/// night that they were doing it wrong. The gradient is always the whole range,
+/// and the marker only says where in it this entry currently sits.
+@available(iOS 16.2, *)
+struct ValenceBar: View {
+    let valence: Double
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(LinearGradient(
+                        colors: [WP.coral.opacity(0.55), WP.inkSoft.opacity(0.35), WP.gold],
+                        startPoint: .leading, endPoint: .trailing))
+                Circle()
+                    .fill(.white)
+                    .frame(width: 6, height: 6)
+                    .offset(x: max(0, min(geo.size.width - 6,
+                                          (geo.size.width - 6) * (valence + 1) / 2)))
+            }
+        }
+        .accessibilityLabel("Mood so far")
+        .accessibilityValue(valence > 0.2 ? "positive" : (valence < -0.2 ? "heavy" : "even"))
+    }
+}
+
+@available(iOS 16.2, *)
+struct RitualRing: View {
+    let elapsed: TimeInterval
+    let target: TimeInterval
+
+    private var progress: Double {
+        guard target > 0 else { return 0 }
+        return min(elapsed / target, 1)
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(WP.gold.opacity(0.22), lineWidth: 2.4)
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(WP.gold, style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+        .accessibilityLabel("Recording, \(Int(elapsed)) seconds")
+    }
+}
+
 @available(iOS 16.2, *)
 struct RecordingLiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
@@ -32,47 +92,105 @@ struct RecordingLiveActivityWidget: Widget {
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 6) {
-                        Image(systemName: "mic.fill").foregroundStyle(WP.coral)
-                        Text("Listening")
-                            .font(.caption.weight(.semibold))
+                        Circle()
+                            .fill(context.state.paused ? WP.inkSoft : WP.coral)
+                            .frame(width: 7, height: 7)
+                        // "0:28 / 0:42" — elapsed against the ritual, which is
+                        // what the canvas shows. Elapsed alone lost the only
+                        // number that gives it meaning.
+                        Text(elapsedString(context.state.elapsed)
+                             + " / " + elapsedString(context.attributes.softTargetSeconds))
+                            .font(.dv(size: 13, weight: .semibold, design: .monospaced))
                             .foregroundStyle(.primary)
                     }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text(elapsedString(context.state.elapsed))
-                        .font(.title3.monospacedDigit().weight(.semibold))
-                        .foregroundStyle(.primary)
+                    // Top-right, per the canvas — the claim sits at the edge of
+                    // the island where it reads as a status, not a caption.
+                    Text("0 BYTES OUT")
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(WP.goldNight)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    VStack(spacing: 6) {
-                        WaveformGlyph(level: CGFloat(context.state.level), bars: 22)
-                            .frame(height: 28)
-                        HStack {
-                            Text(progressLine(state: context.state,
-                                              attributes: context.attributes))
-                            Spacer()
-                            // §E state 3 carries this line. It is the product's
-                            // whole claim, on the surface a user sees without
-                            // unlocking — and it is true because the target has
-                            // no networking code at all.
-                            Text("0 BYTES OUT")
-                                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    VStack(spacing: 8) {
+                        // The phrase is the point of this view: proof it writes
+                        // itself on the phone. It leads, at a readable size,
+                        // with no waveform competing — the compact island
+                        // already carries the waveform.
+                        if !context.state.phrase.isEmpty {
+                            Text("\u{201C}\(context.state.phrase)\u{201D}")
+                                .font(.dv(size: 14))
+                                .foregroundStyle(.primary)
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            Text(context.state.paused ? "Paused" : "Listening\u{2026}")
+                                .font(.dv(size: 14))
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+
+                        ValenceBar(valence: context.state.valence)
+                            .frame(height: 4)
+
+                        if #available(iOS 17.0, *) {
+                            HStack(spacing: 10) {
+                                Button(intent: DiscardRecordingIntent()) {
+                                    Text("Discard")
+                                        .font(.dv(size: 12, weight: .bold, design: .rounded))
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .tint(WP.navySurface)
+
+                                Button(intent: FinishRecordingIntent()) {
+                                    Text("Finish \u{2726}")
+                                        .font(.dv(size: 12, weight: .bold, design: .rounded))
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .tint(WP.gold)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(.top, 2)
+                        }
                     }
                     .padding(.top, 4)
                 }
             } compactLeading: {
-                Image(systemName: "mic.fill")
-                    .foregroundStyle(WP.coral)
+                // §E1, read off the canvas: a gold DOT on the left, the 42-second
+                // ring on the RIGHT — wrapped around the camera on that side —
+                // with the waveform between them. This was built inverted, ring
+                // left and waveform right, which put the dial on the wrong side
+                // of the lens and lost the "recording" dot entirely.
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(context.state.paused ? WP.inkSoft : WP.coral)
+                        .frame(width: 7, height: 7)
+                    WaveformGlyph(level: CGFloat(context.state.level), bars: 4)
+                        .frame(width: 16, height: 12)
+                }
             } compactTrailing: {
-                Text(elapsedString(context.state.elapsed))
-                    .font(.caption2.monospacedDigit().weight(.semibold))
-                    .foregroundStyle(.primary)
+                // §E2: when the graph catches a name the island shows it, then
+                // goes back to listening. `caughtName` clears itself after a
+                // beat — see LiveTranscriber.announce.
+                if let name = context.state.caughtName, !name.isEmpty {
+                    HStack(spacing: 3) {
+                        IslandStar(colour: WP.gold)
+                            .frame(width: 11, height: 11)
+                        Text(name)
+                            .font(.dv(size: 12, weight: .bold, design: .rounded))
+                            .foregroundStyle(WP.gold)
+                            .lineLimit(1)
+                    }
+                } else {
+                    RitualRing(elapsed: context.state.elapsed,
+                               target: context.attributes.softTargetSeconds)
+                        .frame(width: 18, height: 18)
+                }
             } minimal: {
-                Image(systemName: "mic.fill")
-                    .foregroundStyle(.red)
+                RitualRing(elapsed: context.state.elapsed,
+                           target: context.attributes.softTargetSeconds)
+                    .frame(width: 18, height: 18)
             }
             .keylineTint(WP.gold) // warm gold
         }
@@ -91,15 +209,15 @@ private struct RecordingLockScreenView: View {
                     .frame(width: 44, height: 44)
                 Image(systemName: "mic.fill")
                     .foregroundStyle(.red)
-                    .font(.title3)
+                    .font(.dv(.title3))
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Recording your entry")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.dv(.subheadline, weight: .semibold))
                     .foregroundStyle(lsWarmInk)
                 Text(subtitle)
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundStyle(lsWarmInkMute)
                 WaveformGlyph(level: CGFloat(context.state.level), bars: 28)
                     .frame(height: 18)
@@ -108,7 +226,7 @@ private struct RecordingLockScreenView: View {
             Spacer()
 
             Text(elapsedString(context.state.elapsed))
-                .font(.title2.monospacedDigit().weight(.semibold))
+                .font(.dv(.title2, design: .monospaced, weight: .semibold))
                 .foregroundStyle(lsWarmInk)
         }
         .padding(.horizontal, 16)

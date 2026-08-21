@@ -29,5 +29,11 @@
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Nunito-Variable.ttf</string>
+		<string>Inter-Variable.ttf</string>
+		<string>DMMono-Medium.ttf</string>
+	</array>
 </dict>
 </plist>
