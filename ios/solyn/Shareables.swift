@@ -28,11 +28,26 @@ enum Shareables {
     static let milestones = [42, 100, 365]
 
     enum Card: String, CaseIterable, Identifiable {
+        /// The DAILY one.
+        ///
+        /// Everything else here is occasional — Year One is annual, Milestone
+        /// fires at 42/100/365, the receipt is an argument you make once. There
+        /// was nothing to post on an ordinary Tuesday, which for a product whose
+        /// only growth channel is people posting is the whole problem.
+        ///
+        /// Tonight is different every night by construction: the sky places
+        /// stars by when they were spoken, so a new one lands in a new place and
+        /// the field grows outward. No words, no names — the same rule as My Sky.
+        case tonight
         case mySky, receipt, yearOne, milestone, wallpaper, gift
         var id: String { rawValue }
 
         var title: String {
             switch self {
+            case .tonight: return "Tonight"
+            case .tonight:
+                return "The one you made today, in the sky it landed in. A new " +
+                       "place every night — no words on it, ever."
             case .mySky: return "My Sky"
             case .receipt: return "Receipt"
             case .yearOne: return "Year One"
@@ -44,6 +59,8 @@ enum Shareables {
 
         var caption: String {
             switch self {
+            case .tonight:
+                return "The one you made today, in the sky it landed in. A new place every night — no words on it, ever."
             case .mySky:
                 return "Stars, no words. The sky is the only journal artifact that is beautiful and private at the same time."
             case .receipt:
@@ -202,6 +219,7 @@ enum Shareables {
         return UIGraphicsImageRenderer(size: size).image { ctx in
             let c = ctx.cgContext
             switch card {
+            case .tonight:   drawTonight(c, size, f, airplane)
             case .mySky:     drawMySky(c, size, f, airplane)
             case .receipt:   drawReceipt(c, size, f)
             case .yearOne:   drawYearOne(c, size, f, includeNames)
@@ -218,6 +236,63 @@ enum Shareables {
             .appendingPathComponent("dailyvox-\(card.rawValue).png")
         try? data.write(to: url)
         return url
+    }
+
+    // MARK: - F0 · Tonight — the daily card
+
+    /// Tonight's star, in the sky it landed in.
+    ///
+    /// Deliberately not a summary of the day: no transcript, no mood word, no
+    /// names. What makes it worth posting twice is that it is visibly YOURS and
+    /// visibly new — the field is denser than last night and the bright one has
+    /// moved. The only text is a count and a duration.
+    private static func drawTonight(_ c: CGContext, _ s: CGSize, _ f: [Fact], _ airplane: Bool) {
+        fill(c, s, UIColor(DS.Palette.navy))
+        var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
+        scatter(c, s, count: 300, rng: &rng, topInset: 140, bottomInset: 260)
+
+        let centre = CGPoint(x: s.width / 2, y: s.height * 0.46)
+        let sorted = f.sorted { $0.date > $1.date }
+        guard let newest = sorted.first else { return }
+
+        // The same encoding the app draws — literally the same code. A card that
+        // placed stars by its own copy of the rule would stop matching the
+        // screen it claims to be a picture of.
+        let skySpan = SkyEncoding.Span(dates: sorted.map(\.date))
+        func place(_ date: Date) -> CGPoint {
+            SkyEncoding.entryPoint(date: date, in: skySpan, jitter: 0,
+                                   centre: centre,
+                                   near: s.width * 0.10, far: s.width * 0.40)
+        }
+
+        // The journal so far, quiet.
+        for fact in sorted.dropFirst().prefix(200) {
+            let p = place(fact.date)
+            let age = SkyEncoding.age(fact.date, in: skySpan)
+            let r: CGFloat = 4 + CGFloat(1 - age) * 3
+            c.setFillColor(UIColor(DS.Palette.navyText)
+                .withAlphaComponent(0.20 + 0.35 * (1 - age)).cgColor)
+            c.fillEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2))
+        }
+
+        // Tonight: the bright one.
+        let tonight = place(newest.date)
+        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.18).cgColor)
+        c.fillEllipse(in: CGRect(x: tonight.x - 62, y: tonight.y - 62, width: 124, height: 124))
+        star(c, at: tonight, r: 26, colour: UIColor(DS.Palette.gold))
+
+        text(c, "TONIGHT", at: CGPoint(x: s.width / 2, y: 128),
+             font: mono(26), colour: UIColor(DS.Palette.goldNight), align: .center)
+
+        let nightCount = nights(f)
+        text(c, "\(nightCount)", at: CGPoint(x: s.width / 2, y: s.height - 236),
+             font: display(120), colour: UIColor(DS.Palette.navyText), align: .center)
+        text(c, nightCount == 1 ? "NIGHT KEPT" : "NIGHTS KEPT",
+             at: CGPoint(x: s.width / 2, y: s.height - 176),
+             font: mono(24), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.55),
+             align: .center)
+
+        footer(c, s, airplane ? "IN AIRPLANE MODE \u{00B7} 0 BYTES OUT" : "A SKY MADE OF YOU")
     }
 
     // MARK: - F1 · My Sky
@@ -268,15 +343,22 @@ enum Shareables {
         dotted(c, s, y: 214)
 
         let words = f.reduce(0) { $0 + $1.text.split(whereSeparator: \.isWhitespace).count }
-        // Every figure is counted from the journal or structurally zero. There
-        // is no networking code in this target, so "0" is a fact about the
-        // build rather than a promise about behaviour.
+        let syncing = PersistenceController.isCloudSyncActive
+        // Every figure is counted from the journal, structurally zero, or read
+        // from the setting it describes.
+        //
+        // The rows used to be "NETWORK CALLS 0" and "BYTES UPLOADED 0", printed
+        // unconditionally on a build that links CloudKit and offers a sync
+        // toggle. This is a card people post as PROOF, so a number on it that
+        // the app cannot vouch for is worse than no card at all. "Sent to
+        // DailyVox" is zero forever because there is nowhere to send it; iCloud
+        // is a row now instead of an omission.
         let rows: [(String, String)] = [
             ("ENTRIES SPOKEN", "\(f.count)"),
             ("WORDS KEPT", "\(words)"),
             ("NIGHTS IN A ROW", "\(streak(f))"),
-            ("NETWORK CALLS", "0"),
-            ("BYTES UPLOADED", "0"),
+            ("SENT TO DAILYVOX", "0 BYTES"),
+            ("ICLOUD SYNC", syncing ? "YOUR ACCOUNT" : "OFF"),
             ("ADS SHOWN", "0"),
             ("ACCOUNTS CREATED", "0"),
             ("SUBSCRIPTION", "FREE"),
@@ -290,7 +372,8 @@ enum Shareables {
 
         dotted(c, s, y: y + 8)
         y += 62
-        text(c, "YOUR DATA STAYED HOME", at: CGPoint(x: 96, y: y),
+        text(c, syncing ? "YOUR DATA STAYED YOURS" : "YOUR DATA STAYED HOME",
+             at: CGPoint(x: 96, y: y),
              font: mono(28), colour: UIColor(DS.Palette.goldDay))
         star(c, at: CGPoint(x: s.width - 118, y: y + 14), r: 20, colour: UIColor(DS.Palette.gold))
         dotted(c, s, y: y + 58)
@@ -343,7 +426,10 @@ enum Shareables {
             c.strokePath()
             y += 92
         }
-        footer(c, s, "YEAR ONE · 0 NETWORK CALLS")
+        // Not "0 NETWORK CALLS": the figures on this card ARE computed here and
+        // nowhere else, which is the honest version of the same boast and does
+        // not depend on whether the user turned iCloud sync on.
+        footer(c, s, "YEAR ONE · COMPUTED ON THIS PHONE")
     }
 
     // MARK: - F · milestone stamp
@@ -388,16 +474,23 @@ enum Shareables {
     /// headline to be covered up — and no wordmark, because a wallpaper that
     /// advertises at its owner comes off within a week.
     private static func drawWallpaper(_ c: CGContext, _ s: CGSize, _ f: [Fact]) {
+        // A 1080x1920 field with a 280px constellation in the middle of it read
+        // as an empty wallpaper — which is what it was. The sky now fills the
+        // frame: a denser star field, wider arms, and a caption you can read.
         fill(c, s, UIColor(DS.Palette.navy))
         var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
-        scatter(c, s, count: 240, rng: &rng, topInset: 0, bottomInset: 0)
+        scatter(c, s, count: 520, rng: &rng, topInset: 0, bottomInset: 0)
 
-        let centre = CGPoint(x: s.width / 2, y: s.height * 0.63)
-        orbits(c, centre: centre, radii: [s.width * 0.20, s.width * 0.32])
-        constellation(c, centre: centre, s: s, count: min(5, max(f.count, 1)), spread: 0.26)
+        // Sits low: the lock screen puts the clock at the top, and a wallpaper
+        // whose subject is behind the time is a wallpaper you never see.
+        let centre = CGPoint(x: s.width / 2, y: s.height * 0.60)
+        orbits(c, centre: centre, radii: [s.width * 0.30, s.width * 0.46, s.width * 0.62])
+        constellation(c, centre: centre, s: s,
+                      count: min(9, max(f.count, 3)), spread: 0.58)
 
-        text(c, "\(nights(f))", at: CGPoint(x: s.width / 2, y: s.height - 120),
-             font: mono(20), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.4),
+        let caption = "\(nights(f)) NIGHTS \u{00B7} A SKY MADE OF YOU"
+        text(c, caption, at: CGPoint(x: s.width / 2, y: s.height - 150),
+             font: mono(30), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.5),
              align: .center)
     }
 
@@ -478,8 +571,10 @@ enum Shareables {
     private static func constellation(_ c: CGContext, centre: CGPoint, s: CGSize,
                                       count: Int, spread: CGFloat) {
         for i in 0..<count {
-            let angle = (-58.0 + Double(i) * (count == 5 ? 72.0 : 88.0)) * .pi / 180
-            let r = s.width * (spread + CGFloat(i % 2) * 0.05)
+            // Spread whatever count is asked for evenly round the circle,
+            // rather than assuming five arms at 72 degrees.
+            let angle = (-58.0 + Double(i) * (360.0 / Double(max(count, 1)))) * .pi / 180
+            let r = s.width * (spread + CGFloat(i % 3) * 0.055)
             let p = CGPoint(x: centre.x + r * CGFloat(cos(angle)),
                             y: centre.y + r * CGFloat(sin(angle)))
             let m = CGPoint(x: (centre.x + p.x) / 2, y: (centre.y + p.y) / 2)
@@ -489,8 +584,10 @@ enum Shareables {
             let ctrl = CGPoint(x: m.x + (-d.y / len) * len * bow,
                                y: m.y + (d.x / len) * len * bow)
 
+            // Floor the alpha: past the eighth arm the old formula went
+            // negative and the strokes vanished.
             c.setStrokeColor(UIColor(DS.Palette.gold)
-                .withAlphaComponent(0.45 - Double(i) * 0.05).cgColor)
+                .withAlphaComponent(max(0.18, 0.48 - Double(i) * 0.035)).cgColor)
             c.setLineWidth(3)
             c.move(to: centre)
             c.addQuadCurve(to: p, control: ctrl)
@@ -498,7 +595,7 @@ enum Shareables {
 
             let node = i == 1 ? UIColor(DS.Palette.starBlue) : UIColor(DS.Palette.navyText)
             c.setFillColor(node.cgColor)
-            let nr = 15 - CGFloat(i) * 1.5
+            let nr = max(7, 17 - CGFloat(i) * 1.1)
             c.fillEllipse(in: CGRect(x: p.x - nr, y: p.y - nr, width: nr * 2, height: nr * 2))
         }
         c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.24).cgColor)

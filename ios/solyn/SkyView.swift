@@ -12,8 +12,21 @@ import SwiftUI
 struct SkyEntry {
     let id: String
     let valence: Double
-    /// Stable per-entry seed, so the same journal always draws the same sky.
+    /// When it was spoken. Drives BOTH polar coordinates — see `SkyView`.
+    let date: Date
+    /// Seconds spoken. Drives the star's size.
+    let duration: Double
+    /// Stable per-entry seed. Now only a small jitter, not the position itself.
     let seed: UInt64
+}
+
+/// A named star — a person or topic the graph knows.
+struct SkyNamed {
+    let label: String
+    /// How many entries mention them. Drives size.
+    let mentions: Int
+    /// Last time they came up. Drives distance from the core.
+    let lastSeen: Date
 }
 
 /// The constellation, full-bleed and alive.
@@ -29,41 +42,72 @@ struct SkyEntry {
 struct SkyView: View {
     let entries: [SkyEntry]
     /// Up to three named stars, biggest first.
-    let named: [String]
+    let named: [SkyNamed]
 
-    @ObservedObject private var theme = ThemeManager.shared
+    /// The subtree's theme. On the Twin tab that is night whatever the app
+    /// theme says; the sky has no cream variant.
+    @Environment(\.dvTheme) private var theme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The phase the still sky is frozen at. Not zero: at t=0 both orbit rings
+    /// and the comet sit at the same angle, which draws a seam. Chosen so the
+    /// three periods (80s / 130s / 18s) land well apart.
+    private static let stillPhase: TimeInterval = 21
 
     /// Matches Android's MAX_DRAWN_TWINKLES. One twinkle per entry meant a
     /// 1,000-entry journal animated a thousand circles a frame, and it got
     /// worse the longer someone used the app.
     static let maxDrawnTwinkles = 156
 
-    init(entries: [SkyEntry], named: [String]) {
+    init(entries: [SkyEntry], named: [SkyNamed]) {
         self.entries = entries
         self.named = named
     }
 
+    // The encoding itself lives in `SkyEncoding` — it was written here AND in
+    // the share-card renderer AND twice more for named stars, and four copies of
+    // a rule that drifts silently is not a rule.
+
+    private var span: SkyEncoding.Span { SkyEncoding.Span(dates: entries.map(\.date)) }
+
+    private func near(_ minDim: CGFloat) -> CGFloat { minDim * 0.14 }
+    private func far(_ minDim: CGFloat) -> CGFloat { minDim * 0.47 }
+    private func namedNear(_ minDim: CGFloat) -> CGFloat { minDim * 0.20 }
+    private func namedFar(_ minDim: CGFloat) -> CGFloat { minDim * 0.44 }
+
+    /// Every colour the sky draws with. On cream the thin strokes need the
+    /// darker gold; plain #D9A441 at 1.4pt all but vanishes on #F7F3EA.
     private var palette: (ink: Color, line: Color, core: Color, accent: Color) {
         theme.isNight
             ? (DS.Palette.navyText, DS.Palette.gold, DS.Palette.gold, DS.Palette.starBlue)
-            // On cream the thin strokes need the darker gold; plain #D9A441 at
-            // 1.4pt all but vanishes on #F7F3EA.
             : (DS.Palette.ink, DS.Palette.goldDay, DS.Palette.gold,
                Color(red: 0.298, green: 0.482, blue: 0.651))
     }
 
     var body: some View {
-        // SwiftUI.TimelineView, spelled out: this app already has a
-        // `TimelineView` — the Journal screen — and the unqualified name
-        // resolves to that one, which reports as "argument passed to call that
-        // takes no arguments" rather than as a collision.
-        SwiftUI.TimelineView(.animation) { timeline in
-            let t = timeline.date.timeIntervalSinceReferenceDate
-
+        // §8.8: "pause ambient sky/orbit loops" under reduced motion. The sky
+        // still DRAWS — the constellation is the content, not the animation —
+        // it just stops at a fixed phase instead of drifting, twinkling and
+        // running a comet. `.animation` schedules a redraw every frame, so the
+        // guard has to be on the schedule itself, not inside the draw call.
+        if reduceMotion {
             Canvas { context, size in
-                draw(context: context, size: size, t: t)
+                draw(context: context, size: size, t: Self.stillPhase)
             }
-            .overlay(alignment: .topLeading) { labels(t: t) }
+            .overlay(alignment: .topLeading) { labels(t: Self.stillPhase) }
+        } else {
+            // SwiftUI.TimelineView, spelled out: this app already has a
+            // `TimelineView` — the Journal screen — and the unqualified name
+            // resolves to that one, which reports as "argument passed to call
+            // that takes no arguments" rather than as a collision.
+            SwiftUI.TimelineView(.animation) { timeline in
+                let t = timeline.date.timeIntervalSinceReferenceDate
+
+                Canvas { context, size in
+                    draw(context: context, size: size, t: t)
+                }
+                .overlay(alignment: .topLeading) { labels(t: t) }
+            }
         }
         // NO background of its own. Painting one — even in the page colour —
         // gives the sky a rectangle, and the radial glow terminating at that
@@ -119,44 +163,67 @@ struct SkyView: View {
                                    dashPhase: circumference * (phase / 360)))
         }
 
-        // Twinkles: the rest of the journal, seeded so the sky is stable.
-        for (i, e) in entries.dropFirst(4).prefix(Self.maxDrawnTwinkles).enumerated() {
-            var rng = e.seed
-            func next() -> Double {
-                rng = rng &* 6364136223846793005 &+ 1442695040888963407
-                return Double((rng >> 33) % 10000) / 10000
-            }
-            // Very slow parallax — a full pass takes over three minutes, and
-            // near stars drift further than far ones. Too slow to watch happen,
-            // fast enough that the field is never quite where you left it.
-            let depth = 0.35 + Double(i % 5) * 0.16
-            let drift = CGFloat((t / 200).truncatingRemainder(dividingBy: 1.0) * depth)
-            var x = next() + drift
-            if x > 1 { x -= 1 }
-            let pt = CGPoint(x: CGFloat(x) * size.width, y: next() * size.height)
-            // Keep the core legible.
-            if abs(pt.x - centre.x) < size.width * 0.10,
-               abs(pt.y - centre.y) < size.height * 0.12 { continue }
+        // Every entry, placed by WHEN — distance is how long ago, angle is the
+        // hour it was spoken. See the encoding note above.
+        let s = span
+        for (i, e) in entries.prefix(Self.maxDrawnTwinkles).enumerated() {
+            let a = SkyEncoding.age(e.date, in: s)
+            let pt = SkyEncoding.entryPoint(date: e.date, in: s, jitter: e.seed,
+                                            centre: centre,
+                                            near: near(minDim), far: far(minDim))
 
-            // Nine staggered phases at 2.7–4.1s, so no two land together. That
-            // stagger is what stops it reading as a pulsing diagram.
+            // Size is how long you spoke: a passing thought is a smaller star
+            // than a night you needed twenty minutes for.
+            let spoke = min(max(e.duration, 0) / 180, 1)
+            let r = 1.7 + spoke * 2.6
+
+            // Nine staggered phases at 2.7–4.1s, so no two land together — the
+            // stagger is what stops it reading as a pulsing diagram. Recent
+            // stars twinkle brighter; the far past is quieter.
             let k = i % 9
             let period = 2.7 + Double(k) * 0.18
             let tw = 0.22 + 0.78 * (0.5 + 0.5 * Foundation.sin((t + Double(k) * 0.26) * .pi * 2 / period))
-            let r = 1.6 + Double(i % 3) * 0.35
+            let recency = 1.0 - a * 0.55
+
             context.fill(
                 Circle().path(in: CGRect(x: pt.x - r, y: pt.y - r, width: r * 2, height: r * 2)),
-                with: .color(valenceColour(e.valence).opacity(0.5 * tw)))
+                with: .color(valenceColour(e.valence).opacity(0.85 * tw * recency)))
         }
 
-        // Named stars: the four biggest, each on a curved link out of the core.
-        let anchors = [
-            CGPoint(x: centre.x - size.width * 0.23, y: centre.y - size.height * 0.21),
-            CGPoint(x: centre.x + size.width * 0.24, y: centre.y - size.height * 0.16),
-            CGPoint(x: centre.x - size.width * 0.17, y: centre.y + size.height * 0.28),
-            CGPoint(x: centre.x + size.width * 0.22, y: centre.y + size.height * 0.23),
-        ]
-        for (i, anchor) in anchors.enumerated() where i < max(entries.count, 1) {
+        // Tonight, if it exists: the newest star, given a halo so you can find
+        // the one you just made.
+        if let newest = entries.min(by: { $0.date > $1.date }),
+           Calendar.current.isDateInToday(newest.date) {
+            let pt = SkyEncoding.entryPoint(date: newest.date, in: s, jitter: newest.seed,
+                                            centre: centre,
+                                            near: near(minDim), far: far(minDim))
+            let pulse = 0.5 + 0.5 * Foundation.sin(t * .pi * 2 / 3.2)
+            let halo = 9 + 3 * pulse
+            context.fill(
+                Circle().path(in: CGRect(x: pt.x - halo, y: pt.y - halo,
+                                         width: halo * 2, height: halo * 2)),
+                with: .color(p.core.opacity(0.18 + 0.10 * pulse)))
+            context.fill(
+                Circle().path(in: CGRect(x: pt.x - 3.4, y: pt.y - 3.4, width: 6.8, height: 6.8)),
+                with: .color(p.core))
+        }
+
+        // Named stars, placed by MEANING rather than at four fixed anchors.
+        //
+        // Distance is how recently they came up, size is how often. Someone in
+        // your life this week sits close and large; someone you have not
+        // mentioned since spring has drifted to the rim and shrunk. The old
+        // version pinned them to the same four corners forever, so the screen
+        // said the same thing on day three as on day three hundred.
+        let mostMentions = max(named.map(\.mentions).max() ?? 1, 1)
+        for (i, person) in named.prefix(4).enumerated() {
+            let personAge = SkyEncoding.age(person.lastSeen, in: s)
+            let anchor = SkyEncoding.namedPoint(
+                rank: i, of: named.prefix(4).count,
+                lastSeen: person.lastSeen, in: s, centre: centre,
+                near: namedNear(minDim), far: namedFar(minDim))
+            // How big a part of the journal they are.
+            let weight = Double(person.mentions) / Double(mostMentions)
             // Control points pushed PERPENDICULAR to each core→star line.
             // Placed ON the line they give a mathematically valid quadratic
             // that is visually a straight segment — the curve has to bow.
@@ -173,20 +240,21 @@ struct SkyView: View {
             link.move(to: centre)
             link.addQuadCurve(to: anchor, control: control)
             context.stroke(link,
-                           with: .color(p.line.opacity(0.5 - Double(i) * 0.06)),
-                           lineWidth: 1.4)
+                           with: .color(p.line.opacity(0.18 + 0.34 * (1 - personAge))),
+                           lineWidth: 1.0 + CGFloat(weight) * 1.2)
 
             let node = i == 1 ? p.accent : p.ink
-            let halo = 11 - Double(i)
+            // Size carries mentions; a recent person also burns brighter.
+            let nr = 4.0 + weight * 5.0
+            let halo = nr + 5.5
             context.fill(
                 Circle().path(in: CGRect(x: anchor.x - halo, y: anchor.y - halo,
                                          width: halo * 2, height: halo * 2)),
-                with: .color(node.opacity(0.15)))
-            let nr = 6 - Double(i) * 0.5
+                with: .color(node.opacity(0.10 + 0.14 * (1 - personAge))))
             context.fill(
                 Circle().path(in: CGRect(x: anchor.x - nr, y: anchor.y - nr,
                                          width: nr * 2, height: nr * 2)),
-                with: .color(i == 3 ? p.core.opacity(0.85) : node))
+                with: .color(node.opacity(0.55 + 0.45 * (1 - personAge))))
         }
 
         // The core: a soft disc under a solid one.
@@ -281,32 +349,46 @@ struct SkyView: View {
     /// Names sit in SwiftUI text above the Canvas — the sky is only meaningful
     /// if you can read who is in it.
     @ViewBuilder
+    /// Names, pinned to the stars they belong to.
+    ///
+    /// They used to sit at three hard-coded screen positions while the stars sat
+    /// at four other hard-coded positions — so a label and its star had no
+    /// relationship at all, and one name got a chip while the others did not for
+    /// no reason a reader could infer. Now each name follows its own star, and
+    /// all of them are drawn the same way.
+    /// Names, pinned to the stars they belong to — using the SAME encoding the
+    /// stars are drawn with, rather than a second copy of the maths that used to
+    /// sit here and silently drift.
     private func labels(t: TimeInterval) -> some View {
         GeometryReader { geo in
-            let goldText = theme.goldText
+            let minDim = min(geo.size.width, geo.size.height)
+            let centre = CGPoint(x: geo.size.width / 2, y: geo.size.height * 0.47)
+            let s = span
+            let shown = Array(named.prefix(4).enumerated())
+
             ZStack(alignment: .topLeading) {
-                if named.count > 0 {
-                    Text(named[0].uppercased())
-                        .font(.system(size: 10, weight: .heavy, design: .rounded))
-                        .foregroundColor(goldText)
-                        .padding(.horizontal, 10).padding(.vertical, 6)
-                        .background(Capsule().fill(DS.Palette.gold.opacity(0.16)))
-                        .position(x: 62, y: geo.size.height * 0.20)
-                }
-                if named.count > 1 {
-                    Text(named[1].uppercased())
-                        .font(.system(size: 10, weight: .heavy, design: .rounded))
-                        .foregroundColor(theme.secondaryTextColor)
-                        .position(x: geo.size.width - 62, y: geo.size.height * 0.26)
-                }
-                if named.count > 2 {
-                    Text(named[2].uppercased())
-                        .font(.system(size: 10, weight: .heavy, design: .rounded))
-                        .foregroundColor(theme.secondaryTextColor)
-                        .position(x: 74, y: geo.size.height * 0.82)
+                ForEach(shown, id: \.element.label) { i, person in
+                    let personAge = SkyEncoding.age(person.lastSeen, in: s)
+                    let anchor = SkyEncoding.namedPoint(
+                        rank: i, of: shown.count,
+                        lastSeen: person.lastSeen, in: s, centre: centre,
+                        near: namedNear(minDim), far: namedFar(minDim))
+                    let rad = SkyEncoding.namedDegrees(rank: i, of: shown.count) * .pi / 180
+
+                    Text(person.label.uppercased())
+                        .font(.dv(size: 10, weight: .heavy, design: .rounded))
+                        // A name not said in months is quieter, the same way its
+                        // star is.
+                        .foregroundColor(theme.goldText.opacity(0.55 + 0.45 * (1 - personAge)))
+                        .fixedSize()
+                        // Nudged outward along its own spoke so the text never
+                        // sits on its node.
+                        .position(x: anchor.x + CGFloat(Foundation.cos(rad)) * 34,
+                                  y: anchor.y + CGFloat(Foundation.sin(rad)) * 20)
                 }
             }
         }
+        .allowsHitTesting(false)
     }
 
     // MARK: - Helpers

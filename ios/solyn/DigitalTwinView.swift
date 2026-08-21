@@ -11,7 +11,12 @@ import DailyVoxTwinEngine
 
 struct DigitalTwinView: View {
     @ObservedObject private var twin = DigitalTwinEngine.shared
-    @ObservedObject private var themeManager = ThemeManager.shared
+    /// NIGHT, UNDER BOTH THEMES (FINAL-SPEC §1 colour rules, §2.5, §8.4).
+    ///
+    /// Not `ThemeManager.shared`: this screen has no day variant. The same
+    /// value is handed to the subtree below so the sky, the cards and every
+    /// system-semantic colour agree with it.
+    private let themeManager = DVTheme.night
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -23,6 +28,9 @@ struct DigitalTwinView: View {
         ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
     @State private var selectedSection: TwinSection = .overview
     @State private var showInsights = false
+    /// Whether the non-C2 cards are expanded. Collapsed by default; the Twin
+    /// screen's job is the sky, not a dashboard.
+    @State private var showDepth = false
     @State private var showShare = false
     @State private var showingDetail = false
     @State private var animateOrb = false
@@ -50,66 +58,98 @@ struct DigitalTwinView: View {
                 firstTimeTwinView
             } else {
                 VStack(spacing: 24) {
-                    HStack(alignment: .center) {
-                        Text("Your sky")
-                            .font(.system(size: 28, weight: .heavy, design: .rounded))
-                            .foregroundColor(themeManager.textColor)
-                        Spacer()
-                        Button { showInsights = true } label: {
-                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(themeManager.goldText)
-                                .frame(width: 34, height: 34)
-                        }
-                        .accessibilityLabel("Insights")
-                        Button { showShare = true } label: {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(themeManager.goldText)
-                                .frame(width: 34, height: 34)
-                        }
-                        .accessibilityLabel("Share your sky")
-                    }
+                    Text("Your sky")
+                        .font(.dv(size: 28, weight: .heavy, design: .rounded))
+                        .foregroundColor(themeManager.textColor)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     // Digital Twin Orb Header
                     twinOrbHeader
 
-                    // Ask Your Twin
-                    askTwinButton
+                    // C2, complete and in the spec's order: the sky, one
+                    // sentence about who you are, the dimension stats, and the
+                    // way in to ask. That is the whole screen the design draws.
+                    twinSummaryCard
 
-                    // Maturity indicator
-                    maturityBadge
+                    dimensionStats
 
-                    // How well the Twin actually knows you (self-prediction fidelity)
-                    TwinResolutionCard()
-
-                    // Consented-pilot invitation (high-engagement users only;
-                    // once-ever, dismissible — see PilotInviteCard for gates)
-                    PilotInviteCard(entryCount: entries.count,
-                                    firstEntryDate: entries.last?.date)
-
-                    // The Body dimension + review-before-learning queue
-                    BodyTwinCard()
-
-                    // Section Picker
-                    sectionPicker
-
-                    // Content based on selection
-                    switch selectedSection {
-                    case .overview:
-                        overviewSection
-                    case .personality:
-                        personalitySection
-                    case .emotions:
-                        emotionsSection
-                    case .world:
-                        worldSection
-                    case .patterns:
-                        patternsSection
+                    // Insights and Share, as NAMED actions.
+                    //
+                    // They were two 34pt unlabelled glyphs in the top corner of
+                    // one tab. Insights is a whole section of the product — the
+                    // spec calls it a segment of this tab — and Share is §F, the
+                    // entire virality thesis. Nobody was going to find either
+                    // one there. They sit under the summary now, at full width,
+                    // with their names on them.
+                    HStack(spacing: 10) {
+                        twinAction("Insights", "chart.line.uptrend.xyaxis") {
+                            showInsights = true
+                        }
+                        twinAction("Share your sky", "square.and.arrow.up") {
+                            showShare = true
+                        }
                     }
 
-                    // Privacy badge
-                    privacyBadge
+                    // No "Ask Your Twin" button here.
+                    //
+                    // Ask is a TAB. A decorated full-width control that goes
+                    // where the bottom bar already goes is weight with no
+                    // destination of its own — and it was the largest object on
+                    // the screen after the sky.
+
+                    // Everything the design has no slot for lives behind this.
+                    //
+                    // NOT deleted. The resolution card, the pilot invite, the
+                    // Body queue and the five sections are shipped features with
+                    // people using them — removing them to satisfy a layout is
+                    // the wrong trade. But C2 is a sky and a sentence, and a
+                    // screen that opened with six stacked dashboards was not
+                    // that screen no matter what the top of it said.
+                    twinDepthDisclosure
+
+                    if showDepth {
+                        // Maturity indicator
+                        maturityBadge
+
+                        // How well the Twin actually knows you (self-prediction fidelity)
+                        TwinResolutionCard()
+
+                        // Consented-pilot invitation (high-engagement users only;
+                        // once-ever, dismissible — see PilotInviteCard for gates)
+                        PilotInviteCard(entryCount: entries.count,
+                                        firstEntryDate: entries.last?.date)
+
+                        // The Body dimension + review-before-learning queue
+                        BodyTwinCard()
+
+                        // Section Picker
+                        sectionPicker
+
+                        // Content based on selection
+                        switch selectedSection {
+                        case .overview:
+                            overviewSection
+                        case .personality:
+                            personalitySection
+                        case .emotions:
+                            emotionsSection
+                        case .world:
+                            worldSection
+                        case .patterns:
+                            patternsSection
+                        }
+                    }
+
+                    // No privacy badge here either. The claim is made on the
+                    // Record screen, under the mic, and again in Settings' Data
+                    // Shield. Saying it a third time on the one screen that
+                    // contains no words does not make it more true.
+
+                    // The C2 content grew (summary card, dimension stats) and
+                    // the old clearance was computed from a bar height that was
+                    // wrong by 20pt, so MIND/HEART/GRAPH sat under the pill with
+                    // their captions poking out below it.
+                    Spacer(minLength: DS.Space.lg)
                 }
                 .padding()
                 .dailyVoxBarClearance()
@@ -121,12 +161,24 @@ struct DigitalTwinView: View {
         // bar was reserving an empty band above it. Insights and Share move
         // onto that same row.
         .toolbar(.hidden, for: .navigationBar)
+        .dailyVoxStatusBarScrim()
         .background { WarmBackground() }
+        // The whole subtree is night. Two overrides, because the screen mixes
+        // two colour systems: `dvTheme` covers everything drawn from the
+        // DailyVox palette, and `colorScheme` covers the cards still built on
+        // system semantics (.primary, .secondary, secondarySystemGroupedBackground)
+        // which would otherwise render light-on-light over the navy.
+        .environment(\.dvTheme, .night)
+        .environment(\.colorScheme, .dark)
+        // Insights and the share sheet are NOT the constellation screen — the
+        // spec makes only the sky unconditional — so they are handed the user's
+        // real theme back. Sheets inherit the presenter's environment, so
+        // without this they would come up dark on a cream app.
         .sheet(isPresented: $showInsights) {
-            NavigationStack { StatsView() }
+            NavigationStack { StatsView() }.appThemedSheet()
         }
         .sheet(isPresented: $showShare) {
-            ShareSheetView()
+            ShareSheetView().appThemedSheet()
         }
     }
 
@@ -179,7 +231,7 @@ struct DigitalTwinView: View {
                     }
 
                     Text("Your sky is empty — for now")
-                        .font(.system(.caption, design: .rounded).weight(.medium))
+                        .font(.dv(.caption, design: .rounded, weight: .medium))
                         .foregroundColor(DS.Palette.tintGold.opacity(0.5))
                 }
             }
@@ -188,11 +240,11 @@ struct DigitalTwinView: View {
             // Introduction steps
             VStack(spacing: 20) {
                 Text("Meet your Digital Twin")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .font(.dv(size: 24, weight: .bold, design: .rounded))
                     .foregroundColor(themeManager.textColor)
 
                 Text("A private AI that learns who you are — entirely on your device.")
-                    .font(.system(.subheadline, design: .rounded).weight(.regular))
+                    .font(.dv(.subheadline, design: .rounded, weight: .regular))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .multilineTextAlignment(.center)
                     .lineSpacing(4)
@@ -239,10 +291,10 @@ struct DigitalTwinView: View {
             // CTA hint
             HStack(spacing: 10) {
                 Image(systemName: "hand.point.left.fill")
-                    .font(.system(.callout))
+                    .font(.dv(.callout))
                     .foregroundColor(DS.Palette.gold)
                 Text("Switch to the Record tab to begin")
-                    .font(.system(.subheadline, design: .rounded).weight(.medium))
+                    .font(.dv(.subheadline, design: .rounded, weight: .medium))
                     .foregroundColor(themeManager.textColor)
             }
             .frame(maxWidth: .infinity)
@@ -254,10 +306,10 @@ struct DigitalTwinView: View {
             // Privacy assurance
             HStack(spacing: 6) {
                 Image(systemName: "lock.shield.fill")
-                    .font(.caption2)
+                    .font(.dv(.caption2))
                     .foregroundColor(DS.Palette.forest)
                 Text("Your Twin never leaves your device")
-                    .font(.system(.caption2, design: .rounded).weight(.medium))
+                    .font(.dv(.caption2, design: .rounded, weight: .medium))
                     .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
             }
             .padding(.bottom, 20)
@@ -282,7 +334,7 @@ struct DigitalTwinView: View {
                         .fill(color.opacity(0.15))
                         .frame(width: 36, height: 36)
                     Image(systemName: icon)
-                        .font(.system(.subheadline).weight(.semibold))
+                        .font(.dv(.subheadline, weight: .semibold))
                         .foregroundColor(color)
                 }
                 if !isLast {
@@ -295,10 +347,10 @@ struct DigitalTwinView: View {
             // Content
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(.callout, design: .rounded).weight(.semibold))
+                    .font(.dv(.callout, design: .rounded, weight: .semibold))
                     .foregroundColor(themeManager.textColor)
                 Text(description)
-                    .font(.system(.footnote, design: .rounded).weight(.regular))
+                    .font(.dv(.footnote, design: .rounded, weight: .regular))
                     .foregroundColor(themeManager.secondaryTextColor)
                     .lineSpacing(3)
             }
@@ -316,7 +368,7 @@ struct DigitalTwinView: View {
             // draws (SkyView is a port of its `drawSky`). ConstellationView
             // put it in a bordered navy card that did not move, which made the
             // two platforms visibly different products on their hero screen.
-            SkyView(entries: skyEntries, named: topKnowledgeNodes.map(\.0))
+            SkyView(entries: skyEntries, named: skyNamed)
                 .frame(height: isIPad ? 520 : 430)
                 // Escapes the column's 16pt padding so the sky runs edge to
                 // edge. Inset, its glow ended on a straight vertical line down
@@ -328,21 +380,203 @@ struct DigitalTwinView: View {
             // that has no end, and reads as a progress bar on their own life.
             HStack(spacing: 8) {
                 Text("\(starCount) \u{2726}")
-                    .font(.system(size: 15, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 15, weight: .heavy, design: .rounded))
                     .foregroundColor(themeManager.goldText)
                 Text("\u{00B7}")
                     .foregroundColor(themeManager.secondaryTextColor)
                 Text(skyDepth.uppercased())
-                    .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    .font(.dv(size: 13, weight: .heavy, design: .rounded))
                     .tracking(0.6)
                     .foregroundColor(themeManager.goldText)
             }
 
+            // One line of key. The encoding is legible once you know it and
+            // invisible until you do, and a sky that needs a paragraph is not
+            // worth having.
+            Text("NEWEST AT THE CENTRE \u{00B7} AROUND BY HOUR \u{00B7} BRIGHTER IS BETTER")
+                .font(.dv(size: 8.5, weight: .semibold, design: .monospaced))
+                .tracking(0.9)
+                .foregroundColor(themeManager.secondaryTextColor.opacity(0.75))
+                .multilineTextAlignment(.center)
+
             Text(constellationSubtitle)
-                .font(.system(.subheadline, design: .rounded).weight(.regular))
+                .font(.dv(.subheadline, design: .rounded, weight: .regular))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
         }
+    }
+
+    // MARK: - Depth disclosure
+
+    private var twinDepthDisclosure: some View {
+        Button {
+            withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) {
+                showDepth.toggle()
+            }
+            HapticManager.shared.selectionChanged()
+        } label: {
+            HStack(spacing: 8) {
+                Text(showDepth ? "HIDE THE DETAIL" : "HOW IT KNOWS")
+                    .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.2)
+                Image(systemName: showDepth ? "chevron.up" : "chevron.down")
+                    .font(.dv(size: 10, weight: .bold))
+                Spacer(minLength: 0)
+            }
+            .foregroundColor(themeManager.secondaryTextColor)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(themeManager.cardBackgroundColor.opacity(0.6)))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(showDepth ? "Hide Twin detail" : "Show how your Twin knows you")
+    }
+
+    private func twinAction(_ title: String, _ symbol: String,
+                            _ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 7) {
+                Image(systemName: symbol)
+                    .font(.dv(size: 14, weight: .semibold))
+                Text(title)
+                    .font(.dv(size: 14, weight: .bold, design: .rounded))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .foregroundColor(themeManager.goldText)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            // A hairline, not a fill. Two tinted blocks under a constellation
+            // competed with it; the sky should be the only lit thing on this
+            // screen.
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(DS.Palette.gold.opacity(0.32), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - C2: the summary card
+
+    /// One sentence, and the count it rests on.
+    ///
+    /// The count is not decoration. It is the difference between "you are warm
+    /// and expansive" — which is a horoscope — and "warm and expansive, from 84
+    /// entries", which is a claim with its own sample size attached. The Twin is
+    /// never allowed to sound more certain than its evidence.
+    private var twinSummaryCard: some View {
+        HStack(alignment: .center, spacing: 11) {
+            ZStack {
+                Circle().fill(DS.Palette.gold).frame(width: 34, height: 34)
+                Text("\u{2726}")
+                    .font(.dv(size: 14, weight: .heavy, design: .rounded))
+                    .foregroundColor(DS.Palette.navy)
+            }
+            Text(twinSummary)
+                .font(.dv(size: 12, weight: .medium))
+                .foregroundColor(themeManager.textColor)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous)
+            .fill(themeManager.cardBackgroundColor))
+    }
+
+    /// Ported from Android's `summary(entries:)`, thresholds included, so the
+    /// two platforms describe the same journal the same way.
+    private var twinSummary: String {
+        let scored = entries.compactMap { entry -> Double? in
+            guard entry.date != nil else { return nil }
+            let mood = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+            return (Double(mood.moodValue) - 3.0) / 2.0
+        }
+        guard scored.count >= 5 else {
+            return "Still listening. A few more nights and there will be something to say."
+        }
+        let v = scored.reduce(0, +) / Double(scored.count)
+        let tone: String
+        switch v {
+        case 0.25...:      tone = "warm, steady"
+        case 0.05..<0.25:  tone = "even-handed"
+        case -0.15..<0.05: tone = "measured"
+        default:           tone = "candid, unsparing"
+        }
+        let words = entries.reduce(0) { $0 + ($1.text ?? "").split(whereSeparator: \.isWhitespace).count }
+        let average = entries.isEmpty ? 0 : words / entries.count
+        let length = average > 40 ? "expansive" : "economical"
+        // `starCount`, not `entries.count`. This card sits two inches under a
+        // badge reading "137 ✦" and was saying "from 45 entries" — the exact
+        // contradiction the badge's own comment records having already fixed
+        // once, reintroduced here. Whatever the right number is, a screen may
+        // only have one of it.
+        //
+        // The two sources genuinely disagree (Twin state accumulated over time
+        // vs. rows currently in Core Data) and that gap is worth chasing
+        // separately; it is not worth showing the user both halves of.
+        return "Who you are: \(tone), \(length) — from \(starCount) entries."
+    }
+
+    // MARK: - C2: dimension stats
+
+    /// Mind · Heart · Graph, as the spec's stat row.
+    ///
+    /// Body is deliberately NOT a fourth column here: it is the one dimension
+    /// that can be empty for a legitimate reason (no Health permission), and a
+    /// column reading "—" next to three real numbers reads as a broken feature
+    /// rather than a choice the user made. It keeps its own card below, which is
+    /// also where the review queue lives.
+    private var dimensionStats: some View {
+        HStack(spacing: 10) {
+            dimensionStat(label: "MIND",
+                          value: "\(twin.behavioralPatterns.totalEntries)",
+                          caption: "entries kept")
+            dimensionStat(label: "HEART",
+                          value: heartValue,
+                          caption: "average tone")
+            dimensionStat(label: "GRAPH",
+                          value: "\(graphNodeCount)",
+                          caption: "people & topics")
+        }
+    }
+
+    /// Three numbers, on the page. They were three cards with three fills and
+    /// three shadows to carry three integers — the heaviest possible way to say
+    /// the lightest possible thing.
+    private func dimensionStat(label: String, value: String, caption: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(label)
+                .font(.dv(size: 9, weight: .semibold, design: .monospaced))
+                .tracking(1.1)
+                .foregroundColor(themeManager.secondaryTextColor)
+            Text(value)
+                .font(.dv(size: 20, weight: .heavy, design: .rounded))
+                .foregroundColor(themeManager.goldText)
+            Text(caption)
+                .font(.dv(size: 10.5))
+                .foregroundColor(themeManager.secondaryTextColor)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var heartValue: String {
+        let scored = entries.compactMap { entry -> Double? in
+            let mood = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+            guard mood != .none else { return nil }
+            return (Double(mood.moodValue) - 3.0) / 2.0
+        }
+        guard !scored.isEmpty else { return "\u{2014}" }
+        return String(format: "%+.2f", scored.reduce(0, +) / Double(scored.count))
+    }
+
+    private var graphNodeCount: Int {
+        let graph = twin.knowledgeGraph
+        return graph.topNodes(ofType: .person, limit: 500).count
+            + graph.topNodes(ofType: .topic, limit: 500).count
     }
 
     /// The same thresholds the Android sky uses, so a screenshot from either
@@ -366,16 +600,27 @@ struct DigitalTwinView: View {
     /// Newest first, as the sky expects: the four biggest become named stars
     /// and the rest twinkle.
     private var skyEntries: [SkyEntry] {
-        entries.prefix(SkyView.maxDrawnTwinkles + 4).enumerated().map { i, entry in
+        entries.prefix(SkyView.maxDrawnTwinkles).enumerated().map { i, entry in
             let mood = Mood(rawValue: entry.value(forKey: "mood") as? String ?? "") ?? Mood.none
+            let when = entry.date ?? Date()
             return SkyEntry(
                 id: entry.objectID.uriRepresentation().absoluteString,
                 valence: (Double(mood.moodValue) - 3) / 2,
-                // Seeded off the date so the same journal always draws the same
-                // sky — one that reshuffled between launches would look broken.
-                seed: UInt64(bitPattern: Int64((entry.date ?? Date()).timeIntervalSince1970))
+                date: when,
+                duration: entry.duration,
+                // The seed is only a ±14° jitter now — position itself comes
+                // from when the entry was spoken. Still derived from the date so
+                // the same journal draws the same sky every launch.
+                seed: UInt64(bitPattern: Int64(when.timeIntervalSince1970))
                     ^ UInt64(i &* 7919)
             )
+        }
+    }
+
+    /// The people the sky names, with what it needs to place them.
+    private var skyNamed: [SkyNamed] {
+        twin.knowledgeGraph.topNodes(ofType: .person, limit: 4).map {
+            SkyNamed(label: $0.label, mentions: $0.mentions, lastSeen: $0.lastSeen)
         }
     }
 
@@ -434,23 +679,23 @@ struct DigitalTwinView: View {
                         .frame(width: 32, height: 32)
 
                     Image(systemName: "bubble.left.and.bubble.right.fill")
-                        .font(.system(.footnote))
+                        .font(.dv(.footnote))
                         .foregroundStyle(.white)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Ask Your Twin")
-                        .font(.subheadline.bold())
+                        .font(.dv(.subheadline, weight: .bold))
                         .foregroundColor(themeManager.textColor)
                     Text("Get insights from your journal data")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(themeManager.secondaryTextColor)
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
             .padding()
@@ -495,11 +740,11 @@ struct DigitalTwinView: View {
 
             HStack {
                 Text("\(twin.summary.dataPointsCollected) data points")
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
                 Text(twin.summary.maturityLevel.rawValue.capitalized)
-                    .font(.caption.bold())
+                    .font(.dv(.caption, weight: .bold))
                     .foregroundColor(themeManager.accentColor)
             }
         }
@@ -523,7 +768,7 @@ struct DigitalTwinView: View {
                             }
                         } label: {
                             Text(section.rawValue)
-                                .font(.subheadline.weight(selectedSection == section ? .bold : .regular))
+                                .font(.dv(.subheadline, weight: selectedSection == section ? .bold : .regular))
                                 .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
@@ -621,7 +866,7 @@ struct DigitalTwinView: View {
                     sectionHeader("Learned Trait", icon: "sparkles")
                     traitBar(label: "Openness", value: openness.value, lowLabel: "Grounded", highLabel: "Open")
                     Text("A learned estimate — \(confidenceWord(openness.confidence)) confidence. It grows more sure as you write.")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -667,7 +912,7 @@ struct DigitalTwinView: View {
                     FlowLayout(spacing: 8) {
                         ForEach(Array(topWords), id: \.key) { word, count in
                             Text(word)
-                                .font(.caption.weight(count > 3 ? .bold : .regular))
+                                .font(.dv(.caption, weight: count > 3 ? .bold : .regular))
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
                                 .background(themeManager.accentColor.opacity(Double(min(count, 10)) / 15.0 + 0.1))
@@ -692,6 +937,7 @@ struct DigitalTwinView: View {
                     image,
                     PersonalityCardRenderer.shareText
                 ])
+                .appThemedSheet()
             }
         }
     }
@@ -704,17 +950,17 @@ struct DigitalTwinView: View {
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: "square.and.arrow.up")
-                    .font(.system(.callout).weight(.semibold))
+                    .font(.dv(.callout, weight: .semibold))
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Share Your Twin")
-                        .font(.system(.subheadline).weight(.bold))
+                        .font(.dv(.subheadline, weight: .bold))
                     Text("Show the world your personality card")
-                        .font(.system(.caption2).weight(.regular))
+                        .font(.dv(.caption2, weight: .regular))
                         .opacity(0.6)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .font(.system(.footnote).weight(.semibold))
+                    .font(.dv(.footnote, weight: .semibold))
                     .opacity(0.4)
             }
             .foregroundColor(.white)
@@ -765,7 +1011,7 @@ struct DigitalTwinView: View {
                         Image(systemName: twin.emotionalSignature.sentimentTrend > 0 ? "arrow.up.right" : "arrow.down.right")
                             .foregroundColor(twin.emotionalSignature.sentimentTrend > 0 ? DS.Palette.forest : DS.Palette.gold)
                         Text("Emotional trajectory is \(twin.emotionalSignature.sentimentTrend > 0 ? "improving" : "declining")")
-                            .font(.caption)
+                            .font(.dv(.caption))
                             .foregroundColor(themeManager.secondaryTextColor)
                     }
                 }
@@ -800,9 +1046,9 @@ struct DigitalTwinView: View {
                     ForEach(sorted.prefix(6), id: \.key) { mood, count in
                         HStack {
                             Image(systemName: moodEmoji(mood))
-                                .font(.caption)
+                                .font(.dv(.caption))
                             Text(mood.capitalized)
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .frame(width: 60, alignment: .leading)
                             GeometryReader { geo in
                                 RoundedRectangle(cornerRadius: 4)
@@ -811,7 +1057,7 @@ struct DigitalTwinView: View {
                             }
                             .frame(height: 16)
                             Text("\(Int(count))")
-                                .font(.caption2)
+                                .font(.dv(.caption2))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }
                     }
@@ -828,13 +1074,13 @@ struct DigitalTwinView: View {
 
                     if !twin.emotionalSignature.positiveTriggersTopics.isEmpty {
                         Text("Lifts your mood")
-                            .font(.caption.bold())
+                            .font(.dv(.caption, weight: .bold))
                             .foregroundColor(DS.Palette.forest)
 
                         FlowLayout(spacing: 6) {
                             ForEach(Array(twin.emotionalSignature.positiveTriggersTopics.sorted { $0.value > $1.value }.prefix(8)), id: \.key) { topic, _ in
                                 Text(topic.capitalized)
-                                    .font(.caption)
+                                    .font(.dv(.caption))
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
                                     .background(DS.Palette.forest.opacity(0.2))
@@ -845,14 +1091,14 @@ struct DigitalTwinView: View {
 
                     if !twin.emotionalSignature.negativeTriggersTopics.isEmpty {
                         Text("Weighs on you")
-                            .font(.caption.bold())
+                            .font(.dv(.caption, weight: .bold))
                             .foregroundColor(DS.Palette.gold)
                             .padding(.top, 4)
 
                         FlowLayout(spacing: 6) {
                             ForEach(Array(twin.emotionalSignature.negativeTriggersTopics.sorted { $0.value > $1.value }.prefix(8)), id: \.key) { topic, _ in
                                 Text(topic.capitalized)
-                                    .font(.caption)
+                                    .font(.dv(.caption))
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
                                     .background(DS.Palette.gold.opacity(0.2))
@@ -890,10 +1136,10 @@ struct DigitalTwinView: View {
             if twin.knowledgeGraph.nodes.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "globe")
-                        .font(.system(size: 40))
+                        .font(.dv(size: 40))
                         .foregroundColor(themeManager.accentColor.opacity(0.5))
                     Text("Your world map will build as you journal")
-                        .font(.subheadline)
+                        .font(.dv(.subheadline))
                         .foregroundColor(themeManager.secondaryTextColor)
                 }
                 .frame(maxWidth: .infinity)
@@ -925,7 +1171,7 @@ struct DigitalTwinView: View {
 
                             if hour % 6 == 0 {
                                 Text("\(hour)")
-                                    .font(.system(.caption2))
+                                    .font(.dv(.caption2))
                                     .foregroundColor(themeManager.secondaryTextColor)
                             }
                         }
@@ -935,7 +1181,7 @@ struct DigitalTwinView: View {
 
                 if let peak = twin.behavioralPatterns.peakHour {
                     Text("Peak writing time: \(formatHour(peak))")
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(themeManager.secondaryTextColor)
                 }
             }
@@ -959,7 +1205,7 @@ struct DigitalTwinView: View {
                                 .frame(height: max(8, 50 * (count / max(1, maxDaily))))
 
                             Text(days[day - 1])
-                                .font(.system(.caption2))
+                                .font(.dv(.caption2))
                                 .foregroundColor(themeManager.secondaryTextColor)
                         }
                     }
@@ -1006,11 +1252,11 @@ struct DigitalTwinView: View {
                 Image(systemName: icon)
                     .foregroundColor(themeManager.accentColor)
                 Text(title)
-                    .font(.headline)
+                    .font(.dv(.headline))
                     .foregroundColor(themeManager.textColor)
             }
             Text(content)
-                .font(.subheadline)
+                .font(.dv(.subheadline))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -1025,7 +1271,7 @@ struct DigitalTwinView: View {
             Image(systemName: icon)
                 .foregroundColor(themeManager.accentColor)
             Text(title)
-                .font(.headline)
+                .font(.dv(.headline))
                 .foregroundColor(themeManager.textColor)
         }
     }
@@ -1034,7 +1280,7 @@ struct DigitalTwinView: View {
         VStack(spacing: 4) {
             HStack {
                 Text(label)
-                    .font(.caption)
+                    .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
             }
@@ -1057,11 +1303,11 @@ struct DigitalTwinView: View {
             .frame(height: 8)
             HStack {
                 Text(lowLabel)
-                    .font(.system(.caption2))
+                    .font(.dv(.caption2))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
                 Text(highLabel)
-                    .font(.system(.caption2))
+                    .font(.dv(.caption2))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
         }
@@ -1080,13 +1326,13 @@ struct DigitalTwinView: View {
                     .rotationEffect(.degrees(-90))
 
                 Text(String(format: "%.0f%%", value * 100))
-                    .font(.system(size: isIPad ? 14 : 11, weight: .bold))
+                    .font(.dv(size: isIPad ? 14 : 11, weight: .bold))
                     .foregroundColor(themeManager.textColor)
             }
             .frame(width: meterSize, height: meterSize)
 
             Text(label)
-                .font(.system(size: isIPad ? 12 : 10))
+                .font(.dv(size: isIPad ? 12 : 10))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
     }
@@ -1095,14 +1341,14 @@ struct DigitalTwinView: View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .foregroundColor(sentimentColor(sentiment))
-                .font(.title3)
+                .font(.dv(.title3))
 
             Text(sentimentLabel(sentiment))
-                .font(.system(.caption2).weight(.medium))
+                .font(.dv(.caption2, weight: .medium))
                 .foregroundColor(sentimentColor(sentiment))
 
             Text(label)
-                .font(.system(.caption2))
+                .font(.dv(.caption2))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .frame(maxWidth: .infinity)
@@ -1122,13 +1368,13 @@ struct DigitalTwinView: View {
                                 .frame(width: 8, height: 8)
 
                             Text(node.label)
-                                .font(.subheadline)
+                                .font(.dv(.subheadline))
                                 .foregroundColor(themeManager.textColor)
 
                             Spacer()
 
                             Text("\(node.mentions)x")
-                                .font(.caption)
+                                .font(.dv(.caption))
                                 .foregroundColor(themeManager.secondaryTextColor)
 
                             // Importance indicator
@@ -1152,10 +1398,10 @@ struct DigitalTwinView: View {
     private func statItem(value: String, label: String) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.title3.bold())
+                .font(.dv(.title3, weight: .bold))
                 .foregroundColor(themeManager.accentColor)
             Text(label)
-                .font(.system(.caption2))
+                .font(.dv(.caption2))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .frame(maxWidth: .infinity)
@@ -1164,15 +1410,15 @@ struct DigitalTwinView: View {
     private var emptyStateCard: some View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
-                .font(.system(size: 40))
+                .font(.dv(size: 40))
                 .foregroundColor(DS.Palette.gold.opacity(0.6))
 
             Text("Your constellation awaits")
-                .font(.system(.body, design: .rounded).weight(.semibold))
+                .font(.dv(.body, design: .rounded, weight: .semibold))
                 .foregroundColor(themeManager.textColor)
 
             Text("Every journal entry becomes a star. Speak for 42 seconds — or longer — and watch your inner sky take shape.")
-                .font(.system(.subheadline, design: .rounded).weight(.regular))
+                .font(.dv(.subheadline, design: .rounded, weight: .regular))
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .lineSpacing(3)
@@ -1181,7 +1427,7 @@ struct DigitalTwinView: View {
                 Label("Voice entries", systemImage: "mic.fill")
                 Label("Written entries", systemImage: "square.and.pencil")
             }
-            .font(.caption)
+            .font(.dv(.caption))
             .foregroundColor(themeManager.accentColor)
         }
         .padding(24)
@@ -1194,7 +1440,7 @@ struct DigitalTwinView: View {
             Image(systemName: "lock.shield.fill")
                 .foregroundColor(DS.Palette.forest)
             Text("100% on-device. Your twin never leaves your device.")
-                .font(.caption)
+                .font(.dv(.caption))
                 .foregroundColor(themeManager.secondaryTextColor)
         }
         .padding()
@@ -1331,7 +1577,7 @@ struct TwinPredictionsSection: View {
                         Image(systemName: "brain.head.profile")
                             .foregroundColor(DS.Palette.terracotta)
                         Text("Your Twin Thinks...")
-                            .font(.headline)
+                            .font(.dv(.headline))
                     }
 
                     ForEach(predictions) { prediction in
@@ -1350,19 +1596,19 @@ struct TwinPredictionsSection: View {
                     .fill(prediction.tint.opacity(0.15))
                     .frame(width: 36, height: 36)
                 Image(systemName: prediction.icon)
-                    .font(.system(.subheadline))
+                    .font(.dv(.subheadline))
                     .foregroundColor(prediction.tint)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(prediction.message)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.dv(.subheadline, weight: .semibold))
                     .foregroundColor(.primary)
                     .fixedSize(horizontal: false, vertical: true)
 
                 if let detail = prediction.detail {
                     Text(detail)
-                        .font(.caption)
+                        .font(.dv(.caption))
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -1370,9 +1616,9 @@ struct TwinPredictionsSection: View {
                 // v1.6: honest confidence — the Twin says how sure it is.
                 HStack(spacing: 4) {
                     Image(systemName: "gauge.with.dots.needle.33percent")
-                        .font(.system(.caption2))
+                        .font(.dv(.caption2))
                     Text(prediction.confidenceBand.label)
-                        .font(.system(.caption2).weight(.medium))
+                        .font(.dv(.caption2, weight: .medium))
                 }
                 .foregroundColor(.secondary)
                 .padding(.top, 2)
