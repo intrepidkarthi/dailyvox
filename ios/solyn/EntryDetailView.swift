@@ -16,6 +16,7 @@ import WidgetKit
 /// Allows viewing, editing text, setting mood, playing back audio, and attaching photos.
 struct EntryDetailView: View {
     @Environment(\.dvTheme) private var theme
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject var entry: DiaryEntry
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -181,6 +182,11 @@ struct EntryDetailView: View {
             }
         }
         .onDisappear(perform: saveIfNeeded)
+        // Backgrounding is the other way an edit leaves the screen, and the one
+        // iOS can follow with termination. `.onDisappear` does not fire then.
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { saveIfNeeded() }
+        }
         .onAppear(perform: loadPhotos)
         .onChange(of: selectedPhotos) { _, newItems in
             handlePhotoSelection(newItems)
@@ -236,7 +242,10 @@ struct EntryDetailView: View {
     /// "5:28 PM · 0:04 · 17 WORDS"
     private var entryMetaLine: String {
         var parts: [String] = []
-        if let updatedAt = entry.updatedAt { parts.append(formattedTime(updatedAt).uppercased()) }
+        // `entry.date`, not `updatedAt`. This line says when the entry was
+        // SPOKEN; reading it from the modification stamp meant fixing one typo
+        // at 11:47pm rewrote a morning entry's history to "11:47 PM".
+        if let spokenAt = entry.date { parts.append(formattedTime(spokenAt).uppercased()) }
         let seconds = Int(entry.duration.rounded())
         if seconds > 0 { parts.append(String(format: "%d:%02d", seconds / 60, seconds % 60)) }
         let words = text.split { $0.isWhitespace || $0.isNewline }.count
@@ -297,11 +306,11 @@ struct EntryDetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .onTapGesture {
-            if !isTranscribing {
-                isEditing = true
-            }
-        }
+        // NO tap-to-edit. The same text is `.textSelection(.enabled)`, so
+        // reaching in to select a sentence to quote instead opened a TextEditor
+        // and threw the keyboard up — two gestures competing for one press,
+        // with the destructive one winning. Edit is an explicit button in the
+        // actions row, which is where it reads as a choice.
     }
 
     /// What "Ask about this" actually asks.
@@ -435,8 +444,11 @@ struct EntryDetailView: View {
     private var bodyLine: String? {
         guard let date = entry.date else { return nil }
         let day = Calendar.current.startOfDay(for: date)
+        // `capturedAt`, not `keptAt`: keeping is batched, so `keptAt` is when
+        // the user got round to reviewing, which is routinely a different day
+        // from the one the entry — and the body reading — belong to.
         let kept = KeptSnapshotStore.shared.loadAll().first {
-            Calendar.current.startOfDay(for: $0.keptAt) == day
+            Calendar.current.startOfDay(for: $0.snapshot.capturedAt) == day
         }
         guard let hours = kept?.snapshot.sleepHours else { return nil }
         let h = Int(hours)
@@ -671,6 +683,11 @@ struct EntryDetailView: View {
                     Button("Done") {
                         isTextFocused = false
                         isEditing = false
+                        // Done means done. This used to only drop focus and
+                        // leave the edit sitting in @State until .onDisappear —
+                        // so an entry rewritten and then left on screen was
+                        // lost outright if iOS reclaimed the app.
+                        saveIfNeeded()
                     }
                     .font(.dv(.subheadline, weight: .medium))
                 }

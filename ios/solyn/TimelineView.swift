@@ -206,7 +206,7 @@ struct TimelineView: View {
                 // EditButton is the one casualty — swipe-to-delete still works
                 // via .onDelete, so nothing became unreachable.
                 headerAction(showSearch ? "magnifyingglass.circle.fill" : "magnifyingglass",
-                             showSearch ? "Close search" : "Search what you meant") {
+                             showSearch ? "Close search" : "Search entries") {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
                         showSearch.toggle()
                     }
@@ -242,11 +242,13 @@ struct TimelineView: View {
             // the feature.
             //
             // The teaching still happens, in the one place it has to: the
-            // placeholder still reads "Describe it — search what you meant", so
-            // opening search explains itself the first time. What is NOT
-            // repeated is the earlier mistake — the glyph that opens this is
-            // labelled for VoiceOver and there is no second, competing search
-            // anywhere in the app.
+            // The placeholder no longer says "Describe it — search what you
+            // meant". This field runs `localizedCaseInsensitiveContains`, so it
+            // was promising meaning and delivering substring: type "the day I
+            // felt overwhelmed" and get nothing back, with no way to tell
+            // whether the entry is missing or the search is. Meaning-search is
+            // real and still here — it is offered from the empty result, which
+            // is precisely when it is worth having.
             if searchIsActive {
                 searchField
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -328,9 +330,18 @@ struct TimelineView: View {
                         }
                 }
 
-                // Empty state
+                // Two different empties, and they were sharing one state.
+                // "No entries found" beside a magnifying glass is the right
+                // answer to a query that matched nothing and the WRONG answer
+                // to a journal nobody has written in yet — which is what a
+                // first-run user saw on this tab: a search failure for a search
+                // they never ran.
                 if filteredEntries.isEmpty {
-                    emptySearchState
+                    if entries.isEmpty {
+                        emptyJournalState
+                    } else {
+                        emptySearchState
+                    }
                 }
             
                 // Clearance for the floating tab bar. A List does not take
@@ -357,58 +368,16 @@ struct TimelineView: View {
         .sheet(isPresented: $showSemanticSearch) {
             SemanticSearchView()
         }
-        .refreshable {
-            HapticManager.shared.pullToRefresh()
-            try? await Task.sleep(nanoseconds: 300_000_000)
-        }
-        .toolbar {
-            #if os(iOS)
-            ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 12) {
-                    // Semantic search (v1.6) — find an entry by meaning.
-                    Button {
-                        showSemanticSearch = true
-                    } label: {
-                        Image(systemName: "sparkle.magnifyingglass")
-                            .foregroundColor(.accentColor)
-                    }
-                    .accessibilityLabel("Search by meaning")
-
-                    // Voice search button
-                    Button {
-                        toggleVoiceSearch()
-                    } label: {
-                        Image(systemName: isListening ? "mic.fill" : "mic")
-                            .foregroundColor(isListening ? theme.recordingColor : .accentColor)
-                    }
-                    .accessibilityLabel("Voice search")
-                    
-                    // Filter button
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            showFilters.toggle()
-                        }
-                        HapticManager.shared.buttonTap()
-                    } label: {
-                        Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-                    }
-                    .accessibilityLabel("Filters")
-                    
-                    EditButton()
-                }
-            }
-            #endif
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    showStarredOnly.toggle()
-                    HapticManager.shared.selectionChanged()
-                }) {
-                    Image(systemName: showStarredOnly ? "star.fill" : "star")
-                        .foregroundColor(showStarredOnly ? DS.Palette.gold : DS.Palette.sage)
-                }
-                .accessibilityLabel("Show starred only")
-            }
-        }
+        // No .refreshable: a @FetchRequest is already live, so the gesture
+        // buzzed, waited 300ms and changed nothing — a control that pretends to
+        // work is worse than no control.
+        // The navigation bar is hidden (below), so a `.toolbar` here renders
+        // NOTHING. Search, voice, filters and share were re-homed into the
+        // Journal's own header when that happened; the starred toggle was not,
+        // and quietly became the only way to reach a feature — you could star an
+        // entry, count starred entries in Insights, and export only starred
+        // entries, but never actually look at them. It now lives in the filter
+        // row, which is where a filter belongs.
         .background { WarmBackground() }
         .toolbar(.hidden, for: .navigationBar)
         .dailyVoxStatusBarScrim()
@@ -422,34 +391,13 @@ struct TimelineView: View {
             }
         }
         #endif
-        .onChange(of: searchText) { _, newValue in
-            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
-            if trimmed.count >= 2 {
-                searchSuggestions = twin.searchSuggestions(for: trimmed)
-            } else {
-                searchSuggestions = []
-            }
-        }
-        .searchSuggestions {
-            ForEach(searchSuggestions, id: \.text) { suggestion in
-                Button {
-                    if suggestion.type == "mood" {
-                        // Apply mood filter
-                        if let mood = Mood(rawValue: suggestion.text.lowercased()) {
-                            selectedMoodFilter = mood
-                            searchText = ""
-                        }
-                    } else {
-                        searchText = suggestion.text
-                    }
-                } label: {
-                    Label(suggestion.text, systemImage: suggestion.icon)
-                }
-                .searchCompletion(suggestion.text)
-            }
-        }
+        // `.searchSuggestions` needs `.searchable`, which this view does not use
+        // — it draws its own field. So the modifier rendered nothing while the
+        // computation behind it ran the Twin's suggestion search on every
+        // keystroke. Both are gone; the field filters as you type, which is what
+        // the suggestions were dressing up anyway.
     }
-    
+
     // MARK: - Quick Filter Chips
 
     private var quickFilterChips: some View {
@@ -498,14 +446,19 @@ struct TimelineView: View {
                 .foregroundColor(theme.secondaryTextColor)
 
             TextField("", text: $searchText, prompt:
-                Text("Describe it — search what you meant")
+                Text("Search your entries")
                     .foregroundColor(theme.secondaryTextColor)
             )
             .font(.dv(size: 15))
             .foregroundColor(theme.textColor)
             .focused($searchFocused)
             .submitLabel(.search)
-            .onSubmit { if !searchText.isEmpty { showSemanticSearch = true } }
+            // Return dismisses the keyboard. It used to open the semantic
+            // search sheet — throwing the user off the screen they were already
+            // searching, mid-search, onto a second search with the same query.
+            // The list below is already filtering live; Return means "I am done
+            // typing", not "start over somewhere else".
+            .onSubmit { searchFocused = false }
 
             if !searchText.isEmpty {
                 Button {
@@ -617,6 +570,37 @@ struct TimelineView: View {
 
     private var filterBar: some View {
         VStack(spacing: 12) {
+            // Starred, re-homed from the navigation bar that no longer renders.
+            // First in the row because it is the only binary one, and because it
+            // is the filter people arrive looking for.
+            HStack(spacing: 8) {
+                Button {
+                    withAnimation { showStarredOnly.toggle() }
+                    HapticManager.shared.selectionChanged()
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: showStarredOnly ? "star.fill" : "star")
+                        Text("Starred only")
+                    }
+                    .font(.dv(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundColor(showStarredOnly ? DS.Palette.gold : theme.secondaryTextColor)
+                    .padding(.horizontal, 14)
+                    .frame(minHeight: 44)
+                    .background(
+                        Capsule().fill(showStarredOnly
+                                       ? DS.Palette.gold.opacity(0.16)
+                                       : Color(.tertiarySystemFill))
+                    )
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Show starred only")
+                .accessibilityAddTraits(showStarredOnly ? .isSelected : [])
+
+                Spacer()
+            }
+            .padding(.horizontal)
+
             // Mood filter
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -640,11 +624,14 @@ struct TimelineView: View {
                                 Text(mood.rawValue)
                             }
                             .font(.dv(.caption))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
+                            .padding(.horizontal, 12)
+                            // 28pt against a 44pt floor. Same fix the tab bar
+                            // and the header glyphs already took.
+                            .frame(minHeight: 44)
                             .background(selectedMoodFilter == mood ? mood.color.opacity(0.2) : Color(.tertiarySystemFill))
                             .foregroundColor(selectedMoodFilter == mood ? mood.color : .secondary)
                             .clipShape(Capsule())
+                            .contentShape(Capsule())
                         }
                         .buttonStyle(.plain)
                     }
@@ -723,6 +710,37 @@ struct TimelineView: View {
     
     // MARK: - Empty State
     
+    /// Nothing written yet. Same voice as the Record tab's "What's on your
+    /// mind?" and the Twin's "Your sky is empty — for now": an invitation, in a
+    /// journal that has not started rather than a query that failed.
+    private var emptyJournalState: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "sparkle")
+                .font(.dv(size: 28))
+                .foregroundColor(DS.Palette.gold.opacity(0.7))
+
+            Text("Nothing here yet")
+                .font(.dv(size: 19, weight: .bold, design: .rounded))
+                .foregroundColor(theme.textColor)
+
+            Text("Every entry you speak lands here,\nnewest first.")
+                .font(.dv(.subheadline, design: .rounded, weight: .regular))
+                .foregroundColor(theme.secondaryTextColor)
+                .multilineTextAlignment(.center)
+                .lineSpacing(3)
+
+            Text("SPEAK TAB, THE GREEN MIC")
+                .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(1.4)
+                .foregroundColor(theme.secondaryTextColor.opacity(0.8))
+                .padding(.top, 2)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 56)
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
     private var emptySearchState: some View {
         VStack(spacing: 16) {
             Image(systemName: "magnifyingglass")
@@ -732,13 +750,37 @@ struct TimelineView: View {
             Text("No entries found")
                 .font(.dv(.headline))
                 .foregroundColor(.secondary)
-            
+
+            // Meaning-search, offered exactly where it earns its place: the
+            // words did not match, so try what the words meant. It was
+            // previously bound to the Return key, which ejected people mid-type
+            // into a second search screen — and then to nothing at all, once
+            // the navigation bar that held its button stopped rendering.
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Button {
+                    showSemanticSearch = true
+                    HapticManager.shared.buttonTap()
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkle.magnifyingglass")
+                        Text("Search by meaning instead")
+                    }
+                    .font(.dv(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundColor(theme.accentColor)
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+
             if hasActiveFilters {
                 Button("Clear Filters") {
                     clearAllFilters()
                 }
                 .font(.dv(.subheadline))
                 .foregroundColor(.accentColor)
+                .frame(minHeight: 44)
             }
         }
         .frame(maxWidth: .infinity)
@@ -953,7 +995,11 @@ struct EntryRowView: View {
     private var relativeDay: String {
         guard let date = entry.date else { return dateString.uppercased() }
         let cal = Calendar.current
-        if cal.isDateInToday(date) { return "TONIGHT" }
+        // "TONIGHT" for anything today made a 7am entry read
+        // "TONIGHT · 1M 20 · 58 WORDS". Today is today whatever the hour; the
+        // word "tonight" belongs to the Tonight share card, which really is
+        // drawn at the end of a day.
+        if cal.isDateInToday(date) { return "TODAY" }
         if cal.isDateInYesterday(date) { return "YESTERDAY" }
         // Within the last week, the weekday alone locates it.
         if let days = cal.dateComponents([.day], from: cal.startOfDay(for: date),
@@ -1100,21 +1146,25 @@ struct FilterChip: View {
                 .font(.dv(.caption2))
             Text(label)
                 .font(.dv(.caption))
-            Button {
-                withAnimation {
-                    onRemove()
-                }
-                HapticManager.shared.buttonTap()
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.dv(.caption))
-            }
+            // The whole chip is the target, not just the glyph. A caption-sized
+            // cross inside a 26pt capsule is roughly a 16pt hit area, and the
+            // chip does exactly one thing — so let it be pressed anywhere.
+            Image(systemName: "xmark.circle.fill")
+                .font(.dv(.caption))
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 44)
         .background(color.opacity(0.15))
         .foregroundColor(color)
         .clipShape(Capsule())
+        .contentShape(Capsule())
+        .onTapGesture {
+            withAnimation { onRemove() }
+            HapticManager.shared.buttonTap()
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Remove filter \(label)")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -1144,10 +1194,11 @@ struct DateRangeButton: View {
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .frame(minHeight: 44)
             .background(date != nil ? Color.accentColor.opacity(0.1) : Color(.tertiarySystemFill))
             .foregroundColor(date != nil ? .accentColor : .secondary)
             .clipShape(Capsule())
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showPicker) {

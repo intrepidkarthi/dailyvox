@@ -257,7 +257,7 @@ struct DigitalTwinView: View {
                     number: "1",
                     icon: "mic.circle.fill",
                     title: "You speak",
-                    description: "Record a voice entry on the Record tab. 42 seconds is the sweet spot — take as long as you need.",
+                    description: "Speak an entry on the Speak tab. 42 seconds is the sweet spot — take as long as you need.",
                     color: DS.Palette.sage,
                     isLast: false
                 )
@@ -288,12 +288,14 @@ struct DigitalTwinView: View {
             }
             .padding(.horizontal, 20)
 
-            // CTA hint
+            // The tab is labelled "Speak". This said "Record tab" — naming a
+            // destination that does not exist — beside a hand pointing LEFT at
+            // nothing, while the bar it means is at the bottom.
             HStack(spacing: 10) {
-                Image(systemName: "hand.point.left.fill")
-                    .font(.dv(.callout))
+                Image(systemName: "arrow.down")
+                    .font(.dv(.callout, weight: .semibold))
                     .foregroundColor(DS.Palette.gold)
-                Text("Switch to the Record tab to begin")
+                Text("Start on the Speak tab, below")
                     .font(.dv(.subheadline, design: .rounded, weight: .medium))
                     .foregroundColor(themeManager.textColor)
             }
@@ -303,16 +305,17 @@ struct DigitalTwinView: View {
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .padding(.horizontal, 20)
 
-            // Privacy assurance
-            HStack(spacing: 6) {
-                Image(systemName: "lock.shield.fill")
-                    .font(.dv(.caption2))
-                    .foregroundColor(DS.Palette.forest)
-                Text("Your Twin never leaves your device")
-                    .font(.dv(.caption2, design: .rounded, weight: .medium))
-                    .foregroundColor(themeManager.secondaryTextColor.opacity(0.7))
-            }
-            .padding(.bottom, 20)
+            // This screen made the same promise THREE times — "entirely on your
+            // device", "Everything stays on your device. No servers. No cloud
+            // AI. No accounts.", and here "Your Twin never leaves your device".
+            // Said once it is a fact; said three times on one scroll it reads as
+            // protesting. The middle one, which is the specific one, stays.
+
+            // The first-run branch never had bar clearance — it is applied on
+            // the populated branch only — so this footer sat under the floating
+            // pill. Same failure this file records having already fixed once,
+            // on the other branch.
+            Color.clear.frame(height: DailyVoxTabBar.reservedHeight)
         }
         .onAppear {
             // The pulsing core star is decorative. A repeat-forever animation
@@ -507,16 +510,15 @@ struct DigitalTwinView: View {
         let words = entries.reduce(0) { $0 + ($1.text ?? "").split(whereSeparator: \.isWhitespace).count }
         let average = entries.isEmpty ? 0 : words / entries.count
         let length = average > 40 ? "expansive" : "economical"
-        // `starCount`, not `entries.count`. This card sits two inches under a
-        // badge reading "137 ✦" and was saying "from 45 entries" — the exact
-        // contradiction the badge's own comment records having already fixed
-        // once, reintroduced here. Whatever the right number is, a screen may
-        // only have one of it.
+        // No count in this sentence at all.
         //
-        // The two sources genuinely disagree (Twin state accumulated over time
-        // vs. rows currently in Core Data) and that gap is worth chasing
-        // separately; it is not worth showing the user both halves of.
-        return "Who you are: \(tone), \(length) — from \(starCount) entries."
+        // It used to end "— from 45 entries" while a badge two inches above
+        // read "137 ✦" — two numbers for one thing, disagreeing. That was fixed
+        // by making both read `starCount`, which left the SAME integer printed
+        // four times on one screen: the badge, this sentence, the MIND column,
+        // and Writing Stats. A sentence about who someone is does not need to
+        // cite its sample size; the badge already states it, once, in gold.
+        return "Who you are: \(tone), \(length)."
     }
 
     // MARK: - C2: dimension stats
@@ -771,11 +773,14 @@ struct DigitalTwinView: View {
                                 .font(.dv(.subheadline, weight: selectedSection == section ? .bold : .regular))
                                 .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
                                 .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
+                                // ~36pt against the 44pt floor, on the control
+                                // that navigates this entire screen.
+                                .frame(minHeight: 44)
                                 .background(
                                     Capsule()
                                         .fill(selectedSection == section ? themeManager.accentColor : themeManager.cardBackgroundColor)
                                 )
+                                .contentShape(Capsule())
                         }
                         .id(section)
                         // VoiceOver otherwise reads these as six identical unlabelled buttons
@@ -1221,7 +1226,8 @@ struct DigitalTwinView: View {
                 sectionHeader("Writing Stats", icon: "doc.text.fill")
 
                 HStack(spacing: 20) {
-                    statItem(value: "\(twin.behavioralPatterns.totalEntries)", label: "Entries")
+                    // "Entries" is not here: it is the badge at the top of this
+                    // same screen, and the MIND column between the two.
                     statItem(value: formatNumber(twin.behavioralPatterns.totalWords), label: "Words")
                     statItem(value: "\(Int(twin.communicationStyle.averageSentenceLength))", label: "Avg Sentence")
                     statItem(value: String(format: "%.0f%%", twin.communicationStyle.vocabularyRichness * 100), label: "Vocab Richness")

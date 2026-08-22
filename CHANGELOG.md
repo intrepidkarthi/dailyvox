@@ -71,6 +71,35 @@ nothing here has shipped to a user.
   home-indicator strip — so tabs often needed pressing twice. With a keyboard
   up, taps fell through the bar entirely.
 - Entry actions sat underneath the floating tab bar and could not be pressed.
+- **The Journal's starred filter could not be reached.** Its button lived in a
+  navigation bar the screen hides, so it rendered nothing — you could star an
+  entry, count starred entries in Insights and export only starred entries, but
+  never look at them. It now sits in the filter row, where a filter belongs.
+- **The Record tab and Insights disagreed about the streak.** Three copies of
+  one rule existed and the most prominent was wrong: it counted back from the
+  latest entry without checking the run reached the present, so a journal last
+  written in March still read "5-day streak". One definition now, with tests.
+- **An entry's timestamp changed when you edited it.** The line read from the
+  modification stamp, so fixing a typo at 11:47pm rewrote a morning entry to
+  "11:47 PM". It reads the time the entry was spoken.
+- **An edit could be lost.** Text and mood were written only when the screen
+  went away; backgrounding the app and having iOS reclaim it discarded them.
+  Done saves, and so does leaving the foreground.
+- Selecting text in an entry opened the editor instead — two gestures on one
+  press, with the destructive one winning.
+- The Journal greeted a brand-new user with "No entries found" and a magnifying
+  glass: a search failure for a search they had not run.
+- The Twin's first-run screen ran under the floating tab bar, told users to go
+  to a "Record tab" that is called Speak, and pointed a hand leftward at it.
+- Pull-to-refresh in the Journal buzzed, waited, and did nothing.
+- Pressing Return while searching threw you off the screen into a second search.
+- The reminder rows always showed Evening ticked, whatever time was scheduled.
+- Touch targets under the 44pt floor: the route to Settings, mood and date
+  filters, filter chips, the Twin's section picker, storage refresh.
+- Body context was joined to an entry by the day the user *reviewed* the reading
+  rather than the day it was taken. Review is batched, so working through a week
+  of pending snapshots in one sitting stamped them all with the same date — and
+  an entry would then show a night's sleep belonging to a different night.
 - Recording is no longer lost to a phone call: an interruption pauses and keeps
   what was captured, rather than ending the entry silently.
 
@@ -91,6 +120,12 @@ nothing here has shipped to a user.
   from a list index — it had the grammar of a chart and said nothing.
 - **A "Tonight" share card**, different every night by construction. Everything
   else was occasional; there was nothing to post on an ordinary Tuesday.
+- **A "Body" share card** — nights slept, and how mood read after a long night
+  against a short one. It is the only shareable that can carry a health fact, so
+  it is held to a stricter rule than names: it is absent unless body signals were
+  kept, its own switch starts off every time the sheet opens, and with the switch
+  off the card renders a withheld state rather than the same picture unguarded.
+  Heart-rate variability and resting heart rate never reach a card at all.
 - Full-screen recording dial with Discard, Stop & keep, and a real Pause.
 - "What your Twin filed" on an entry, with gold-underlined names, plus Edit and
   Ask about this.
@@ -99,6 +134,20 @@ nothing here has shipped to a user.
 - Reduced-motion support, and a real sunset that follows the sun.
 
 ### Changed
+- **The mic sits at the bottom of the Speak tab.** It was a centred object about
+  45% up the screen — outside the arc a thumb reaches on the phone holding it.
+  The question stays married to the button, so the pair moved down together.
+- Insights lost its "AI Insights" card. "AI" is the category this product
+  defines itself against, and the card said what "Your Twin noticed" says
+  further down the same scroll. Entry detail had already dropped its copy.
+- Reaching a milestone no longer throws a full-screen gold trophy over Insights
+  before you have read a word of it. It is a line on the streak card.
+- The Twin screen printed the same entry count four times. The badge keeps it.
+- Settings, presented as a sheet, gained a Done button, and its two privacy
+  sections stopped contradicting each other about iCloud.
+- The Journal's search field said "Describe it — search what you meant" while
+  running a substring match. It says "Search your entries"; search-by-meaning is
+  offered from the empty result, which is when it is actually worth having.
 - Sharing reaches three surfaces — an entry, the Journal and the sky — rather
   than one glyph in one corner. Insights is a named action, not an icon.
 - The Record screen is the question and the microphone, centred, with today's

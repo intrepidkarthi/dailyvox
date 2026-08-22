@@ -296,11 +296,29 @@ struct TodayView: View {
 
     private var firstTimeView: some View {
         VStack(spacing: 0) {
+            // Settings had NO route on this screen. It is reached only from the
+            // ellipsis in `headerSection`, which the first-run branch does not
+            // draw — so the one population most likely to need it (someone who
+            // just declined the microphone prompt and wants to know why nothing
+            // happens) could not reach permissions, reminders or the Data
+            // Shield until they had successfully recorded.
+            HStack {
+                Spacer()
+                Button { showSettings = true } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.dv(size: 16, weight: .semibold))
+                        .foregroundColor(theme.secondaryTextColor)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityLabel("Settings")
+            }
+            .padding(.horizontal, 8)
+            .padding(.top, 4)
+
             Spacer()
 
-            // Gentle prompt
             VStack(spacing: 24) {
-                // Small star icon
                 ZStack {
                     Circle()
                         .fill(DS.Palette.gold.opacity(0.1))
@@ -314,13 +332,13 @@ struct TodayView: View {
                 }
 
                 VStack(spacing: 12) {
-                    Text("What's on your mind?")
+                    Text("What\u{2019}s on your mind?")
                         .font(.dv(size: 26, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
+                        .foregroundColor(theme.textColor)
 
-                    Text("Tap the mic and speak for 42 seconds — or longer.\nYour first star will appear.")
+                    Text("Tap the mic and speak for 42 seconds \u{2014} or longer.\nYour first star will appear.")
                         .font(.dv(.subheadline, design: .rounded, weight: .regular))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(theme.secondaryTextColor)
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
                 }
@@ -329,13 +347,12 @@ struct TodayView: View {
 
             Spacer()
 
-            // The mic button — large, centered, inviting
-            VStack(spacing: 20) {
+            // The mic sits LOW, in thumb reach, like the one on the normal view.
+            VStack(spacing: 18) {
                 Button {
                     toggleRecording()
                 } label: {
                     ZStack {
-                        // Pulsing ring
                         Circle()
                             .stroke(DS.Palette.sage.opacity(0.2), lineWidth: 2)
                             .frame(width: 108, height: 108)
@@ -343,48 +360,40 @@ struct TodayView: View {
                             .opacity(firstTimePulse ? 0 : 0.5)
                             .animation(.easeOut(duration: 2.0).repeatForever(autoreverses: false), value: firstTimePulse)
 
-                        // Ambient glow
                         Circle()
                             .fill(DS.Palette.sage.opacity(0.08))
                             .frame(width: 120, height: 120)
                             .blur(radius: 15)
 
-                        // Outer ring
                         Circle()
                             .stroke(DS.Palette.sage.opacity(0.3), lineWidth: 4)
                             .frame(width: 96, height: 96)
 
-                        // Main circle
                         Circle()
                             .fill(DS.Palette.sage)
                             .frame(width: 80, height: 80)
 
-                        // Mic icon
                         Image(systemName: "mic.fill")
                             .font(.dv(size: 32))
                             .foregroundColor(.white)
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Record an entry")
                 .onAppear { firstTimePulse = true }
 
-                Text("Your voice stays on this device")
-                    .font(.dv(.caption, design: .rounded, weight: .medium))
-                    .foregroundColor(.secondary)
-
-                // Privacy assurance
-                HStack(spacing: 6) {
-                    Image(systemName: "lock.shield.fill")
-                        .font(.dv(.caption2))
-                        .foregroundColor(DS.Palette.forest)
-                    Text("No servers. No accounts. 100% private.")
-                        .font(.dv(.caption2, design: .rounded, weight: .medium))
-                        .foregroundColor(.secondary.opacity(0.7))
-                }
+                // ONE claim, not two. This screen used to say "Your voice stays
+                // on this device" and, directly beneath it, "No servers. No
+                // accounts. 100% private." — the same promise twice, stacked,
+                // which reads as protesting rather than stating. The mono
+                // register matches the caption under the mic on the normal view.
+                Text("TRANSCRIBED ON THIS PHONE")
+                    .font(.dv(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.4)
+                    .foregroundColor(theme.secondaryTextColor)
             }
 
-            Spacer()
-                .frame(height: 60)
+            Color.clear.frame(height: DailyVoxTabBar.reservedHeight)
         }
     }
 
@@ -403,43 +412,57 @@ struct TodayView: View {
     /// The fix is the bar's own reserved height, so the two stack instead of
     /// competing for the same strip.
     private var normalView: some View {
-        // B2/C1's composition: header, air, the question-and-mic as one centred
-        // object, air, then what the day produced and the claim underneath it.
+        // Header at the top, the mic PINNED at the bottom, the day's star in the
+        // scrollable middle.
         //
-        // What this replaces: a scroll of stacked cards with the mic docked
-        // beneath it. That layout put an inert mic-illustration card ("Add a
-        // star to today's sky") and a prompt row between the question and the
-        // real button — so the first microphone on the screen did nothing, and
-        // the scroll area was squeezed until its last row always clipped.
-        ScrollView {
-            VStack(spacing: 0) {
-                headerSection
+        // It used to be one scroll with the question-and-mic as a centred object
+        // in the middle of it. That composition reads well on a canvas and badly
+        // in a hand: the primary — and on most days only — action of the whole
+        // app sat around 45% of the way up a 6.7" screen, which is outside the
+        // arc a thumb reaches on the phone it is holding. Karthik flagged it.
+        // The question stays married to the button, so the pair moves down
+        // together and the greeting keeps the top.
+        VStack(spacing: 0) {
+            headerSection
+                .padding(.horizontal)
+                .padding(.top)
 
-                Spacer(minLength: 28)
+            ScrollView {
+                VStack(spacing: 0) {
+                    Spacer(minLength: 24)
 
-                questionAndMic
+                    if recordingState == .idle {
+                        // Today's star, once it exists. The canvas surfaces it
+                        // here rather than making you open the Journal for it.
+                        //
+                        // BodyTwinIdleCards is NOT here any more. It added a
+                        // third card under the mic ("7,002 steps already — your
+                        // day is in motion") on a screen the design gives two.
+                        // Body context already appears where it means
+                        // something: the BODY row of an entry's ledger, and the
+                        // Body card on the Twin tab.
+                        entryCardSection
+                    }
 
-                Spacer(minLength: 28)
-
-                if recordingState == .idle {
-                    // Today's star, once it exists. The canvas surfaces it here
-                    // rather than making you open the Journal for it.
-                    //
-                    // BodyTwinIdleCards is NOT here any more. It added a third
-                    // card under the mic ("7,002 steps already — your day is in
-                    // motion") on a screen the design gives two. Body context
-                    // already appears where it means something: the BODY row of
-                    // an entry's ledger, and the Body card on the Twin tab.
-                    entryCardSection
+                    Spacer(minLength: 24)
                 }
-
-                Spacer(minLength: 22)
+                .padding(.horizontal)
+                .frame(maxWidth: isIPad ? 700 : .infinity)
+                .frame(maxWidth: .infinity)
             }
-            .padding()
-            .frame(maxWidth: isIPad ? 700 : .infinity)
-            .frame(maxWidth: .infinity)
-            .frame(minHeight: minCanvasHeight, alignment: .top)
-            .dailyVoxBarClearance()
+            // The middle may be empty on a day with nothing recorded; it must
+            // still take the slack so the mic stays put rather than riding up
+            // to meet the header.
+            .frame(maxHeight: .infinity)
+
+            questionAndMic
+                .padding(.horizontal)
+                .frame(maxWidth: isIPad ? 700 : .infinity)
+                .frame(maxWidth: .infinity)
+
+            // Clears the floating bar. Docked content, so the bar's own height
+            // plus breathing room rather than the full scroll reservation.
+            Color.clear.frame(height: DailyVoxTabBar.reservedHeight - 10)
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
@@ -485,7 +508,10 @@ struct TodayView: View {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)
-                        .frame(width: 34, height: 34)
+                        // 34pt against a 44pt floor, on the app's only route to
+                        // Settings.
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .accessibilityLabel("Settings")
                 .padding(.leading, 2)
@@ -1294,27 +1320,7 @@ struct TodayView: View {
     }
 
     private var streakCount: Int {
-        let calendar = Calendar.current
-
-        let daysSet: Set<Date> = Set(allEntries.compactMap { entry in
-            guard let date = entry.date else { return nil }
-            return calendar.startOfDay(for: date)
-        })
-
-        var days = Array(daysSet)
-        guard !days.isEmpty else { return 0 }
-        days.sort(by: >)
-
-        var streak = 1
-        for i in 1..<days.count {
-            let diff = calendar.dateComponents([.day], from: days[i], to: days[i - 1]).day ?? 0
-            if diff == 1 {
-                streak += 1
-            } else {
-                break
-            }
-        }
-        return streak
+        Streak.current(dates: allEntries.compactMap(\.date))
     }
 }
 
@@ -1452,31 +1458,7 @@ func currentStreak(in context: NSManagedObjectContext) -> Int {
     let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
     request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
     guard let entries = try? context.fetch(request) else { return 0 }
-
-    let calendar = Calendar.current
-    var checkDate = calendar.startOfDay(for: Date())
-    let todayHasEntry = entries.contains { entry in
-        guard let date = entry.date else { return false }
-        return calendar.isDate(date, inSameDayAs: checkDate)
-    }
-    if !todayHasEntry {
-        checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-    }
-
-    var streak = 0
-    while true {
-        let hasEntry = entries.contains { entry in
-            guard let date = entry.date else { return false }
-            return calendar.isDate(date, inSameDayAs: checkDate)
-        }
-        if hasEntry {
-            streak += 1
-            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-        } else {
-            break
-        }
-    }
-    return streak
+    return Streak.current(dates: entries.compactMap(\.date))
 }
 
 func totalEntryCount(in context: NSManagedObjectContext) -> Int {

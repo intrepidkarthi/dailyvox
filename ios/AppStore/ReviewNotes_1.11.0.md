@@ -1,4 +1,4 @@
-# App Review Notes — DailyVox 1.11.0 (build 41)
+# App Review Notes — DailyVox 1.11.0 (build 44)
 
 ## What changed in this build
 
@@ -21,9 +21,18 @@ the product's design specification. The Twin's constellation now encodes real
 data — distance from centre is how long ago an entry was spoken, angle is the
 time of day it was spoken, size is its length.
 
-**Sharing.** A new "Tonight" card joins the existing share cards. All cards are
-rendered on the device and handed to the standard share sheet; the app never
-transmits them. Names are excluded by default.
+**Sharing.** New "Tonight" and "Body" cards join the existing share cards. All
+cards are rendered on the device and handed to the standard share sheet; the app
+never transmits them. Names are excluded by default.
+
+The "Body" card is the only shareable that can carry HealthKit-derived
+information, and it is gated three ways: it does not appear at all unless the
+user has reviewed and **kept** at least one body snapshot; it has its own switch
+that is **off** each time the sheet is opened; and with that switch off the card
+renders a "your body stays here" state carrying no health value. It draws sleep
+hours and the app's own mood score only — heart-rate variability and resting
+heart rate are never rendered on any shareable surface. To reproduce: Settings →
+Body Twin, keep a snapshot, then Share → Body.
 
 ## Privacy — the part most relevant to review
 

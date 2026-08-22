@@ -47,8 +47,13 @@ struct StatsView: View {
                     // Shareable Weekly Insights
                     WeeklyInsightsSection(entries: Array(entries))
 
-                    // AI Insights
-                    aiInsightsCard
+                    // No "AI Insights" card. "AI" is the category this product
+                    // defines itself against, and EntryDetailView already
+                    // removed its own copy of that card for exactly this
+                    // reason: two names on one screen teach people the Twin is
+                    // a skin over something generic. Its content also said what
+                    // "Your Twin noticed" says, ten points further down the
+                    // same scroll.
 
                     // Streak Card
                     streakCard
@@ -87,16 +92,19 @@ struct StatsView: View {
         }
         .background { WarmBackground() }
         .navigationTitle("Insights")
-        .overlay {
-            if let milestone = showMilestone {
-                milestoneOverlay(days: milestone)
-            }
-        }
         .onAppear {
             refreshBodyInsights()
+            // Reached milestones now surface as a gold line INSIDE the streak
+            // card, rather than a full-screen gold trophy thrown over the
+            // content before the user has read a word of it — "Milestone! Your
+            // dedication to self-reflection is paying off", dismissible only by
+            // tapping out. That is the gamification the design rules out, on
+            // the screen most at risk of it. The haptic stays; the interrupt
+            // does not. `checkMilestone` still records what has been seen, so
+            // each one is marked once.
             if let milestone = goalManager.checkMilestone(currentStreak: currentStreak) {
                 HapticManager.shared.streakMilestone()
-                withAnimation(.spring(response: 0.5)) {
+                withAnimation(.easeOut(duration: 0.4)) {
                     showMilestone = milestone
                 }
             }
@@ -153,6 +161,26 @@ struct StatsView: View {
                     .foregroundColor(.secondary)
                     .padding(.bottom, 8)
                 Spacer()
+            }
+
+            // The milestone, where it belongs: one gold line on the card that
+            // is already about the streak. Gold rewards.
+            if let milestone = showMilestone {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkle")
+                        .font(.dv(.caption, weight: .semibold))
+                    Text("\(milestone) days. That is a habit now.")
+                        .font(.dv(size: 13, weight: .semibold, design: .rounded))
+                    Spacer(minLength: 0)
+                }
+                .foregroundColor(DS.Palette.gold)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(DS.Palette.gold.opacity(0.12))
+                )
             }
 
             // Streak info
@@ -536,47 +564,6 @@ struct StatsView: View {
 
     // MARK: - AI Insights Card
 
-    private var aiInsightsCard: some View {
-        let insights = InsightsEngine.generateInsights(from: entries.map(\.twinInput))
-
-        return Group {
-            if !insights.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "sparkles")
-                            .foregroundColor(DS.Palette.gold)
-                        Text("AI Insights")
-                            .font(.dv(.headline, design: .rounded))
-                    }
-
-                    ForEach(insights.prefix(3)) { insight in
-                        HStack(alignment: .top, spacing: DS.Space.md) {
-                            Image(systemName: insight.icon)
-                                .font(.dv(.subheadline, weight: .semibold))
-                                .foregroundColor(colorFromName(insight.color))
-                                .frame(width: 38, height: 38)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 11, style: .continuous)
-                                        .fill(colorFromName(insight.color).opacity(0.12))
-                                )
-
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(insight.title)
-                                    .font(.dsHeadline)
-                                Text(insight.description)
-                                    .font(.dsCaption)
-                                    .foregroundColor(DS.Palette.inkMute)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                .dsCard()
-            }
-        }
-    }
 
     // MARK: - Weekly Summary Card
 
@@ -649,54 +636,6 @@ struct StatsView: View {
 
     // MARK: - Milestone Overlay
 
-    private func milestoneOverlay(days: Int) -> some View {
-        ZStack {
-            Color.black.opacity(0.5)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation {
-                        showMilestone = nil
-                    }
-                }
-
-            VStack(spacing: 20) {
-                Image(systemName: "trophy.fill")
-                    .font(.dv(size: 60))
-                    .foregroundColor(DS.Palette.gold)
-
-                Text("Milestone!")
-                    .font(.dv(.largeTitle, weight: .bold))
-
-                Text("\(days)-Day Streak")
-                    .font(.dv(.title2))
-                    .foregroundColor(DS.Palette.gold)
-
-                Text("You've journaled for \(days) consecutive days. Your dedication to self-reflection is paying off.")
-                    .font(.dv(.subheadline))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-
-                Button("Keep Going") {
-                    withAnimation {
-                        showMilestone = nil
-                    }
-                }
-                .font(.dv(.headline))
-                .padding(.horizontal, 32)
-                .padding(.vertical, 12)
-                .background(DS.Palette.sage)
-                .foregroundColor(.white)
-                .clipShape(Capsule())
-            }
-            .padding(32)
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .shadow(radius: 20)
-            .padding(40)
-            .transition(.scale.combined(with: .opacity))
-        }
-    }
 
     private func colorFromName(_ name: String) -> Color {
         switch name {
@@ -713,50 +652,19 @@ struct StatsView: View {
 
     // MARK: - Computed Properties
 
+    // Both streaks go through `Streak` now. Insights was the one screen that
+    // had the rule RIGHT, and it still had its own copy of it — which is how
+    // the Record tab's wrong copy survived unnoticed.
     private var currentStreak: Int {
-        let calendar = Calendar.current
-        var streak = 0
-        var checkDate = calendar.startOfDay(for: Date())
-
-        // Check if there's an entry today
-        if !hasEntryOn(checkDate) {
-            // Check yesterday - streak might still be active
-            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-            if !hasEntryOn(checkDate) {
-                return 0
-            }
-        }
-
-        // Count consecutive days
-        while hasEntryOn(checkDate) {
-            streak += 1
-            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-        }
-
-        return streak
+        Streak.current(days: entryDays)
     }
 
     private var longestStreak: Int {
-        let calendar = Calendar.current
-        let sortedDates = entries.compactMap { $0.date }.map { calendar.startOfDay(for: $0) }
-        let uniqueDates = Set(sortedDates).sorted(by: >)
+        Streak.longest(days: entryDays)
+    }
 
-        guard !uniqueDates.isEmpty else { return 0 }
-
-        var longest = 1
-        var current = 1
-
-        for i in 1..<uniqueDates.count {
-            let diff = calendar.dateComponents([.day], from: uniqueDates[i], to: uniqueDates[i-1]).day ?? 0
-            if diff == 1 {
-                current += 1
-                longest = max(longest, current)
-            } else {
-                current = 1
-            }
-        }
-
-        return longest
+    private var entryDays: Set<Date> {
+        Set(entries.compactMap { $0.date }.map { Calendar.current.startOfDay(for: $0) })
     }
 
     private var entriesThisMonth: Int {

@@ -40,6 +40,15 @@ enum Shareables {
         /// the field grows outward. No words, no names — the same rule as My Sky.
         case tonight
         case mySky, receipt, yearOne, milestone, wallpaper, gift
+        /// Sleep against mood, and ONLY when the user turns it on.
+        ///
+        /// Health is held to a stricter rule than names: names are redacted by
+        /// default and this is absent by default, because a name is something
+        /// other people already know about you and your sleep is not. It reads
+        /// only kept snapshots, shows no HRV or heart rate — those read as
+        /// medical and belong nowhere near a feed — and states a noticing
+        /// rather than a prescription.
+        case body
         var id: String { rawValue }
 
         var title: String {
@@ -54,6 +63,7 @@ enum Shareables {
             case .milestone: return "Milestone"
             case .wallpaper: return "Wallpaper"
             case .gift: return "Gift a star"
+            case .body: return "Body"
             }
         }
 
@@ -73,6 +83,8 @@ enum Shareables {
                 return "Your constellation, sized for a lock screen. The one surface you look at forty times a day, and nobody else can read it."
             case .gift:
                 return "A referral card with no tracking link, because there is nothing here that could carry one."
+            case .body:
+                return "How you slept against how you wrote. Off unless you turn it on, and it never leaves out that this is a noticing, not a prescription."
             }
         }
 
@@ -91,25 +103,54 @@ enum Shareables {
         let text: String
         let mood: Double
         let people: [String]
+        /// Hours slept the night before, IF the user kept that snapshot.
+        ///
+        /// Only kept snapshots are ever read. Body signals go through a
+        /// review-before-learning queue precisely so nothing the user has not
+        /// looked at can end up anywhere — least of all on a card they might
+        /// post.
+        var sleepHours: Double? = nil
     }
 
+    /// Sleep by day, from the snapshots the user KEPT. Nothing pending, nothing
+    /// discarded, nothing the user has not seen.
+    @MainActor
+    private static func keptSleepByDay() -> [Date: Double] {
+        var out: [Date: Double] = [:]
+        for kept in KeptSnapshotStore.shared.loadAll() {
+            guard let hours = kept.snapshot.sleepHours else { continue }
+            // Keyed on `capturedAt` — the day the body was in that state —
+            // NOT `keptAt`. Review is batched: keeping five pending snapshots
+            // in one sitting stamps them all with the same `keptAt`, which
+            // would collapse a week of sleep onto today and join it to the
+            // wrong entries.
+            out[Calendar.current.startOfDay(for: kept.snapshot.capturedAt)] = hours
+        }
+        return out
+    }
+
+    @MainActor
     static func facts(from entries: [DiaryEntry]) -> [Fact] {
         // Resolved once for the whole journal rather than per entry: the graph
         // lookup is the expensive part and it does not vary by entry.
+        let sleep = keptSleepByDay()
         let known = DigitalTwinEngine.shared.knowledgeGraph
             .topNodes(ofType: .person, limit: 40)
             .map(\.label)
 
         return entries.map { entry -> Fact in
             let body = entry.text ?? ""
+            let when = entry.date ?? Date()
             return Fact(
-                date: entry.date ?? Date(),
+                date: when,
                 text: body,
                 // `mood` is a String label, not a number. `moodValue` is the
                 // app's own 1–5 reading of it, remapped here to −1…1 so the
                 // cards speak the same scale as every other surface.
                 mood: Self.valence(of: entry),
-                people: known.filter { body.localizedCaseInsensitiveContains($0) }
+                people: known.filter { body.localizedCaseInsensitiveContains($0) },
+                // Nil unless the user kept a body snapshot for that day.
+                sleepHours: sleep[Calendar.current.startOfDay(for: when)]
             )
         }
     }
@@ -213,7 +254,7 @@ enum Shareables {
 
     // MARK: - Rendering
 
-    static func render(_ card: Card, facts f: [Fact], includeNames: Bool,
+    static func render(_ card: Card, facts f: [Fact], includeNames: Bool, includeBody: Bool = false,
                        airplane: Bool) -> UIImage {
         let size = card.size
         return UIGraphicsImageRenderer(size: size).image { ctx in
@@ -226,6 +267,7 @@ enum Shareables {
             case .milestone: drawMilestone(c, size, f)
             case .wallpaper: drawWallpaper(c, size, f)
             case .gift:      drawGift(c, size, f)
+            case .body:      drawBody(c, size, f, include: includeBody)
             }
         }
     }
@@ -492,6 +534,103 @@ enum Shareables {
         text(c, caption, at: CGPoint(x: s.width / 2, y: s.height - 150),
              font: mono(30), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.5),
              align: .center)
+    }
+
+    // MARK: - F · body
+
+    /// Sleep against mood, in the same ledger F3 uses.
+    ///
+    /// Deliberately narrow. Sleep and mood only: HRV and resting heart rate are
+    /// in the snapshot and stay there, because a number a stranger could read as
+    /// a medical fact does not belong on something built to be posted. No
+    /// causal language — the app's own framing for this is "a noticing, not a
+    /// prescription", and a card is the worst place to start claiming more.
+    /// The body card.
+    ///
+    /// `include` is not a style flag — it decides whether any health number is
+    /// drawn at all. Off is the default and draws a card that says so, which is
+    /// both the honest preview and the reason a mis-tap cannot leak sleep.
+    ///
+    /// The headline is the FINDING, not the count. A card captioned "a noticing"
+    /// whose largest words are "12 nights" has not noticed anything; the reason
+    /// anyone would post this is the sentence about themselves, so that is what
+    /// gets the display face and the count drops to a ledger row.
+    private static func drawBody(_ c: CGContext, _ s: CGSize, _ f: [Fact], include: Bool) {
+        fill(c, s, UIColor(DS.Palette.navy))
+        var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 7))
+        scatter(c, s, count: 150, rng: &rng, topInset: 80, bottomInset: 300)
+
+        let measured = f.filter { $0.sleepHours != nil }
+        let rested = measured.filter { ($0.sleepHours ?? 0) >= 7 }
+        let short = measured.filter { ($0.sleepHours ?? 0) < 7 }
+
+        text(c, "HOW YOU SLEPT \u{00B7} HOW YOU WROTE", at: CGPoint(x: 84, y: 130),
+             font: mono(22), colour: UIColor(DS.Palette.goldNight))
+
+        // Both sides need a real sample before a comparison means anything, and
+        // a gap smaller than a tenth is not a difference — it is the scorer's
+        // own noise wearing the clothes of a finding.
+        let restedMood = rested.count >= 3 ? average(rested.map(\.mood)) : nil
+        let shortMood = short.count >= 3 ? average(short.map(\.mood)) : nil
+        var gap: Double? = nil
+        if let r = restedMood, let sh = shortMood, abs(r - sh) >= 0.1 { gap = r - sh }
+
+        let headline: [String]
+        if !include {
+            headline = ["Your body", "stays here."]
+        } else if let g = gap {
+            headline = g > 0 ? ["You write warmer", "after a long night."]
+                             : ["You write warmer", "after a short one."]
+        } else if restedMood != nil && shortMood != nil {
+            headline = ["Sleep barely moved", "how you wrote."]
+        } else {
+            headline = ["\(measured.count) nights", "your body kept."]
+        }
+        text(c, headline[0], at: CGPoint(x: 84, y: 250), font: display(66),
+             colour: UIColor(DS.Palette.navyText))
+        text(c, headline[1], at: CGPoint(x: 84, y: 330), font: display(66),
+             colour: UIColor(DS.Palette.navyText))
+
+        // The ledger is built first and then anchored ABOVE the footer, so a
+        // card with two rows and a card with five both sit on the same baseline
+        // instead of leaving a third of the frame empty navy.
+        var rows: [(String, String, Bool)] = []
+        if include {
+            rows.append(("Nights measured", "\(measured.count)", false))
+            if let avg = average(measured.compactMap(\.sleepHours)) {
+                let h = Int(avg)
+                let m = Int((avg - Double(h)) * 60)
+                rows.append(("Slept, on average", String(format: "%dh%02d", h, m), false))
+            }
+            if let r = restedMood, let sh = shortMood {
+                // Labelled with the scale, because "+0.4" alone is a number
+                // nobody outside this app can read.
+                rows.append(("After seven hours", String(format: "%+.1f mood", r), gap ?? 0 > 0))
+                rows.append(("After less", String(format: "%+.1f mood", sh), gap ?? 0 < 0))
+            }
+        } else {
+            rows.append(("Sleep", "not included", false))
+        }
+        rows.append(("Read by", "this phone only", true))
+
+        let rowHeight: CGFloat = 78
+        var y = s.height - 230 - rowHeight * CGFloat(rows.count - 1)
+        for (label, value, gold) in rows {
+            text(c, label, at: CGPoint(x: 84, y: y), font: body(27),
+                 colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.62))
+            text(c, value, at: CGPoint(x: s.width - 84, y: y), font: body(27),
+                 colour: UIColor(gold ? DS.Palette.goldNight : DS.Palette.navyText),
+                 align: .right)
+            dotted(c, s, y: y + 34)
+            y += rowHeight
+        }
+
+        footer(c, s, include ? "A NOTICING, NOT A PRESCRIPTION" : "NOTHING OF YOUR BODY IS ON THIS CARD")
+    }
+
+    private static func average(_ xs: [Double]) -> Double? {
+        guard !xs.isEmpty else { return nil }
+        return xs.reduce(0, +) / Double(xs.count)
     }
 
     // MARK: - F · gift a star

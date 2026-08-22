@@ -36,6 +36,12 @@ struct ShareSheetView: View {
     // is the one someone is most likely to have come here for.
     @State private var card: Shareables.Card = .tonight
     @State private var includeNames = false
+    /// Health is opt-in per sheet and starts off, every time.
+    ///
+    /// Held to a stricter rule than names: a name is something the people in
+    /// the photo already know about themselves; how you slept is not, and it is
+    /// the one thing on any of these cards a stranger could read as medical.
+    @State private var includeBody = false
     @State private var airplaneDeclared = false
     @State private var shareURL: URL?
 
@@ -45,14 +51,26 @@ struct ShareSheetView: View {
     /// chip shown to someone on night 9 turns a reward into a nag, which is the
     /// gamification guilt the design explicitly rules out.
     private var cards: [Shareables.Card] {
-        Shareables.Card.allCases.filter {
-            $0 != .milestone || Shareables.milestoneReached(facts) != nil
+        Shareables.Card.allCases.filter { card in
+            switch card {
+            case .milestone:
+                return Shareables.milestoneReached(facts) != nil
+            case .body:
+                // Absent — not empty, not disabled — until there is kept body
+                // data to draw from. Offering a blank health card would be an
+                // invitation to go and switch Health on, which is not a thing a
+                // share sheet gets to do.
+                return facts.contains { $0.sleepHours != nil }
+            default:
+                return true
+            }
         }
     }
 
     private var image: UIImage {
         Shareables.render(card, facts: facts,
-                          includeNames: includeNames, airplane: airplaneDeclared)
+                          includeNames: includeNames, includeBody: includeBody,
+                          airplane: airplaneDeclared)
     }
 
     var body: some View {
@@ -81,6 +99,7 @@ struct ShareSheetView: View {
                         .foregroundColor(theme.secondaryTextColor)
 
                     if card == .yearOne { namesToggle }
+                    if card == .body { bodyToggle }
                     if card == .mySky { airplaneToggle }
 
                     actions
@@ -128,6 +147,21 @@ struct ShareSheetView: View {
                     .onTapGesture { card = c }
             }
         }
+    }
+
+    private var bodyToggle: some View {
+        Toggle(isOn: $includeBody) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Include how you slept").font(.dsCallout).foregroundColor(theme.textColor)
+                Text(includeBody ? "Sleep hours and mood. Never heart rate."
+                                 : "Off \u{2014} the card shows no body data.")
+                    .font(.dsCaption2)
+                    .foregroundColor(includeBody ? theme.goldText : theme.secondaryTextColor)
+            }
+        }
+        .tint(theme.accentColor)
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 18).fill(theme.cardBackgroundColor))
     }
 
     private var namesToggle: some View {

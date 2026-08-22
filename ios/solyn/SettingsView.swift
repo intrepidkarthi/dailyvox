@@ -7,6 +7,7 @@ import UIKit
 #endif
 
 struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.dvTheme) private var theme
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -27,7 +28,14 @@ struct SettingsView: View {
 
     @State private var showPermissionDeniedAlert = false
     @State private var showShareReceipt = false
-    @State private var selectedReminderPreset: String = "evening"
+    /// Which preset row shows as selected.
+    ///
+    /// This was plain `@State` seeded to "evening" and never read from the
+    /// manager — so a reminder actually scheduled for 7:00 AM still drew the
+    /// tick beside Evening, on every launch. It is DERIVED from the scheduled
+    /// time now, with the @State kept only to hold "custom", which is the one
+    /// state no time can imply.
+    @State private var customPresetChosen = false
 
     // Export states
     @State private var showExportSheet = false
@@ -113,6 +121,15 @@ struct SettingsView: View {
         .background(themeManager.backgroundColor.ignoresSafeArea())
         .onAppear { calculateStorage() }
         .navigationTitle("Settings")
+        // Settings is presented as a SHEET from the Speak tab, and had no Done
+        // button — so once you had scrolled past the fifteenth section there
+        // was nothing on screen that said how to leave. Swipe-to-dismiss is a
+        // gesture, not an affordance.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done") { dismiss() }
+            }
+        }
         .alert("Notifications Disabled", isPresented: $showPermissionDeniedAlert) {
             #if os(iOS)
             Button("Open Settings") {
@@ -277,6 +294,25 @@ struct SettingsView: View {
     /// Says the same thing either way \u{2014} DailyVox has nowhere to send anything
     /// \u{2014} but stops short of claiming nothing moves when the user has asked
     /// iCloud to move it.
+    private var selectedReminderPreset: String {
+        if customPresetChosen { return "custom" }
+        let c = Calendar.current.dateComponents([.hour, .minute], from: reminderManager.reminderTime)
+        switch (c.hour ?? -1, c.minute ?? -1) {
+        case (7, 0):   return "morning"
+        case (12, 30): return "midday"
+        case (20, 0):  return "evening"
+        default:       return "custom"
+        }
+    }
+
+    /// The same fact as `dataShieldFooter`, said shorter — this section sits
+    /// far below it and is read on its own.
+    private var privacyFooter: String {
+        iCloudSyncEnabled && PersistenceController.isCloudAvailable
+            ? "Your thoughts are yours alone. iCloud Sync is on, so they are copied to your own iCloud account, encrypted with your Apple ID."
+            : "Your thoughts are yours alone. iCloud Sync is off, so nothing leaves this device."
+    }
+
     private var dataShieldFooter: String {
         let base = "Speech is transcribed by this iPhone; no recording and no transcript is ever sent to DailyVox, because there is no DailyVox server to send it to. Permissions used: microphone, speech, notifications."
         guard iCloudSyncEnabled && PersistenceController.isCloudAvailable else {
@@ -546,7 +582,7 @@ struct SettingsView: View {
                     intent: "Start your day with clarity",
                     isSelected: selectedReminderPreset == "morning"
                 ) {
-                    selectedReminderPreset = "morning"
+                    customPresetChosen = false
                     applyReminderPreset(hour: 7, minute: 0)
                 }
 
@@ -557,7 +593,7 @@ struct SettingsView: View {
                     intent: "Reset and reflect",
                     isSelected: selectedReminderPreset == "midday"
                 ) {
-                    selectedReminderPreset = "midday"
+                    customPresetChosen = false
                     applyReminderPreset(hour: 12, minute: 30)
                 }
 
@@ -568,7 +604,7 @@ struct SettingsView: View {
                     intent: "Unwind and look back",
                     isSelected: selectedReminderPreset == "evening"
                 ) {
-                    selectedReminderPreset = "evening"
+                    customPresetChosen = false
                     applyReminderPreset(hour: 20, minute: 0)
                 }
 
@@ -579,7 +615,7 @@ struct SettingsView: View {
                     intent: "Pick your own time",
                     isSelected: selectedReminderPreset == "custom"
                 ) {
-                    selectedReminderPreset = "custom"
+                    customPresetChosen = true
                 }
 
                 if selectedReminderPreset == "custom" {
@@ -893,7 +929,11 @@ struct SettingsView: View {
         } header: {
             Text("Privacy & Security")
         } footer: {
-            Text("Your thoughts are yours alone. Data syncs only through your personal iCloud, encrypted with your Apple ID.")
+            // This used to state, unconditionally, "Data syncs only through
+            // your personal iCloud" — on a screen whose Data Shield section
+            // says "Nothing leaves this device" when sync is off. One of the
+            // two was always wrong. Both now read the same setting.
+            Text(privacyFooter)
         }
     }
 
@@ -1089,7 +1129,12 @@ struct SettingsView: View {
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.dv(.caption))
+                        // A bare caption glyph is roughly a 16pt target.
+                        .frame(width: 44, height: 44, alignment: .trailing)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Recalculate storage")
             }
         } footer: {
             Text("Audio and photos are stored on-device only. iCloud syncs text entries only.")
@@ -1220,7 +1265,12 @@ struct SettingsView: View {
             }
 
             HStack {
-                Text("Total Entries")
+                // "Entries stored", not "Total Entries". This counts rows in
+                // Core Data; the Twin tab's badge counts what the Twin has
+                // folded in, and the two genuinely differ. Naming this one for
+                // what it measures stops it reading as a contradiction of the
+                // other.
+                Text("Entries stored")
                 Spacer()
                 Text("\(totalEntriesCount)")
                     .foregroundColor(.secondary)
