@@ -148,7 +148,9 @@ enum Shareables {
                 // app's own 1–5 reading of it, remapped here to −1…1 so the
                 // cards speak the same scale as every other surface.
                 mood: Self.valence(of: entry),
-                people: known.filter { body.localizedCaseInsensitiveContains($0) },
+                // Word boundaries: `contains` put "Mom" on a card because the
+                // entry said "moments".
+                people: EntityMatch.present(known, in: body),
                 // Nil unless the user kept a body snapshot for that day.
                 sleepHours: sleep[Calendar.current.startOfDay(for: when)]
             )
@@ -318,19 +320,35 @@ enum Shareables {
         }
 
         // Tonight: the bright one.
+        //
+        // The halo used to be a single 18%-alpha gold disc, which on navy is not
+        // a glow — it is a dull olive coin with a hard edge, and the star sat in
+        // the middle of it looking like a badge. Stacked rings fading outward
+        // read as light instead.
         let tonight = place(newest.date)
-        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.18).cgColor)
-        c.fillEllipse(in: CGRect(x: tonight.x - 62, y: tonight.y - 62, width: 124, height: 124))
-        star(c, at: tonight, r: 26, colour: UIColor(DS.Palette.gold))
+        for step in stride(from: 5, through: 1, by: -1) {
+            let r = CGFloat(step) * 17
+            c.setFillColor(UIColor(DS.Palette.gold)
+                .withAlphaComponent(0.05 * (1.15 - CGFloat(step) / 6)).cgColor)
+            c.fillEllipse(in: CGRect(x: tonight.x - r, y: tonight.y - r,
+                                     width: r * 2, height: r * 2))
+        }
+        star(c, at: tonight, r: 30, colour: UIColor(DS.Palette.gold))
 
         text(c, "TONIGHT", at: CGPoint(x: s.width / 2, y: 128),
              font: mono(26), colour: UIColor(DS.Palette.goldNight), align: .center)
 
+        // `text(at:)` positions the TOP of the line, not its baseline. The
+        // count was drawn at 120pt with 60pt of room before its caption, so
+        // "35" sat directly on top of "NIGHTS KEPT". The figure needs its own
+        // line height plus air.
         let nightCount = nights(f)
-        text(c, "\(nightCount)", at: CGPoint(x: s.width / 2, y: s.height - 236),
-             font: display(120), colour: UIColor(DS.Palette.navyText), align: .center)
+        let countFont = display(120)
+        let countTop = s.height - 330
+        text(c, "\(nightCount)", at: CGPoint(x: s.width / 2, y: countTop),
+             font: countFont, colour: UIColor(DS.Palette.navyText), align: .center)
         text(c, nightCount == 1 ? "NIGHT KEPT" : "NIGHTS KEPT",
-             at: CGPoint(x: s.width / 2, y: s.height - 176),
+             at: CGPoint(x: s.width / 2, y: countTop + countFont.lineHeight + 14),
              font: mono(24), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.55),
              align: .center)
 

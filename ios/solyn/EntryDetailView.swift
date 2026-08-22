@@ -340,13 +340,17 @@ struct EntryDetailView: View {
         guard !labels.isEmpty else { return attributed }
 
         for label in labels where !label.isEmpty {
-            var searchRange = attributed.startIndex..<attributed.endIndex
-            while let found = attributed[searchRange].range(of: label, options: [.caseInsensitive]) {
+            // Word boundaries, via the same rule the ledger below is filtered
+            // by — otherwise the transcript underlines things the ledger does
+            // not list, and each makes the other look broken.
+            for range in EntityMatch.properNounRanges(of: label, in: source) {
+                guard let lower = AttributedString.Index(range.lowerBound, within: attributed),
+                      let upper = AttributedString.Index(range.upperBound, within: attributed)
+                else { continue }
+                let found = lower..<upper
                 attributed[found].underlineStyle = .single
                 attributed[found].underlineColor = UIColor(DS.Palette.gold)
                 attributed[found].foregroundColor = UIColor(ThemeManager.shared.goldText)
-                guard found.upperBound < attributed.endIndex else { break }
-                searchRange = found.upperBound..<attributed.endIndex
             }
         }
         return attributed
@@ -354,19 +358,17 @@ struct EntryDetailView: View {
 
     /// Graph nodes whose label actually occurs in this entry.
     private var filedEntities: [PersonalKnowledgeGraph.KnowledgeNode] {
-        let haystack = text.lowercased()
-        guard !haystack.isEmpty else { return [] }
+        guard !text.isEmpty else { return [] }
         return DigitalTwinEngine.shared.knowledgeGraph
             .topNodes(ofType: .person, limit: 40)
-            .filter { haystack.contains($0.label.lowercased()) }
+            .filter { EntityMatch.mentionsAsName($0.label, in: text) }
     }
 
     private var filedPlaces: [PersonalKnowledgeGraph.KnowledgeNode] {
-        let haystack = text.lowercased()
-        guard !haystack.isEmpty else { return [] }
+        guard !text.isEmpty else { return [] }
         return DigitalTwinEngine.shared.knowledgeGraph
             .topNodes(ofType: .place, limit: 20)
-            .filter { haystack.contains($0.label.lowercased()) }
+            .filter { EntityMatch.mentionsAsName($0.label, in: text) }
     }
 
     // MARK: - What your Twin filed (B4)
@@ -403,13 +405,23 @@ struct EntryDetailView: View {
                     .tracking(1.2)
                     .foregroundColor(ThemeManager.shared.secondaryTextColor)
 
-                // B4's rows, in B4's order: MOOD, PLACES, BODY, PACE. People
-                // fold into PLACES' line when there are any — the canvas lists
-                // what was in the entry, not which detector found it.
+                // MOOD, MENTIONED, BODY, PACE, TOPICS.
+                //
+                // The second row folds people and places into one line — the
+                // canvas lists what was in the entry, not which detector found
+                // it — but it was LABELLED "Places", so a dinner-party entry
+                // filed "PLACES: Sarah · James · Emma · Lisa". The extractor
+                // also types the same name as both a person and a place, so the
+                // merged list could repeat a name. "Mentioned" is true of every
+                // item whichever detector produced it, and the dedupe is
+                // case-insensitive because the two detectors do not agree on
+                // capitalisation either.
                 filedRow("Mood", moodLine)
+                var seen = Set<String>()
                 let named = (people + places).map(\.label)
+                    .filter { seen.insert($0.lowercased()).inserted }
                 if !named.isEmpty {
-                    filedRow("Places", named.joined(separator: " \u{00B7} "))
+                    filedRow("Mentioned", named.joined(separator: " \u{00B7} "))
                 }
                 if let body = bodyLine {
                     filedRow("Body", body)

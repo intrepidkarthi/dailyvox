@@ -80,7 +80,7 @@ struct TodayView: View {
 
     @StateObject private var recorder = AudioRecorder()
     @State private var recordingState: RecordingState = .idle
-    @State private var showSettings = false
+    @State private var showSettings = ScreenshotScene.current == .settings
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
     @State private var selectedPrompt: EntryPrompt? = nil
@@ -427,11 +427,16 @@ struct TodayView: View {
                 .padding(.horizontal)
                 .padding(.top)
 
-            ScrollView {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 24)
+            // GeometryReader + minHeight is what makes the Spacers inside a
+            // ScrollView actually push. Without it the content keeps its
+            // intrinsic height, sits at the top, and leaves a third of the
+            // screen as dead cream between today's card and the question.
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        Spacer(minLength: 24)
 
-                    if recordingState == .idle {
+                        if recordingState == .idle {
                         // Today's star, once it exists. The canvas surfaces it
                         // here rather than making you open the Journal for it.
                         //
@@ -441,19 +446,17 @@ struct TodayView: View {
                         // Body context already appears where it means
                         // something: the BODY row of an entry's ledger, and the
                         // Body card on the Twin tab.
-                        entryCardSection
-                    }
+                            entryCardSection
+                        }
 
-                    Spacer(minLength: 24)
+                        Spacer(minLength: 24)
+                    }
+                    .padding(.horizontal)
+                    .frame(maxWidth: isIPad ? 700 : .infinity)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: proxy.size.height)
                 }
-                .padding(.horizontal)
-                .frame(maxWidth: isIPad ? 700 : .infinity)
-                .frame(maxWidth: .infinity)
             }
-            // The middle may be empty on a day with nothing recorded; it must
-            // still take the slack so the mic stays put rather than riding up
-            // to meet the header.
-            .frame(maxHeight: .infinity)
 
             questionAndMic
                 .padding(.horizontal)

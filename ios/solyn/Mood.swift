@@ -41,17 +41,30 @@ enum Mood: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Mood colours, drawn from the design system rather than from UIKit.
+    ///
+    /// These were `.yellow`, `.mint`, `.pink`, `.orange`, `.purple`, `.indigo`,
+    /// `.blue` and `.red` — eight system colours, none of them in the palette.
+    /// They are the most-repeated colour in the app: a rail down the left edge
+    /// of every row in the Journal. A magenta and a cyan running down a cream
+    /// page is the one place "Evergreen & Gold Hour" was being contradicted at
+    /// scale, on the screen people look at most.
+    ///
+    /// The mapping runs warm-to-cool along valence, which is what the rail is
+    /// actually reporting: gold and terracotta for the good days, sage for the
+    /// even ones, navy and slate for the flat ones, coral for anger — the same
+    /// coral that means "recording", the one alarm colour the palette has.
     var color: Color {
         switch self {
-        case .none: return .secondary
-        case .happy: return .yellow
-        case .calm: return .mint
-        case .grateful: return .pink
-        case .excited: return .orange
-        case .tired: return .purple
-        case .anxious: return .indigo
-        case .sad: return .blue
-        case .angry: return .red
+        case .none:     return DS.Palette.inkMute
+        case .happy:    return DS.Palette.gold
+        case .excited:  return DS.Palette.terracotta
+        case .grateful: return DS.Palette.sagePositive
+        case .calm:     return DS.Palette.forest
+        case .tired:    return DS.Palette.inkSoft
+        case .anxious:  return DS.Palette.starBlue
+        case .sad:      return DS.Palette.navySurface
+        case .angry:    return DS.Palette.coral
         }
     }
 

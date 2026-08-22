@@ -102,7 +102,11 @@ struct TimelineView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var theme = ThemeManager.shared
     @Environment(\.dailyVoxKeyboardVisible) private var keyboardVisible
-    @State private var showShareSheet = false
+    /// `-StartTab journal -ScreenshotScene share` opens the share sheet on
+    /// launch. Same reason `-StartTab` exists: a screenshot run has to reach a
+    /// surface without driving taps, and the command line cannot tap a
+    /// hand-built bar or a list row. Screenshot mode only.
+    @State private var showShareSheet = ScreenshotScene.current == .share
     /// Search is opened, not always present.
     @State private var showSearch = false
     @FocusState private var searchFocused: Bool
@@ -187,6 +191,8 @@ struct TimelineView: View {
     static func clock(_ t: TimeInterval) -> String {
         String(format: "%d:%02d", Int(t) / 60, Int(t) % 60)
     }
+
+    @State private var screenshotEntry: DiaryEntry?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -364,6 +370,26 @@ struct TimelineView: View {
         // behind an icon. `searchField` above is now the only one.
         .sheet(isPresented: $showShareSheet) {
             ShareSheetView().appThemedSheet()
+        }
+        // Screenshot mode only: push the newest entry so the detail screen can
+        // be captured without a tap.
+        .navigationDestination(item: $screenshotEntry) { entry in
+            EntryDetailView(entry: entry)
+        }
+        .task {
+            if ScreenshotScene.current == .entry {
+                // The entry with the most names in it, not simply the newest.
+                // "What your Twin filed" is the reason this screen is worth
+                // photographing, and the newest entry happened to be the one
+                // with no people in it — a ledger of MOOD, PACE and TOPICS,
+                // demonstrating nothing.
+                let known = DigitalTwinEngine.shared.knowledgeGraph
+                    .topNodes(ofType: .person, limit: 40).map(\.label)
+                screenshotEntry = entries.max {
+                    EntityMatch.present(known, in: $0.text ?? "").count
+                        < EntityMatch.present(known, in: $1.text ?? "").count
+                } ?? entries.first
+            }
         }
         .sheet(isPresented: $showSemanticSearch) {
             SemanticSearchView()

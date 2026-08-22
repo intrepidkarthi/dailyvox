@@ -64,13 +64,19 @@ struct TwinChatView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Chat messages
+            GeometryReader { viewport in
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 16) {
-                        // Welcome message
+                        // Welcome message. Centred in the empty screen rather
+                        // than parked under the header with two thirds of the
+                        // view left as dead cream beneath it — an invitation to
+                        // ask something should sit in the middle of the space
+                        // it is inviting you into.
                         if messages.isEmpty {
+                            Spacer(minLength: 0)
                             welcomeCard
-                                .padding(.top, 20)
+                            Spacer(minLength: 0)
                         }
 
                         ForEach(messages) { message in
@@ -88,6 +94,10 @@ struct TwinChatView: View {
                     }
                     .padding(.horizontal)
                     .padding(.bottom, 8)
+                    // Only when empty: a conversation should start at the top
+                    // and grow downward, so the fill must not apply once there
+                    // are messages.
+                    .frame(minHeight: messages.isEmpty ? viewport.size.height : 0)
                 }
                 .onChange(of: messages.count) { _ in
                     withAnimation(.easeOut(duration: 0.3)) {
@@ -99,6 +109,7 @@ struct TwinChatView: View {
                         proxy.scrollTo("bottom", anchor: .bottom)
                     }
                 }
+            }
             }
 
             Divider()
