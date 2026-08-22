@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      DailyVox privacy manifest.
+
+      The app has no server, no analytics, no advertising identifier and no
+      third-party SDKs, so the two collection keys below are empty by fact
+      rather than by omission — they match the "Data Not Collected" label on
+      the App Store listing exactly.
+
+      HealthKit, microphone, speech, photos and motion are all PERMISSIONS, not
+      collection: the data is read on the device, used on the device, and never
+      transmitted. Apple's definition of "collect" is data transmitted off the
+      device in a way that makes it accessible to the developer over time, and
+      none of it is. Purpose strings for each live in Info.plist.
+    -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!--
+          UserDefaults, and only UserDefaults. The audit that produced this file
+          also looked for file-timestamp, disk-space, system-boot-time and
+          active-keyboard APIs; none are used. Storage sizes in Settings come
+          from `.fileSizeKey`, which is file size and is not a required-reason
+          API.
+
+          CA92.1: the app reads and writes only its own defaults and its own app
+          group's — settings, the reminder time, the last milestone shown, the
+          onboarding flag. Nothing is read from another app and nothing is
+          derived from the device.
+        -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

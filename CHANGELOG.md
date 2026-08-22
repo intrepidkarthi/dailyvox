@@ -132,6 +132,11 @@ nothing here has shipped to a user.
 - A visible semantic search field in the Journal, in the product's own words.
 - Ask your Twin as a Siri intent, answered on the device with its citation count.
 - Reduced-motion support, and a real sunset that follows the sun.
+- **A privacy manifest** (`PrivacyInfo.xcprivacy`), which the binary had never
+  carried. It declares no tracking, no tracking domains, no collected data types
+  and one required-reason API — UserDefaults, reason CA92.1. An audit found no
+  other required-reason API in use, so without the manifest the only thing
+  missing was the declaration, not the compliance.
 
 ### Changed
 - **The mic sits at the bottom of the Speak tab.** It was a centred object about
@@ -162,7 +167,16 @@ nothing here has shipped to a user.
 - Recording still stops if the app is backgrounded. This is deliberate: a
   microphone foreground service would add permissions to a ledger the product
   invites people to audit.
-- App Store screenshots have not been regenerated for this release.
+- 91 of 422 user-visible strings have no German, Spanish, French or Italian
+  translation and fall back to English — 20 of them new in this release. Not
+  machine-translated on purpose: several are deliberately typographic English,
+  and the rest carry a voice a literal translation would flatten.
+- App Store screenshots have not been regenerated for this release. They show
+  the old centred microphone, the old Journal header and a sky placed by hash.
+- The amended privacy policy is committed but not deployed. The old wording said
+  health data is "never shared with anyone", which the Body card makes untrue in
+  the one way that matters — you can now put your own sleep on a card. App Review
+  reads the hosted page, so it has to go live before submission.
 
 ## [1.10.0] — 2026-08-11
 
