@@ -79,7 +79,11 @@ struct TodayView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @StateObject private var recorder = AudioRecorder()
-    @State private var recordingState: RecordingState = .idle
+    /// Screenshot mode only: the dial is the app's signature surface and there
+    /// is no microphone in a simulator, so the store frame cannot be captured
+    /// by recording. This shows the dial without arming the recorder.
+    @State private var recordingState: RecordingState =
+        ScreenshotScene.current == .recording ? .recording : .idle
     @State private var showSettings = ScreenshotScene.current == .settings
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?

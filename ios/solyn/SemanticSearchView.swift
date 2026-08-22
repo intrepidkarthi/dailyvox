@@ -47,6 +47,12 @@ struct SemanticSearchView: View {
             }
             .task {
                 search.indexAll(from: context)
+                // Screenshot mode only: run a real query so the store frame
+                // shows ranked results rather than an empty field.
+                if ScreenshotScene.current == .search {
+                    query = ScreenshotScene.cannedQuery
+                    runSearch()
+                }
             }
         }
     }

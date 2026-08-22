@@ -27,7 +27,7 @@ struct DigitalTwinView: View {
         ProcessInfo.processInfo.arguments.contains("-UITesting") ||
         ProcessInfo.processInfo.arguments.contains("-ScreenshotMode")
     @State private var selectedSection: TwinSection = .overview
-    @State private var showInsights = false
+    @State private var showInsights = ScreenshotScene.current == .insights
     /// Whether the non-C2 cards are expanded. Collapsed by default; the Twin
     /// screen's job is the sky, not a dashboard.
     @State private var showDepth = false

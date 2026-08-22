@@ -121,7 +121,7 @@ struct TimelineView: View {
     @State private var searchText: String = ""
     @StateObject private var todayQueue = TodayAudioQueue()
     @State private var todayDuration: TimeInterval?
-    @State private var showSemanticSearch: Bool = false
+    @State private var showSemanticSearch: Bool = ScreenshotScene.current == .search
     @State private var showStarredOnly: Bool = false
     @State private var showFilters: Bool = false
     @State private var selectedMoodFilter: Mood? = nil

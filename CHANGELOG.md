@@ -139,10 +139,13 @@ nothing here has shipped to a user.
   missing was the declaration, not the compliance.
 
 ### Changed
-- App Store screenshots regenerated for build 44: six frames in the app's own
-  palette and its two bundled faces, night and day grounds alternating, plus
-  `make_screenshots.sh` so the next set is one command rather than an afternoon
-  of tapping — which is why the last one went four releases stale.
+- App Store screenshots rebuilt to the store canvas (S1–S7): seven frames, each
+  with its own ground, a handwritten gloss and a sticker, and a real screenshot
+  inside the phone rather than a drawing of one. Plus `make_screenshots.sh`, so
+  the next set is one command rather than an afternoon of tapping — which is why
+  the last one went four releases stale. Where a frame had to depart from the
+  canvas the reason is recorded in `metadata.json`; the notable one is that the
+  canvas still shows the "Network calls made: 0 · EVER" row this release removed.
 - **The mic sits at the bottom of the Speak tab.** It was a centred object about
   45% up the screen — outside the arc a thumb reaches on the phone holding it.
   The question stays married to the button, so the pair moved down together.

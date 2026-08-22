@@ -53,7 +53,10 @@ struct ContentView: View {
         return d
     }()
     /// Hidden while recording, so the dial owns the whole screen (spec §2.2).
-    @State private var chromeVisible = true
+    /// Screenshot mode only: the dial scene sets `recordingState` directly, so
+    /// the notification that normally hides the bar never fires and the store
+    /// frame showed a tab bar over a full-screen recording dial.
+    @State private var chromeVisible = ScreenshotScene.current != .recording
     @StateObject private var keyboard = KeyboardObserver()
 
     var body: some View {

@@ -36,29 +36,28 @@
     "notes_for_reviewer": "# App Review Notes — DailyVox 1.11.0 (build 44)\n\n## What changed in this build\n\n**A Control Center control.** \"Speak\" can be added to Control Centre, the Lock\nScreen controls, or the Action Button. It does **not** record from there — it\nopens the app already recording, because the microphone is only ever live with\nthe app in the foreground. No background-audio mode is requested.\n\n**Live Activity / Dynamic Island.** The recording Live Activity now shows a\n42-second ring, the phrase currently being transcribed, a mood bar, and Finish /\nDiscard buttons (`LiveActivityIntent`, running in the app process). Nothing is\nsent anywhere; see the privacy note below.\n\n**Typography.** The app now bundles Nunito, Inter and DM Mono (SIL Open Font\nLicense 1.1) rather than using the system face. Text scales with Dynamic Type,\ncapped at 1.6×.\n\n**Interface.** The Record, Journal, Twin and Entry screens were reworked against\nthe product's design specification. The Twin's constellation now encodes real\ndata — distance from centre is how long ago an entry was spoken, angle is the\ntime of day it was spoken, size is its length.\n\n**Sharing.** New \"Tonight\" and \"Body\" cards join the existing share cards. All\ncards are rendered on the device and handed to the standard share sheet; the app\nnever transmits them. Names are excluded by default.\n\nThe \"Body\" card is the only shareable that can carry HealthKit-derived\ninformation, and it is gated three ways: it does not appear at all unless the\nuser has reviewed and **kept** at least one body snapshot; it has its own switch\nthat is **off** each time the sheet is opened; and with that switch off the card\nrenders a \"your body stays here\" state carrying no health value. It draws sleep\nhours and the app's own mood score only — heart-rate variability and resting\nheart rate are never rendered on any shareable surface. To reproduce: Settings →\nBody Twin, keep a snapshot, then Share → Body.\n\n## Privacy — the part most relevant to review\n\n**Speech is transcribed on the device, always.** This build changed\n`requiresOnDeviceRecognition` to be unconditional. Previously the app allowed\nApple's server-based recognition when the device was online; it no longer does.\nWhere no on-device speech model is installed, transcription **fails and explains\nwhy** rather than falling back to the network. The recording is still saved and\nthe user can type the entry.\n\nTo reproduce on a device without an installed model: record an entry and the app\nshows \"Recording Saved\" with instructions to enable Dictation. This is expected\nbehaviour, not a defect.\n\n**iCloud sync is user-controlled and off by default for new installs.**\nSettings → iCloud Sync. When it is on, entries sync via the user's own iCloud\n(CloudKit); when off, nothing leaves the device. The in-app \"Data Shield\" panel\nstates which of the two is currently true rather than asserting a fixed claim.\n\n**No analytics, no advertising identifiers, no third-party SDKs, no accounts.**\n\n## Permissions used\n\n| Permission | Why |\n|---|---|\n| Microphone | recording voice entries |\n| Speech recognition | on-device transcription only |\n| Notifications | one optional local daily reminder, scheduled on-device |\n| HealthKit (read) | optional body context; every signal is reviewed by the user before the app keeps it |\n| Photo library | optional, user-initiated attachment and export |\n\nNo new entitlements were added in this build.\n\n## Test account\n\nNone required. The app has no accounts and no server. Launch and record.\n"
   },
   "screenshots": {
-    "_note": "Regenerated for 1.11.0 (build 44) on 2026-08-22 by AppStore/screenshot-src/make_screenshots.sh. Six frames, drawn in the app's own palette and its two bundled faces, alternating night/day grounds so the row of thumbnails reads as a rhythm. Rendered at 6.9\" and resampled to the other three sizes. To regenerate after any UI change: bash AppStore/screenshot-src/make_screenshots.sh",
+    "_note": "Built to the store canvas — `DailyVox Store Images.dc.html` in the Claude Design project (S1-S7) — at 3x, with REAL app screenshots inside the phone plate rather than the canvas's hand-drawn approximations. Regenerate after any UI change with: bash AppStore/screenshot-src/make_screenshots.sh",
     "sizes": {
       "iphone_69": "1320x2868",
       "iphone_65": "1284x2778",
       "iphone_63": "1206x2622",
       "iphone_61": "1170x2532"
     },
-    "count_per_size": 6,
+    "count_per_size": 7,
     "files": [
-      "01_speak.png",
-      "02_sky.png",
-      "03_journal.png",
-      "04_filed.png",
-      "05_share.png",
-      "06_private.png"
+      "01_a_sky_made_of_you.png",
+      "02_42_seconds.png",
+      "03_answers_with_receipts.png",
+      "04_describe_find.png",
+      "05_streak.png",
+      "06_private_by_design.png",
+      "07_first_star.png"
     ],
-    "captions": {
-      "01_speak": "SPEAK · 42 SECONDS / Talk for a minute. That's the entry.",
-      "02_sky": "YOUR SKY / Every night you keep becomes a star.",
-      "03_journal": "YOUR JOURNAL / What you said, and when you said it.",
-      "04_filed": "WHAT YOUR TWIN FILED / It reads every entry. You can check its work.",
-      "05_share": "SHARE · NO WORDS ON IT / A year of your life, with nothing private in it.",
-      "06_private": "0 NETWORK CALLS / There is no server to send it to."
-    }
+    "deviations_from_canvas": [
+      "S1: canvas headline says '213 stars' over a phone reading '140 stars'. Every figure here matches the screenshot beneath it (35), because the app is the thing being advertised.",
+      "S6: canvas shows a Data Shield row reading 'Network calls made: 0 - EVER'. That claim was removed from the app in 1.11.0 — it was unfalsifiable, and untrue once iCloud sync is on. The frame shows the real rows and the figure reads '0 / DailyVox servers exist'.",
+      "S4: canvas sticker says '50% match'; the real top hit for the seeded query is 49%.",
+      "S2: cropped from the BOTTOM of the Speak screen. The microphone docks at the bottom now, so a top crop of the frame captioned '42 seconds is the app' would omit the button."
+    ]
   }
 }

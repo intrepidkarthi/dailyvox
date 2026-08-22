@@ -57,12 +57,21 @@ shoot () {
 }
 
 echo "capturing…"
-shoot speak    -StartTab speak
-shoot twin     -StartTab twin
-shoot journal  -StartTab journal
-shoot entry    -StartTab journal -ScreenshotScene entry
-shoot share    -StartTab journal -ScreenshotScene share
-shoot settings -StartTab speak   -ScreenshotScene settings
+# One per store frame in the canvas (S1–S7), plus the surfaces the earlier
+# in-app set used.
+shoot twin      -StartTab twin                            # S1  a sky made of you
+shoot speak     -StartTab speak                           # S2  42 seconds is the app
+shoot ask       -StartTab ask    -ScreenshotScene ask     # S3  answers with receipts
+shoot search    -StartTab journal -ScreenshotScene search # S4  describe it, find it
+shoot insights  -StartTab twin   -ScreenshotScene insights # S5 it spots the streak
+shoot settings  -StartTab speak  -ScreenshotScene settings # S6 private by design
+shoot recording -StartTab speak  -ScreenshotScene recording # S7 speak once
+
+# Not in the store set, but captured so the raw folder covers every surface a
+# future frame might want.
+shoot journal   -StartTab journal
+shoot entry     -StartTab journal -ScreenshotScene entry
+shoot share     -StartTab journal -ScreenshotScene share
 
 echo "composing…"
 python3 "$HERE/make_frames.py" "$RAW" "$OUT"

@@ -115,35 +115,48 @@ required-reason API.
 
 ---
 
-## 7. Screenshots — DONE
+## 7. Screenshots — DONE, built to the store canvas
 
-Regenerated for this build and committed. Six frames per size, four sizes:
+Seven frames per size, four sizes, in `AppStore/screenshots/iPhone_*`.
 
-| # | File | Says |
+They follow `DailyVox Store Images.dc.html` (S1-S7) from the Claude Design
+project: each frame its own saturated ground, a DM Mono eyebrow, a Nunito
+headline with one word in the frame's accent, a figure with a handwritten Caveat
+gloss, a phone plate cropped by the bottom edge, and one rotated sticker. The
+difference from the canvas is that the phone contains a REAL screenshot rather
+than a drawing of one.
+
+| # | File | Headline |
 |---|---|---|
-| 1 | `01_speak.png` | Talk for a minute. That's the entry. |
-| 2 | `02_sky.png` | Every night you keep becomes a star. |
-| 3 | `03_journal.png` | What you said, and when you said it. |
-| 4 | `04_filed.png` | It reads every entry. You can check its work. |
-| 5 | `05_share.png` | A year of your life, with nothing private in it. |
-| 6 | `06_private.png` | There is no server to send it to. |
+| 1 | `01_a_sky_made_of_you.png` | a sky made of you |
+| 2 | `02_42_seconds.png` | 42 seconds is the app |
+| 3 | `03_answers_with_receipts.png` | answers with receipts |
+| 4 | `04_describe_find.png` | describe it, find it |
+| 5 | `05_streak.png` | it spots the streak first |
+| 6 | `06_private_by_design.png` | your diary, yours only |
+| 7 | `07_first_star.png` | speak once, watch it ignite |
 
-`AppStore/screenshots/iPhone_{6.9,6.5,6.3,6.1}_*`. The previous set is in
-`AppStore/screenshots-archive-1.10/` rather than deleted.
+**Where these deviate from the canvas, and why** (also recorded in
+`metadata.json`):
 
-They are drawn in the app's own palette and its two bundled faces, with night
-and day grounds alternating so the row of thumbnails reads as a rhythm instead
-of six of the same picture. The old set was a cream gradient wash with emoji
-stickers, a handwriting face and slang copy — a different product's voice.
+- **S1** — the canvas headline says "213 stars" over a phone reading "140 ✦".
+  Every figure here matches the screenshot beneath it, because the app is the
+  thing being advertised.
+- **S6** — the canvas shows a Data Shield row reading "Network calls made:
+  0 · EVER". **That claim was removed from the app in this very release** — it
+  was unfalsifiable, and untrue once iCloud sync is on. The frame shows the real
+  rows, and the figure reads "0 / DailyVox servers exist".
+- **S4** — canvas sticker says "50% match"; the real top hit is 49%.
+- **S2** — cropped from the bottom of the Speak screen, because the microphone
+  now docks there and a top crop would omit the button the frame is about.
 
-**To regenerate after any UI change** — one command, which is the point:
+**To regenerate** — one command:
 
     bash ios/AppStore/screenshot-src/make_screenshots.sh
 
 It builds, installs onto a fresh container per shot, pins the status bar to
-9:41, captures six surfaces via `-StartTab` / `-ScreenshotScene`, and composes
-all four sizes. The last set went four releases stale because doing this by hand
-was an afternoon of tapping.
+9:41, captures ten surfaces through `-StartTab` / `-ScreenshotScene`, and
+composes all four sizes.
 
 ---
 

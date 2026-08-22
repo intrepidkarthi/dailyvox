@@ -507,6 +507,13 @@ struct TwinChatView: View {
     /// Runs once. `messages.isEmpty` rather than a flag, because the sheet is
     /// rebuilt on every presentation and a `@State` bool would survive it.
     private func askSeedIfNeeded() {
+        // Screenshot mode only: ask a real question so the store frame shows an
+        // answer with its citation chips, which is the whole claim this screen
+        // makes — an empty invitation demonstrates nothing.
+        if ScreenshotScene.current == .ask, messages.isEmpty {
+            send(text: "What do I say about my mornings?")
+            return
+        }
         guard let seedQuestion, messages.isEmpty else { return }
         send(text: seedQuestion)
     }

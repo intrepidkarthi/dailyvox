@@ -24,6 +24,16 @@ enum ScreenshotScene: String {
     case entry
     case share
     case settings
+    case insights
+    case search
+    case ask
+    case recording
+
+    /// A canned query, so the search and Ask frames show a real answer rather
+    /// than an empty field. Deliberately a sentence — the semantic index ranks
+    /// short keyword queries poorly, and the store frame should show the
+    /// feature working the way the UI asks you to use it.
+    static let cannedQuery = "a quiet moment that made me feel grounded"
 
     static var current: ScreenshotScene? {
         let args = ProcessInfo.processInfo.arguments

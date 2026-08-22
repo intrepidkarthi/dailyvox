@@ -18,8 +18,13 @@ final class AudioRecorder: NSObject, ObservableObject {
     // MARK: - Published Properties
     
     @Published var isRecording = false
-    @Published var currentTime: TimeInterval = 0
-    @Published var level: Float = 0  // 0...1 normalized audio level
+    /// Screenshot mode seeds these so the store frame shows the dial mid-take —
+    /// a simulator has no microphone, so a real recording cannot be captured,
+    /// and a dial reading 0:00 with no ticks lit advertises nothing.
+    @Published var currentTime: TimeInterval =
+        ScreenshotScene.current == .recording ? 28 : 0
+    @Published var level: Float =
+        ScreenshotScene.current == .recording ? 0.62 : 0  // 0...1 normalized audio level
 
     // MARK: - Private Properties
     
