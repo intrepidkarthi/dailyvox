@@ -139,6 +139,10 @@ nothing here has shipped to a user.
   missing was the declaration, not the compliance.
 
 ### Changed
+- App Store screenshots regenerated for build 44: six frames in the app's own
+  palette and its two bundled faces, night and day grounds alternating, plus
+  `make_screenshots.sh` so the next set is one command rather than an afternoon
+  of tapping — which is why the last one went four releases stale.
 - **The mic sits at the bottom of the Speak tab.** It was a centred object about
   45% up the screen — outside the arc a thumb reaches on the phone holding it.
   The question stays married to the button, so the pair moved down together.
@@ -171,8 +175,6 @@ nothing here has shipped to a user.
   translation and fall back to English — 20 of them new in this release. Not
   machine-translated on purpose: several are deliberately typographic English,
   and the rest carry a voice a literal translation would flatten.
-- App Store screenshots have not been regenerated for this release. They show
-  the old centred microphone, the old Journal header and a sky placed by hash.
 - The amended privacy policy is committed but not deployed. The old wording said
   health data is "never shared with anyone", which the Body card makes untrue in
   the one way that matters — you can now put your own sleep on a card. App Review

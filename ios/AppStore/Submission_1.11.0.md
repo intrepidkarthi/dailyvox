@@ -115,23 +115,35 @@ required-reason API.
 
 ---
 
-## 7. Screenshots — STALE, and the one blocker
+## 7. Screenshots — DONE
 
-The live sets in `AppStore/screenshots/iPhone_*` predate this redesign. They show
-the old centred microphone, the old Journal header, and a Twin sky whose stars
-were placed by hash rather than by date. Shipping them would advertise a version
-of the app that no longer exists.
+Regenerated for this build and committed. Six frames per size, four sizes:
 
-Regenerate five, in this order:
+| # | File | Says |
+|---|---|---|
+| 1 | `01_speak.png` | Talk for a minute. That's the entry. |
+| 2 | `02_sky.png` | Every night you keep becomes a star. |
+| 3 | `03_journal.png` | What you said, and when you said it. |
+| 4 | `04_filed.png` | It reads every entry. You can check its work. |
+| 5 | `05_share.png` | A year of your life, with nothing private in it. |
+| 6 | `06_private.png` | There is no server to send it to. |
 
-1. **Speak** — microphone docked at the bottom, live transcript mid-sentence
-2. **Journal** — entries with the mono meta line, search closed
-3. **Twin** — the sky, with the gold star count and MIND / HEART / GRAPH
-4. **Entry** — "What your Twin filed", gold-underlined names, the audio player
-5. **Share → Tonight** — the card
+`AppStore/screenshots/iPhone_{6.9,6.5,6.3,6.1}_*`. The previous set is in
+`AppStore/screenshots-archive-1.10/` rather than deleted.
 
-Sizes required: 6.7" (1290 × 2796) and 6.5" (1284 × 2778). iPad if the listing
-still carries iPad screenshots.
+They are drawn in the app's own palette and its two bundled faces, with night
+and day grounds alternating so the row of thumbnails reads as a rhythm instead
+of six of the same picture. The old set was a cream gradient wash with emoji
+stickers, a handwriting face and slang copy — a different product's voice.
+
+**To regenerate after any UI change** — one command, which is the point:
+
+    bash ios/AppStore/screenshot-src/make_screenshots.sh
+
+It builds, installs onto a fresh container per shot, pins the status bar to
+9:41, captures six surfaces via `-StartTab` / `-ScreenshotScene`, and composes
+all four sizes. The last set went four releases stale because doing this by hand
+was an afternoon of tapping.
 
 ---
 

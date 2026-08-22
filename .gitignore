@@ -132,3 +132,6 @@ android/**/build/
 local.properties
 android/.kotlin/
 android/app/build/
+
+# Raw simulator captures — an intermediate of make_screenshots.sh, not an asset.
+ios/AppStore/screenshot-src/raw/

@@ -27,10 +27,25 @@ struct ScreenshotDataSeeder {
         try? context.execute(deleteRequest)
         context.reset()
 
-        // Delete existing AI state so Digital Twin rebuilds fresh
+        // Delete existing AI state so Digital Twin rebuilds fresh.
+        //
+        // Fetch-and-delete rather than NSBatchDeleteRequest: a batch delete goes
+        // straight to the persistent store and does not touch the context or
+        // its row cache, so the reload below read the rows back and the Twin
+        // carried on from where it left off — 35 seeded entries counted twice.
         let aiRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "AIState")
-        let aiDelete = NSBatchDeleteRequest(fetchRequest: aiRequest)
-        try? context.execute(aiDelete)
+        if let rows = try? context.fetch(aiRequest) as? [NSManagedObject] {
+            for row in rows { context.delete(row) }
+            try? context.save()
+        }
+
+        // NOTE: re-`configure`-ing the engines here does NOT reset them — it
+        // reloads on top of state they already hold, which double-counts.
+        // `solynApp.init` configures them before this runs, so on a clean
+        // install they start empty and the fold below is the only one. A
+        // screenshot run must therefore start from a fresh container:
+        //   xcrun simctl uninstall <device> com.dailyvox.app
+        // before installing. `make_screenshots.sh` does this.
 
         let calendar = Calendar.current
         let now = Date()
