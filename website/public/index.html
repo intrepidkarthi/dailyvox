@@ -864,6 +864,70 @@ section.band.g-paper2{background:var(--band)!important}
   .device{width:clamp(268px,62vw,320px)}
   .pin-stage::after{width:110vw}
 }
+
+/* --- HERO: the action, and some life ------------------------------------- */
+.hero-cta{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  margin-top:clamp(10px,1.4vh,18px);position:relative;z-index:3}
+.hero-ph{display:inline-flex;align-items:center;opacity:.9;transition:opacity .2s}
+.hero-ph:hover{opacity:1}
+.hero-ph img{display:block;height:39px;width:auto}
+@media (max-width:860px){
+  .hero-cta{gap:9px}
+  .hero-ph img{height:34px}
+}
+
+/* Each screen pushes slowly toward the thing that matters on it, so a beat
+   that lasts several seconds is not a still. The origin differs per beat
+   because the subject does: the mic sits low, the dial centres, the ledger
+   sits above the fold of the card, the sky is high.
+
+   A GIF would have done this too, and worse — 256 colours banding across the
+   cream gradients, a megabyte of asset, and no way to respect a reduced-motion
+   preference. This is the same four screens already in the DOM. */
+.scr img{transform:scale(1.002);transition:transform 6s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.scr.on img{transform:scale(1.038)}
+/* Origins stay near the middle. A 1.085 push from 74% threw the greeting off
+   the top of the frame, which reads as a clipping bug and not a camera move —
+   the effect has to stay inside the screen it is moving across. */
+.scr[data-i="0"] img{transform-origin:50% 62%}
+.scr[data-i="1"] img{transform-origin:50% 50%}
+.scr[data-i="2"] img{transform-origin:50% 44%}
+.scr[data-i="3"] img{transform-origin:50% 46%}
+
+/* The caption fades up rather than snapping, which is what made the sequence
+   feel like a slideshow of stills. */
+.cap{transition:opacity .5s ease, transform .5s ease}
+.cap:not(.on){transform:translateY(6px)}
+
+@media (prefers-reduced-motion: reduce){
+  .scr img,.scr.on img{transform:none!important;transition:none}
+  .cap{transition:none;transform:none}
+}
+
+/* .caps has a fixed height so the four captions do not jitter the layout as
+   they swap — but two-line copy overflowed it and landed on top of the CTA
+   row that now sits underneath. Taller, and the CTA keeps its own clearance. */
+.caps{height:clamp(84px,11vh,116px)!important}
+.hero-cta{margin-top:clamp(14px,2vh,26px)}
+@media (max-width:860px){.caps{height:clamp(92px,14vh,130px)!important}}
+
+/* The hero stack is head + device + caption + CTA inside one 100svh stage, and
+   on a short laptop window it ran ~22px past the fold — which put the download
+   button, the entire reason the CTA moved up here, just out of sight.
+   Reclaimed from the two pieces that can give it without the device shrinking:
+   the caption block's reserved height, and the stage's top padding. */
+@media (max-height: 820px){
+  .caps{height:clamp(66px,9vh,88px)!important}
+  .pin-inner{padding-top:64px!important}
+  .hero-cta{margin-top:10px}
+  .pin-head{margin-bottom:2px}
+}
+@media (max-height: 700px){
+  .caps{height:clamp(58px,8vh,74px)!important}
+  .pin-inner{padding-top:56px!important}
+  .hero-cta .pill{padding-top:9px;padding-bottom:9px;font-size:14px}
+  .hero-ph img{height:32px}
+}
 </style>
 </head>
 
@@ -955,7 +1019,6 @@ section.band.g-paper2{background:var(--band)!important}
         </div>
         <div class="device-floor" aria-hidden="true"></div>
       </div>
-
       <div class="caps">
         <div class="cap on" data-i="0">
           <h2>You start talking.</h2>
@@ -973,6 +1036,18 @@ section.band.g-paper2{background:var(--band)!important}
           <h2>It knows a little more than it did.</h2>
           <p>Forty-two seconds. Tomorrow it knows more again.</p>
         </div>
+      </div>
+      <!-- The download button lived in .pin-after, which is FOUR viewport
+           heights below the hero's first frame — so the primary action was
+           past the entire opening sequence. It belongs on the first paint,
+           pinned with everything else. -->
+      <div class="hero-cta">
+        <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
+        <span class="pill soon" aria-label="Android version coming soon; not yet available">Android<span class="soon-tag">coming soon</span></span>
+        <a class="hero-ph" href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer">
+          <img alt="DailyVox on Product Hunt" width="180" height="39" loading="lazy"
+               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277">
+        </a>
       </div>
 
     </div>
@@ -1706,6 +1781,33 @@ section.band.g-paper2{background:var(--band)!important}
   addEventListener('scroll', onScroll, {passive:true});
   addEventListener('resize', onScroll);
   draw();
+
+  /* AUTOPLAY until the reader takes over.
+
+     The sequence was entirely scroll-driven, so the hero's first frame was a
+     still: someone landing on the page saw one screenshot and no indication
+     that three more existed. It now advances on its own — and stops for good
+     the moment there is any scroll, because once the reader is driving,
+     something moving underneath them is a distraction rather than a demo. */
+  var auto = null, autoI = 0;
+  function stopAuto(){
+    if(auto){ clearInterval(auto); auto = null; }
+    removeEventListener('scroll', stopAuto);
+    removeEventListener('wheel', stopAuto);
+    removeEventListener('touchstart', stopAuto);
+  }
+  var still = matchMedia('(prefers-reduced-motion: reduce)');
+  if(!still.matches && window.scrollY < 4){
+    set(0);
+    auto = setInterval(function(){
+      if(window.scrollY > 4){ stopAuto(); return; }
+      autoI = (autoI + 1) % N;
+      set(autoI);
+    }, 3400);
+    addEventListener('scroll', stopAuto, {passive:true, once:true});
+    addEventListener('wheel', stopAuto, {passive:true, once:true});
+    addEventListener('touchstart', stopAuto, {passive:true, once:true});
+  }
 })();
 </script>
 </body>

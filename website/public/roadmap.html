@@ -998,6 +998,14 @@
 .trk.off p{color:var(--ink-mute,#5C6A64)}
 .track-note{font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
 @media (max-width:700px){.track-grid{grid-template-columns:1fr}}
+
+/* Adjacent paragraphs had no gap at all. The page zeroes <p> margins and gets
+   its vertical rhythm from the non-paragraph siblings between them — which
+   works until a section actually has two paragraphs in a row, and then they
+   run together as one block. Only fires for p-after-p, so nothing that already
+   carries its own margin is double-spaced. */
+.sec-block > p + p{margin-top:15px}
+.sec-block > p + ul,.sec-block > p + ol{margin-top:15px}
 </style>
 </head>
 <body>

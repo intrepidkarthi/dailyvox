@@ -1054,6 +1054,14 @@
   color:var(--uv-text,#3F5A4D);margin-bottom:7px}
 .shp p{margin:0;font-size:14.6px;line-height:1.55}
 @media (max-width:760px){.ag-grid,.shape-grid{grid-template-columns:1fr}}
+
+/* Adjacent paragraphs had no gap at all. The page zeroes <p> margins and gets
+   its vertical rhythm from the non-paragraph siblings between them — which
+   works until a section actually has two paragraphs in a row, and then they
+   run together as one block. Only fires for p-after-p, so nothing that already
+   carries its own margin is double-spaced. */
+.sec-block > p + p{margin-top:15px}
+.sec-block > p + ul,.sec-block > p + ol{margin-top:15px}
 </style>
 </head>
 <body>
