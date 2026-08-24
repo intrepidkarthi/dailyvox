@@ -212,7 +212,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.
 
-Phone-only by conviction: the phone is the Twin's body, and every feature works end-to-end on the phone alone — no Mac, no second computer, ever. That rule is what the Android port has to satisfy too, and it is why the port replaces Apple's frameworks with on-device substitutes rather than a server. [Full roadmap](ROADMAP.md).
+Phone-first by conviction: the phone is the Twin's body, and every feature works end-to-end on the phone alone — no Mac, no second computer, ever. That rule is what the Android port has to satisfy too, and it is why the port replaces Apple's frameworks with on-device substitutes rather than a server. Portability of your data lives in the `.twin` format (Twin Protocol) rather than in which app you happen to run. [Full roadmap](ROADMAP.md).
 
 ---
 

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building An On-Device LLM That Cannot Cite What It Did Not Read</title>
+<meta name="description" content="Prompting a local model to avoid hallucinating is a request. We made it structurally impossible instead, with a deterministic audit that rejects any answer before it renders.">
+<link rel="canonical" href="https://getdailyvox.com/blog/llm-that-cannot-cite-what-it-did-not-read">
+<meta name="theme-color" content="#FAF8F5">
+<meta property="og:type" content="article"><meta property="og:title" content="Building An On-Device LLM That Cannot Cite What It Did Not Read">
+<meta property="og:description" content="Prompting a local model to avoid hallucinating is a request. We made it structurally impossible instead, with a deterministic audit that rejects any answer before it renders."><meta property="og:url" content="https://getdailyvox.com/blog/llm-that-cannot-cite-what-it-did-not-read">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Building An On-Device LLM That Cannot Cite What It Did Not Read", "description": "Prompting a local model to avoid hallucinating is a request. We made it structurally impossible instead, with a deterministic audit that rejects any answer before it renders.", "url": "https://getdailyvox.com/blog/llm-that-cannot-cite-what-it-did-not-read", "author": {"@type": "Organization", "name": "DailyVox"}, "publisher": {"@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"}, {"@type": "ListItem", "position": 3, "name": "Building An On-Device LLM That Cannot Cite What It Did Not Read"}]}</script>
+<style>
+:root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
+*{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
+header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
+h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
+.bc{font-size:14px;color:#8a8175;margin-top:14px}.bc a{color:#8a8175}
+ol{padding-left:22px}ol li{margin:6px 0}
+.cta{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}
+.cta a{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}
+details{border-top:1px solid #e7e0d6;padding:13px 0}summary{font-weight:700;cursor:pointer}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
+.related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
+footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
+a{color:var(--terra)}
+</style><style>/* ── Shared site footer ────────────────────────────────────────────────────
+   Eleven different footers existed across eighteen pages — three class names,
+   link counts from 3 to 21, and several missing Research, Changelog and the
+   demo entirely. This is the one footer, namespaced dv-f- so it cannot collide
+   with whatever each page already defines, and using each page's own custom
+   properties with hard fallbacks so it inherits the local palette. */
+.dv-footer{background:var(--paper-2,#F2EDE8);border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  margin-top:0;padding:clamp(38px,6vh,62px) 0 clamp(22px,3vh,32px);
+  font-family:var(--sans,'Inter',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-wrap{width:min(1180px,calc(100% - 2*clamp(18px,4vw,48px)));margin-inline:auto}
+.dv-f-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:clamp(20px,3vw,40px)}
+.dv-f-brand p{margin:12px 0 0;font-size:14px;line-height:1.55;max-width:30ch;
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-mark{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font:800 19px/1 var(--display,'Nunito',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-mark img{border-radius:7px;display:block}
+.dv-f-col{display:flex;flex-direction:column;gap:9px}
+.dv-f-col h4{margin:0 0 4px;font:600 10.5px/1 var(--mono,'DM Mono',ui-monospace,monospace);
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mute,#5C6A64)}
+.dv-f-col a{font-size:14px;line-height:1.45;text-decoration:none;
+  color:var(--ink-dim,rgba(26,26,46,.72))}
+.dv-f-col a:hover{color:var(--uv-text,#3F5A4D);text-decoration:underline}
+.dv-f-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:clamp(26px,4vh,44px);padding-top:18px;
+  border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  font:500 12.5px/1.5 var(--mono,'DM Mono',ui-monospace,monospace);
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-base a{color:inherit}
+@media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
+  .dv-f-brand{grid-column:1 / -1}}
+.dv-f-agent{margin:16px 0 0;font-size:12px;line-height:1.5;max-width:92ch;
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-agent a{color:var(--uv-text,#3F5A4D)}
+@media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}</style>
+</head>
+<body>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<main>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
+<h1>Building An On-Device LLM That Cannot Cite What It Did Not Read</h1>
+<p>Apple Intelligence puts a 3B model on the phone, which means an app can run a real conversation over your private data with nothing leaving the device. We used it to let people ask their journal questions in their own words.</p>
+<p>The privacy problem is solved by the architecture. The honesty problem is not. A local model invents things at roughly the rate a hosted one does, and it invents them about your life, which is worse than inventing them about the world. You can check a wrong claim about the boiling point of water. You cannot easily check "you have seemed more anxious since March" when you do not remember March.</p>
+<p>Prompting the model to be careful is a request. We wanted a property.</p>
+<h2>Citation as a structural constraint</h2>
+<p>The answer is not free text that we then inspect. It is assembled from units, and every factual sentence must attach to either a retrieved entry or a measured Twin signal. A sentence with nothing to attach to cannot be emitted, because there is no slot for it.</p>
+<p>That is the difference between "the model was told not to make things up" and "there is no path by which a claim reaches the screen without a source." The first is a prompt. The second is a shape.</p>
+<p>The visible result is the citation chips under each answer — tap one and it opens the exact entry. Those are not decoration added afterward. They are the thing the sentence was built from.</p>
+<h2>The audit runs on every answer</h2>
+<p>Structure is not enough on its own, because a structure can have a bug. So a deterministic audit checks every answer before it renders: does every claim cite something, does every cited ID exist in what was actually retrieved this turn, does every number appear verbatim in the source it points at.</p>
+<p>Deterministic matters. It is not a second model grading the first, which would just be two things that can both be wrong in correlated ways. It is a check with a yes and a no.</p>
+<p>An answer that fails never appears. The app falls back to the older template chat, which is less impressive and cannot lie. A user sees a slightly worse answer; they do not see a confident wrong one.</p>
+<h2>Numbers are copied, never generated</h2>
+<p>Any figure in an answer is copied verbatim from the data it cites. The model is not permitted to compute, round, or restate a number.</p>
+<p>This sounds over-strict until you watch a language model round "eleven entries in fourteen days" to "almost every day." Both describe the same fortnight. One of them is a claim about your life that your data does not support, and it is the kind of error nobody catches, because it reads more naturally than the truth.</p>
+<h2>What it is tested against</h2>
+<p>An adversarial battery, and the release had to pass it twice consecutively before shipping: grounding, tone, false-premise resistance, prompt-injection resistance.</p>
+<p>False premise is the interesting one for personal data. Ask "why have I been so angry lately" when the entries show nothing of the kind, and the accommodating answer is to explain an anger that does not exist. The model has to decline the premise, which is exactly the behaviour a helpful-sounding assistant is worst at.</p>
+<p>Prompt injection matters because the corpus is user-authored. If someone writes instructions into their own diary, or pastes something that contains them, those words arrive in the context window like any other entry.</p>
+<h2>The honest limit</h2>
+<p>Every one of these constraints costs range. The Twin will not speculate, will not synthesise across entries in ways it cannot cite, and abstains often enough that some people find it terse.</p>
+<p>That is the deal. For an app whose whole claim is that your journal is private and the model is local, a system that occasionally makes something up about your inner life would cost more than it returns. The interesting engineering was not making the model smarter. It was removing the paths by which it could be wrong.</p>
+<p>DailyVox is a free, open-source voice journal for iPhone. Conversational answers run on Apple's on-device foundation model where available, and every mechanism described here runs on the phone.</p>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
+</main>
+<footer class="dv-footer">
+  <div class="dv-f-wrap">
+    <div class="dv-f-grid">
+      <div class="dv-f-brand">
+        <a href="/" class="dv-f-mark"><img src="/apple-touch-icon.png" alt="" width="28" height="28"><span>DailyVox</span></a>
+        <p>A personal AI that lives on your phone. Free, open source, private by construction.</p>
+      </div>
+      <nav class="dv-f-col" aria-label="Product">
+        <h4>Product</h4>
+        <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="/technology">Technology</a>
+        <a href="/ai-journaling-app">AI Journaling App</a>
+        <a href="/personal-digital-twin">Digital Twin</a>
+        <a href="/compare">Compare</a>
+        <a href="/demo">Interactive demo</a>
+        <a href="/faq">FAQ</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Project">
+        <h4>Project</h4>
+        <a href="/roadmap">Roadmap</a>
+        <a href="/research">Research</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/press">Press Kit</a>
+        <a href="/support">Support</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="More">
+        <h4>More</h4>
+        <a href="/privacy">Privacy</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/voice-journaling-statistics">Statistics</a>
+        <a href="/for-students">For students</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+        <a href="mailto:hello@getdailyvox.com">Contact</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Social">
+        <h4>Social</h4>
+        <a href="https://x.com/getDailyVox" rel="me">X &middot; @getDailyVox</a>
+        <a href="https://www.instagram.com/getdailyvox/" rel="me">Instagram</a>
+        <a href="https://www.reddit.com/user/getDailyVox/" rel="me">Reddit</a>
+        <a href="https://www.producthunt.com/products/dailyvox">Product Hunt</a>
+      </nav>
+    </div>
+    <div class="dv-f-base">
+      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
+    </div>
+    <p class="dv-f-agent"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p>
+  </div>
+</footer>
+</body></html>

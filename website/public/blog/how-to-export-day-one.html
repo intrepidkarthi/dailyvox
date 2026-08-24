@@ -93,6 +93,9 @@
 .dv-f-base a{color:inherit}
 @media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
   .dv-f-brand{grid-column:1 / -1}}
+.dv-f-agent{margin:16px 0 0;font-size:12px;line-height:1.5;max-width:92ch;
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-agent a{color:var(--uv-text,#3F5A4D)}
 @media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}</style>
 </head>
 <body>
@@ -280,6 +283,7 @@
       <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
+    <p class="dv-f-agent"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p>
   </div>
 </footer>
 </body>

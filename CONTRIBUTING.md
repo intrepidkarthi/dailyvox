@@ -42,13 +42,21 @@ Not sure what to work on? Here are some ways to jump in:
 - **v1.4**: Body Twin — HealthKit integration + Apple Watch companion app
 - **v1.5**: Semantic search with NLEmbedding (cosine similarity, K-means clustering, anomaly detection)
 - **v1.6**: Apple Foundation Models integration (on-device 3B LLM Twin chat)
-- **v1.7**: macOS companion app + multi-language String Catalogs
+- **v1.7**: multi-language String Catalogs *(shipped in v1.10)*
+
+These are historical suggestions and several have since shipped or been dropped —
+check [ROADMAP.md](ROADMAP.md) for what is actually open before starting work.
 
 ## Prerequisites
+
+For the iOS app:
 
 - **Xcode 15+** (latest stable recommended)
 - **iOS 17+ SDK**
 - A Mac with macOS Sonoma or later
+
+(An Android app is in development. When it lands it will carry its own
+prerequisites, and neither app will require the other's toolchain.)
 - No third-party tools required — zero external dependencies
 
 ## Development Workflow
