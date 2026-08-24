@@ -65,6 +65,13 @@ its default it would copy your journal and your recordings to Google Drive —
 done by the system, without the app needing any permission at all. We turned it
 off so that "nothing leaves this phone" stays true rather than nearly true.
 
+Transcription is the same trap, and it is why DailyVox needs Android 13 or
+newer. The ordinary speech recogniser can send your audio to Google — again by
+another app, needing no permission from this one. Android 13 added a recogniser
+guaranteed to stay on the phone, and it is the only one DailyVox will use. With
+no offline language pack installed it says so and stops, rather than
+transcribing over a network instead.
+
 YOUR DIGITAL TWIN
 
 As you speak, the Twin quietly builds a picture of you:

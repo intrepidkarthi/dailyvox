@@ -16,12 +16,14 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * On-device speech capture.
  *
- * `createOnDeviceSpeechRecognizer` (API 33+) forces recognition to stay on the
- * device -- it does not fall back to the network, it fails instead. That failure
- * mode is the correct one for this product: a journal that silently uploaded
- * audio to fill a gap would break the only promise it makes. On API < 33 the
- * platform recognizer is used with EXTRA_PREFER_OFFLINE, which is a preference
- * rather than a guarantee, so the UI says so.
+ * `createOnDeviceSpeechRecognizer` forces recognition to stay on the device --
+ * it does not fall back to the network, it fails instead. That failure mode is
+ * the correct one for this product: a journal that silently uploaded audio to
+ * fill a gap would break the only promise it makes.
+ *
+ * It is the ONLY recognizer this class will construct. There is no second
+ * branch, because every second branch anyone has written here has been a
+ * network branch wearing a preference flag.
  *
  * Known gap, and it is the largest untested assumption in the port: the name
  * detector depends entirely on transcripts CAPITALISING names. Apple's recognizer
@@ -116,11 +118,20 @@ class SpeechCapture(private val context: Context) {
     private fun beginSession(): Boolean {
         _partial.value = ""
         pausing = false
-        val r = when {
-            onDeviceAvailable -> SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
-            SpeechRecognizer.isRecognitionAvailable(context) -> SpeechRecognizer.createSpeechRecognizer(context)
-            else -> { _state.value = State.IDLE; return false }
+        // On-device or not at all. The generic recognizer used to stand in here
+        // whenever no on-device one was available, with EXTRA_PREFER_OFFLINE set
+        // -- and a preference is not a guarantee. Google's recognizer honours it
+        // when a pack is installed and goes to its own servers when one is not.
+        // That path uploaded the audio while onboarding said "Nothing left your
+        // phone", and it needed no INTERNET permission of ours to do it: the
+        // upload happens in the recognizer's process, not this one. Which is
+        // also why the manifest cannot be the whole proof the listing says it is.
+        if (!onDeviceAvailable) {
+            _error.value = noOnDeviceRecogniser()
+            _state.value = State.IDLE
+            return false
         }
+        val r = SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
         recognizer = r
         r.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) { _state.value = State.RECORDING }
@@ -248,6 +259,23 @@ class SpeechCapture(private val context: Context) {
      * Observed on a clean Pixel emulator as "LANGUAGE_PACK_ERROR with error
      * code 13", which is precisely the case the port plan flagged as untested.
      */
+    /**
+     * Two dead ends, and only one of them is the user's to fix. Below API 33 the
+     * on-device recognizer does not exist at all, so no setting reaches it; from
+     * 33 the language pack is a download away. minSdk keeps the first case off
+     * phones that install from Play -- it stays for sideloads, and for the day
+     * someone lowers minSdk back without reading this file.
+     */
+    private fun noOnDeviceRecogniser(): CaptureError =
+        if (Build.VERSION.SDK_INT < 33) CaptureError(
+            message = "This version of Android has no on-device speech recogniser.",
+            fix = "DailyVox needs Android 13 or newer -- that is the version where offline recognition arrived. It will not transcribe over a network on any version.",
+        ) else CaptureError(
+            message = "No offline speech pack is installed for your language yet.",
+            fix = "Android Settings \u203a System \u203a Languages \u203a Speech \u203a Offline speech recognition. DailyVox cannot download it for you, because it has no internet permission at all, and it will not transcribe over a network instead.",
+            openLanguageSettings = true,
+        )
+
     private fun describe(code: Int): CaptureError = when (code) {
         SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
         SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> CaptureError(

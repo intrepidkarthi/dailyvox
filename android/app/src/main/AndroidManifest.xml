@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- The permission ledger the onboarding shows verbatim: microphone is
          REQUIRED, Health Connect is OPTIONAL, and INTERNET is NOT REQUESTED.
@@ -14,6 +15,13 @@
          the whole app on the first haptic. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- androidx.biometric merges USE_FINGERPRINT in for API 27 and under.
+         At minSdk 33 it is dead weight, and it is not free: the listing invites
+         people to read this app's permissions in app info, so a line that does
+         nothing costs more here than the byte it takes. USE_BIOMETRIC, which
+         BiometricPrompt actually uses, still merges in. -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove" />
+
     <!-- Health Connect, OPTIONAL and read-only, exactly as the onboarding ledger
          says. Declared is not held: nothing is requested until the user turns
          Body signals on, and only these four are ever asked for — the four the
@@ -22,6 +30,14 @@
     <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
     <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
     <uses-permission android:name="android.permission.health.READ_STEPS" />
+
+    <!-- On API 33 Health Connect is a separate APK, and package visibility
+         filtering hides it: without this the availability check reports NOT
+         INSTALLED on a phone that has it, and Body signals look unsupported.
+         From API 34 it is part of the platform and this is simply ignored. -->
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
 
     <!-- Auto Backup is OFF. See res/xml/data_extraction_rules.xml: the default
          (true) would have shipped the journal and the raw audio to Google Drive
@@ -59,6 +75,24 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <!-- The API 34+ half of the same rationale. Android 14 moved Health
+             Connect into the platform and stopped reading the intent-filter
+             above: it looks for VIEW_PERMISSION_USAGE with the
+             HEALTH_PERMISSIONS category instead, and an app that declares only
+             one of the two shows a permission screen with no explanation of
+             why it wants sleep and heart rate. Play's health-data review
+             checks for it. -->
+        <activity-alias
+            android:name=".HealthRationaleActivity"
+            android:exported="true"
+            android:targetActivity=".MainActivity"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
+
         <receiver
             android:name=".system.RecordingLive$FinishReceiver"
             android:exported="false">

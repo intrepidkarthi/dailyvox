@@ -103,5 +103,6 @@ holds.
 |---|---|
 | No INTERNET permission | merged manifest + `dumpsys package` on device |
 | Works fully offline | airplane mode, fresh install, full journey exercised |
+| Speech never goes to a network | code: `SpeechCapture` constructs `createOnDeviceSpeechRecognizer` and nothing else. **Note what airplane mode cannot check** — until 2026-08-24 a fallback branch sent audio to the platform recognizer, and with no network there was nothing for it to leak to, so the offline test passed on exactly the phones that were leaking. minSdk 33 now guarantees the on-device recognizer exists. |
 | Auto Backup off | `ALLOW_BACKUP` absent from `dumpsys package` flags |
 | Health permissions not held until opt-in | `dumpsys package` shows `granted=false` for all four |
