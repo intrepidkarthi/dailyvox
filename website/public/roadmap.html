@@ -984,6 +984,20 @@
 .path tr:last-child th,.path tr:last-child td{border-bottom:none}
 .path-note{margin-top:12px;font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
 @media (max-width:760px){.path{font-size:13.5px}.path th,.path td{padding:10px 10px}}
+
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:20px 0 16px}
+.trk{padding:16px 18px;border-radius:14px;border:1px solid var(--rule-2,rgba(26,26,46,.14))}
+.trk.off{background:var(--paper-2,rgba(26,26,46,.025));border-style:dashed}
+.trk-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.trk-h h4{margin:0;font-size:16.5px;letter-spacing:-.01em}
+.trk-s{font:600 9.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px}
+.trk.on .trk-s{background:rgba(91,124,107,.15);color:#3F5A4D}
+.trk.off .trk-s{background:rgba(26,26,46,.07);color:var(--ink-mute,#5C6A64)}
+.trk p{margin:0;font-size:14.8px;line-height:1.58}
+.trk.off p{color:var(--ink-mute,#5C6A64)}
+.track-note{font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
+@media (max-width:700px){.track-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1108,6 +1122,7 @@
             <tbody>
               <tr><th scope="row">v1.12</th><td>Long-horizon memory: the Twin connecting entries months apart</td><td>Reaching parity with the shipped iPhone Twin</td><td>A benchmark that scores whether the connection was <em>made</em> or confabulated</td></tr>
               <tr><th scope="row">v1.13</th><td>The emotion layer replaced with a learned head</td><td>Same head, same gate</td><td>A licence-clean retrain that stops over-firing on neutral text — the current one fails this</td></tr>
+              <tr><th scope="row">v1.13.5</th><td>Tamil and code-mixed entries end to end — transcript, sentiment, names</td><td>Same, on ML Kit and MediaPipe</td><td>Matching the name recall already measured on non-Anglo names, on code-mixed text</td></tr>
               <tr><th scope="row">v1.14</th><td>Trait scoring validated against instruments, not asserted</td><td>Same</td><td>Pilot data. This is the release that cannot ship from one person's diary</td></tr>
               <tr><th scope="row">v2.0</th><td>Apple Intelligence native — ask Siri, it consults your Twin</td><td>First public Android release</td><td>Everything above holding on both platforms at once</td></tr>
             </tbody>
@@ -1192,6 +1207,31 @@
         <p class="pilot-terms">Independent research, no compensation, no institutional sponsor. Consent messages are kept privately and a deletion request is honoured immediately — your row is struck and the files removed. Withdrawal is honoured any time before publication. Participant data never leaves the researcher's machine; it is not in the app, not in a cloud, and not in the repository.</p>
 
         <p>If you keep a journal in DailyVox and would consider this, the address is <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>. Saying no costs nothing and changes nothing about the app.</p>
+
+        <h3 class="sub-h">What is actually being worked on, and what is parked</h3>
+
+        <p>This is a one-person project with a day job, so the research is filtered by a single question: does it ship as a feature? Work that produces only a paper competes with the product. Work that produces a release <em>and</em> a result compounds. Two lines pass that filter and two do not, and it is more useful to say which than to list everything as "planned".</p>
+
+        <div class="track-grid">
+          <div class="trk on">
+            <div class="trk-h"><span class="trk-s">active</span><h4>Long-horizon memory</h4></div>
+            <p>Can the Twin connect entries months apart, and can that be scored rather than asserted? Tractable alone — a twenty-year diary and the entity graph already exist — and it is the difference between a journal with search and a Twin worth returning to. The benchmark and the feature are the same work.</p>
+          </div>
+          <div class="trk on">
+            <div class="trk-h"><span class="trk-s">active</span><h4>Tamil and code-mixed journals</h4></div>
+            <p>The name recogniser already finds 100% of the non-Anglo names a learned model misses, precisely <em>because</em> it has no prior about what a name looks like. That result points somewhere, and on-device sentiment and entity work for Tamil-English code-mixed diaries is where. No one has done it without a cloud.</p>
+          </div>
+          <div class="trk off">
+            <div class="trk-h"><span class="trk-s">parked</span><h4>The consented cohort</h4></div>
+            <p>Designed, consent form written, harness ready — and stopped, because one person cannot recruit, review and consent a cohort in evenings. It is not abandoned and not scheduled. It resumes when there is an institution attached, and until then rung 07 stays unclimbed and nothing here is described as proven.</p>
+          </div>
+          <div class="trk off">
+            <div class="trk-h"><span class="trk-s">parked</span><h4>Body signals across people</h4></div>
+            <p>Whether poor sleep predicts a worse day <em>for you</em> is answerable from one journal. Whether it does so for people in general needs many journals and many wearables, which is the same wall as the cohort. Held behind it.</p>
+          </div>
+        </div>
+
+        <p class="track-note">The honest cost of this filter: the two parked lines are the two that would turn "it works for me" into a finding. Shipping features is the easier half, and it is the half being done.</p>
       </section>
 
       <!-- RESEARCH LADDER — the roadmap read as a feature list, which is the
@@ -1228,7 +1268,7 @@
           </li>
           <li class="rung wip">
             <div class="rung-h"><span class="rung-n">05</span><h3>Does it remember across years?</h3><span class="rung-s">in progress</span></div>
-            <p>Retrieval over a week is not memory. The open work is long-horizon evaluation — the kind of benchmark that asks a question answerable only by connecting entries months apart, and scores whether the connection was made or confabulated. A journal's value compounds; the evaluation has to as well.</p>
+            <p><em>This is the line being worked on now.</em> Retrieval over a week is not memory. The open work is long-horizon evaluation — the kind of benchmark that asks a question answerable only by connecting entries months apart, and scores whether the connection was made or confabulated. A journal's value compounds; the evaluation has to as well.</p>
           </li>
           <li class="rung wip">
             <div class="rung-h"><span class="rung-n">06</span><h3>Does it model who you are, not just how you felt?</h3><span class="rung-s">in progress</span></div>
@@ -1236,7 +1276,7 @@
           </li>
           <li class="rung open">
             <div class="rung-h"><span class="rung-n">07</span><h3>Does any of it hold for someone who isn't me?</h3><span class="rung-s">not yet</span></div>
-            <p>Every number on this site comes from one author's diary. That is enough to build with and not enough to conclude from. A cohort — many journals, many people, the same measurements — is the gate between "it works for me" and a finding, and it is the one rung that cannot be climbed by writing more code.</p>
+            <p><em>Parked, and honestly so.</em> Every number on this site comes from one author's diary. That is enough to build with and not enough to conclude from. A cohort — many journals, many people, the same measurements — is the gate between "it works for me" and a finding, and it is the one rung that cannot be climbed by writing more code.</p>
           </li>
         </ol>
 
