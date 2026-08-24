@@ -1190,6 +1190,40 @@ section.band.g-paper2{background:var(--band)!important}
   .pin-inner{grid-template-columns:1fr!important;justify-items:center}
   .hero-right{justify-self:center;max-width:34rem;text-align:center}
 }
+
+/* --- the connector --------------------------------------------------------
+   A chip floating beside a phone does not say WHICH part of the screen it is
+   about. The arrow is the whole point of the callout and it went missing when
+   the crop windows were removed. One per sticker, in that beat's colour,
+   reaching from the chip to the device. */
+.sticker{overflow:visible}
+.st-arrow{
+  position:absolute; left:calc(100% - 6px); width:104px; height:72px; overflow:visible;
+  stroke-width:3.6; fill:none; stroke-linecap:round; stroke-linejoin:round;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.18));
+  opacity:0; transition:opacity .4s ease .12s;
+}
+.sticker.on .st-arrow{opacity:1}
+.sticker[data-i="0"] .st-arrow{top:6%;  stroke:#2E5B44}
+.sticker[data-i="1"] .st-arrow{top:14%; stroke:#D9A441}
+.sticker[data-i="2"] .st-arrow{bottom:2%; stroke:#C4956A}
+.sticker[data-i="3"] .st-arrow{bottom:6%; stroke:#EDCB86}
+@media (max-width:1140px){.st-arrow{width:76px;height:56px}}
+@media (max-width:900px){.st-arrow{display:none}}
+@media (prefers-reduced-motion:reduce){.st-arrow{transition:none}}
+
+/* --- section alignment ----------------------------------------------------
+   The heading block was capped at 760px while the table and card lists under
+   it ran to 1040. Same left edge, different right edge, so the section read as
+   two misaligned columns with a hole beside the headline. The head now spans
+   the same width as the content; only the deck paragraph keeps a readable
+   measure, which is a line-length decision rather than a layout one. */
+.clip .section-head,.g-paper2 .section-head,section.band .section-head{max-width:none}
+.section-head .deck{max-width:62ch}
+.section-head.center .deck{margin-inline:auto}
+/* the heading itself can use the full width before it wraps */
+.section-head h2{max-width:22ch}
+.section-head.center h2{margin-inline:auto}
 </style>
 </head>
 
@@ -1278,15 +1312,19 @@ section.band.g-paper2{background:var(--band)!important}
              and cluttered more. -->
         <div class="sticker" data-i="0" style="--rot:-4deg">
           <b>42 seconds</b><i>that's the whole ritual</i>
+          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 22 C 44 16, 84 36, 114 64"/><path d="M114 64 l -18 -3 M114 64 l -4 -18"/></svg>
         </div>
         <div class="sticker" data-i="1" style="--rot:3.5deg">
           <b>your voice</b><i>transcribed on this phone</i>
+          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 22 C 44 16, 84 36, 114 64"/><path d="M114 64 l -18 -3 M114 64 l -4 -18"/></svg>
         </div>
         <div class="sticker" data-i="2" style="--rot:-3deg">
           <b>it caught the names</b><i>Sarah &middot; James &middot; Emma</i>
+          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 64 C 44 70, 84 50, 114 22"/><path d="M114 22 l -18 4 M114 22 l -3 18"/></svg>
         </div>
         <div class="sticker" data-i="3" style="--rot:4deg">
           <b>35 stars</b><i>one for every night you kept</i>
+          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 64 C 44 70, 84 50, 114 22"/><path d="M114 22 l -18 4 M114 22 l -3 18"/></svg>
         </div>
       </div>
 
@@ -1333,10 +1371,8 @@ section.band.g-paper2{background:var(--band)!important}
      pinned stage stays purely the app -->
 <section class="pin-after" aria-label="What DailyVox is">
   <div class="wrap inner narrow">
-    <div class="cta-row reveal" style="justify-content:center;margin-bottom:26px">
-      <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
-      <span class="pill soon" aria-label="Android version coming soon; not yet available">Android<span class="soon-tag">coming soon</span></span>
-    </div>
+    <!-- The duplicate download row lived here. It moved into the hero, and
+         two identical buttons a few hundred pixels apart is not emphasis. -->
     <div class="trust reveal" style="justify-content:center;margin-bottom:26px">
       <span>Free forever</span><span>On-device</span><span>No account</span><span><a href="https://github.com/intrepidkarthi/dailyvox" style="color:inherit;text-decoration:underline">Open source</a></span>
     </div>
