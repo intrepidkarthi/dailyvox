@@ -1224,6 +1224,13 @@ section.band.g-paper2{background:var(--band)!important}
 /* the heading itself can use the full width before it wraps */
 .section-head h2{max-width:22ch}
 .section-head.center h2{margin-inline:auto}
+
+/* The section floated: no heading, no ground, a narrow centred column between
+   a full-bleed hero and a full-bleed colour band. It reads as a deliberate
+   lead-in now rather than something left behind. */
+.pin-after{background:var(--paper-2,#F2EDE8);padding-block:clamp(30px,5vh,58px)}
+.pin-after .deck{max-width:64ch;margin-inline:auto;text-align:center}
+.pin-after .cta-row{justify-content:center;margin-top:20px;gap:10px;flex-wrap:wrap}
 </style>
 </head>
 
@@ -1371,18 +1378,20 @@ section.band.g-paper2{background:var(--band)!important}
      pinned stage stays purely the app -->
 <section class="pin-after" aria-label="What DailyVox is">
   <div class="wrap inner narrow">
-    <!-- The duplicate download row lived here. It moved into the hero, and
-         two identical buttons a few hundred pixels apart is not emphasis. -->
-    <div class="trust reveal" style="justify-content:center;margin-bottom:26px">
-      <span>Free forever</span><span>On-device</span><span>No account</span><span><a href="https://github.com/intrepidkarthi/dailyvox" style="color:inherit;text-decoration:underline">Open source</a></span>
-    </div>
+    <!-- What this section is FOR, since it looked like an orphan: the deck
+         paragraph is the page's keyword-bearing description and its link into
+         the /ai-journaling-app cluster. Search is the main way people find
+         this app, so the paragraph earns its place even though the hero above
+         already made the pitch.
+
+         What did NOT earn its place, and is gone: a second Product Hunt badge
+         (the hero has one now) and a trust chip row repeating claims the
+         buttons directly above it already make. -->
     <p class="deck reveal">DailyVox is a free voice journal for iPhone with on-device AI, and an Android version is on the way. Speak for forty-two seconds — or longer. The app transcribes your voice on-device and builds a Digital Twin, an AI model of your personality and inner world. It lives on your phone. It never leaves. <strong>It's yours.</strong> <a href="/ai-journaling-app">See how the on-device AI journaling app works →</a></p>
     <div class="cta-row reveal">
       <a href="#specimen" class="ghost">What is a Digital Twin? ↓</a>
       <a href="/demo" class="ghost">See the interactive demo →</a>
-    </div>
-    <div class="ph-badge reveal" style="margin-top:22px">
-      <a href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer"><img alt="DailyVox - Speak 42 seconds a day — a private, on-device voice diary | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277"></a>
+      <a href="https://github.com/intrepidkarthi/dailyvox" class="ghost">Read the source →</a>
     </div>
   </div>
 </section>
