@@ -1114,6 +1114,52 @@ section.band.g-paper2{background:var(--band)!important}
 .callout{z-index:7!important}
 .co-arrow{width:88px!important;height:64px!important}
 .callout .co-arrow{left:calc(100% + 4px)!important}
+
+@font-face{font-family:'Caveat';src:url('/fonts/Caveat-SemiBold.ttf') format('truetype');
+  font-weight:600;font-style:normal;font-display:swap}
+
+/* --- STICKERS -------------------------------------------------------------
+   What the App Store frames actually do: a rotated card carrying one claim in
+   Nunito and one handwritten line under it, beside a phone showing its whole
+   screen. No magnified crop, no leader line. The crop callouts magnified a
+   control and explained less than this does. */
+.sticker{
+  position:absolute; z-index:7; display:block; width:max-content; max-width:16rem;
+  padding:13px 17px 12px; border-radius:15px; text-align:left;
+  transform:rotate(var(--rot)) translateY(8px) scale(.96); transform-origin:center;
+  opacity:0; visibility:hidden;
+  transition:opacity .45s ease, transform .5s cubic-bezier(.2,.7,.3,1), visibility .45s;
+  box-shadow:0 16px 38px -12px rgba(70,45,25,.34), 0 2px 0 rgba(0,0,0,.04);
+  pointer-events:none;
+}
+.sticker.on{opacity:1;visibility:visible;transform:rotate(var(--rot))}
+.sticker b{display:block;font:800 17px/1.2 var(--ui);letter-spacing:-.01em}
+.sticker i{display:block;font:600 17px/1.15 'Caveat',cursive;font-style:normal;margin-top:3px;opacity:.78}
+
+.sticker[data-i="0"]{background:#2E5B44;color:#F7F3EA; left:auto; right:calc(100% - 30px); top:62%}
+.sticker[data-i="1"]{background:#D9A441;color:#101B2D; left:calc(100% - 34px); top:34%}
+.sticker[data-i="2"]{background:#C4956A;color:#2B1B10; right:calc(100% - 30px); top:20%}
+.sticker[data-i="3"]{background:#101B2D;color:#F1EDE2; left:calc(100% - 34px); top:24%}
+.sticker[data-i="3"] i{color:#EDCB86;opacity:1}
+
+@media (max-width:1140px){
+  .sticker{max-width:12rem;padding:11px 14px}
+  .sticker b{font-size:15px}.sticker i{font-size:15px}
+}
+@media (max-width:900px){.sticker{display:none}}
+@media (prefers-reduced-motion:reduce){.sticker{transition:none}}
+
+/* All four sit LEFT of the phone. Two were anchored to the right edge and
+   pushed into the headline column, covering "knows you." — the hero-left
+   column is right-aligned, so the phone's own width is the offset that puts a
+   sticker in the empty gutter beside it. */
+.sticker[data-i="0"],.sticker[data-i="1"],.sticker[data-i="2"],.sticker[data-i="3"]{
+  left:auto!important; right:calc(clamp(178px,27vh,392px) + 22px)!important;
+}
+.sticker[data-i="0"]{top:58%!important}
+.sticker[data-i="1"]{top:30%!important}
+.sticker[data-i="2"]{top:44%!important}
+.sticker[data-i="3"]{top:18%!important}
 </style>
 </head>
 
@@ -1201,25 +1247,22 @@ section.band.g-paper2{background:var(--band)!important}
         </div>
         <div class="device-floor" aria-hidden="true"></div>
       </div>
-        <div class="callout co-down" data-i="0" style="--cx:50%; --cy:76%">
-          <span class="co-crop" style="background-image:url('/app/app-record.webp?v=1111')"></span>
-          <span class="co-lab">Tap it. Talk for<br><b>forty-two seconds.</b></span>
-          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 14 C 80 12, 42 32, 14 68"/><path d="M14 68 l 17 -8 M14 68 l 2 -18"/></svg>
+        <!-- Stickers, not crops. The App Store frames project a CLAIM beside a
+             whole phone screen — a rotated card with a bold line and a
+             handwritten one under it. No zoom window, no arrow. The crop
+             callouts tried to magnify a control instead, which explained less
+             and cluttered more. -->
+        <div class="sticker" data-i="0" style="--rot:-4deg">
+          <b>42 seconds</b><i>that's the whole ritual</i>
         </div>
-        <div class="callout co-down" data-i="1" style="--cx:50%; --cy:43%">
-          <span class="co-crop" style="background-image:url('/app/app-live.webp?v=1111')"></span>
-          <span class="co-lab">The words arrive<br><b>as you say them.</b></span>
-          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 14 C 80 12, 42 32, 14 68"/><path d="M14 68 l 17 -8 M14 68 l 2 -18"/></svg>
+        <div class="sticker" data-i="1" style="--rot:3.5deg">
+          <b>your voice</b><i>transcribed on this phone</i>
         </div>
-        <div class="callout co-up" data-i="2" style="--cx:52%; --cy:18%">
-          <span class="co-crop" style="background-image:url('/app/app-entry.webp?v=1111')"></span>
-          <span class="co-lab">It catches the<br><b>names you said.</b></span>
-          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 68 C 80 72, 42 52, 14 18"/><path d="M14 18 l 17 7 M14 18 l 2 18"/></svg>
+        <div class="sticker" data-i="2" style="--rot:-3deg">
+          <b>it caught the names</b><i>Sarah &middot; James &middot; Emma</i>
         </div>
-        <div class="callout co-up" data-i="3" style="--cx:50%; --cy:30%">
-          <span class="co-crop" style="background-image:url('/app/app-twin.webp?v=1111')"></span>
-          <span class="co-lab">Everyone who<br><b>keeps coming up.</b></span>
-          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 68 C 80 72, 42 52, 14 18"/><path d="M14 18 l 17 7 M14 18 l 2 18"/></svg>
+        <div class="sticker" data-i="3" style="--rot:4deg">
+          <b>35 stars</b><i>one for every night you kept</i>
         </div>
       </div>
 
@@ -1965,7 +2008,7 @@ section.band.g-paper2{background:var(--band)!important}
       scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
       ticks = [].slice.call(wrap.querySelectorAll('.tick')),
-      cos   = [].slice.call(wrap.querySelectorAll('.callout')),
+      cos   = [].slice.call(wrap.querySelectorAll('.sticker')),
       N = 4, cur = -1, queued = false,
       horiz = window.matchMedia('(max-width:860px)');
 
