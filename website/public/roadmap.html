@@ -1006,6 +1006,38 @@
    carries its own margin is double-spaced. */
 .sec-block > p + p{margin-top:15px}
 .sec-block > p + ul,.sec-block > p + ol{margin-top:15px}
+
+/* ── Shared site footer ────────────────────────────────────────────────────
+   Eleven different footers existed across eighteen pages — three class names,
+   link counts from 3 to 21, and several missing Research, Changelog and the
+   demo entirely. This is the one footer, namespaced dv-f- so it cannot collide
+   with whatever each page already defines, and using each page's own custom
+   properties with hard fallbacks so it inherits the local palette. */
+.dv-footer{background:var(--paper-2,#F2EDE8);border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  margin-top:0;padding:clamp(38px,6vh,62px) 0 clamp(22px,3vh,32px);
+  font-family:var(--sans,'Inter',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-wrap{width:min(1180px,calc(100% - 2*clamp(18px,4vw,48px)));margin-inline:auto}
+.dv-f-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:clamp(20px,3vw,40px)}
+.dv-f-brand p{margin:12px 0 0;font-size:14px;line-height:1.55;max-width:30ch;
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-mark{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font:800 19px/1 var(--display,'Nunito',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-mark img{border-radius:7px;display:block}
+.dv-f-col{display:flex;flex-direction:column;gap:9px}
+.dv-f-col h4{margin:0 0 4px;font:600 10.5px/1 var(--mono,'DM Mono',ui-monospace,monospace);
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mute,#5C6A64)}
+.dv-f-col a{font-size:14px;line-height:1.45;text-decoration:none;
+  color:var(--ink-dim,rgba(26,26,46,.72))}
+.dv-f-col a:hover{color:var(--uv-text,#3F5A4D);text-decoration:underline}
+.dv-f-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:clamp(26px,4vh,44px);padding-top:18px;
+  border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  font:500 12.5px/1.5 var(--mono,'DM Mono',ui-monospace,monospace);
+  color:var(--ink-mute,#5C6A64)}
+.dv-f-base a{color:inherit}
+@media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
+  .dv-f-brand{grid-column:1 / -1}}
+@media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1279,57 +1311,56 @@
     </div>
   </main>
 
-<footer class="site-footer">
-    <div class="wrap">
-      <div class="sf-brand">
-        <div class="mk">
-          <span class="logo-mark" role="img" aria-label="DailyVox"></span>
-          DailyVox
-        </div>
-        <p>A personal AI that lives on your phone.<br>Free, open source, private by construction.</p>
+<footer class="dv-footer">
+  <div class="dv-f-wrap">
+    <div class="dv-f-grid">
+      <div class="dv-f-brand">
+        <a href="/" class="dv-f-mark"><img src="/apple-touch-icon.png" alt="" width="28" height="28"><span>DailyVox</span></a>
+        <p>A personal AI that lives on your phone. Free, open source, private by construction.</p>
       </div>
-      <div class="sf-col">
+      <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
-        <ul>
-          <li><a href="https://apps.apple.com/app/id6760454642">App Store</a></li>
-          <li><a href="/technology">Technology</a></li>
-          <li><a href="/compare">Compare</a></li>
-          <li><a href="/faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="sf-col">
-        <h4>Company</h4>
-        <ul>
-          <li><a href="/about">About</a></li>
-          <li><a href="/blog">Journal</a></li>
-          <li><a href="/for-students">For Students</a></li>
-          <li><a href="/support">Support</a></li>
-          <li><a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a></li>
-        </ul>
-      </div>
-      <div class="sf-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="/privacy">Privacy</a></li>
-          <li><a href="/glossary">Glossary</a></li>
-          <li><a href="/voice-journaling-statistics">Statistics</a></li>
-          <li><a href="mailto:hello@getdailyvox.com">Contact</a></li>
-        </ul>
-      </div>
-      <div class="sf-social">
-        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
-        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
-        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
-        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
-        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
-      </div>
-
-      <div class="sf-bottom">
-        <span>© 2026 DailyVox · built on-device, by hand</span>
-        <span class="live-tag"><span class="dot"></span> systems.ok · 0 rpc</span>
-      </div>
+        <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="/technology">Technology</a>
+        <a href="/ai-journaling-app">AI Journaling App</a>
+        <a href="/personal-digital-twin">Digital Twin</a>
+        <a href="/compare">Compare</a>
+        <a href="/demo">Interactive demo</a>
+        <a href="/faq">FAQ</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Project">
+        <h4>Project</h4>
+        <a href="/roadmap">Roadmap</a>
+        <a href="/research">Research</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/press">Press Kit</a>
+        <a href="/support">Support</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="More">
+        <h4>More</h4>
+        <a href="/privacy">Privacy</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/voice-journaling-statistics">Statistics</a>
+        <a href="/for-students">For students</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+        <a href="mailto:hello@getdailyvox.com">Contact</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Social">
+        <h4>Social</h4>
+        <a href="https://x.com/getDailyVox" rel="me">X &middot; @getDailyVox</a>
+        <a href="https://www.instagram.com/getdailyvox/" rel="me">Instagram</a>
+        <a href="https://www.reddit.com/user/getDailyVox/" rel="me">Reddit</a>
+        <a href="https://www.producthunt.com/products/dailyvox">Product Hunt</a>
+      </nav>
     </div>
-  </footer>
+    <div class="dv-f-base">
+      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
