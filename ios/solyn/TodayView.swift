@@ -431,15 +431,19 @@ struct TodayView: View {
                 .padding(.horizontal)
                 .padding(.top)
 
-            // GeometryReader + minHeight is what makes the Spacers inside a
-            // ScrollView actually push. Without it the content keeps its
-            // intrinsic height, sits at the top, and leaves a third of the
-            // screen as dead cream between today's card and the question.
+            // Today's card sits directly under the header, where a device
+            // actually puts it. Centring it in the band — which is what this
+            // did — opened a gap ABOVE the card that exists nowhere in the
+            // running app, and made the first thing you wrote today look like
+            // it was floating. The slack belongs below it, between what you
+            // have said and the button for saying more.
             GeometryReader { proxy in
                 ScrollView {
                     VStack(spacing: 0) {
-                        Spacer(minLength: 24)
-
+                        // NO leading Spacer. A Spacer expands, so a pair of them
+                        // — even with minLength 16 and 0 — splits the slack
+                        // evenly and re-centres the card, which is the gap this
+                        // was meant to remove. Only the trailing one remains.
                         if recordingState == .idle {
                         // Today's star, once it exists. The canvas surfaces it
                         // here rather than making you open the Journal for it.
@@ -453,12 +457,12 @@ struct TodayView: View {
                             entryCardSection
                         }
 
-                        Spacer(minLength: 24)
+                        Spacer(minLength: 0)
                     }
                     .padding(.horizontal)
                     .frame(maxWidth: isIPad ? 700 : .infinity)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: proxy.size.height)
+                    .frame(minHeight: proxy.size.height, alignment: .top)
                 }
             }
 
@@ -694,12 +698,16 @@ struct TodayView: View {
                                 }
                             }
 
+                            // Four lines. One truncated line was a receipt for
+                            // something you already knew you'd done; four is
+                            // enough to re-read the thought and decide whether
+                            // to open it.
                             Text(text)
                                 .font(.dv(size: 13.5))
                                 .lineSpacing(3)
                                 .foregroundColor(theme.textColor.opacity(0.88))
                                 .multilineTextAlignment(.leading)
-                                .lineLimit(1)
+                                .lineLimit(4)
                         } else {
                             // Entry exists but no text yet
                             VStack(alignment: .leading, spacing: 8) {

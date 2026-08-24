@@ -511,7 +511,11 @@ struct TwinChatView: View {
         // answer with its citation chips, which is the whole claim this screen
         // makes — an empty invitation demonstrates nothing.
         if ScreenshotScene.current == .ask, messages.isEmpty {
-            send(text: "What do I say about my mornings?")
+            // A question worth photographing: it has to be one the Twin can
+            // only answer from THIS journal, so the reply demonstrates the
+            // claim ("answers with receipts") instead of sounding like any
+            // chatbot. "My mornings" produced a shrug; this produces citations.
+            send(text: "What do I keep avoiding saying out loud?")
             return
         }
         guard let seedQuestion, messages.isEmpty else { return }

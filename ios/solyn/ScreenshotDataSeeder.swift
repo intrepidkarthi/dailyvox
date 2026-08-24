@@ -53,16 +53,16 @@ struct ScreenshotDataSeeder {
         let entries: [(text: String, mood: String, daysAgo: Int, starred: Bool, duration: Double)] = [
             // Recent streak (last 7 days)
             (
-                "Had a wonderful morning walk in the park today. The cherry blossoms are starting to bloom and there's something magical about seeing the first signs of spring. Stopped at my favorite coffee shop on the way back and just sat there for a while, watching people go by. These small moments of peace are what I treasure most.",
-                "happy", 0, true, 120
+                "Sarah called on the drive home and I ended up saying the thing I've been avoiding out loud for about three weeks — that I'm not actually fine about the move. She didn't try to fix it. She just let me say it. I sat in the car park for ten minutes afterwards feeling lighter than I have in a while. I think I needed to hear myself say it more than I needed her to answer.",
+                "calm", 0, true, 96
             ),
             (
-                "Big presentation at work went really well today. Sarah and Mike gave great feedback on the quarterly report. I've been working on this for weeks and it feels incredible to see it come together. The team seemed genuinely excited about our new direction. Celebrated with the team over lunch.",
-                "excited", 1, true, 90
+                "The presentation landed. Mike asked the one question I'd been dreading and I actually had an answer, which surprised me more than it surprised him. Weeks of work and the whole thing was over in eleven minutes. I notice I keep bracing for these and then they're fine — that's worth remembering next time I can't sleep the night before.",
+                "excited", 1, true, 84
             ),
             (
-                "Spent the evening reading and journaling. There's a quiet comfort in having a routine that grounds me. Made some chamomile tea, put on soft music, and just let my thoughts flow. I've been thinking a lot about what matters most to me and how I want to spend my time.",
-                "calm", 2, false, 60
+                "Didn't want to record tonight. Nothing happened, and I nearly skipped it. But I said that out loud and then kept going for another minute about why nothing-days bother me so much, and that turned out to be the actual entry. Note to self: the days I don't want to speak are usually the ones with something underneath.",
+                "calm", 2, false, 62
             ),
             (
                 "Grateful for my family today. Mom called and we talked for over an hour about everything and nothing. She told me stories about when I was little that I'd never heard before. Dad chimed in from the background with his usual jokes. I need to visit them more often.",
