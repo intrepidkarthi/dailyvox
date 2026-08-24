@@ -62,7 +62,7 @@
   </script>
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]},"downloadUrl":"https://apps.apple.com/app/id6760454642","softwareVersion":"1.10.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]},"downloadUrl":"https://apps.apple.com/app/id6760454642","softwareVersion":"1.11.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642"]}
   </script>
 
   <style>
@@ -710,6 +710,36 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
   .foot-grid > :first-child{ grid-column:1 / -1 !important; }
 }
 
+
+/* --- Android chapter (v2.0 canvas) ---------------------------------------
+   A "coming soon" store button is a real control that does nothing, which is
+   normally a bug. It earns its place here because the alternative — no Android
+   affordance at all — leaves half the visitors wondering, and because it says
+   plainly that it is not ready rather than linking to a listing that does not
+   exist. Rendered as a <span>, not an <a>, so nothing is focusable or
+   clickable and no screen reader announces a link. */
+.pill.soon{background:transparent;color:var(--ink-mute,#5C6A64);
+  border:1.5px dashed rgba(30,42,38,.28);cursor:default;box-shadow:none}
+.pill.soon:hover{background:transparent;transform:none}
+.pill.soon .soon-tag{display:block;font-size:.72em;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.72;font-weight:600;margin-top:2px}
+.plat{width:100%;border-collapse:collapse;margin-top:26px;font-size:15px}
+.plat th,.plat td{padding:14px 16px;text-align:left;border-bottom:1px solid rgba(30,42,38,.10);vertical-align:top}
+.plat thead th{font:600 11px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-mute,#5C6A64);border-bottom-width:2px}
+.plat tbody th{font-weight:600;color:var(--ink,#1E2A26);width:26%}
+.plat td{color:var(--ink-soft,#5C6A64)}
+.plat td code{font-size:.92em}
+.plat tr:last-child th,.plat tr:last-child td{border-bottom:none}
+.plat-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.plat-note{margin-top:14px;font-size:13.5px;color:var(--ink-mute,#5C6A64)}
+@media (max-width:640px){.plat{font-size:14px}.plat th,.plat td{padding:11px 12px}}
+
+/* The Android milestone is neither shipped nor vision. On the spine it reads
+   as the one in flight: a filled dot in the vital tone, between the solid
+   green of what has shipped and the hollow ring of what is only intended. */
+.chip-next{background:var(--vital); color:#fff}
+.mile.next::before{background:var(--vital)}
 </style>
 </head>
 
@@ -829,11 +859,12 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
   <div class="wrap inner narrow">
     <div class="cta-row reveal" style="justify-content:center;margin-bottom:26px">
       <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
+      <span class="pill soon" aria-label="Android version coming soon; not yet available">Android<span class="soon-tag">coming soon</span></span>
     </div>
     <div class="trust reveal" style="justify-content:center;margin-bottom:26px">
       <span>Free forever</span><span>On-device</span><span>No account</span><span><a href="https://github.com/intrepidkarthi/dailyvox" style="color:inherit;text-decoration:underline">Open source</a></span>
     </div>
-    <p class="deck reveal">DailyVox is a free voice journal for iPhone with on-device AI. Speak for forty-two seconds — or longer. The app transcribes your voice on-device and builds a Digital Twin, an AI model of your personality and inner world. It lives on your phone. It never leaves. <strong>It's yours.</strong> <a href="/ai-journaling-app">See how the on-device AI journaling app works →</a></p>
+    <p class="deck reveal">DailyVox is a free voice journal for iPhone with on-device AI, and an Android version is on the way. Speak for forty-two seconds — or longer. The app transcribes your voice on-device and builds a Digital Twin, an AI model of your personality and inner world. It lives on your phone. It never leaves. <strong>It's yours.</strong> <a href="/ai-journaling-app">See how the on-device AI journaling app works →</a></p>
     <div class="cta-row reveal">
       <a href="#specimen" class="ghost">What is a Digital Twin? ↓</a>
       <a href="/demo" class="ghost">See the interactive demo →</a>
@@ -1163,8 +1194,32 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
   <div class="wrap inner">
     <div class="section-head reveal">
       <p class="eyebrow">the stack</p>
-      <h2 id="stack-h">Nine Apple frameworks. <span class="accent">Zero vendors.</span></h2>
-      <p class="deck" style="margin-top:18px">DailyVox is built entirely on Apple's on-device SDKs — no third-party dependencies anywhere in the app. Every capability has a home inside iOS.</p>
+      <h2 id="stack-h">Two platforms. <span class="accent">Zero vendors.</span></h2>
+      <p class="deck" style="margin-top:18px">DailyVox is built entirely on platform SDKs — Apple's frameworks on iPhone, Google and AOSP frameworks on Android. There are no third-party dependencies anywhere in the app, on either side. Every capability has a home inside the operating system it runs on.</p>
+    </div>
+
+    <!-- The cross-platform table the v2.0 canvas asks for. It sits ABOVE the
+         iOS detail rather than replacing it: the per-framework list below is
+         the evidence for the privacy claim and the reason a technical reader
+         believes any of this, so it stays. -->
+    <div class="plat-wrap reveal">
+      <table class="plat">
+        <caption class="sr-only">How each DailyVox capability is implemented on iPhone and on Android</caption>
+        <thead>
+          <tr><th scope="col">Capability</th><th scope="col">iPhone</th><th scope="col">Android</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Transcription</th><td>SpeechAnalyzer · SFSpeechRecognizer</td><td>ML Kit GenAI Speech Recognition</td></tr>
+          <tr><th scope="row">Sentiment &amp; entities</th><td>NLTagger · four CoreML models</td><td>MediaPipe with bundled models</td></tr>
+          <tr><th scope="row">Semantic search</th><td>NLEmbedding · 512-dim vectors</td><td>On-device sentence embeddings</td></tr>
+          <tr><th scope="row">Conversational Twin</th><td>Foundation Models · 3B on-device LLM</td><td>Gemini Nano via AICore</td></tr>
+          <tr><th scope="row">Body signals</th><td>HealthKit · Apple Watch</td><td>Health Connect</td></tr>
+          <tr><th scope="row">Storage &amp; sync</th><td>Core Data + CloudKit, end-to-end</td><td>Room + SQLCipher, optional E2E</td></tr>
+          <tr><th scope="row">Lock &amp; keys</th><td>Face ID · Secure Enclave</td><td>BiometricPrompt · StrongBox</td></tr>
+          <tr><th scope="row">Widgets &amp; assistant</th><td>WidgetKit · App Intents · Siri</td><td>Glance · Quick Settings tile</td></tr>
+        </tbody>
+      </table>
+      <p class="plat-note">The Android column describes the build in development; it has not been released. The iPhone column is what ships today, and every framework in it is listed below with the version it arrived in.</p>
     </div>
     <div class="stack-list reveal">
       <div class="stk"><span class="sdot s-ship"></span><div class="stk-body"><div class="stk-top"><span class="stk-name">SFSpeechRecognizer</span><span class="chip chip-shipped">● shipped</span></div><span class="stk-tag">Speech.framework</span><p class="stk-desc">On-device transcription with <code>requiresOnDeviceRecognition = true</code>. 60+ languages on the Neural Engine.</p><span class="stk-ver">v1.0 · iOS 13+</span></div></div>
@@ -1217,6 +1272,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
       <div class="mile ship reveal"><div class="card"><div class="m-top"><span class="chip chip-shipped">● shipped · v1.5</span><span class="micro">HealthKit</span></div><h3>Body Twin</h3><p class="body-p" style="margin-top:8px">Sleep, HRV, resting heart rate, and activity context feed the Twin — every signal through a review-and-discard queue, context-aware so a jog isn't mistaken for stress. The Apple Watch companion is a later Body Twin release.</p></div></div>
       <div class="mile ship reveal"><div class="card"><div class="m-top"><span class="chip chip-shipped">● shipped · v1.6</span><span class="micro">NLEmbedding</span></div><h3>Semantic Search</h3><p class="body-p" style="margin-top:8px">Find entries by meaning, not keywords — 512-dimensional on-device embeddings with a measured abstention threshold, so search declines rather than guesses. The grounding layer for the v1.7 conversational Twin.</p></div></div>
       <div class="mile ship reveal"><div class="card"><div class="m-top"><span class="chip chip-shipped">● shipped · v1.7 · iOS 26</span><span class="micro">Foundation Models</span></div><h3>Conversational Twin</h3><p class="body-p" style="margin-top:8px">A 3B on-device LLM powers deep conversations with your Twin, with answers that cite your own entries. Then v2.0 goes Apple Intelligence native: ask Siri and it consults your Twin — context flows in, nothing flows out.</p></div></div>
+      <div class="mile next reveal"><div class="card"><div class="m-top"><span class="chip chip-next">◆ next · v2.0</span><span class="micro">Android</span></div><h3>DailyVox for Android</h3><p class="body-p" style="margin-top:8px">The same Twin and the same zero-network architecture, built on Google and AOSP frameworks rather than ported around them — ML Kit for speech, MediaPipe for sentiment, Gemini Nano for the conversational Twin, Health Connect for body signals. In development; no release date yet, and no Play Store listing until there is one.</p></div></div>
       <div class="mile vision reveal"><div class="card"><div class="m-top"><span class="chip chip-vision">◆ vision · v3.0</span></div><h3>True Digital Self</h3><p class="body-p" style="margin-top:8px">After years of entries: a Twin that talks like you, sounds like you, and knows how you've changed. Not a clone — a mirror that deepens every day.</p></div></div>
     </div>
   </div>
@@ -1294,7 +1350,10 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
     <p class="eyebrow" style="justify-content:center">install · $0 · no account</p>
     <h2 id="cta-h">Start talking. Your Twin <span class="accent">begins today.</span></h2>
     <p class="body-p">Forty-two seconds a day. Your voice becomes a Digital Twin — a private AI that knows how you think, how you feel, and who matters to you. Free forever. No data ever leaves your phone.</p>
-    <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on the App Store →</a>
+    <div class="cta-row" style="justify-content:center">
+      <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on the App Store →</a>
+      <span class="pill soon" aria-label="Android version coming soon; not yet available">Android<span class="soon-tag">coming soon</span></span>
+    </div>
   </div>
 </section>
 

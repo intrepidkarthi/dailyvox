@@ -170,7 +170,7 @@
   </header>
 
   <section class="hero wrap">
-    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-07-31</div>
+    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-08-24</div>
     <h1>Every <em>version</em>, every change.</h1>
     <p class="lede">DailyVox shipped its first version in March 2026. Here is every release since — what we built, what we changed, and (occasionally) what we shouldn't have done. For the developer-facing diff, see the <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/CHANGELOG.md" style="color:var(--uv); text-decoration:underline;">GitHub CHANGELOG</a>.</p>
   </section>
@@ -179,8 +179,19 @@
 
       <section class="version" style="border-left:3px solid var(--uv);padding-left:18px;">
         <div class="v-head">
-          <div class="v-tag" style="color:var(--uv);">◆ latest · v1.10.0</div>
+          <div class="v-tag" style="color:var(--uv);">◆ latest · v1.11.0</div>
+          <h2 id="v1-11-shipped">Version 1.11.0 — Live Transcription (shipped)</h2>
+          <p><strong>You can watch the words arrive.</strong> The recording screen and the Dynamic Island now show what you are saying as you say it, with a gold star the moment a name is caught. The Island carries the full 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.</p>
+          <p><strong>A correction that matters more than any feature here.</strong> Until this release, the transcriber preferred on-device recognition only when the phone was offline — which meant that on a connected iPhone, nearly every user nearly always, the recording went to Apple's speech servers for better punctuation. Every claim this product makes rested on that not happening. On-device recognition is now unconditional: where no on-device model is installed, transcription stops and says why rather than reaching for the network. Voice search had the same fault and the same fix.</p>
+          <p><strong>Your sky means something now.</strong> How far a star sits from the centre is how long ago you spoke it; the angle around the centre is the hour of the day. A usual bedtime becomes a visible band. Two new share cards join it — "Tonight", different every night by construction, and "Body", which reads how you slept against how you wrote. The Body card stays hidden unless you have kept body signals, its switch starts off every time you open the share sheet, and heart rate never appears on any shareable image.</p>
+          <p><strong>And a long list of things that were simply broken.</strong> The starred filter in your Journal could not be reached at all. The streak on the home screen could disagree with the streak in Insights. Editing an entry rewrote its timestamp, and an edit could be lost if iOS reclaimed the app. The microphone now sits at the bottom of the Speak tab, where your thumb actually is. A phone call no longer costs you the recording in progress.</p>
+          <p style="color:var(--ink-soft); font-size:14px;">Everything above happens on this iPhone. The App Store label remains "Data Not Collected."</p>
+        </div>
+        <div class="v-block">
+          <div class="v-tag">v1.10.0</div>
           <h2 id="v1-10-shipped">Version 1.10.0 — Multi-Language (shipped)</h2>
+        </div>
+        <div class="v-body">
           <p>The interface now ships in Spanish, French, German and Italian alongside English. It follows your iPhone's language automatically; there is nothing to switch on.</p>
           <p>Those four because every feature works fully in them, including search by meaning. That relies on on-device sentence embeddings, which Apple provides for a limited set of languages, and shipping an interface in a language where search quietly returned nothing would have been worse than waiting.</p>
           <p>Recording already worked in every language your iPhone can transcribe, and still does. This release changed the interface language, not what you can speak. Everything stays on your phone, as always.</p>

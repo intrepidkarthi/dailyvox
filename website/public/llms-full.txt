@@ -12,7 +12,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.10.0
+- **Current Version**: 1.11.0
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642

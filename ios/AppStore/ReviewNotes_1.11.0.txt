@@ -1,0 +1,79 @@
+DailyVox 1.11.0 (build 44) — notes for review
+
+THE PART MOST RELEVANT TO REVIEW: SPEECH IS TRANSCRIBED ON THE DEVICE, ALWAYS
+
+This build changes requiresOnDeviceRecognition to be unconditional. Previously
+the app allowed Apple's server-based recognition when the device was online; it
+no longer does. Where no on-device speech model is installed, transcription
+fails and explains why rather than falling back to the network. The recording is
+still saved and the user can type the entry.
+
+To reproduce on a device with no installed model: record an entry. The app shows
+"Recording Saved" with instructions to enable Dictation. That is the fix working
+as intended, not a defect.
+
+iCloud sync is user-controlled and off by default for new installs (Settings >
+iCloud Sync). When on, entries sync through the user's own iCloud via CloudKit;
+when off, nothing leaves the device. The in-app Data Shield panel reports which
+of the two is currently true rather than asserting a fixed claim.
+
+No analytics, no advertising identifiers, no third-party SDKs, no accounts.
+
+THE "BODY" SHARE CARD (HEALTHKIT)
+
+New in this build, and the only shareable surface that can carry HealthKit-
+derived information. It is gated three ways:
+
+1. It does not appear at all unless the user has reviewed and KEPT at least one
+   body snapshot.
+2. It has its own switch, which is OFF every time the share sheet is opened.
+3. With that switch off, the card renders a "your body stays here" state that
+   carries no health value.
+
+It draws sleep hours and the app's own mood score only. Heart-rate variability
+and resting heart rate are never rendered on any shareable image.
+
+To reproduce: Settings > Body Twin, keep a snapshot, then Share > Body.
+
+OTHER CHANGES IN THIS BUILD
+
+A Control Center control. "Speak" can be added to Control Centre, the Lock
+Screen, or the Action Button. It does not record from there — it opens the app
+already recording, because the microphone is only ever live with the app in the
+foreground. No background-audio mode is requested.
+
+Live Activity / Dynamic Island. The recording Live Activity shows a 42-second
+ring, the phrase currently being transcribed, a mood bar, and Finish / Discard
+buttons (LiveActivityIntent, running in the app process). Nothing is transmitted.
+
+Typography. The app now bundles Nunito, Inter and DM Mono (SIL Open Font License
+1.1) rather than using the system face. Text scales with Dynamic Type, capped at
+1.6x.
+
+Interface. The Speak, Journal, Twin and Entry screens were reworked against the
+product's design specification. The Twin's constellation now encodes real data:
+distance from the centre is how long ago an entry was spoken, angle is the time
+of day, size is its length.
+
+Sharing. New "Tonight" and "Body" cards join the existing share cards. Every
+card is rendered on the device and handed to the standard share sheet; the app
+never transmits one. Names are excluded by default.
+
+Privacy manifest. PrivacyInfo.xcprivacy ships for the first time in this build.
+It declares no tracking, no tracking domains, no collected data types, and one
+required-reason API: NSPrivacyAccessedAPICategoryUserDefaults, reason CA92.1.
+
+PERMISSIONS USED
+
+Microphone — recording voice entries.
+Speech recognition — on-device transcription only.
+Notifications — one optional local daily reminder, scheduled on the device.
+HealthKit (read) — optional body context. Every signal is reviewed by the user
+  before the app keeps it. No HealthKit write access is requested.
+Photo library — optional, user-initiated attachment and export.
+
+No new entitlements were added in this build.
+
+TEST ACCOUNT
+
+None required. The app has no accounts and no server. Launch and record.
