@@ -11,20 +11,21 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox Research — Help Us Measure the Digital Twin</title>
-  <meta name="description" content="DailyVox runs an open research program: does an on-device model of one person actually match how that person sees themselves? Join the small consented pilot — your diary never leaves your phone until you choose.">
+  <title>DailyVox Research — Measuring a Model of One</title>
+  <meta name="description" content="The research programme behind DailyVox: a falsifiable, on-device evaluation methodology for private personal models, what the instrument found against its own model, and the open problems anyone can pick up.">
+  <meta name="keywords" content="dailyvox research, on-device model evaluation, personal model, digital twin evaluation, falsifiable AI methodology, private AI research">
   <meta name="theme-color" content="#FAF8F5">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
   <meta property="og:url" content="https://getdailyvox.com/research">
-  <meta property="og:title" content="DailyVox Research — Help Us Measure the Digital Twin">
-  <meta property="og:description" content="A small consented pilot: how well does a private, on-device model of you agree with how you see yourself? Only numbers are ever published.">
+  <meta property="og:title" content="DailyVox Research — Measuring a Model of One">
+  <meta property="og:description" content="The research programme behind DailyVox: a falsifiable on-device evaluation methodology, what it found against its own model, and five open problems.">
   <meta property="og:image" content="https://getdailyvox.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:title" content="DailyVox Research — Measuring a Model of One">
+  <meta name="twitter:description" content="The research programme behind DailyVox: a falsifiable on-device evaluation methodology, what it found against its own model, and five open problems.">
   <link rel="canonical" href="https://getdailyvox.com/research">
-
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -34,32 +35,78 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is there an Android version of DailyVox?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A native Android app is in development and is not yet released. It is written in Kotlin and Jetpack Compose rather than being a wrapper around the iPhone app, and it holds no internet permission of any kind — the same privacy claim as iOS, verifiable in Android's own app info screen. DailyVox is currently available on iPhone and iPad."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When will the DailyVox Android app be released?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There is no announced release date. The app is feature-complete against the iPhone version in development builds, but it has not been tested on a broad range of physical devices and has not been submitted to the Play Store."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will the Android version have the same privacy guarantees?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "That was the condition for building it. The Android app requests no INTERNET permission, so it cannot send a journal anywhere regardless of what its code does. Android's automatic cloud backup, which would otherwise copy the database and audio to Google Drive, is explicitly disabled. Health Connect is opt-in, read-only, and limited to four record types."
+        }
+      }
+    ]
+  }
+  </script>
+
+<style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
     :root {
-      --paper: #FAF8F5; --paper-2: #F2EDE8;
+      --paper: #FAF8F5; --paper-2: #F2EDE8; --paper-3: #E8E0D8;
       --card: #ffffff;
       --ink: #1A1A2E;
       --ink-dim: rgba(26,26,46,0.62); --ink-mute: rgba(26,26,46,0.42);
-      --rule: rgba(26,26,46,0.08);
-      --uv: #5B7C6B; --bio: #D4A547;
-      --display: 'Nunito', system-ui, sans-serif;
-      --sans: 'Inter', -apple-system, system-ui, sans-serif;
-      --mono: 'DM Mono', ui-monospace, monospace;
+      --rule: rgba(26,26,46,0.08); --rule-2: rgba(26,26,46,0.16);
+      --uv: #5B7C6B; --uv-wash: rgba(91,124,107,0.06); --uv-soft: rgba(91,124,107,0.12); --uv-edge: rgba(91,124,107,0.28);
+      --bio: #D4A547; --bio-soft: rgba(212,165,71,0.14); --bio-edge: rgba(212,165,71,0.45);
+      --vital: #C4956A; --vital-soft: rgba(196,149,106,0.10);
+      --ray: #D4634B; --ray-soft: rgba(212,99,75,0.10);
+      --display: 'Nunito', 'Inter', system-ui, sans-serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --r: 10px; --r-sm: 6px; --r-xs: 4px;
     }
+
     body {
       font-family: var(--sans);
-      background: var(--paper); color: var(--ink);
+      background: var(--paper);
+      color: var(--ink);
       line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "ss01","cv02","cv11";
+      overflow-x: hidden;
     }
+    ::selection { background: var(--uv); color: var(--paper); }
     a { color: inherit; text-decoration: none; }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
 
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── NAV ── */
     .topbar {
       position: sticky; top: 0; z-index: 80;
       background: rgba(250,248,245,0.78);
-      backdrop-filter: blur(18px) saturate(150%);
+      backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%);
       border-bottom: 1px solid var(--rule);
     }
     .topbar .wrap {
@@ -67,152 +114,1106 @@
       padding: 14px 28px; gap: 20px;
     }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 30px; height: 30px; border-radius: 7px;
-      background: url("/apple-touch-icon.png") center/cover; }
-    .logo-text { font-family: var(--display); font-weight: 600; font-size: 17px; }
-    .nav { display: flex; gap: 4px; }
-    .nav a { padding: 8px 14px; border-radius: 6px;
-      font-family: var(--mono); font-size: 12px; font-weight: 500;
-      color: var(--ink-dim); }
-    .nav a.active { color: var(--ink); }
-    .nav a:hover { background: rgba(26,26,46,0.04); color: var(--ink); }
-    .cta-btn { background: var(--ink); color: var(--paper);
-      padding: 9px 18px; border-radius: 7px;
-      font-family: var(--mono); font-size: 12px; font-weight: 600; }
-    @media (max-width: 700px) { .nav { display: none; } }
-
-    .hero { padding: 80px 0 48px; border-bottom: 1px solid var(--rule); }
-    .hero .marker {
-      font-family: var(--mono); font-size: 11px; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--ink-mute); margin-bottom: 22px;
+    .logo-mark {
+      width: 30px; height: 30px; border-radius: 7px;
+      display: inline-block; flex-shrink: 0;
+      background: url("/apple-touch-icon.png") center/cover no-repeat;
+      box-shadow: 0 1px 2px rgba(26,26,46,0.08), 0 0 0 1px rgba(26,26,46,0.04);
     }
-    .hero .marker .diamond { color: var(--uv); margin-right: 8px; }
-    .hero h1 {
+    .logo-text {
       font-family: var(--display);
-      font-size: clamp(42px, 5.6vw, 68px);
-      font-weight: 600; line-height: 1.06; letter-spacing: -0.035em;
+      font-weight: 600; font-size: 17px;
+      letter-spacing: -0.015em;
+    }
+    .logo-ver {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--ink-mute); letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 7px; border: 1px solid var(--rule);
+      border-radius: var(--r-xs); margin-left: 8px;
+    }
+    .nav { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav a {
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--ink-dim);
+      padding: 8px 12px; border-radius: var(--r-xs);
+      letter-spacing: -0.01em;
+      transition: color .15s, background .15s;
+    }
+    .nav a:hover { color: var(--ink); background: rgba(26,26,46,0.04); }
+    .nav a.active { color: var(--ink); }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: var(--paper);
+      font-family: var(--mono); font-size: 12px; font-weight: 600;
+      padding: 9px 14px; border-radius: var(--r-sm);
+      letter-spacing: -0.01em;
+      transition: background .2s, transform .2s;
+    }
+    .cta-btn:hover { background: var(--uv); transform: translateY(-1px); }
+    .cta-btn .arr { transition: transform .2s; }
+    .cta-btn:hover .arr { transform: translateX(3px); }
+
+    /* ── HERO ── */
+    .tech-hero {
+      position: relative;
+      padding: 72px 0 48px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--rule);
+    }
+    .tech-hero::before {
+      content: '';
+      position: absolute; inset: -40px 0 0;
+      background:
+        radial-gradient(700px 500px at 80% 20%, var(--uv-wash), transparent 60%),
+        radial-gradient(500px 400px at 20% 80%, rgba(212,165,71,0.05), transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .tech-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 920px;
+    }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-dim); letter-spacing: 0.06em;
+      text-transform: uppercase; font-weight: 500;
+      padding: 5px 12px 5px 8px;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .kicker .pip {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--bio);
+      box-shadow: 0 0 0 3px var(--bio-soft);
+      animation: breathe 2s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.72; }
+    }
+
+    .tech-hero h1 {
+      font-family: var(--display);
+      font-size: clamp(36px, 5.2vw, 72px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.0;
       margin-bottom: 20px;
     }
-    .hero h1 em { font-style: normal; color: var(--uv); }
-    .hero .lede { font-size: 18px; color: var(--ink-dim); max-width: 640px; }
-    .hero .lede a { color: var(--uv); text-decoration: underline; }
-
-    section.block { padding: 52px 0; border-bottom: 1px solid var(--rule); }
-    .block h2 {
-      font-family: var(--display); font-weight: 600;
-      font-size: 28px; letter-spacing: -0.02em; margin-bottom: 16px;
+    .tech-hero h1 em {
+      color: var(--uv);
+      font-style: italic;
+      font-weight: 500;
     }
-    .block p { color: var(--ink-dim); max-width: 680px; margin-bottom: 14px; }
-    .block p strong { color: var(--ink); }
-    .block a { color: var(--uv); text-decoration: underline; }
+    .tech-hero .subtitle {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--ink-dim);
+      max-width: 640px;
+    }
+    .tech-hero .subtitle strong { color: var(--ink); font-weight: 600; }
 
-    .steps { display: grid; gap: 14px; margin: 26px 0 6px; max-width: 680px; }
-    .step { background: var(--card); border: 1px solid var(--rule);
-      border-radius: 12px; padding: 18px 20px; display: flex; gap: 16px; }
-    .step .n { font-family: var(--mono); font-weight: 600; color: var(--uv);
-      font-size: 13px; padding-top: 2px; }
-    .step .t strong { display: block; margin-bottom: 4px; }
-    .step .t span { color: var(--ink-dim); font-size: 15px; }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 14px;
+      margin-top: 32px;
+    }
+    .hero-meta-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-dim);
+      padding: 6px 12px;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 100px;
+      letter-spacing: 0.02em;
+    }
+    .hero-meta-pill strong { color: var(--ink); font-weight: 600; }
 
-    .promise { background: var(--paper-2); border-radius: 14px;
-      padding: 24px 26px; max-width: 680px; margin-top: 8px; }
-    .promise li { margin: 8px 0 8px 18px; color: var(--ink-dim); }
-    .promise li strong { color: var(--ink); }
+    /* ── CONTENT ── */
+    .tech-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 28px 80px;
+    }
 
-    .join-cta { display: inline-block; background: var(--uv); color: #fff;
-      padding: 14px 26px; border-radius: 9px; margin-top: 18px;
+    .sec-block {
+      margin: 80px 0 0;
+      padding-top: 36px;
+      border-top: 1px solid var(--rule);
+    }
+    .sec-block:first-of-type { margin-top: 56px; padding-top: 0; border-top: 0; }
+
+    .sec-head {
+      display: flex; align-items: baseline; gap: 14px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .sec-num {
+      font-family: var(--mono);
+      font-size: 11px; color: var(--uv);
+      letter-spacing: 0.14em;
+      font-weight: 600;
+    }
+    .sec-title {
+      font-family: var(--display);
+      font-size: clamp(26px, 3.2vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.028em;
+      line-height: 1.1;
+      color: var(--ink);
+      flex: 1;
+    }
+    .sec-title em { color: var(--uv); font-style: italic; font-weight: 500; }
+    .sec-tag {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--ink-mute); letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .tech-content p {
+      font-size: 16.5px;
+      color: var(--ink-dim);
+      line-height: 1.72;
+      margin-bottom: 20px;
+    }
+    .tech-content h3 {
+      font-family: var(--display);
+      font-size: 20px; font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 36px 0 12px;
+    }
+    .tech-content strong { color: var(--ink); font-weight: 600; }
+    .tech-content em { font-style: italic; }
+    .tech-content code {
+      font-family: var(--mono); font-size: 0.88em;
+      background: var(--uv-wash); padding: 1px 6px; border-radius: 3px;
+      color: var(--uv); border: 1px solid var(--uv-edge);
+    }
+    .tech-content a {
+      color: var(--uv); font-weight: 500;
+      border-bottom: 1px solid var(--uv-edge);
+      transition: border-color .15s;
+    }
+    .tech-content a:hover { border-color: var(--uv); }
+
+    /* ── ARCHITECTURE DIAGRAM ── */
+    .arch {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      margin: 28px 0;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.9;
+      color: var(--ink-dim);
+      position: relative;
+    }
+    .arch::before {
+      content: 'fig 01 · on-device pipeline';
+      position: absolute;
+      top: 14px; right: 20px;
+      font-family: var(--mono); font-size: 10px;
+      color: var(--ink-mute);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .arch-inner {
+      white-space: pre;
+      padding-top: 28px;
+    }
+    .arch .node {
+      display: inline-block;
+      color: var(--uv);
+      background: var(--uv-wash);
+      border: 1px solid var(--uv-edge);
+      padding: 1px 8px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+    .arch .arrow { color: var(--ink-mute); }
+    .arch .label { color: var(--ink-mute); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
+
+    /* ── STACK GRID ── */
+    .stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .st-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 22px 24px;
+      position: relative;
+      transition: border-color .2s, transform .2s;
+    }
+    .st-card:hover { border-color: var(--ink); transform: translateY(-2px); }
+    .st-card .st-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; margin-bottom: 14px;
+    }
+    .st-card .st-glyph {
+      width: 32px; height: 32px;
+      border-radius: 7px;
+      background: var(--paper);
+      border: 1px solid var(--rule-2);
+      font-family: var(--mono); font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      letter-spacing: -0.02em;
+      color: var(--uv);
+    }
+    .st-card .st-pill {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      padding: 3px 8px; border-radius: 3px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .st-pill-shipped { background: var(--ink); color: var(--paper); }
+    .st-pill-next    { background: var(--uv-soft); color: var(--uv); }
+    .st-pill-android { background: var(--uv-soft); color: var(--uv); }
+
+    /* Platform matrix — the iOS/Android mapping */
+    .pmx { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 14px; }
+    .pmx th, .pmx td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    .pmx th { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+    .pmx td:first-child { font-weight: 600; }
+    .pmx code { font-size: 12.5px; }
+    .pmx tr:last-child td { border-bottom: none; }
+    .pmx-note { font-size: 13px; color: var(--ink-3); margin-top: -6px; }
+    @media (max-width: 720px) {
+      .pmx, .pmx tbody, .pmx tr, .pmx td { display: block; width: 100%; }
+      .pmx thead { display: none; }
+      .pmx tr { border-bottom: 1px solid var(--rule); padding: 10px 0; }
+      .pmx td { border: none; padding: 3px 0; }
+      .pmx td:first-child { font-size: 15px; }
+      .pmx td:not(:first-child)::before { content: attr(data-l) "  "; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+    }
+    .st-card h3 {
+      font-family: var(--display);
+      font-size: 17px; font-weight: 600;
+      letter-spacing: -0.018em;
+      margin-bottom: 2px;
+    }
+    .st-card .st-fw {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute); letter-spacing: 0.02em;
+      margin-bottom: 12px;
+    }
+    .st-card p {
+      font-size: 13.5px; color: var(--ink-dim);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .st-card ul {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+    }
+    .st-card ul li {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink-dim);
+      line-height: 1.8;
+      padding-left: 14px;
+      position: relative;
+      letter-spacing: -0.01em;
+    }
+    .st-card ul li::before {
+      content: '›';
+      position: absolute; left: 0;
+      color: var(--uv);
+      font-weight: 600;
+    }
+    .st-card ul li strong { color: var(--ink); font-weight: 600; }
+
+    /* ── MODEL CARD ── */
+    .model-card {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      margin: 24px 0;
+      overflow: hidden;
+    }
+    .model-card-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 22px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      flex-wrap: wrap; gap: 10px;
+    }
+    .model-card-head .mc-name {
+      font-family: var(--display);
+      font-size: 17px; font-weight: 600;
+      letter-spacing: -0.02em;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .model-card-head .mc-name .mc-chip {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      padding: 3px 8px; border-radius: 3px;
+      background: var(--bio-soft); color: #4c8f1f;
+      letter-spacing: 0.1em;
+    }
+    .model-card-head .mc-meta {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute); letter-spacing: 0.02em;
+    }
+    .model-card-body {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .mc-field {
+      padding: 18px 22px;
+      border-right: 1px solid var(--rule);
+    }
+    .mc-field:last-child { border-right: 0; }
+    .mc-field-lbl {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--ink-mute); letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .mc-field-val {
+      font-family: var(--display); font-weight: 600;
+      font-size: 15px; letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .mc-field-desc {
+      font-size: 12px; color: var(--ink-dim);
+      line-height: 1.5;
+    }
+
+    /* ── TWIN ORGAN GRID ── */
+    .twin-organs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .twin-organ {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 20px 22px;
+    }
+    .twin-organ-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .twin-organ-head h4 {
+      font-family: var(--display);
+      font-size: 15px; font-weight: 600;
+      letter-spacing: -0.015em;
+    }
+    .twin-organ-tag {
+      font-family: var(--mono); font-size: 9px; font-weight: 600;
+      padding: 2px 7px; border-radius: 3px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .tot-style { background: var(--uv-soft); color: var(--uv); }
+    .tot-emo { background: var(--vital-soft); color: var(--vital); }
+    .tot-graph { background: var(--ray-soft); color: #0e8a96; }
+    .tot-pred { background: var(--bio-soft); color: #4c8f1f; }
+    .twin-organ p {
+      font-size: 13px; color: var(--ink-dim);
+      line-height: 1.55; margin-bottom: 10px;
+    }
+    .twin-organ ul { list-style: none; margin: 0; padding: 0; }
+    .twin-organ ul li {
+      font-family: var(--mono);
+      font-size: 11px; color: var(--ink-dim);
+      line-height: 1.85;
+      padding-left: 12px;
+      position: relative;
+      letter-spacing: -0.01em;
+    }
+    .twin-organ ul li::before {
+      content: '-'; position: absolute; left: 0;
+      color: var(--uv); font-weight: 700;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      margin: 28px 0;
+      padding: 22px 26px;
+      background: var(--uv-wash);
+      border: 1px solid var(--uv-edge);
+      border-radius: var(--r);
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    .callout strong { color: var(--ink); }
+
+    /* ── DARK PRIVACY BLOCK ── */
+    .privacy-block {
+      background: var(--ink);
+      color: var(--paper);
+      margin: 40px -28px 40px;
+      padding: 56px 56px;
+      border-radius: var(--r);
+      position: relative;
+      overflow: hidden;
+    }
+    .privacy-block::before {
+      content: '';
+      position: absolute;
+      top: -20%; left: -10%; right: -10%; bottom: -20%;
+      background:
+        radial-gradient(600px 400px at 80% 10%, rgba(212,165,71,0.1), transparent 60%),
+        radial-gradient(500px 400px at 10% 90%, rgba(91,124,107,0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .privacy-block > * { position: relative; z-index: 1; }
+    .privacy-block .sec-head { margin-bottom: 24px; }
+    .privacy-block .sec-num  { color: var(--bio); }
+    .privacy-block .sec-title { color: var(--paper); }
+    .privacy-block .sec-title em { color: var(--bio); }
+    .privacy-block .sec-tag { color: rgba(250,248,245,0.55); }
+    .privacy-block p {
+      color: rgba(250,248,245,0.78);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .privacy-block strong { color: var(--paper); }
+    .privacy-block code {
+      font-family: var(--mono); font-size: 0.88em;
+      background: rgba(212,165,71,0.1); padding: 1px 6px; border-radius: 3px;
+      color: var(--bio); border: 1px solid rgba(212,165,71,0.25);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0 8px;
+      font-size: 13.5px;
+    }
+    .compare-table thead th {
+      text-align: left;
+      padding: 14px 16px;
+      font-family: var(--mono); font-size: 10px;
+      color: rgba(250,248,245,0.55); letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 600;
+      background: rgba(250,248,245,0.04);
+      border-bottom: 1px solid rgba(250,248,245,0.1);
+    }
+    .compare-table thead th.us { color: var(--bio); }
+    .compare-table tbody td {
+      padding: 12px 16px;
+      color: rgba(250,248,245,0.78);
+      border-bottom: 1px solid rgba(250,248,245,0.08);
+    }
+    .compare-table tbody tr:last-child td { border-bottom: 0; }
+    .compare-table .us-col {
+      color: var(--bio);
+      font-weight: 500;
+      background: rgba(212,165,71,0.05);
+    }
+    .compare-table .lbl { color: var(--paper); font-weight: 500; }
+
+    /* ── ROADMAP (shared from about.html pattern) ── */
+    .roadmap {
+      margin: 24px 0 8px;
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: 16px; top: 18px; bottom: 18px;
+      width: 1px;
+      background: var(--rule-2);
+    }
+    .rd-item {
+      display: flex; gap: 18px;
+      padding: 14px 0;
+      position: relative;
+    }
+    .rd-dot {
+      width: 34px; height: 34px;
+      flex-shrink: 0;
+      border-radius: var(--r-xs);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 12px; font-weight: 700;
+      position: relative; z-index: 1;
+      border: 1px solid;
+      background: var(--card);
+    }
+    .rd-done { border-color: var(--bio-edge); color: #4c8f1f; background: var(--bio-soft); }
+    .rd-now  { border-color: var(--uv-edge); color: var(--uv); background: var(--uv-soft); box-shadow: 0 0 0 4px var(--uv-wash); }
+    .rd-next { border-color: var(--rule-2); color: var(--ink-dim); }
+    .rd-body h3 {
+      font-family: var(--display);
+      font-size: 16px; font-weight: 600;
+      letter-spacing: -0.018em;
+      margin: 0 0 4px;
+    }
+    .rd-body .rd-tag {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .rd-done-txt { color: #4c8f1f; }
+    .rd-now-txt  { color: var(--uv); }
+    .rd-next-txt { color: var(--ink-mute); }
+    .rd-body p {
+      font-size: 13.5px; color: var(--ink-dim);
+      line-height: 1.65; margin: 0 0 8px;
+    }
+    .rd-body p strong { color: var(--ink); font-weight: 600; }
+    .rd-tags {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-top: 8px;
+    }
+    .rd-tags span {
+      font-family: var(--mono); font-size: 10px;
+      padding: 2px 8px; border-radius: 3px;
+      background: var(--paper); border: 1px solid var(--rule);
+      color: var(--ink-dim);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── RESEARCH CITATIONS ── */
+    .citations {
+      display: flex; flex-direction: column;
+      margin: 20px 0 8px;
+      border-top: 1px solid var(--rule);
+    }
+    .citation {
+      display: grid;
+      grid-template-columns: 32px 60px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: start;
+    }
+    .citation:last-child { border-bottom: 0; }
+    .cit-num {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute); letter-spacing: 0.04em;
+      padding-top: 2px;
+    }
+    .cit-year {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      color: var(--uv); letter-spacing: 0.04em;
+      padding: 2px 8px;
+      background: var(--uv-soft);
+      border: 1px solid var(--uv-edge);
+      border-radius: 3px;
+      text-align: center;
+    }
+    .cit-body { min-width: 0; }
+    .cit-title {
+      font-family: var(--display);
+      font-size: 15px; font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .cit-desc {
+      font-size: 13px; color: var(--ink-dim);
+      line-height: 1.55;
+    }
+
+    /* ── OPEN SOURCE CALLOUT ── */
+    .oss {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: var(--r);
+      padding: 32px 32px;
+      margin: 24px 0 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .oss::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, var(--uv-wash), transparent 60%);
+      pointer-events: none;
+    }
+    .oss-body { position: relative; z-index: 1; }
+    .oss-body h3 {
+      font-family: var(--display);
+      font-size: 24px; font-weight: 600;
+      letter-spacing: -0.022em;
+      margin-bottom: 6px;
+    }
+    .oss-body p {
+      font-size: 14px; color: var(--ink-dim);
+      line-height: 1.6;
+      margin: 0;
+      max-width: 500px;
+    }
+    .btn-github {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--ink); color: var(--paper);
       font-family: var(--mono); font-size: 13px; font-weight: 600;
-      text-decoration: none !important; }
-    .join-cta:hover { filter: brightness(1.07); }
-    .fine { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+      padding: 12px 20px;
+      border-radius: var(--r-sm);
+      letter-spacing: -0.01em;
+      position: relative; z-index: 1;
+      transition: background .2s, transform .15s;
+    }
+    .btn-github:hover { background: var(--uv); transform: translateY(-1px); }
 
-    .footer { padding: 44px 0 60px; }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 18px;
-      font-family: var(--mono); font-size: 12px; color: var(--ink-dim);
-      margin-bottom: 18px; }
-    .footer-links a:hover { color: var(--ink); }
-    .footer-copy { font-size: 12.5px; color: var(--ink-mute); }
-  </style>
+    /* ── FINAL CTA ── */
+    .final {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--rule);
+      margin-top: 60px;
+    }
+    .final::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(500px 360px at 50% 40%, var(--uv-wash), transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .final-inner { position: relative; z-index: 1; }
+    .final .kicker { margin: 0 auto 22px; }
+    .final h2 {
+      font-family: var(--display);
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 0.98;
+      margin-bottom: 18px;
+    }
+    .final h2 em { color: var(--uv); font-style: italic; font-weight: 500; }
+    .final > p {
+      font-size: 17px; line-height: 1.55;
+      color: var(--ink-dim);
+      max-width: 480px; margin: 0 auto 32px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--ink); color: var(--paper);
+      font-family: var(--mono); font-size: 13px; font-weight: 600;
+      padding: 14px 24px;
+      border-radius: var(--r-sm);
+      letter-spacing: -0.01em;
+      position: relative; overflow: hidden;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent, rgba(212,165,71,0.35), transparent);
+      transform: translateX(-120%); transition: transform .7s;
+    }
+    .btn-primary:hover::before { transform: translateX(120%); }
+    .btn-primary:hover { background: var(--uv); transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 48px 0 32px;
+      border-top: 1px solid var(--rule);
+    }
+    .site-footer .wrap {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    .sf-brand .mk {
+      font-family: var(--display);
+      font-size: 20px; font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .sf-brand p {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+    .sf-col h4 {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--ink-mute); letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .sf-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .sf-col a {
+      font-size: 13px; color: var(--ink-dim);
+      font-family: var(--sans); letter-spacing: -0.01em;
+      transition: color .15s;
+    }
+    .sf-col a:hover { color: var(--ink); }
+    .sf-social {
+      grid-column: 1 / -1;
+      display: flex; gap: 18px 28px; flex-wrap: wrap;
+      padding-top: 28px;
+      margin-top: 24px;
+      border-top: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    .sf-social a {
+      color: var(--ink-dim);
+      transition: color 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sf-social a:hover { color: var(--ink); }
+    .sf-social a::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ink-mute);
+    }
+    .sf-social a.x::before     { background: #ffffff; box-shadow: inset 0 0 0 1px var(--ink-mute); }
+    .sf-social a.ig::before    { background: #e1306c; }
+    .sf-social a.reddit::before { background: #ff4500; }
+    .sf-social a.gh::before    { background: var(--ink); }
+    .sf-social a.email::before { background: var(--uv); }
+
+    .sf-bottom {
+      grid-column: 1 / -1;
+      margin-top: 32px; padding-top: 20px;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-mute); letter-spacing: 0.02em;
+    }
+    .sf-bottom .live-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #4c8f1f; font-weight: 500;
+    }
+    .sf-bottom .live-tag .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--bio);
+      box-shadow: 0 0 0 3px var(--bio-soft);
+      animation: breathe 2s ease-in-out infinite;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .stack { grid-template-columns: 1fr; }
+      .model-card-body { grid-template-columns: 1fr 1fr; }
+      .mc-field:nth-child(2) { border-right: 0; }
+      .mc-field:nth-child(1), .mc-field:nth-child(2) { border-bottom: 1px solid var(--rule); }
+      .twin-organs { grid-template-columns: 1fr; }
+      .privacy-block { padding: 40px 32px; margin: 30px -14px; }
+      .site-footer .wrap { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .tech-hero { padding: 56px 0 40px; }
+      .tech-content { padding: 0 20px 64px; }
+      .arch { font-size: 10.5px; padding: 20px 16px; }
+      .model-card-body { grid-template-columns: 1fr; }
+      .mc-field { border-right: 0; border-bottom: 1px solid var(--rule); }
+      .mc-field:last-child { border-bottom: 0; }
+      .oss { flex-direction: column; align-items: flex-start; padding: 24px; }
+      .compare-table { font-size: 12px; }
+      .compare-table td, .compare-table th { padding: 10px 12px; }
+      .privacy-block { padding: 32px 22px; }
+      .site-footer .wrap { grid-template-columns: 1fr; }
+      .logo-ver { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  
+.ladder{list-style:none;margin:26px 0 20px;padding:0;counter-reset:none}
+.rung{position:relative;padding:0 0 22px 30px;border-left:2px solid var(--rule,rgba(26,26,46,.10))}
+.rung:last-child{border-left-color:transparent;padding-bottom:4px}
+.rung::before{content:'';position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;
+  background:var(--paper,#FAF8F5);border:2px solid var(--rule-2,rgba(26,26,46,.20))}
+.rung.done::before{background:#5B7C6B;border-color:#5B7C6B}
+.rung.wip::before{background:#C4956A;border-color:#C4956A}
+.rung.open::before{background:var(--paper,#FAF8F5);border-color:#C4543B}
+.rung-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.rung-n{font:600 11px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.1em;color:var(--ink-mute,#5C6A64)}
+.rung-h h3{margin:0;font-size:19px;letter-spacing:-.01em}
+.rung-s{font:600 10px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.11em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px}
+.rung.done .rung-s{background:rgba(91,124,107,.14);color:#3F5A4D}
+.rung.wip  .rung-s{background:rgba(196,149,106,.16);color:#84512E}
+.rung.open .rung-s{background:rgba(196,84,59,.12);color:#8C3524}
+.rung p{margin:0;font-size:15.5px;line-height:1.62}
+.ladder-note{font-size:15px;color:var(--ink-mute,#5C6A64)}
+@media (max-width:600px){.rung{padding-left:22px}.rung-h h3{font-size:17px}}
+
+.hist-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:22px 0 6px}
+.hist{width:100%;border-collapse:collapse;font-size:15px}
+.hist th,.hist td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--rule,rgba(26,26,46,.09));vertical-align:top}
+.hist thead th{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-mute,#5C6A64);border-bottom-width:2px}
+.hist tbody th{font:600 13px/1.4 'DM Mono',ui-monospace,monospace;white-space:nowrap;width:1%;color:var(--uv-text,#3F5A4D)}
+.hist td:nth-child(2){font:500 12.5px/1.5 'DM Mono',ui-monospace,monospace;color:var(--ink-mute,#5C6A64);white-space:nowrap;width:1%}
+.hist tr:last-child th,.hist tr:last-child td{border-bottom:none}
+.sub-h{margin:30px 0 12px;font-size:18px;letter-spacing:-.01em}
+.findings{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:13px}
+.findings li{padding:15px 17px;border-radius:14px;background:var(--paper-2,rgba(26,26,46,.03));
+  border:1px solid var(--rule,rgba(26,26,46,.08));font-size:15.5px;line-height:1.6}
+.findings-note{font-size:15px;color:var(--ink-mute,#5C6A64);font-style:italic}
+.pilot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:20px 0 18px}
+.pil{padding:16px 18px;border-radius:14px;border:1px solid var(--rule-2,rgba(26,26,46,.14))}
+.pil-n{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--uv-text,#3F5A4D);margin-bottom:7px}
+.pil p{margin:0;font-size:15px;line-height:1.58}
+.pilot-terms{font-size:14.5px;color:var(--ink-mute,#5C6A64);padding:14px 16px;border-radius:12px;
+  background:var(--uv-wash,rgba(91,124,107,.06))}
+@media (max-width:700px){.pilot-grid{grid-template-columns:1fr}.hist{font-size:14px}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.path-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0 24px}
+.path{width:100%;border-collapse:collapse;font-size:14.5px}
+.path th,.path td{padding:12px 14px;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--rule,rgba(26,26,46,.09))}
+.path thead th{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-mute,#5C6A64);border-bottom-width:2px}
+.path tbody th{font:600 13px/1.4 'DM Mono',ui-monospace,monospace;white-space:nowrap;width:1%;
+  color:var(--uv-text,#3F5A4D)}
+.path td:last-child{color:var(--ink-mute,#5C6A64)}
+.path tr:last-child th,.path tr:last-child td{border-bottom:none}
+.path-note{margin-top:12px;font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
+@media (max-width:760px){.path{font-size:13.5px}.path th,.path td{padding:10px 10px}}
+
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:20px 0 16px}
+.trk{padding:16px 18px;border-radius:14px;border:1px solid var(--rule-2,rgba(26,26,46,.14))}
+.trk.off{background:var(--paper-2,rgba(26,26,46,.025));border-style:dashed}
+.trk-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:7px}
+.trk-h h4{margin:0;font-size:16.5px;letter-spacing:-.01em}
+.trk-s{font:600 9.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px}
+.trk.on .trk-s{background:rgba(91,124,107,.15);color:#3F5A4D}
+.trk.off .trk-s{background:rgba(26,26,46,.07);color:var(--ink-mute,#5C6A64)}
+.trk p{margin:0;font-size:14.8px;line-height:1.58}
+.trk.off p{color:var(--ink-mute,#5C6A64)}
+.track-note{font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
+@media (max-width:700px){.track-grid{grid-template-columns:1fr}}
+
+.cite-box{margin:22px 0 6px;border:1px solid var(--rule-2,rgba(26,26,46,.14));border-radius:14px;overflow:hidden}
+.cite-h{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-mute,#5C6A64);padding:11px 15px;border-bottom:1px solid var(--rule,rgba(26,26,46,.09))}
+.cite-box pre{margin:0;padding:15px;overflow-x:auto;background:var(--paper-2,rgba(26,26,46,.025))}
+.cite-box code{font:500 12.5px/1.65 'DM Mono',ui-monospace,monospace;white-space:pre}
+.prob{padding:18px 20px;border-radius:15px;border:1px solid var(--rule-2,rgba(26,26,46,.14));margin:14px 0}
+.prob.blocked{border-style:dashed;background:var(--paper-2,rgba(26,26,46,.025))}
+.prob-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.prob-h h3{margin:0;font-size:18px;letter-spacing:-.01em;flex:1 1 auto}
+.prob-n{font:600 11px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.1em;color:var(--ink-mute,#5C6A64)}
+.prob-t{font:600 9.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px;background:rgba(91,124,107,.13);color:#3F5A4D}
+.prob.blocked .prob-t{background:rgba(26,26,46,.07);color:var(--ink-mute,#5C6A64)}
+.prob p{margin:0 0 9px;font-size:15.3px;line-height:1.6}
+.prob p:last-child{margin-bottom:0}
+.prob-w{padding:11px 13px;border-radius:11px;background:var(--uv-wash,rgba(91,124,107,.06));font-size:14.6px}
+.dlist{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:11px}
+.dlist li{padding:14px 16px;border-radius:13px;background:var(--paper-2,rgba(26,26,46,.028));
+  border:1px solid var(--rule,rgba(26,26,46,.08));font-size:15.3px;line-height:1.58}
+.ethics{margin-top:20px;font-size:14.5px;color:var(--ink-mute,#5C6A64);padding:14px 16px;border-radius:12px;
+  background:var(--uv-wash,rgba(91,124,107,.06))}
+</style>
 </head>
 <body>
 
-  <header class="topbar">
+  <a href="#main" class="skip">Skip to content</a>
+
+  <nav class="topbar">
     <div class="wrap">
       <a href="/" class="logo">
-        <span class="logo-mark"></span>
+        <span class="logo-mark" role="img" aria-label="DailyVox"></span>
         <span class="logo-text">DailyVox</span>
+        <span class="logo-ver">research</span>
       </a>
-      <nav class="nav">
-        <a href="/technology">Technology</a>
-        <a href="/roadmap">Roadmap</a>
-      <a href="/about">About</a>
-        <a href="/blog">Journal</a>
-        <a href="/faq">FAQ</a>
-        <a href="/research" class="active">Research</a>
-      </nav>
-      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">Get the app</a>
-    </div>
-  </header>
-
-  <section class="hero wrap">
-    <div class="marker"><span class="diamond">◆</span>OPEN RESEARCH · PILOT WAVE ONE</div>
-    <h1>Does your Twin actually <em>know</em> you?</h1>
-    <p class="lede">DailyVox builds a private model of you — entirely on your iPhone, nothing collected, nothing transmitted. That architecture has a consequence we refuse to dodge: nobody can check the model works by watching a server, because there isn't one. So we measure it the hard way, in the open, and we publish what we find — including the failures. The next measurement needs a handful of real people. Maybe you.</p>
-  </section>
-
-  <section class="block wrap">
-    <h2>The question</h2>
-    <p>One honest question, precisely stated: <strong>how well do the Twin's estimates of your traits agree with how you see yourself?</strong> You journal by voice; the model estimates seven things about your style of expression; you answer seven short questions about yourself; we compute the agreement — and compare it against a baseline that guesses blindly. If the model can't beat the blind guess, we say so in public. We've already published one negative result on the developer's own twenty-year diary; the instrument is real.</p>
-  </section>
-
-  <section class="block wrap">
-    <h2>What taking part involves</h2>
-    <div class="steps">
-      <div class="step"><div class="n">01</div><div class="t"><strong>Journal by voice for a few weeks.</strong><span>About a minute a day in DailyVox, as you normally would. 20+ entries gives the model a fair chance — but any amount is usable.</span></div></div>
-      <div class="step"><div class="n">02</div><div class="t"><strong>Read the consent note, export your diary.</strong><span>Settings → Export Data → readable text export. Your data stays on your phone until this moment — sharing is a choice you make, not one the app makes.</span></div></div>
-      <div class="step"><div class="n">03</div><div class="t"><strong>Answer 7 short questions about yourself.</strong><span>Two minutes. There are no good or bad answers — the model is the one being graded, not you.</span></div></div>
-      <div class="step"><div class="n">04</div><div class="t"><strong>Send both privately to the researcher.</strong><span>Email, AirDrop, or Signal — with the words "I consent". That's it. About ten minutes of your time in total.</span></div></div>
-    </div>
-  </section>
-
-  <section class="block wrap">
-    <h2>What we promise</h2>
-    <div class="promise">
-      <ul>
-        <li><strong>Only numbers are ever published</strong> — trait estimates, agreement scores, entry counts, under an anonymous ID like “P3”. Never a word of your diary, never your name, nothing quotable.</li>
-        <li><strong>Your export is read by one named person</strong> (the researcher), computed on locally, never uploaded anywhere, never used to train anything.</li>
-        <li><strong>Delete any entries you'd rather not share</strong> before exporting — fine, and nobody asks.</li>
-        <li><strong>Withdraw any time before publication</strong>; your data is deleted, no questions asked — and in any case when the study concludes.</li>
-        <li><strong>You can see your numbers</strong> before anything is published, on request.</li>
+      <ul class="nav">
+        <li><a href="/technology">Technology</a></li>
+        <li><a href="/roadmap">Roadmap</a>
+      <a href="/research">Research</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Journal</a></li>
+        <li><a href="/faq">FAQ</a></li>
       </ul>
+      <a href="https://apps.apple.com/app/id6760454642" class="cta-btn">
+        Download <span class="arr">→</span>
+      </a>
     </div>
-    <p class="fine">Full documents: <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/pilot/PARTICIPANT-SHEET.md">participant sheet</a> · <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/pilot/CONSENT.md">consent note</a> · <a href="https://github.com/intrepidkarthi/dailyvox/tree/main/research">the public research kit</a>. This is an independent, unpaid, consented study run by the developer as an independent researcher; it is not a university study.</p>
-  </section>
+  </nav>
 
-  <section class="block wrap" style="border-bottom:none;">
-    <h2>Join wave one</h2>
-    <p>The first wave is deliberately small — a handful of people, measured carefully, reported honestly. If you journal in English on an iPhone and are 18 or older, you're eligible.</p>
-    <p class="fine">Saw the invitation card in the app? This is that study — the card appears once to journalers with a few weeks of entries, and everything beyond it happens here and over email, never inside the app. Two ways to take part: answer the seven-question self-report and compare it with your Twin's estimates (numbers only, two minutes), or additionally share an encrypted export of your diary for model validation — your choice, spelled out in the consent note before anything moves.</p>
-    <a class="join-cta" href="mailto:hello@getdailyvox.com?subject=Research%20pilot%20—%20I%27m%20in&body=Hi%20Karthikeyan%2C%0A%0AI%27d%20like%20to%20join%20the%20DailyVox%20research%20pilot.%20Please%20send%20me%20the%20details.%0A%0A">Email hello@getdailyvox.com</a>
-    <p class="fine">Questions first? Same address — ask anything before sending your materials.</p>
-  </section>
-
-  <footer class="footer">
-    <div class="wrap">
-      <div class="footer-links">
-        <a href="/roadmap">Roadmap</a>
-      <a href="/about">About</a>
-        <a href="/technology">Technology</a>
-        <a href="/blog">Journal</a>
-        <a href="/faq">FAQ</a>
-        <a href="/changelog">Changelog</a>
-        <a href="/research">Research</a>
-        <a href="/privacy">Privacy</a>
-        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
-        <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div class="kicker">research</div>
+        <h1>Measuring a model<br>of <em>one</em>.</h1>
+        <p class="lede">A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships, or its fidelity claims cannot be checked at all. This page is the programme built around that problem: the paper, the instrument, what the instrument found against its own model, and the problems still open.</p>
       </div>
-      <div class="footer-copy">© 2026 DailyVox · Built by Karthikeyan NG</div>
+    </section>
+
+    <div class="wrap">
+
+      <!-- PAPER -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§01</span>
+          <h2 class="sec-title">The <em>paper</em>.</h2>
+          <span class="sec-tag">methodology</span>
+        </div>
+        <p><strong>Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models.</strong> Karthikeyan NG, independent researcher.</p>
+        <p>The contribution is a method, not a model. Every metric is lift over an explicit baseline. A permutation null and five negative controls collapse to chance when the link between label and text is destroyed — which is the property that lets the numbers say <em>no</em>. Validation runs in staged legs: synthetic pipeline checks gate what is worth testing on humans, then population-scale human corpora, then a full-protocol single subject.</p>
+        <p>The testbed is DailyVox itself — a shipping iPhone app whose verifiable zero-egress architecture is exactly what removes the observability the method has to replace.</p>
+        <div class="cite-box">
+          <div class="cite-h">how to cite</div>
+          <pre><code>Karthikeyan NG. "Measuring a Model of One: A Falsifiable,
+On-Device Evaluation Methodology for Private Personal Models."
+2026. Source and research kit:
+https://github.com/intrepidkarthi/dailyvox</code></pre>
+        </div>
+      </section>
+
+      <!-- FINDINGS -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§02</span>
+          <h2 class="sec-title">What it <em>found</em>.</h2>
+          <span class="sec-tag">including the failures</span>
+        </div>
+        <p>Leading with the losses, because an instrument that cannot catch its own maker's model is not an instrument.</p>
+        <ul class="findings">
+          <li><strong>The deployed Twin failed first contact with a real diary.</strong> On the author's own journal, keyword-derived traits scored <em>below a do-nothing baseline</em> — lift <strong>−25.2%</strong>. The cause was a written-versus-spoken register shift that synthetic validation could not have exposed. The app was shipping; the harness said it should not have been trusted.</li>
+          <li><strong>Some layers carry signal, others do not.</strong> Across 1,473 writer-self-labelled entries and 15,809 held-out utterances: OS valence reads people at <strong>r = +0.59</strong>. The keyword emotion layer scores <strong>43.5%</strong> against an <strong>85.0%</strong> majority baseline — worse than always guessing the common answer.</li>
+          <li><strong>The repair is named and not yet takeable.</strong> A learned emotion probe beats the keyword layer on transfer to real diaries (50.1% vs 43.8%), but trains on research-licence-only data. The first licence-clean retrain fails the deployment gate by over-firing on neutral text.</li>
+          <li><strong>An honest null.</strong> A 105 KB openness head reads 1,307 writers' self-reported openness at <strong>r = +0.13</strong> — statistically real, practically worthless, and bounded by how much text a person writes rather than by the head.</li>
+        </ul>
+        <p class="findings-note">Three of those four are the product losing. That is the result.</p>
+      </section>
+
+      <!-- OPEN PROBLEMS -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§03</span>
+          <h2 class="sec-title">Open <em>problems</em>.</h2>
+          <span class="sec-tag">pick one</span>
+        </div>
+        <p>Stated as problems rather than plans, with what a good contribution to each would actually look like. None of them require access to anyone's diary.</p>
+
+        <div class="prob">
+          <div class="prob-h"><span class="prob-n">01</span><h3>A licence-clean emotion head that survives the gate</h3><span class="prob-t">ML · tractable</span></div>
+          <p>The probe that beats the shipped keyword layer trains on data whose licence forbids commercial use. The first clean retrain over-fires on neutral text, which on a journal is the majority class and the one that matters — a model that calls an ordinary Tuesday "sad" is worse than no model.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> a head trained only on permissively-licensed corpora that beats 43.8% transfer accuracy <em>and</em> holds its neutral precision, under about 200 KB, running on the phone's own embeddings.</p>
+        </div>
+
+        <div class="prob">
+          <div class="prob-h"><span class="prob-n">02</span><h3>Long-horizon memory that can be scored</h3><span class="prob-t">eval · open</span></div>
+          <p>Retrieval over a week is not memory. The hard question is whether a model connected two entries months apart because the connection is there, or because it confabulated one — and existing long-context benchmarks are built for documents, not for one person's decade.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> a benchmark over a personal longitudinal corpus that distinguishes a real connection from a plausible one, with a null that collapses when the timeline is shuffled.</p>
+        </div>
+
+        <div class="prob">
+          <div class="prob-h"><span class="prob-n">03</span><h3>Code-mixed, non-Anglo on-device NLP</h3><span class="prob-t">NLP · regional</span></div>
+          <p>The app's name recogniser is model-free — a heuristic over capitalisation evidence — and it finds <strong>100%</strong> of the non-Anglo person names in the test corpus where a learned model finds 97.7%, precisely <em>because</em> it has no prior about what a name looks like. That result points at a gap: sentiment and entity work for code-mixed diaries, on-device, without a cloud translation hop.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> a Tamil-English (or any code-mixed pair) evaluation set of journal-register text, and a sentiment or entity approach that runs in a phone's memory budget.</p>
+        </div>
+
+        <div class="prob">
+          <div class="prob-h"><span class="prob-n">04</span><h3>Aggregating evidence without egress</h3><span class="prob-t">systems · open</span></div>
+          <p>If a product's whole claim is that nothing leaves the device, how do you ever learn anything across devices? Federated approaches assume a coordinating server this architecture refuses to have. There may be no good answer; saying so rigorously would also be a result.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> a protocol where a participant can contribute an aggregate measurement without a server ever holding their text — or a clear argument that the trade cannot be made.</p>
+        </div>
+
+        <div class="prob blocked">
+          <div class="prob-h"><span class="prob-n">05</span><h3>The consented cohort</h3><span class="prob-t">blocked · needs people</span></div>
+          <p>Every number above comes from one author's diary plus public corpora. A cohort is the gate between "it works for me" and a finding. The protocol is written, the consent form exists, the harness is ready — and it is stopped, because one person cannot recruit, review and consent a cohort in evenings.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code.</p>
+        </div>
+      </section>
+
+      <!-- DATA -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§04</span>
+          <h2 class="sec-title">What <em>data</em> exists.</h2>
+          <span class="sec-tag">and what does not</span>
+        </div>
+        <ul class="dlist">
+          <li><strong>Public corpora, licence-clean.</strong> The population-scale numbers — 1,473 self-labelled entries, 15,809 held-out utterances, 1,307 writers' openness self-reports — come from published datasets. Reproducible.</li>
+          <li><strong>Research-licence-only corpora.</strong> The emotion probe's training data. Usable for a paper, not for a shipped model. This constraint is the whole of open problem 01.</li>
+          <li><strong>One author's diary.</strong> Twenty years, and the only longitudinal personal corpus in the programme. Not shareable, and its non-shareability is the point of the product.</li>
+          <li><strong>No user data. At all.</strong> The app has no telemetry and no server. There is no dataset of DailyVox users' journals, there never has been, and building one would require every participant to individually choose to send an export.</li>
+        </ul>
+      </section>
+
+      <!-- CONTRIBUTING -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§05</span>
+          <h2 class="sec-title">If you want to <em>work on it</em>.</h2>
+          <span class="sec-tag">contact</span>
+        </div>
+        <p>This is an independent project — no institutional sponsor, no funding, no compensation to offer. What there is: a shipping app with real users as a testbed, an evaluation harness that already exists, a paper to attach your name to, and problems that are genuinely open rather than homework.</p>
+        <p>Reasonable things to do next: read the <a href="/technology">architecture</a>, take the <a href="https://github.com/intrepidkarthi/dailyvox">source and research kit</a>, or write and say which of the five you would want.</p>
+        <p><a href="mailto:hello@getdailyvox.com" class="btn-primary">hello@getdailyvox.com <span class="arr">→</span></a></p>
+        <p class="ethics">On ethics: any work involving participants runs on informed consent, no compensation, data local to the participant's own machine, deletion honoured immediately, withdrawal honoured any time before publication, and aggregate numerics only in anything published. Those terms are not negotiable and predate anyone asking.</p>
+      </section>
+
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+      <div class="sf-brand">
+        <div class="mk">
+          <span class="logo-mark" role="img" aria-label="DailyVox"></span>
+          DailyVox
+        </div>
+        <p>A personal AI that lives on your phone.<br>Free, open source, private by construction.</p>
+      </div>
+      <div class="sf-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="https://apps.apple.com/app/id6760454642">App Store</a></li>
+          <li><a href="/technology">Technology</a></li>
+          <li><a href="/compare">Compare</a></li>
+          <li><a href="/faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/blog">Journal</a></li>
+          <li><a href="/for-students">For Students</a></li>
+          <li><a href="/support">Support</a></li>
+          <li><a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a></li>
+        </ul>
+      </div>
+      <div class="sf-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/glossary">Glossary</a></li>
+          <li><a href="/voice-journaling-statistics">Statistics</a></li>
+          <li><a href="mailto:hello@getdailyvox.com">Contact</a></li>
+        </ul>
+      </div>
+      <div class="sf-social">
+        <a class="x" href="https://x.com/getDailyVox" target="_blank" rel="noopener">X · @getDailyVox</a>
+        <a class="ig" href="https://www.instagram.com/getdailyvox/" target="_blank" rel="noopener">Instagram · @getdailyvox</a>
+        <a class="reddit" href="https://www.reddit.com/user/getDailyVox/" target="_blank" rel="noopener">Reddit · u/getDailyVox</a>
+        <a class="gh" href="https://github.com/intrepidkarthi/dailyvox" target="_blank" rel="noopener">GitHub · intrepidkarthi/dailyvox</a>
+        <a class="email" href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>
+      </div>
+
+      <div class="sf-bottom">
+        <span>© 2026 DailyVox · built on-device, by hand</span>
+        <span class="live-tag"><span class="dot"></span> systems.ok · 0 rpc</span>
+      </div>
     </div>
   </footer>
 

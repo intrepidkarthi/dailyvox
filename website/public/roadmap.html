@@ -1013,7 +1013,8 @@
       </a>
       <ul class="nav">
         <li><a href="/technology">Technology</a></li>
-        <li><a href="/roadmap" class="active">Roadmap</a></li>
+        <li><a href="/roadmap" class="active">Roadmap</a>
+      <a href="/research">Research</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/blog">Journal</a></li>
         <li><a href="/faq">FAQ</a></li>
@@ -1162,51 +1163,13 @@
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§06</span>
-          <h2 class="sec-title">The research <em>programme</em>.</h2>
-          <span class="sec-tag">paper · harness · pilot</span>
+          <h2 class="sec-title">The research <em>lines</em>.</h2>
+          <span class="sec-tag">what is moving</span>
         </div>
 
-        <p>A model built to be private cannot be watched in production. With no egress there is no server-side dashboard, no population A/B test, no confusion matrix — and its one user is the only witness. So it has to be evaluated <em>on the device, before it ships</em>, or its fidelity claims cannot be checked at all.</p>
+        <p>DailyVox has a research programme attached to it, because a model built to be private cannot be watched in production — with no egress there is no dashboard, no A/B test and no confusion matrix, so it has to be evaluated on the device before it ships. That argument, the paper it produced, the evaluation harness, what the harness found against this app's own model, and five open problems anyone can pick up are all on the <a href="/research"><strong>research page</strong></a>.</p>
 
-        <p>That is the argument of the paper this project produced, <em>Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models</em>, and of <strong>TwinEval</strong>, the harness it releases. Every metric is lift over an explicit baseline. A permutation null and five negative controls collapse to chance when the link between label and text is destroyed — which is what lets the numbers say <em>no</em>.</p>
-
-        <h3 class="sub-h">What the instrument found, starting with its own model</h3>
-
-        <ul class="findings">
-          <li><strong>The deployed Twin failed its first contact with a real diary.</strong> On the author's own journal, keyword-derived traits scored <strong>below a do-nothing baseline — lift −25.2%</strong>. The cause was a written-versus-spoken register shift that synthetic validation could not have exposed.</li>
-          <li><strong>Some layers carry real signal; others do not.</strong> Across 1,473 writer-self-labelled entries and 15,809 held-out utterances: the OS valence layer reads people at <strong>r = +0.59</strong>. The keyword emotion layer scores <strong>43.5%</strong> against an <strong>85.0%</strong> majority baseline — worse than guessing the common answer.</li>
-          <li><strong>The repair is named, and not yet takeable.</strong> A learned emotion probe beats the keyword layer on transfer to real diaries (50.1% vs 43.8%) but trains on research-licence-only data. The first licence-clean retrain fails the deployment gate by over-firing on neutral text.</li>
-          <li><strong>An honest null.</strong> A 105 KB openness head reads 1,307 writers' self-reported openness at <strong>r = +0.13</strong> — statistically real, practically worthless, and bounded by how much text a person writes rather than by the model.</li>
-        </ul>
-
-        <p class="findings-note">An instrument that catches its own maker's model failing is the only kind worth publishing. None of the above is a marketing number; three of the four are the product losing.</p>
-
-        <h3 class="sub-h">The pilot, and what would happen to your data</h3>
-
-        <p>Every measurement above comes from one author's diary plus public corpora. The gate between that and a finding is a small consented cohort — and because this is a zero-network product, running one is deliberately awkward. There is no telemetry to switch on. A participant has to <em>choose</em> to send something.</p>
-
-        <div class="pilot-grid">
-          <div class="pil">
-            <div class="pil-n">what you'd send</div>
-            <p>A diary export from the app, seven self-report answers about how you see yourself, and the words "I consent". Nothing automatic; nothing the app collects on its own.</p>
-          </div>
-          <div class="pil">
-            <div class="pil-n">what happens to it</div>
-            <p>It is scored locally by the same harness, against the same baselines. Then, about two weeks later, you answer the same seven questions again without looking at the first set.</p>
-          </div>
-          <div class="pil">
-            <div class="pil-n">why twice</div>
-            <p>Because people are not consistent with themselves. Your test–retest agreement becomes the ceiling the Twin is measured against — a Twin cannot know you better than you agree with you.</p>
-          </div>
-          <div class="pil">
-            <div class="pil-n">what gets published</div>
-            <p>An anonymous ID, entry count, date span, per-trait numbers, and the fidelity and self-consistency scores. Aggregate numerics only. Nothing else — not a line of your diary.</p>
-          </div>
-        </div>
-
-        <p class="pilot-terms">Independent research, no compensation, no institutional sponsor. Consent messages are kept privately and a deletion request is honoured immediately — your row is struck and the files removed. Withdrawal is honoured any time before publication. Participant data never leaves the researcher's machine; it is not in the app, not in a cloud, and not in the repository.</p>
-
-        <p>If you keep a journal in DailyVox and would consider this, the address is <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>. Saying no costs nothing and changes nothing about the app.</p>
+        <p>What belongs here is narrower: which of those lines is actually moving.</p>
 
         <h3 class="sub-h">What is actually being worked on, and what is parked</h3>
 
