@@ -1020,6 +1020,40 @@
   border:1px solid var(--rule,rgba(26,26,46,.08));font-size:15.3px;line-height:1.58}
 .ethics{margin-top:20px;font-size:14.5px;color:var(--ink-mute,#5C6A64);padding:14px 16px;border-radius:12px;
   background:var(--uv-wash,rgba(91,124,107,.06))}
+
+.lede-2{margin-top:14px}
+.paper-card{margin:20px 0 26px;padding:22px 24px;border-radius:16px;
+  border:1px solid var(--uv-edge,rgba(91,124,107,.28));background:var(--uv-wash,rgba(91,124,107,.06))}
+.paper-meta{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--uv-text,#3F5A4D);margin-bottom:10px}
+.paper-t{margin:0 0 8px;font-size:20px;line-height:1.32;letter-spacing:-.01em}
+.paper-a{margin:0 0 18px;font-size:14.5px;color:var(--ink-mute,#5C6A64)}
+.paper-acts{display:flex;gap:11px;flex-wrap:wrap}
+.btn-ghost{display:inline-flex;align-items:center;padding:11px 18px;border-radius:30px;font-size:14.5px;
+  font-weight:600;border:1.5px solid var(--rule-2,rgba(26,26,46,.2));color:var(--ink,#1A1A2E);text-decoration:none}
+.btn-ghost:hover{border-color:var(--uv,#5B7C6B)}
+.mlist{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.mlist li{padding:13px 15px;border-radius:12px;background:var(--paper-2,rgba(26,26,46,.028));
+  font-size:15.2px;line-height:1.58}
+.toc{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:5px}
+.toc li{display:flex;gap:11px;align-items:baseline;font-size:15px;padding:5px 0;
+  border-bottom:1px solid var(--rule,rgba(26,26,46,.07))}
+.toc li:last-child{border-bottom:none}
+.toc span{font:600 11px/1 'DM Mono',ui-monospace,monospace;color:var(--ink-mute,#5C6A64);min-width:14px}
+.paper-note{margin-top:16px;font-size:14.6px;color:var(--ink-mute,#5C6A64)}
+.ag-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:18px}
+.ag{padding:17px 19px;border-radius:14px;border:1px solid var(--rule,rgba(26,26,46,.09));
+  background:var(--paper-2,rgba(26,26,46,.022))}
+.ag h4{margin:0 0 8px;font-size:16.5px;letter-spacing:-.01em}
+.ag p{margin:0;font-size:14.8px;line-height:1.58}
+.offer{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:9px}
+.offer li{padding:12px 15px;border-radius:12px;background:var(--paper-2,rgba(26,26,46,.028));font-size:15.2px;line-height:1.55}
+.shape-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0 20px}
+.shp{padding:15px 17px;border-radius:13px;border:1px solid var(--rule-2,rgba(26,26,46,.13))}
+.shp-n{font:600 10px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--uv-text,#3F5A4D);margin-bottom:7px}
+.shp p{margin:0;font-size:14.6px;line-height:1.55}
+@media (max-width:760px){.ag-grid,.shape-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1052,7 +1086,8 @@
       <div class="wrap">
         <div class="kicker">research</div>
         <h1>Measuring a model<br>of <em>one</em>.</h1>
-        <p class="lede">A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships, or its fidelity claims cannot be checked at all. This page is the programme built around that problem: the paper, the instrument, what the instrument found against its own model, and the problems still open.</p>
+        <p class="lede">A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships, or its fidelity claims cannot be checked at all.</p>
+        <p class="lede lede-2">This page is the programme built around that problem — and an open invitation. It is one person's work so far, which is its main weakness. If any of it is close to what you work on, I would rather do it with you than alone: co-authorship, joint supervision, a student project, or just an argument about whether the method holds. <a href="#work-with">How to start a conversation</a> is at the bottom.</p>
       </div>
     </section>
 
@@ -1065,17 +1100,49 @@
           <h2 class="sec-title">The <em>paper</em>.</h2>
           <span class="sec-tag">methodology</span>
         </div>
-        <p><strong>Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models.</strong> Karthikeyan NG, independent researcher.</p>
-        <p>The contribution is a method, not a model. Every metric is lift over an explicit baseline. A permutation null and five negative controls collapse to chance when the link between label and text is destroyed — which is the property that lets the numbers say <em>no</em>. Validation runs in staged legs: synthetic pipeline checks gate what is worth testing on humans, then population-scale human corpora, then a full-protocol single subject.</p>
-        <p>The testbed is DailyVox itself — a shipping iPhone app whose verifiable zero-egress architecture is exactly what removes the observability the method has to replace.</p>
+        <div class="paper-card">
+          <div class="paper-meta">preprint · July 2026 · 9 sections</div>
+          <h3 class="paper-t">Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models</h3>
+          <p class="paper-a">Karthikeyan NG · independent researcher</p>
+          <div class="paper-acts">
+            <a href="/paper/measuring-a-model-of-one.pdf" class="btn-primary">Read the paper (PDF) <span class="arr">→</span></a>
+            <a href="https://github.com/intrepidkarthi/dailyvox" class="btn-ghost">Source &amp; research kit</a>
+          </div>
+        </div>
+
+        <h3 class="sub-h">The problem it addresses</h3>
+        <p>Privacy and observability are in direct tension, and almost nobody states it. The moment a model is built so that nothing leaves the device, every ordinary method of knowing whether it works stops being available: no server-side logs, no population A/B test, no held-out set you can inspect after the fact. The user is the only witness, and the user cannot audit a model of themselves — they are the thing being modelled.</p>
+        <p>The usual answer is to give up the privacy. This paper's answer is to move the evaluation: run it on the device, before shipping, against baselines strict enough that the result can come back negative.</p>
+
+        <h3 class="sub-h">What the method actually requires</h3>
+        <ul class="mlist">
+          <li><strong>Every metric is lift over an explicit baseline.</strong> Not accuracy — accuracy on a skewed personal corpus flatters everything. Lift over the do-nothing answer, stated with the baseline next to it.</li>
+          <li><strong>A permutation null and five negative controls.</strong> Destroy the link between label and text and the metric must collapse to chance. If it does not, the metric was measuring the corpus, not the model.</li>
+          <li><strong>Staged legs.</strong> Synthetic pipeline checks gate what is worth testing on humans; population-scale human corpora come next; a full-protocol single subject last. Each leg can stop the next.</li>
+          <li><strong>The instrument ships with the claim.</strong> A fidelity claim that cannot be re-run by the person it is about is a marketing number.</li>
+        </ul>
+
+        <h3 class="sub-h">How it is laid out</h3>
+        <ol class="toc">
+          <li><span>1</span> Introduction</li>
+          <li><span>2</span> The Personal Model — what is being claimed, and what would falsify it</li>
+          <li><span>3</span> The substrate, and its drift</li>
+          <li><span>4</span> DailyVox: an existence proof — the shipping testbed</li>
+          <li><span>5</span> What is not yet shown — the limits, stated before the results</li>
+          <li><span>6</span> The instrument, and what it measured</li>
+          <li><span>7</span> Discussion and limitations</li>
+          <li><span>8</span> Ethics and privacy</li>
+          <li><span>9</span> Conclusion</li>
+        </ol>
+        <p class="paper-note">A preprint, not yet peer-reviewed, and hosted here rather than on a repository — so treat it as a working document. Corrections are welcome and will be credited; if you think the method is wrong, that is the most useful email this page could produce.</p>
+
         <div class="cite-box">
           <div class="cite-h">how to cite</div>
           <pre><code>Karthikeyan NG. "Measuring a Model of One: A Falsifiable,
 On-Device Evaluation Methodology for Private Personal Models."
-2026. Source and research kit:
-https://github.com/intrepidkarthi/dailyvox</code></pre>
+Preprint, July 2026.
+https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         </div>
-      </section>
 
       <!-- FINDINGS -->
       <section class="sec-block">
@@ -1134,10 +1201,51 @@ https://github.com/intrepidkarthi/dailyvox</code></pre>
         </div>
       </section>
 
-      <!-- DATA -->
+
+      <!-- WHERE IT GOES — the page listed five problems that are open NOW and
+           implied that was the whole programme. These are the directions after
+           them: further out, less defined, and the ones most worth arguing
+           about with someone who knows the literature. -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§04</span>
+          <h2 class="sec-title">Where it <em>goes after that</em>.</h2>
+          <span class="sec-tag">longer horizon</span>
+        </div>
+        <p>The five above are close enough to attempt. These are the directions behind them — further out, less defined, and the ones I would most want to argue about with someone who reads this literature properly. Several may turn out to be bad ideas, which is itself worth establishing.</p>
+
+        <div class="ag-grid">
+          <div class="ag">
+            <h4>Memory that has a middle</h4>
+            <p>The Twin currently goes from raw entries to a statistical persona with nothing between. There is no layer of atoms ("she started therapy in March") and no layer of scenarios ("the year of the move"), so every question re-derives everything at query time. Building that middle is an architecture question and an evaluation question at once: what is the right granularity for a memory of a person, and how would you know you had it?</p>
+          </div>
+          <div class="ag">
+            <h4>Personality depth without fine-tuning</h4>
+            <p>Weight-level personalisation on a phone is not practical yet. Persona conditioning — steering a shared model with a measured profile and the person's own phrasings — might get most of the way. The open question is whether a conditioned model is meaningfully <em>more</em> that person than a well-retrieved one, or whether retrieval is doing all the work and the conditioning is theatre.</p>
+          </div>
+          <div class="ag">
+            <h4>Drift: a person changes, does the model?</h4>
+            <p>A twenty-year diary is not one person. Someone at 22 and the same person at 42 are different subjects, and a model averaged over both describes neither. Detecting the boundaries, and deciding whether a Personal Model should track the current self or remember the former one, is unsolved and probably the most interesting thing on this page.</p>
+          </div>
+          <div class="ag">
+            <h4>A mirror that can disagree</h4>
+            <p>Personal models have an obvious failure mode: agreeing with you. A Twin that reflects a distorted self-image back approvingly is worse than no Twin, particularly in this domain. Measuring sycophancy in a system whose ground truth is the user's own words — where the user is both subject and judge — is a genuinely hard evaluation problem.</p>
+          </div>
+          <div class="ag">
+            <h4>Ambient signals, and their ethics</h4>
+            <p>Photos, music, movement and sleep are on the phone already, and each carries mood signal. Every one of them also widens what the model knows past what the person chose to say. The research question and the ethics question are the same question, and the current answer — a review-and-discard queue, nothing learned without being seen — is a design choice that has never been tested against alternatives.</p>
+          </div>
+          <div class="ag">
+            <h4>Cross-lingual personal models</h4>
+            <p>Most people who journal in more than one language switch <em>within</em> a thought, not between entries. A personal model that treats the switch as noise loses the part where the switch is the signal. This runs alongside the code-mixed work in §03 but is the deeper version of it.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DATA -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§05</span>
           <h2 class="sec-title">What <em>data</em> exists.</h2>
           <span class="sec-tag">and what does not</span>
         </div>
@@ -1150,12 +1258,39 @@ https://github.com/intrepidkarthi/dailyvox</code></pre>
       </section>
 
       <!-- CONTRIBUTING -->
-      <section class="sec-block">
+      <section class="sec-block" id="work-with">
         <div class="sec-head">
-          <span class="sec-num">§05</span>
-          <h2 class="sec-title">If you want to <em>work on it</em>.</h2>
-          <span class="sec-tag">contact</span>
+          <span class="sec-num">§06</span>
+          <h2 class="sec-title">Let's do it <em>together</em>.</h2>
+          <span class="sec-tag">open invitation</span>
         </div>
+
+        <p>Everything above is one person's work, and that is the honest limitation of all of it. A single author with a single diary can build an instrument and can catch his own model failing — but cannot produce a finding, cannot peer-review himself, and cannot see the parts of the literature he has not read. I would genuinely rather do this with other people.</p>
+
+        <p>There is no funding, no institutional sponsor and nothing to pay anyone, so this is not a job offer. What there is:</p>
+
+        <ul class="offer">
+          <li><strong>A shipping testbed.</strong> A real app, on the App Store, with real users — not a notebook and a Kaggle set.</li>
+          <li><strong>An instrument that already exists.</strong> TwinEval runs, with baselines, nulls and negative controls in place. You would not be starting from an empty repository.</li>
+          <li><strong>Problems that are actually open.</strong> Not homework with a known answer at the back.</li>
+          <li><strong>Authorship, stated up front.</strong> If your work is in a paper, your name is on it. That gets agreed in writing before anyone starts, not after.</li>
+          <li><strong>An engineer who will do the engineering.</strong> If the interesting part for you is the method, the shipping and the plumbing are mine.</li>
+        </ul>
+
+        <h3 class="sub-h">Shapes this could take</h3>
+        <div class="shape-grid">
+          <div class="shp"><div class="shp-n">joint paper</div><p>Any of §03 or §04 is a paper with two names on it. The methodology work in particular needs someone who will attack it.</p></div>
+          <div class="shp"><div class="shp-n">supervised student work</div><p>Several of these are the right size for a final-year or master's project, with a shipping app as the testbed and a real result at the end.</p></div>
+          <div class="shp"><div class="shp-n">the cohort</div><p>The one thing that cannot be solved by code. An institution with an ethics process unblocks the entire bottom of the ladder.</p></div>
+          <div class="shp"><div class="shp-n">just tell me I'm wrong</div><p>If the method has a hole in it, that is worth more than a collaboration and takes one email. Corrections get credited.</p></div>
+        </div>
+
+        <p>Reasonable next steps: read the <a href="/paper/measuring-a-model-of-one.pdf">paper</a>, look at the <a href="/technology">architecture</a>, take the <a href="https://github.com/intrepidkarthi/dailyvox">source and research kit</a> — then write and say which part you would want.</p>
+        <p><a href="mailto:hello@getdailyvox.com" class="btn-primary">hello@getdailyvox.com <span class="arr">→</span></a></p>
+        <p class="ethics">On ethics, so it is settled before anyone asks: work involving participants runs on informed consent, no compensation, data kept local to the participant's own machine, deletion honoured immediately, withdrawal honoured any time before publication, and aggregate numerics only in anything published. Those terms predate anyone asking and are not negotiable.</p>
+      </section>
+
+    </div>
         <p>This is an independent project — no institutional sponsor, no funding, no compensation to offer. What there is: a shipping app with real users as a testbed, an evaluation harness that already exists, a paper to attach your name to, and problems that are genuinely open rather than homework.</p>
         <p>Reasonable things to do next: read the <a href="/technology">architecture</a>, take the <a href="https://github.com/intrepidkarthi/dailyvox">source and research kit</a>, or write and say which of the five you would want.</p>
         <p><a href="mailto:hello@getdailyvox.com" class="btn-primary">hello@getdailyvox.com <span class="arr">→</span></a></p>
