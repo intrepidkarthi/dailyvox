@@ -1038,6 +1038,14 @@
 @media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
   .dv-f-brand{grid-column:1 / -1}}
 @media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
+
+/* The skip link had no styles on this page, so it rendered as a plain visible
+   link above the header — a screen-reader affordance sitting in the layout.
+   Off-canvas until focused, which is the whole contract. */
+.skip{position:absolute;left:-9999px;top:0;z-index:200;
+  background:var(--uv,#5B7C6B);color:#fff;padding:12px 20px;
+  border-radius:0 0 8px 0;font-family:var(--ui,'Nunito',system-ui,sans-serif);font-weight:700}
+.skip:focus{left:0}
 </style>
 </head>
 <body>
