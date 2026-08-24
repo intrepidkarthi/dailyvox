@@ -928,7 +928,27 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     }
-  </style>
+  
+.ladder{list-style:none;margin:26px 0 20px;padding:0;counter-reset:none}
+.rung{position:relative;padding:0 0 22px 30px;border-left:2px solid var(--rule,rgba(26,26,46,.10))}
+.rung:last-child{border-left-color:transparent;padding-bottom:4px}
+.rung::before{content:'';position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;
+  background:var(--paper,#FAF8F5);border:2px solid var(--rule-2,rgba(26,26,46,.20))}
+.rung.done::before{background:#5B7C6B;border-color:#5B7C6B}
+.rung.wip::before{background:#C4956A;border-color:#C4956A}
+.rung.open::before{background:var(--paper,#FAF8F5);border-color:#C4543B}
+.rung-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.rung-n{font:600 11px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.1em;color:var(--ink-mute,#5C6A64)}
+.rung-h h3{margin:0;font-size:19px;letter-spacing:-.01em}
+.rung-s{font:600 10px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.11em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px}
+.rung.done .rung-s{background:rgba(91,124,107,.14);color:#3F5A4D}
+.rung.wip  .rung-s{background:rgba(196,149,106,.16);color:#84512E}
+.rung.open .rung-s{background:rgba(196,84,59,.12);color:#8C3524}
+.rung p{margin:0;font-size:15.5px;line-height:1.62}
+.ladder-note{font-size:15px;color:var(--ink-mute,#5C6A64)}
+@media (max-width:600px){.rung{padding-left:22px}.rung-h h3{font-size:17px}}
+</style>
 </head>
 <body>
 
@@ -1032,9 +1052,59 @@
       </section>
 
       <!-- OPEN -->
+      <!-- RESEARCH LADDER — the roadmap read as a feature list, which is the
+           wrong shape for this product. "Digital Twin" is a claim, and a claim
+           needs gates. Each rung below is a question that can be answered with
+           a number, in the order they have to be answered: hearing before
+           reading, reading before remembering, remembering before generalising.
+           Statuses are honest, including the one that says no. -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§05</span>
+          <h2 class="sec-title">How you'd know it <em>worked</em>.</h2>
+          <span class="sec-tag">the research ladder</span>
+        </div>
+
+        <p>"Digital Twin" is a claim, not a feature, and the only honest way to make it is to say in advance what would prove it false. Each rung is a question with a number attached. They are in order: a Twin that mishears you cannot read you, and one that cannot find the right memory cannot model you.</p>
+
+        <ol class="ladder">
+          <li class="rung done">
+            <div class="rung-h"><span class="rung-n">01</span><h3>Does it hear you?</h3><span class="rung-s">measured</span></div>
+            <p>On-device transcription, and the willingness to fail rather than reach for a network when the model is missing. This is the rung everything else stands on, and it is the one the app got wrong until v1.11.</p>
+          </li>
+          <li class="rung done">
+            <div class="rung-h"><span class="rung-n">02</span><h3>Does it read how you felt?</h3><span class="rung-s">measured</span></div>
+            <p>Against 1,459 human-labelled entries the bundled lexicon scores <strong>r = +0.663</strong> with 87.1% sign accuracy, ahead of the platform's own <strong>+0.594</strong> at 79.8%. Shuffled controls collapse to chance, which is the part that makes the number mean anything.</p>
+          </li>
+          <li class="rung done">
+            <div class="rung-h"><span class="rung-n">03</span><h3>Does it know who is in your life?</h3><span class="rung-s">measured</span></div>
+            <p><strong>99.1%</strong> of 111 hand-annotated name spans found, at 61.6% precision. Every person name in that corpus is non-Anglo, and all of them were found — a learned model missed 2.3% of them, because it has a prior about what a name looks like and that prior is parochial.</p>
+          </li>
+          <li class="rung done">
+            <div class="rung-h"><span class="rung-n">04</span><h3>Can it find the right memory?</h3><span class="rung-s">measured</span></div>
+            <p>Semantic retrieval with a measured abstention threshold, so the Twin declines rather than guesses. An answer that cites the wrong entry is worse than no answer, because you cannot tell which kind you got.</p>
+          </li>
+          <li class="rung wip">
+            <div class="rung-h"><span class="rung-n">05</span><h3>Does it remember across years?</h3><span class="rung-s">in progress</span></div>
+            <p>Retrieval over a week is not memory. The open work is long-horizon evaluation — the kind of benchmark that asks a question answerable only by connecting entries months apart, and scores whether the connection was made or confabulated. A journal's value compounds; the evaluation has to as well.</p>
+          </li>
+          <li class="rung wip">
+            <div class="rung-h"><span class="rung-n">06</span><h3>Does it model who you are, not just how you felt?</h3><span class="rung-s">in progress</span></div>
+            <p>Mood is a reading of a day. Traits are a claim about a person, and they need validating against instruments built for the purpose rather than asserted from a paragraph. Until that is done the Twin reports a <em>Twin Resolution</em> score: how well it thinks it knows you, stated so you can disagree with it.</p>
+          </li>
+          <li class="rung open">
+            <div class="rung-h"><span class="rung-n">07</span><h3>Does any of it hold for someone who isn't me?</h3><span class="rung-s">not yet</span></div>
+            <p>Every number on this site comes from one author's diary. That is enough to build with and not enough to conclude from. A cohort — many journals, many people, the same measurements — is the gate between "it works for me" and a finding, and it is the one rung that cannot be climbed by writing more code.</p>
+          </li>
+        </ol>
+
+        <p class="ladder-note">Rungs 1 to 4 ship in the app today and the numbers above are reproducible from the <a href="https://github.com/intrepidkarthi/dailyvox">source</a>. Rungs 5 and 6 are where the work is. Rung 7 is the honest reason nothing here is described as proven.</p>
+      </section>
+
+
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§06</span>
           <h2 class="sec-title">Open <em>questions</em>.</h2>
           <span class="sec-tag">unresolved</span>
         </div>
