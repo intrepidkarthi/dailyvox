@@ -238,6 +238,9 @@
 @media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
   .dv-f-brand{grid-column:1 / -1}}
 @media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
+
+.pdt-recent{margin:0 0 8px}
+.pdt-recent h3{margin-top:26px}
 </style>
 </head>
 <body>
@@ -308,7 +311,34 @@
 
     <h2>How DailyVox builds your personal digital twin</h2>
     <p><a href="/">DailyVox</a> is a free voice journal for iPhone that builds a personal digital twin — it calls it your <strong>Digital Twin</strong> — entirely on-device. You speak for as little as forty-two seconds a day. DailyVox transcribes it with Apple's on-device Speech framework, reads the emotional tone and named entities with the NaturalLanguage framework, and grows a private model of your personality on Apple's Neural Engine.</p>
-    <p>Because everything runs on your phone, the twin works in airplane mode, needs no account, and carries Apple's "Data Not Collected" privacy label. You can read exactly how it works in <a href="/technology">the technology breakdown</a>, see every term defined in the <a href="/glossary">glossary</a>, or read <a href="/about">why it was built</a>.</p>
+    <p>Because everything runs on your phone, the twin works in airplane mode, needs no account, and carries Apple's "Data Not Collected" privacy label. A native Android app is in development, built on Google and AOSP frameworks rather than ported around them — not released, and no date announced. You can read exactly how it works in <a href="/technology">the technology breakdown</a>, see every term defined in the <a href="/glossary">glossary</a>, or read <a href="/about">why it was built</a>.</p>
+
+    <h2>What the twin looks like once it has been running</h2>
+
+
+    <p>A personal digital twin is easy to describe and hard to show, so here is what one actually contains after a few weeks of daily entries, using DailyVox's as the worked example.</p>
+
+
+    <p><strong>A sky that encodes time, not decoration.</strong> Every entry is a star. How far it sits from the centre is how long ago you spoke it; the angle around the centre is the hour of day. A usual bedtime becomes a visible band; a 3am entry sits alone, opposite. People you mention become named stars, placed by when they last came up and sized by how often — so the ones currently in your life are close and bright, and the ones who have faded have drifted out.</p>
+
+
+    <p><strong>A ledger you can check.</strong> Every entry shows what the twin filed from it: the mood it read and the score behind it, the names it caught, how fast you were speaking, the topics it assigned. The point is that it is <em>checkable</em> — a model of a person that cannot be audited by that person is asking for trust it has not earned.</p>
+
+
+    <p><strong>Answers that cite.</strong> Ask it something and it answers from your own entries, showing which ones and how strongly each matched. If nothing is close enough it declines rather than guessing, because an answer citing the wrong entry is worse than no answer: you cannot tell which kind you received.</p>
+
+
+    <h2>How would you know a personal digital twin worked?</h2>
+
+
+    <p>This is the question most writing on the subject skips. A twin that produces confident, fluent descriptions of you is easy to build and impossible to falsify.</p>
+
+
+    <p>DailyVox's answer is a published methodology with an evaluation harness, and the results include the ones where the product loses. On its own author's real diary the deployed twin's keyword-derived traits once scored <strong>below a do-nothing baseline</strong>. The layer that reads emotional tone from keywords scores 43.5% against an 85.0% majority baseline — worse than always guessing the common answer.</p>
+
+
+    <p>Those numbers are published rather than buried, because an instrument that cannot catch its own maker's model is not an instrument. The <a href="/paper/measuring-a-model-of-one.pdf">paper</a> and the <a href="/research">research programme</a> both go further, and five of the open problems are written up as problems anyone can pick up.</p>
+
 
     <h2>Frequently asked questions</h2>
 
