@@ -884,8 +884,9 @@ section.band.g-paper2{background:var(--band)!important}
    A GIF would have done this too, and worse — 256 colours banding across the
    cream gradients, a megabyte of asset, and no way to respect a reduced-motion
    preference. This is the same four screens already in the DOM. */
-.scr img{transform:scale(1.002);transition:transform 6s cubic-bezier(.22,.61,.36,1);will-change:transform}
-.scr.on img{transform:scale(1.038)}
+/* Ken Burns removed: it moved the whole screen, which explains nothing at
+   300px wide. The callouts do the pointing now. */
+.scr img{transform:none}
 /* Origins stay near the middle. A 1.085 push from 74% threw the greeting off
    the top of the frame, which reads as a clipping bug and not a camera move —
    the effect has to stay inside the screen it is moving across. */
@@ -928,6 +929,191 @@ section.band.g-paper2{background:var(--band)!important}
   .hero-cta .pill{padding-top:9px;padding-bottom:9px;font-size:14px}
   .hero-ph img{height:32px}
 }
+
+/* ============================================================================
+   HERO v2 — device beside the words, with callouts lifted out of the screen.
+
+   The Ken Burns push is gone. It moved the whole screen, which is a slideshow
+   effect, not an explanation: at 300px wide nobody can read what the zoom is
+   pointing at. These crops do what the App Store frames do instead — take a
+   piece of the screen OUT of the phone, blow it up until it is legible, and
+   draw an arrow back to where it came from.
+
+   Each crop is a background-position window onto the SAME webp already loaded
+   for the device. No second asset, and it stays crisp because the source is
+   900px wide showing a ~200px region.
+   ========================================================================== */
+.pin-inner{
+  display:grid!important; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  align-items:center; gap:clamp(18px,3vw,54px);
+  max-width:1200px; margin-inline:auto;
+  flex-direction:unset!important;
+}
+.hero-left{position:relative;display:flex;justify-content:center;align-items:center}
+.hero-right{text-align:left;min-width:0}
+.hero-right .pin-head{text-align:left;max-width:none;margin-bottom:14px}
+.hero-right .pin-head h1.hero{
+  font-size:clamp(26px,3.1vw,44px)!important;max-width:15ch;margin-inline:0;line-height:1.08!important}
+.hero-right .caps{width:100%;text-align:left;margin-top:0}
+.hero-right .cap{text-align:left}
+.hero-right .hero-cta{justify-content:flex-start}
+.pin-device{margin-inline:0}
+
+/* --- the callout ---------------------------------------------------------- */
+.callout{
+  position:absolute; z-index:4; display:flex; align-items:center; gap:11px;
+  opacity:0; visibility:hidden; transform:translateY(6px) scale(.97);
+  transition:opacity .45s ease, transform .45s cubic-bezier(.2,.7,.3,1), visibility .45s;
+  pointer-events:none;
+}
+.callout.on{opacity:1;visibility:visible;transform:none}
+.co-crop{
+  width:150px;height:104px;border-radius:15px;flex:none;
+  background-repeat:no-repeat;
+  /* 340% of the container width shows roughly a fifth of the phone screen —
+     enough for one control, large enough to read. --cx/--cy pick which fifth. */
+  background-size:340% auto;
+  background-position:var(--cx) var(--cy);
+  box-shadow:0 0 0 3px var(--paper), 0 0 0 4.5px #D9A441,
+             0 18px 40px -14px rgba(80,60,35,.45);
+}
+.co-lab{
+  font:600 14.5px/1.34 var(--ui); color:var(--ink); letter-spacing:-.005em;
+  max-width:15ch; text-shadow:0 1px 0 var(--paper);
+}
+.co-lab b{color:var(--uv-text);font-weight:800}
+.co-arrow{
+  position:absolute; width:108px; height:74px; overflow:visible;
+  stroke:#D9A441; stroke-width:2.4; fill:none; stroke-linecap:round; stroke-linejoin:round;
+}
+.callout.on .co-arrow path{
+  stroke-dasharray:200; stroke-dashoffset:200; animation:coDraw .75s .18s ease forwards;
+}
+@keyframes coDraw{to{stroke-dashoffset:0}}
+
+/* Placement per beat: two on the left of the phone, two on the right, so the
+   eye is not pulled to the same corner four times running. */
+.callout[data-i="0"]{right:calc(50% + 118px); top:64%; flex-direction:row-reverse}
+.callout[data-i="0"] .co-arrow{left:100%; top:8%; transform:scaleX(-1)}
+.callout[data-i="1"]{left:calc(50% + 118px); top:40%}
+.callout[data-i="1"] .co-arrow{right:100%; top:10%}
+.callout[data-i="2"]{right:calc(50% + 118px); top:16%; flex-direction:row-reverse}
+.callout[data-i="2"] .co-arrow{left:100%; bottom:2%; transform:scaleX(-1)}
+.callout[data-i="3"]{left:calc(50% + 118px); top:22%}
+.callout[data-i="3"] .co-arrow{right:100%; bottom:6%}
+
+/* The arrows point at the phone, so they must sit UNDER it, not over the bezel */
+.pin-device{position:relative;z-index:5}
+
+@media (max-width:1080px){
+  .co-crop{width:124px;height:86px}
+  .co-lab{font-size:13.5px;max-width:13ch}
+  .callout[data-i="0"],.callout[data-i="2"]{right:calc(50% + 96px)}
+  .callout[data-i="1"],.callout[data-i="3"]{left:calc(50% + 96px)}
+}
+/* Below the two-column break the callouts have nowhere to go — the phone fills
+   the width. They are decoration, not content, so they leave rather than
+   overlap the thing they are explaining. */
+@media (max-width:900px){
+  .pin-inner{grid-template-columns:1fr!important;gap:14px}
+  .hero-right{text-align:center}
+  .hero-right .pin-head{text-align:center}
+  .hero-right .pin-head h1.hero{margin-inline:auto;max-width:22ch}
+  .hero-right .caps,.hero-right .cap{text-align:center}
+  .hero-right .hero-cta{justify-content:center}
+  .callout{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .callout{transition:none}
+  .callout.on .co-arrow path{animation:none;stroke-dashoffset:0}
+}
+
+/* --- callout corrections -------------------------------------------------- */
+/* They were landing in the gap BETWEEN the phone and the text, which squeezed
+   the label to one word per line and crowded both columns. They belong in the
+   outer gutter, to the left of the device, where there is nothing else. */
+.pin-inner{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)!important}
+.hero-left{justify-content:flex-end;padding-right:clamp(0px,2vw,26px)}
+.callout,.callout[data-i]{left:auto!important;flex-direction:row!important}
+.callout[data-i="0"],.callout[data-i="1"],.callout[data-i="2"],.callout[data-i="3"]{
+  right:calc(100% - 4px)!important; width:max-content}
+.callout[data-i="0"]{top:58%!important}
+.callout[data-i="1"]{top:36%!important}
+.callout[data-i="2"]{top:14%!important}
+.callout[data-i="3"]{top:26%!important}
+.callout .co-arrow{left:100%!important;right:auto!important;transform:scaleX(-1)}
+.callout[data-i="0"] .co-arrow{top:12%!important;bottom:auto!important}
+.callout[data-i="1"] .co-arrow{top:14%!important;bottom:auto!important}
+.callout[data-i="2"] .co-arrow{bottom:4%!important;top:auto!important;transform:scaleX(-1) scaleY(1)}
+.callout[data-i="3"] .co-arrow{bottom:8%!important;top:auto!important}
+.co-lab{max-width:none;white-space:nowrap;font-size:14px}
+
+/* Less zoom. At 340% a two-pixel error in the crop coordinate lands on the
+   caption under the control instead of the control, which is what happened. */
+.co-crop{background-size:250% auto!important;width:158px;height:112px}
+
+/* The right column had no rhythm — heading, caption and buttons ran together
+   and the caption overlapped the CTA. */
+.hero-right{display:flex;flex-direction:column;gap:clamp(10px,1.6vh,18px)}
+.hero-right .caps{height:auto!important;min-height:clamp(56px,7vh,76px)}
+.hero-right .cap{position:static;display:none}
+.hero-right .cap.on{display:block}
+.hero-right .cap h2{font-size:clamp(19px,1.9vw,25px);margin:0 0 5px}
+.hero-right .cap p{margin:0;max-width:38ch}
+@media (max-width:1140px){
+  .co-lab{white-space:normal;max-width:13ch}
+  .co-crop{width:128px;height:92px}
+}
+
+/* The callouts were anchored to the COLUMN's left edge, which put them off the
+   viewport. Anchor them just left of the phone instead — the column is
+   right-aligned, so the phone's own width is the offset. */
+.callout[data-i="0"],.callout[data-i="1"],.callout[data-i="2"],.callout[data-i="3"]{
+  right:calc(clamp(178px,27vh,392px) + 30px)!important;
+}
+
+/* --- the rail is gone ------------------------------------------------------
+   A vertical 0:00–0:42 scrubber down the left edge was a second progress
+   indicator competing with the beats themselves, and it sat exactly where the
+   callouts need to be. The timecode idea survives where it belongs: in the
+   caption copy and on the recording dial inside the phone. */
+.rail{display:none!important}
+
+/* --- vibrant arrows --------------------------------------------------------
+   One colour per beat, taken from the palette the beat is about: green for the
+   action, gold for the recording, terracotta for the names it filed, star-blue
+   for the sky. Thicker stroke and a soft drop-glow so they read as marks made
+   ON the page rather than hairlines under it. */
+.co-arrow{stroke-width:3.4!important;filter:drop-shadow(0 2px 6px rgba(0,0,0,.16))}
+.callout[data-i="0"] .co-arrow{stroke:#2E7D4F!important}
+.callout[data-i="1"] .co-arrow{stroke:#E0A32E!important}
+.callout[data-i="2"] .co-arrow{stroke:#C4653A!important}
+.callout[data-i="3"] .co-arrow{stroke:#5B8FD0!important}
+/* the crop ring picks up the same colour, so mark and window are one object */
+.callout[data-i="0"] .co-crop{box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px #2E7D4F,0 18px 40px -14px rgba(80,60,35,.45)}
+.callout[data-i="1"] .co-crop{box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px #E0A32E,0 18px 40px -14px rgba(80,60,35,.45)}
+.callout[data-i="2"] .co-crop{box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px #C4653A,0 18px 40px -14px rgba(80,60,35,.45)}
+.callout[data-i="3"] .co-crop{box-shadow:0 0 0 3px var(--paper),0 0 0 4.5px #5B8FD0,0 18px 40px -14px rgba(80,60,35,.45)}
+.callout[data-i="0"] .co-lab b{color:#2E7D4F}
+.callout[data-i="1"] .co-lab b{color:#9A6D12}
+.callout[data-i="2"] .co-lab b{color:#A8502A}
+.callout[data-i="3"] .co-lab b{color:#3F6FB5}
+
+/* with the rail gone the column can breathe */
+.hero-left{padding-left:0}
+
+/* The stroke-draw animation left the path at dashoffset 200 — fully hidden —
+   whenever the class landed outside the frame the animation keyed off. An
+   arrow that sometimes does not exist is worse than one that never animates. */
+.callout.on .co-arrow path{stroke-dasharray:none!important;stroke-dashoffset:0!important;animation:none!important}
+.co-arrow path{stroke-dasharray:none;stroke-dashoffset:0}
+
+/* The arrow ran UNDER the device (.pin-device sits at z-index 5) so its tip —
+   the end that does the pointing — was hidden behind the bezel. Stop it short
+   of the phone instead and lift the whole callout above it. */
+.callout{z-index:7!important}
+.co-arrow{width:88px!important;height:64px!important}
+.callout .co-arrow{left:calc(100% + 4px)!important}
 </style>
 </head>
 
@@ -979,15 +1165,6 @@ section.band.g-paper2{background:var(--band)!important}
     <div class="blob blob-hero" aria-hidden="true"></div>
     <div class="wrap pin-inner">
 
-      <div class="pin-head">
-        <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
-        <h1 class="hero" id="hero-h">Your voice builds a Digital
-          <span class="uline">Twin<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q40 2 60 6 T118 5"/></svg></span>
-          that <span class="accent">knows you.</span></h1>
-      </div>
-
-      <!-- the 42-second rail: the page's structural device is a timecode, because the
-           content really is one 42-second recording being processed -->
       <ol class="rail" aria-label="What happens during one 42-second entry">
         <li class="tick on" data-i="0"><i aria-hidden="true"></i><b>0:00</b></li>
         <li class="tick" data-i="1"><i aria-hidden="true"></i><b>0:14</b></li>
@@ -996,7 +1173,12 @@ section.band.g-paper2{background:var(--band)!important}
         <span class="rail-fill" id="railFill" aria-hidden="true"></span>
       </ol>
 
-      <div class="pin-device">
+      <!-- Two columns: the phone on one side, the words and the buttons on the
+           other. Stacked, the CTA kept slipping past the fold on a short
+           window, and the device had no room around it for anything to point
+           AT — which is what the callouts below need. -->
+      <div class="hero-left">
+        <div class="pin-device">
         <div class="device pin-phone">
           <div class="screens">
             <figure class="scr on" data-i="0">
@@ -1019,7 +1201,36 @@ section.band.g-paper2{background:var(--band)!important}
         </div>
         <div class="device-floor" aria-hidden="true"></div>
       </div>
-      <div class="caps">
+        <div class="callout co-down" data-i="0" style="--cx:50%; --cy:76%">
+          <span class="co-crop" style="background-image:url('/app/app-record.webp?v=1111')"></span>
+          <span class="co-lab">Tap it. Talk for<br><b>forty-two seconds.</b></span>
+          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 14 C 80 12, 42 32, 14 68"/><path d="M14 68 l 17 -8 M14 68 l 2 -18"/></svg>
+        </div>
+        <div class="callout co-down" data-i="1" style="--cx:50%; --cy:43%">
+          <span class="co-crop" style="background-image:url('/app/app-live.webp?v=1111')"></span>
+          <span class="co-lab">The words arrive<br><b>as you say them.</b></span>
+          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 14 C 80 12, 42 32, 14 68"/><path d="M14 68 l 17 -8 M14 68 l 2 -18"/></svg>
+        </div>
+        <div class="callout co-up" data-i="2" style="--cx:52%; --cy:18%">
+          <span class="co-crop" style="background-image:url('/app/app-entry.webp?v=1111')"></span>
+          <span class="co-lab">It catches the<br><b>names you said.</b></span>
+          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 68 C 80 72, 42 52, 14 18"/><path d="M14 18 l 17 7 M14 18 l 2 18"/></svg>
+        </div>
+        <div class="callout co-up" data-i="3" style="--cx:50%; --cy:30%">
+          <span class="co-crop" style="background-image:url('/app/app-twin.webp?v=1111')"></span>
+          <span class="co-lab">Everyone who<br><b>keeps coming up.</b></span>
+          <svg class="co-arrow" viewBox="0 0 128 86" aria-hidden="true"><path d="M114 68 C 80 72, 42 52, 14 18"/><path d="M14 18 l 17 7 M14 18 l 2 18"/></svg>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="pin-head">
+        <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
+        <h1 class="hero" id="hero-h">Your voice builds a Digital
+          <span class="uline">Twin<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q40 2 60 6 T118 5"/></svg></span>
+          that <span class="accent">knows you.</span></h1>
+      </div>
+        <div class="caps">
         <div class="cap on" data-i="0">
           <h2>You start talking.</h2>
           <p>The mic is the whole interface — no prompt, no blank page, nothing to fill in.</p>
@@ -1037,17 +1248,14 @@ section.band.g-paper2{background:var(--band)!important}
           <p>Forty-two seconds. Tomorrow it knows more again.</p>
         </div>
       </div>
-      <!-- The download button lived in .pin-after, which is FOUR viewport
-           heights below the hero's first frame — so the primary action was
-           past the entire opening sequence. It belongs on the first paint,
-           pinned with everything else. -->
-      <div class="hero-cta">
+        <div class="hero-cta">
         <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
         <span class="pill soon" aria-label="Android version coming soon; not yet available">Android<span class="soon-tag">coming soon</span></span>
         <a class="hero-ph" href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer">
           <img alt="DailyVox on Product Hunt" width="180" height="39" loading="lazy"
                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277">
         </a>
+      </div>
       </div>
 
     </div>
@@ -1757,13 +1965,14 @@ section.band.g-paper2{background:var(--band)!important}
       scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
       ticks = [].slice.call(wrap.querySelectorAll('.tick')),
+      cos   = [].slice.call(wrap.querySelectorAll('.callout')),
       N = 4, cur = -1, queued = false,
       horiz = window.matchMedia('(max-width:860px)');
 
   function set(i){
     if(i === cur) return;
     cur = i;
-    [scrs, caps, ticks].forEach(function(group){
+    [scrs, caps, ticks, cos].forEach(function(group){
       group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === i); });
     });
   }
