@@ -22,7 +22,7 @@
   <meta property="og:url" content="https://getdailyvox.com/">
   <meta property="og:title" content="DailyVox — Your Personal AI, On Your Phone">
   <meta property="og:description" content="A voice journal with a living on-device Digital Twin. Your voice, your personality model, your phone.">
-  <meta property="og:image" content="https://getdailyvox.com/og-image.png">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png?v=1111">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="DailyVox — private voice journal with an on-device Digital Twin. Free for iPhone.">
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="DailyVox — Your Personal AI, On Your Phone">
   <meta name="twitter:description" content="An on-device voice journal that grows a living model of you.">
-  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png?v=1111">
   <meta name="twitter:image:alt" content="DailyVox — private voice journal with an on-device Digital Twin. Free for iPhone.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://getdailyvox.com/">
@@ -583,7 +583,6 @@ h1.hero{ font-size:clamp(32px,4.2vw,56px) !important; line-height:1.05 !importan
   padding:0 0 12px !important;
 }
 
-/* the 42-second rail — vertical and out of the flow on desktop, so it costs the device no height */
 .rail{
   position:absolute; left:0; top:clamp(168px,27vh,290px); z-index:2;
   margin:0; padding:0; list-style:none; width:76px; height:min(40vh,330px);
@@ -1160,6 +1159,37 @@ section.band.g-paper2{background:var(--band)!important}
 .sticker[data-i="1"]{top:30%!important}
 .sticker[data-i="2"]{top:44%!important}
 .sticker[data-i="3"]{top:18%!important}
+
+/* --- the hero is a normal section now ------------------------------------
+   It was 420vh tall with a sticky stage, because scroll position drove which
+   beat was showing. The beats now run on their own timer, so the height was
+   four screens of nothing to scroll past before the page began. The stage
+   keeps its centring; it just stops being pinned. */
+.hero-pin{height:auto!important;min-height:100svh!important;margin-top:0!important}
+.pin-stage{position:static!important;height:auto!important;min-height:calc(100svh - var(--navh,77px));
+  padding-block:clamp(18px,4vh,52px)}
+.pin-inner{padding-top:clamp(10px,2vh,26px)!important;padding-bottom:0!important}
+
+/* --- hero centring --------------------------------------------------------
+   The grid container was centred but its CONTENTS were not: the left column
+   ran 574px wide with the phone pinned to its right edge, so 347px of the
+   column was empty and the whole composition sat visually right of centre.
+   Symmetric columns, phone centred in its own, stickers hung off the phone
+   rather than off the column edge. */
+.pin-inner{grid-template-columns:1fr 1fr!important;
+  align-items:center; justify-items:center; max-width:1120px!important}
+.hero-left{justify-content:center!important;padding-right:0!important;width:100%}
+.hero-right{justify-self:start;max-width:30rem}
+
+/* Anchored to the phone's own half-width, so a sticker sits just outside the
+   device wherever the device happens to be. */
+.sticker[data-i="0"],.sticker[data-i="1"],.sticker[data-i="2"],.sticker[data-i="3"]{
+  right:calc(50% + (clamp(178px,27vh,392px) / 2) + 14px)!important;
+}
+@media (max-width:900px){
+  .pin-inner{grid-template-columns:1fr!important;justify-items:center}
+  .hero-right{justify-self:center;max-width:34rem;text-align:center}
+}
 </style>
 </head>
 
@@ -1210,14 +1240,8 @@ section.band.g-paper2{background:var(--band)!important}
     <!-- blob lives inside the sticky stage, not the 420vh section, or it sits off-screen -->
     <div class="blob blob-hero" aria-hidden="true"></div>
     <div class="wrap pin-inner">
-
-      <ol class="rail" aria-label="What happens during one 42-second entry">
-        <li class="tick on" data-i="0"><i aria-hidden="true"></i><b>0:00</b></li>
-        <li class="tick" data-i="1"><i aria-hidden="true"></i><b>0:14</b></li>
-        <li class="tick" data-i="2"><i aria-hidden="true"></i><b>0:28</b></li>
-        <li class="tick" data-i="3"><i aria-hidden="true"></i><b>0:42</b></li>
-        <span class="rail-fill" id="railFill" aria-hidden="true"></span>
-      </ol>
+      <!-- The 0:00-0:42 rail is gone with the scroll driver: it was a scroll
+           progress indicator for a section that no longer scrolls. -->
 
       <!-- Two columns: the phone on one side, the words and the buttons on the
            other. Stacked, the CTA kept slipping past the fold on a short
@@ -2004,62 +2028,35 @@ section.band.g-paper2{background:var(--band)!important}
 (function(){
   var wrap = document.getElementById('pinWrap');
   if(!wrap) return;
-  var fill  = document.getElementById('railFill'),
-      scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
+  var scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
-      ticks = [].slice.call(wrap.querySelectorAll('.tick')),
       cos   = [].slice.call(wrap.querySelectorAll('.sticker')),
-      N = 4, cur = -1, queued = false,
-      horiz = window.matchMedia('(max-width:860px)');
+      N = 4, cur = -1, i = 0;
 
-  function set(i){
-    if(i === cur) return;
-    cur = i;
-    [scrs, caps, ticks, cos].forEach(function(group){
-      group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === i); });
+  function set(n){
+    if(n === cur) return;
+    cur = n;
+    [scrs, caps, cos].forEach(function(group){
+      group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === n); });
     });
   }
-  function draw(){
-    queued = false;
-    var r = wrap.getBoundingClientRect(), span = r.height - window.innerHeight;
-    if(span <= 0) return;
-    var p = Math.min(1, Math.max(0, -r.top / span));
-    set(Math.min(N - 1, Math.floor(p * N * 0.999)));
-    var pct = (p * 100).toFixed(2) + '%';
-    if(horiz.matches){ fill.style.width = pct; fill.style.height = '1px'; }
-    else { fill.style.height = pct; fill.style.width = '1px'; }
-  }
-  function onScroll(){ if(!queued){ queued = true; requestAnimationFrame(draw); } }
-  addEventListener('scroll', onScroll, {passive:true});
-  addEventListener('resize', onScroll);
-  draw();
 
-  /* AUTOPLAY until the reader takes over.
+  /* The beats used to be driven by scroll position across a 420vh section.
+     They run on a timer now and keep running — there is no scroll state to
+     hand over to, so nothing stops the loop. Reduced motion pins beat 0 and
+     leaves it there. */
+  set(0);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-     The sequence was entirely scroll-driven, so the hero's first frame was a
-     still: someone landing on the page saw one screenshot and no indication
-     that three more existed. It now advances on its own — and stops for good
-     the moment there is any scroll, because once the reader is driving,
-     something moving underneath them is a distraction rather than a demo. */
-  var auto = null, autoI = 0;
-  function stopAuto(){
-    if(auto){ clearInterval(auto); auto = null; }
-    removeEventListener('scroll', stopAuto);
-    removeEventListener('wheel', stopAuto);
-    removeEventListener('touchstart', stopAuto);
-  }
-  var still = matchMedia('(prefers-reduced-motion: reduce)');
-  if(!still.matches && window.scrollY < 4){
-    set(0);
-    auto = setInterval(function(){
-      if(window.scrollY > 4){ stopAuto(); return; }
-      autoI = (autoI + 1) % N;
-      set(autoI);
-    }, 3400);
-    addEventListener('scroll', stopAuto, {passive:true, once:true});
-    addEventListener('wheel', stopAuto, {passive:true, once:true});
-    addEventListener('touchstart', stopAuto, {passive:true, once:true});
-  }
+  var timer = setInterval(tick, 3600);
+  function tick(){ i = (i + 1) % N; set(i); }
+
+  /* Pause while the tab is hidden, so a backgrounded page is not animating
+     into nothing and the beat on return is the one that was showing. */
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ clearInterval(timer); timer = null; }
+    else if(!timer){ timer = setInterval(tick, 3600); }
+  });
 })();
 </script>
 </body>

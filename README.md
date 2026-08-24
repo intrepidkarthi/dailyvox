@@ -4,7 +4,7 @@
 
 <h1 align="center">DailyVox</h1>
 <p align="center"><strong>Speak for 42 seconds. Watch your words become stars.</strong></p>
-<p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your iPhone.</p>
+<p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your phone. iPhone today; Android in development.</p>
 <p align="center"><sub><b>Free forever</b> &nbsp;·&nbsp; 100% on-device &nbsp;·&nbsp; ⭐️ 5-star rated &nbsp;·&nbsp; 500+ downloads, growing ~50% week-over-week &nbsp;·&nbsp; 🚀 live on Product Hunt</sub></p>
 
 <p align="center">
@@ -64,13 +64,15 @@ Behind the scenes, an **on-device Digital Twin** learns how you think, how you f
 ## App Screenshots
 
 <p align="center">
-  <img src=".github/readme/speak.png" width="160" alt="Just speak — 42-second voice entries" />
-  <img src=".github/readme/twin.png" width="160" alt="Your on-device Digital Twin predicts your mood" />
-  <img src=".github/readme/remembers.png" width="160" alt="It remembers the people and topics that matter to you" />
-  <img src=".github/readme/patterns.png" width="160" alt="Patterns surfaced across months of entries" />
-  <img src=".github/readme/reads.png" width="160" alt="Reads between the lines of what you say" />
-  <img src=".github/readme/private.png" width="160" alt="100% private — a constellation only you can see" />
+  <img src=".github/readme/speak.png" width="160" alt="The Speak tab: today's entry, and a microphone docked where your thumb is" />
+  <img src=".github/readme/twin.png" width="160" alt="The Digital Twin sky: distance is how long ago, angle is the hour of day" />
+  <img src=".github/readme/remembers.png" width="160" alt="An entry with the names it caught underlined, and what the Twin filed beneath" />
+  <img src=".github/readme/patterns.png" width="160" alt="Insights: a 32-day writing streak and the week's pattern" />
+  <img src=".github/readme/reads.png" width="160" alt="Ask your Twin: an answer that cites the entries it came from" />
+  <img src=".github/readme/private.png" width="160" alt="The Data Shield: transcription on device, DailyVox servers none exist" />
 </p>
+
+<p align="center"><sub>Real screenshots from v1.11.0, seeded with a demo journal. Regenerate with <code>ios/AppStore/screenshot-src/make_screenshots.sh</code>.</sub></p>
 
 ---
 
@@ -159,16 +161,19 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New: v1.6.0 — Semantic Memory & Measurable Fidelity
+## What's New — v1.11.0 (August 2026)
 
-- **Search by meaning** — find an entry by what it was about, not the words it used; on-device NLEmbedding vectors, with a measured abstention threshold so search declines rather than guesses
-- **A first learned trait with honest confidence** — the openness estimate comes from a small on-device model validated on consented human writing; every Twin prediction now shows how sure it is (tentative / moderate / strong)
-- **Your Day (Ambient), off by default** — on-device photo scene labels and music mood as one-line notes through a review-and-discard queue; only derived labels, never the media
-- **Spoken Words** — teach DailyVox names it mis-hears so corrections stick; sharper SpeechAnalyzer transcription on iOS 26
-- **iCloud sync off by default for new installs** — entries live on this iPhone unless you turn sync on (existing syncers keep syncing)
-- v1.5.0 (Body Twin) shipped the day before: HealthKit snapshots beside each entry, activity context, the body whisper, and Body & Mood insights
+**Live transcription.** The recording screen and the Dynamic Island show what you are saying as you say it, with a gold star when a name is caught. On-device, always. The Island carries the 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.
 
-[Full changelog](CHANGELOG.md) · [Try the interactive demo](https://getdailyvox.com/demo)
+**The correction that mattered more than any feature.** Until this release the transcriber preferred on-device recognition only when the phone was offline — which meant that on a connected iPhone, nearly every user nearly always, the recording went to Apple's speech servers for better punctuation. Every claim this project makes rested on that not happening. On-device recognition is now unconditional: where no on-device model is installed, transcription stops and says why rather than reaching for the network. Voice search had the same fault and the same fix.
+
+**The constellation encodes the journal.** Distance from the centre is how long ago an entry was spoken; the angle is the hour of day; size is how long you spoke. A usual bedtime becomes a visible band. Positions used to be hashes.
+
+**Two new share cards.** "Tonight" is different every night by construction. "Body" reads how you slept against how you wrote — absent unless you have kept body signals, its own switch off every time the sheet opens, and heart rate never on any shareable image.
+
+**And a long list of things that were simply broken:** the starred filter could not be reached at all; the home screen and Insights could disagree about your streak; editing an entry rewrote its timestamp and an edit could be lost if iOS reclaimed the app; a phone call cost you the recording in progress; the microphone now sits at the bottom of the Speak tab, where your thumb is.
+
+[Full changelog](CHANGELOG.md) · [Release history on the site](https://getdailyvox.com/roadmap) · [Try the interactive demo](https://getdailyvox.com/demo)
 
 ---
 
@@ -247,6 +252,27 @@ The constellation metaphor came from staring at my own journal entries — hundr
 
 ---
 
+## The research behind it
+
+A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships.
+
+That is the argument of **[Measuring a Model of One](https://getdailyvox.com/paper/measuring-a-model-of-one.pdf)**, and of TwinEval, the evaluation harness it releases. Every metric is lift over an explicit baseline; a permutation null and five negative controls collapse to chance when the link between label and text is destroyed, which is what lets the numbers say *no*.
+
+What the instrument found, leading with the losses:
+
+| Finding | Result |
+|:--|:--|
+| The deployed Twin on the author's own diary | **lift −25.2%** — below a do-nothing baseline |
+| OS valence across 1,473 self-labelled entries | **r = +0.59** — real signal |
+| The keyword emotion layer | **43.5%** against an **85.0%** majority baseline |
+| A 105 KB openness head, 1,307 writers | **r = +0.13** — statistically real, practically worthless |
+
+Three of those four are the product losing. An instrument that cannot catch its own maker's model is not an instrument.
+
+**Five problems are open**, and none of them need access to anyone's diary — a licence-clean emotion head that survives the deployment gate, a long-horizon memory benchmark, code-mixed on-device NLP, aggregating evidence without a coordinating server, and a consented cohort. Each is written up with what a good contribution would look like on the [research page](https://getdailyvox.com/research). If any of it is close to what you work on, I would rather do it with you than alone.
+
+---
+
 ## Contributing & Support
 
 DailyVox is open source (MIT) and built solo, in the open. If the mission — a personal AI that's **private by construction** — resonates, here's how to help:
@@ -268,6 +294,9 @@ It's a genuinely fun codebase to hack on: 100% on-device AI, SwiftUI, a Canvas-r
 | **Website** | [getdailyvox.com](https://getdailyvox.com) |
 | **Blog** | [getdailyvox.com/blog](https://getdailyvox.com/blog) |
 | **Privacy Policy** | [getdailyvox.com/privacy](https://getdailyvox.com/privacy.html) |
+| **Roadmap** | [getdailyvox.com/roadmap](https://getdailyvox.com/roadmap) — what shipped, what is parked, and why |
+| **Research** | [getdailyvox.com/research](https://getdailyvox.com/research) — the programme, and five open problems |
+| **Paper** | [Measuring a Model of One](https://getdailyvox.com/paper/measuring-a-model-of-one.pdf) (PDF, preprint) |
 | **Press Kit** | [getdailyvox.com/press](https://getdailyvox.com/press) |
 | **Contact** | intrepidkarthi@gmail.com |
 
