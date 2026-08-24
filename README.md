@@ -5,7 +5,7 @@
 <h1 align="center">DailyVox</h1>
 <p align="center"><strong>Speak for 42 seconds. Watch your words become stars.</strong></p>
 <p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your phone. iPhone today; Android in development.</p>
-<p align="center"><sub><b>Free forever</b> &nbsp;·&nbsp; 100% on-device &nbsp;·&nbsp; ⭐️ 5-star rated &nbsp;·&nbsp; 500+ downloads, growing ~50% week-over-week &nbsp;·&nbsp; 🚀 live on Product Hunt</sub></p>
+<p align="center"><sub><b>Free forever</b> &nbsp;·&nbsp; 100% on-device &nbsp;·&nbsp; No account, no servers, no analytics &nbsp;·&nbsp; MIT licensed &nbsp;·&nbsp; <a href="https://www.producthunt.com/products/dailyvox">on Product Hunt</a></sub></p>
 
 <p align="center">
   <a href="https://apps.apple.com/app/id6760454642"><img src="https://img.shields.io/badge/Download_Free-App%20Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Download on App Store" /></a>
@@ -21,6 +21,7 @@
 <p align="center">
   <a href="https://getdailyvox.com/privacy.html"><img src="https://img.shields.io/badge/Apple_Privacy-Data%20Not%20Collected-brightgreen?style=flat-square&logo=apple" alt="Privacy" /></a>
   <img src="https://img.shields.io/badge/Platform-iOS%2017%2B%20%7C%20iPadOS%2017%2B-lightgrey?style=flat-square&logo=apple" alt="Platform" />
+  <img src="https://img.shields.io/badge/Android-in%20development-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android in development" />
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/Price-Free%20Forever-D4A547?style=flat-square" alt="Free Forever" />
   <img src="https://img.shields.io/badge/AI-100%25%20On--Device-5B7C6B?style=flat-square" alt="On-Device AI" />
@@ -74,6 +75,18 @@ Behind the scenes, an **on-device Digital Twin** learns how you think, how you f
 
 <p align="center"><sub>Real screenshots from v1.11.0, seeded with a demo journal. Regenerate with <code>ios/AppStore/screenshot-src/make_screenshots.sh</code>.</sub></p>
 
+### Android — in development, not released
+
+<p align="center">
+  <img src=".github/readme/android-speak.png" width="160" alt="Speak on Android: the recording dial, and a card saying nothing leaves this phone" />
+  <img src=".github/readme/android-twin.png" width="160" alt="The Twin sky, rendered from the same encoding as iOS" />
+  <img src=".github/readme/android-filed.png" width="160" alt="An entry and what the Twin filed from it" />
+  <img src=".github/readme/android-insights.png" width="160" alt="Insights on Android" />
+  <img src=".github/readme/android-permissions.png" width="160" alt="Android app permissions for DailyVox: microphone and notifications, and no internet" />
+</p>
+
+<p align="center"><sub>The last one is Android's own permission screen, not ours. It is the claim this app is built around, in the one place a user can check it without trusting us. There is no Play Store listing and no date — see <a href="android/playstore/SUBMISSION_CHECKLIST.md">the submission checklist</a> for what is still blocking.</sub></p>
+
 ---
 
 ## Why DailyVox?
@@ -126,8 +139,6 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 
 ## Tech Stack
 
-| Layer | Technology |
-|:--|:--|
 ### iPhone — shipping
 
 | Layer | Technology |
@@ -148,10 +159,10 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **Data** | Room (no cloud sync; Auto Backup deliberately disabled) |
 | **Sentiment** | Bundled VADER lexicon, 7,517 entries — Android has no system sentiment API |
 | **Entities** | Model-free capitalisation heuristic — Android has no system NER, and the strong open models restrict commercial use |
-| **Speech** | `createOnDeviceSpeechRecognizer` (API 33+), which fails rather than falling back to a network |
+| **Speech** | `createOnDeviceSpeechRecognizer` only — no second branch. Where no on-device model is installed it stops and says so, rather than reaching for a network |
 | **Prosody** | MediaCodec + autocorrelation pitch/energy in plain Kotlin |
 | **Body** | Health Connect — opt-in, read-only, four record types |
-| **Minimum** | API 29 · targetSdk 36 |
+| **Minimum** | API 33 (Android 13) · targetSdk 36 — 33 is where on-device recognition arrived, and below it this app cannot transcribe at all |
 | **Permissions** | RECORD_AUDIO, POST_NOTIFICATIONS, VIBRATE, USE_BIOMETRIC. **No INTERNET permission of any kind.** |
 
 Both platforms are measured against each other rather than assumed equivalent: a
@@ -188,21 +199,20 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 | Version | Focus | Status |
 |:--|:--|:--|
-| v1.0 | Core voice journal + Digital Twin | Shipped |
-| v1.1 | Twin Predictions + Shareable Cards | Shipped |
-| v1.2 | Ask Your Twin (chat) | Shipped |
-| v1.3 | Constellation Update | Shipped |
-| v1.3.5 | Dynamic Island + New Icon | Shipped |
-| v1.4.0 | Warm redesign — Digital Twin moved to center | Shipped |
-| v1.4.1 | Voice-first "Speak your first star" onboarding | **Shipped** |
-| v1.5 | Body Twin — HealthKit snapshots, body whisper, review queue | Shipped |
-| v1.5.5 | Ambient Signals — on-device photo + music context | Shipped (in v1.6.0) |
-| v1.6 | Semantic Memory & Measurable Fidelity | **Shipped** |
-| v1.7 | Foundation Models Twin — grounded on-device chat with citations | **Built · next release** |
-| v1.8 | Multi-Language (Tamil, Kannada, Hindi, Spanish, Japanese, German first) | Planned |
-| v2.0 | Apple Intelligence Native (Siri AI, iOS 27) | Planned |
+| v1.0 – v1.5 | Voice journal, Digital Twin, constellation, warm redesign, Body Twin | Shipped |
+| v1.6.0 | Semantic memory and measurable fidelity — the eval harness | Shipped Jul 2026 |
+| v1.7.0 | Ask Your Twin on Apple Intelligence, every answer citing its entries | Shipped Jul 2026 |
+| v1.8.0 | Retrieval rebuilt — hybrid scoring, threshold re-measured at τ=0.29 | Shipped Jul 2026 |
+| v1.9.0 | Voice & Access — read-aloud, system voices, accessibility pass | Shipped Jul 2026 |
+| v1.10.0 | Spanish, French, German and Italian | Shipped Aug 2026 |
+| v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | **Shipped Aug 2026** |
+| — | **Android, first release** | In development |
+| v1.12 | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
+| v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
-Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device. iPhone-only by conviction — the phone is the Twin's body, and every feature works end-to-end on the phone alone (no Mac or second computer, ever); portability lives in the data (Twin Protocol), not in platform ports — [full roadmap](ROADMAP.md)
+Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.
+
+Phone-only by conviction: the phone is the Twin's body, and every feature works end-to-end on the phone alone — no Mac, no second computer, ever. That rule is what the Android port has to satisfy too, and it is why the port replaces Apple's frameworks with on-device substitutes rather than a server. [Full roadmap](ROADMAP.md).
 
 ---
 
