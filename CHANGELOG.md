@@ -47,7 +47,7 @@ nothing here has shipped to a user.
   That has not been tested across a broad range of physical devices, and it is
   why there is no release date.
 
-## [1.11.0] — unreleased
+## [1.11.0] — 2026-08-24
 
 ### Fixed, and this one matters most
 - **Voice recordings were being sent to Apple's speech servers.** The

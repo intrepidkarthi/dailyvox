@@ -948,6 +948,42 @@
 .rung p{margin:0;font-size:15.5px;line-height:1.62}
 .ladder-note{font-size:15px;color:var(--ink-mute,#5C6A64)}
 @media (max-width:600px){.rung{padding-left:22px}.rung-h h3{font-size:17px}}
+
+.hist-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:22px 0 6px}
+.hist{width:100%;border-collapse:collapse;font-size:15px}
+.hist th,.hist td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--rule,rgba(26,26,46,.09));vertical-align:top}
+.hist thead th{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-mute,#5C6A64);border-bottom-width:2px}
+.hist tbody th{font:600 13px/1.4 'DM Mono',ui-monospace,monospace;white-space:nowrap;width:1%;color:var(--uv-text,#3F5A4D)}
+.hist td:nth-child(2){font:500 12.5px/1.5 'DM Mono',ui-monospace,monospace;color:var(--ink-mute,#5C6A64);white-space:nowrap;width:1%}
+.hist tr:last-child th,.hist tr:last-child td{border-bottom:none}
+.sub-h{margin:30px 0 12px;font-size:18px;letter-spacing:-.01em}
+.findings{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:13px}
+.findings li{padding:15px 17px;border-radius:14px;background:var(--paper-2,rgba(26,26,46,.03));
+  border:1px solid var(--rule,rgba(26,26,46,.08));font-size:15.5px;line-height:1.6}
+.findings-note{font-size:15px;color:var(--ink-mute,#5C6A64);font-style:italic}
+.pilot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin:20px 0 18px}
+.pil{padding:16px 18px;border-radius:14px;border:1px solid var(--rule-2,rgba(26,26,46,.14))}
+.pil-n{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--uv-text,#3F5A4D);margin-bottom:7px}
+.pil p{margin:0;font-size:15px;line-height:1.58}
+.pilot-terms{font-size:14.5px;color:var(--ink-mute,#5C6A64);padding:14px 16px;border-radius:12px;
+  background:var(--uv-wash,rgba(91,124,107,.06))}
+@media (max-width:700px){.pilot-grid{grid-template-columns:1fr}.hist{font-size:14px}}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.path-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px 0 24px}
+.path{width:100%;border-collapse:collapse;font-size:14.5px}
+.path th,.path td{padding:12px 14px;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--rule,rgba(26,26,46,.09))}
+.path thead th{font:600 10.5px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-mute,#5C6A64);border-bottom-width:2px}
+.path tbody th{font:600 13px/1.4 'DM Mono',ui-monospace,monospace;white-space:nowrap;width:1%;
+  color:var(--uv-text,#3F5A4D)}
+.path td:last-child{color:var(--ink-mute,#5C6A64)}
+.path tr:last-child th,.path tr:last-child td{border-bottom:none}
+.path-note{margin-top:12px;font-size:14.5px;color:var(--ink-mute,#5C6A64);font-style:italic}
+@media (max-width:760px){.path{font-size:13.5px}.path th,.path td{padding:10px 10px}}
 </style>
 </head>
 <body>
@@ -985,10 +1021,46 @@
 
     <div class="wrap">
 
-      <!-- LIVE -->
+
+      <!-- HOW IT GOT HERE — the page opened at "live today", which is a status
+           page, not a roadmap. A roadmap has a direction, and direction needs a
+           starting point. Fifteen releases in five months, with the research
+           result that forced each turn. -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§01</span>
+          <h2 class="sec-title">How it <em>got here</em>.</h2>
+          <span class="sec-tag">2026.03 → now</span>
+        </div>
+
+        <p>Fifteen releases in five months. The interesting column is the right-hand one: most of these turns were forced by a measurement rather than chosen from a backlog.</p>
+
+        <div class="hist-wrap">
+          <table class="hist">
+            <caption class="sr-only">DailyVox release history, with what each release was for</caption>
+            <thead><tr><th scope="col">Version</th><th scope="col">Shipped</th><th scope="col">What it was</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1.0</th><td>23 Mar</td><td>Record, transcribe on-device, store locally. The whole product in one screen.</td></tr>
+              <tr><th scope="row">1.1</th><td>26 Mar</td><td>The Twin's first predictions — mood shifts, triggers, day-of-week patterns.</td></tr>
+              <tr><th scope="row">1.2</th><td>21 May</td><td>Ask Your Twin, and shareable cards. The Twin becomes something you talk to.</td></tr>
+              <tr><th scope="row">1.3</th><td>24 May</td><td>The constellation, and the design language it belongs to.</td></tr>
+              <tr><th scope="row">1.4</th><td>19 Jun</td><td>Warm redesign. Voice-first onboarding: your first entry becomes your first star.</td></tr>
+              <tr><th scope="row">1.5</th><td>4 Jul</td><td>Body Twin — HealthKit through a review-and-discard queue, so nothing is learned without being seen first.</td></tr>
+              <tr><th scope="row">1.6</th><td>19 Jul</td><td>Semantic search, with a <em>measured</em> abstention threshold. The release where the Twin learned to decline.</td></tr>
+              <tr><th scope="row">1.7</th><td>20 Jul</td><td>The conversational Twin: a 3B on-device model, answers constrained to cite your own entries.</td></tr>
+              <tr><th scope="row">1.8</th><td>23 Jul</td><td>Multi-language groundwork.</td></tr>
+              <tr><th scope="row">1.9</th><td>31 Jul</td><td>Voice &amp; access. 138 places in the app ignored your text size; all of them scale now.</td></tr>
+              <tr><th scope="row">1.10</th><td>11 Aug</td><td>Spanish, French, German, Italian — limited to the four where search by meaning actually works.</td></tr>
+              <tr><th scope="row">1.11</th><td>24 Aug</td><td>Live transcription, the Dynamic Island, an encoded sky — and the correction that stopped recordings reaching Apple's speech servers when the phone was online.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- LIVE -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§02</span>
           <h2 class="sec-title">Live <em>today</em>.</h2>
           <span class="sec-tag">app.store</span>
         </div>
@@ -1001,7 +1073,7 @@
       <!-- ANDROID -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§02</span>
+          <span class="sec-num">§03</span>
           <h2 class="sec-title">Android, <em>in development</em>.</h2>
           <span class="sec-tag">not.released</span>
         </div>
@@ -1022,9 +1094,25 @@
       <!-- NEXT -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§03</span>
+          <span class="sec-num">§04</span>
           <h2 class="sec-title">What comes <em>next</em>.</h2>
           <span class="sec-tag">planned</span>
+        </div>
+
+        <p>Neither platform goes straight to v2.0. There is a run of releases in between on both, and what gates most of them is a measurement rather than a feature — the version numbers move when a number does.</p>
+
+        <div class="path-wrap">
+          <table class="path">
+            <caption class="sr-only">Planned releases before v2.0, on both platforms, and what gates each</caption>
+            <thead><tr><th scope="col">Next</th><th scope="col">iPhone</th><th scope="col">Android</th><th scope="col">Gated on</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">v1.12</th><td>Long-horizon memory: the Twin connecting entries months apart</td><td>Reaching parity with the shipped iPhone Twin</td><td>A benchmark that scores whether the connection was <em>made</em> or confabulated</td></tr>
+              <tr><th scope="row">v1.13</th><td>The emotion layer replaced with a learned head</td><td>Same head, same gate</td><td>A licence-clean retrain that stops over-firing on neutral text — the current one fails this</td></tr>
+              <tr><th scope="row">v1.14</th><td>Trait scoring validated against instruments, not asserted</td><td>Same</td><td>Pilot data. This is the release that cannot ship from one person's diary</td></tr>
+              <tr><th scope="row">v2.0</th><td>Apple Intelligence native — ask Siri, it consults your Twin</td><td>First public Android release</td><td>Everything above holding on both platforms at once</td></tr>
+            </tbody>
+          </table>
+          <p class="path-note">Dates are deliberately absent. Three of these four are waiting on a result, and a result does not arrive on a schedule.</p>
         </div>
 
         <p><strong>Body Twin.</strong> Sleep, heart-rate variability and activity as context the Twin can correlate against mood — HealthKit on iPhone, Health Connect on Android. Opt-in and read-only on both. The interesting question is not whether poor sleep makes a bad day; it is whether it does so <em>for you</em>, which is a question only your own entries can answer.</p>
@@ -1037,7 +1125,7 @@
       <!-- DROPPED -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§04</span>
+          <span class="sec-num">§05</span>
           <h2 class="sec-title">Tried, and <em>dropped</em>.</h2>
           <span class="sec-tag">negative.results</span>
         </div>
@@ -1052,6 +1140,60 @@
       </section>
 
       <!-- OPEN -->
+            <!-- THE RESEARCH PROGRAMME. The roadmap said "the research programme" in
+           passing and linked nowhere. This is what it is, what it has already
+           found — including against this app — and what using real participants'
+           data would actually involve. -->
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§06</span>
+          <h2 class="sec-title">The research <em>programme</em>.</h2>
+          <span class="sec-tag">paper · harness · pilot</span>
+        </div>
+
+        <p>A model built to be private cannot be watched in production. With no egress there is no server-side dashboard, no population A/B test, no confusion matrix — and its one user is the only witness. So it has to be evaluated <em>on the device, before it ships</em>, or its fidelity claims cannot be checked at all.</p>
+
+        <p>That is the argument of the paper this project produced, <em>Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models</em>, and of <strong>TwinEval</strong>, the harness it releases. Every metric is lift over an explicit baseline. A permutation null and five negative controls collapse to chance when the link between label and text is destroyed — which is what lets the numbers say <em>no</em>.</p>
+
+        <h3 class="sub-h">What the instrument found, starting with its own model</h3>
+
+        <ul class="findings">
+          <li><strong>The deployed Twin failed its first contact with a real diary.</strong> On the author's own journal, keyword-derived traits scored <strong>below a do-nothing baseline — lift −25.2%</strong>. The cause was a written-versus-spoken register shift that synthetic validation could not have exposed.</li>
+          <li><strong>Some layers carry real signal; others do not.</strong> Across 1,473 writer-self-labelled entries and 15,809 held-out utterances: the OS valence layer reads people at <strong>r = +0.59</strong>. The keyword emotion layer scores <strong>43.5%</strong> against an <strong>85.0%</strong> majority baseline — worse than guessing the common answer.</li>
+          <li><strong>The repair is named, and not yet takeable.</strong> A learned emotion probe beats the keyword layer on transfer to real diaries (50.1% vs 43.8%) but trains on research-licence-only data. The first licence-clean retrain fails the deployment gate by over-firing on neutral text.</li>
+          <li><strong>An honest null.</strong> A 105 KB openness head reads 1,307 writers' self-reported openness at <strong>r = +0.13</strong> — statistically real, practically worthless, and bounded by how much text a person writes rather than by the model.</li>
+        </ul>
+
+        <p class="findings-note">An instrument that catches its own maker's model failing is the only kind worth publishing. None of the above is a marketing number; three of the four are the product losing.</p>
+
+        <h3 class="sub-h">The pilot, and what would happen to your data</h3>
+
+        <p>Every measurement above comes from one author's diary plus public corpora. The gate between that and a finding is a small consented cohort — and because this is a zero-network product, running one is deliberately awkward. There is no telemetry to switch on. A participant has to <em>choose</em> to send something.</p>
+
+        <div class="pilot-grid">
+          <div class="pil">
+            <div class="pil-n">what you'd send</div>
+            <p>A diary export from the app, seven self-report answers about how you see yourself, and the words "I consent". Nothing automatic; nothing the app collects on its own.</p>
+          </div>
+          <div class="pil">
+            <div class="pil-n">what happens to it</div>
+            <p>It is scored locally by the same harness, against the same baselines. Then, about two weeks later, you answer the same seven questions again without looking at the first set.</p>
+          </div>
+          <div class="pil">
+            <div class="pil-n">why twice</div>
+            <p>Because people are not consistent with themselves. Your test–retest agreement becomes the ceiling the Twin is measured against — a Twin cannot know you better than you agree with you.</p>
+          </div>
+          <div class="pil">
+            <div class="pil-n">what gets published</div>
+            <p>An anonymous ID, entry count, date span, per-trait numbers, and the fidelity and self-consistency scores. Aggregate numerics only. Nothing else — not a line of your diary.</p>
+          </div>
+        </div>
+
+        <p class="pilot-terms">Independent research, no compensation, no institutional sponsor. Consent messages are kept privately and a deletion request is honoured immediately — your row is struck and the files removed. Withdrawal is honoured any time before publication. Participant data never leaves the researcher's machine; it is not in the app, not in a cloud, and not in the repository.</p>
+
+        <p>If you keep a journal in DailyVox and would consider this, the address is <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>. Saying no costs nothing and changes nothing about the app.</p>
+      </section>
+
       <!-- RESEARCH LADDER — the roadmap read as a feature list, which is the
            wrong shape for this product. "Digital Twin" is a claim, and a claim
            needs gates. Each rung below is a question that can be answered with
@@ -1060,7 +1202,7 @@
            Statuses are honest, including the one that says no. -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§05</span>
+          <span class="sec-num">§07</span>
           <h2 class="sec-title">How you'd know it <em>worked</em>.</h2>
           <span class="sec-tag">the research ladder</span>
         </div>
@@ -1104,7 +1246,7 @@
 
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§06</span>
+          <span class="sec-num">§08</span>
           <h2 class="sec-title">Open <em>questions</em>.</h2>
           <span class="sec-tag">unresolved</span>
         </div>
