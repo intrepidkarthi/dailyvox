@@ -42,7 +42,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="alternate" type="application/rss+xml" title="DailyVox Blog" href="/blog/feed.xml">
 
-  <link rel="preload" as="image" href="/app/app-record.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="/app/app-record.webp?v=1110" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -516,7 +516,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,[
   background:
     radial-gradient(760px 500px at 78% 14%, rgba(91,124,107,.22), transparent 62%),
     radial-gradient(580px 440px at 12% 94%, rgba(212,165,71,.13), transparent 60%),
-    linear-gradient(165deg,#2B2520 0%,#211C18 55%,#2B2620 100%) !important;
+    linear-gradient(165deg,#571F14 0%,#43170F 55%,#5B2116 100%) !important;
   color:#F4EEE0; position:relative; isolation:isolate;
 }
 .band-dark .blob{ opacity:0 !important; }
@@ -740,6 +740,130 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
    green of what has shipped and the hollow ring of what is only intended. */
 .chip-next{background:var(--vital); color:#fff}
 .mile.next::before{background:var(--vital)}
+
+/* ============================================================================
+   COLOUR BANDS — the v2.0 canvas turns the page into blocks of saturated
+   ground, the same treatment the App Store frames use, so the site and the
+   store listing read as one system.
+
+   Implemented by overriding the root custom properties per band rather than
+   restyling each component. The page makes 276 var() references against 32
+   literal colours, so a band that redefines --ink, --paper, --card and the
+   accent ramp gets every card, chip, rule and table inside it for free.
+
+   The accent flip is not cosmetic. --uv is forest green (#5B7C6B); on navy it
+   measures about 2.2:1, which is the exact combination the product's own
+   design rules out. So on dark grounds gold becomes the actor, which is the
+   rule the app already follows at night.
+   ========================================================================== */
+.band{background:var(--band);color:var(--ink);position:relative;isolation:isolate}
+.band>.blob{opacity:0!important}
+
+.band.on-dark{
+  --paper:var(--band); --paper-2:rgba(241,237,226,.045); --paper-3:rgba(241,237,226,.08);
+  --card:rgba(241,237,226,.055);
+  --ink:#F1EDE2; --ink-dim:rgba(241,237,226,.74); --ink-mute:rgba(241,237,226,.62);
+  --rule:rgba(241,237,226,.13); --rule-2:rgba(241,237,226,.24);
+  --uv:#EDCB86; --uv-text:#EDCB86; --uv-2:#D9A441;
+  --uv-wash:rgba(237,203,134,.07); --uv-soft:rgba(237,203,134,.15); --uv-edge:rgba(237,203,134,.36);
+  --bio:#EDCB86; --bio-text:#F3DCAE; --bio-soft:rgba(237,203,134,.16); --bio-edge:rgba(237,203,134,.46);
+  --vital:#E3B98F; --vital-text:#F0D6BA; --vital-soft:rgba(227,185,143,.15); --vital-edge:rgba(227,185,143,.46);
+  --ray:#E8836A; --ray-soft:rgba(232,131,106,.14);
+  /* --ink-soft is referenced with a hard-coded light-mode fallback in a few
+     components (the platform table among them). Undefined at :root, that
+     fallback painted #5C6A64 on purple — 2.1:1. Defining it here is the fix. */
+  --ink-soft:rgba(241,237,226,.78);
+}
+.band.on-dark .card,.band.on-dark .tile,.band.on-dark .stk,.band.on-dark .mile .card,
+.band.on-dark .q,.band.on-dark .post{background:var(--card);border-color:var(--rule)!important;
+  box-shadow:none!important;backdrop-filter:blur(2px)}
+.band.on-dark table th,.band.on-dark table td{border-color:var(--rule)!important}
+.band.on-dark .chip-shipped{background:#EDCB86;color:#16241B}
+.band.on-dark a{color:var(--uv-text)}
+.band.on-dark .pill{background:#EDCB86;color:#16241B}
+.band.on-dark .pill.soon{background:transparent;color:rgba(241,237,226,.66);
+  border-color:rgba(241,237,226,.30)}
+.band.on-dark .ghost{border-color:var(--rule-2);color:var(--ink)}
+/* A bare .chip (the vision and next milestones) inherited a light-mode tint
+   that measured 1.8:1 on the moss band. */
+.band.on-dark .chip{background:rgba(237,203,134,.16);color:#F3DCAE;
+  border:1px solid rgba(237,203,134,.42)}
+.band.on-dark .chip-next{background:#E3B98F;color:#2B1B10;border-color:transparent}
+/* #2E5B44 is the lightest of the dark grounds, so body text needs more lift
+   there than on navy to clear AA. */
+.band.b-green{--ink-dim:rgba(241,237,226,.86);--ink-mute:rgba(241,237,226,.76);
+  --ink-soft:rgba(241,237,226,.88)}
+/* The post cards sit on a translucent tint over the green, which left their
+   titles at 4.4:1 — a rounding error short of AA, but short. */
+.band.b-green .blog-card,.band.b-green a.card{color:#F7F3EA}
+
+/* Gold is a LIGHT ground, so it inverts the other way: dark ink, green actor. */
+.band.on-gold{
+  --paper:var(--band); --paper-2:rgba(43,32,16,.05); --paper-3:rgba(43,32,16,.09);
+  --card:rgba(255,253,247,.68);
+  --ink:#2B2010; --ink-dim:rgba(43,32,16,.80); --ink-mute:rgba(43,32,16,.68);
+  --rule:rgba(43,32,16,.16); --rule-2:rgba(43,32,16,.28);
+  --uv:#24402F; --uv-text:#1E3A2B; --uv-2:#2E5B44;
+  --uv-soft:rgba(36,64,47,.12); --uv-edge:rgba(36,64,47,.34);
+  --bio:#6B4E12; --bio-text:#5A410E; --bio-soft:rgba(107,78,18,.13); --bio-edge:rgba(107,78,18,.4);
+}
+.band.on-gold .pill{background:#16241B;color:#F7F3EA}
+/* An inline link inherited the light-mode green and landed at 2.0:1 on gold. */
+.band.on-gold a:not(.pill){color:#1E3A2B;text-decoration-color:rgba(30,58,43,.45)}
+.band.on-gold{--ink-soft:rgba(43,32,16,.80)}
+.band.on-gold .pill.soon{background:transparent;color:rgba(43,32,16,.62);
+  border-color:rgba(43,32,16,.32)}
+
+/* Grounds, from the canvas. */
+.b-navy{--band:#101B2D} .b-forest{--band:#1D5038} .b-moss{--band:#16342B}
+.b-green{--band:#2E5B44} .b-red{--band:#571F14} .b-purple{--band:#3A3153}
+.b-teal{--band:#0F3E46} .b-gold{--band:#D9A441}
+.b-cream{--band:#F7F3EA} .b-ivory{--band:#F1EDE2}
+.band.b-cream,.band.b-ivory{background:var(--band)}
+/* #F7F3EA is a touch darker than the page's #FAF8F5, which took the link
+   colour from 4.5 to 4.18 against it. Darkened inside cream bands only, so the
+   rest of the site keeps the colour it already shipped. */
+.band.b-cream,.band.b-ivory{--uv-text:#365044}
+/* The comparison table's check links sat at 3.9:1 on the cream band. */
+.band.b-cream .chk,.band.b-ivory .chk{color:#2F4A3B}
+
+/* A band must beat the page's own gradient sections. */
+section.band.g-paper2{background:var(--band)!important}
+@media (prefers-reduced-motion:no-preference){.band{transition:none}}
+
+
+
+/* --- HERO polish (v2.0 pass) -----------------------------------------------
+   The stage stays cream: navy was tried and it swallowed the device. What was
+   wrong was scale and separation, not colour — a 300px phone centred in a full
+   viewport reads as a small object in a large empty room.
+
+   Everything below is additive to the existing pinned-device hero: the device
+   grows with the viewport, the shadow gains a warm cast so it sits on the
+   paper rather than floating above it, and a soft halo gives the screen
+   something to be lit against. */
+.device{
+  width:clamp(300px, 26vh, 396px);
+  box-shadow:
+    0 0 0 1px rgba(26,26,46,.06),
+    0 2px 6px rgba(26,26,46,.05),
+    0 34px 70px -26px rgba(80,60,35,.34),
+    0 90px 140px -70px rgba(80,60,35,.30);
+}
+.pin-stage::after{
+  content:'';position:absolute;left:50%;top:52%;translate:-50% -50%;
+  width:min(760px,86vw);aspect-ratio:1;border-radius:50%;z-index:0;pointer-events:none;
+  background:radial-gradient(closest-side, rgba(212,165,71,.13), rgba(212,165,71,.045) 46%, transparent 72%);
+}
+.device-floor{width:56%;height:40px;bottom:-28px;
+  background:rgba(80,60,35,.20);filter:blur(30px)}
+/* The four beats are the point of the hero, so give them room to be read. */
+.caps h2{font-size:clamp(21px,2.5vw,30px);letter-spacing:-.015em}
+.caps p{max-width:46ch;margin-inline:auto}
+@media (max-width:760px){
+  .device{width:clamp(268px,62vw,320px)}
+  .pin-stage::after{width:110vw}
+}
 </style>
 </head>
 
@@ -749,7 +873,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 <header id="siteHeader">
 <nav class="nav" aria-label="Primary">
   <div class="wrap nav-in">
-    <a href="/" class="wordmark"><img class="logo-mark" src="/apple-touch-icon.png" alt="" width="30" height="30"><span class="logo-text">DailyVox</span><span class="ver">v1.9.0</span></a>
+    <a href="/" class="wordmark"><img class="logo-mark" src="/apple-touch-icon.png" alt="" width="30" height="30"><span class="logo-text">DailyVox</span><span class="ver">v1.11.0</span></a>
     <div class="nav-links">
       <a href="/technology">Technology</a>
       <a href="/roadmap">Roadmap</a>
@@ -810,20 +934,20 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
         <div class="device pin-phone">
           <div class="screens">
             <figure class="scr on" data-i="0">
-              <img src="/app/app-record.webp" width="900" height="1957" fetchpriority="high"
+              <img src="/app/app-record.webp?v=1110" width="900" height="1955" fetchpriority="high"
                    alt="The DailyVox home screen: a journal entry transcribed from speech about a morning walk, a 32-day streak, and a microphone button labelled “your voice stays on this device”.">
             </figure>
             <figure class="scr" data-i="1">
-              <img src="/app/app-journal.webp" width="900" height="1957" loading="lazy"
-                   alt="The DailyVox journal, showing July entries with the people and topics — Sarah, James, Emma, work — picked out of the user’s own words.">
+              <img src="/app/app-live.webp?v=1110" width="900" height="1955" loading="lazy"
+                   alt="Recording in progress: a 42-second dial at 28 seconds, a live waveform, and the words being transcribed on the phone as they are spoken.">
             </figure>
             <figure class="scr" data-i="2">
-              <img src="/app/app-twin.webp" width="900" height="1957" loading="lazy"
-                   alt="The Digital Twin screen: a constellation built from 213 stars of journal data, an “Ask Your Twin” card, and a Twin Resolution score of 41 per cent.">
+              <img src="/app/app-entry.webp?v=1110" width="900" height="1955" loading="lazy"
+                   alt="An entry with the names Sarah, James and Emma underlined in gold, and a ledger below it reading MOOD grateful, MENTIONED Sarah, James, Emma, Lisa.">
             </figure>
             <figure class="scr" data-i="3">
-              <img src="/app/app-insights.webp" width="900" height="1957" loading="lazy"
-                   alt="The Insights screen: a 32-day writing streak, a positive week, and 188 per cent more writing this month than last.">
+              <img src="/app/app-twin.webp?v=1110" width="900" height="1955" loading="lazy"
+                   alt="The Digital Twin sky: a constellation of 35 entries with Sarah, Mike, Emma and James named among them, and a summary reading warm, steady, expansive.">
             </figure>
           </div>
         </div>
@@ -876,7 +1000,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="clip" aria-labelledby="hiw-h" id="specimen">
+<section class="clip band on-dark b-forest" aria-labelledby="hiw-h" id="specimen">
   <div class="wrap inner">
     <div class="section-head reveal">
       <p class="eyebrow">how it works</p>
@@ -912,7 +1036,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 <div class="divider reveal"><span>✦</span></div>
 
 <!-- THE VISION — wide, left-aligned moment (breaks the centered metronome) -->
-<section class="g-paper2 clip" aria-labelledby="vis-h">
+<section class="g-paper2 clip band b-ivory" aria-labelledby="vis-h">
   <div class="blob blob-vision" aria-hidden="true"></div>
   <div class="wrap inner">
     <div class="vision-feature reveal">
@@ -933,7 +1057,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- MEET YOUR TWIN — asymmetric editorial feature -->
-<section class="g-paper2" aria-labelledby="twin-h" style="padding-top:0">
+<section class="g-paper2 band b-ivory" aria-labelledby="twin-h" style="padding-top:0">
   <div class="wrap inner twin-grid">
     <div class="twin-left reveal">
       <p class="eyebrow">meet your Twin</p>
@@ -1082,7 +1206,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 <div class="divider reveal"><span>✦</span></div>
 
 <!-- HOW IT LEARNS — interactive 5-stage stepper -->
-<section class="clip" aria-labelledby="learn-h">
+<section class="clip band b-cream" aria-labelledby="learn-h">
   <div class="wrap inner">
     <div class="section-head reveal">
       <p class="eyebrow">how it learns</p>
@@ -1173,7 +1297,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- WHY VOICE -->
-<section class="clip" aria-labelledby="voice-h">
+<section class="clip band b-cream" aria-labelledby="voice-h">
   <div class="blob blob-voice" aria-hidden="true"></div>
   <div class="wrap inner">
     <div class="section-head center reveal">
@@ -1190,7 +1314,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- THE STACK -->
-<section class="clip" aria-labelledby="stack-h">
+<section class="clip band on-dark b-purple" aria-labelledby="stack-h">
   <div class="wrap inner">
     <div class="section-head reveal">
       <p class="eyebrow">the stack</p>
@@ -1236,7 +1360,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- COMPARISON -->
-<section class="g-paper2" aria-labelledby="cmp-h">
+<section class="g-paper2 band b-cream" aria-labelledby="cmp-h">
   <div class="wrap inner">
     <div class="section-head reveal"><p class="eyebrow">next to the category</p><h2 id="cmp-h">How it <span class="accent">compares.</span></h2></div>
     <div class="cmp-scroll reveal" tabindex="0" role="region" aria-label="Comparison table, scrollable">
@@ -1258,7 +1382,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- ROADMAP (shipped + next) -->
-<section class="clip" aria-labelledby="road-h">
+<section class="clip band on-dark b-moss" aria-labelledby="road-h">
   <div class="wrap inner">
     <div class="section-head center reveal">
       <p class="eyebrow">the roadmap</p>
@@ -1279,7 +1403,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- FAQ -->
-<section class="g-paper2" aria-labelledby="faq-h">
+<section class="g-paper2 band on-dark b-teal" aria-labelledby="faq-h">
   <div class="wrap inner">
     <div class="section-head center reveal"><p class="eyebrow">common questions</p><h2 id="faq-h">The <span class="accent">honest</span> answers.</h2></div>
     <div class="faq reveal">
@@ -1296,7 +1420,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 <div class="divider reveal"><span>✦</span></div>
 
 <!-- BUILDER NOTE -->
-<section class="g-paper2" aria-labelledby="builder-h">
+<section class="g-paper2 band b-cream" aria-labelledby="builder-h">
   <div class="wrap inner builder">
     <div class="reveal">
       <p class="eyebrow" style="justify-content:center" id="builder-h">note from the builder</p>
@@ -1316,7 +1440,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- BLOG -->
-<section class="clip" aria-labelledby="blog-h">
+<section class="clip band on-dark b-green" aria-labelledby="blog-h">
   <div class="wrap inner">
     <div class="section-head reveal"><p class="eyebrow">from the journal</p><h2 id="blog-h">Writing about <span class="accent">the work.</span></h2></div>
     <div class="blog3">
@@ -1344,7 +1468,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
 </section>
 
 <!-- FINAL CTA -->
-<section class="g-paper2 final clip" aria-labelledby="cta-h">
+<section class="g-paper2 final clip band on-gold b-gold" aria-labelledby="cta-h">
   <div class="blob blob-cta" aria-hidden="true"></div>
   <div class="wrap inner reveal">
     <p class="eyebrow" style="justify-content:center">install · $0 · no account</p>
@@ -1401,7 +1525,7 @@ footer .wordmark{ display:inline-flex; align-items:center; gap:9px; }
       </div>
     </div>
     <div class="foot-bottom">
-      <span class="colophon">© 2026 DailyVox · v1.9.0 · built on-device, by hand · Nunito / Inter / DM Mono</span>
+      <span class="colophon">© 2026 DailyVox · v1.11.0 · built on-device, by hand · Nunito / Inter / DM Mono</span>
       <span class="status">✦ data on-device</span>
     </div>
   </div>
