@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.data.toChatEntry
 import com.dailyvox.app.data.Repo
 import com.dailyvox.app.ui.components.DvCard
 import com.dailyvox.app.ui.components.MonoLabel
@@ -377,17 +378,6 @@ private fun ThinkingRow() {
         }
     }
 }
-
-private fun Entry.toChatEntry() = ChatEntry(
-    id = id,
-    createdAt = createdAt,
-    text = text,
-    valence = valence,
-    entities = entityList,
-    sleepHours = sleepHours,
-    hourOfDay = hourOfDay,
-    dayOfWeek = dayOfWeek,
-)
 
 /**
  * A receipt. Tappable when it points at an entry — a citation you cannot open

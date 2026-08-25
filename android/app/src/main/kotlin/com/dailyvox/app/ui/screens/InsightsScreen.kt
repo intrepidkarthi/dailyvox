@@ -12,6 +12,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +24,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.data.toChatEntry
+import com.dailyvox.twin.Insights
 import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.ui.text.font.FontWeight
 import com.dailyvox.app.ui.components.*
@@ -48,6 +52,13 @@ fun InsightsScreen(
     onShareMilestone: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    // The one place the goal notification can fire from: Insights is where the
+    // number lives, and posting from a background job would need a scheduler
+    // this app deliberately does not run.
+    LaunchedEffect(entries.size) {
+        com.dailyvox.app.system.Goals.celebrateIfReached(context, entries)
+    }
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
         Spacer(Modifier.height(12.dp))
         ScreenTitle("Insights", onBack = onBack)
@@ -118,6 +129,53 @@ fun InsightsScreen(
             }
         }
 
+        // Weekly goal, only once the user has asked for one. An always-present
+        // progress bar would turn a journal into a habit tracker for everybody,
+        // which is the opposite of what the empty states promise.
+        if (com.dailyvox.app.system.Goals.isEnabled(context)) {
+            val target = com.dailyvox.app.system.Goals.target(context)
+            val nights = remember(entries) { com.dailyvox.app.system.Goals.nightsThisWeek(entries) }
+            val met = nights >= target
+            val left = com.dailyvox.app.system.Goals.daysLeftInWeek()
+            Spacer(Modifier.height(12.dp))
+            DvCard {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text("$nights of $target", fontSize = 20.sp,
+                         fontWeight = FontWeight.ExtraBold, color = goldText)
+                    MonoLabel(
+                        // Never "you are behind". The only number the app will
+                        // put next to a miss is how much week is left.
+                        if (met) "this week" else "$left ${if (left == 1) "day" else "days"} left"
+                    )
+                }
+                Spacer(Modifier.height(9.dp))
+                Row(
+                    Modifier.fillMaxWidth().height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.16f))
+                ) {
+                    val filled = (nights.toFloat() / target).coerceIn(0f, 1f)
+                    if (filled > 0f) {
+                        Box(
+                            Modifier.fillMaxHeight().fillMaxWidth(filled)
+                                .background(com.dailyvox.app.ui.theme.Gold)
+                        )
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (met) "That is your week. Anything else is extra."
+                    else "Nights, not entries — one evening counts once.",
+                    fontSize = 12.sp, lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         Spacer(Modifier.height(20.dp))
         MonoLabel("Last 30 nights")
         Spacer(Modifier.height(4.dp))
@@ -155,7 +213,7 @@ fun InsightsScreen(
         Spacer(Modifier.height(24.dp))
         MonoLabel("Patterns your Twin noticed")
         Spacer(Modifier.height(10.dp))
-        val patterns = Patterns.find(entries)
+        val patterns = Insights.find(entries.map { it.toChatEntry() })
         if (patterns.isEmpty()) {
             DvCard {
                 Text(
@@ -285,143 +343,3 @@ private fun MoodCurve(entries: List<Entry>) {
  * deliberately conservative: it is better to show nothing than to tell someone
  * something about themselves that the data does not carry.
  */
-/** One finding: a short lead, the numbers behind it, and how big the effect is. */
-internal data class Pattern(val lead: String, val detail: String, val effect: Double)
-
-/**
- * Patterns, each gated on enough support to be worth stating. The thresholds are
- * deliberately conservative: it is better to show nothing than to tell someone
- * something about themselves that the data does not carry.
- *
- * Findings are ranked by effect size and the day-of-week family is capped at
- * two. Before that, `out.take(4)` returned whatever was appended first, and
- * weekdays are appended first and can produce seven — so the sleep, person and
- * voice findings, which are the ones only this app can make, were computed
- * every time and never once shown.
- */
-internal object Patterns {
-    private const val DOW_CAP = 2
-
-    fun find(entries: List<Entry>): List<Pattern> {
-        if (entries.size < 8) return emptyList()
-        val dow = mutableListOf<Pattern>()
-        val out = mutableListOf<Pattern>()
-
-        val cal = Calendar.getInstance()
-        val byDow = entries.groupBy { e ->
-            cal.timeInMillis = e.createdAt; cal.get(Calendar.DAY_OF_WEEK)
-        }
-        val overall = entries.map { it.valence }.average()
-        byDow.filter { it.value.size >= 3 }.forEach { (d, es) ->
-            val v = es.map { it.valence }.average()
-            if (abs(v - overall) > 0.22) {
-                val name = SimpleNames.dow(d)
-                dow += Pattern(
-                    if (v < overall) "${name}s run low." else "${name}s run high.",
-                    "%+.2f against your %+.2f average, across %d entries.".format(v, overall, es.size),
-                    abs(v - overall),
-                )
-            }
-        }
-        out += dow.sortedByDescending { it.effect }.take(DOW_CAP)
-
-        // Person effect: needs 3+ entries mentioning them.
-        entries.flatMap { it.entityList }.groupingBy { it }.eachCount()
-            .filter { it.value >= 3 }
-            .forEach { (name, n) ->
-                val v = entries.filter { name in it.entityList }.map { it.valence }.average()
-                if (v - overall > 0.2)
-                    out += Pattern(
-                        "$name lifts you.",
-                        "Entries mentioning them average %+.2f against your %+.2f overall, across %d of them."
-                            .format(v, overall, n),
-                        v - overall,
-                    )
-            }
-
-        // Sleep effect: needs 3 nights on each side of 7 hours.
-        val withSleep = entries.filter { it.sleepHours != null }
-        val good = withSleep.filter { it.sleepHours!! >= 7f }
-        val poor = withSleep.filter { it.sleepHours!! < 7f }
-        if (good.size >= 3 && poor.size >= 3) {
-            val gv = good.map { it.valence }.average(); val pv = poor.map { it.valence }.average()
-            if (abs(gv - pv) > 0.2)
-                out += Pattern(
-                    if (gv > pv) "Sleep shows up." else "Sleep runs the other way.",
-                    "After seven or more hours you write %+.2f; under seven, %+.2f. %d nights either side."
-                        .format(gv, pv, withSleep.size),
-                    abs(gv - pv),
-                )
-        }
-
-        // Steps effect. Same gate as the rest: 4 either side of the median, and
-        // a difference big enough to be worth saying out loud.
-        val withSteps = entries.filter { (it.stepsToday ?: 0) > 0 }
-        if (withSteps.size >= 8) {
-            val median = withSteps.map { it.stepsToday!! }.sorted()[withSteps.size / 2]
-            val more = withSteps.filter { it.stepsToday!! > median }
-            val less = withSteps.filter { it.stepsToday!! <= median }
-            if (more.size >= 4 && less.size >= 4) {
-                val mv = more.map { it.valence }.average()
-                val lv = less.map { it.valence }.average()
-                if (abs(mv - lv) > 0.2)
-                    out += Pattern(
-                        if (mv > lv) "Moving helps." else "Busy days cost you.",
-                        "On your more active days you read %+.2f; on quieter ones, %+.2f. Across %d days."
-                            .format(mv, lv, withSteps.size),
-                        abs(mv - lv),
-                    )
-            }
-        }
-
-        // Voice effect: needs 4 entries with prosody on each side of the median.
-        val withRate = entries.filter { (it.speakingRate ?: 0f) > 0f }
-        if (withRate.size >= 8) {
-            val rates = withRate.map { it.speakingRate!! }.sorted()
-            val median = rates[rates.size / 2]
-            val fast = withRate.filter { it.speakingRate!! > median }
-            val slow = withRate.filter { it.speakingRate!! <= median }
-            if (fast.size >= 4 && slow.size >= 4) {
-                val fv = fast.map { it.valence }.average()
-                val sv = slow.map { it.valence }.average()
-                if (abs(fv - sv) > 0.2)
-                    out += Pattern(
-                        "Your pace tracks it.",
-                        "When you speak faster you read %+.2f; slower, %+.2f. Across %d recordings."
-                            .format(fv, sv, withRate.size),
-                        abs(fv - sv),
-                    )
-            }
-        }
-
-        // Time-of-day effect, from stored ambient context rather than re-parsed
-        // timestamps.
-        val byPartOfDay = entries.filter { it.hourOfDay != null }.groupBy { e ->
-            when (e.hourOfDay!!) {
-                in 0..4 -> "the small hours"; in 5..11 -> "mornings"
-                in 12..16 -> "afternoons"; in 17..21 -> "evenings"
-                else -> "late nights"
-            }
-        }
-        byPartOfDay.filter { it.value.size >= 4 }.forEach { (part, es) ->
-            val v = es.map { it.valence }.average()
-            if (abs(v - overall) > 0.22)
-                out += Pattern(
-                    "Your $part " + if (v > overall) "read warmer." else "read cooler.",
-                    "%+.2f against your %+.2f overall, across %d entries.".format(v, overall, es.size),
-                    abs(v - overall),
-                )
-        }
-
-        return out.sortedByDescending { it.effect }.take(4)
-    }
-}
-
-internal object SimpleNames {
-    fun dow(c: Int) = when (c) {
-        Calendar.MONDAY -> "Monday"; Calendar.TUESDAY -> "Tuesday"
-        Calendar.WEDNESDAY -> "Wednesday"; Calendar.THURSDAY -> "Thursday"
-        Calendar.FRIDAY -> "Friday"; Calendar.SATURDAY -> "Saturday"
-        else -> "Sunday"
-    }
-}

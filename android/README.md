@@ -24,8 +24,22 @@ Requires **JDK 21** — the Kotlin compiler in this toolchain cannot parse a JDK
 version string and dies with `IllegalArgumentException: 26.0.2`:
 
 ```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null || echo /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home)
 ./gradlew :app:assembleDebug
+```
+
+The fallback is not belt and braces. Homebrew's `openjdk@21` is **keg-only**, so
+it is never symlinked into `/Library/Java/JavaVirtualMachines` and
+`/usr/libexec/java_home` cannot see it. Worse, `java_home -v 21` does not fail
+when 21 is absent — it returns whatever JDK it *does* have. On a machine with
+only JDK 26 installed the export silently sets 26, `:app` still builds because
+AGP forks its own compiler, and only `:engine` dies, with
+`IllegalArgumentException: 26.0.2` and no mention of Java anywhere in it.
+
+Verify rather than assume:
+
+```bash
+java -version   # must say 21
 ```
 
 ### Without engine access

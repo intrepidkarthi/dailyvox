@@ -42,7 +42,11 @@ object RecordingLive {
     /** Set by the recorder; read by the receiver's stop action. */
     @Volatile var onFinishRequested: (() -> Unit)? = null
 
+    @android.annotation.SuppressLint("MissingPermission")  // see the guard below
     fun show(context: Context, elapsedSeconds: Int) {
+        // lint cannot follow the check into canPostNotifications, hence the
+        // annotation above. Duplicating the check here would just give the two
+        // copies a chance to drift apart.
         if (!Reminders.canPostNotifications(context)) return
         ensureChannel(context)
 

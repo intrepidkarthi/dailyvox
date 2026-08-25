@@ -90,7 +90,37 @@ boundary with exceptions requires a judgement call per file, and drifts.
 | Prosody contract + DSP | `ProsodyFeatures.swift` | `Prosody.kt` |
 | Graph | `EntityGraph.swift` | `EntityGraph.kt` |
 | Sentiment | `NLTagger` (Apple's, not ours) | `Sentiment.kt` |
+| Findings ("Your Twin noticed") | `InsightsEngine.swift` | `Insights.kt` |
+| Chat facts and answer composition | `TwinChat.swift`, `RetrievalAnswerComposer.swift` | `TwinFacts.kt`, `TwinChat.kt` |
 | Public app holds | UI, AVFoundation capture, Core Data | UI, MediaCodec decode, Room, assets |
+
+The engine takes `ChatEntry`, never the app's own row type — "the engine must
+not know what the app persists, or the boundary stops being a boundary". Each
+app converts at its edge (`Entry.toChatEntry()` on Android).
+
+#### How the boundary was breached, and what it cost
+
+The rule above is easy to state and easy to lose, so the one real breach is
+recorded here rather than quietly fixed.
+
+`Patterns.find` — the six finding families behind "Your Twin noticed ✦", each
+with the effect-size threshold and evidence gate that decides whether the
+product is willing to assert something about a person's life — lived **inside
+`InsightsScreen.kt`**, a UI file in the public app, for the whole of the Android
+port. iOS's `TwinPatterns.swift` was then ported *from* it, into the public iOS
+app. So the thresholds existed twice, in two public repositories, and in neither
+of the two private ones.
+
+It was not smuggled in. It was written where it was first needed — next to the
+screen that renders it — and no single commit ever looked like a boundary
+violation. That is the failure mode to watch for: engine code does not arrive as
+engine code, it accretes in a view.
+
+Moved to `Insights.kt` (August 2026) with the thresholds named as constants and
+a test suite that is mostly about the Twin **staying quiet** — thin evidence,
+small effects and coincidences must all produce nothing. iOS's copy has not been
+moved yet; until it is, `TwinPatterns.swift` is the remaining instance and the
+two platforms can still drift apart on what counts as a finding.
 
 #### A note on the history of this repository
 
@@ -210,6 +240,13 @@ The engine maintains four interconnected models:
 - **Privacy label** — Apple "Data Not Collected"
 
 ## Building
+
+> **JDK 21, and check that you got it.** Homebrew's `openjdk@21` is keg-only, so
+> `/usr/libexec/java_home -v 21` cannot see it — and it does not fail when 21 is
+> absent, it returns whatever JDK it has. On a machine with only JDK 26 the
+> usual export silently selects 26, `:app` still builds because AGP forks its
+> own compiler, and only `:engine` dies, with `IllegalArgumentException: 26.0.2`
+> and nothing in it that mentions Java. Run `java -version` and read it.
 
 1. Open `ios/solyn.xcodeproj` in Xcode 15+
 2. Select the `solyn` scheme

@@ -18,7 +18,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.data.Entry
+import com.dailyvox.app.data.toChatEntry
+import com.dailyvox.twin.Insights
 import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.foundation.layout.FlowRow
 import com.dailyvox.app.ui.components.*
@@ -40,19 +43,30 @@ fun JournalScreen(
     // The strongest finding the Twin has, computed from the same code Insights
     // uses rather than a second copy of the thresholds. Null until the data
     // carries one, which is the point of the gates in Patterns.
-    val noticed = remember(entries) { Patterns.find(entries).firstOrNull() }
+    val noticed = remember(entries) { Insights.find(entries.map { it.toChatEntry() }).firstOrNull() }
     val queue = remember { com.dailyvox.app.audio.AudioQueue() }
     var playingToday by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { queue.stop() } }
     // Voice search. Same recogniser as the journal itself -- searching a voice
     // journal by typing was always the odd part.
-    val voiceSearch = androidx.activity.compose.rememberLauncherForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        result.data
-            ?.getStringArrayListExtra(android.speech.RecognizerIntent.EXTRA_RESULTS)
-            ?.firstOrNull()?.let(onQuery)
-    }
+    //
+    // It used to launch ACTION_RECOGNIZE_SPEECH as an activity, which hands the
+    // microphone to Google's voice-input UI: a different process, with its own
+    // INTERNET permission, free to transcribe the query on a server. The query
+    // is a line out of the user's diary ("what did I say about Ravi"), so that
+    // was the same leak the recording path had, one screen over -- and iOS
+    // shipped and fixed exactly this pair in v1.11.0.
+    //
+    // SpeechCapture instead: same on-device-only recognizer as recording, and
+    // the partial results let the results filter as the sentence is spoken.
+    val search = remember { SpeechCapture(context) }
+    DisposableEffect(Unit) { onDispose { search.release() } }
+    val searchState by search.state.collectAsState()
+    val searchPartial by search.partial.collectAsState()
+    val searchError by search.error.collectAsState()
+    val listening = searchState != SpeechCapture.State.IDLE
+    LaunchedEffect(searchPartial) { if (searchPartial.isNotBlank()) onQuery(searchPartial) }
+    LaunchedEffect(Unit) { search.finished.collect { if (it.isNotBlank()) onQuery(it) } }
     val filters = listOf("All", "People", "Mood", "Body")
     var filter by rememberSaveable { mutableStateOf("All") }
 
@@ -150,14 +164,7 @@ fun JournalScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .clickable {
                             runCatching {
-                                voiceSearch.launch(
-                                    android.content.Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                                        .putExtra(
-                                            android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                                            android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
-                                        )
-                                        .putExtra(android.speech.RecognizerIntent.EXTRA_PROMPT, "Search your journal")
-                                )
+                                if (listening) search.stop() else search.start()
                             }.onFailure {
                                 android.widget.Toast.makeText(
                                     context, "No voice input on this device.",
@@ -317,7 +324,7 @@ private fun durationLabel(s: Int): String = "%d:%02d".format(s / 60, s % 60)
  * argue with itself.
  */
 @Composable
-private fun TwinNoticedCard(p: Pattern, onAsk: () -> Unit) {
+private fun TwinNoticedCard(p: Insights.Finding, onAsk: () -> Unit) {
     val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
     val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
                    else com.dailyvox.app.ui.theme.DayGoldText

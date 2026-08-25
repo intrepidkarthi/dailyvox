@@ -132,6 +132,12 @@ object Reminders {
         }
 
         private fun notify(context: Context) {
+            // Checked here rather than only at schedule time. The alarm is set
+            // while the permission is held and fires days later -- long enough
+            // for the user to have revoked notifications, or for Android to have
+            // revoked them itself under "manage app if unused", which the
+            // permissions screenshot in the README shows switched on by default.
+            if (!canPostNotifications(context)) return
             ensureChannel(context)
             val open = PendingIntent.getActivity(
                 context, 0,
@@ -148,6 +154,7 @@ object Reminders {
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()
+            @Suppress("MissingPermission")  // checked at the top of this method
             runCatching { NotificationManagerCompat.from(context).notify(42, n) }
         }
 

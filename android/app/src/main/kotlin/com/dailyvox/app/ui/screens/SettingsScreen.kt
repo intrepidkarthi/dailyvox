@@ -238,6 +238,80 @@ fun SettingsScreen(
             )
         }
 
+        // ── WEEKLY GOAL ────────────────────────────────────────────────────
+        // iOS has had this since v1.0; Android did not. Reads and writes its own
+        // preferences the way the vocabulary list above does, rather than being
+        // threaded through MainActivity: nothing else in the app needs to know
+        // the target, and a parameter no caller uses is a parameter that rots.
+        SettingsCard {
+            var goalOn by remember { mutableStateOf(com.dailyvox.app.system.Goals.isEnabled(context)) }
+            var goalTarget by remember { mutableIntStateOf(com.dailyvox.app.system.Goals.target(context)) }
+            var goalNotify by remember { mutableStateOf(com.dailyvox.app.system.Goals.notifies(context)) }
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SectionLabel("WEEKLY GOAL · OFF BY DEFAULT", scheme.onSurfaceVariant)
+                Switch(
+                    checked = goalOn,
+                    onCheckedChange = { goalOn = it; com.dailyvox.app.system.Goals.setEnabled(context, it) },
+                    modifier = Modifier.height(20.dp),
+                )
+            }
+            if (goalOn) {
+                Spacer(Modifier.height(11.dp))
+                Text(
+                    "Nights a week you want to show up",
+                    fontSize = 12.sp, lineHeight = 17.sp,
+                    fontWeight = FontWeight.Medium, color = scheme.onSurface,
+                )
+                Spacer(Modifier.height(10.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    com.dailyvox.app.system.Goals.TARGETS.forEach { n ->
+                        val on = n == goalTarget
+                        Text(
+                            "$n", fontSize = 11.sp, fontWeight = FontWeight.Bold,
+                            color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f)
+                                .clip(RoundedCornerShape(13.dp))
+                                .then(
+                                    if (on) Modifier.background(scheme.primary)
+                                    else Modifier.border(1.5.dp,
+                                        scheme.onSurfaceVariant.copy(alpha = 0.25f),
+                                        RoundedCornerShape(13.dp))
+                                )
+                                .clickable {
+                                    goalTarget = n
+                                    com.dailyvox.app.system.Goals.setTarget(context, n)
+                                }
+                                .padding(vertical = 9.dp)
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                        )
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                LedgerRow("Tell me when I reach it") {
+                    Switch(
+                        checked = goalNotify,
+                        onCheckedChange = {
+                            goalNotify = it
+                            com.dailyvox.app.system.Goals.setNotifies(context, it)
+                        },
+                        modifier = Modifier.height(20.dp),
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                // Counting nights rather than entries is the part worth stating:
+                // it is what stops three recordings in one evening from clearing
+                // a target of three.
+                Text(
+                    "Counts nights, not entries \u00b7 once a week at most \u00b7 never a reminder that you missed one.",
+                    fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+                )
+            }
+        }
+
         // ── BACKUP & EXPORT ────────────────────────────────────────────────
         SettingsCard {
             SectionLabel("BACKUP & EXPORT", scheme.onSurfaceVariant)

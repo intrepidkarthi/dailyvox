@@ -100,13 +100,19 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.10 *(shipped 2026-08-11)* | v1.0 *(built, unreleased)* |
-| Voice journaling, on-device transcription | ✅ | ✅ built |
+| **Current** | v1.11.0 *(shipped 2026-08-24)* | v1.0 *(built, unreleased)* |
+| Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ built *(unconditional; minSdk 33)* |
+| Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ built *(screen only)* |
 | Digital Twin personality models | ✅ | ✅ built |
 | Entity graph | ✅ | ✅ built *(heuristic NER, measured)* |
 | Semantic memory / search by meaning | ✅ `NLEmbedding` | ranked lexical only — no embedder yet |
 | Encrypted export / `.twin` | ✅ | ✅ built, **byte-compatible both directions** |
-| Multi-language interface | ✅ 5 languages | English only |
+| Multi-language interface | ✅ 5 languages | English only — **no translations exist** |
+| Journaling goals and weekly targets | ✅ | ✅ built *(2026-08-25)* |
+| Photo attachments | ✅ | ✅ built |
+| PDF / JSON / Markdown / CSV export | ✅ | ✅ built |
+| Voice search | ✅ | ✅ built *(on-device, fixed 2026-08-25)* |
+| Findings engine ("Your Twin noticed") | ✅ *(in-app copy — see note)* | ✅ **engine-side** `Insights.kt` |
 | Body Twin (health signals) | ✅ HealthKit | ✅ built *(Health Connect, opt-in)* |
 | Prosody / voice biomarkers | ✅ | ✅ built |
 | Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
@@ -120,6 +126,36 @@ build and has been exercised on an emulator. None of it has been tested across a
 range of physical devices, and none of it is on the Play Store. The blocking
 unknown is whether Android's speech recogniser capitalises names — the entity
 graph has no input if it does not, and no emulator can answer it.
+
+**The transcription row was wrong until 2026-08-25**, and it is worth saying how.
+Android's capture had a second branch: where the on-device recogniser was
+unavailable it used the platform one with `EXTRA_PREFER_OFFLINE`, which is a
+preference rather than a guarantee. With minSdk 26, every Android 12-and-older
+phone took that branch on every recording, and the app's own missing INTERNET
+permission did not stop it, because the upload happens in the recogniser's
+process. Voice search had the same shape, via `ACTION_RECOGNIZE_SPEECH`. Both
+are now on-device only, and minSdk moved to 33 because below it no such
+recogniser exists. iOS shipped and fixed the same pair of faults in v1.11.0.
+
+**No amount of airplane-mode testing could have found either.** With no network
+there is nothing to leak to, so the offline check passed on precisely the phones
+that were leaking. Verifying this claim needs a *connected* device with the
+recogniser's traffic watched from outside the app, and that belongs on the
+pre-release checklist on both platforms.
+
+**The two platforms disagree about what a milestone is**, and building goals on
+Android surfaced it rather than creating it. iOS celebrates 7 / 14 / 30 / 50 /
+100 / 200 / 365 nights; Android's share card celebrates 42 / 100 / 365, with 42
+chosen because it is the app's own number. Android's goal now uses Android's
+list, so the two surfaces on one phone agree — but someone carrying both phones
+is congratulated on different nights. Unresolved on purpose: picking one means
+either dropping 42, which is the brand, or adding six milestones to iOS that its
+users have already passed unremarked.
+
+**Android has no translations at all.** iOS ships five languages; Android ships
+one `values/strings.xml`. This is a larger gap than the table's single row
+suggests, and it is not a build-system problem — it is 400-odd strings that
+nobody has translated.
 
 **Why the version numbers differ.** Android v1.0 is not a regression from iOS
 v1.10; it is a first release. Sharing one number across platforms would force
@@ -149,6 +185,7 @@ is better than discovering it in a review.
 | **Voice** | v1.7 *(shipped 2026-07-20)* | converses with a real on-device brain, citing your own entries |
 | **Spoken** | v1.9 *(shipped 2026-07-31)* | reads its answers back to you — and is usable by people the app had locked out |
 | **Polyglot** | v1.10 *(shipped 2026-08-11)* | speaks your language — depth on one platform, breadth in languages |
+| **Witness** | v1.11 *(shipped 2026-08-24)* | shows its working as you speak — and stops rather than transcribing over a network |
 | **Citizen** | v2.0 | lives inside the OS — answers through Siri, keeps every byte on-device |
 | **Self** | v2.1 | knows who you are — and lets you talk to who you were |
 | **Agent** | v2.2 | acts on your behalf, every action explained and evidenced |
@@ -364,6 +401,35 @@ Phone-first by conviction, not just sequencing. Everything that makes the Twin d
   paths, so journaling in any of the 34 has always worked. This release changes the *interface*
   language only — the pipeline was never the thing lagging behind
 - **No desktop platform.** The macOS target is dropped (v2.1's re-scope to on-device persona conditioning removed its last reason to exist); the visionOS spatial-constellation exploration is dropped. *(Android was listed here as deferred until iOS product-market fit; withdrawn August 2026 — see [Platforms](#platforms).)*
+
+### v1.11 — Live Transcription & the Correction Underneath *(shipped 2026-08-24, build 44)*
+
+The visible half is that the words now appear as they are spoken, on the
+recording screen and in the Dynamic Island, with a gold star when a name is
+caught. The Island carries the 42-second ring and Finish or Discard without
+opening the app, and a "Speak" control can sit in Control Centre, on the Lock
+Screen, or on the Action Button.
+
+The half that mattered more is a correction. Until this release the transcriber
+preferred on-device recognition **only when the phone was offline** — so on a
+connected iPhone, which is nearly every user nearly always, recordings went to
+Apple's speech servers for better punctuation. Every claim this project makes
+rested on that not happening. On-device recognition is now unconditional: with
+no on-device model installed, transcription stops and explains why rather than
+reaching for the network. Voice search had the same fault and the same fix.
+
+Also: the constellation now **encodes the journal** — distance from the centre is
+how long ago an entry was spoken, angle is the hour of day, size is how long you
+spoke, so a usual bedtime becomes a visible band. Positions used to be hashes.
+Two new share cards, "Tonight" and "Body". And a long list of things that were
+simply broken: the starred filter could not be reached at all, the home screen
+and Insights could disagree about your streak, editing an entry rewrote its
+timestamp, and a phone call cost you the recording in progress.
+
+- The same two faults were then found in the Android port and fixed there on
+  2026-08-25 — see [Platforms](#platforms). A fault that appears independently on
+  two platforms is a design smell, not a coincidence: *prefer-on-device-with-
+  fallback is not on-device*, in any API, on any OS.
 
 ### v2.0 — Apple Intelligence Native *(iOS 27)*
 

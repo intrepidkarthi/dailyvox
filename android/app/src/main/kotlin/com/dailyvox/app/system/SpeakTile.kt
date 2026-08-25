@@ -44,7 +44,8 @@ class SpeakTile : TileService() {
                 )
             )
         } else {
-            @Suppress("DEPRECATION") startActivityAndCollapse(intent)
+            @Suppress("DEPRECATION", "StartActivityAndCollapseDeprecated")
+            startActivityAndCollapse(intent)
         }
     }
 }

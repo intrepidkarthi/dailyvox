@@ -86,6 +86,28 @@ paperwork.
       merges it in for API 27 and under; at minSdk 33 it is dead, and the listing
       invites people to read this app's permissions in app info.
 
+- [x] **Voice search was the same leak, one screen over.** The journal's search
+      mic launched `ACTION_RECOGNIZE_SPEECH` as an activity, which hands the
+      microphone to Google's voice-input UI — a different process, with its own
+      INTERNET permission, free to transcribe on a server. The query is a line
+      out of the user's diary. It now uses `SpeechCapture`, so it is on-device
+      like everything else and the results filter as the sentence is spoken.
+      iOS shipped and fixed exactly this pair in v1.11.0.
+- [x] **`app/proguard-rules.pro` created.** `build.gradle.kts` named it and it
+      did not exist, so every release build printed "Supplied proguard
+      configuration does not exist" and continued with only the default config.
+      It shrank and it ran — but any keep rule anyone believed they had added
+      was silently absent, and a missing keep rule fails on a user's phone
+      rather than in the build.
+- [x] **The daily reminder could fire without the permission it needs.**
+      `canPostNotifications` was checked when the alarm was *scheduled*, not
+      when it *fired*, and the two can be days apart — long enough for the user
+      to revoke notifications, or for Android to revoke them under "manage app
+      if unused", which is on by default. Checked at fire time now.
+- [x] **Weekly goals built** (parity with iOS, which has had them since v1.0).
+      Off by default; counts nights rather than entries; posts at most once a
+      week and never says you missed one.
+
 ## Ready
 
 - [x] Store listing copy — name 29/30, short 72/80, full 3,884/4,000 chars

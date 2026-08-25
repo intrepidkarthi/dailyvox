@@ -117,3 +117,21 @@ interface EntryDao {
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }
+
+/**
+ * The app's Room row, as the engine's surfaces take it. The engine must not
+ * know what the app persists, so every screen that asks the Twin something
+ * converts here rather than handing over its own type.
+ */
+internal fun Entry.toChatEntry() = com.dailyvox.twin.ChatEntry(
+    id = id,
+    createdAt = createdAt,
+    text = text,
+    valence = valence,
+    entities = entityList,
+    sleepHours = sleepHours,
+    hourOfDay = hourOfDay,
+    dayOfWeek = dayOfWeek,
+    stepsToday = stepsToday,
+    speakingRate = speakingRate,
+)

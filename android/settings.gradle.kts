@@ -1,6 +1,17 @@
 pluginManagement {
     repositories { google(); mavenCentral(); gradlePluginPortal() }
 }
+
+// Lets Gradle fetch the JDK a module's toolchain asks for instead of failing.
+// The engine pins jvmToolchain(21) and forces the compile into that JDK, but a
+// toolchain is only a REQUEST -- with no resolver and no JDK 21 installed,
+// Gradle falls back to whatever is running. On a machine with only JDK 26 that
+// means the Kotlin compiler parses "26.0.2", does not recognise it, and dies
+// with IllegalArgumentException. The app module never showed it because AGP
+// forks its own. This is also what the engine's CI runner was missing.
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories { google(); mavenCentral() }
