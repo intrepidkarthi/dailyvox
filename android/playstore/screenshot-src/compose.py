@@ -37,6 +37,10 @@ NIGHT  = ("#101A26", "#D6A84A")   # night blue / gold
 CLAY   = ("#241611", "#E0906A")   # deep clay / terracotta
 SLATE  = ("#111C22", "#6FC3D6")   # slate / cyan
 
+# Every `stat` below must match what the DEVICE SCREENSHOT beside it shows.
+# They drifted once: the frames claimed 12 while the captures said TOTAL 38,
+# which is the kind of thing a store reviewer reads as a fabricated number.
+# Check against screenshot-src/04-insights.png before changing a seed.
 FRAMES = [
     dict(img="01-speak.png", theme=INK, kick="just talk",
          head='42 seconds<br>is the <em>app</em>.', stat="0:42", script="the whole ritual",
@@ -48,7 +52,7 @@ FRAMES = [
                 + stk("check it yourself", "settings › apps › dailyvox", "right:40px;top:1560px", 5)),
 
     dict(img="03-twin.png", theme=NIGHT, kick="meet your twin",
-         head='a sky made<br>of <em>you</em>.', stat="12", script="stars in your sky",
+         head='a sky made<br>of <em>you</em>.', stat="38", script="stars in your sky",
          stickers=stk("100% on this phone", "no cloud, no account", "right:40px;top:1720px", 4, "accent")),
 
     dict(img="05-ask.png", theme=SLATE, kick="ask your twin",
@@ -60,7 +64,7 @@ FRAMES = [
          stickers=stk("only when proven", "nothing claimed early", "right:40px;top:1660px", 4)),
 
     dict(img="02-journal.png", theme=FOREST, kick="your journal",
-         head='every night,<br><em>kept here</em>.', stat="12", script="entries, on this phone",
+         head='every night,<br><em>kept here</em>.', stat="38", script="entries, on this phone",
          stickers=stk("search by meaning", "or just by voice", "left:26px;top:1700px", -4, "accent")),
 
     dict(img="06-filed.png", theme=INK, kick="nothing hidden",

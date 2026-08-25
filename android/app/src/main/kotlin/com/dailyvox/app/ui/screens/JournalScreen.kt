@@ -178,6 +178,53 @@ fun JournalScreen(
             }
         }
 
+        searchError?.let { err ->
+            Spacer(Modifier.height(10.dp))
+            Column(
+                Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .clickable { search.clearError() }
+                    .padding(14.dp),
+            ) {
+                Text(err.message, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                     color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(5.dp))
+                Text(err.fix, fontSize = 12.sp, lineHeight = 18.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (err.openLanguageSettings) {
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        "Open speech settings",
+                        fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(13.dp))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable {
+                                // Same three-step fallback the record screen
+                                // uses: the voice-input screen is not on every
+                                // OEM, so the general locale screen is the last
+                                // resort rather than a dead button.
+                                listOf(
+                                    "com.android.settings.VOICE_INPUT_SETTINGS",
+                                    android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
+                                    android.provider.Settings.ACTION_LOCALE_SETTINGS,
+                                ).firstOrNull { action ->
+                                    runCatching {
+                                        context.startActivity(
+                                            android.content.Intent(action)
+                                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        )
+                                    }.isSuccess
+                                }
+                            }
+                            .padding(horizontal = 12.dp, vertical = 7.dp),
+                    )
+                }
+            }
+        }
+
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             filters.forEach { f ->
@@ -339,10 +386,42 @@ private fun TwinNoticedCard(p: Insights.Finding, onAsk: () -> Unit) {
         Text("\u2726", fontSize = 14.sp, color = goldText)
         Spacer(Modifier.width(11.dp))
         Text(
-            "Twin noticed: ${p.lead.trimEnd('.').replaceFirstChar { it.lowercase() }}. Ask about it.",
+            "Twin noticed: ${leadInSentence(p.lead)}. Ask about it.",
             fontSize = 13.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f),
         )
         Text("\u203A", fontSize = 18.sp, color = goldText)
     }
 }
+
+
+/**
+ * Fold a finding's lead into the middle of a sentence.
+ *
+ * Lower-casing the first character unconditionally is wrong for half of them:
+ * the person finding reads "Mumbai lifts you", and the card rendered it as
+ * "Twin noticed: mumbai lifts you" -- lower-casing a proper noun, on a card
+ * whose whole job is to look like the Twin knows who you are.
+ *
+ * Leads that start with a name are left alone. Everything else ("Saturdays run
+ * high", "Sleep shows up") is sentence-cased as before. The test is whether the
+ * SECOND character is upper case too, which no ordinary sentence opener has and
+ * an acronym does, plus the weekday and part-of-day leads which are known.
+ */
+private fun leadInSentence(lead: String): String {
+    val body = lead.trimEnd('.')
+    val first = body.substringBefore(' ')
+    val startsWithSentenceWord = first in SENTENCE_LEADS ||
+        first.trimEnd('s') in SENTENCE_LEADS
+    return if (startsWithSentenceWord) body.replaceFirstChar { it.lowercase() } else body
+}
+
+/**
+ * The words a finding can open with that are ordinary vocabulary rather than
+ * something out of the user's own life. Everything Insights can emit is here;
+ * anything else reaching this function is a name, and names keep their capital.
+ */
+private val SENTENCE_LEADS = setOf(
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+    "Sleep", "Moving", "Busy", "Your",
+)
