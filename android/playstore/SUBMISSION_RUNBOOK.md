@@ -85,9 +85,10 @@ Assets:
 
 | Play field | File |
 |---|---|
+| Hi-res icon | `assets/icon-512.png` (512×512, 32-bit) |
 | Feature graphic | `assets/feature-graphic.png` (1024×500 exactly) |
 | Phone screenshots | `assets/screenshots/01.png` … `08.png` (1242×2208) |
-| App icon | already in the bundle |
+| App icon in-app | already in the bundle, adaptive |
 | Privacy policy | `https://getdailyvox.com/privacy` |
 
 Screenshot order matters. `02.png` is Android's own permission screen and is the

@@ -147,6 +147,14 @@ below is untouched by this run.
       release candidate. The previous set predated the four-tab redesign and
       showed a five-tab nav bar the app does not have.
 - [x] App icon — adaptive, shipped in the APK
+- [x] **Hi-res icon 512x512** — `assets/icon-512.png`, RGBA. Was **missing
+      entirely**: the launcher icon is an adaptive vector with no raster
+      anywhere, which is right for the APK and leaves nothing to upload.
+      `screenshot-src/make_icon.py` renders it from the same two drawables, so
+      editing the icon and re-running keeps them in step rather than leaving a
+      hand-drawn copy to drift. It renders the inner 72dp — the region a
+      launcher actually shows — checked against how Android draws it on the
+      emulator, not assumed.
 - [x] Data safety declaration, with the verification method recorded per claim
 - [x] Content rating answers
 - [x] Privacy policy — getdailyvox.com/privacy
