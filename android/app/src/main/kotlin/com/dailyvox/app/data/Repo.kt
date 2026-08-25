@@ -8,12 +8,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-private val STOP = setOf(
-    "the","and","for","was","were","this","that","with","from","have","has","had","not",
-    "but","are","you","your","his","her","she","him","they","them","their","its","our",
-    "about","just","then","than","when","what","who","how","why","all","some","been",
-    "will","would","could","should","did","does","done","get","got","out","one","two",
-)
 
 class Repo private constructor(private val db: DailyVoxDb) {
 
@@ -192,21 +186,23 @@ class Repo private constructor(private val db: DailyVoxDb) {
          * and a second implementation of the scoring would drift from this one
          * the first time either is touched.
          */
+        /**
+         * Journal search ranking. No abstention threshold on purpose: searching
+         * is browsing, and a weak match is still worth showing when the user is
+         * the one deciding whether it is what they meant. Ask goes through
+         * [com.dailyvox.twin.Retrieval.retrieve] instead, which does abstain,
+         * because there the Twin is the one deciding.
+         *
+         * The scoring itself lives in the engine so the two surfaces cannot
+         * drift into ranking the same journal differently.
+         */
         fun rank(q: String, all: List<Entry>): List<Pair<Entry, Float>> {
-            val terms = rankWords(q)
-            if (terms.isEmpty()) return emptyList()
-            return all.map { e ->
-                val hay = rankWords(e.text) + e.entityList.map { it.lowercase() }
-                val overlap = terms.count { t -> hay.any { it.startsWith(t) || t.startsWith(it) } }
-                e to overlap / terms.size.toFloat()
-            }.filter { it.second > 0f }
-             .sortedByDescending { it.second }
+            val byId = all.associateBy { it.id }
+            return com.dailyvox.twin.Retrieval.rank(q, all.map { it.toChatEntry() })
+                .mapNotNull { hit -> byId[hit.entryId]?.let { it to hit.score } }
         }
 
-        fun rankWords(t: String): Set<String> =
-            t.lowercase().split(Regex("[^a-z0-9']+"))
-                .filter { it.length >= 3 && it !in STOP }
-                .toSet()
+        fun rankWords(t: String): Set<String> = com.dailyvox.twin.Retrieval.words(t)
 
 
         /**

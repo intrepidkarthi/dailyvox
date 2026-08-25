@@ -35,11 +35,11 @@ import com.dailyvox.app.ui.components.DvCard
 import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.components.ScreenTitle
 import com.dailyvox.twin.ChatEntry
+import com.dailyvox.twin.Retrieval
 import com.dailyvox.twin.RetrievalAnswerComposer
 import com.dailyvox.twin.TwinChatEvidence
 import com.dailyvox.twin.TwinFacts
 import com.dailyvox.twin.TwinQuestion
-import com.dailyvox.twin.TwinResponseGenerator
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -128,9 +128,16 @@ fun AskScreen(
         if (!thinking) return@LaunchedEffect
         val question = messages.lastOrNull { it.isUser }?.text ?: return@LaunchedEffect
         delay(420)
-        val hits = Repo.rank(question, entries).take(3).map { (e, score) ->
-            TwinChatEvidence(e.id, e.createdAt, e.text, score)
-        }
+        // retrieve, not rank: this is the surface that ABSTAINS. Below the
+        // fitted threshold it returns nothing and the composer says the Twin
+        // does not know, rather than answering "should I buy a house in Tokyo"
+        // out of an entry that happens to contain the word "house".
+        val hits = Retrieval.retrieve(question, entries.map { it.toChatEntry() })
+            .mapNotNull { hit ->
+                entries.firstOrNull { it.id == hit.entryId }?.let { e ->
+                    TwinChatEvidence(e.id, e.createdAt, e.text, hit.score)
+                }
+            }
         val turn = RetrievalAnswerComposer.compose(question, hits, facts)
         seq += 1
         push(Msg(seq, turn.answer, isUser = false,
