@@ -12,7 +12,7 @@
 <style>
 :root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
 *{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
-header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header,main{max-width:720px;margin:0 auto;padding:0 22px}
 header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
 header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
 h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
@@ -25,9 +25,8 @@ table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
 th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
 th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
 .related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
-footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
 a{color:var(--terra)}
-</style><style>/* ── Shared site footer ────────────────────────────────────────────────────
+/* ── Shared site footer ────────────────────────────────────────────────────
    Eleven different footers existed across eighteen pages — three class names,
    link counts from 3 to 21, and several missing Research, Changelog and the
    demo entirely. This is the one footer, namespaced dv-f- so it cannot collide
@@ -60,8 +59,8 @@ a{color:var(--terra)}
 .dv-f-agent{margin:16px 0 0;font-size:12px;line-height:1.5;max-width:92ch;
   color:var(--ink-mute,#5C6A64)}
 .dv-f-agent a{color:var(--uv-text,#3F5A4D)}
-@media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}</style>
-</head>
+@media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
+</style></head>
 <body>
 <header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
 <main>
