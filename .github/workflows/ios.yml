@@ -12,6 +12,13 @@ on:
     branches: [main]
     paths:
       - 'ios/**'
+      # Its own file too. Without this you can break this workflow on main and
+      # nothing runs to tell you -- which is how a retired runner image or a
+      # deprecated action gets discovered by the next unrelated commit.
+      - '.github/workflows/ios.yml'
+
+  # So a runner or action bump can be proved before it is needed.
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
