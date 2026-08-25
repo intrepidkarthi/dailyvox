@@ -10,6 +10,17 @@
 # neutral value, loudly enough that nobody mistakes a stub build for a real one:
 # no names are detected, every mood is 0.0, and prosody is unavailable. It exists
 # to typecheck the app, nothing more.
+#
+# KEEP IT IN STEP WITH THE APP. This file is the only thing standing between an
+# outside contributor and a build that cannot compile, and it goes stale in
+# exactly one way: someone adds an engine call to the app, builds locally
+# against the real engine, and never learns the stub lost a symbol. That is how
+# it broke -- the Ask Your Twin work added six types and the findings move added
+# a seventh, and CI on the public repo failed on `Assemble` from then on.
+#
+# The surface below must equal what the app imports. To check:
+#
+#     grep -rhoE "com\.dailyvox\.twin\.[A-Za-z]+" app/src | sort -u
 set -euo pipefail
 
 DEST="${1:-$(cd "$(dirname "$0")/../.." && pwd)/DailyVoxTwin/kotlin/engine}"
@@ -63,6 +74,72 @@ data class ProsodyFeatures(
 object Prosody {
     fun analyse(pcm: ShortArray, sampleRate: Int, wordCount: Int): ProsodyFeatures =
         ProsodyFeatures.UNAVAILABLE
+}
+
+// ── The chat surface ─────────────────────────────────────────────────────────
+// Field-for-field with the real ChatEntry, because the app constructs it by
+// named argument and a missing parameter is a compile error rather than a
+// degraded answer.
+data class ChatEntry(
+    val id: String,
+    val createdAt: Long,
+    val text: String,
+    val valence: Float,
+    val entities: List<String> = emptyList(),
+    val sleepHours: Float? = null,
+    val hourOfDay: Int? = null,
+    val dayOfWeek: Int? = null,
+    val stepsToday: Int? = null,
+    val speakingRate: Float? = null,
+)
+
+data class PersonNode(val label: String, val mentions: Int, val sentimentAssociation: Double)
+
+data class TwinChatEvidence(
+    val entryId: String,
+    val date: Long,
+    val snippet: String,
+    val score: Float,
+)
+
+data class TwinChatTurn(
+    val answer: String,
+    val citations: List<TwinChatEvidence> = emptyList(),
+    val suggestedFollowUps: List<String> = emptyList(),
+    val usedFallback: Boolean = true,
+)
+
+class TwinFacts private constructor() {
+    val hasEnoughData: Boolean get() = false
+    companion object { fun from(entries: List<ChatEntry>): TwinFacts = TwinFacts() }
+}
+
+// The real bank has ten questions with fixed wording shared with iOS. A stub
+// with no questions is the honest shape: `available` returns nothing, so the
+// Ask screen shows its empty state rather than offering a question that would
+// be answered with silence.
+enum class TwinQuestion(val text: String) {
+    PLACEHOLDER("");
+    companion object {
+        fun matching(text: String): TwinQuestion? = null
+        fun available(facts: TwinFacts): List<TwinQuestion> = emptyList()
+    }
+}
+
+object TwinResponseGenerator {
+    fun answer(question: TwinQuestion, facts: TwinFacts): TwinChatTurn =
+        TwinChatTurn(answer = "")
+}
+
+object RetrievalAnswerComposer {
+    fun compose(question: String, evidence: List<TwinChatEvidence>, facts: TwinFacts): TwinChatTurn =
+        TwinChatTurn(answer = "")
+}
+
+// ── Findings ─────────────────────────────────────────────────────────────────
+object Insights {
+    data class Finding(val lead: String, val detail: String, val effect: Double)
+    fun find(entries: List<ChatEntry>): List<Finding> = emptyList()
 }
 KOT
 
