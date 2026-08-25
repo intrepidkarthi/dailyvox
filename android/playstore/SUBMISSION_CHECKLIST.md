@@ -44,6 +44,36 @@ paperwork.
       permissions put this app in the health-apps review track, which is a form
       plus a wait, not a checkbox. The manifest side is now complete (see below).
 
+## Emulator verification, 2026-08-25
+
+Ran the release candidate on a Pixel 9 Pro emulator (API 36, minSdk 33) end to
+end. What it confirmed:
+
+- app installs and launches on API 36 with minSdk 33
+- onboarding ledger renders: Microphone REQUIRED, Health Connect OPTIONAL,
+  **Internet NOT REQUESTED**
+- Settings ledger reads "Network calls made: 0 · EVER"
+- Android's own permission screen shows Microphone and Notifications allowed and
+  **"Health, fitness and wellness — Not allowed"** — the data-safety claim that
+  health permissions are declared but never held until opt-in, in Google's UI
+  rather than ours
+- the Twin sky, Insights, Ask, Journal, entry detail and share sheet all render
+- weekly goals work and are off by default
+- findings from the engine render with their evidence
+- **voice search stays in-app on the on-device recogniser.** logcat shows
+  `LANGUAGE_PACK_ERROR code 13` and the app displays the offline-pack card
+  rather than transcribing over a network. This is the fix working: the
+  emulator has no offline pack, so the old code would have gone to Google here.
+
+Two defects it found, both now fixed: voice search failed silently when no
+language pack was present, and a finding lowercased a proper noun
+("Twin noticed: mumbai lifts you").
+
+**What the emulator could NOT answer: recogniser capitalisation.** It has no
+offline language pack, so nothing was ever transcribed on it. The names in the
+screenshots come from the seeded demo journal, not from speech. The blocker
+below is untouched by this run.
+
 ## Closed since the last pass
 
 - [x] **`versionCode` / `versionName` set.** `1` / `1.0` — Android's own line,
@@ -112,7 +142,10 @@ paperwork.
 
 - [x] Store listing copy — name 29/30, short 72/80, full 3,884/4,000 chars
 - [x] Feature graphic — 1024x500 exactly
-- [x] Eight phone screenshots — 1242x2208, all within Play's limits
+- [x] Eight phone screenshots — 1242x2208, all within Play's limits.
+      **Recaptured 2026-08-25** from a Pixel 9 Pro emulator running the actual
+      release candidate. The previous set predated the four-tab redesign and
+      showed a five-tab nav bar the app does not have.
 - [x] App icon — adaptive, shipped in the APK
 - [x] Data safety declaration, with the verification method recorded per claim
 - [x] Content rating answers
