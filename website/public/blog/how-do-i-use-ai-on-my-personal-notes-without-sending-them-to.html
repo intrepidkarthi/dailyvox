@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use AI On Notes Without Sending Them To OpenAI</title>
+<meta name="description" content="Run AI models locally on your device using Apple's frameworks so your personal notes never leave your phone.">
+<link rel="canonical" href="https://getdailyvox.com/blog/how-do-i-use-ai-on-my-personal-notes-without-sending-them-to">
+<meta name="theme-color" content="#FAF8F5">
+<meta property="og:type" content="article"><meta property="og:title" content="Use AI On Notes Without Sending Them To OpenAI">
+<meta property="og:description" content="Run AI models locally on your device using Apple's frameworks so your personal notes never leave your phone."><meta property="og:url" content="https://getdailyvox.com/blog/how-do-i-use-ai-on-my-personal-notes-without-sending-them-to">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Use AI On Notes Without Sending Them To OpenAI", "description": "Run AI models locally on your device using Apple's frameworks so your personal notes never leave your phone.", "url": "https://getdailyvox.com/blog/how-do-i-use-ai-on-my-personal-notes-without-sending-them-to", "author": {"@type": "Organization", "name": "DailyVox"}, "publisher": {"@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"}, {"@type": "ListItem", "position": 3, "name": "Use AI On Notes Without Sending Them To OpenAI"}]}</script>
+<style>
+:root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
+*{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
+header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
+h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
+.bc{font-size:14px;color:#8a8175;margin-top:14px}.bc a{color:#8a8175}
+ol{padding-left:22px}ol li{margin:6px 0}
+.cta{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}
+.cta a{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}
+details{border-top:1px solid #e7e0d6;padding:13px 0}summary{font-weight:700;cursor:pointer}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
+.related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
+footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
+a{color:var(--terra)}
+</style><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://getdailyvox.com/#organization",
+      "name": "DailyVox",
+      "url": "https://getdailyvox.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://getdailyvox.com/app-icon.png"
+      },
+      "sameAs": [
+        "https://apps.apple.com/app/id6760454642",
+        "https://github.com/intrepidkarthi/dailyvox",
+        "https://x.com/getDailyVox",
+        "https://www.instagram.com/getdailyvox/",
+        "https://www.youtube.com/@dailyvoxapp",
+        "https://www.reddit.com/user/getDailyVox/",
+        "https://www.quora.com/profile/DailyVox"
+      ]
+    },
+    {
+      "@type": "Blog",
+      "@id": "https://getdailyvox.com/blog/how-do-i-use-ai-on-my-personal-notes-without-sending-them-to#blog",
+      "url": "https://getdailyvox.com/blog/how-do-i-use-ai-on-my-personal-notes-without-sending-them-to",
+      "publisher": {
+        "@id": "https://getdailyvox.com/#organization"
+      },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<main>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
+<h1>Use AI On Notes Without Sending Them To OpenAI</h1>
+<p>You run local models directly on your device using Apple's frameworks. That is the only way to use AI on personal notes without sending your text to OpenAI, Google, or anyone else's servers.</p>
+<p>Most note apps route your thoughts through third-party APIs. They process your journal entries in the cloud. They train models on your private life. I hated that trade-off. So I built something else.</p>
+<h2>The Local AI Stack</h2>
+<p>Your phone has a Neural Engine inside its chip. It runs machine learning tasks fast. It does this without an internet connection.</p>
+<p>When you use local frameworks like Natural Language and CoreML, computation happens on the silicon in your hand. No servers exist in the loop. Data stays where it belongs.</p>
+<p>You can test this easily. Turn on airplane mode. Open a properly built local app. The intelligence still works.</p>
+<h2>How Options Compare</h2>
+<p>Different apps handle privacy differently. You have choices.</p>
+<p>DailyVox is a free, open-source voice journaling app for iPhone. Everything runs on-device using Apple's frameworks. There are no servers, no accounts, and no data collection. The App Store privacy label reads "Data Not Collected". It works in airplane mode. It includes a Digital Twin that models your emotional patterns locally.</p>
+<p>Apple Journal is built into iOS. It uses on-device machine learning to suggest journaling moments from your day. It encrypts entries end-to-end when backed up to iCloud. It lacks deeper analysis tools or customizable tracking patterns.</p>
+<p>Day One is a long-standing journaling app with great design. It offers end-to-end encryption for sync, but it also integrates external AI features that process text in the cloud depending on how you use them.</p>
+<p>Rosebud focuses heavily on AI journaling and guided reflection. It offers deep insights, but it relies on cloud-based AI processing to generate those responses.</p>
+<p>Daylio tracks your moods and habits with clean charts. It is private and stores data locally by default, but it does not use advanced AI language models to analyze your writing patterns.</p>
+<h2>The One Catch</h2>
+<p>I am keeping this honest. The limitation of local-only AI is hardware dependency.</p>
+<p>DailyVox is iPhone-only. There is no web version and no Android app. Because the app relies entirely on Apple's on-device processing and local frameworks, it cannot run in a browser window or sync to a Windows PC. If you switch devices outside the Apple ecosystem, you have to export your data and start fresh.</p>
+<p>That constraint buys you absolute privacy. You trade cross-platform convenience for the guarantee that your thoughts never touch a remote server.</p>
+<h2>Frequently Asked Questions</h2>
+<p>### Can I sync my local notes across my other devices? Yes, but only through Apple's own CloudKit infrastructure. Your data goes directly from your device to your personal iCloud account using end-to-end encryption that only you control. Developers never see it.</p>
+<p>### Does local AI drain my iPhone battery? Running on-device models uses more power than a standard text editor. Apple's Neural Engine handles the load efficiently, but heavy transcription or pattern analysis will use noticeable battery during extended sessions.</p>
+<p>### What happens if I lose my iPhone? If you lose your phone and do not have an iCloud backup enabled, your notes are gone. Because there are no developer servers or external accounts, nobody exists to help you recover a lost local database.</p>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
+</main>
+<footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.<div class="container"><p class="agent-note"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p></div>
+</footer>
+</body></html>
