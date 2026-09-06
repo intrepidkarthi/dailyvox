@@ -103,6 +103,11 @@
       "source": "/reports/state-of-on-device-ai-journaling-2026.html",
       "destination": "/blog/why-95-percent-ai-journals-not-on-device",
       "permanent": true
+    },
+    {
+      "source": "/blog/what-is-the-best-voice-diary-app",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
