@@ -56,12 +56,12 @@
     },
     {
       "source": "/blog/best-ai-journal-app",
-      "destination": "/blog/best-offline-journal-app",
+      "destination": "/blog/journal-app-with-ai",
       "permanent": true
     },
     {
       "source": "/blog/best-journal-app-iphone",
-      "destination": "/blog/best-offline-journal-app",
+      "destination": "/blog/best-diary-app-iphone",
       "permanent": true
     },
     {
@@ -108,6 +108,16 @@
       "source": "/blog/what-is-the-best-voice-diary-app",
       "destination": "/blog/best-voice-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/journaling-apps-for-ios",
+      "destination": "/blog/best-diary-app-iphone",
+      "permanent": true
+    },
+    {
+      "source": "/blog/personal-digital-twin",
+      "destination": "/personal-digital-twin",
+      "permanent": true
     }
   ],
   "headers": [
