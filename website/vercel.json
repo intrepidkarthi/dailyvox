@@ -118,6 +118,11 @@
       "source": "/blog/personal-digital-twin",
       "destination": "/personal-digital-twin",
       "permanent": true
+    },
+    {
+      "source": "/blog/voice-diary-app",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
