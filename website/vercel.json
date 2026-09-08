@@ -123,6 +123,11 @@
       "source": "/blog/voice-diary-app",
       "destination": "/blog/best-voice-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/what-is-the-best-audio-journal-app-that-transcribes-what-i-s",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
