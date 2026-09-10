@@ -81,8 +81,10 @@ website/generate_quality_pages.py
 website/render_articles.py
 website/seo_data/
 
-# Research paper draft (parked; kept local until/if published).
-paper/
+# Research paper drafts, LaTeX sources and venue strategy — internal.
+# ANCHORED to repo root: an unanchored 'paper/' also matched website/public/paper/,
+# which silently kept the published PDF off the live site (404 for ~3 weeks).
+/paper/
 
 # Proprietary Digital Twin engine — lives in its own private repo at
 # https://github.com/intrepidkarthi/DailyVoxTwin and is consumed by the
