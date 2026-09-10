@@ -11,21 +11,21 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox Research — Measuring a Model of One</title>
-  <meta name="description" content="The research programme behind DailyVox: a falsifiable, on-device evaluation methodology for private personal models, what the instrument found against its own model, and the open problems anyone can pick up.">
+  <title>Research Statement — A Model of One | DailyVox</title>
+  <meta name="description" content="A formal research statement for prospective academic collaborators: the open question, the instrument that already exists, a pre-registered cohort study awaiting an ethics process, publication targets with dates, and an explicit division of labour.">
   <meta name="keywords" content="dailyvox research, on-device model evaluation, personal model, digital twin evaluation, falsifiable AI methodology, private AI research">
   <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://getdailyvox.com/research">
-  <meta property="og:title" content="DailyVox Research — Measuring a Model of One">
-  <meta property="og:description" content="The research programme behind DailyVox: a falsifiable on-device evaluation methodology, what it found against its own model, and five open problems.">
+  <meta property="og:url" content="https://getdailyvox.com/research-statement">
+  <meta property="og:title" content="Research Statement — A Model of One">
+  <meta property="og:description" content="The open question, the instrument that exists, a pre-registered study awaiting a cohort, and what a collaborating institution supplies.">
   <meta property="og:image" content="https://getdailyvox.com/og-image.png?v=1111">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="DailyVox Research — Measuring a Model of One">
-  <meta name="twitter:description" content="The research programme behind DailyVox: a falsifiable on-device evaluation methodology, what it found against its own model, and five open problems.">
-  <link rel="canonical" href="https://getdailyvox.com/research">
+  <meta name="twitter:title" content="Research Statement — A Model of One">
+  <meta name="twitter:description" content="The open question, the instrument that exists, a pre-registered study awaiting a cohort, and what a collaborating institution supplies.">
+  <link rel="canonical" href="https://getdailyvox.com/research-statement">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -1103,7 +1103,31 @@
   border-radius:0 0 8px 0;font-family:var(--ui,'Nunito',system-ui,sans-serif);font-weight:700}
 .skip:focus{left:0}
 </style>
-</head>
+<style>
+.vt{width:100%;border-collapse:collapse;margin:18px 0 6px;font-size:14.5px}
+.vt th{text-align:left;font:600 10px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3,rgba(26,26,46,.5));padding:0 12px 9px 0;
+  border-bottom:1px solid var(--rule-2,rgba(26,26,46,.13))}
+.vt td{padding:11px 12px 11px 0;border-bottom:1px solid var(--rule,rgba(26,26,46,.07));vertical-align:top;line-height:1.5}
+.vt tr:last-child td{border-bottom:0}
+.vt .wk{font:500 12.5px/1 'DM Mono',ui-monospace,monospace;white-space:nowrap}
+.vt .gone{color:var(--ink-3,rgba(26,26,46,.45))}
+.doc-meta{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0}
+.doc-meta span{font:500 11px/1 'DM Mono',ui-monospace,monospace;letter-spacing:.06em;
+  padding:8px 12px;border-radius:99px;border:1px solid var(--rule-2,rgba(26,26,46,.13));
+  color:var(--ink-2,rgba(26,26,46,.68))}
+.num-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 4px}
+.num-c{padding:15px 16px;border-radius:13px;border:1px solid var(--rule-2,rgba(26,26,46,.13))}
+.num-c b{display:block;font-size:23px;letter-spacing:-.02em;margin-bottom:5px}
+.num-c span{font-size:13.4px;line-height:1.5;color:var(--ink-2,rgba(26,26,46,.68))}
+.role{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 4px}
+.role>div{padding:17px 19px;border-radius:14px;border:1px solid var(--rule-2,rgba(26,26,46,.13))}
+.role h4{margin:0 0 11px;font-size:15px;letter-spacing:-.01em}
+.role ul{margin:0;padding-left:17px}
+.role li{font-size:14.4px;line-height:1.62;margin-bottom:7px}
+@media(max-width:720px){.role{grid-template-columns:1fr}.vt{font-size:13px}}
+</style>
+
 <body>
 
   <a href="#main" class="skip">Skip to content</a>
@@ -1129,260 +1153,191 @@
     </div>
   </nav>
 
+
   <main id="main">
     <section class="hero">
       <div class="wrap">
-        <div class="kicker">research</div>
-        <h1>Measuring a model<br>of <em>one</em>.</h1>
-        <p class="lede">A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships, or its fidelity claims cannot be checked at all.</p>
-        <p class="lede lede-2">This page is the programme built around that problem — and an open invitation. It is one person's work so far, which is its main weakness. If any of it is close to what you work on, I would rather do it with you than alone: co-authorship, joint supervision, a student project, or just an argument about whether the method holds. <a href="#work-with">How to start a conversation</a> is at the bottom.</p>
-        <p class="lede lede-2"><strong>If you are reading this as a prospective academic collaborator</strong> — a supervisor, a group with an ethics process, a student looking for a project — start with the <a href="/research-statement">research statement</a>. It is the formal version: one falsifiable question, the study that is designed and powered but cannot run, publication targets with dates, and an explicit division of labour.</p>
+        <div class="kicker">research statement</div>
+        <h1>Can a model of <em>one</em><br>beat a model of everyone?</h1>
+        <p class="lede">This document is for a prospective academic collaborator. It states one falsifiable question, the instrument that already exists to answer it, the study that is designed and powered but cannot run, and precisely what an institution would have to supply for it to run. It is deliberately specific about what is missing, because that is the part being asked for.</p>
+        <div class="doc-meta">
+          <span>Karthikeyan NG · independent</span>
+          <span>v1 · September 2026</span>
+          <span>Contact: hello@getdailyvox.com</span>
+        </div>
       </div>
     </section>
 
     <div class="wrap">
 
-      <!-- PAPER -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§01</span>
-          <h2 class="sec-title">The <em>paper</em>.</h2>
-          <span class="sec-tag">methodology</span>
+          <h2 class="sec-title">The <em>question</em>.</h2>
+          <span class="sec-tag">one sentence, falsifiable</span>
         </div>
-        <div class="paper-card">
-          <div class="paper-meta">preprint · July 2026, revised August · 9 sections</div>
-          <h3 class="paper-t">Measuring a Model of One: A Falsifiable, On-Device Evaluation Methodology for Private Personal Models</h3>
-          <p class="paper-a">Karthikeyan NG · independent researcher</p>
-          <div class="paper-acts">
-            <a href="/paper/measuring-a-model-of-one.pdf" class="btn-primary">Read the paper (PDF) <span class="arr">→</span></a>
-            <a href="https://github.com/intrepidkarthi/dailyvox" class="btn-ghost">Source &amp; research kit</a>
-          </div>
-        </div>
+        <p><strong>Does an emotion model adapted on a person&rsquo;s own labelled diary entries predict that person&rsquo;s later self-reported feelings better than a generic model trained on everyone &mdash; and how many entries does the adaptation take?</strong></p>
+        <p>The question matters beyond one app. Consumer AI in 2026 personalises by centralisation: a large model trained on everyone, tuned to an individual by sending that individual&rsquo;s data to it. The alternative is a model of one, built and kept on the person&rsquo;s own device. That alternative is defensible today on ownership and privacy grounds alone, and I have argued it in a position paper. What has <em>not</em> been shown &mdash; by me or, as far as I can find, by anyone in this configuration &mdash; is the predictive claim: that a model fit to one person beats a model fit to a population, on that person, at a sample size a real user could plausibly produce.</p>
+        <p>That is an empirical question with a number attached, and it can come back negative. If personalisation does not help at 25 entries, that is a publishable result and it changes what the product should honestly claim.</p>
+      </section>
 
-        <h3 class="sub-h">The problem it addresses</h3>
-        <p>Privacy and observability are in direct tension, and almost nobody states it. The moment a model is built so that nothing leaves the device, every ordinary method of knowing whether it works stops being available: no server-side logs, no population A/B test, no held-out set you can inspect after the fact. The user is the only witness, and the user cannot audit a model of themselves — they are the thing being modelled.</p>
-        <p>The usual answer is to give up the privacy. This paper's answer is to move the evaluation: run it on the device, before shipping, against baselines strict enough that the result can come back negative.</p>
-
-        <h3 class="sub-h">What the method actually requires</h3>
-        <ul class="mlist">
-          <li><strong>Every metric is lift over an explicit baseline.</strong> Not accuracy — accuracy on a skewed personal corpus flatters everything. Lift over the do-nothing answer, stated with the baseline next to it.</li>
-          <li><strong>A permutation null and five negative controls.</strong> Destroy the link between label and text and the metric must collapse to chance. If it does not, the metric was measuring the corpus, not the model.</li>
-          <li><strong>Staged legs.</strong> Synthetic pipeline checks gate what is worth testing on humans; population-scale human corpora come next; a full-protocol single subject last. Each leg can stop the next.</li>
-          <li><strong>The instrument ships with the claim.</strong> A fidelity claim that cannot be re-run by the person it is about is a marketing number.</li>
-        </ul>
-
-        <h3 class="sub-h">How it is laid out</h3>
-        <ol class="toc">
-          <li><span>1</span> Introduction</li>
-          <li><span>2</span> The Personal Model — what is being claimed, and what would falsify it</li>
-          <li><span>3</span> The substrate, and its drift</li>
-          <li><span>4</span> DailyVox: an existence proof — the shipping testbed</li>
-          <li><span>5</span> What is not yet shown — the limits, stated before the results</li>
-          <li><span>6</span> The instrument, and what it measured</li>
-          <li><span>7</span> Discussion and limitations</li>
-          <li><span>8</span> Ethics and privacy</li>
-          <li><span>9</span> Conclusion</li>
-        </ol>
-        <p class="paper-note">A preprint, not yet peer-reviewed, and hosted here rather than on a repository — so treat it as a working document. Corrections are welcome and will be credited; if you think the method is wrong, that is the most useful email this page could produce.</p>
-
-        <div class="cite-box">
-          <div class="cite-h">how to cite</div>
-          <pre><code>Karthikeyan NG. "Measuring a Model of One: A Falsifiable,
-On-Device Evaluation Methodology for Private Personal Models."
-Preprint, July 2026.
-https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
-        </div>
-
-      <!-- FINDINGS -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§02</span>
-          <h2 class="sec-title">What it <em>found</em>.</h2>
-          <span class="sec-tag">including the failures</span>
+          <h2 class="sec-title">What already <em>exists</em>.</h2>
+          <span class="sec-tag">not starting from zero</span>
         </div>
-        <p>Leading with the losses, because an instrument that cannot catch its own maker's model is not an instrument.</p>
-        <ul class="findings">
-          <li><strong>The deployed Twin failed first contact with a real diary.</strong> On the author's own journal, keyword-derived traits scored <em>below a do-nothing baseline</em> — lift <strong>−25.2%</strong>. The cause was a written-versus-spoken register shift that synthetic validation could not have exposed. The app was shipping; the harness said it should not have been trusted.</li>
-          <li><strong>Some layers carry signal, others do not.</strong> Across 1,473 writer-self-labelled entries and 15,809 held-out utterances: OS valence reads people at <strong>r = +0.59</strong>. The keyword emotion layer scores <strong>43.5%</strong> against an <strong>85.0%</strong> majority baseline — worse than always guessing the common answer.</li>
-          <li><strong>The repair is named and not yet takeable.</strong> A learned emotion probe beats the keyword layer on transfer to real diaries (50.1% vs 43.8%), but trains on research-licence-only data. The first licence-clean retrain fails the deployment gate by over-firing on neutral text.</li>
-          <li><strong>An honest null.</strong> A 105 KB openness head reads 1,307 writers' self-reported openness at <strong>r = +0.13</strong> — statistically real, practically worthless, and bounded by how much text a person writes rather than by the head.</li>
+        <p>A collaborator is not being asked to build infrastructure. Four things are already running, and the instrument has already been used to fail my own model in public.</p>
+        <ul class="dlist">
+          <li><strong>A shipping testbed with the measurement built in.</strong> DailyVox is a live iOS app that transcribes speech on-device with no network permission at all. Since v1.9 it ships a seven-class self-labelling control, so participants generate labelled ground truth as a normal part of journaling &mdash; not in a separate survey instrument that decays after week two.</li>
+          <li><strong>A falsifiable evaluation harness (TwinEval).</strong> Every metric is lift over an explicit baseline; label-permutation negative controls collapse to chance when the signal is destroyed (p = 0.000 against the null). The harness is the contribution, not just plumbing for the claim.</li>
+          <li><strong>A position paper with a discrimination study.</strong> A shared on-device model prompted to imitate the author is reliably separable from the author&rsquo;s real writing (AUC 0.81); a model actually fit to the author is not (AUC 0.43) &mdash; evidence that prompt conditioning is not personalisation and that the path runs through on-device adaptation.</li>
+          <li><strong>Population-scale baselines on licence-clean public corpora.</strong> 1,473 writer-self-labelled entries, 15,809 held-out utterances, 1,307 writers&rsquo; openness self-reports. Reproducible without anyone&rsquo;s diary.</li>
         </ul>
-        <p class="findings-note">Three of those four are the product losing. That is the result.</p>
+
+        <h3 class="sub-h">Results so far, including the ones that went against me</h3>
+        <div class="num-grid">
+          <div class="num-c"><b>&minus;25.2%</b><span>Lift of the deployed Twin&rsquo;s keyword traits against the author&rsquo;s own diary &mdash; below a do-nothing baseline. The app was already shipping.</span></div>
+          <div class="num-c"><b>43.5%</b><span>Keyword emotion layer against an 85.0% majority-class baseline: worse than always guessing the common answer.</span></div>
+          <div class="num-c"><b>r = +0.13</b><span>A 105&nbsp;KB openness head on 1,307 writers &mdash; statistically real, practically worthless. Reported as a null.</span></div>
+          <div class="num-c"><b>r = +0.663</b><span>The layer that does carry signal: lexicon valence against self-reported mood. Published with the method, not as a headline.</span></div>
+        </div>
+        <p class="findings-note">Three of those four are the product losing. An instrument that cannot catch its own maker&rsquo;s model is not an instrument, so the negatives are the evidence that the method has teeth.</p>
       </section>
 
-      <!-- OPEN PROBLEMS -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§03</span>
-          <h2 class="sec-title">Open <em>problems</em>.</h2>
-          <span class="sec-tag">pick one</span>
+          <h2 class="sec-title">The <em>study</em>, in full.</h2>
+          <span class="sec-tag">designed, powered, unfrozen</span>
         </div>
-        <p>Stated as problems rather than plans, with what a good contribution to each would actually look like. None of them require access to anyone's diary.</p>
+        <p>The study exists as a complete pre-registration draft: hypotheses, split rule, power tables, analysis code, and a pre-written result sentence for every branch of the outcome tree, so no wording is chosen after the data is seen.</p>
 
         <div class="prob">
-          <div class="prob-h"><span class="prob-n">01</span><h3>A licence-clean emotion head that survives the gate</h3><span class="prob-t">ML · tractable</span></div>
-          <p>The probe that beats the shipped keyword layer trains on data whose licence forbids commercial use. The first clean retrain over-fires on neutral text, which on a journal is the majority class and the one that matters — a model that calls an ordinary Tuesday "sad" is worse than no model.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> a head trained only on permissively-licensed corpora that beats 43.8% transfer accuracy <em>and</em> holds its neutral precision, under about 200 KB, running on the phone's own embeddings.</p>
+          <div class="prob-h"><span class="prob-n">H1</span><h3>Personalisation lift at 25 entries</h3><span class="prob-t">primary</span></div>
+          <p>Fit a per-person emotion head at K &isin; {0, 5, 10, 25} adaptation entries and grade each participant on their own <em>later</em> entries. Primary claim at K&nbsp;=&nbsp;25. Each participant contributes about 60 self-labelled entries; the split rule holds out everything past the adaptation window, capped at 35 test entries.</p>
+          <p class="prob-w"><strong>Primary test:</strong> exact sign-flip permutation on per-participant &Delta;accuracy, with a win-rate binomial second in a fixed sequence. A win is strictly positive lift; ties count as losses. The analysis runs exactly once, after the data freezes &mdash; enforced by the harness refusing a second run rather than by a promise.</p>
         </div>
 
-        <div class="prob">
-          <div class="prob-h"><span class="prob-n">02</span><h3>Long-horizon memory that can be scored</h3><span class="prob-t">eval · open</span></div>
-          <p>Retrieval over a week is not memory. The hard question is whether a model connected two entries months apart because the connection is there, or because it confabulated one — and existing long-context benchmarks are built for documents, not for one person's decade.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> a benchmark over a personal longitudinal corpus that distinguishes a real connection from a plausible one, with a null that collapses when the timeline is shuffled.</p>
-        </div>
+        <h3 class="sub-h">Power, stated before recruitment</h3>
+        <table class="vt">
+          <thead><tr><th>Participants</th><th>Primary test</th><th>Companion test</th><th>Reading</th></tr></thead>
+          <tbody>
+            <tr><td class="wk">N = 8</td><td>0.59</td><td>0.83</td><td>Real but underpowered; &ldquo;inconclusive&rdquo; is a likely honest outcome</td></tr>
+            <tr><td class="wk">N = 10</td><td>&mdash;</td><td>0.92</td><td>Companion test becomes decisive</td></tr>
+            <tr><td class="wk">N = 15</td><td>0.75</td><td>&mdash;</td><td>First cohort size that tolerates three participants losing</td></tr>
+          </tbody>
+        </table>
+        <p>At N&nbsp;=&nbsp;15 the per-person win probability is 0.828 under a true +10-point effect, with a 2.9-point accuracy quantum and a 6.9% tie rate. Below eight participants the single most likely outcome is &ldquo;we could not tell&rdquo; &mdash; and that sentence is pre-written like every other, because a pilot that can only report success is not a pilot.</p>
 
-        <div class="prob">
-          <div class="prob-h"><span class="prob-n">03</span><h3>Code-mixed, non-Anglo on-device NLP</h3><span class="prob-t">NLP · regional</span></div>
-          <p>The app's name recogniser is model-free — a heuristic over capitalisation evidence — and it finds <strong>100%</strong> of the non-Anglo person names in the test corpus where a learned model finds 97.7%, precisely <em>because</em> it has no prior about what a name looks like. That result points at a gap: sentiment and entity work for code-mixed diaries, on-device, without a cloud translation hop.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> a Tamil-English (or any code-mixed pair) evaluation set of journal-register text, and a sentiment or entity approach that runs in a phone's memory budget.</p>
-        </div>
+        <h3 class="sub-h">The anti-fabrication gate</h3>
+        <p>A leave-one-participant-out donor arm is pre-registered as an <em>interpretive</em> gate: adapt on other participants, test on this one. If donor adaptation matches personalised adaptation, the personalisation claim is <strong>withdrawn</strong> and the finding is published instead as spoken-register domain adaptation. This exists because the generic head is trained on written-register corpora while diary entries are transcribed speech, so an apparent personalisation lift could be shared register adaptation with no person-specific signal in it at all. The study is publishable on either branch.</p>
 
-        <div class="prob">
-          <div class="prob-h"><span class="prob-n">04</span><h3>Aggregating evidence without egress</h3><span class="prob-t">systems · open</span></div>
-          <p>If a product's whole claim is that nothing leaves the device, how do you ever learn anything across devices? Federated approaches assume a coordinating server this architecture refuses to have. There may be no good answer; saying so rigorously would also be a result.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> a protocol where a participant can contribute an aggregate measurement without a server ever holding their text — or a clear argument that the trade cannot be made.</p>
-        </div>
-
-        <div class="prob blocked">
-          <div class="prob-h"><span class="prob-n">05</span><h3>The consented cohort</h3><span class="prob-t">blocked · needs people</span></div>
-          <p>Every number above comes from one author's diary plus public corpora. A cohort is the gate between "it works for me" and a finding. The protocol is written, the consent form exists, the harness is ready — and it is stopped, because one person cannot recruit, review and consent a cohort in evenings.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code. The protocol itself is no longer hand-waving: the first cohort study is fully designed and power-analysed — it is §06 below.</p>
-        </div>
+        <h3 class="sub-h">Prior art the design must answer</h3>
+        <p>MoodScope (MobiSys 2013) drew a personalisation curve for mood from phone sensors thirteen years ago and is the closest ancestor; LEIA (EPJ Data Science 2023) and Meta-PerSER (Interspeech 2025) are the nearest modern lines. The novelty claim here is a conjunction, not a single new idea: on-device, diary-register transcribed speech, self-labelled ground truth generated in normal use, consent-first with no egress, and falsifiable by construction. Each of those papers is engaged by name in the pre-registration, and a reviewer who thinks the conjunction is thin is exactly the reader this document wants.</p>
       </section>
 
-
-      <!-- WHERE IT GOES — the page listed five problems that are open NOW and
-           implied that was the whole programme. These are the directions after
-           them: further out, less defined, and the ones most worth arguing
-           about with someone who knows the literature. -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§04</span>
-          <h2 class="sec-title">Where it <em>goes after that</em>.</h2>
-          <span class="sec-tag">longer horizon</span>
+          <h2 class="sec-title">Why it <em>cannot run</em>.</h2>
+          <span class="sec-tag">the actual ask</span>
         </div>
-        <p>The five above are close enough to attempt. These are the directions behind them — further out, less defined, and the ones I would most want to argue about with someone who reads this literature properly. Several may turn out to be bad ideas, which is itself worth establishing.</p>
-
-        <div class="ag-grid">
-          <div class="ag">
-            <h4>Memory that has a middle</h4>
-            <p>The Twin currently goes from raw entries to a statistical persona with nothing between. There is no layer of atoms ("she started therapy in March") and no layer of scenarios ("the year of the move"), so every question re-derives everything at query time. Building that middle is an architecture question and an evaluation question at once: what is the right granularity for a memory of a person, and how would you know you had it?</p>
-          </div>
-          <div class="ag">
-            <h4>Personality depth without fine-tuning</h4>
-            <p>Weight-level personalisation on a phone is not practical yet. Persona conditioning — steering a shared model with a measured profile and the person's own phrasings — might get most of the way. The open question is whether a conditioned model is meaningfully <em>more</em> that person than a well-retrieved one, or whether retrieval is doing all the work and the conditioning is theatre.</p>
-          </div>
-          <div class="ag">
-            <h4>Drift: a person changes, does the model?</h4>
-            <p>A twenty-year diary is not one person. Someone at 22 and the same person at 42 are different subjects, and a model averaged over both describes neither. Detecting the boundaries, and deciding whether a Personal Model should track the current self or remember the former one, is unsolved and probably the most interesting thing on this page.</p>
-          </div>
-          <div class="ag">
-            <h4>A mirror that can disagree</h4>
-            <p>Personal models have an obvious failure mode: agreeing with you. A Twin that reflects a distorted self-image back approvingly is worse than no Twin, particularly in this domain. Measuring sycophancy in a system whose ground truth is the user's own words — where the user is both subject and judge — is a genuinely hard evaluation problem.</p>
-          </div>
-          <div class="ag">
-            <h4>Ambient signals, and their ethics</h4>
-            <p>Photos, music, movement and sleep are on the phone already, and each carries mood signal. Every one of them also widens what the model knows past what the person chose to say. The research question and the ethics question are the same question, and the current answer — a review-and-discard queue, nothing learned without being seen — is a design choice that has never been tested against alternatives.</p>
-          </div>
-          <div class="ag">
-            <h4>Cross-lingual personal models</h4>
-            <p>Most people who journal in more than one language switch <em>within</em> a thought, not between entries. A personal model that treats the switch as noise loses the part where the switch is the signal. This runs alongside the code-mixed work in §03 but is the deeper version of it.</p>
-          </div>
-        </div>
+        <p>Three blockers. None is technical, and that is the point &mdash; they are the specific things one unaffiliated person cannot supply, stated plainly so nobody discovers them late.</p>
+        <ul class="dlist">
+          <li><strong>No ethics process.</strong> A human-subjects study needs a real one. An independent researcher can write a self-assessment, and reviewers at IMWUT or CHI will notice it is not an IRB. This is the single largest gap and the one a university closes by existing.</li>
+          <li><strong>The consent document needs its second version before anyone enrols.</strong> The current form was written for a different, retired study: it promises data will &ldquo;never be used to train anything,&rdquo; which this study&rsquo;s per-person head would violate, and it recruits for the wrong artifact. The in-app recruitment card is held closed until that is fixed. Zero participants have been enrolled and zero data collected, so the fix is free today and unfixable retroactively the moment it is not.</li>
+          <li><strong>Recruitment and review capacity.</strong> Eight to fifteen participants, each journaling to roughly 60 self-labelled entries over about two months. One person working evenings cannot recruit, consent, support and review a cohort; a supervised group can do it as a term project.</li>
+        </ul>
+        <p>One further item is deliberately open rather than blocked: <strong>the pre-registration is still a draft.</strong> It becomes unamendable the moment it is frozen, so it stays unfrozen until someone qualified has attacked it. Reviewing it before the freeze is the highest-leverage thing a collaborator can do, and it has to happen first.</p>
       </section>
 
-      <!-- DATA -->
       <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§05</span>
-          <h2 class="sec-title">What <em>data</em> exists.</h2>
-          <span class="sec-tag">and what does not</span>
+          <h2 class="sec-title">Where it <em>publishes</em>.</h2>
+          <span class="sec-tag">venues and dates</span>
         </div>
-        <ul class="dlist">
-          <li><strong>Public corpora, licence-clean.</strong> The population-scale numbers — 1,473 self-labelled entries, 15,809 held-out utterances, 1,307 writers' openness self-reports — come from published datasets. Reproducible.</li>
-          <li><strong>Research-licence-only corpora.</strong> The emotion probe's training data. Usable for a paper, not for a shipped model. This constraint is the whole of open problem 01.</li>
-          <li><strong>One author's diary.</strong> Twenty years, and the only longitudinal personal corpus in the programme. Not shareable, and its non-shareability is the point of the product.</li>
-          <li><strong>No user data. At all.</strong> The app has no telemetry and no server. There is no dataset of DailyVox users' journals, there never has been, and building one would require every participant to individually choose to send an export.</li>
-        </ul>
+        <p>The venue scan below was verified against primary sources in July 2026 and should be re-checked before anything is committed to &mdash; three near-term deadlines have already passed while this work sat blocked, which is itself the argument for starting now.</p>
+        <table class="vt">
+          <thead><tr><th>Venue</th><th>Deadline</th><th>Fit</th></tr></thead>
+          <tbody>
+            <tr><td><strong>FAccT 2027</strong> &middot; Porto</td><td class="wk">Abstracts 27 Oct 2026<br>Papers 3 Nov 2026</td><td>Ownership, privacy and agency framing of the position paper. Nearest live deadline.</td></tr>
+            <tr><td><strong>IMWUT</strong> (UbiComp journal)</td><td class="wk">1 Nov 2026<br>1 Feb 2027 &middot; 1 May 2027</td><td>Highest-fit archival home for system-plus-deployment. Precedent bar is MindScape (2024): an 8-week, N = 20 field study &mdash; which is close to this study&rsquo;s shape. <strong>The February cycle is the natural target if a cohort starts this autumn.</strong></td></tr>
+            <tr><td><strong>PoPETs 2027</strong> &middot; Issue 3</td><td class="wk">30 Nov 2026</td><td>Privacy-by-architecture framing; artifact badges suit the open evaluation kit.</td></tr>
+            <tr><td><strong>CHI 2027 Posters</strong></td><td class="wk">21 Jan 2027</td><td>Non-archival and explicitly does not require completeness &mdash; the most tolerant top-tier entry point, and it keeps every archival option open.</td></tr>
+            <tr><td><strong>UMAP 2027</strong></td><td class="wk">late Jan 2027</td><td>Scope names LLM-based user modelling, personalised agents, and privacy of personalisation. Direct topical fit for the harness paper.</td></tr>
+            <tr class="gone"><td>IUI 2027 &middot; PoPETs Issue 2 &middot; CHI 2027 Papers</td><td class="wk">Aug&ndash;Sep 2026</td><td>Passed while the cohort was blocked.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>The timing works.</strong> A cohort recruited in October, journaling for about two months, freezes data around late December. That lands the analysis in January &mdash; in range for CHI Posters on 21 January and the IMWUT cycle on 1 February. Nothing about that schedule requires heroics; it requires starting.</p>
+        <p>There are two separable papers here, which matters for a student&rsquo;s workload: the <em>methodology and harness</em> paper (already largely written) and the <em>cohort study</em> paper (the one that needs people). They can be submitted to different venues, and the second is the one with a clean student-sized scope.</p>
       </section>
 
-      <!-- THE READY STUDY — the concrete case for an academic partner: a
-           pre-registered protocol that exists today, stated the way a reviewer
-           would want it, with its blockers named. This is the section a
-           supervisor reads before deciding to put a student or an ethics
-           application behind the programme. -->
-      <section class="sec-block" id="study">
+      <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§06</span>
-          <h2 class="sec-title">One study, <em>ready to run</em>.</h2>
-          <span class="sec-tag">pre-registered draft · needs a cohort</span>
+          <h2 class="sec-title">Division of <em>labour</em>.</h2>
+          <span class="sec-tag">who does what</span>
         </div>
-
-        <p>Everything before this point is programme. This is the study — the concrete thing an academic partner can read, attack, and put a student behind. It exists today as a full pre-registration draft: hypotheses, power analysis, analysis code, and a pre-written sentence for every possible outcome, so that no wording is left to choose after the result is known.</p>
-
-        <div class="prob">
-          <div class="prob-h"><span class="prob-n">Q</span><h3>Does personalisation actually help?</h3><span class="prob-t">the question</span></div>
-          <p>Does a small emotion model adapted on a person's <em>own</em> labelled diary entries predict that person's later self-reported feelings better than a generic model — and how many entries does it take? The app already ships the labelling instrument: users can self-label entries on a seven-class scale, on the device, under consent. The study fits a per-person head at K&nbsp;∈&nbsp;{0,&nbsp;5,&nbsp;10,&nbsp;25} adaptation entries, primary claim at K&nbsp;=&nbsp;25, and grades on that person's later entries.</p>
+        <div class="role">
+          <div>
+            <h4>The collaborating group supplies</h4>
+            <ul>
+              <li>An ethics process, and the institutional standing that makes the study reviewable.</li>
+              <li>Adversarial review of the pre-registration <em>before</em> it freezes &mdash; the design decisions are still live and should be co-owned, not inherited.</li>
+              <li>Recruitment and consent of 8&ndash;15 participants, and light-touch support over the collection window.</li>
+              <li>Literature depth on affective computing and personalisation that I do not have and know I do not have.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>I supply</h4>
+            <ul>
+              <li>The app, the on-device labelling instrument, and the export tooling participants use.</li>
+              <li>The evaluation harness, the split-rule patch, the power analysis, and the analysis code.</li>
+              <li>All engineering, deployment and data plumbing. If the interesting part for the group is the method, the software is not their problem.</li>
+              <li>Drafting, revision, and the submission mechanics.</li>
+            </ul>
+          </div>
         </div>
-
-        <ul class="dlist">
-          <li><strong>The test, fixed in advance.</strong> Exact sign-flip permutation on per-participant Δaccuracy, win-rate binomial second in a fixed sequence. A "win" is strictly positive lift; ties count as losses. The analysis runs exactly once, after the data freezes — enforced by the harness refusing a second run, not by a promise.</li>
-          <li><strong>Power, stated honestly.</strong> Each participant contributes ~60 self-labelled entries; 35 are held out for test. The headline test has power 0.59 at eight participants and 0.75 at fifteen; the companion test reaches 0.92 at ten. Below eight, the single most likely outcome is "inconclusive" — and that sentence is pre-written like every other.</li>
-          <li><strong>The anti-fabrication gate.</strong> A donor arm — adapt on <em>other</em> participants, test on this one — is pre-registered as an interpretive gate. If donor adaptation matches personalised adaptation, the personalisation claim is withdrawn and the result is published as spoken-register domain adaptation instead. The study is publishable on either branch; a null is a finding, not a failure.</li>
-          <li><strong>Prior art it must answer.</strong> MoodScope (MobiSys 2013) drew a personalisation curve for mood thirteen years ago from phone sensors; LEIA (2023) and Meta-PerSER (Interspeech 2025) are the nearest modern lines. The claim here is the conjunction — on-device, diary-register speech, self-labelled ground truth, consent-first, falsifiable by design — and the pre-registration engages each of those papers by name.</li>
-        </ul>
-
-        <h3 class="sub-h">What is deliberately not done</h3>
-        <p>Three things are open on purpose, because they are the parts a collaborator should co-own rather than inherit. The pre-registration is a <em>draft</em> — unamendable once frozen, so it stays unfrozen until someone qualified has attacked it. The consent document needs its second version to land before a single participant is enrolled; the in-app recruitment funnel is held closed until it does. And the ethics route is an open decision — a university process is the credible answer, and it is exactly the piece one person without an institution cannot supply.</p>
-
-        <h3 class="sub-h">The shape of the collaboration</h3>
-        <ul class="offer">
-          <li><strong>The partner brings:</strong> an ethics process, adversarial review of the protocol before it freezes, and recruitment of eight to fifteen participants who journal ~60 self-labelled entries over about two months.</li>
-          <li><strong>The partner gets:</strong> co-authorship agreed in writing up front, a shipping instrument and harness rather than an empty repository, and a study sized for a master's or final-year student to run end to end — with a publishable result on every branch of the outcome tree.</li>
-          <li><strong>The engineering stays mine:</strong> the harness patch, the app, the export tooling, and the plumbing are not the collaborator's problem.</li>
-        </ul>
-
-        <p>The full pre-registration draft — power tables, split rule, outcome sentences, consent draft, and the decision log — is available on request, and the right first response to it is suspicion: if your instinct is that the design is wrong somewhere, that instinct is the collaboration. The formal write-up of all of this, including venues and dates, is the <a href="/research-statement">research statement</a>. <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></p>
+        <h3 class="sub-h">Shapes this can take</h3>
+        <div class="shape-grid">
+          <div class="shp"><div class="shp-n">joint paper</div><p>Co-authorship agreed in writing before anyone starts, not negotiated after a result exists.</p></div>
+          <div class="shp"><div class="shp-n">supervised student project</div><p>The cohort study is the right size for a master&rsquo;s or final-year project: a shipping testbed, a pre-registered protocol, and a publishable result on every branch &mdash; including the null.</p></div>
+          <div class="shp"><div class="shp-n">protocol review only</div><p>A single pass over the pre-registration before it freezes is a real contribution and a small commitment. It can precede any larger decision.</p></div>
+          <div class="shp"><div class="shp-n">tell me it is wrong</div><p>If the design has a hole, that is worth more than a collaboration and costs one email. Corrections are credited.</p></div>
+        </div>
       </section>
 
-      <!-- CONTRIBUTING -->
-      <section class="sec-block" id="work-with">
+      <section class="sec-block">
         <div class="sec-head">
           <span class="sec-num">§07</span>
-          <h2 class="sec-title">Let's do it <em>together</em>.</h2>
-          <span class="sec-tag">open invitation</span>
+          <h2 class="sec-title">Risks, <em>stated</em>.</h2>
+          <span class="sec-tag">before you ask</span>
         </div>
-
-        <p>Everything above is one person's work, and that is the honest limitation of all of it. A single author with a single diary can build an instrument and can catch his own model failing — but cannot produce a finding, cannot peer-review himself, and cannot see the parts of the literature he has not read. I would genuinely rather do this with other people.</p>
-
-        <p>There is no funding, no institutional sponsor and nothing to pay anyone, so this is not a job offer. What there is:</p>
-
-        <ul class="offer">
-          <li><strong>A shipping testbed.</strong> A real app, on the App Store, with real users — not a notebook and a Kaggle set.</li>
-          <li><strong>An instrument that already exists.</strong> TwinEval runs, with baselines, nulls and negative controls in place. You would not be starting from an empty repository.</li>
-          <li><strong>Problems that are actually open.</strong> Not homework with a known answer at the back.</li>
-          <li><strong>Authorship, stated up front.</strong> If your work is in a paper, your name is on it. That gets agreed in writing before anyone starts, not after.</li>
-          <li><strong>An engineer who will do the engineering.</strong> If the interesting part for you is the method, the shipping and the plumbing are mine.</li>
+        <ul class="dlist">
+          <li><strong>The study may return a null, or an &ldquo;inconclusive&rdquo;.</strong> At 8&ndash;14 participants, inconclusive is the single most likely outcome, and a +6-point true effect is essentially undetectable at this scale. Every branch has a pre-written sentence and every branch is publishable, but nobody should enter this expecting a confident positive.</li>
+          <li><strong>Novelty is a conjunction, not a first.</strong> MoodScope showed a personalisation curve in 2013. If a reviewer decides the conjunction is insufficiently new, that is a real risk and it is better argued now than discovered at submission.</li>
+          <li><strong>Attrition is the operational risk.</strong> Sixty labelled entries over two months is a genuine ask of a volunteer. The mitigation is that labelling happens inside an app people already use daily rather than in a separate instrument, but the cohort should be over-recruited.</li>
+          <li><strong>One author, so far.</strong> Everything above is a single person&rsquo;s work with a single diary, which is the honest limitation of all of it &mdash; and the reason this document exists.</li>
         </ul>
+        <p class="ethics">On ethics, settled before anyone asks: informed consent, no compensation, data kept local to the participant&rsquo;s own machine, deletion honoured immediately, withdrawal honoured any time before publication, and aggregate numerics only in anything published. Those terms predate anyone asking and are not negotiable. Where a collaborating institution&rsquo;s process is stricter, its process governs.</p>
+      </section>
 
-        <h3 class="sub-h">Shapes this could take</h3>
-        <div class="shape-grid">
-          <div class="shp"><div class="shp-n">joint paper</div><p>Any of §03 or §04 is a paper with two names on it. The methodology work in particular needs someone who will attack it.</p></div>
-          <div class="shp"><div class="shp-n">supervised student work</div><p>Several of these are the right size for a final-year or master's project, with a shipping app as the testbed and a real result at the end.</p></div>
-          <div class="shp"><div class="shp-n">the cohort</div><p>The one thing that cannot be solved by code. An institution with an ethics process unblocks the entire bottom of the ladder.</p></div>
-          <div class="shp"><div class="shp-n">just tell me I'm wrong</div><p>If the method has a hole in it, that is worth more than a collaboration and takes one email. Corrections get credited.</p></div>
+      <section class="sec-block">
+        <div class="sec-head">
+          <span class="sec-num">§08</span>
+          <h2 class="sec-title">Next <em>step</em>.</h2>
+          <span class="sec-tag">concrete</span>
         </div>
-
-        <p>Reasonable next steps: read the <a href="/paper/measuring-a-model-of-one.pdf">paper</a>, look at the <a href="/technology">architecture</a>, take the <a href="https://github.com/intrepidkarthi/dailyvox">source and research kit</a> — then write and say which part you would want.</p>
-        <p><a href="mailto:hello@getdailyvox.com" class="btn-primary">hello@getdailyvox.com <span class="arr">→</span></a></p>
-        <p class="ethics">On ethics, so it is settled before anyone asks: work involving participants runs on informed consent, no compensation, data kept local to the participant's own machine, deletion honoured immediately, withdrawal honoured any time before publication, and aggregate numerics only in anything published. Those terms predate anyone asking and are not negotiable.</p>
+        <p>The full pre-registration draft &mdash; power tables, split rule, outcome sentences, consent draft and the decision log &mdash; is available on request and is the right thing to read next. The most useful first response to it is suspicion.</p>
+        <p>A thirty-minute conversation about whether the design holds is enough to decide whether any of this is worth an ethics application.</p>
+        <p><a href="mailto:hello@getdailyvox.com?subject=Research%20collaboration%20%E2%80%94%20Model%20of%20One" class="btn-primary">hello@getdailyvox.com <span class="arr">&rarr;</span></a></p>
+        <p style="margin-top:18px">Background reading: the <a href="/paper/measuring-a-model-of-one.pdf">methodology paper (PDF)</a>, the <a href="/research">research programme and open problems</a>, and the <a href="/technology">system architecture</a>.</p>
       </section>
 
     </div>
-</section>
-
-    </div>
-</main>
+  </main>
 
 <footer class="dv-footer">
   <div class="dv-f-wrap">
