@@ -1482,7 +1482,7 @@
         <p>Privacy is not a feature of DailyVox. It is the architectural constraint every technical decision is built around. The system is designed so that private data <strong>physically cannot</strong> leave the device for processing.</p>
 
         <h3 style="font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--paper); margin: 28px 0 10px; letter-spacing: -0.02em;">Zero network processing</h3>
-        <p>Every AI operation runs on the device's Neural Engine. Transcription uses <code>requiresOnDeviceRecognition = true</code>. NLTagger runs locally. The Twin is computed and stored in Core Data. There are no API calls, no cloud functions, no telemetry on journal content.</p>
+        <p>Every AI operation runs on the device's Neural Engine. Transcription sets <code>requiresOnDeviceRecognition = true</code> unconditionally — it fails and says why rather than falling back to a network. NLTagger runs locally. The Twin is computed and stored in Core Data. There are no inference API calls, no cloud functions and no telemetry on journal content. The one network path that exists is iCloud sync, which is optional, off unless you turn it on, goes to your own Apple account rather than ours, and is reported as on or off in the app's own Data Shield panel — because a zero-calls claim the app cannot vouch for is not a claim worth printing.</p>
 
         <h3 style="font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--paper); margin: 28px 0 10px; letter-spacing: -0.02em;">No third-party SDKs</h3>
         <p>DailyVox contains zero third-party dependencies for core functionality. No analytics SDKs. No crash reporting that sends journal content. No ad networks. The only external code is Google Analytics on this website (not in the app) and Apple's own frameworks.</p>
@@ -1615,12 +1615,21 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-now">→</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
-              <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.11.0</span></div>
+              <div class="rd-tag rd-done-txt">Shipped · v1.10.0</div>
               <h3>The Twin speaks your language</h3>
               <p>The interface ships in Spanish, French, German and Italian, chosen because every feature works fully in them — search by meaning relies on on-device sentence embeddings Apple provides for a limited set of languages. Recording already worked in every language the iPhone can transcribe; this release changed the interface. iPhone-only by conviction: no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
               <div class="rd-tags"><span>String Catalogs</span><span>60+ Languages</span><span>iPhone-only</span></div>
+            </div>
+          </div>
+          <div class="rd-item">
+            <div class="rd-dot rd-now">→</div>
+            <div class="rd-body">
+              <div class="rd-tag rd-done-txt">Shipped · v1.11.0</div>
+              <h3>Making the central claim true</h3>
+              <p>The transcriber was set to <em>prefer</em> on-device recognition when offline. On a connected iPhone — nearly every user, nearly always — that meant the recording went to Apple's speech servers for better punctuation. Every claim on this page rested on that not happening. On-device recognition is now unconditional: where it is unavailable, transcription fails and says why rather than reaching for a network. Voice search had the same fault and the same fix. Airplane-mode testing could never have caught it, because with no network there is nothing to leak to — it took reading the flag rather than trusting it. Settings also claimed "Network calls made: 0 · EVER" while the app linked CloudKit and offered a sync toggle; a claim nothing can falsify is not a claim, so the panel now reports what is actually true, including when iCloud sync is on.</p>
+              <div class="rd-tags"><span>requiresOnDeviceRecognition</span><span>Unconditional</span><span>Falsifiable ledger</span></div>
             </div>
           </div>
           <div class="rd-item">
