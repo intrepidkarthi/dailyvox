@@ -1245,7 +1245,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         <div class="prob blocked">
           <div class="prob-h"><span class="prob-n">05</span><h3>The consented cohort</h3><span class="prob-t">blocked · needs people</span></div>
           <p>Every number above comes from one author's diary plus public corpora. A cohort is the gate between "it works for me" and a finding. The protocol is written, the consent form exists, the harness is ready — and it is stopped, because one person cannot recruit, review and consent a cohort in evenings.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code. The protocol itself is no longer hand-waving: the first cohort study is fully designed and power-analysed — it is §06 below.</p>
         </div>
       </section>
 
@@ -1305,10 +1305,49 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         </ul>
       </section>
 
+      <!-- THE READY STUDY — the concrete case for an academic partner: a
+           pre-registered protocol that exists today, stated the way a reviewer
+           would want it, with its blockers named. This is the section a
+           supervisor reads before deciding to put a student or an ethics
+           application behind the programme. -->
+      <section class="sec-block" id="study">
+        <div class="sec-head">
+          <span class="sec-num">§06</span>
+          <h2 class="sec-title">One study, <em>ready to run</em>.</h2>
+          <span class="sec-tag">pre-registered draft · needs a cohort</span>
+        </div>
+
+        <p>Everything before this point is programme. This is the study — the concrete thing an academic partner can read, attack, and put a student behind. It exists today as a full pre-registration draft: hypotheses, power analysis, analysis code, and a pre-written sentence for every possible outcome, so that no wording is left to choose after the result is known.</p>
+
+        <div class="prob">
+          <div class="prob-h"><span class="prob-n">Q</span><h3>Does personalisation actually help?</h3><span class="prob-t">the question</span></div>
+          <p>Does a small emotion model adapted on a person's <em>own</em> labelled diary entries predict that person's later self-reported feelings better than a generic model — and how many entries does it take? The app already ships the labelling instrument: users can self-label entries on a seven-class scale, on the device, under consent. The study fits a per-person head at K&nbsp;∈&nbsp;{0,&nbsp;5,&nbsp;10,&nbsp;25} adaptation entries, primary claim at K&nbsp;=&nbsp;25, and grades on that person's later entries.</p>
+        </div>
+
+        <ul class="dlist">
+          <li><strong>The test, fixed in advance.</strong> Exact sign-flip permutation on per-participant Δaccuracy, win-rate binomial second in a fixed sequence. A "win" is strictly positive lift; ties count as losses. The analysis runs exactly once, after the data freezes — enforced by the harness refusing a second run, not by a promise.</li>
+          <li><strong>Power, stated honestly.</strong> Each participant contributes ~60 self-labelled entries; 35 are held out for test. The headline test has power 0.59 at eight participants and 0.75 at fifteen; the companion test reaches 0.92 at ten. Below eight, the single most likely outcome is "inconclusive" — and that sentence is pre-written like every other.</li>
+          <li><strong>The anti-fabrication gate.</strong> A donor arm — adapt on <em>other</em> participants, test on this one — is pre-registered as an interpretive gate. If donor adaptation matches personalised adaptation, the personalisation claim is withdrawn and the result is published as spoken-register domain adaptation instead. The study is publishable on either branch; a null is a finding, not a failure.</li>
+          <li><strong>Prior art it must answer.</strong> MoodScope (MobiSys 2013) drew a personalisation curve for mood thirteen years ago from phone sensors; LEIA (2023) and Meta-PerSER (Interspeech 2025) are the nearest modern lines. The claim here is the conjunction — on-device, diary-register speech, self-labelled ground truth, consent-first, falsifiable by design — and the pre-registration engages each of those papers by name.</li>
+        </ul>
+
+        <h3 class="sub-h">What is deliberately not done</h3>
+        <p>Three things are open on purpose, because they are the parts a collaborator should co-own rather than inherit. The pre-registration is a <em>draft</em> — unamendable once frozen, so it stays unfrozen until someone qualified has attacked it. The consent document needs its second version to land before a single participant is enrolled; the in-app recruitment funnel is held closed until it does. And the ethics route is an open decision — a university process is the credible answer, and it is exactly the piece one person without an institution cannot supply.</p>
+
+        <h3 class="sub-h">The shape of the collaboration</h3>
+        <ul class="offer">
+          <li><strong>The partner brings:</strong> an ethics process, adversarial review of the protocol before it freezes, and recruitment of eight to fifteen participants who journal ~60 self-labelled entries over about two months.</li>
+          <li><strong>The partner gets:</strong> co-authorship agreed in writing up front, a shipping instrument and harness rather than an empty repository, and a study sized for a master's or final-year student to run end to end — with a publishable result on every branch of the outcome tree.</li>
+          <li><strong>The engineering stays mine:</strong> the harness patch, the app, the export tooling, and the plumbing are not the collaborator's problem.</li>
+        </ul>
+
+        <p>The full pre-registration draft — power tables, split rule, outcome sentences, consent draft, and the decision log — is available on request, and the right first response to it is suspicion: if your instinct is that the design is wrong somewhere, that instinct is the collaboration. <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></p>
+      </section>
+
       <!-- CONTRIBUTING -->
       <section class="sec-block" id="work-with">
         <div class="sec-head">
-          <span class="sec-num">§06</span>
+          <span class="sec-num">§07</span>
           <h2 class="sec-title">Let's do it <em>together</em>.</h2>
           <span class="sec-tag">open invitation</span>
         </div>
