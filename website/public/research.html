@@ -1142,10 +1142,52 @@
 
     <div class="wrap">
 
+      <!-- WHAT THIS IS FOR — the page previously opened on the instrument and
+           never stated the destination the instrument serves. A reader arriving
+           cold could not tell what the programme was ultimately trying to build. -->
+      <section class="sec-block" id="the-goal">
+        <div class="sec-head">
+          <span class="sec-num">§01</span>
+          <h2 class="sec-title">What this is all <em>for</em>.</h2>
+          <span class="sec-tag">the destination</span>
+        </div>
+
+        <p>Everything below is instrumentation, and instruments are only interesting because of what they are pointed at. So it is worth stating the destination plainly before the methodology starts.</p>
+
+        <p><strong>The goal is a model of a single person that lives on that person&rsquo;s own device, is built from their own longitudinal record, and belongs to them.</strong> Not a general model with a profile attached. Not a service that rents your history back to you. A model whose subject <em>is</em> you, which runs where your data is made, and which you could delete tomorrow without asking anyone&rsquo;s permission. We call it a <a href="/personal-digital-twin">personal digital twin</a>, and that page is the plain-language explanation of what it is and how it differs from the industrial sense of the term.</p>
+
+        <h3 class="sub-h">What it is not</h3>
+        <p>The claim is deliberately narrower than the phrase usually implies, and the narrowness is the honest part. A personal digital twin here is <strong>a mirror of what you have actually written, not an oracle that claims to be you</strong>. It does not pretend to hold opinions you have never expressed, and when it is asked something your record cannot answer, the correct behaviour is to say so rather than to improvise. A model of a person that confabulates about that person is worse than no model at all, which is why abstention is treated as a feature to be measured rather than a failure to be engineered away.</p>
+
+        <h3 class="sub-h">Five properties, each a constraint rather than a feature</h3>
+        <ul class="dlist">
+          <li><strong>Of one.</strong> The training set is one life and the prediction target is one person&rsquo;s next state &mdash; not a population average conditioned on a profile. The unit of optimisation is the individual.</li>
+          <li><strong>Private by architecture.</strong> The data has no path off the device. This is the load-bearing property, because most privacy is a promise &mdash; a policy to read, an audit to trust, a setting to toggle. A wiring fact is stronger than a promise, and it is the one a user can verify independently.</li>
+          <li><strong>On-device.</strong> A small model travels to the data rather than the data travelling to a large model.</li>
+          <li><strong>Longitudinal.</strong> Assembled from years, not from one session. A questionnaire captures who someone says they are on a single afternoon; a model of one is built from thousands of ordinary days, which is where most of a life actually happens.</li>
+          <li><strong>Owned.</strong> The weights sit on the person&rsquo;s side of the trust boundary. The model is their asset, not a subscription.</li>
+        </ul>
+
+        <h3 class="sub-h">Why now, and not five years ago</h3>
+        <p>The substrate stopped being hypothetical. A 2026 phone ships a multi-billion-parameter language model with constrained decoding and tool calling, small trainable adapters, on-device speech recognition, sentence embeddings, and a neural accelerator measured in tens of trillions of operations per second. Assembling a genuinely complete personal model on the device itself is beginning to look less like a research fantasy and more like an engineering schedule.</p>
+        <p>Which relocates the hard problem. <strong>The open question is moving from &ldquo;can it run on the phone?&rdquo; to &ldquo;how would anyone know it is any good?&rdquo;</strong> &mdash; and the second has no settled answer, because a system built so that nothing leaves the device cannot be watched in production. There is no dashboard, no population A/B test, no held-out set to inspect after the fact, and the only witness is the person being modelled, who cannot audit a model of themselves. That is the gap this programme occupies, and it is the reason the evaluation work comes before the capability work rather than after it.</p>
+
+        <h3 class="sub-h">What stands between here and there</h3>
+        <p>Four problems look structural rather than incremental, and none of them is solved by a larger model:</p>
+        <ul class="dlist">
+          <li><strong>Evaluation without observation.</strong> Fidelity claims have to be falsifiable on the device that makes them, or they are marketing. This is the whole of the methodology work in &sect;02.</li>
+          <li><strong>Memory with a middle.</strong> The system currently goes from raw entries to a statistical persona with nothing in between &mdash; no layer of atoms, no layer of episodes &mdash; so every question re-derives everything at query time. What the right granularity is for a memory <em>of a person</em>, and how you would know you had it, is an open architecture and evaluation question at once.</li>
+          <li><strong>Drift.</strong> A twenty-year diary is not one person. Someone at 22 and the same person at 42 are different subjects, and a model averaged over both describes neither. Whether a personal model should track the current self or remember the former one is unsolved, and probably the most interesting question here.</li>
+          <li><strong>A mirror that can disagree.</strong> The obvious failure mode of a personal model is agreeing with you. Measuring sycophancy in a system whose ground truth is the user&rsquo;s own words &mdash; where the user is both subject and judge &mdash; is genuinely hard, and it matters most in exactly this domain.</li>
+        </ul>
+
+        <p>The rest of this page is the work done so far against that destination: the methodology and what it measured (&sect;02&ndash;&sect;03), the problems that are open now (&sect;04) and further out (&sect;05), and the one study that is designed, powered and waiting on a cohort (&sect;07). If you want the shipped-versus-unshipped state of the product instead, the <a href="/roadmap">roadmap</a> is honest about it, and <a href="/technology">the architecture</a> describes how the current model is actually built.</p>
+      </section>
+
       <!-- PAPER -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§01</span>
+          <span class="sec-num">§02</span>
           <h2 class="sec-title">The <em>paper</em>.</h2>
           <span class="sec-tag">methodology</span>
         </div>
@@ -1196,7 +1238,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       <!-- FINDINGS -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§02</span>
+          <span class="sec-num">§03</span>
           <h2 class="sec-title">What it <em>found</em>.</h2>
           <span class="sec-tag">including the failures</span>
         </div>
@@ -1213,7 +1255,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       <!-- OPEN PROBLEMS -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§03</span>
+          <span class="sec-num">§04</span>
           <h2 class="sec-title">Open <em>problems</em>.</h2>
           <span class="sec-tag">pick one</span>
         </div>
@@ -1246,7 +1288,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         <div class="prob blocked">
           <div class="prob-h"><span class="prob-n">05</span><h3>The consented cohort</h3><span class="prob-t">blocked · needs people</span></div>
           <p>Every number above comes from one author's diary plus public corpora. A cohort is the gate between "it works for me" and a finding. The protocol is written, the consent form exists, the harness is ready — and it is stopped, because one person cannot recruit, review and consent a cohort in evenings.</p>
-          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code. The protocol itself is no longer hand-waving: the first cohort study is fully designed and power-analysed — it is §06 below.</p>
+          <p class="prob-w"><strong>A contribution looks like:</strong> an institution with an ethics process, or a supervised group willing to run the protocol. This is the one that cannot be solved by writing code. The protocol itself is no longer hand-waving: the first cohort study is fully designed and power-analysed — it is §07 below.</p>
         </div>
       </section>
 
@@ -1257,7 +1299,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
            about with someone who knows the literature. -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§04</span>
+          <span class="sec-num">§05</span>
           <h2 class="sec-title">Where it <em>goes after that</em>.</h2>
           <span class="sec-tag">longer horizon</span>
         </div>
@@ -1294,7 +1336,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       <!-- DATA -->
       <section class="sec-block">
         <div class="sec-head">
-          <span class="sec-num">§05</span>
+          <span class="sec-num">§06</span>
           <h2 class="sec-title">What <em>data</em> exists.</h2>
           <span class="sec-tag">and what does not</span>
         </div>
@@ -1313,7 +1355,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
            application behind the programme. -->
       <section class="sec-block" id="study">
         <div class="sec-head">
-          <span class="sec-num">§06</span>
+          <span class="sec-num">§07</span>
           <h2 class="sec-title">One study, <em>ready to run</em>.</h2>
           <span class="sec-tag">pre-registered draft · needs a cohort</span>
         </div>
@@ -1348,7 +1390,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       <!-- CONTRIBUTING -->
       <section class="sec-block" id="work-with">
         <div class="sec-head">
-          <span class="sec-num">§07</span>
+          <span class="sec-num">§08</span>
           <h2 class="sec-title">Let's do it <em>together</em>.</h2>
           <span class="sec-tag">open invitation</span>
         </div>
@@ -1367,7 +1409,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
 
         <h3 class="sub-h">Shapes this could take</h3>
         <div class="shape-grid">
-          <div class="shp"><div class="shp-n">joint paper</div><p>Any of §03 or §04 is a paper with two names on it. The methodology work in particular needs someone who will attack it.</p></div>
+          <div class="shp"><div class="shp-n">joint paper</div><p>Any of §04 or §05 is a paper with two names on it. The methodology work in particular needs someone who will attack it.</p></div>
           <div class="shp"><div class="shp-n">supervised student work</div><p>Several of these are the right size for a final-year or master's project, with a shipping app as the testbed and a real result at the end.</p></div>
           <div class="shp"><div class="shp-n">the cohort</div><p>The one thing that cannot be solved by code. An institution with an ethics process unblocks the entire bottom of the ladder.</p></div>
           <div class="shp"><div class="shp-n">just tell me I'm wrong</div><p>If the method has a hole in it, that is worth more than a collaboration and takes one email. Corrections get credited.</p></div>
