@@ -54,13 +54,13 @@
   .pb{page-break-before:always}
   @media print{
     @page{size:A4;margin:13mm 14mm}
-    body{background:#fff;font-size:9.6pt;line-height:1.4}
+    body{background:#fff;font-size:9.5pt;line-height:1.34}
     .sheet{margin:0;padding:0;box-shadow:none;max-width:none;background:#fff}
     a{color:var(--ink);text-decoration:none}
     h1{font-size:17pt;margin-bottom:3px}
-    h2{font-size:10.4pt;margin:11px 0 5px;padding-bottom:3px;break-after:avoid}
+    h2{font-size:10.2pt;margin:9px 0 4px;padding-bottom:3px;break-after:avoid}
     h3{font-size:9.6pt;margin:7px 0 3px}
-    p{margin:0 0 5px}
+    p{margin:0 0 4px}
     li{margin-bottom:2px}
     .kick{font-size:7pt;margin-bottom:5px}
     .sub{font-size:9.4pt;margin-bottom:7px}
@@ -90,11 +90,11 @@
   <h2>The question</h2>
   <p class="q"><strong>Does an emotion model adapted on a person's own labelled diary entries predict that person's later self-reported feelings better than a generic model trained on everyone — and how many entries does the adaptation take?</strong></p>
   <p>Consumer AI personalises by centralisation: a large model trained on everyone, tuned to an individual by sending that individual's data to it. The alternative is a model of one, built and kept on the person's own device — defensible today on ownership and privacy grounds, but with its predictive claim unproven. That claim is an empirical question with a number attached, and it can come back negative.</p>
-  <p>The longer arc: a complete personal model running on the owner's own hardware — a mirror of what someone has actually written, not an oracle claiming to be them. The substrate has arrived (on-device LLMs, trainable adapters, embeddings, a neural accelerator), so the open question is shifting from <em>can it run?</em> to <em>how would you know it is any good?</em> A model built to be private cannot be watched in production: no dashboard, no A/B test, and the only witness is the person being modelled, who cannot audit a model of themselves.</p>
+  <p>The longer arc is a complete personal model running on the owner's own hardware — a mirror of what someone has written, not an oracle claiming to be them. The substrate has arrived, so the open question is shifting from <em>can it run?</em> to <em>how would you know it is any good?</em> A model built to be private cannot be watched in production: no dashboard, no A/B test, and the only witness is the person being modelled, who cannot audit a model of themselves.</p>
 
   <h2>What already exists — no infrastructure to build</h2>
   <ul>
-    <li><strong>A shipping testbed with measurement built in.</strong> A live iOS app that transcribes on-device with no network permission at all, and since v1.9 ships a seven-class self-labelling control — participants generate ground truth as part of normal journaling, not in a survey that decays after week two.</li>
+    <li><strong>A shipping testbed with measurement built in.</strong> A live iOS app transcribing on-device with no network permission at all, shipping a seven-class self-labelling control — participants generate ground truth as part of normal journaling, not in a survey that decays after week two.</li>
     <li><strong>A falsifiable evaluation harness.</strong> Every metric is lift over an explicit baseline; label-permutation negative controls collapse to chance (p = 0.000 against the null).</li>
     <li><strong>A position paper with a discrimination study.</strong> A shared model prompted to imitate the author is separable from his real writing (AUC 0.81); a model fit to him is not (AUC 0.43) — evidence that prompt conditioning is not personalisation.</li>
     <li><strong>Licence-clean population baselines.</strong> 1,473 self-labelled entries, 15,809 held-out utterances, 1,307 writers' openness self-reports.</li>
@@ -108,7 +108,7 @@
   <p>Three of those four are the product losing. An instrument that cannot catch its own maker's model is not an instrument.</p>
 
   <h2>The study</h2>
-  <p>Fit a per-person emotion head at K ∈ {0, 5, 10, 25} adaptation entries; grade each participant on their own <em>later</em> entries. Primary claim at K = 25. Each participant contributes ~60 self-labelled entries; everything past the adaptation window is held out, capped at 35 test entries. Primary test is an exact sign-flip permutation on per-participant Δaccuracy, with a win-rate binomial second in a fixed sequence. Ties count as losses. The analysis runs <em>once</em>, after the data freezes — enforced by the harness refusing a second run, not by a promise.</p>
+  <p>Fit a per-person emotion head at K ∈ {0, 5, 10, 25} adaptation entries; grade each participant on their own <em>later</em> entries, primary claim at K = 25. Each contributes ~60 self-labelled entries; everything past the adaptation window is held out, capped at 35. Primary test is an exact sign-flip permutation on per-participant Δaccuracy, win-rate binomial second in a fixed sequence, ties counting as losses. The analysis runs <em>once</em>, after the data freezes — enforced by the harness refusing a second run, not by a promise.</p>
   <table>
     <thead><tr><th>Participants</th><th>Primary</th><th>Companion</th><th>Reading</th></tr></thead>
     <tbody>
@@ -125,10 +125,10 @@
   <p>Three blockers, none technical — which is the point. They are what one unaffiliated person cannot supply.</p>
   <ul>
     <li><strong>No ethics process.</strong> A human-subjects study needs a real one. A self-assessment is not an IRB, and reviewers notice. This is the largest gap, and a university closes it by existing.</li>
-    <li><strong>Consent v2 before anyone enrols.</strong> The current form was written for a different, retired study and promises data will "never be used to train anything" — which a per-person head violates. Recruitment is held closed until it is rewritten. Zero participants enrolled and zero data collected, so the fix is free today and impossible retroactively.</li>
+    <li><strong>Consent v2 before anyone enrols.</strong> The current form was written for a retired study and promises data will "never be used to train anything" — which a per-person head violates. Recruitment is held closed until it is rewritten. Zero participants enrolled and zero data collected, so the fix is free today and impossible retroactively.</li>
     <li><strong>Recruitment capacity.</strong> Eight to fifteen participants, ~60 self-labelled entries each over about two months. One person working evenings cannot recruit, consent and support a cohort; a supervised group can, as a term project.</li>
   </ul>
-  <p>One item is open rather than blocked: <strong>the pre-registration is still a draft.</strong> It becomes unamendable the moment it freezes, so it stays unfrozen until someone qualified has attacked it. Reviewing it before the freeze is the highest-leverage first contribution, and it has to happen first.</p>
+  <p>One item is open rather than blocked: <strong>the pre-registration is still a draft.</strong> It becomes unamendable once frozen, so it stays unfrozen until someone qualified has attacked it — which is the highest-leverage first contribution, and has to happen first.</p>
 
   <h2>Division of labour</h2>
   <div class="two">
@@ -151,7 +151,7 @@
       </ul>
     </div>
   </div>
-  <p>Co-authorship is agreed in writing before anyone starts, not after a result exists. The study is the right size for a master's or final-year project, with a publishable result on every branch — including the null.</p>
+  <p>Co-authorship agreed in writing before anyone starts. The study is the right size for a master's or final-year project, with a publishable result on every branch — including the null.</p>
 
   <h2>Where it publishes — probable targets, not a plan</h2>
   <p><strong>A Registered Report fits best, and is available now.</strong> "Inconclusive" is the modal outcome at this cohort size, and every conference rewards results; a Registered Report is accepted on the design <em>before</em> data exists, making that outcome publishable by construction. <strong>PCI Registered Reports</strong> is free and rolling, states it "sets no minimum requirement for statistical power," and its Stage-1 acceptance is honoured by 41 journals without further review — including <strong>Royal Society Open Science</strong>, whose guidance concedes "classic power analysis may not be appropriate or possible for all research fields or designs," and <strong>PeerJ Computer Science</strong>. No speech, NLP, affective-computing or ACM HCI venue has such a track.</p>
@@ -161,20 +161,19 @@
       <tr><td>UMAP 2027 · Chicago</td><td class="mono">22 / 29 Jan 2027</td><td>"Does adapting to this person beat the population model" is UMAP's own question</td></tr>
       <tr><td>IMWUT (UbiComp)</td><td class="mono">1 Feb 2027</td><td>On-device sensing home turf; journal R&amp;R rather than binary reject</td></tr>
       <tr><td>MobileHCI 2027</td><td class="mono">10 / 17 Feb 2027</td><td>Friendliest pool — in-the-wild deployment at this scale is a normal contribution</td></tr>
-      <tr><td>PCI RR → RSOS / PeerJ CS</td><td class="mono">rolling</td><td>The recommended route; no deadline, no power minimum</td></tr>
     </tbody>
   </table>
-  <p>On whether this cohort size can publish at all: <em>JMIR Formative Research</em> has already run a person-specific mental-health study at <strong>N = 5</strong> and an <strong>n-of-1</strong> per-person modelling study. Also in window: PoPETs Issue 4 (28 Feb) and IEEE ASLI (21 Apr).</p>
+  <p>On whether this cohort size publishes at all: <em>JMIR Formative Research</em> has run a person-specific study at <strong>N = 5</strong> and an <strong>n-of-1</strong> per-person modelling study. Also in window: PoPETs Issue 4 (28 Feb), IEEE ASLI (21 Apr).</p>
 
   <h2>Risks, stated</h2>
   <ul>
-    <li><strong>It may return a null or an "inconclusive."</strong> At 8–14 participants that is the modal outcome and a +6-point effect is undetectable. Every branch has a pre-written sentence; nobody should enter expecting a confident positive. A Registered Report is the structural mitigation.</li>
+    <li><strong>It may return a null or an "inconclusive."</strong> At 8–14 participants that is the modal outcome and a +6-point effect is undetectable. Every branch has a pre-written sentence; nobody should expect a confident positive. A Registered Report is the structural mitigation.</li>
     <li><strong>Novelty is a conjunction, not a first.</strong> MoodScope drew a personalisation curve in 2013 (N = 32, 66% → 93%). What looks unoccupied is narrower: no prior work applies an <em>exact</em> sign-flip permutation to per-participant Δaccuracy, nor uses leave-one-participant-out as an anti-fabrication gate.</li>
-    <li><strong>Attrition, and one author.</strong> Sixty entries over two months is a real ask of a volunteer — labelling inside a daily-use app mitigates it, but over-recruit. And a single person with a single diary is the honest limitation of all of it, which is the reason this document exists.</li>
+    <li><strong>Attrition, and one author.</strong> Sixty entries over two months is a real ask; labelling inside a daily-use app mitigates it, but over-recruit. And a single person with a single diary is the honest limitation of all of it — the reason this document exists.</li>
   </ul>
 
   <p class="foot"><strong>Ethics, settled before anyone asks:</strong> informed consent, no compensation, data kept local to the participant's own machine, deletion honoured immediately, withdrawal honoured any time before publication, aggregate numerics only in anything published. Where a collaborating institution's process is stricter, its process governs.</p>
-  <p class="meta">Full statement: getdailyvox.com/research-statement · Programme and open problems: getdailyvox.com/research · Methodology paper: getdailyvox.com/paper/measuring-a-model-of-one.pdf<br>The full pre-registration draft — power tables, split rule, outcome sentences, consent draft, decision log — is available on request. The most useful first response to it is suspicion.</p>
+  <p class="meta">getdailyvox.com/research-statement (full version) · /research (programme) · /paper/measuring-a-model-of-one.pdf<br>The pre-registration draft — power tables, split rule, outcome sentences, consent draft, decision log — is available on request. The most useful first response to it is suspicion.</p>
 
 </div>
 </body>
