@@ -138,6 +138,11 @@
       "source": "/blog/what-is-the-best-voice-journaling-app-for-iphone",
       "destination": "/blog/best-voice-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/best-journaling-app",
+      "destination": "/blog/best-free-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
