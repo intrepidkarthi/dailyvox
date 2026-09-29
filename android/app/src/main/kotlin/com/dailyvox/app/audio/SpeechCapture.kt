@@ -89,7 +89,11 @@ class SpeechCapture(private val context: Context) {
     private val _error = MutableStateFlow<CaptureError?>(null)
     val error: StateFlow<CaptureError?> = _error
 
-    fun clearError() { _error.value = null }
+    fun clearError() {
+        _error.value = null
+        // A finished or failed download belongs to the card being dismissed.
+        if (_pack.value !is PackDownload.Requested && _pack.value !is PackDownload.Progress) _pack.value = PackDownload.Idle
+    }
 
     private val _pack = MutableStateFlow<PackDownload>(PackDownload.Idle)
     val pack: StateFlow<PackDownload> = _pack
@@ -126,7 +130,10 @@ class SpeechCapture(private val context: Context) {
                             _pack.value = PackDownload.Progress(completedPercent)
                         }
                         override fun onSuccess() {
-                            _pack.value = PackDownload.Done; _error.value = null
+                            // The card stays up saying so, with Try again. Clearing
+                            // the error here made the card vanish on success, which
+                            // on a real phone read as the button having done nothing.
+                            _pack.value = PackDownload.Done
                             runCatching { rec.destroy() }
                         }
                         override fun onScheduled() {

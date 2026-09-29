@@ -179,5 +179,5 @@ Take the closest string Console actually offers, top down, until five are used:
 Avoid: Productivity, Lifestyle, Tools, Utilities — Play treats them as noise.
 
 **Do not** take a tag the app cannot back. Meditation, Therapy, Fitness and
-Sleep tracking are all adjacent and all wrong: DailyVox reads sleep, it does not
-track it, and a tag that oversells is a refund and a one-star, not a download.
+Sleep tracking are all adjacent and all wrong: v1.0 reads no sleep data at all,
+and a tag that oversells is a refund and a one-star, not a download.

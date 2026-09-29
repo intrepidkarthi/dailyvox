@@ -67,7 +67,9 @@ fun JournalScreen(
     val listening = searchState != SpeechCapture.State.IDLE
     LaunchedEffect(searchPartial) { if (searchPartial.isNotBlank()) onQuery(searchPartial) }
     LaunchedEffect(Unit) { search.finished.collect { if (it.isNotBlank()) onQuery(it) } }
-    val filters = listOf("All", "People", "Mood", "Body")
+    // No "Body" in v1.0: it filtered on sleep from Health Connect, which the
+    // release does not read, so it could only ever show an empty list.
+    val filters = listOf("All", "People", "Mood")
     var filter by rememberSaveable { mutableStateOf("All") }
     // Same construction as SpeakScreen: one instance per screen, remembered.
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
@@ -145,7 +147,7 @@ fun JournalScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             if (query.isEmpty()) {
-                Text("Describe it — search what you meant", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.5.sp)
+                Text("Search your journal", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicTextField(

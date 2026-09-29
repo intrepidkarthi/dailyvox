@@ -22,14 +22,6 @@ import java.util.UUID
  */
 object DummyData {
 
-    /** Sleep hours, cycled across the seed. Nulls are deliberate — a phone with
-     *  no wearable has gaps, and the Body row has to survive them. */
-    private val SLEEP = listOf(
-        7.2f, 6.1f, null, 7.9f, 4.8f, 7.0f, 8.1f, null, 6.4f, 7.5f,
-        6.8f, 7.2f, 5.9f, 8.4f, null, 6.6f, 7.8f, 5.2f, 7.1f, 6.9f,
-        8.0f, null, 6.3f, 7.4f, 4.9f, 7.7f,
-    )
-
     private val texts = listOf(
         "Walked before anyone was up. Sarah's flight lands tonight and I'm more nervous than I expected. The house feels different when someone is about to come back to it, like it has been holding its breath." to 52,
         "The review went sideways. James pushed back on the timeline and I let it get to me. I should have said less and listened longer, and I knew that while it was happening." to 78,
@@ -109,7 +101,9 @@ object DummyData {
                     // appeared because the seed got bigger. Any per-entry list
                     // here has to be modulo-safe or it is a landmine for the
                     // next person who adds a text.
-                    sleepHours = SLEEP[i % SLEEP.size],
+                    // No sleep: v1.0 reads no health data, and store
+                    // screenshots must not show what the app cannot collect.
+                    sleepHours = null,
                 )
             )
         }
