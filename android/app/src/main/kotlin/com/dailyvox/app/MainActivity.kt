@@ -173,7 +173,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                 // The first star is persisted as a REAL entry, exactly as iOS
                 // does — so "that star is yours" is true and the app opens onto
                 // a sky that already holds something.
-                if (text.isNotBlank()) vm.add(text, secs, path)
+                // Audio with no words is still the user's first entry: the
+                // recogniser failed, they did not. It stays, untranscribed.
+                if (text.isNotBlank() || path != null) vm.add(text, secs, path)
                 prefs.edit().putBoolean("onboarded", true).apply()
                 onboarded = true
             })

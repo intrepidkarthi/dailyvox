@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -180,49 +181,7 @@ fun JournalScreen(
 
         searchError?.let { err ->
             Spacer(Modifier.height(10.dp))
-            Column(
-                Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable { search.clearError() }
-                    .padding(14.dp),
-            ) {
-                Text(err.message, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(5.dp))
-                Text(err.fix, fontSize = 12.sp, lineHeight = 18.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (err.openLanguageSettings) {
-                    Spacer(Modifier.height(10.dp))
-                    Text(
-                        "Open speech settings",
-                        fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(13.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clickable {
-                                // Same three-step fallback the record screen
-                                // uses: the voice-input screen is not on every
-                                // OEM, so the general locale screen is the last
-                                // resort rather than a dead button.
-                                listOf(
-                                    "com.android.settings.VOICE_INPUT_SETTINGS",
-                                    android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
-                                    android.provider.Settings.ACTION_LOCALE_SETTINGS,
-                                ).firstOrNull { action ->
-                                    runCatching {
-                                        context.startActivity(
-                                            android.content.Intent(action)
-                                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        )
-                                    }.isSuccess
-                                }
-                            }
-                            .padding(horizontal = 12.dp, vertical = 7.dp),
-                    )
-                }
-            }
+            SpeechErrorCard(err, search, "Dismiss", onSecondary = { search.clearError() }, compact = true)
         }
 
         Spacer(Modifier.height(12.dp))

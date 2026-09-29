@@ -45,7 +45,20 @@ data class CaptureError(
     val message: String,
     val fix: String,
     val openLanguageSettings: Boolean = false,
+    /** The fix is a missing offline pack, which [SpeechCapture.downloadPack] can ask for. */
+    val offerDownload: Boolean = false,
 )
+
+/** Where a [SpeechCapture.downloadPack] request has got to. */
+sealed interface PackDownload {
+    data object Idle : PackDownload
+    data object Requested : PackDownload
+    data class Progress(val percent: Int) : PackDownload
+    /** The recogniser accepted it but will fetch later, e.g. on Wi-Fi. */
+    data object Scheduled : PackDownload
+    data object Done : PackDownload
+    data object Failed : PackDownload
+}
 
 class SpeechCapture(private val context: Context) {
 
@@ -77,6 +90,63 @@ class SpeechCapture(private val context: Context) {
     val error: StateFlow<CaptureError?> = _error
 
     fun clearError() { _error.value = null }
+
+    private val _pack = MutableStateFlow<PackDownload>(PackDownload.Idle)
+    val pack: StateFlow<PackDownload> = _pack
+
+    /**
+     * Ask the phone's recogniser to fetch its own offline pack.
+     *
+     * The download happens in the RECOGNISER's process, over its connection --
+     * exactly as the pack would arrive from Android Settings. DailyVox still
+     * holds no INTERNET permission and no audio moves anywhere; this sends a
+     * language tag, not a recording. The platform may show its own approval
+     * prompt, and may only schedule the fetch, so the outcome is reported as
+     * what it is rather than as "fixed".
+     *
+     * API 33 has only the fire-and-forget form; 34 adds a listener.
+     */
+    fun downloadPack() {
+        if (!onDeviceAvailable) { _pack.value = PackDownload.Failed; return }
+        val rec = runCatching { SpeechRecognizer.createOnDeviceSpeechRecognizer(context) }
+            .getOrNull() ?: run { _pack.value = PackDownload.Failed; return }
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
+        }
+        // The next session must re-ask what is installed, or it keeps
+        // requesting the stale (absent) language it cached before the download.
+        prefs.edit().remove(LANG_KEY).remove(PROBED_KEY).apply()
+        _pack.value = PackDownload.Requested
+        if (Build.VERSION.SDK_INT >= 34) {
+            val ok = runCatching {
+                rec.triggerModelDownload(intent, context.mainExecutor,
+                    object : android.speech.ModelDownloadListener {
+                        override fun onProgress(completedPercent: Int) {
+                            _pack.value = PackDownload.Progress(completedPercent)
+                        }
+                        override fun onSuccess() {
+                            _pack.value = PackDownload.Done; _error.value = null
+                            runCatching { rec.destroy() }
+                        }
+                        override fun onScheduled() {
+                            _pack.value = PackDownload.Scheduled
+                            runCatching { rec.destroy() }
+                        }
+                        override fun onError(error: Int) {
+                            android.util.Log.w(TAG, "triggerModelDownload error=$error")
+                            _pack.value = PackDownload.Failed
+                            runCatching { rec.destroy() }
+                        }
+                    })
+            }.isSuccess
+            if (!ok) { _pack.value = PackDownload.Failed; runCatching { rec.destroy() } }
+        } else {
+            // No callback on 33: the request is all we can truthfully report.
+            if (runCatching { rec.triggerModelDownload(intent) }.isFailure) _pack.value = PackDownload.Failed
+            runCatching { rec.destroy() }
+        }
+    }
 
     /**
      * A session that captured audio and produced no words.
@@ -370,12 +440,14 @@ class SpeechCapture(private val context: Context) {
         // this; saying nothing surfaces an error and puts the button back.
         arm(START_TIMEOUT_MS) {
             _error.value = recogniserSilent()
-            recognizer?.let { runCatching { it.cancel() }; runCatching { it.destroy() } }
-            recognizer = null
-            _level.value = 0f
-            _partial.value = ""
+            recognizer?.let { runCatching { it.cancel() } }
             pausing = false
-            _state.value = State.IDLE
+            // Through finish(), not straight to IDLE: finish is what emits
+            // `unrecognised`, and that is the only signal that makes the screen
+            // stop the MediaRecorder and keep the audio. Skipping it here left
+            // the mic held and the .m4a orphaned -- on exactly the silent
+            // recogniser this watchdog exists for.
+            finish("")
         }
         return true
     }
@@ -504,7 +576,8 @@ class SpeechCapture(private val context: Context) {
     /**
      * The one that matters is ERROR_LANGUAGE_UNAVAILABLE (13): the language is
      * supported but its offline pack is not downloaded. This app holds no
-     * INTERNET permission, so it CANNOT fetch that pack itself — by design. The
+     * INTERNET permission, so it cannot fetch that pack itself — but it can ask the
+     * recogniser to, which is [downloadPack]. The
      * message therefore has to point at the place the user can fix it, rather
      * than apologise and leave them stuck.
      *
@@ -524,8 +597,9 @@ class SpeechCapture(private val context: Context) {
             fix = "DailyVox needs Android 13 or newer -- that is the version where offline recognition arrived. It will not transcribe over a network on any version.",
         ) else CaptureError(
             message = "No offline speech pack is installed for your language yet.",
-            fix = "Android Settings \u203a System \u203a Languages \u203a Speech \u203a Offline speech recognition. DailyVox cannot download it for you, because it has no internet permission at all, and it will not transcribe over a network instead.",
+            fix = "Your phone's speech service can download it now. DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.",
             openLanguageSettings = true,
+            offerDownload = true,
         )
 
     /**
@@ -581,8 +655,9 @@ class SpeechCapture(private val context: Context) {
                 "This phone's speech packs (${it.joinToString(", ")}) could not " +
                     "handle ${Locale.getDefault().toLanguageTag()}."
             } ?: "This phone has no offline speech pack installed yet.",
-            fix = "Android Settings › System › Languages › Speech › Offline speech recognition. DailyVox cannot download it for you, because it has no internet permission at all.",
+            fix = "Your phone's speech service can download the pack now. DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.",
             openLanguageSettings = true,
+            offerDownload = true,
         )
         SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> CaptureError(
             message = "The microphone permission was turned off.",
@@ -605,8 +680,9 @@ class SpeechCapture(private val context: Context) {
         SpeechRecognizer.ERROR_SERVER,
         SpeechRecognizer.ERROR_SERVER_DISCONNECTED -> CaptureError(
             message = "This phone's recogniser wanted to use the internet, so nothing was recorded.",
-            fix = "Turn on offline speech recognition in Android Settings › System › Languages › Speech. DailyVox will not transcribe over a network.",
+            fix = "Download the offline pack for your language and it will work with no network at all. DailyVox will not transcribe over a network.",
             openLanguageSettings = true,
+            offerDownload = true,
         )
         else -> CaptureError(
             message = "The recogniser stopped unexpectedly.",

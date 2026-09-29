@@ -103,6 +103,31 @@ def check_listing():
                        "heading and the fence — put the value first, commentary after")
 
 
+def check_source_claims():
+    """Listing and permission text that describes a default or a feature. Each
+    of these shipped wrong once: the docs said the reminder and the lock were
+    off by default while MainActivity turned both on, and the listing sold
+    photo attachments that no button in the app could reach."""
+    print("\nListing / permission claims vs the source")
+    main = open(f"{ANDROID}/app/src/main/kotlin/com/dailyvox/app/MainActivity.kt").read()
+    perms = open(f"{HERE}/PERMISSIONS.md").read()
+    listing = open(f"{HERE}/STORE_LISTING.md").read()
+    src = "".join(open(f).read() for f in glob.glob(
+        f"{ANDROID}/app/src/main/kotlin/**/*.kt", recursive=True))
+
+    reminder_on = bool(re.search(r"Reminders\.PREF_ENABLED,\s*true", main))
+    doc_says_off = bool(re.search(r"reminder.{0,80}(defaults to off|off until)", perms, re.S | re.I))
+    say(reminder_on != doc_says_off, f"reminder default ({'on' if reminder_on else 'off'}) matches PERMISSIONS.md")
+
+    lock_on = 'getBoolean("lock", lockAvailableNow)' in main
+    lock_doc_off = "lock is off by default" in perms
+    say(not (lock_on and lock_doc_off), f"app-lock default ({'on' if lock_on else 'off'}) matches PERMISSIONS.md")
+
+    photos_reachable = "pickPhoto.launch" in src
+    photos_sold = bool(re.search(r"photo", listing.split("## Full description", 1)[-1], re.I))
+    say(photos_reachable or not photos_sold, "listing does not sell unreachable photo attachments")
+
+
 def counts():
     """Not pass/fail: the authoritative numbers for a dated record."""
     print("\nCurrent build facts — paste these, do not recall them")
@@ -127,6 +152,7 @@ def counts():
 if __name__ == "__main__":
     check_permissions()
     check_listing()
+    check_source_claims()
     counts()
     print()
     print(f"FAIL  {fail} mismatch(es)" if fail else "PASS  documents match the build")

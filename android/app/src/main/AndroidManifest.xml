@@ -7,8 +7,9 @@
          The absence of an INTERNET permission is the product claim, in the one
          place a user can verify it without trusting us. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- Notifications are runtime-requested on API 33+; the daily reminder is the
-         only thing that posts one, and it is off until the user turns it on. -->
+    <!-- Notifications are runtime-requested on API 33+; two things post one:
+         the daily reminder (on by default, one switch in Settings) and the
+         ongoing chip while a recording is in progress. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Normal permission, granted at install. Declaring it is not optional:
          Vibrator.vibrate throws SecurityException without it, which took down
@@ -24,11 +25,10 @@
 
     <!-- Health Connect, OPTIONAL and read-only, exactly as the onboarding ledger
          says. Declared is not held: nothing is requested until the user turns
-         Body signals on, and only these four are ever asked for — the four the
-         Twin actually correlates against. -->
+         Body signals on, and only these two are ever asked for — the two the
+         Twin actually correlates against. HRV and resting heart rate were
+         read and analysed by nothing, so they were dropped before v1.0. -->
     <uses-permission android:name="android.permission.health.READ_SLEEP" />
-    <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
-    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
     <uses-permission android:name="android.permission.health.READ_STEPS" />
 
     <!-- On API 33 Health Connect is a separate APK, and package visibility

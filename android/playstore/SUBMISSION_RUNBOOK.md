@@ -126,7 +126,7 @@ Both are asserted by CI on every build.
 
 ## 4. The health-data declaration
 
-Four `health.READ_*` permissions put this app in Google's **health apps review
+Two `health.READ_*` permissions (sleep, steps) put this app in Google's **health apps review
 track**. That is a form plus a wait, not a checkbox, and it is the step most
 likely to add a week you did not plan for.
 
@@ -134,7 +134,7 @@ The manifest side is complete: the API 34+ `VIEW_PERMISSION_USAGE` activity-alia
 with the `HEALTH_PERMISSIONS` category is declared, and so is the `<queries>`
 entry API 33 needs to see Health Connect at all.
 
-What the form wants is the *why*: sleep, HRV, resting heart rate and steps are
+What the form wants is the *why*: sleep and steps are
 read to correlate a person's own physiology against their own journal, on their
 own device, and none of it leaves the phone. Health Connect access is optional,
 read-only, and not requested until the user turns Body signals on — which the
@@ -173,7 +173,7 @@ as carelessness about exactly the claims this product asks to be trusted on.
   (2026-08-26; the 5.2 / 4.9 quoted here before was stale)
 - No INTERNET permission in the merged manifest, asserted by CI
 - Auto Backup disabled, asserted by CI
-- Nine permissions total, all four health ones unheld until opt-in
+- Seven permissions total, both health ones unheld until opt-in
 - **46 app unit tests, 58 engine tests**, both green (the 36 / 51 quoted here
   before was stale — run `python3 playstore/verify.py` rather than recalling it)
 - `lintVitalRelease` clean, which is the lint that gates a release build.

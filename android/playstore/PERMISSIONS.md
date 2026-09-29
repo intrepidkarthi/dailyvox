@@ -50,9 +50,10 @@ was wrong — see the correction at the bottom of this file.**
 ```
 Two notifications, and no others.
 
-1. An optional evening reminder to record the day's entry. It is off until the
-   user switches it on and picks a time, and it does not post if they have
-   already recorded that day.
+1. An evening reminder to record the day's entry, at 9 pm unless the user picks
+   another time. It is on by default, Android asks for notification permission
+   before it can post anything, one switch in Settings turns it off, and it
+   does not post if they have already recorded that day.
 
 2. An ongoing notification shown only while a recording is actually in progress,
    displaying the elapsed time with a control to finish the entry. It appears
@@ -68,7 +69,8 @@ No marketing, promotional or engagement notifications are ever sent.
 ```
 
 *Where:* `system/Reminders.kt`, channel `dailyvox.reminder`, gated on the
-`reminder` preference which defaults to off; and `system/RecordingLive.kt`,
+`reminder` preference which defaults to **on** (`MainActivity.kt`, retention is
+the measured constraint), and checked again at fire time; and `system/RecordingLive.kt`,
 channel `dailyvox.recording`, shown from `SpeakScreen.kt` while the state is
 RECORDING.
 
@@ -99,8 +101,8 @@ device's own biometric prompt — fingerprint or face — falling back to the de
 PIN, pattern or password if biometrics are unavailable or fail.
 
 The app never sees or stores biometric data. It asks the Android BiometricPrompt
-API for a yes or no and receives only that. The lock is off by default and the
-app is fully usable without it.
+API for a yes or no and receives only that. The lock is on by default only where
+the device has a screen lock to honour it, and one switch in Settings turns it off.
 ```
 
 *Where:* `security/AppLock.kt`, `BiometricPrompt` with
@@ -111,15 +113,15 @@ read.
 
 ---
 
-## Health Connect — four `health.READ_*` permissions
+## Health Connect — two `health.READ_*` permissions
 
-Sleep, heart rate variability, resting heart rate, steps. **Read-only, optional,
+Sleep and steps. **Read-only, optional,
 and nothing is requested until the user turns Body signals on.**
 
 Per-type justifications for the Play health form are in
 [`HEALTH_DECLARATION.md`](HEALTH_DECLARATION.md) — that form requires a separate
-explanation for each data type, and two of the four are weaker than the code
-comments used to claim. Read it before submitting.
+explanation for each data type. HRV and resting heart rate were dropped before
+v1.0 because nothing analysed them; the reasoning is recorded there.
 
 *Where:* `body/BodySignals.kt`.
 

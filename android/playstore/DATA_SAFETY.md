@@ -27,8 +27,6 @@ aapt2 dump permissions app-release.apk
 #   uses-permission: name='android.permission.POST_NOTIFICATIONS'
 #   uses-permission: name='android.permission.VIBRATE'
 #   uses-permission: name='android.permission.health.READ_SLEEP'
-#   uses-permission: name='android.permission.health.READ_HEART_RATE_VARIABILITY'
-#   uses-permission: name='android.permission.health.READ_RESTING_HEART_RATE'
 #   uses-permission: name='android.permission.health.READ_STEPS'
 #   uses-permission: name='android.permission.USE_BIOMETRIC'
 #   uses-permission: name='com.dailyvox.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
@@ -104,13 +102,13 @@ transfer, and silently losing a diary when changing phones is its own harm.
 
 | Question | Answer |
 |---|---|
-| Which Health Connect data types? | Sleep, Heart rate variability (RMSSD), Resting heart rate, Steps |
+| Which Health Connect data types? | Sleep, Steps |
 | Read or write? | **Read only.** The app never writes to Health Connect |
-| Purpose | On-device only. **Sleep and steps** are correlated against the user's own journal sentiment (engine `Insights.kt`); **HRV and resting heart rate** are displayed beside the entry as context and are not analysed. Per-type wording for the health form is in `HEALTH_DECLARATION.md` |
+| Purpose | On-device only. Sleep and steps are correlated against the user's own journal sentiment (engine `Insights.kt`) and shown beside the entry. Per-type wording for the health form is in `HEALTH_DECLARATION.md` |
 | Shared with third parties? | **No** — impossible, see Section 1 |
 | Required to use the app? | **No.** Fully optional; everything else works untouched |
 
-The app requests exactly the four types it reads. Play's health policy requires
+The app requests exactly the two types it reads. Play's health policy requires
 that the requested set match the used set, and a broader request would be both a
 violation and indefensible on a screen that prints every permission the app
 holds.
@@ -125,4 +123,4 @@ holds.
 | Works fully offline | airplane mode, fresh install, full journey exercised |
 | Speech never goes to a network | code: `SpeechCapture` constructs `createOnDeviceSpeechRecognizer` and nothing else. **Note what airplane mode cannot check** — until 2026-08-24 a fallback branch sent audio to the platform recognizer, and with no network there was nothing for it to leak to, so the offline test passed on exactly the phones that were leaking. minSdk 33 now guarantees the on-device recognizer exists. |
 | Auto Backup off | `ALLOW_BACKUP` absent from `dumpsys package` flags |
-| Health permissions not held until opt-in | `dumpsys package` shows `granted=false` for all four |
+| Health permissions not held until opt-in | `dumpsys package` shows `granted=false` for both |

@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -157,6 +158,10 @@ fun SpeakScreen(
     // and "the app threw away what you said", and until now it was the second.
     LaunchedEffect(Unit) {
         capture.unrecognised.collect {
+            // Under two seconds with no words is a pocket tap or a cough, not an
+            // entry: filing it would put an empty, unplayable-looking row in the
+            // journal. The error card still says nothing was caught.
+            if (elapsed < MIN_KEPT_SECONDS) { recorder.discard(); return@collect }
             val path = recorder.stop()?.absolutePath ?: return@collect
             onSaved("", elapsed.coerceAtLeast(1), path)
             haptics.entrySaved()
@@ -187,7 +192,21 @@ fun SpeakScreen(
             // open when the screen goes away would leave MediaRecorder holding
             // the microphone — and now that Pause exists, "still open" includes
             // a paused entry the user walked away from.
-            if (capture.state.value != SpeechCapture.State.IDLE) recorder.discard()
+            //
+            // PROCESSING is different: the user already pressed stop, so the
+            // entry is theirs and only the transcript is late. Walking away
+            // during "Filing it." used to delete the audio and the words with
+            // it. File what exists -- the audio, plus whatever partial was
+            // heard -- and let the entry say it has no transcript.
+            when (capture.state.value) {
+                SpeechCapture.State.IDLE -> Unit
+                SpeechCapture.State.PROCESSING -> {
+                    val path = recorder.stop()?.absolutePath
+                    val heard = capture.partial.value
+                    if (path != null || heard.isNotBlank()) onSaved(heard, elapsed.coerceAtLeast(1), path)
+                }
+                else -> recorder.discard()
+            }
             capture.release()
             com.dailyvox.app.system.RecordingLive.hide(context)
             com.dailyvox.app.system.RecordingLive.onFinishRequested = null
@@ -322,7 +341,10 @@ fun SpeakScreen(
             onTap = {
                 if (!granted) mic.request()
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
-                else { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                // Only from IDLE. A tap during PROCESSING used to reach here:
+                // capture.start() returned early, recorder.start() did not, and
+                // a second MediaRecorder opened over the entry being filed.
+                else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
             },
         )
 
@@ -345,58 +367,7 @@ fun SpeakScreen(
         // returning to "Tap to start" taught people the button was broken.
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
-            Column(
-                Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp),
-            ) {
-                Text(err.message, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(6.dp))
-                Text(err.fix, fontSize = 13.sp, lineHeight = 20.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (err.openLanguageSettings) {
-                        Text(
-                            "Open speech settings",
-                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable {
-                                    // Deep-link where it exists; the general
-                                    // language screen is the fallback, since the
-                                    // voice-input screen is not on every OEM.
-                                    val tried = listOf(
-                                        "com.android.settings.VOICE_INPUT_SETTINGS",
-                                        android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
-                                        android.provider.Settings.ACTION_LOCALE_SETTINGS,
-                                    )
-                                    tried.firstOrNull { action ->
-                                        runCatching {
-                                            context.startActivity(
-                                                android.content.Intent(action)
-                                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            )
-                                        }.isSuccess
-                                    }
-                                }
-                                .padding(horizontal = 16.dp, vertical = 11.dp),
-                        )
-                    }
-                    Text(
-                        "Dismiss", fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(14.dp))
-                            .clickable { capture.clearError() }
-                            .padding(horizontal = 16.dp, vertical = 11.dp),
-                    )
-                }
-            }
+            SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -623,3 +594,6 @@ private fun RecordButton(
         }
     }
 }
+
+/** Shortest wordless recording worth keeping as an audio-only entry. */
+private const val MIN_KEPT_SECONDS = 2

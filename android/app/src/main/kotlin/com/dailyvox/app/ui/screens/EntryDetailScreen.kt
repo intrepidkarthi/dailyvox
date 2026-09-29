@@ -74,7 +74,7 @@ fun EntryDetailScreen(
         androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
-            val dest = java.io.File(context.filesDir, "photo-${'$'}{entry.id}.jpg")
+            val dest = java.io.File(context.filesDir, "photo-${entry.id}.jpg")
             runCatching {
                 context.contentResolver.openInputStream(uri)!!.use { input ->
                     dest.outputStream().use { input.copyTo(it) }

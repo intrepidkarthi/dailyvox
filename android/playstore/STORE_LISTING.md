@@ -73,7 +73,7 @@ The complete list of what DailyVox asks for:
 • Notifications — the optional evening reminder, and the recording timer
 • Vibration — haptics
 • Biometrics — the optional app lock
-• Health Connect — only if you switch on Body signals, read-only, four types
+• Health Connect — only if you switch on Body signals, read-only, two types (sleep and steps)
 
 That's it. No analytics SDK. No crash reporter. No account. No sign-up. No ads.
 No subscription. No "free trial" that becomes a bill.
@@ -113,19 +113,18 @@ Twin that guesses about your life is worse than one that stays quiet.
 
 WHAT ELSE IS IN IT
 
-• Search your journal by what you meant, or by voice
+• Search your journal by typing or by voice
 • Play back the original recording of any entry
 • See exactly what the Twin filed from each entry, and correct it
 • Tell it how the day actually felt — your word, not its guess
 • Home screen widget and a Quick Settings tile for one-tap recording
 • Optional evening reminder, with no streak guilt if you miss a night
 • App lock with your fingerprint, face, or device PIN
-• Photos attached to entries, kept on this phone
 • Export as PDF or readable JSON, and an encrypted backup you control
 • Your backup opens on an iPhone too — the format is identical on both
 
-Body signals are optional. With your permission DailyVox reads sleep, morning
-HRV, resting heart rate and steps from Health Connect, so the Twin can tell you
+Body signals are optional. With your permission DailyVox reads sleep and steps
+from Health Connect, so the Twin can tell you
 whether a rough night actually changes how YOU write — a question only your own
 entries can answer.
 

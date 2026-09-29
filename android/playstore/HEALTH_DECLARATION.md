@@ -8,7 +8,7 @@ necessary types be requested.
 Everything below is what the code does, with the file and line that does it, so
 a reviewer's follow-up question has an answer.
 
-DailyVox reads **four** types, **read-only**, and writes nothing back to Health
+DailyVox reads **two** types — sleep and steps — **read-only**, and writes nothing back to Health
 Connect. Nothing is requested until the user turns Body signals on in Settings;
 the permissions are declared in the manifest but not held until then.
 
@@ -68,81 +68,21 @@ entirely optional and the rest of the app is unaffected if they stay off.
 
 ---
 
-## Heart rate variability — `android.permission.health.READ_HEART_RATE_VARIABILITY`
+## Decided 2026-09-29: HRV and resting heart rate are not requested
 
-**Paste this:**
-
-```
-DailyVox is a voice journal. With the user's permission it reads the user's
-morning heart rate variability (RMSSD) and shows it alongside the journal entry
-they recorded that day, so that when they read the entry back they can see the
-physiological context they wrote it in.
-
-Only morning readings are used — from midnight to 11:00 — because HRV varies
-with posture, food and activity through the day, so a whole-day average would
-not be a meaningful figure to show anyone. The value appears on the entry as
-"HRV 48 ms this morning" and nowhere else.
-
-The data is read on the device, stored only on the device, and is never
-transmitted. The app holds no internet permission at all. Body signals are
-entirely optional and the rest of the app is unaffected if they stay off.
-```
-
----
-
-## Resting heart rate — `android.permission.health.READ_RESTING_HEART_RATE`
-
-**Paste this:**
-
-```
-DailyVox is a voice journal. With the user's permission it reads the user's
-resting heart rate for the day and shows it alongside the journal entry they
-recorded, so that when they read the entry back they can see the physiological
-context they wrote it in.
-
-The app takes the most recent resting heart rate reading recorded that day. The
-value appears on the entry as "Resting pulse 58 bpm" and nowhere else.
-
-The data is read on the device, stored only on the device, and is never
-transmitted. The app holds no internet permission at all. Body signals are
-entirely optional and the rest of the app is unaffected if they stay off.
-```
-
----
-
-## Read this before submitting: two of the four are weaker than the code claims
-
-`BodySignals.kt` says it reads "only the four fields the Twin actually
-correlates against", and `DATA_SAFETY.md` repeated it. **That is true of sleep
-and steps and false of the other two.** Traced through the code:
+Earlier builds also read heart rate variability and resting heart rate. Traced
+through the code, those two were read, stored and shown beside the entry, and
+**nothing computed with them** — `Entry.toChatEntry()` passes only `sleepHours`
+and `stepsToday` to the engine. Play asks for the minimum necessary types, so
+both were dropped from the manifest and from `BodySignals.PERMISSIONS` before
+the first release.
 
 | Type | Shown on the entry | Feeds a Twin insight |
 |---|---|---|
 | Sleep | yes | **yes** — `Insights.kt:97` |
 | Steps | yes | **yes** — `Insights.kt:108` |
-| HRV | yes | **no** |
-| Resting heart rate | yes | **no** |
 
-`Entry.toChatEntry()` hands the engine `sleepHours` and `stepsToday`. It does
-not pass `hrvMs` or `restingHrBpm`, and no engine file references them. They are
-read, stored and displayed — and nothing computes with them.
-
-That is still a genuine user-facing benefit and the justifications above state
-it accurately rather than overselling it. But Play asks for the **minimum
-necessary** data types, and this is a decision worth making deliberately rather
-than by default:
-
-- **Keep both.** Defensible: the user sees the number next to their entry, which
-  is a real feature and is what the wording above claims. Costs two extra data
-  types in the health review.
-- **Drop both.** Removes two types from the declaration and shortens the
-  permission list the store listing invites people to inspect. Costs the two
-  rows on the entry screen. Wiring HRV into the engine later would mean asking
-  for the permission again.
-- **Wire them up first.** HRV against journal sentiment is the most interesting
-  of the four for this product and the correlation code already exists —
-  `Insights.split()` is generic. This turns the weakest justification into the
-  strongest.
-
-Nothing here is blocking. But do not submit the form describing HRV as
-something the Twin analyses, because it currently does not.
+The `hrvMs` / `restingHrBpm` columns stay in the database (nullable, no
+migration) so the entry screen still renders values recorded by earlier test
+builds. Add the permissions back only when the engine correlates them, and
+write the justification then — as analysis, because it will be.

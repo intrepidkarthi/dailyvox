@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -216,7 +217,21 @@ private fun SpeakBeat(
             onCaptured(t, elapsed.coerceAtLeast(1), path)
         }
     }
-    DisposableEffect(Unit) { onDispose { capture.release() } }
+    // The recogniser failed but the microphone did not. On a phone like that,
+    // this used to be where the user's very first entry was destroyed: only
+    // `finished` was collected, so the audio sat in an open MediaRecorder until
+    // the screen left and nothing ever stopped it. Keep it, and move on.
+    LaunchedEffect(Unit) {
+        capture.unrecognised.collect {
+            if (elapsed < 2) { recorder.discard(); return@collect }
+            path = recorder.stop()?.absolutePath ?: return@collect
+            text = ""
+            onCaptured("", elapsed.coerceAtLeast(1), path)
+        }
+    }
+    // discard() is a no-op once stop() has handed the file over, so this only
+    // ever deletes a recording nobody finished -- and releases the mic.
+    DisposableEffect(Unit) { onDispose { recorder.discard(); capture.release() } }
 
     Column(
         Modifier.fillMaxSize().padding(horizontal = 26.dp),
@@ -272,56 +287,9 @@ private fun SpeakBeat(
 
         captureError?.let { err ->
             Spacer(Modifier.height(22.dp))
-            Column(
-                Modifier.fillMaxWidth().widthIn(max = 420.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp),
-            ) {
-                Text(err.message, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(6.dp))
-                Text(err.fix, fontSize = 13.sp, lineHeight = 20.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (err.openLanguageSettings) {
-                        Text(
-                            "Open speech settings",
-                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable {
-                                    val tried = listOf(
-                                        "com.android.settings.VOICE_INPUT_SETTINGS",
-                                        android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
-                                        android.provider.Settings.ACTION_LOCALE_SETTINGS,
-                                    )
-                                    tried.firstOrNull { action ->
-                                        runCatching {
-                                            context.startActivity(
-                                                android.content.Intent(action)
-                                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            )
-                                        }.isSuccess
-                                    }
-                                }
-                                .padding(horizontal = 16.dp, vertical = 11.dp),
-                        )
-                    }
-                    Text(
-                        "Continue anyway", fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(14.dp))
-                            .clickable { capture.clearError(); onSkip() }
-                            .padding(horizontal = 16.dp, vertical = 11.dp),
-                    )
-                }
-            }
+            SpeechErrorCard(err, capture, "Continue anyway",
+                onSecondary = { capture.clearError(); onSkip() },
+                modifier = Modifier.widthIn(max = 420.dp))
         }
     }
 }

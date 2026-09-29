@@ -258,9 +258,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     "speakingRate REAL", "pitchMean REAL", "pitchVariability REAL",
                     "energyMean REAL", "pauseRatio REAL", "longPauseCount INTEGER",
                     "hourOfDay INTEGER", "dayOfWeek INTEGER",
-                ).forEach { column ->
-                    db.execSQL("ALTER TABLE entries ADD COLUMN $column")
-                }
+                ).forEach { addColumnIfMissing(db, it) }
             }
         }
 
@@ -268,10 +266,27 @@ class Repo private constructor(private val db: DailyVoxDb) {
          *  about having none rather than reporting zero steps and no pulse. */
         val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
             override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
-                listOf("hrvMs REAL", "restingHrBpm REAL", "stepsToday INTEGER").forEach {
-                    db.execSQL("ALTER TABLE entries ADD COLUMN $it")
-                }
+                listOf("hrvMs REAL", "restingHrBpm REAL", "stepsToday INTEGER")
+                    .forEach { addColumnIfMissing(db, it) }
             }
+        }
+
+        /**
+         * `ALTER TABLE ... ADD COLUMN`, skipped when the column is already there.
+         *
+         * Schemas 1.json and 2.json are byte-identical: a build shipped the
+         * prosody columns while `version` was still 1. On such an install a bare
+         * ADD COLUMN throws "duplicate column name", and with no destructive
+         * fallback that is a crash on every launch, forever. Checking first makes
+         * every migration safe to run against a table that is already ahead.
+         */
+        internal fun addColumnIfMissing(db: androidx.sqlite.db.SupportSQLiteDatabase, definition: String) {
+            val name = definition.substringBefore(' ')
+            val present = db.query("PRAGMA table_info(entries)").use { c ->
+                val col = c.getColumnIndexOrThrow("name")
+                generateSequence { if (c.moveToNext()) c.getString(col) else null }.any { it == name }
+            }
+            if (!present) db.execSQL("ALTER TABLE entries ADD COLUMN $definition")
         }
 
         @Volatile private var INSTANCE: Repo? = null

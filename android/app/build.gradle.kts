@@ -131,5 +131,9 @@ dependencies {
     implementation(libs.health.connect)
     implementation(project(":engine"))
     testImplementation(libs.junit)
+    // Robolectric only for tests that need a real SQLite: the Room migrations,
+    // which must survive running against a table that is already ahead.
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.test:core:1.6.1")
     debugImplementation(libs.compose.ui.tooling)
 }
