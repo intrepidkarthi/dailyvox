@@ -79,6 +79,29 @@ def load_brand():
     inside = ~(a.min(axis=2) > 235)
     ys, xs = np.where(inside)
     y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+    # Erode the mask before it reaches the matte. The rounded square's rim is
+    # antialiased from white into sage, so those pixels sit far from the fitted
+    # background and keyed as MIC: a faint rounded-square outline rode along in
+    # the foreground layer, visible just inside the launcher's mask on device.
+    # The art also has a soft inner bevel along the rim, so the margin grows by
+    # 60px; nothing of the microphone, its stand or its shadow is within ~95px.
+    #
+    # Only white CONNECTED TO THE EDGE is margin: the capsule's specular
+    # highlight is near-white too, and treating it as outside punched holes
+    # through the mic.
+    from PIL import ImageDraw, ImageFilter
+    # .copy(): fromarray can hand back a read-only view, and floodfill then
+    # silently changes nothing.
+    white = Image.fromarray(((~inside) * 255).astype(np.uint8)).copy()
+    for seed in [(0, 0), (white.width - 1, 0), (0, white.height - 1), (white.width - 1, white.height - 1)]:
+        ImageDraw.floodfill(white, seed, 128)
+    margin = Image.fromarray(((np.asarray(white) == 128) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(121))
+    inside = np.asarray(margin) < 127
+    # The straight sides run to the image edge with the same bevel line on
+    # them, and white flood-fill never reaches those. Band every edge too.
+    band = 70
+    inside[:band, :] = inside[-band:, :] = False
+    inside[:, :band] = inside[:, -band:] = False
     return a[y0:y1, x0:x1], inside[y0:y1, x0:x1]
 
 

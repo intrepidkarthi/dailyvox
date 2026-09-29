@@ -98,20 +98,9 @@ fun SettingsScreen(
                     colors = dvSwitchColors(),
                 )
             }
-            // The design mock reads "REVIEW QUEUE"; that is placeholder text. A
-            // ledger whose rows are decorative is worse than no ledger, so this
-            // one reports what Health Connect actually is on THIS phone.
-            var hcState by remember { mutableStateOf("CHECKING") }
-            LaunchedEffect(Unit) {
-                val body = com.dailyvox.app.body.BodySignals(context)
-                hcState = when (body.availability()) {
-                    com.dailyvox.app.body.BodySignals.Availability.UNSUPPORTED -> "NOT INSTALLED"
-                    com.dailyvox.app.body.BodySignals.Availability.NEEDS_UPDATE -> "NEEDS UPDATE"
-                    com.dailyvox.app.body.BodySignals.Availability.AVAILABLE ->
-                        if (body.granted()) "CONNECTED" else "NOT LINKED"
-                }
-            }
-            LedgerRow("Health Connect") { Mono(hcState, goldText) }
+            // No Health Connect row in v1.0: the app declares no health
+            // permission, and a ledger row for something it cannot touch would
+            // be decoration. It returns with a real Body signals opt-in.
             Spacer(Modifier.height(11.dp))
             Text(
                 "The complete permission list: microphone, notifications, vibration, " +

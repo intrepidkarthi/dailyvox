@@ -26,8 +26,6 @@ aapt2 dump permissions app-release.apk
 #   uses-permission: name='android.permission.RECORD_AUDIO'
 #   uses-permission: name='android.permission.POST_NOTIFICATIONS'
 #   uses-permission: name='android.permission.VIBRATE'
-#   uses-permission: name='android.permission.health.READ_SLEEP'
-#   uses-permission: name='android.permission.health.READ_STEPS'
 #   uses-permission: name='android.permission.USE_BIOMETRIC'
 #   uses-permission: name='com.dailyvox.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 ```
@@ -72,7 +70,6 @@ handles and where it stays:
 | Voice recordings | app-private internal storage | No |
 | Transcripts | local Room database | No |
 | Derived mood, names, prosody | local Room database | No |
-| Health data (opt-in) | read from Health Connect, stored locally | No |
 | Photos attached to entries | copied into app-private storage | No |
 | Exports and backups | **only where the user chooses to save them** | Only by the user's own action |
 
@@ -98,20 +95,10 @@ transfer, and silently losing a diary when changing phones is its own harm.
 
 ---
 
-## Section 4 — Health Connect (Play's health data policy)
+## Section 4 — Health Connect
 
-| Question | Answer |
-|---|---|
-| Which Health Connect data types? | Sleep, Steps |
-| Read or write? | **Read only.** The app never writes to Health Connect |
-| Purpose | On-device only. Sleep and steps are correlated against the user's own journal sentiment (engine `Insights.kt`) and shown beside the entry. Per-type wording for the health form is in `HEALTH_DECLARATION.md` |
-| Shared with third parties? | **No** — impossible, see Section 1 |
-| Required to use the app? | **No.** Fully optional; everything else works untouched |
-
-The app requests exactly the two types it reads. Play's health policy requires
-that the requested set match the used set, and a broader request would be both a
-violation and indefensible on a screen that prints every permission the app
-holds.
+Not applicable to v1.0: the app declares no `health.*` permission. Answer "No"
+to every health-data question in the Play form.
 
 ---
 
@@ -123,4 +110,3 @@ holds.
 | Works fully offline | airplane mode, fresh install, full journey exercised |
 | Speech never goes to a network | code: `SpeechCapture` constructs `createOnDeviceSpeechRecognizer` and nothing else. **Note what airplane mode cannot check** — until 2026-08-24 a fallback branch sent audio to the platform recognizer, and with no network there was nothing for it to leak to, so the offline test passed on exactly the phones that were leaking. minSdk 33 now guarantees the on-device recognizer exists. |
 | Auto Backup off | `ALLOW_BACKUP` absent from `dumpsys package` flags |
-| Health permissions not held until opt-in | `dumpsys package` shows `granted=false` for both |

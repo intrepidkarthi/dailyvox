@@ -1,5 +1,8 @@
 # Play Console — Health apps declaration
 
+> **Not used by v1.0.** The release declares no Health Connect permission, so this
+> form is not submitted. Kept for when Body signals ship with a real opt-in.
+
 Mandatory for **every** publishing request from an app that uses Health Connect,
 new or update, regardless of store category. Play requires a justification per
 data type with a clear user-facing benefit, and asks that only the minimum

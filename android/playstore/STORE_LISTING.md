@@ -19,18 +19,19 @@ untested on physical hardware (see `SUBMISSION_CHECKLIST.md`).
 **Paste this:**
 
 ```
-DailyVox: Private Voice Diary
+DailyVox: Voice Journal Diary
 ```
 
-*Why:* "Private" earns its slot — it is the search term this audience actually
-types, and it is the one claim the listing can prove rather than assert.
+*Why:* the App Store name, verbatim (`ios/AppStore/metadata.json`). One product,
+one name in both stores; "private" is carried by the short description, which
+Play shows above the fold.
 
 ## Short description (80 characters max)
 
 **Paste this:**
 
 ```
-Voice journal with no internet permission. Check it yourself in app info.
+Private on-device audio diary. No internet permission: check it in app info.
 ```
 
 *Why:* Play shows this above the fold, before anyone taps *Read more*, so it
@@ -73,7 +74,6 @@ The complete list of what DailyVox asks for:
 • Notifications — the optional evening reminder, and the recording timer
 • Vibration — haptics
 • Biometrics — the optional app lock
-• Health Connect — only if you switch on Body signals, read-only, two types (sleep and steps)
 
 That's it. No analytics SDK. No crash reporter. No account. No sign-up. No ads.
 No subscription. No "free trial" that becomes a bill.
@@ -123,11 +123,6 @@ WHAT ELSE IS IN IT
 • Export as PDF or readable JSON, and an encrypted backup you control
 • Your backup opens on an iPhone too — the format is identical on both
 
-Body signals are optional. With your permission DailyVox reads sleep and steps
-from Health Connect, so the Twin can tell you
-whether a rough night actually changes how YOU write — a question only your own
-entries can answer.
-
 FREE, AND OPEN
 
 Free forever. No paid tier exists. The app's source code is public — how it
@@ -151,11 +146,10 @@ wanted to keep writing without handing it to anyone.
 
 ### Category
 
-**Health & Fitness.** Worth recording that this is a pure discovery choice and
-carries no compliance weight: the Health apps declaration form is mandatory for
-**every** app that uses Health Connect, whatever category it sits in. Picking
-Lifestyle would not avoid the health review, and Health & Fitness is where
-Play's own definition puts journaling, mood and daily-routine tracking.
+**Health & Fitness** — the same primary category as the App Store listing, and
+where Play's own definition puts journaling, mood and daily-routine tracking.
+v1.0 declares no Health Connect permission, so the Health apps declaration form
+does not apply; it returns if Body signals ever ship with a real opt-in.
 
 ### Tags
 

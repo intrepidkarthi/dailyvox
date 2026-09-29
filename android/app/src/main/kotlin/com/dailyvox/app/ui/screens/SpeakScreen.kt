@@ -523,8 +523,15 @@ private fun RecordButton(
     )
     val orbit = if (still) 0f else orbitRaw
     // Record start: mic scales 1 -> 1.08 on a spring (§4).
+    // Finger down: 0.95, the same give iOS's button style has. Without it the
+    // disc was a picture of a button until the tap landed.
+    var pressed by remember { mutableStateOf(false) }
     val press by animateFloatAsState(
-        if (state == SpeechCapture.State.RECORDING) 1.08f else 1f,
+        when {
+            pressed -> 0.95f
+            state == SpeechCapture.State.RECORDING -> 1.08f
+            else -> 1f
+        },
         spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow),
         label = "press",
     )
@@ -534,7 +541,12 @@ private fun RecordButton(
             Modifier
                 .size(diameter)
                 .semantics { contentDescription = label }
-                .pointerInput(state) { detectTapGestures { onTap() } }
+                .pointerInput(state) {
+                    detectTapGestures(
+                        onPress = { pressed = true; tryAwaitRelease(); pressed = false },
+                        onTap = { onTap() },
+                    )
+                }
         ) {
             val c = center
             val ringR = size.minDimension * 0.467f      // 70/150
@@ -576,22 +588,43 @@ private fun RecordButton(
                 radius = discR * 1.5f,
                 center = Offset(c.x, c.y + discR * 0.18f),
             )
+            // Lit from above: a lighter crown falling to the base colour, so the
+            // disc has the volume of the gold 3D mic in the brand mark rather
+            // than reading as a flat sticker.
+            val base = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary
             drawCircle(
-                color = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary,
+                brush = Brush.verticalGradient(
+                    listOf(androidx.compose.ui.graphics.lerp(base, Color.White, 0.16f), base),
+                    startY = c.y - discR, endY = c.y + discR,
+                ),
                 radius = discR,
                 center = c,
             )
         }
 
-        // Cream capsule glyph, 24x40 at the design's 112 disc.
-        Canvas(Modifier.size(diameter * 0.21f)) {
-            val w = size.width
+        // A microphone, drawn: capsule, the U-shaped holder, stem and foot.
+        // The bare capsule read as a "0" or a pill; iOS shows mic.fill. Still
+        // geometric strokes, per §8.9, and it rides the press scale.
+        Canvas(Modifier.size(diameter * 0.25f * press)) {
+            val w = size.width; val h = size.height
+            val ink = scheme.onPrimary
+            val stroke = w * 0.085f
             drawRoundRect(
-                color = scheme.onPrimary,
-                topLeft = Offset(w * 0.30f, 0f),
-                size = androidx.compose.ui.geometry.Size(w * 0.40f, size.height),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.20f),
+                color = ink,
+                topLeft = Offset(w * 0.34f, 0f),
+                size = androidx.compose.ui.geometry.Size(w * 0.32f, h * 0.60f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.16f),
             )
+            drawArc(
+                color = ink, startAngle = 0f, sweepAngle = 180f, useCenter = false,
+                topLeft = Offset(w * 0.20f, h * 0.22f),
+                size = androidx.compose.ui.geometry.Size(w * 0.60f, h * 0.52f),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+            )
+            drawLine(ink, Offset(w * 0.5f, h * 0.74f), Offset(w * 0.5f, h * 0.90f), stroke,
+                     cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(ink, Offset(w * 0.36f, h * 0.93f), Offset(w * 0.64f, h * 0.93f), stroke,
+                     cap = androidx.compose.ui.graphics.StrokeCap.Round)
         }
     }
 }

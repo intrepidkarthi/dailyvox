@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,7 @@ import com.dailyvox.app.data.Entry
 import com.dailyvox.app.ui.components.valenceColor
 import com.dailyvox.app.ui.theme.*
 import kotlin.math.abs
+import kotlin.math.roundToInt
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -126,6 +128,9 @@ fun TwinScreen(
     val casing = remember(entries) {
         com.dailyvox.app.system.CasingCheck.of(entries.map { it.text })
     }
+    // One star per named person at least, so every label has a star to sit
+    // beside even when a single entry named three people.
+    val starCount = maxOf(minOf(entries.size, 4), named.size)
     val depth = when {
         entries.size >= 120 -> "DEEP"
         entries.size >= 60 -> "FORMING"
@@ -167,13 +172,13 @@ fun TwinScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
         ) {
-            Text("Your sky", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Your sky", fontFamily = Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = NightText)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Star count, not a percentage. The number is what the user made.
                 Text(
                     "${entries.size} ✦ · $depth",
-                    fontSize = 13.sp, fontWeight = FontWeight.ExtraBold,
+                    fontFamily = Nunito, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 0.5.sp, color = goldText,
                 )
                 Spacer(Modifier.width(6.dp))
@@ -201,35 +206,26 @@ fun TwinScreen(
         ) {
             Canvas(Modifier.fillMaxSize()) {
                 drawSky(
-                    palette, entries, orbitInner, orbitOuter, comet, innerBody, coreGlow,
+                    palette, entries, starCount, orbitInner, orbitOuter, comet, innerBody, coreGlow,
                     if (still) List(9) { 1f } else twinkle.map { it.value },
                 )
             }
-            // Named stars, labelled in place — the sky is only meaningful if you
-            // can read who is in it.
-            named.getOrNull(0)?.let { (n, _) ->
-                Text(
-                    n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                    color = goldText,
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .offset(x = 26.dp, y = skyHeight * 0.13f)
-                        .clip(RoundedCornerShape(11.dp))
-                        .background(Gold.copy(alpha = 0.16f))
-                        .padding(horizontal = 10.dp, vertical = 6.dp),
-                )
-            }
-            named.getOrNull(1)?.let { (n, _) ->
-                Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightTextSecondary,
-                     modifier = Modifier.align(Alignment.TopEnd)
-                         .offset(x = (-26).dp, y = skyHeight * 0.19f))
-            }
-            named.getOrNull(2)?.let { (n, _) ->
-                Text(n.uppercase(), fontSize = 10.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightTextSecondary,
-                     modifier = Modifier.align(Alignment.BottomStart)
-                         .offset(x = 34.dp, y = -skyHeight * 0.10f))
+            // Named stars, labelled beside their OWN star. The labels used to
+            // sit at three hard-coded box offsets while the stars were drawn at
+            // four unrelated anchors, so a name and its star had no relationship
+            // a reader could see. Both now read the same [skyAnchors].
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                val w = constraints.maxWidth.toFloat()
+                val h = constraints.maxHeight.toFloat()
+                val anchors = skyAnchors(w, h)
+                val core = skyCore(w, h)
+                named.take(anchors.size).forEachIndexed { i, (n, _) ->
+                    SkyName(
+                        n, anchors[i], core, w, h,
+                        // Quieter by rank, the way the stars thin out.
+                        goldText.copy(alpha = 1f - i * 0.14f),
+                    )
+                }
             }
         }
 
@@ -255,12 +251,12 @@ fun TwinScreen(
                 Modifier.size(34.dp).clip(CircleShape).background(Gold),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("✦", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                Text("✦", fontFamily = Nunito, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold,
                      color = NightBackground)   // ink on the gold disc, both themes
             }
             Text(
                 summary(entries),
-                fontSize = 12.sp, lineHeight = 17.sp, fontWeight = FontWeight.Medium,
+                fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
                 color = NightText,
             )
         }
@@ -314,7 +310,7 @@ private fun CasingNote(
     Spacer(Modifier.height(14.dp))
     Text(
         text,
-        fontSize = 12.sp, lineHeight = 18.sp,
+        fontSize = 13.5.sp, lineHeight = 20.sp,
         color = NightTextSecondary,
         modifier = Modifier.padding(horizontal = 26.dp),
     )
@@ -346,10 +342,10 @@ private fun SkyLink(title: String, sub: String, onClick: () -> Unit, modifier: M
             .clickable(onClick = onClick)
             .padding(horizontal = 15.dp, vertical = 14.dp),
     ) {
-        Text(title, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+        Text(title, fontFamily = Nunito, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold,
              color = NightText)
         Spacer(Modifier.height(3.dp))
-        Text(sub, fontSize = 11.sp, color = NightTextSecondary)
+        Text(sub, fontSize = 12.5.sp, color = NightTextSecondary)
     }
 }
 
@@ -372,6 +368,56 @@ private data class SkyPalette(
     val accent: Color,
 )
 
+/** Where the core sits: centred, a little above the middle. */
+private fun skyCore(w: Float, h: Float) = Offset(w / 2f, h * 0.47f)
+
+/**
+ * The named-star positions, in the sky's own pixels. The ONE copy: the Canvas
+ * draws stars here and the label layer places names from here, so the two
+ * cannot drift apart again (iOS learned the same lesson in SkyView.labels).
+ */
+private fun skyAnchors(w: Float, h: Float): List<Offset> {
+    val c = skyCore(w, h)
+    return listOf(
+        Offset(c.x - w * 0.23f, c.y - h * 0.21f),
+        Offset(c.x + w * 0.24f, c.y - h * 0.16f),
+        Offset(c.x - w * 0.17f, c.y + h * 0.28f),
+        Offset(c.x + w * 0.22f, c.y + h * 0.23f),
+    )
+}
+
+/**
+ * One name, beside its star.
+ *
+ * Pushed outward along the core->star spoke so the text never sits on its node,
+ * like iOS. The push is measured from the text's EDGE rather than its centre —
+ * a fixed centre offset let long names run back over the star — and the result
+ * is clamped inside the sky so a name near the rim is never cut off.
+ */
+@Composable
+private fun SkyName(name: String, anchor: Offset, core: Offset, w: Float, h: Float, color: Color) {
+    Text(
+        name.uppercase(),
+        fontFamily = Nunito, fontSize = 11.5.sp, fontWeight = FontWeight.Black,
+        letterSpacing = 0.6.sp, color = color, maxLines = 1,
+        modifier = Modifier.layout { measurable, constraints ->
+            val p = measurable.measure(constraints.copy(minWidth = 0, minHeight = 0))
+            val dx = anchor.x - core.x
+            val dy = anchor.y - core.y
+            val len = kotlin.math.sqrt(dx * dx + dy * dy).coerceAtLeast(1f)
+            val ux = dx / len
+            val uy = dy / len
+            val push = 12.dp.toPx() + abs(ux) * p.width / 2f + abs(uy) * p.height / 2f
+            val margin = 8.dp.toPx()
+            val x = (anchor.x + ux * push - p.width / 2f)
+                .coerceIn(margin, (w - p.width - margin).coerceAtLeast(margin))
+            val y = (anchor.y + uy * push - p.height / 2f)
+                .coerceIn(margin, (h - p.height - margin).coerceAtLeast(margin))
+            layout(p.width, p.height) { p.place(x.roundToInt(), y.roundToInt()) }
+        },
+    )
+}
+
 /** Matches ConstellationView.maxDrawnStars on iOS, so both skies saturate at
  *  the same density. */
 private const val MAX_DRAWN_TWINKLES = 156
@@ -383,6 +429,7 @@ private const val MAX_DRAWN_TWINKLES = 156
 private fun DrawScope.drawSky(
     palette: SkyPalette,
     entries: List<Entry>,
+    starCount: Int,
     orbitInner: Float,
     orbitOuter: Float,
     comet: Float,
@@ -390,9 +437,9 @@ private fun DrawScope.drawSky(
     coreGlow: Float,
     twinkle: List<Float>,
 ) {
-    val cx = size.width / 2f
-    val cy = size.height * 0.47f
-    val core = Offset(cx, cy)
+    val core = skyCore(size.width, size.height)
+    val cx = core.x
+    val cy = core.y
 
     // Centre glow, breathing at 5s.
     drawCircle(
@@ -423,14 +470,8 @@ private fun DrawScope.drawSky(
         )
     }
 
-    // Named stars: the four biggest, each on a curved link out of the core.
-    val big = entries.take(4)
-    val anchors = listOf(
-        Offset(cx - size.width * 0.23f, cy - size.height * 0.21f),
-        Offset(cx + size.width * 0.24f, cy - size.height * 0.16f),
-        Offset(cx - size.width * 0.17f, cy + size.height * 0.28f),
-        Offset(cx + size.width * 0.22f, cy + size.height * 0.23f),
-    )
+    // Named stars, each on a curved link out of the core.
+    val anchors = skyAnchors(size.width, size.height)
     // Control points pushed PERPENDICULAR to each core->star line. Placing them
     // on the line (as the first version did) produces a mathematically valid
     // quadratic that is visually a straight segment — the curve has to bow.
@@ -445,7 +486,7 @@ private fun DrawScope.drawSky(
         val bow = if (i % 2 == 0) 0.22f else -0.18f
         Offset(mx + (-dy / len) * len * bow, my + (dx / len) * len * bow)
     }
-    big.forEachIndexed { i, e ->
+    repeat(starCount.coerceAtMost(anchors.size)) { i ->
         val p = anchors[i]
         drawPath(
             Path().apply {

@@ -114,8 +114,6 @@ private fun LedgerBeat(onNext: () -> Unit) {
         Spacer(Modifier.height(28.dp))
         LedgerRow("Microphone", "required", MaterialTheme.colorScheme.secondary)
         Spacer(Modifier.height(8.dp))
-        LedgerRow("Health Connect", "optional", MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
         LedgerRow("Internet", "not requested", MaterialTheme.colorScheme.tertiary)
 
         Spacer(Modifier.height(18.dp))

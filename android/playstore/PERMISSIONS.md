@@ -113,17 +113,12 @@ read.
 
 ---
 
-## Health Connect — two `health.READ_*` permissions
+## Health Connect — none in v1.0
 
-Sleep and steps. **Read-only, optional,
-and nothing is requested until the user turns Body signals on.**
-
-Per-type justifications for the Play health form are in
-[`HEALTH_DECLARATION.md`](HEALTH_DECLARATION.md) — that form requires a separate
-explanation for each data type. HRV and resting heart rate were dropped before
-v1.0 because nothing analysed them; the reasoning is recorded there.
-
-*Where:* `body/BodySignals.kt`.
+Earlier builds declared sleep and steps, but no screen ever asked for them.
+Declared-and-unreachable permissions buy a health-apps review and nothing else,
+so v1.0 declares none. `body/BodySignals.kt` is kept for when Body signals get a
+real opt-in; `HEALTH_DECLARATION.md` has the form wording for that day.
 
 ---
 

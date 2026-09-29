@@ -1,4 +1,5 @@
 <resources>
     <color name="brand_cream">#F7F3EA</color>
     <color name="brand_ink">#101B2D</color>
+    <color name="brand_night">#101B2D</color>
 </resources>
