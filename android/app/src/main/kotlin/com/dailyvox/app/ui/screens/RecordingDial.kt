@@ -108,7 +108,7 @@ fun RecordingDial(
         Spacer(Modifier.height(20.dp))
         Text(
             if (paused) "❙❙ PAUSED · ON-DEVICE · 0 B OUT" else "● RECORDING · ON-DEVICE · 0 B OUT",
-            fontSize = 10.sp,
+            fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
             letterSpacing = 1.6.sp,
             fontWeight = FontWeight.SemiBold,
             // Paused holds steady. The blink means "live", so a paused dial that
@@ -187,14 +187,14 @@ fun RecordingDial(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     "%d:%02d".format(elapsed / 60, elapsed % 60),
-                    fontSize = 46.sp,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 52.sp,
+                    fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
                     color = NightText,
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
                     "OF 0:42 · ${elapsed.coerceAtMost(42)} TICKS LIT",
-                    fontSize = 10.sp,
+                    fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                     letterSpacing = 1.4.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = NightText.copy(alpha = 0.55f),
@@ -223,7 +223,7 @@ fun RecordingDial(
             Spacer(Modifier.height(14.dp))
             Text(
                 "${lastEntity.uppercase()} ✦ FILED TO YOUR SKY",
-                fontSize = 10.sp,
+                fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 0.8.sp,
                 color = NightGoldText.copy(alpha = chipBlink),

@@ -167,7 +167,7 @@ fun TwinScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
         ) {
-            Text("Your sky", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Your sky", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = NightText)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Star count, not a percentage. The number is what the user made.

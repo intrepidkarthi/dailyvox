@@ -87,7 +87,7 @@ fun JournalScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Journal", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Journal", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = MaterialTheme.colorScheme.onBackground)
             // Queues today's recordings back to back. Green, because playing is
             // an action — the pill is the one green thing on this screen.
@@ -286,7 +286,8 @@ private fun SpecChip(text: String, gold: Boolean) {
     val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
     Text(
         text,
-        fontSize = 9.5.sp,
+        fontFamily = com.dailyvox.app.ui.theme.DmMono,
+        fontSize = 10.sp,
         letterSpacing = 0.6.sp,
         fontWeight = FontWeight.SemiBold,
         color = when {

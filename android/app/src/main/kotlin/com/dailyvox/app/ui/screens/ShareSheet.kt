@@ -81,7 +81,7 @@ fun ShareSheet(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
         ) {
-            Text("Share", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Share", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
             Spacer(Modifier.height(4.dp))
             Text(

@@ -286,12 +286,22 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         val nightSurface = darkTheme || current == com.dailyvox.app.ui.nav.Destination.TWIN
         androidx.compose.runtime.SideEffect {
             val window = (view.context as android.app.Activity).window
-            androidx.core.view.WindowCompat.getInsetsController(window, view)
-                .isAppearanceLightStatusBars = !nightSurface
+            androidx.core.view.WindowCompat.getInsetsController(window, view).apply {
+                isAppearanceLightStatusBars = !nightSurface
+                // The gesture handle too, or it stays dark on the navy sky.
+                isAppearanceLightNavigationBars = !nightSurface
+            }
         }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            // Navy edge to edge on Twin. The container stayed cream, so the
+            // status-bar strip and the gap round the floating nav were cream
+            // bands framing the "always night" sky. iOS ignores the top safe
+            // area there; this is the same thing.
+            containerColor = if (current == com.dailyvox.app.ui.nav.Destination.TWIN && overlay == Overlay.NONE && openEntry == null)
+                com.dailyvox.app.ui.theme.NightBackground
+            else androidx.compose.material3.MaterialTheme.colorScheme.background,
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
                     // Follows the SCREEN, not the theme — a cream bar under the

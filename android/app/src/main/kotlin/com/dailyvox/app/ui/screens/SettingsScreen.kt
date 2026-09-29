@@ -78,7 +78,7 @@ fun SettingsScreen(
                  modifier = Modifier.clip(RoundedCornerShape(24.dp)).clickable(onClick = onBack)
                      .defaultMinSize(48.dp, 48.dp).wrapContentSize())
             Spacer(Modifier.width(4.dp))
-            Text("Settings", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Settings", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
         }
 
@@ -95,7 +95,7 @@ fun SettingsScreen(
             LedgerRow("Biometric lock") {
                 Switch(
                     checked = lockEnabled, onCheckedChange = onLock, enabled = lockAvailable,
-                    modifier = Modifier.height(20.dp),
+                    colors = dvSwitchColors(),
                 )
             }
             // The design mock reads "REVIEW QUEUE"; that is placeholder text. A
@@ -178,7 +178,7 @@ fun SettingsScreen(
                 Switch(
                     checked = reminderOn,
                     onCheckedChange = { onReminder(it, reminderHour) },
-                    modifier = Modifier.height(20.dp),
+                    colors = dvSwitchColors(),
                 )
             }
             Spacer(Modifier.height(11.dp))
@@ -256,7 +256,7 @@ fun SettingsScreen(
                 Switch(
                     checked = goalOn,
                     onCheckedChange = { goalOn = it; com.dailyvox.app.system.Goals.setEnabled(context, it) },
-                    modifier = Modifier.height(20.dp),
+                    colors = dvSwitchColors(),
                 )
             }
             if (goalOn) {
@@ -298,7 +298,7 @@ fun SettingsScreen(
                             goalNotify = it
                             com.dailyvox.app.system.Goals.setNotifies(context, it)
                         },
-                        modifier = Modifier.height(20.dp),
+                    colors = dvSwitchColors(),
                     )
                 }
                 Spacer(Modifier.height(8.dp))
@@ -461,18 +461,18 @@ private fun SettingsCard(content: @Composable ColumnScope.() -> Unit) {
 
 @Composable
 private fun SectionLabel(text: String, color: androidx.compose.ui.graphics.Color) {
-    Text(text, fontSize = 9.5.sp, letterSpacing = 1.2.sp,
+    Text(text, fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp, letterSpacing = 1.2.sp,
          fontWeight = FontWeight.SemiBold, color = color)
 }
 
 @Composable
 private fun LedgerRow(label: String, trailing: @Composable () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(vertical = 5.dp),
+        Modifier.fillMaxWidth().heightIn(min = 44.dp).padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium,
+        Text(label, fontSize = 15.sp, fontWeight = FontWeight.Medium,
              color = MaterialTheme.colorScheme.onSurface)
         trailing()
     }
@@ -480,22 +480,22 @@ private fun LedgerRow(label: String, trailing: @Composable () -> Unit) {
 
 @Composable
 private fun Mono(text: String, color: androidx.compose.ui.graphics.Color) {
-    Text(text, fontSize = 11.sp, letterSpacing = 0.5.sp,
+    Text(text, fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 12.sp, letterSpacing = 0.5.sp,
          fontWeight = FontWeight.SemiBold, color = color)
 }
 
 @Composable
 private fun ChevronRow(label: String, hint: String, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 7.dp),
+        Modifier.fillMaxWidth().heightIn(min = 44.dp).clickable(onClick = onClick).padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Medium,
+            Text(label, fontSize = 15.sp, fontWeight = FontWeight.Medium,
                  color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.width(5.dp))
-            Text(hint, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(hint, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Text("›", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
@@ -521,3 +521,12 @@ private fun hourLabel(h: Int): String = when {
     h > 12 -> "${h - 12}pm"
     else -> "${h}am"
 }
+
+/** Brand green track, cream thumb — not M3's baseline purple-tinted defaults. */
+@Composable
+private fun dvSwitchColors() = androidx.compose.material3.SwitchDefaults.colors(
+    checkedTrackColor = MaterialTheme.colorScheme.primary,
+    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+    uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+)

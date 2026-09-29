@@ -98,7 +98,7 @@ fun EntryDetailScreen(
             Spacer(Modifier.width(6.dp))
             Column {
                 Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
-                     fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                     fontSize = 19.sp, fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
                      color = MaterialTheme.colorScheme.onBackground)
                 MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }

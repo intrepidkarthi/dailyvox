@@ -322,7 +322,8 @@ fun SpeakScreen(
                 SpeechCapture.State.PROCESSING -> "Filing it."
                 else -> "How was your day,\nreally?"
             },
-            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.Bold,
+            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
