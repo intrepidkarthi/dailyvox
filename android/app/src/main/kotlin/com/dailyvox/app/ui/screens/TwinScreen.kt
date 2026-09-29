@@ -120,6 +120,12 @@ fun TwinScreen(
             .entries.sortedByDescending { it.value }
             .take(3).map { it.key to it.value }
     }
+    // Whether this phone's recogniser is capitalising names at all. The
+    // constellation is built entirely from capitalised tokens, so a sky with no
+    // names has two completely different causes and they need different words.
+    val casing = remember(entries) {
+        com.dailyvox.app.system.CasingCheck.of(entries.map { it.text })
+    }
     val depth = when {
         entries.size >= 120 -> "DEEP"
         entries.size >= 60 -> "FORMING"
@@ -227,6 +233,14 @@ fun TwinScreen(
             }
         }
 
+        // Why the sky has no names in it.
+        //
+        // Without this an empty constellation looks the same whether the user
+        // has written about nobody or the recogniser has been discarding every
+        // name they ever said -- and the second one is a fault in the app that
+        // the app was unable to notice. See CasingCheck.
+        CasingNote(casing, hasNames = named.isNotEmpty())
+
         // The one sentence. Everything the Twin has concluded, in a line, with
         // the count it rests on — so it can never sound more certain than it is.
         Row(
@@ -260,6 +274,50 @@ fun TwinScreen(
         }
         Spacer(Modifier.height(120.dp))
     }
+}
+
+/**
+ * The honest version of "no names yet".
+ *
+ * Deliberately different words for the two verdicts, because one of them is
+ * ambiguous and the other is not:
+ *
+ *   - [Inconsistent] is unambiguous. Names ARE arriving capitalised sometimes,
+ *     so the recogniser knows they are names -- and the detector's precision
+ *     guard is then throwing them away for the whole journal. That is a real
+ *     fault and it names the people being lost.
+ *   - [NotCasing] is ambiguous and must not be stated as a fault. A journal
+ *     that genuinely mentions nobody looks identical from the text alone, and
+ *     telling that user their phone is broken would be the worse error.
+ */
+@Composable
+private fun CasingNote(
+    verdict: com.dailyvox.app.system.CasingCheck.Verdict,
+    hasNames: Boolean,
+) {
+    val text = when (verdict) {
+        is com.dailyvox.app.system.CasingCheck.Verdict.Inconsistent ->
+            "Some names are reaching your journal spelled both ways — " +
+                verdict.contested.joinToString(", ") { it.replaceFirstChar(Char::uppercase) } +
+                " — so the Twin can't count them as one person. Correcting a " +
+                "transcript on an entry teaches it the right spelling."
+        // Only worth saying when there is genuinely nothing in the sky. With
+        // names already showing, the recogniser is plainly casing and this
+        // verdict would just be wrong.
+        com.dailyvox.app.system.CasingCheck.Verdict.NotCasing -> if (hasNames) null else
+            "No names have come through yet. Either you haven't spoken about " +
+                "anyone, or this phone's speech recogniser isn't capitalising " +
+                "names — which is what the Twin reads them by."
+        else -> null
+    } ?: return
+
+    Spacer(Modifier.height(14.dp))
+    Text(
+        text,
+        fontSize = 12.sp, lineHeight = 18.sp,
+        color = NightTextSecondary,
+        modifier = Modifier.padding(horizontal = 26.dp),
+    )
 }
 
 private fun summary(entries: List<Entry>): String {

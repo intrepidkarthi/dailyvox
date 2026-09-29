@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The brand mark: the gold microphone on sage, the same one iOS and the
+     website press kit ship. All three layers are generated from that single
+     PNG by playstore/screenshot-src/make_icon.py, which is also where the
+     reasoning lives for why the mark is a raster here and why a vector redraw
+     was the wrong call.
+
+     `monochrome` is its own asset now. It used to point at the foreground,
+     which was harmless while the foreground was a flat amber stroke and wrong
+     the moment it carried gradients and a specular highlight. -->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
 </adaptive-icon>

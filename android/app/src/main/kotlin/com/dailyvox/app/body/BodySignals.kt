@@ -19,10 +19,24 @@ import java.time.ZoneId
  * Body signals from Health Connect — the Android peer of the engine's
  * `HealthSnapshot` (DailyVoxTwinEngine/BodyTwin/BodyTwin.swift:87).
  *
- * READ ONLY, and only the four fields the Twin actually correlates against:
- * sleep, morning HRV, resting heart rate, steps. Health Connect will happily
- * grant read access to dozens of record types; asking for one the app does not
- * use would be indefensible on a screen that lists every permission it holds.
+ * READ ONLY, and only four fields. Health Connect will happily grant read
+ * access to dozens of record types; asking for one the app does not use would be
+ * indefensible on a screen that lists every permission it holds.
+ *
+ * Be precise about what each one earns, because this comment used to say all
+ * four were "fields the Twin actually correlates against" and only half of them
+ * are:
+ *
+ *   sleep  -> shown on the entry AND correlated  (engine Insights.kt:97)
+ *   steps  -> shown on the entry AND correlated  (engine Insights.kt:108)
+ *   HRV    -> shown on the entry only
+ *   restHR -> shown on the entry only
+ *
+ * `Entry.toChatEntry` passes sleepHours and stepsToday to the engine and does
+ * not pass hrvMs or restingHrBpm; no engine file references them. Displaying a
+ * number beside the entry is a real benefit and is what the Play health
+ * declaration claims for those two -- but it is not analysis, and the health
+ * form must not describe it as analysis. See playstore/HEALTH_DECLARATION.md.
  *
  * NOTHING is requested until the user turns the feature on. That is why the
  * library adds no permissions to the manifest by default and why the ledger in

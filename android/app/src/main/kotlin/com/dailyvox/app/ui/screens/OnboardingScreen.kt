@@ -1,9 +1,5 @@
 package com.dailyvox.app.ui.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -28,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.ui.components.MonoLabel
@@ -87,11 +82,11 @@ fun OnboardingScreen(
 @Composable
 private fun LedgerBeat(onNext: () -> Unit) {
     val context = LocalContext.current
-    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        // Continue either way. A journal that refuses to open because you said no
-        // to the microphone is punishing caution, and caution is who this is for.
-        onNext()
-    }
+    // Continue either way. A journal that refuses to open because you said no
+    // to the microphone is punishing caution, and caution is who this is for --
+    // which is also why a permanent denial walks on rather than diverting to
+    // app settings the way the Speak button does.
+    val mic = com.dailyvox.app.system.rememberMicPermission { onNext() }
 
     Column(
         Modifier.fillMaxSize()
@@ -164,9 +159,7 @@ private fun LedgerBeat(onNext: () -> Unit) {
         // named the permission dialog rather than the thing on the other side
         // of it.
         FilledAction("Speak your first star") {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED
-            ) onNext() else ask.launch(Manifest.permission.RECORD_AUDIO)
+            if (mic.granted || mic.permanentlyDenied) onNext() else mic.request()
         }
         Spacer(Modifier.height(14.dp))
         QuietAction("See how it works first", onNext)
@@ -198,8 +191,9 @@ private fun SpeakBeat(
     var text by remember { mutableStateOf("") }
     var path by remember { mutableStateOf<String?>(null) }
 
-    val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-        PackageManager.PERMISSION_GRANTED
+    // Re-read when the app comes back to the foreground, so granting the
+    // permission in Settings mid-onboarding is noticed here.
+    val granted = com.dailyvox.app.system.rememberMicPermission().granted
 
     LaunchedEffect(state) {
         when (state) {

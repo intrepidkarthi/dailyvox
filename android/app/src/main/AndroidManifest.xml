@@ -37,6 +37,17 @@
          From API 34 it is part of the platform and this is simply ignored. -->
     <queries>
         <package android:name="com.google.android.apps.healthdata" />
+
+        <!-- The speech recogniser. Package visibility filtering (Android 11+)
+             hides every app this one has not declared an interest in, and a
+             RecognitionService is just another app: without this the platform
+             can report no recogniser on a phone that has one, and the Speak
+             button fails with "no offline speech pack" on hardware where the
+             pack is installed and working. Nothing in the app's own manifest
+             said it wanted to talk to one. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
     </queries>
 
     <!-- Auto Backup is OFF. See res/xml/data_extraction_rules.xml: the default

@@ -21,15 +21,35 @@ transmit anything: the app holds **no `INTERNET` permission**. This is not a
 policy we follow, it is a capability we do not have.
 
 ```bash
-# The complete permission list in the built artifact:
-aapt dump permissions app-release.apk
-#   uses-permission: android.permission.RECORD_AUDIO
-#   uses-permission: android.permission.POST_NOTIFICATIONS
-#   uses-permission: android.permission.VIBRATE
-#   uses-permission: android.permission.USE_BIOMETRIC
-#   uses-permission: android.permission.USE_FINGERPRINT
-#   (+ health.READ_* only when Body signals is enabled by the user)
+# The complete permission list in the built artifact, verbatim:
+aapt2 dump permissions app-release.apk
+#   uses-permission: name='android.permission.RECORD_AUDIO'
+#   uses-permission: name='android.permission.POST_NOTIFICATIONS'
+#   uses-permission: name='android.permission.VIBRATE'
+#   uses-permission: name='android.permission.health.READ_SLEEP'
+#   uses-permission: name='android.permission.health.READ_HEART_RATE_VARIABILITY'
+#   uses-permission: name='android.permission.health.READ_RESTING_HEART_RATE'
+#   uses-permission: name='android.permission.health.READ_STEPS'
+#   uses-permission: name='android.permission.USE_BIOMETRIC'
+#   uses-permission: name='com.dailyvox.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 ```
+
+Nine, and this list is now generated from the artifact rather than typed. The
+version that stood here was wrong in both directions, in the one document that
+is a binding declaration to Google:
+
+  * it listed **USE_FINGERPRINT**, which the manifest explicitly removes
+    (`tools:node="remove"`, because androidx.biometric merges it in for API 27
+    and under and minSdk is 33). It is absent from the merged manifest and from
+    the APK.
+  * it omitted **DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION**, which androidx
+    defines for the app's own use and which *is* in the artifact.
+  * it said the four `health.READ_*` lines appear "only when Body signals is
+    enabled". They are **declared in the manifest always** — what is conditional
+    is whether they are ever *granted*. `aapt2` shows them on any build.
+
+Check it with `python3 playstore/verify.py`, which diffs this block against the
+built APK, rather than by reading it.
 
 There is no `INTERNET` line. An app without it cannot open a socket, so no
 third-party SDK inside it could exfiltrate anything either — which is also why
@@ -86,7 +106,7 @@ transfer, and silently losing a diary when changing phones is its own harm.
 |---|---|
 | Which Health Connect data types? | Sleep, Heart rate variability (RMSSD), Resting heart rate, Steps |
 | Read or write? | **Read only.** The app never writes to Health Connect |
-| Purpose | Correlating the user's own physiology against their own journal, on-device |
+| Purpose | On-device only. **Sleep and steps** are correlated against the user's own journal sentiment (engine `Insights.kt`); **HRV and resting heart rate** are displayed beside the entry as context and are not analysed. Per-type wording for the health form is in `HEALTH_DECLARATION.md` |
 | Shared with third parties? | **No** — impossible, see Section 1 |
 | Required to use the app? | **No.** Fully optional; everything else works untouched |
 

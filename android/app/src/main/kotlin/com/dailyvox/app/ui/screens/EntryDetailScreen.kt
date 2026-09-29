@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -98,7 +100,7 @@ fun EntryDetailScreen(
                 Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
                      fontSize = 18.sp, fontWeight = FontWeight.Bold,
                      color = MaterialTheme.colorScheme.onBackground)
-                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)} · ${entry.text.split(" ").size} words")
+                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }
         }
 
@@ -132,6 +134,10 @@ fun EntryDetailScreen(
         val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
         val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
                        else com.dailyvox.app.ui.theme.DayGoldText
+        if (entry.isUntranscribed) {
+            UntranscribedBlock(entry, onEdit)
+            Spacer(Modifier.height(6.dp))
+        }
         val marked = remember(entry.text, entry.entities) {
             buildAnnotatedString {
                 var rest = entry.text
@@ -200,7 +206,7 @@ fun EntryDetailScreen(
                 FiledRow("Steps", "%,d today".format(it), MaterialTheme.colorScheme.tertiary)
             }
             Spacer(Modifier.height(10.dp))
-            FiledRow("Pace", "${(entry.text.split(" ").size * 60 / entry.durationSec.coerceAtLeast(1))} wpm",
+            FiledRow("Pace", "${(entry.wordCount * 60 / entry.durationSec.coerceAtLeast(1))} wpm",
                      MaterialTheme.colorScheme.onSurfaceVariant)
 
             // Prosody, only when the recording could actually be analysed. An
@@ -410,6 +416,100 @@ private fun AudioBar(path: String) {
             }
         }
     }
+}
+
+/**
+ * What the user sees when the recogniser failed but the microphone did not.
+ *
+ * Three requirements, in order:
+ *
+ *  - **Say the recording is safe, first.** The fear an empty entry creates is
+ *    "the app lost what I said". Everything else is secondary to answering that.
+ *  - **Blame the right thing.** It is this phone's speech service, not the
+ *    user's diction and not their microphone. Wording that implies they mumbled
+ *    is both wrong and the sort of thing people stop using an app over.
+ *  - **Offer the two real routes out** — try the recogniser again against the
+ *    saved audio, or type it — and no third one that does nothing.
+ *
+ * Deliberately a filled card rather than an error banner: this is a state the
+ * entry is IN, not an event that just happened, and it is still true tomorrow.
+ */
+@Composable
+private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var state by remember(entry.id) { mutableStateOf<TranscribeState>(TranscribeState.Idle) }
+
+    Column(
+        Modifier.fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(18.dp),
+    ) {
+        Text(
+            "Your recording is saved",
+            fontSize = 15.sp, fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            when (val s = state) {
+                is TranscribeState.Failed -> s.reason
+                TranscribeState.Running -> "Reading the recording\u2026 this can take a moment."
+                else -> "This phone's speech service didn't turn it into words. " +
+                    "The audio is here and can be played, and you can try again " +
+                    "or write it out yourself."
+            },
+            fontSize = 13.sp, lineHeight = 19.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(14.dp))
+        if (state is TranscribeState.Running) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp), strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.width(12.dp))
+                Text("Transcribing", fontSize = 13.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        } else {
+            FilledTonalButton(
+                onClick = {
+                    val f = entry.audioPath?.let { java.io.File(it) } ?: return@FilledTonalButton
+                    state = TranscribeState.Running
+                    scope.launch {
+                        state = when (val r = com.dailyvox.app.audio.FileTranscriber
+                            .transcribe(context, f, null)) {
+                            is com.dailyvox.app.audio.FileTranscriber.Result.Text -> {
+                                onTranscribed(r.value); TranscribeState.Idle
+                            }
+                            // Named, not swallowed. A recogniser that ignored the
+                            // file was listening to the ROOM, and saving that as
+                            // somebody's diary entry is the worst outcome here.
+                            com.dailyvox.app.audio.FileTranscriber.Result.IgnoredTheFile ->
+                                TranscribeState.Failed(
+                                    "This phone's recogniser can't read a saved " +
+                                    "recording \u2014 it tried to listen live instead, " +
+                                    "so nothing was used. Writing it out is the way " +
+                                    "to keep these words."
+                                )
+                            is com.dailyvox.app.audio.FileTranscriber.Result.Failed ->
+                                TranscribeState.Failed(r.reason)
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("Try transcribing again") }
+        }
+    }
+}
+
+private sealed interface TranscribeState {
+    data object Idle : TranscribeState
+    data object Running : TranscribeState
+    data class Failed(val reason: String) : TranscribeState
 }
 
 @Composable

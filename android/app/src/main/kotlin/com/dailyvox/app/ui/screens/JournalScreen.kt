@@ -294,13 +294,15 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
         // B3: DM Mono meta line, gold star on the right for a made thing.
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             MonoLabel(
-                "${dateLabel(e.createdAt).uppercase()} · ${durationLabel(e.durationSec)} · ${e.text.split(" ").size} WORDS"
+                "${dateLabel(e.createdAt).uppercase()} · ${durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
             )
             Text("✦", fontSize = 12.sp, color = Gold)
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            e.text, fontSize = 13.sp, lineHeight = 20.sp,
+            if (e.isUntranscribed) "Recorded, but this phone did not transcribe it. The audio is saved \u2014 tap to play."
+            else e.text,
+            fontSize = 13.sp, lineHeight = 20.sp,
             maxLines = 2,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.onSurface,

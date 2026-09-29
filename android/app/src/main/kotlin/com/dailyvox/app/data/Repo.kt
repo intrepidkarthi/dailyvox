@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import com.dailyvox.app.BuildConfig
 import java.util.UUID
 
 
@@ -172,13 +173,54 @@ class Repo private constructor(private val db: DailyVoxDb) {
         ((0.6f * volume + 0.4f * breadth) * 100).toInt().coerceIn(0, 100)
     }
 
+    /**
+     * Load the lexicon, and -- only when explicitly asked for screenshots --
+     * seed the demo journal.
+     *
+     * This method used to seed unconditionally. Every new install therefore
+     * opened on 38 fabricated entries about Sarah, James, Emma and Priya, and
+     * the release APK shipped that way. The seeder was written for store
+     * screenshots and nothing ever gated it, which is a plausible mistake and a
+     * severe one: a journal that invents its own contents has broken the only
+     * promise it makes, and a user has no way to tell which entries are theirs.
+     *
+     * Two locks, because one was clearly not enough. `BuildConfig.DEBUG` means
+     * R8 removes the whole branch from any release build; SEED_DEMO_DATA means
+     * even a debug build needs `-PseedDemo` to ask for it.
+     */
     suspend fun seedIfEmpty(context: Context) {
         Lexicon.ensureLoaded(context)
+        purgeDemoData(context)
+        if (!BuildConfig.DEBUG || !BuildConfig.SEED_DEMO_DATA) return
         if (db.entries().count() > 0) return
         DummyData.entries().forEach { db.entries().upsert(it) }
     }
 
+    /**
+     * Take the demo journal back off phones that already received it.
+     *
+     * Gating the seeder fixes the next install and does nothing for the ones
+     * already out there, where the fake entries are sitting in the database and
+     * counting towards the streak, the constellation and the Twin's resolution.
+     *
+     * Runs once and records that it ran, so a debug build that deliberately
+     * seeds with -PseedDemo does not have the data deleted out from under it on
+     * the next launch. Skipped entirely when demo data is what was asked for.
+     */
+    private suspend fun purgeDemoData(context: Context) = withContext(Dispatchers.IO) {
+        if (BuildConfig.DEBUG && BuildConfig.SEED_DEMO_DATA) return@withContext
+        val prefs = context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+        if (prefs.getBoolean(PURGED, false)) return@withContext
+        val removed = db.entries().deleteByTexts(DummyData.demoTexts())
+        prefs.edit().putBoolean(PURGED, true).apply()
+        if (removed > 0) {
+            android.util.Log.i("DailyVox", "Removed $removed seeded demo entries")
+        }
+    }
+
     companion object {
+
+        private const val PURGED = "demo_data_purged"
 
         /**
          * The same scoring the journal search uses, with the score kept rather

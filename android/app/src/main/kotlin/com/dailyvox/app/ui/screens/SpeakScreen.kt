@@ -1,9 +1,5 @@
 package com.dailyvox.app.ui.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -30,7 +26,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import androidx.compose.ui.text.buildAnnotatedString
@@ -83,13 +78,12 @@ fun SpeakScreen(
     var playingToday by remember { mutableStateOf(false) }
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
     var audioPath by remember { mutableStateOf<String?>(null) }
-    var granted by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+    // Handles the two cases the inline version could not: a permanent denial,
+    // where re-launching the request is a silent no-op and the only way out is
+    // app settings, and a permission granted in Settings while the app was
+    // backgrounded, which nothing here used to notice.
+    val mic = com.dailyvox.app.system.rememberMicPermission()
+    val granted = mic.granted
 
     val state by capture.state.collectAsState()
     val captureError by capture.error.collectAsState()
@@ -149,6 +143,23 @@ fun SpeakScreen(
                 if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
                 else haptics.entrySaved()
             }
+        }
+    }
+
+    // Transcription failed, but the microphone worked and the audio is on disk.
+    //
+    // Save it anyway. Losing the recording is a strictly worse outcome than an
+    // entry with no words in it: the words can be recovered later, from the
+    // audio, by a better recogniser or by the user typing them. A deleted file
+    // cannot be recovered by anything.
+    //
+    // This is the whole difference between "the app did not transcribe that"
+    // and "the app threw away what you said", and until now it was the second.
+    LaunchedEffect(Unit) {
+        capture.unrecognised.collect {
+            val path = recorder.stop()?.absolutePath ?: return@collect
+            onSaved("", elapsed.coerceAtLeast(1), path)
+            haptics.entrySaved()
         }
     }
 
@@ -309,7 +320,7 @@ fun SpeakScreen(
             elapsed = elapsed,
             firstEver = firstEver,
             onTap = {
-                if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
+                if (!granted) mic.request()
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
                 else { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
             },

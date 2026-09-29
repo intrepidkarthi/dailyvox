@@ -26,8 +26,50 @@ android {
         // Android's own line, starting at 1.0. It is deliberately not 1.11.0:
         // matching the iOS number would claim a parity this port does not have
         // (no cloud sync, no live Dynamic-Island transcription, no Body cards).
-        versionCode = 1
+        // MUST increase on every single upload, and a number can never be
+        // reused — not even for a build Play rejected. Play refuses a release
+        // whose bundle offers nothing newer than what a tester already has, and
+        // it says so in two errors at once that do not obviously mean this:
+        //
+        //   "This release does not add or remove any app bundles."
+        //   "You can't rollout this release because it doesn't allow any
+        //    existing users to upgrade to the newly added app bundles."
+        //
+        // Both mean the same thing: there is no bundle here that anybody could
+        // upgrade TO. Bump this, rebuild, re-upload. To move an ALREADY
+        // uploaded build between tracks, do not create a release at all — use
+        // Promote release on the track that has it.
+        // 3 because 2 is already uploaded. This has now cost two rejected
+        // releases, so the rule is worth stating flatly: the number has to beat
+        // what is IN THE STORE, not what was last built here. A local bump is
+        // not evidence the number is free — check the Play Console release
+        // list, or `./gradlew :app:bundleRelease` will happily produce a
+        // duplicate Play refuses on upload.
+        versionCode = 3
         versionName = "1.0"
+
+        // Demo journal entries, for store screenshots ONLY.
+        //
+        // These are fabricated diary entries about people who do not exist --
+        // Sarah, James, Emma, Priya -- and Repo.seedIfEmpty wrote all 38 of
+        // them into the database on first launch, unconditionally, in every
+        // build. A person who installed the app opened their private journal
+        // and found somebody else's life already in it, with no way to tell
+        // which entries were theirs. It read as a bug in the worst possible
+        // place: the one screen whose entire promise is that it holds only what
+        // you said.
+        //
+        // The flag is off by default and forced off in release below, so
+        // producing screenshots now takes a deliberate:
+        //
+        //     ./gradlew installDebug -PseedDemo
+        //
+        // and nothing else, ever, gets the data.
+        buildConfigField(
+            "boolean",
+            "SEED_DEMO_DATA",
+            (project.hasProperty("seedDemo")).toString(),
+        )
     }
 
     // Signing credentials live in keystore.properties, which is gitignored and
@@ -52,6 +94,9 @@ android {
 
     buildTypes {
         release {
+            // Belt and braces with the DEBUG guard at the call site: -PseedDemo
+            // on a release build must not be a way to ship the demo journal.
+            buildConfigField("boolean", "SEED_DEMO_DATA", "false")
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release")
@@ -62,7 +107,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
     kotlin { jvmToolchain(21) }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 }
 

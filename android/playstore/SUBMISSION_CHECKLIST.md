@@ -140,29 +140,60 @@ below is untouched by this run.
 
 ## Ready
 
-- [x] Store listing copy — name 29/30, short 72/80, full 3,884/4,000 chars
-- [x] Feature graphic — 1024x500 exactly
+- [x] Store listing copy — **verified by script, not by hand**. Run
+      `python3 playstore/verify.py`; it reads STORE_LISTING.md and exits
+      1 on any mismatch. It also diffs DATA_SAFETY.md's permission list against
+      the built APK. The hand-counted figures that used to sit here (72/80,
+      3,884/4,000) were both wrong and disagreed with two other files.
+- [x] Feature graphic — 1024x500. **Reground 2026-08-26** with the screenshots:
+      it was three shades of near-black (L\* ~6), arriving as a dark smudge at
+      the top of the listing. Now the same emerald as screenshot 01, so the
+      listing header and the first frame under it read as one object.
 - [x] Eight phone screenshots — 1242x2208, all within Play's limits.
       **Recaptured 2026-08-25** from a Pixel 9 Pro emulator running the actual
       release candidate. The previous set predated the four-tab redesign and
       showed a five-tab nav bar the app does not have.
-- [x] App icon — adaptive, shipped in the APK
-- [x] **Hi-res icon 512x512** — `assets/icon-512.png`, RGBA. Was **missing
-      entirely**: the launcher icon is an adaptive vector with no raster
-      anywhere, which is right for the APK and leaves nothing to upload.
-      `screenshot-src/make_icon.py` renders it from the same two drawables, so
-      editing the icon and re-running keeps them in step rather than leaving a
-      hand-drawn copy to drift. It renders the inner 72dp — the region a
-      launcher actually shows — checked against how Android draws it on the
-      emulator, not assumed.
+
+      **Frames redesigned 2026-08-26.** Two measured faults, not taste:
+      (1) five near-black grounds reused across eight frames, mean lightness
+      **L\* 9.3** — at carousel thumbnail size that is eight identical dark
+      rectangles, and the iOS set it was meant to match actually uses saturated
+      jewel tones. Now eight distinct hues, no repeats, mean **L\* 27.3**, every
+      pairing checked at >=7:1 for the headline and >=4.5:1 for the accent.
+      (2) the device crop landed mid-sentence — frame 01 cut "Works in airplane
+      mode. Nothing leaves this" clean through — which reads as a broken export.
+      A hem now fades the crop into the ground, anchored to the **canvas**: the
+      device is ~1778px starting at y=520 on a 2208 frame, so anything anchored
+      to the device finishes off-screen. Also fixed: the last frame's sticker
+      hung off the right edge of the canvas and shipped that way.
+- [x] App icon — adaptive, shipped in the APK. **Replaced 2026-08-26.** What
+      shipped was not the DailyVox mark: a hand-drawn flat microphone in thin
+      amber strokes on a #101B2D navy square, while the brand mark is a
+      three-dimensional gold microphone on sage green. Nobody had drawn the
+      real one for Android, so a stand-in was drawn and then treated as the
+      icon.
+- [x] **Hi-res icon 512x512** — `assets/icon-512.png`, RGBA. Regenerated
+      2026-08-26 with the launcher icon, and it had to be: the previous version
+      of `make_icon.py` rendered the store icon *from the two placeholder
+      drawables*, so the wrong mark was propagated faithfully onto the listing
+      as well. Nothing looked broken, which is what made it survive.
+
+      Both now come from one source — the 1024 brand PNG that iOS and the
+      website press kit already ship — keyed into layers by
+      `screenshot-src/make_icon.py`. Re-run it after any change to that PNG;
+      it rewrites all five launcher densities, the monochrome layer, the
+      background gradient and this 512.
 - [x] Data safety declaration, with the verification method recorded per claim
 - [x] Content rating answers
 - [x] Privacy policy — getdailyvox.com/privacy
-- [x] Release build verified, 2026-08-24: AAB 5.19 MB, universal APK 4.91 MB,
+- [x] Release build verified, **2026-08-26: AAB 5.32 MB, universal APK 4.77 MB**
+      (the 2026-08-24 figures of 5.19 / 4.91 predate the icon rasters and this
+      week's fixes),
       merged manifest holds no INTERNET permission and nine permissions total
       (RECORD_AUDIO, POST_NOTIFICATIONS, VIBRATE, USE_BIOMETRIC, four
       `health.READ_*`, and androidx's own private receiver permission). Unit
-      tests green. The older 3.21 MB figure predates several releases.
+      46 app unit tests and 58 engine tests green. Re-measure with
+      `python3 playstore/verify.py`; do not hand-copy these forward.
 - [x] Auto Backup disabled and confirmed absent from `dumpsys package` flags
 
 ## Do not do

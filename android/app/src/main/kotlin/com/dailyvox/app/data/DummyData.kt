@@ -3,8 +3,14 @@ package com.dailyvox.app.data
 import java.util.UUID
 
 /**
- * Seed entries so every screen has something real to render before recording works,
- * mirroring iOS ScreenshotDataSeeder.
+ * Seed entries for STORE SCREENSHOTS, mirroring iOS ScreenshotDataSeeder.
+ *
+ * Never for a real install. These are invented diary entries about invented
+ * people, and [Repo.seedIfEmpty] used to write all 38 into the database on
+ * first launch of every build -- so the first thing a new user saw in their
+ * private journal was a stranger's life, indistinguishable from their own. The
+ * gate is BuildConfig.SEED_DEMO_DATA, off unless someone passes -PseedDemo, and
+ * hard-false in release regardless.
  *
  * Two rules carried over from the iOS seeder, both learned the hard way:
  *   - valence and entities are COMPUTED by the real Sentiment and NameDetector,
@@ -64,6 +70,9 @@ object DummyData {
         "Rahul is going freelance. Nervous for him and slightly envious, which is worth noticing." to 52,
         "Two months of this now. Looking back at the early ones, I sound like someone else. That is the whole point of it." to 65,
     )
+
+    /** The corpus, for the purge that removes it from installs that got it. */
+    fun demoTexts(): List<String> = texts.map { it.first }
 
     fun entries(): List<Entry> {
         val now = System.currentTimeMillis()
