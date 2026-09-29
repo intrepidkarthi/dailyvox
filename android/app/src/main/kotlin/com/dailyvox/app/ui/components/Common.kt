@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -19,19 +20,30 @@ import androidx.compose.ui.unit.sp
 import com.dailyvox.app.ui.theme.*
 
 /**
- * Cards are hairline-on-white in Light and tonal-no-border in Dark. That split is
- * from the design spec and it is not arbitrary: a drop shadow on cream reads as
- * grey smudge, so Light gets a 1px border instead and Dark gets a lifted surface.
+ * White card, soft warm shadow, 5% ink hairline in Light; tonal lift, no border,
+ * in Dark. FINAL-SPEC §1 and iOS's DesignSystem card.
+ *
+ * The border used to be DayTextSecondary -- 60% ink -- which drew a dark ring
+ * round every Journal and Insights card. A hairline is 5%, not 60%.
+ *
+ * The caller's modifier (usually `clickable`) goes AFTER the clip, so the ripple
+ * has the card's corners rather than a square.
  */
 @Composable
 fun DvCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     val dark = MaterialTheme.colorScheme.background == NightBackground
+    val shape = RoundedCornerShape(22.dp)
     Column(
-        modifier
+        Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .then(if (dark) Modifier else Modifier.shadow(
+                elevation = 6.dp, shape = shape,
+                ambientColor = DayText.copy(alpha = 0.10f), spotColor = DayText.copy(alpha = 0.10f),
+            ))
+            .clip(shape)
             .background(MaterialTheme.colorScheme.surface)
-            .then(if (dark) Modifier else Modifier.border(1.dp, DayTextSecondary, RoundedCornerShape(24.dp)))
+            .then(if (dark) Modifier else Modifier.border(1.dp, DayText.copy(alpha = 0.05f), shape))
+            .then(modifier)
             .padding(18.dp),
         content = content,
     )
@@ -76,7 +88,8 @@ fun valenceColor(v: Float): Color = when {
 fun MonoLabel(text: String, modifier: Modifier = Modifier) {
     Text(
         text.uppercase(),
-        fontSize = 10.sp,
+        fontFamily = DmMono,
+        fontSize = 10.5.sp,
         letterSpacing = 1.2.sp,
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -112,7 +125,7 @@ fun ScreenTitle(
                 )
                 Spacer(Modifier.width(4.dp))
             }
-            Text(text, fontSize = 30.sp, fontWeight = FontWeight.Bold,
+            Text(text, fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = MaterialTheme.colorScheme.onBackground)
         }
         trailing?.invoke()

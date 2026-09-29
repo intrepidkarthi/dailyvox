@@ -1,9 +1,6 @@
 package com.dailyvox.app.ui.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -30,7 +27,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import com.dailyvox.app.audio.AudioRecorder
 import com.dailyvox.app.audio.SpeechCapture
 import androidx.compose.ui.text.buildAnnotatedString
@@ -83,13 +79,12 @@ fun SpeakScreen(
     var playingToday by remember { mutableStateOf(false) }
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
     var audioPath by remember { mutableStateOf<String?>(null) }
-    var granted by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val ask = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
+    // Handles the two cases the inline version could not: a permanent denial,
+    // where re-launching the request is a silent no-op and the only way out is
+    // app settings, and a permission granted in Settings while the app was
+    // backgrounded, which nothing here used to notice.
+    val mic = com.dailyvox.app.system.rememberMicPermission()
+    val granted = mic.granted
 
     val state by capture.state.collectAsState()
     val captureError by capture.error.collectAsState()
@@ -152,6 +147,27 @@ fun SpeakScreen(
         }
     }
 
+    // Transcription failed, but the microphone worked and the audio is on disk.
+    //
+    // Save it anyway. Losing the recording is a strictly worse outcome than an
+    // entry with no words in it: the words can be recovered later, from the
+    // audio, by a better recogniser or by the user typing them. A deleted file
+    // cannot be recovered by anything.
+    //
+    // This is the whole difference between "the app did not transcribe that"
+    // and "the app threw away what you said", and until now it was the second.
+    LaunchedEffect(Unit) {
+        capture.unrecognised.collect {
+            // Under two seconds with no words is a pocket tap or a cough, not an
+            // entry: filing it would put an empty, unplayable-looking row in the
+            // journal. The error card still says nothing was caught.
+            if (elapsed < MIN_KEPT_SECONDS) { recorder.discard(); return@collect }
+            val path = recorder.stop()?.absolutePath ?: return@collect
+            onSaved("", elapsed.coerceAtLeast(1), path)
+            haptics.entrySaved()
+        }
+    }
+
     // Arrived from the widget or the Quick Settings tile. Fires once, and only
     // with the permission already granted -- launching a permission dialog from
     // a home-screen tap, with no context for why, is how apps get denied
@@ -176,7 +192,21 @@ fun SpeakScreen(
             // open when the screen goes away would leave MediaRecorder holding
             // the microphone — and now that Pause exists, "still open" includes
             // a paused entry the user walked away from.
-            if (capture.state.value != SpeechCapture.State.IDLE) recorder.discard()
+            //
+            // PROCESSING is different: the user already pressed stop, so the
+            // entry is theirs and only the transcript is late. Walking away
+            // during "Filing it." used to delete the audio and the words with
+            // it. File what exists -- the audio, plus whatever partial was
+            // heard -- and let the entry say it has no transcript.
+            when (capture.state.value) {
+                SpeechCapture.State.IDLE -> Unit
+                SpeechCapture.State.PROCESSING -> {
+                    val path = recorder.stop()?.absolutePath
+                    val heard = capture.partial.value
+                    if (path != null || heard.isNotBlank()) onSaved(heard, elapsed.coerceAtLeast(1), path)
+                }
+                else -> recorder.discard()
+            }
             capture.release()
             com.dailyvox.app.system.RecordingLive.hide(context)
             com.dailyvox.app.system.RecordingLive.onFinishRequested = null
@@ -292,7 +322,8 @@ fun SpeakScreen(
                 SpeechCapture.State.PROCESSING -> "Filing it."
                 else -> "How was your day,\nreally?"
             },
-            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.Bold,
+            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
@@ -309,9 +340,12 @@ fun SpeakScreen(
             elapsed = elapsed,
             firstEver = firstEver,
             onTap = {
-                if (!granted) ask.launch(Manifest.permission.RECORD_AUDIO)
+                if (!granted) mic.request()
                 else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
-                else { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                // Only from IDLE. A tap during PROCESSING used to reach here:
+                // capture.start() returned early, recorder.start() did not, and
+                // a second MediaRecorder opened over the entry being filed.
+                else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
             },
         )
 
@@ -334,58 +368,7 @@ fun SpeakScreen(
         // returning to "Tap to start" taught people the button was broken.
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
-            Column(
-                Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp),
-            ) {
-                Text(err.message, fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(6.dp))
-                Text(err.fix, fontSize = 13.sp, lineHeight = 20.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (err.openLanguageSettings) {
-                        Text(
-                            "Open speech settings",
-                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable {
-                                    // Deep-link where it exists; the general
-                                    // language screen is the fallback, since the
-                                    // voice-input screen is not on every OEM.
-                                    val tried = listOf(
-                                        "com.android.settings.VOICE_INPUT_SETTINGS",
-                                        android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
-                                        android.provider.Settings.ACTION_LOCALE_SETTINGS,
-                                    )
-                                    tried.firstOrNull { action ->
-                                        runCatching {
-                                            context.startActivity(
-                                                android.content.Intent(action)
-                                                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            )
-                                        }.isSuccess
-                                    }
-                                }
-                                .padding(horizontal = 16.dp, vertical = 11.dp),
-                        )
-                    }
-                    Text(
-                        "Dismiss", fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(14.dp))
-                            .clickable { capture.clearError() }
-                            .padding(horizontal = 16.dp, vertical = 11.dp),
-                    )
-                }
-            }
+            SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -408,7 +391,10 @@ fun SpeakScreen(
                     // chip is drawn at the design's size and would be a ~20dp
                     // target on its own — under the 48dp §8.6 asks for, and the
                     // one Play's pre-launch report measures.
-                    Box(
+                    //
+                    // Only when there is audio: a typed entry showed "▶ 0:00",
+                    // a play button with nothing behind it.
+                    if (!e.audioPath.isNullOrBlank()) Box(
                         Modifier
                             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                             .clickable {
@@ -540,8 +526,15 @@ private fun RecordButton(
     )
     val orbit = if (still) 0f else orbitRaw
     // Record start: mic scales 1 -> 1.08 on a spring (§4).
+    // Finger down: 0.95, the same give iOS's button style has. Without it the
+    // disc was a picture of a button until the tap landed.
+    var pressed by remember { mutableStateOf(false) }
     val press by animateFloatAsState(
-        if (state == SpeechCapture.State.RECORDING) 1.08f else 1f,
+        when {
+            pressed -> 0.95f
+            state == SpeechCapture.State.RECORDING -> 1.08f
+            else -> 1f
+        },
         spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessMediumLow),
         label = "press",
     )
@@ -551,7 +544,12 @@ private fun RecordButton(
             Modifier
                 .size(diameter)
                 .semantics { contentDescription = label }
-                .pointerInput(state) { detectTapGestures { onTap() } }
+                .pointerInput(state) {
+                    detectTapGestures(
+                        onPress = { pressed = true; tryAwaitRelease(); pressed = false },
+                        onTap = { onTap() },
+                    )
+                }
         ) {
             val c = center
             val ringR = size.minDimension * 0.467f      // 70/150
@@ -593,22 +591,46 @@ private fun RecordButton(
                 radius = discR * 1.5f,
                 center = Offset(c.x, c.y + discR * 0.18f),
             )
+            // Lit from above: a lighter crown falling to the base colour, so the
+            // disc has the volume of the gold 3D mic in the brand mark rather
+            // than reading as a flat sticker.
+            val base = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary
             drawCircle(
-                color = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary,
+                brush = Brush.verticalGradient(
+                    listOf(androidx.compose.ui.graphics.lerp(base, Color.White, 0.16f), base),
+                    startY = c.y - discR, endY = c.y + discR,
+                ),
                 radius = discR,
                 center = c,
             )
         }
 
-        // Cream capsule glyph, 24x40 at the design's 112 disc.
-        Canvas(Modifier.size(diameter * 0.21f)) {
-            val w = size.width
+        // A microphone, drawn: capsule, the U-shaped holder, stem and foot.
+        // The bare capsule read as a "0" or a pill; iOS shows mic.fill. Still
+        // geometric strokes, per §8.9, and it rides the press scale.
+        Canvas(Modifier.size(diameter * 0.25f * press)) {
+            val w = size.width; val h = size.height
+            val ink = scheme.onPrimary
+            val stroke = w * 0.085f
             drawRoundRect(
-                color = scheme.onPrimary,
-                topLeft = Offset(w * 0.30f, 0f),
-                size = androidx.compose.ui.geometry.Size(w * 0.40f, size.height),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.20f),
+                color = ink,
+                topLeft = Offset(w * 0.34f, 0f),
+                size = androidx.compose.ui.geometry.Size(w * 0.32f, h * 0.60f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.16f),
             )
+            drawArc(
+                color = ink, startAngle = 0f, sweepAngle = 180f, useCenter = false,
+                topLeft = Offset(w * 0.20f, h * 0.22f),
+                size = androidx.compose.ui.geometry.Size(w * 0.60f, h * 0.52f),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+            )
+            drawLine(ink, Offset(w * 0.5f, h * 0.74f), Offset(w * 0.5f, h * 0.90f), stroke,
+                     cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(ink, Offset(w * 0.36f, h * 0.93f), Offset(w * 0.64f, h * 0.93f), stroke,
+                     cap = androidx.compose.ui.graphics.StrokeCap.Round)
         }
     }
 }
+
+/** Shortest wordless recording worth keeping as an audio-only entry. */
+private const val MIN_KEPT_SECONDS = 2

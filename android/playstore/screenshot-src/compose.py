@@ -1,143 +1,165 @@
 #!/usr/bin/env python3
-"""Play Store frames, 1242x2208 — matching the shipped iOS system.
+"""Play Store frames, 1242x2208. Rebuilt 2026-09-29 for the v1.0 release.
 
-Two rebuilds got here. The first was a flat template. The second invented its own
-look — gradients, sparkles, film grain — because I had studied ONE iOS frame and
-extrapolated. Looking at the whole set shows a much stricter system, and the job
-was to match it, not to design a parallel one:
+The August set matched the iOS structure but not its energy: saturated-but-dark
+jewel grounds (mean L* 27) that still read as eight dim rectangles in a
+carousel. This set goes the other way on purpose:
 
-  · SOLID saturated ground per frame. No gradient, no grain, no sparkles.
-  · A DIFFERENT accent colour per frame, used four times over: kicker, one word
-    in the headline, the stat numeral, and the device's top rim.
-  · Headline enormous and tight, cream, one word in the accent.
-  · Stat numeral huge in the accent, with a Caveat script line beside it.
-  · Device large and CROPPED by the bottom edge, so the frame feels like a
-    window rather than a poster with a picture on it.
-  · One or two stickers, tilted, overlapping the screen.
+  · A VIBRANT two-stop gradient per frame, no hue family twice in a row, since
+    the carousel is scrolled and neighbours are what the eye compares.
+  · Star dust over every ground: two offset dot lattices at low alpha. It is
+    the Twin's sky, so the texture is the product's own metaphor rather than
+    decoration.
+  · One highlighted phrase per headline, set on a tilted marker. The
+    headline is the claim; the marker is the part to remember.
+  · A whole device with a real bezel, cropped by the bottom edge.
+  · One sticker per frame at most, and only for a fact the screen proves.
 
-What stays Android's own is the content: the palette is drawn from the app's
-ink/amber/sage tokens rather than iOS's, and frame 02 is a screenshot of
-ANDROID'S OWN SETTINGS — the one piece of evidence no competitor can fake and no
-App Store listing can show at all.
+Every claim must be true of v1.0 as shipped. In particular: no Health Connect
+(nothing about sleep or steps), no "search by meaning" (search is typed words
+or voice), and the permissions frame says what Android's own screen shows —
+microphone and notifications.
+
+Fonts are the app's own bundled files (app/src/main/res/font), so rendering
+needs no network and the frames use exactly the faces the app does.
+
+    python3 compose.py     # needs Google Chrome; captures in this directory
 """
-import os, subprocess, html
+import html
+import os
+import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT  = os.path.join(os.path.dirname(HERE), "assets", "screenshots")
+OUT = os.path.join(os.path.dirname(HERE), "assets", "screenshots")
+FONTS = os.path.normpath(os.path.join(HERE, "..", "..", "app", "src", "main", "res", "font"))
 os.makedirs(OUT, exist_ok=True)
 
-def stk(text, sub, pos, rot, tone="light"):
-    return (f'<div class="stk {tone}" style="{pos};--r:{rot}deg">'
-            f'<b>{html.escape(text)}</b><small>{html.escape(sub)}</small></div>')
+INK = "#14201B"
 
-# bg, accent — one pairing per frame, drawn from the app's own tokens
-INK    = ("#0F140F", "#E0B15C")   # ink / amber
-FOREST = ("#14261C", "#8FCBA4")   # deep green / sage
-NIGHT  = ("#101A26", "#D6A84A")   # night blue / gold
-CLAY   = ("#241611", "#E0906A")   # deep clay / terracotta
-SLATE  = ("#111C22", "#6FC3D6")   # slate / cyan
+# (top-left, bottom-right, marker, marker text)
+CORAL   = ("#E8432A", "#FF9A2E", "#FFE45C", INK)
+VIOLET  = ("#5A34F5", "#1B1566", "#FFC94D", INK)
+EMERALD = ("#0C9A5E", "#0A6F86", "#FFE45C", INK)
+OCEAN   = ("#1B5FF0", "#00B4CC", "#FFE45C", INK)
+BERRY   = ("#D42A66", "#FF7F3F", INK, "#FFE45C")
+TEAL    = ("#00806F", "#2DB36F", "#FFFFFF", INK)
+ORCHID  = ("#7B35F0", "#DC47C4", "#FFE45C", INK)
+NIGHT   = ("#0F1E3C", "#2D5BFF", "#FFC94D", INK)
 
-# Every `stat` below must match what the DEVICE SCREENSHOT beside it shows.
-# They drifted once: the frames claimed 12 while the captures said TOTAL 38,
-# which is the kind of thing a store reviewer reads as a fabricated number.
-# Check against screenshot-src/04-insights.png before changing a seed.
+def sticker(label, big, pos, rot):
+    return (f'<div class=stk style="{pos};--r:{rot}deg">'
+            f'<small>{html.escape(label)}</small><b>{html.escape(big)}</b></div>')
+
 FRAMES = [
-    dict(img="01-speak.png", theme=INK, kick="just talk",
-         head='42 seconds<br>is the <em>app</em>.', stat="0:42", script="the whole ritual",
-         stickers=stk("no typing", "no blank page to fill", "left:26px;top:1560px", -5)),
-
-    dict(img="10-permissions.png", theme=FOREST, kick="android's own settings",
-         head='the permission<br>list, in <em>full</em>.', stat="0", script="network permissions",
-         stickers=stk("microphone", "that's the whole list", "left:26px;top:1180px", -4, "accent")
-                + stk("check it yourself", "settings › apps › dailyvox", "right:40px;top:1560px", 5)),
-
-    dict(img="03-twin.png", theme=NIGHT, kick="meet your twin",
-         head='a sky made<br>of <em>you</em>.', stat="38", script="stars in your sky",
-         stickers=stk("100% on this phone", "no cloud, no account", "right:40px;top:1720px", 4, "accent")),
-
-    dict(img="05-ask.png", theme=SLATE, kick="ask your twin",
-         head='answers with<br><em>receipts</em>.', stat="0", script="calls to any server",
-         stickers=stk("cites your entries", "every single answer", "left:26px;top:1700px", -5, "accent")),
-
-    dict(img="04-insights.png", theme=CLAY, kick="your patterns",
-         head='it clocks you<br>before <em>you do</em>.', stat="30", script="nights, at a glance",
-         stickers=stk("only when proven", "nothing claimed early", "right:40px;top:1660px", 4)),
-
-    dict(img="02-journal.png", theme=FOREST, kick="your journal",
-         head='every night,<br><em>kept here</em>.', stat="38", script="entries, on this phone",
-         stickers=stk("search by meaning", "or just by voice", "left:26px;top:1700px", -4, "accent")),
-
-    dict(img="06-filed.png", theme=INK, kick="nothing hidden",
-         head='see what it<br><em>filed</em>.', stat=None, script=None,
-         stickers=stk("mood, people, pace", "wrong? fix it yourself", "left:26px;top:1620px", -5, "accent")),
-
-    dict(img="07-onboarding-ledger.png", theme=NIGHT, kick="before you record anything",
-         head='the ledger<br>comes <em>first</em>.', stat=None, script=None,
-         stickers=stk("internet", "NOT REQUESTED", "right:40px;top:1640px", 4, "accent")),
+    dict(img="01-speak.png", c=CORAL, kick="Just talk",
+         head='42 seconds is<br><mark>the whole app</mark>.',
+         sub="Tap, speak, done. No typing, no blank page.",
+         stk=sticker("transcribed", "on this phone", "left:54px;top:1640px", -5)),
+    dict(img="03-twin.png", c=VIOLET, kick="Your Twin",
+         head='A sky made<br><mark>of you</mark>.',
+         sub="The people you talk about become the stars.",
+         stk=sticker("every night", "one new star", "right:54px;top:1760px", 4)),
+    dict(img="02-journal.png", c=EMERALD, kick="Your journal",
+         head='Every night,<br><mark>kept here</mark>.',
+         sub="Search by typing or by voice. Replay any entry.",
+         stk=None),
+    dict(img="05-ask.png", c=OCEAN, kick="Ask your Twin",
+         head='Answers with<br><mark>receipts</mark>.',
+         sub="Every answer comes from your own entries.",
+         stk=sticker("network calls", "zero, ever", "right:54px;top:1700px", 4)),
+    dict(img="04-insights.png", c=BERRY, kick="Your patterns",
+         head='It notices<br><mark>before you do</mark>.',
+         sub="Streaks and moods, and patterns once they hold up.",
+         stk=None),
+    dict(img="10-permissions.png", c=TEAL, kick="Android's own settings",
+         head='No internet.<br><mark>Check yourself</mark>.',
+         sub="Microphone and notifications. Nothing else.",
+         stk=sticker("internet permission", "not requested", "right:54px;top:1170px", 4)),
+    dict(img="06-filed.png", c=ORCHID, kick="Nothing hidden",
+         head='See what it filed.<br><mark>Fix it</mark>.',
+         sub="Mood, people and pace — and your own word for it.",
+         stk=None),
+    dict(img="07-onboarding-ledger.png", c=NIGHT, kick="Before your first word",
+         head='The permission list<br><mark>comes first</mark>.',
+         sub="Before you record a word: what it needs, and what it never sends.",
+         stk=None),
 ]
 
 TPL = """<!doctype html><meta charset=utf-8>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
 <style>
+@font-face{{font-family:Nunito;src:url("file://{fonts}/nunito_variable.ttf");font-weight:200 1000}}
+@font-face{{font-family:Inter;src:url("file://{fonts}/inter_variable.ttf");font-weight:100 900}}
+@font-face{{font-family:DMMono;src:url("file://{fonts}/dm_mono_medium.ttf")}}
 *{{margin:0;box-sizing:border-box}}
-.f{{width:1242px;height:2208px;position:relative;overflow:hidden;
-    font-family:'Nunito',sans-serif;background:{bg}}}
-.top{{position:absolute;top:96px;left:62px;right:62px;z-index:6}}
-.k{{font-family:'DM Mono',monospace;font-size:22px;letter-spacing:.22em;
-    text-transform:uppercase;color:{ac};font-weight:500}}
-h2{{margin-top:20px;font-weight:900;font-size:94px;line-height:.94;
-    letter-spacing:-.042em;color:#F6F1E6}}
-h2 em{{font-style:normal;color:{ac}}}
-.row{{margin-top:{gap}px;display:flex;align-items:baseline;gap:26px}}
-.stat{{font-weight:900;font-size:132px;line-height:.76;color:{ac};letter-spacing:-.055em}}
-.script{{font-family:'Caveat',cursive;font-weight:700;font-size:46px;
-         color:rgba(246,241,230,.80);transform:rotate(-2deg)}}
-/* Cropped by the bottom edge on purpose — a window, not a poster. */
-.stage{{position:absolute;left:50%;transform:translateX(-50%);top:{top}px;z-index:3;
-        width:830px}}
-.dev{{width:100%;border-radius:56px 56px 0 0;overflow:hidden;
-      border-top:5px solid {ac};
-      box-shadow:0 -12px 60px -12px rgba(0,0,0,.5)}}
-.dev img{{width:100%;display:block}}
-.stk{{position:absolute;z-index:7;border-radius:26px;padding:24px 30px;
-      transform:rotate(var(--r));box-shadow:0 26px 56px -14px rgba(0,0,0,.42);
-      max-width:400px}}
-.stk b{{display:block;font-weight:900;font-size:37px;line-height:1.08;color:#20211E}}
-.stk small{{display:block;font-weight:700;font-size:25px;margin-top:5px;color:rgba(32,33,30,.56)}}
-.stk.light{{background:#FBF7EE}}
-.stk.accent{{background:{ac}}}
-.stk.accent b{{color:#12160F}} .stk.accent small{{color:rgba(18,22,15,.62)}}
+.f{{width:1242px;height:2208px;position:relative;overflow:hidden;font-family:Nunito,sans-serif;
+    background:linear-gradient(155deg,{c1} 0%,{c2} 100%)}}
+/* Light: one warm bloom behind the headline, one behind the device. */
+.f:before{{content:"";position:absolute;inset:0;
+    background:radial-gradient(900px 700px at 12% 6%,rgba(255,255,255,.20),transparent 70%),
+               radial-gradient(1100px 900px at 60% 78%,rgba(255,255,255,.16),transparent 70%)}}
+/* Star dust: two offset lattices, so it never reads as a grid. */
+.dust{{position:absolute;inset:0;opacity:.55;
+    background-image:radial-gradient(circle,rgba(255,255,255,.75) 1.6px,transparent 2.4px),
+                     radial-gradient(circle,rgba(255,255,255,.45) 1.2px,transparent 2px);
+    background-size:137px 131px,89px 97px;background-position:11px 23px,53px 7px;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.2) 55%,transparent 80%)}}
+.top{{position:absolute;top:104px;left:72px;right:72px;z-index:6}}
+.k{{display:inline-block;font-family:DMMono,monospace;font-size:25px;letter-spacing:.2em;
+    text-transform:uppercase;color:#fff;background:rgba(255,255,255,.18);
+    border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:12px 24px}}
+h2{{margin-top:34px;font-weight:900;font-size:104px;line-height:1.0;letter-spacing:-.035em;color:#fff;
+    text-shadow:0 4px 30px rgba(0,0,0,.12)}}
+mark{{background:{mk};color:{mt};padding:0 20px 6px;border-radius:22px;display:inline-block;
+      transform:rotate(-1.6deg);margin-top:10px;box-shadow:0 18px 40px -16px rgba(0,0,0,.45);
+      text-shadow:none}}
+.sub{{margin-top:34px;font-family:Inter,sans-serif;font-weight:600;font-size:37px;line-height:1.3;
+      color:rgba(255,255,255,.92);max-width:1060px}}
+.stage{{position:absolute;left:50%;transform:translateX(-50%);top:{top}px;z-index:3;width:880px}}
+.dev{{width:100%;border-radius:104px;background:#0B0F14;padding:16px;
+      box-shadow:0 60px 120px -30px rgba(0,0,0,.55),0 0 0 3px rgba(255,255,255,.14) inset}}
+.scr{{border-radius:90px;overflow:hidden;position:relative}}
+.scr img{{width:100%;display:block}}
+/* Punch-hole camera, as on the Pixel the captures came from. */
+.cam{{position:absolute;top:30px;left:50%;width:30px;height:30px;margin-left:-15px;border-radius:50%;
+      background:#05070A;z-index:2}}
+.stk{{position:absolute;z-index:7;background:#fff;border-radius:30px;padding:24px 32px 26px;
+      transform:rotate(var(--r));box-shadow:0 30px 60px -18px rgba(0,0,0,.45);max-width:420px}}
+.stk small{{display:block;font-family:DMMono,monospace;font-size:21px;letter-spacing:.14em;
+            text-transform:uppercase;color:rgba(20,32,27,.6)}}
+.stk b{{display:block;margin-top:6px;font-weight:900;font-size:46px;line-height:1.05;color:{INK}}}
 </style>
 <div class=f>
+  <div class=dust></div>
   <div class=top>
-    <div class=k>{kicker}</div>
+    <div class=k>{kick}</div>
     <h2>{head}</h2>
-    {statblock}
+    <div class=sub>{sub}</div>
   </div>
-  <div class=stage><div class=dev><img src="{img}"></div></div>
-  {stickers}
+  <div class=stage><div class=dev><div class=scr><div class=cam></div><img src="{img}"></div></div></div>
+  {stk}
 </div>"""
 
-chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
 made = 0
 for i, fr in enumerate(FRAMES, 1):
     src = os.path.join(HERE, fr["img"])
     if not os.path.exists(src):
-        print(f"  SKIP {fr['img']}"); continue
-    bg, ac = fr["theme"]
-    statblock, top, gap = "", 520, 0
-    if fr.get("stat"):
-        statblock = (f'<div class=row><div class=stat>{fr["stat"]}</div>'
-                     f'<div class=script>{html.escape(fr["script"])}</div></div>')
-        top, gap = 570, 34
-    page = TPL.format(img="file://" + src, kicker=fr["kick"], head=fr["head"],
-                      statblock=statblock, stickers=fr["stickers"],
-                      top=top, gap=gap, bg=bg, ac=ac)
+        print(f"  SKIP {fr['img']}")
+        continue
+    c1, c2, mk, mt = fr["c"]
+    page = TPL.format(fonts=FONTS, c1=c1, c2=c2, mk=mk, mt=mt, INK=INK,
+                      kick=html.escape(fr["kick"]), head=fr["head"], sub=html.escape(fr["sub"]),
+                      img="file://" + src, stk=fr["stk"] or "", top=760)
     tmp = os.path.join(HERE, f".f{i:02d}.html")
     open(tmp, "w").write(page)
     out = os.path.join(OUT, f"{i:02d}.png")
-    subprocess.run([chrome, "--headless", "--disable-gpu", f"--screenshot={out}",
+    # virtual-time-budget: let the @font-face files load before the capture,
+    # or the first frames come out in the fallback face.
+    subprocess.run([CHROME, "--headless", "--disable-gpu", "--allow-file-access-from-files",
+                    "--virtual-time-budget=4000", f"--screenshot={out}",
                     "--window-size=1242,2208", "--hide-scrollbars", f"file://{tmp}"],
                    capture_output=True)
-    os.remove(tmp); made += 1
-print(f"{made} frames")
+    os.remove(tmp)
+    made += 1
+print(f"{made} frames -> {OUT}")

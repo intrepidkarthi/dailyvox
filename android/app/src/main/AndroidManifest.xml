@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- The permission ledger the onboarding shows verbatim: microphone is
-         REQUIRED, Health Connect is OPTIONAL, and INTERNET is NOT REQUESTED.
+         REQUIRED, and INTERNET is NOT REQUESTED.
          The absence of an INTERNET permission is the product claim, in the one
          place a user can verify it without trusting us. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- Notifications are runtime-requested on API 33+; the daily reminder is the
-         only thing that posts one, and it is off until the user turns it on. -->
+    <!-- Notifications are runtime-requested on API 33+; two things post one:
+         the daily reminder (on by default, one switch in Settings) and the
+         ongoing chip while a recording is in progress. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Normal permission, granted at install. Declaring it is not optional:
          Vibrator.vibrate throws SecurityException without it, which took down
@@ -22,21 +23,22 @@
          BiometricPrompt actually uses, still merges in. -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove" />
 
-    <!-- Health Connect, OPTIONAL and read-only, exactly as the onboarding ledger
-         says. Declared is not held: nothing is requested until the user turns
-         Body signals on, and only these four are ever asked for — the four the
-         Twin actually correlates against. -->
-    <uses-permission android:name="android.permission.health.READ_SLEEP" />
-    <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
-    <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
-    <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <!-- No Health Connect in v1.0. Body signals had no screen that asked for
+         access, so the two health permissions were declared and unreachable;
+         and declaring them alone puts an app in Play's health-apps review.
+         BodySignals.kt stays; wire a real opt-in before re-adding them. -->
 
-    <!-- On API 33 Health Connect is a separate APK, and package visibility
-         filtering hides it: without this the availability check reports NOT
-         INSTALLED on a phone that has it, and Body signals look unsupported.
-         From API 34 it is part of the platform and this is simply ignored. -->
     <queries>
-        <package android:name="com.google.android.apps.healthdata" />
+        <!-- The speech recogniser. Package visibility filtering (Android 11+)
+             hides every app this one has not declared an interest in, and a
+             RecognitionService is just another app: without this the platform
+             can report no recogniser on a phone that has one, and the Speak
+             button fails with "no offline speech pack" on hardware where the
+             pack is installed and working. Nothing in the app's own manifest
+             said it wanted to talk to one. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
     </queries>
 
     <!-- Auto Backup is OFF. See res/xml/data_extraction_rules.xml: the default
@@ -62,11 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Health Connect requires a rationale target, or the permission
-                 screen shows the app with no explanation of why it wants this. -->
-            <intent-filter>
-                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
-            </intent-filter>
 
             <!-- Must live INSIDE the launcher activity: the framework reads
                  shortcuts off the activity that declares MAIN/LAUNCHER, and at
@@ -75,23 +72,6 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <!-- The API 34+ half of the same rationale. Android 14 moved Health
-             Connect into the platform and stopped reading the intent-filter
-             above: it looks for VIEW_PERMISSION_USAGE with the
-             HEALTH_PERMISSIONS category instead, and an app that declares only
-             one of the two shows a permission screen with no explanation of
-             why it wants sleep and heart rate. Play's health-data review
-             checks for it. -->
-        <activity-alias
-            android:name=".HealthRationaleActivity"
-            android:exported="true"
-            android:targetActivity=".MainActivity"
-            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
-                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
-            </intent-filter>
-        </activity-alias>
 
         <receiver
             android:name=".system.RecordingLive$FinishReceiver"

@@ -3,8 +3,14 @@ package com.dailyvox.app.data
 import java.util.UUID
 
 /**
- * Seed entries so every screen has something real to render before recording works,
- * mirroring iOS ScreenshotDataSeeder.
+ * Seed entries for STORE SCREENSHOTS, mirroring iOS ScreenshotDataSeeder.
+ *
+ * Never for a real install. These are invented diary entries about invented
+ * people, and [Repo.seedIfEmpty] used to write all 38 into the database on
+ * first launch of every build -- so the first thing a new user saw in their
+ * private journal was a stranger's life, indistinguishable from their own. The
+ * gate is BuildConfig.SEED_DEMO_DATA, off unless someone passes -PseedDemo, and
+ * hard-false in release regardless.
  *
  * Two rules carried over from the iOS seeder, both learned the hard way:
  *   - valence and entities are COMPUTED by the real Sentiment and NameDetector,
@@ -15,14 +21,6 @@ import java.util.UUID
  *     mood curve have real shape rather than a single cluster.
  */
 object DummyData {
-
-    /** Sleep hours, cycled across the seed. Nulls are deliberate — a phone with
-     *  no wearable has gaps, and the Body row has to survive them. */
-    private val SLEEP = listOf(
-        7.2f, 6.1f, null, 7.9f, 4.8f, 7.0f, 8.1f, null, 6.4f, 7.5f,
-        6.8f, 7.2f, 5.9f, 8.4f, null, 6.6f, 7.8f, 5.2f, 7.1f, 6.9f,
-        8.0f, null, 6.3f, 7.4f, 4.9f, 7.7f,
-    )
 
     private val texts = listOf(
         "Walked before anyone was up. Sarah's flight lands tonight and I'm more nervous than I expected. The house feels different when someone is about to come back to it, like it has been holding its breath." to 52,
@@ -65,6 +63,9 @@ object DummyData {
         "Two months of this now. Looking back at the early ones, I sound like someone else. That is the whole point of it." to 65,
     )
 
+    /** The corpus, for the purge that removes it from installs that got it. */
+    fun demoTexts(): List<String> = texts.map { it.first }
+
     fun entries(): List<Entry> {
         val now = System.currentTimeMillis()
         val day = 86_400_000L
@@ -100,7 +101,9 @@ object DummyData {
                     // appeared because the seed got bigger. Any per-entry list
                     // here has to be modulo-safe or it is a landmine for the
                     // next person who adds a text.
-                    sleepHours = SLEEP[i % SLEEP.size],
+                    // No sleep: v1.0 reads no health data, and store
+                    // screenshots must not show what the app cannot collect.
+                    sleepHours = null,
                 )
             )
         }

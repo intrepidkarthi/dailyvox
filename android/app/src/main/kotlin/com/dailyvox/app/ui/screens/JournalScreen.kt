@@ -1,11 +1,11 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
@@ -67,8 +67,12 @@ fun JournalScreen(
     val listening = searchState != SpeechCapture.State.IDLE
     LaunchedEffect(searchPartial) { if (searchPartial.isNotBlank()) onQuery(searchPartial) }
     LaunchedEffect(Unit) { search.finished.collect { if (it.isNotBlank()) onQuery(it) } }
-    val filters = listOf("All", "People", "Mood", "Body")
+    // No "Body" in v1.0: it filtered on sleep from Health Connect, which the
+    // release does not read, so it could only ever show an empty list.
+    val filters = listOf("All", "People", "Mood")
     var filter by rememberSaveable { mutableStateOf("All") }
+    // Same construction as SpeakScreen: one instance per screen, remembered.
+    val haptics = remember { com.dailyvox.app.system.Haptics(context) }
 
     val shown = remember(entries, filter) {
         when (filter) {
@@ -86,12 +90,17 @@ fun JournalScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Journal", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold,
+            Text("Journal", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = MaterialTheme.colorScheme.onBackground)
             // Queues today's recordings back to back. Green, because playing is
             // an action — the pill is the one green thing on this screen.
+            // Today's entries that have a recording to play. Typed entries have
+            // none, and a "Play today · 0:00" pill for them played nothing.
+            // Local day, not UTC day: in India the UTC boundary falls at 05:30.
+            val today = java.time.LocalDate.now()
             val todays = entries.filter {
-                it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+                !it.audioPath.isNullOrBlank() && java.time.Instant.ofEpochMilli(it.createdAt)
+                    .atZone(java.time.ZoneId.systemDefault()).toLocalDate() == today
             }
             if (todays.isNotEmpty()) {
                 val total = todays.sumOf { it.durationSec }
@@ -143,11 +152,12 @@ fun JournalScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             if (query.isEmpty()) {
-                Text("Describe it — search what you meant", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.5.sp)
+                Text("Search your journal", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicTextField(
                     value = query, onValueChange = onQuery,
+                    keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                     singleLine = true,
                     textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
                     cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary),
@@ -180,49 +190,7 @@ fun JournalScreen(
 
         searchError?.let { err ->
             Spacer(Modifier.height(10.dp))
-            Column(
-                Modifier.fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable { search.clearError() }
-                    .padding(14.dp),
-            ) {
-                Text(err.message, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
-                     color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(5.dp))
-                Text(err.fix, fontSize = 12.sp, lineHeight = 18.sp,
-                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                if (err.openLanguageSettings) {
-                    Spacer(Modifier.height(10.dp))
-                    Text(
-                        "Open speech settings",
-                        fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(13.dp))
-                            .background(MaterialTheme.colorScheme.primary)
-                            .clickable {
-                                // Same three-step fallback the record screen
-                                // uses: the voice-input screen is not on every
-                                // OEM, so the general locale screen is the last
-                                // resort rather than a dead button.
-                                listOf(
-                                    "com.android.settings.VOICE_INPUT_SETTINGS",
-                                    android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS,
-                                    android.provider.Settings.ACTION_LOCALE_SETTINGS,
-                                ).firstOrNull { action ->
-                                    runCatching {
-                                        context.startActivity(
-                                            android.content.Intent(action)
-                                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        )
-                                    }.isSuccess
-                                }
-                            }
-                            .padding(horizontal = 12.dp, vertical = 7.dp),
-                    )
-                }
-            }
+            SpeechErrorCard(err, search, "Dismiss", onSecondary = { search.clearError() }, compact = true)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -238,7 +206,12 @@ fun JournalScreen(
                             if (on) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.surface
                         )
-                        .clickable { filter = f }
+                        .clickable {
+                            // Only on a real change: re-tapping the lit chip
+                            // does nothing, so it should not feel like it did.
+                            if (f != filter) haptics.selection()
+                            filter = f
+                        }
                         .padding(horizontal = 12.dp, vertical = 7.dp)
                 )
             }
@@ -273,14 +246,38 @@ fun JournalScreen(
                 )
             }
         }
+        // Month sections, as iOS groups them. Entries arrive newest-first, so
+        // grouping preserves order; LinkedHashMap keeps the months in it.
+        val months = remember(shown) {
+            val fmt = SimpleDateFormat("LLLL yyyy", Locale.getDefault())   // standalone month form
+            shown.groupBy { fmt.format(Date(it.createdAt)) }
+        }
+        val newestId = shown.firstOrNull()?.id
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            itemsIndexed(shown, key = { _, e -> e.id }) { i, e ->
-                EntryCard(e) { onOpen(e) }
-                // Sits under the newest entry rather than at the top: it is a
-                // remark about the timeline, and above it, it reads as chrome.
-                if (i == 0) noticed?.let { n ->
-                    Spacer(Modifier.height(12.dp))
-                    TwinNoticedCard(n, onAsk)
+            months.forEach { (month, monthEntries) ->
+                // A quiet mono rule rather than a second title: plain rather
+                // than sticky, because it is a divider you scroll past and a
+                // pinned one would sit on top of the card being read.
+                item(key = "month-$month", contentType = "month") {
+                    Text(
+                        month.uppercase(),
+                        fontFamily = com.dailyvox.app.ui.theme.DmMono,
+                        fontSize = 10.sp, letterSpacing = 1.3.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.animateItem().padding(top = 4.dp),
+                    )
+                }
+                items(monthEntries, key = { it.id }, contentType = { "entry" }) { e ->
+                    Column(Modifier.animateItem()) {
+                        EntryCard(e) { onOpen(e) }
+                        // Sits under the newest entry rather than at the top: it is a
+                        // remark about the timeline, and above it, it reads as chrome.
+                        if (e.id == newestId) noticed?.let { n ->
+                            Spacer(Modifier.height(12.dp))
+                            TwinNoticedCard(n, onAsk)
+                        }
+                    }
                 }
             }
             item { Spacer(Modifier.height(120.dp)) }   // clears the floating nav
@@ -291,29 +288,42 @@ fun JournalScreen(
 @Composable
 private fun EntryCard(e: Entry, onClick: () -> Unit) {
     DvCard(Modifier.clickable(onClick = onClick)) {
-        // B3: DM Mono meta line, gold star on the right for a made thing.
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            MonoLabel(
-                "${dateLabel(e.createdAt).uppercase()} · ${durationLabel(e.durationSec)} · ${e.text.split(" ").size} WORDS"
+        Row(Modifier.height(IntrinsicSize.Min)) {
+            // Mood accent, as iOS draws it: a 3dp hairline so the journal can be
+            // scanned by feeling. Any wider and it reads as a border on every row.
+            Box(
+                Modifier.width(3.dp).fillMaxHeight()
+                    .clip(RoundedCornerShape(1.5.dp))
+                    .background(valenceColor(e.valence))
             )
-            Text("✦", fontSize = 12.sp, color = Gold)
-        }
-        Spacer(Modifier.height(8.dp))
-        Text(
-            e.text, fontSize = 13.sp, lineHeight = 20.sp,
-            maxLines = 2,
-            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        if (e.entityList.isNotEmpty() || e.sleepHours != null) {
-            Spacer(Modifier.height(10.dp))
-            // Entity chips are GREEN-tinted; body chips are GOLD-tinted. The
-            // split is the grammar again: a name is something the Twin found in
-            // what you said, a body reading is something it was given.
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                e.entityList.take(3).forEach { SpecChip(it.uppercase(), gold = false) }
-                e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                // B3: DM Mono meta line. The gold ✦ that used to sit on the right
+                // of every card is gone: the spec reserves it for starred entries,
+                // Entry has no starred field, and on every row it meant nothing.
+                MonoLabel(
+                    "${dateLabel(e.createdAt).uppercase()} · ${if (e.audioPath.isNullOrBlank() && e.durationSec == 0) "TYPED" else durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (e.isUntranscribed) "Recorded, but this phone did not transcribe it. The audio is saved \u2014 tap to play."
+                    else e.text,
+                    fontSize = 15.5.sp, lineHeight = 23.sp,
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (e.entityList.isNotEmpty() || e.sleepHours != null) {
+                    Spacer(Modifier.height(10.dp))
+                    // Entity chips are GREEN-tinted; body chips are GOLD-tinted. The
+                    // split is the grammar again: a name is something the Twin found in
+                    // what you said, a body reading is something it was given.
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        e.entityList.take(3).forEach { SpecChip(it.uppercase(), gold = false) }
+                        e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
+                    }
+                }
             }
         }
     }
@@ -325,7 +335,8 @@ private fun SpecChip(text: String, gold: Boolean) {
     val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
     Text(
         text,
-        fontSize = 9.5.sp,
+        fontFamily = com.dailyvox.app.ui.theme.DmMono,
+        fontSize = 10.sp,
         letterSpacing = 0.6.sp,
         fontWeight = FontWeight.SemiBold,
         color = when {

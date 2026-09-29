@@ -23,6 +23,19 @@ The emulator cannot answer it: it ships no offline language pack, so nothing is
 ever transcribed on it. The names in the store screenshots come from the seeded
 demo journal.
 
+> **Seeding is now opt-in.** That demo journal used to be written into every
+> install, including the released APK, so a new user's first sight of their own
+> journal was 38 invented entries about people who do not exist. It is gated
+> behind `BuildConfig.SEED_DEMO_DATA` and forced off in release. To reproduce
+> the screenshots you now have to ask for it:
+>
+> ```
+> ./gradlew installDebug -PseedDemo
+> ```
+>
+> Without the flag the app starts empty, which is what a real first launch has
+> always been supposed to look like.
+
 Test it like this, on a **physical** Samsung and a **physical** Xiaomi:
 
 1. Settings › System › Languages › Speech › Offline speech recognition —
@@ -78,17 +91,19 @@ accepted.
 ## 2. Create the Play Console listing
 
 App name, short and full description are in `STORE_LISTING.md`, already within
-Play's limits (29/30, 72/80, 3,884/4,000). Paste them verbatim — the character
+Play's limits — check with `python3 playstore/verify.py` rather than
+trusting a number written in prose; the ones that used to be quoted here were
+wrong. Paste the blocks verbatim — the character
 counts are recorded there and the full description is close to the ceiling.
 
 Assets:
 
 | Play field | File |
 |---|---|
-| Hi-res icon | `assets/icon-512.png` (512×512, 32-bit) |
+| Hi-res icon | `assets/icon-512.png` (512×512, 32-bit) — regenerate with `screenshot-src/make_icon.py` |
 | Feature graphic | `assets/feature-graphic.png` (1024×500 exactly) |
 | Phone screenshots | `assets/screenshots/01.png` … `08.png` (1242×2208) |
-| App icon in-app | already in the bundle, adaptive |
+| App icon in-app | already in the bundle, adaptive — the real gold-on-sage mark since 2026-08-26, not the navy placeholder that shipped before it |
 | Privacy policy | `https://getdailyvox.com/privacy` |
 
 Screenshot order matters. `02.png` is Android's own permission screen and is the
@@ -111,20 +126,10 @@ Both are asserted by CI on every build.
 
 ## 4. The health-data declaration
 
-Four `health.READ_*` permissions put this app in Google's **health apps review
-track**. That is a form plus a wait, not a checkbox, and it is the step most
-likely to add a week you did not plan for.
-
-The manifest side is complete: the API 34+ `VIEW_PERMISSION_USAGE` activity-alias
-with the `HEALTH_PERMISSIONS` category is declared, and so is the `<queries>`
-entry API 33 needs to see Health Connect at all.
-
-What the form wants is the *why*: sleep, HRV, resting heart rate and steps are
-read to correlate a person's own physiology against their own journal, on their
-own device, and none of it leaves the phone. Health Connect access is optional,
-read-only, and not requested until the user turns Body signals on — which the
-Android permission screen shows as "Health, fitness and wellness — Not allowed"
-on a fresh install.
+**Not needed for v1.0.** The app declares no Health Connect permission, so it is
+not in the health-apps review track. Answer "No" wherever the Play forms ask
+about health data. `HEALTH_DECLARATION.md` holds the wording for the day Body
+signals ship with a real opt-in.
 
 ---
 
@@ -154,11 +159,18 @@ as carelessness about exactly the claims this product asks to be trusted on.
 
 ## What is already done
 
-- Release bundle builds clean: 5.2 MB AAB, 4.9 MB universal APK
+- Release bundle builds clean: **5.32 MB AAB, 4.77 MB universal APK**
+  (2026-08-26; the 5.2 / 4.9 quoted here before was stale)
 - No INTERNET permission in the merged manifest, asserted by CI
 - Auto Backup disabled, asserted by CI
-- Nine permissions total, all four health ones unheld until opt-in
-- 36 app unit tests, 51 engine tests, lint clean
+- Five permissions total, none of them health
+- **46 app unit tests, 58 engine tests**, both green (the 36 / 51 quoted here
+  before was stale — run `python3 playstore/verify.py` rather than recalling it)
+- `lintVitalRelease` clean, which is the lint that gates a release build.
+  `lintDebug` **crashes** — `NoClassDefFoundError` inside Compose's own
+  `SuspiciousCompositionLocalModifierReadDetector`. It reproduces on an
+  unmodified tree, so it is toolchain version skew, not this code. Do not
+  report it as "lint clean" without that distinction
 - Eight screenshots and the feature graphic, recaptured 2026-08-25 from the
   release candidate and checked against Play's size limits
 - Store listing copy, data safety answers, content rating answers

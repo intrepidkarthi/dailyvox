@@ -25,6 +25,7 @@ object ShareCard {
     fun render(context: Context, entry: Entry): File {
         val bmp = Bitmap.createBitmap(W, H, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
+        BrandFaces.init(context)
 
         c.drawColor(Color.parseColor("#0F140F"))
         // A faint scatter of stars. Seeded from the entry's own timestamp so the
@@ -54,11 +55,15 @@ object ShareCard {
 
         val body = Paint().apply {
             isAntiAlias = true; color = Color.parseColor("#F2EFE9")
-            textSize = 46f; typeface = Typeface.create(Typeface.SERIF, Typeface.NORMAL)
+            // Inter, not the platform SERIF (spec §8.2: no Roboto, no system
+            // faces). The entry is the body text of the card, so it gets the
+            // body face; the date and footer are data, so they get DM Mono.
+            textSize = 46f; typeface = BrandFaces.inter(400)
         }
         val meta = Paint().apply {
             isAntiAlias = true; color = Color.parseColor("#99F2EFE9")
             textSize = 26f; textAlign = Paint.Align.CENTER
+            typeface = BrandFaces.mono()
         }
 
         val lines = wrap(entry.text, body, W - 200f).take(9)
