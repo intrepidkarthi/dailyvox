@@ -391,7 +391,10 @@ fun SpeakScreen(
                     // chip is drawn at the design's size and would be a ~20dp
                     // target on its own — under the 48dp §8.6 asks for, and the
                     // one Play's pre-launch report measures.
-                    Box(
+                    //
+                    // Only when there is audio: a typed entry showed "▶ 0:00",
+                    // a play button with nothing behind it.
+                    if (!e.audioPath.isNullOrBlank()) Box(
                         Modifier
                             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                             .clickable {

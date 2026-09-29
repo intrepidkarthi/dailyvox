@@ -326,6 +326,7 @@ fun SettingsScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
                     value = draft, onValueChange = { draft = it },
+                    keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                     placeholder = { Text("Add a name", fontSize = 12.sp) },
                     singleLine = true, modifier = Modifier.weight(1f),
                 )

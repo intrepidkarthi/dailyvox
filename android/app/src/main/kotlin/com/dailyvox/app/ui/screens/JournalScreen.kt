@@ -94,8 +94,13 @@ fun JournalScreen(
                  color = MaterialTheme.colorScheme.onBackground)
             // Queues today's recordings back to back. Green, because playing is
             // an action — the pill is the one green thing on this screen.
+            // Today's entries that have a recording to play. Typed entries have
+            // none, and a "Play today · 0:00" pill for them played nothing.
+            // Local day, not UTC day: in India the UTC boundary falls at 05:30.
+            val today = java.time.LocalDate.now()
             val todays = entries.filter {
-                it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+                !it.audioPath.isNullOrBlank() && java.time.Instant.ofEpochMilli(it.createdAt)
+                    .atZone(java.time.ZoneId.systemDefault()).toLocalDate() == today
             }
             if (todays.isNotEmpty()) {
                 val total = todays.sumOf { it.durationSec }
@@ -152,6 +157,7 @@ fun JournalScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicTextField(
                     value = query, onValueChange = onQuery,
+                    keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                     singleLine = true,
                     textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
                     cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.secondary),
@@ -296,7 +302,7 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                 // of every card is gone: the spec reserves it for starred entries,
                 // Entry has no starred field, and on every row it meant nothing.
                 MonoLabel(
-                    "${dateLabel(e.createdAt).uppercase()} · ${durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
+                    "${dateLabel(e.createdAt).uppercase()} · ${if (e.audioPath.isNullOrBlank() && e.durationSec == 0) "TYPED" else durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(

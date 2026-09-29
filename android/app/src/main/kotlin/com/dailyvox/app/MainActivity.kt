@@ -52,6 +52,21 @@ class MainActivity : FragmentActivity() {
             (if (night) com.dailyvox.app.ui.theme.NightBackground else com.dailyvox.app.ui.theme.DayBackground).toArgb()))
         setContent { DailyVoxApp(vm, this) }
     }
+
+    /**
+     * The splash is drawn by the system before any of this code runs, so it
+     * cannot follow the Sunset theme on its own: after dark it flashed cream and
+     * then cut to navy. The platform remembers a splash theme for the NEXT
+     * launch, so leave it set to whatever the app looks like right now.
+     */
+    override fun onStop() {
+        super.onStop()
+        val theme = getSharedPreferences("dailyvox", MODE_PRIVATE).getString("theme", "SUNSET")
+        val night = theme == "DARK" || (theme == "SUNSET" && com.dailyvox.app.system.SolarClock.isAfterSunset())
+        runCatching {
+            splashScreen.setSplashScreenTheme(if (night) R.style.Theme_DailyVox_Night else R.style.Theme_DailyVox)
+        }
+    }
 }
 
 @Composable
@@ -202,14 +217,19 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     DailyVoxTheme(darkTheme = dark) {
         if (!onboarded) {
-            OnboardingScreen(onDone = { text, secs, path ->
+            OnboardingScreen(onDone = { text, secs, path, remind ->
                 // The first star is persisted as a REAL entry, exactly as iOS
                 // does — so "that star is yours" is true and the app opens onto
                 // a sky that already holds something.
                 // Audio with no words is still the user's first entry: the
                 // recogniser failed, they did not. It stays, untranscribed.
                 if (text.isNotBlank() || path != null) vm.add(text, secs, path)
-                prefs.edit().putBoolean("onboarded", true).apply()
+                // The claim beat asked, and already requested the notification
+                // permission if the answer was yes -- so the bootstrap below has
+                // nothing left to ask. A no (or a denied dialog) turns it off.
+                reminderOn = remind
+                prefs.edit().putBoolean("onboarded", true)
+                    .putBoolean(com.dailyvox.app.system.Reminders.PREF_ENABLED, remind).apply()
                 onboarded = true
             })
             return@DailyVoxTheme

@@ -299,6 +299,7 @@ fun AskScreen(
         ) {
             BasicTextField(
                 value = typed,
+                keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                 onValueChange = { typed = it },
                 singleLine = true,
                 textStyle = TextStyle(fontSize = 14.sp, color = scheme.onSurface),

@@ -4,6 +4,7 @@ import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -53,7 +55,7 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun OnboardingScreen(
-    onDone: (text: String, seconds: Int, audioPath: String?) -> Unit,
+    onDone: (text: String, seconds: Int, audioPath: String?, remind: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var beat by rememberSaveable { mutableIntStateOf(0) }
@@ -61,20 +63,32 @@ fun OnboardingScreen(
     var seconds by rememberSaveable { mutableIntStateOf(0) }
     var audioPath by rememberSaveable { mutableStateOf<String?>(null) }
 
-    when (beat) {
-        0 -> LedgerBeat(onNext = { beat = 1 })
-        1 -> SpeakBeat(
-            onCaptured = { t, s, p ->
-                transcript = t; seconds = s; audioPath = p; beat = 2
-            },
-            // Skipping the recording must not skip the welcome. Beat 3 still
-            // runs, just with the "your sky is ready" copy instead of a quote.
-            onSkip = { beat = 2 },
-        )
-        else -> ClaimBeat(
-            transcript = transcript,
-            onEnter = { onDone(transcript, seconds, audioPath) },
-        )
+    // Back steps back a beat. Without this it left the app from beat two, and
+    // a cold start then began the whole onboarding again.
+    androidx.activity.compose.BackHandler(enabled = beat in 1..2) { beat -= 1 }
+
+    // The four beats iOS runs: ledger, invite, speak, claim.
+    androidx.compose.animation.Crossfade(
+        targetState = beat,
+        animationSpec = tween(450),
+        label = "beat",
+    ) { b ->
+        when (b) {
+            0 -> LedgerBeat(onNext = { beat = 1 })
+            1 -> InviteBeat(onNext = { beat = 2 })
+            2 -> SpeakBeat(
+                onCaptured = { t, s, p ->
+                    transcript = t; seconds = s; audioPath = p; beat = 3
+                },
+                // Skipping the recording must not skip the welcome. The claim
+                // still runs, with "your sky is ready" instead of a quote.
+                onSkip = { beat = 3 },
+            )
+            else -> ClaimBeat(
+                transcript = transcript,
+                onEnter = { remind -> onDone(transcript, seconds, audioPath, remind) },
+            )
+        }
     }
 }
 
@@ -82,20 +96,13 @@ fun OnboardingScreen(
 
 @Composable
 private fun LedgerBeat(onNext: () -> Unit) {
-    val context = LocalContext.current
-    // Continue either way. A journal that refuses to open because you said no
-    // to the microphone is punishing caution, and caution is who this is for --
-    // which is also why a permanent denial walks on rather than diverting to
-    // app settings the way the Speak button does.
-    val mic = com.dailyvox.app.system.rememberMicPermission { onNext() }
-
     Column(
         Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 26.dp, vertical = 28.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        MonoLabel("01 / 03 · permission")
+        MonoLabel("01 / 04 · permission")
         Spacer(Modifier.height(18.dp))
         Text(
             "Nothing you say leaves this phone.",
@@ -114,7 +121,11 @@ private fun LedgerBeat(onNext: () -> Unit) {
         Spacer(Modifier.height(28.dp))
         LedgerRow("Microphone", "required", MaterialTheme.colorScheme.secondary)
         Spacer(Modifier.height(8.dp))
+        LedgerRow("Speech recognition", "on device", MaterialTheme.colorScheme.tertiary)
+        Spacer(Modifier.height(8.dp))
         LedgerRow("Internet", "not requested", MaterialTheme.colorScheme.tertiary)
+        Spacer(Modifier.height(8.dp))
+        LedgerRow("Sent to DailyVox", "nothing, ever", MaterialTheme.colorScheme.tertiary)
 
         Spacer(Modifier.height(18.dp))
         // The proof card (B1). Navy on cream — the one dark object on the
@@ -124,10 +135,14 @@ private fun LedgerBeat(onNext: () -> Unit) {
         // difference between telling someone the app works offline and handing
         // them a way to check in ten seconds, and the design package calls this
         // "the site's strongest argument, currently absent from the app".
+        // At night the page itself is navy, so the card lifts to the night
+        // surface with a gold hairline -- navy on navy made it vanish.
+        val nightPage = MaterialTheme.colorScheme.background == NightBackground
         Row(
             Modifier.fillMaxWidth().widthIn(max = 520.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(NightBackground)
+                .background(if (nightPage) MaterialTheme.colorScheme.surface else NightBackground)
+                .then(if (nightPage) Modifier.border(1.dp, StarGold.copy(alpha = 0.28f), RoundedCornerShape(20.dp)) else Modifier)
                 .padding(16.dp),
             verticalAlignment = Alignment.Top,
         ) {
@@ -146,7 +161,10 @@ private fun LedgerBeat(onNext: () -> Unit) {
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
-                    "Turn the radios off before you speak your first entry. Everything still works — the transcript, the mood, the star. That is the whole product, demonstrated in ten seconds.",
+                    // Not "before your first entry", as iOS says: an Android
+                    // phone may still need its offline speech pack, and that
+                    // download is the one step that needs a connection.
+                    "Turn the radios off and speak. The transcript, the mood, the star — all of it still happens, on the phone. If your phone needs its offline speech pack first, DailyVox will offer it.",
                     fontSize = 13.sp, lineHeight = 19.sp,
                     color = NightText.copy(alpha = 0.72f),
                 )
@@ -154,18 +172,72 @@ private fun LedgerBeat(onNext: () -> Unit) {
         }
 
         Spacer(Modifier.height(24.dp))
-        // One green CTA. B1 has exactly one thing to do, and "Allow microphone"
-        // named the permission dialog rather than the thing on the other side
-        // of it.
-        FilledAction("Speak your first star") {
-            if (mic.granted || mic.permanentlyDenied) onNext() else mic.request()
-        }
-        Spacer(Modifier.height(14.dp))
-        QuietAction("See how it works first", onNext)
+        // One action. There used to be a second, "See how it works first",
+        // which showed nothing: it skipped the microphone request and landed on
+        // a recording screen with no way to grant it. The ask now lives on the
+        // invite beat, where iOS puts it.
+        FilledAction("Continue", onNext)
     }
 }
 
 /* ---------------------------------------------------------------- beat 2 */
+
+@Composable
+private fun InviteBeat(onNext: () -> Unit) {
+    // Continue either way. A journal that refuses to open because you said no
+    // to the microphone is punishing caution, and caution is who this is for.
+    val mic = com.dailyvox.app.system.rememberMicPermission { onNext() }
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { shown = true }
+    val appear by animateFloatAsState(if (shown) 1f else 0f, tween(900, delayMillis = 150), label = "appear")
+
+    Column(
+        Modifier.fillMaxSize().padding(horizontal = 30.dp, vertical = 28.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(Modifier.weight(1f))
+        MonoLabel("02 / 04 · your voice")
+        Spacer(Modifier.height(26.dp))
+        // Gold rings and a drawn waveform: iOS's invite mark, geometric per §8.9.
+        Canvas(Modifier.size(140.dp)) {
+            val c = center
+            drawCircle(StarGold.copy(alpha = 0.14f * appear), radius = size.minDimension / 2 * (0.7f + 0.3f * appear))
+            drawCircle(StarGold.copy(alpha = 0.22f * appear), radius = size.minDimension * 0.30f)
+            val bars = listOf(0.35f, 0.7f, 1f, 0.6f, 0.85f, 0.45f)
+            val gap = size.minDimension * 0.075f
+            val x0 = c.x - gap * (bars.size - 1) / 2
+            bars.forEachIndexed { i, h ->
+                val half = size.minDimension * 0.13f * h
+                drawLine(StarGold, Offset(x0 + i * gap, c.y - half), Offset(x0 + i * gap, c.y + half),
+                         strokeWidth = size.minDimension * 0.035f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            }
+        }
+        Spacer(Modifier.height(30.dp))
+        Text(
+            "Your sky starts\nwith your voice",
+            style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.graphicsLayer { alpha = appear; translationY = (1 - appear) * 40f },
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            "No forms, no sign-up. Just talk about your day, and watch your voice become the first star in a sky only you can see.",
+            fontSize = 16.sp, lineHeight = 25.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(max = 440.dp).graphicsLayer { alpha = appear },
+        )
+        Spacer(Modifier.weight(1.4f))
+        // The microphone is asked for here, on the calm screen, so the system
+        // dialog never interrupts the recording moment itself (as on iOS).
+        FilledAction("I'm ready") {
+            if (mic.granted || mic.permanentlyDenied) onNext() else mic.request()
+        }
+    }
+}
+
+/* ---------------------------------------------------------------- beat 3 */
 
 private enum class Phase { IDLE, RECORDING, PROCESSING, BORN }
 
@@ -192,7 +264,13 @@ private fun SpeakBeat(
 
     // Re-read when the app comes back to the foreground, so granting the
     // permission in Settings mid-onboarding is noticed here.
-    val granted = com.dailyvox.app.system.rememberMicPermission().granted
+    val mic = com.dailyvox.app.system.rememberMicPermission()
+    val granted = mic.granted
+    // iOS's "I can't talk right now": the first entry, typed. Someone on a
+    // train or next to a sleeping partner should not have to skip the moment
+    // the whole onboarding is built around.
+    var typing by rememberSaveable { mutableStateOf(false) }
+    var typed by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(state) {
         when (state) {
@@ -232,11 +310,11 @@ private fun SpeakBeat(
     DisposableEffect(Unit) { onDispose { recorder.discard(); capture.release() } }
 
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 26.dp),
+        Modifier.fillMaxSize().imePadding().padding(horizontal = 26.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MonoLabel("02 / 03 · your first star")
+        MonoLabel("03 / 04 · your first star")
         Spacer(Modifier.height(18.dp))
         Text(
             when (phase) {
@@ -249,7 +327,7 @@ private fun SpeakBeat(
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(12.dp))
-        Text(
+        if (!typing) Text(
             when (phase) {
                 Phase.IDLE -> "Speak, don't type. Forty-two seconds is plenty — and it stays on this phone."
                 Phase.RECORDING -> "Listening. Take as long as you like."
@@ -262,15 +340,51 @@ private fun SpeakBeat(
             modifier = Modifier.widthIn(max = 420.dp),
         )
 
-        Spacer(Modifier.height(34.dp))
-        VoiceStar(level = level, phase = phase)
-        Spacer(Modifier.height(34.dp))
+        // The star makes way for the keyboard when typing.
+        if (!typing) {
+            Spacer(Modifier.height(34.dp))
+            VoiceStar(level = level, phase = phase)
+        }
+        Spacer(Modifier.height(if (typing) 22.dp else 34.dp))
 
         when {
-            !granted -> QuietAction("Continue without the microphone", onSkip)
+            typing -> {
+                androidx.compose.material3.OutlinedTextField(
+                    value = typed,
+                    keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
+                    onValueChange = { typed = it },
+                    placeholder = { Text("How was your day, really?") },
+                    minLines = 3,
+                    shape = RoundedCornerShape(18.dp),
+                    modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp),
+                )
+                Spacer(Modifier.height(8.dp))
+                MonoLabel("stored only on this phone")
+                Spacer(Modifier.height(16.dp))
+                FilledAction("Save my first star") {
+                    if (typed.isNotBlank()) onCaptured(typed.trim(), 0, null)
+                }
+                Spacer(Modifier.height(8.dp))
+                QuietAction("Back to speaking") { typing = false }
+            }
+            // Declined on the invite beat. Offer it again, rather than a screen
+            // whose only way forward is to give up on the first entry.
+            !granted -> {
+                FilledAction(if (mic.permanentlyDenied) "Allow the microphone in Settings" else "Allow the microphone") {
+                    if (mic.permanentlyDenied) context.startActivity(
+                        android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            android.net.Uri.fromParts("package", context.packageName, null))
+                            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    ) else mic.request()
+                }
+                Spacer(Modifier.height(8.dp))
+                QuietAction("I can't talk right now") { typing = true }
+                QuietAction("Skip for now", onSkip)
+            }
             phase == Phase.IDLE -> {
                 FilledAction("Start speaking") { recorder.start(); capture.start() }
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
+                QuietAction("I can't talk right now") { typing = true }
                 QuietAction("Skip for now", onSkip)
             }
             phase == Phase.RECORDING -> {
@@ -365,14 +479,36 @@ private fun VoiceStar(level: Float, phase: Phase) {
 /* ---------------------------------------------------------------- beat 3 */
 
 @Composable
-private fun ClaimBeat(transcript: String, onEnter: () -> Unit) {
+private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
+    val context = LocalContext.current
+    // Ticked by default, as on iOS, but a choice the user can see and untick.
+    // The reminder used to switch itself on and the notification dialog then
+    // appeared over the app after unlock, with nothing on screen to explain it.
+    var remind by rememberSaveable { mutableStateOf(true) }
+    val askNotifications = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted -> onEnter(granted) }
+    var shown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { shown = true }
+    val appear by animateFloatAsState(
+        if (shown) 1f else 0f, spring(dampingRatio = 0.7f, stiffness = Spring.StiffnessLow), label = "claim",
+    )
+
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 26.dp),
-        verticalArrangement = Arrangement.Center,
+        Modifier.fillMaxSize().padding(horizontal = 26.dp, vertical = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MonoLabel("03 / 03 · yours")
-        Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.weight(1f))
+        MonoLabel("04 / 04 · yours")
+        Spacer(Modifier.height(22.dp))
+        // The star, landed: a gold point with a white core in a soft halo.
+        Canvas(Modifier.size(110.dp).graphicsLayer { scaleX = 0.6f + 0.4f * appear; scaleY = scaleX; alpha = appear }) {
+            drawCircle(StarGold.copy(alpha = 0.14f))
+            drawCircle(StarGold.copy(alpha = 0.35f), radius = size.minDimension * 0.17f)
+            drawCircle(StarGold, radius = size.minDimension * 0.11f)
+            drawCircle(Color.White, radius = size.minDimension * 0.036f)
+        }
+        Spacer(Modifier.height(24.dp))
         Text(
             if (transcript.isBlank()) "Your sky is ready." else "That star is yours.",
             style = MaterialTheme.typography.displayMedium,
@@ -380,66 +516,73 @@ private fun ClaimBeat(transcript: String, onEnter: () -> Unit) {
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(16.dp))
-
         if (transcript.isNotBlank()) {
             Text(
-                "“$transcript”",
-                fontSize = 16.sp, lineHeight = 26.sp,
+                "\u201C$transcript\u201D",
+                fontSize = 16.sp, lineHeight = 25.sp,
+                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
+                maxLines = 5,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 modifier = Modifier
                     .widthIn(max = 460.dp)
-                    .clip(RoundedCornerShape(22.dp))
+                    .clip(RoundedCornerShape(18.dp))
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(20.dp),
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
             )
             Spacer(Modifier.height(16.dp))
         }
-
         Text(
-            if (transcript.isBlank())
-                "Speak whenever you are ready. Nothing is required of you tonight."
-            else
-                "It is already saved, on this phone only. Nothing was uploaded to write it down.",
-            fontSize = 14.sp, lineHeight = 22.sp,
+            if (transcript.isBlank()) "Speak whenever you are ready. Nothing is required of you tonight."
+            else "It lives on your phone, nowhere else.\nSpeak again tomorrow, and your sky grows.",
+            fontSize = 15.sp, lineHeight = 23.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.widthIn(max = 420.dp),
         )
+        Spacer(Modifier.weight(1f))
 
-        Spacer(Modifier.height(26.dp))
-        // Widget priming, from §4.1 of the design package. Mentioned once, here,
-        // rather than as a prompt that interrupts someone later.
         Row(
             Modifier
-                .widthIn(max = 460.dp)
-                .clip(RoundedCornerShape(20.dp))
+                .fillMaxWidth().widthIn(max = 460.dp)
+                .clip(RoundedCornerShape(18.dp))
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp),
+                .clickable { remind = !remind }
+                .padding(horizontal = 18.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            val on = MaterialTheme.colorScheme.primary
+            val off = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f)
             Canvas(Modifier.size(26.dp)) {
-                val c = center; val s = size.minDimension / 2.4f
-                val p = Path().apply {
-                    moveTo(c.x, c.y - s)
-                    cubicTo(c.x + s * .1f, c.y - s * .35f, c.x + s * .35f, c.y - s * .1f, c.x + s, c.y)
-                    cubicTo(c.x + s * .35f, c.y + s * .1f, c.x + s * .1f, c.y + s * .35f, c.x, c.y + s)
-                    cubicTo(c.x - s * .1f, c.y + s * .35f, c.x - s * .35f, c.y + s * .1f, c.x - s, c.y)
-                    cubicTo(c.x - s * .35f, c.y - s * .1f, c.x - s * .1f, c.y - s * .35f, c.x, c.y - s)
-                    close()
-                }
-                drawPath(p, StarGold.copy(alpha = 0.5f), style = Stroke(1.4f))
+                if (remind) {
+                    drawCircle(on)
+                    val p = Path().apply {
+                        moveTo(size.width * 0.28f, size.height * 0.52f)
+                        lineTo(size.width * 0.44f, size.height * 0.68f)
+                        lineTo(size.width * 0.73f, size.height * 0.36f)
+                    }
+                    drawPath(p, Color.White, style = Stroke(size.width * 0.1f, cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                        join = androidx.compose.ui.graphics.StrokeJoin.Round))
+                } else drawCircle(off, style = Stroke(size.width * 0.08f))
             }
-            Spacer(Modifier.width(12.dp))
-            Text(
-                "Add the DailyVox widget to your home screen and tonight's star is one tap away. It never shows what you wrote.",
-                fontSize = 13.sp, lineHeight = 19.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Spacer(Modifier.width(14.dp))
+            Column {
+                Text("Remind me each evening", fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
+                     color = MaterialTheme.colorScheme.onSurface)
+                Text("One nudge at 9 pm. Change it any time in Settings.", fontSize = 13.sp,
+                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
-
-        Spacer(Modifier.height(26.dp))
-        FilledAction(if (transcript.isBlank()) "Enter" else "Enter your sky", onEnter)
+        Spacer(Modifier.height(14.dp))
+        FilledAction("Enter my sky") {
+            val needsAsk = remind && android.os.Build.VERSION.SDK_INT >= 33 &&
+                androidx.core.content.ContextCompat.checkSelfPermission(
+                    context, android.Manifest.permission.POST_NOTIFICATIONS
+                ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            if (needsAsk) askNotifications.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            else onEnter(remind)
+        }
     }
 }
 

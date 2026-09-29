@@ -106,7 +106,7 @@ fun EntryDetailScreen(
                 Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
                      fontSize = 21.sp, fontWeight = FontWeight.ExtraBold, fontFamily = Nunito,
                      color = MaterialTheme.colorScheme.onBackground)
-                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
+                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }
             // Read aloud and Delete live here rather than in the action row.
             // Neither is what you came to the entry to do, and Delete sitting at
@@ -244,9 +244,12 @@ fun EntryDetailScreen(
                 Spacer(Modifier.height(10.dp))
                 FiledRow("Steps", "%,d today".format(it), MaterialTheme.colorScheme.tertiary)
             }
-            Spacer(Modifier.height(10.dp))
-            FiledRow("Pace", "${(entry.wordCount * 60 / entry.durationSec.coerceAtLeast(1))} wpm",
-                     MaterialTheme.colorScheme.onSurfaceVariant)
+            // Pace is a property of speech; a typed entry has none.
+            if (entry.durationSec > 0) {
+                Spacer(Modifier.height(10.dp))
+                FiledRow("Pace", "${(entry.wordCount * 60 / entry.durationSec)} wpm",
+                         MaterialTheme.colorScheme.onSurfaceVariant)
+            }
 
             // Prosody, only when the recording could actually be analysed. An
             // absent row is honest; a row of zeroes would read as "you spoke in
@@ -371,6 +374,7 @@ private fun EntryTextEditor(
         text = {
             androidx.compose.material3.OutlinedTextField(
                 value = draft,
+                keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                 onValueChange = { draft = it },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 5,
