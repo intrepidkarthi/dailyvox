@@ -80,8 +80,8 @@ FRAMES = [
          sub="Mood, people and pace — and your own word for it.",
          stk=None),
     dict(img="07-onboarding-ledger.png", c=NIGHT, kick="Before your first word",
-         head='Nothing you say<br><mark>leaves this phone</mark>.',
-         sub="No account. No cloud. Works in airplane mode.",
+         head='The permission list<br><mark>comes first</mark>.',
+         sub="Before you record a word: what it needs, and what it never sends.",
          stk=None),
 ]
 
