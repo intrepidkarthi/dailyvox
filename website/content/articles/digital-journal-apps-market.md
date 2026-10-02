@@ -31,7 +31,7 @@ I built DailyVox to address privacy at the hardware level. It is a voice-first j
 
 DailyVox runs entirely on your phone. It uses Apple's native frameworks to transcribe spoken audio and analyze sentiment locally. A built-in Digital Twin models emotional patterns directly on the device without sending audio files or telemetry to any external endpoint. The App Store privacy label reads "Data Not Collected". It operates fully in airplane mode.
 
-Here is the honest limitation. DailyVox is strictly iPhone-only. It has no web app, no Android build, and no cross-platform database sync. If you rely on a Windows desktop or an Android tablet for daily writing, DailyVox will not work for you.
+Here is the honest limitation. DailyVox runs on iPhone and Android phones only. It has no web app, no desktop app, and no sync between iPhone and Android. If you rely on a Windows desktop or a tablet for daily writing, DailyVox will not work for you.
 
 ## System Architectures and Privacy Boundaries
 

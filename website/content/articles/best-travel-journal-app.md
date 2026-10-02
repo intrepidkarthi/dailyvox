@@ -45,7 +45,7 @@ DailyVox is an iPhone app built around your voice. You open it, tap record, and 
 
 Everything runs locally on your phone. It requires no cellular connection, no accounts, and no servers. It works in airplane mode at 35,000 feet. The App Store privacy label states "Data Not Collected." It also includes a Digital Twin feature that models your emotional tone and reflection habits locally over time. DailyVox is free and open-source under the MIT license.
 
-The honest limitation: DailyVox has zero photo support. None. If you want a visual scrapbook of café tables and museum tickets, DailyVox is the wrong tool. It is strictly text and voice. It also has no Android or web version.
+The honest limitation: DailyVox has zero photo support. None. If you want a visual scrapbook of café tables and museum tickets, DailyVox is the wrong tool. It is strictly text and voice. It runs on iPhone and Android, but has no web version.
 
 ### Daylio: Micro-Tracking for Busy Trips
 

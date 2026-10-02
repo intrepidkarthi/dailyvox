@@ -2,19 +2,26 @@
 
 All notable changes to DailyVox are documented here.
 
-## [Unreleased] — Android
+## [Android 1.0] — 2026-10-02
 
-The Android app is **in development and not released**. There is no Play Store
-listing and no announced date. This section tracks it so the work is visible;
-nothing here has shipped to a user.
+The Android app is **released on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)**
+for Android 13 or newer. Android has its own version line; this is its first
+release, not a counterpart to any iOS version number.
 
 ### Added
-- Native Kotlin / Jetpack Compose app, feature-complete against iOS v1.10 in
-  development builds: record, transcribe, detect names, score mood, file, search,
-  Twin constellation, Ask, Insights, entry detail with audio playback, PDF and
-  JSON export, encrypted backup, photo attachments, self-labels, read-aloud,
-  daily reminder, home-screen widget, Quick Settings tile, app shortcuts,
-  biometric lock, prosody, and Health Connect body signals.
+- Native Kotlin / Jetpack Compose app: record, transcribe on-device, detect
+  names, score mood, file, search by typing or by voice, Twin constellation, Ask,
+  Insights, entry detail with audio playback, PDF / JSON / Markdown / CSV export,
+  encrypted backup, self-labels, read-aloud, daily reminder, home-screen widget,
+  Quick Settings tile, app shortcuts, app lock, and prosody.
+- Onboarding in the same four steps as iOS. The microphone is asked for on its
+  own step, and "I can't talk right now" lets the first entry be typed.
+- Typed entries show as typed, with no empty audio player.
+- If the phone has no offline speech pack, the app offers to download it. The
+  phone's speech service fetches the pack; DailyVox still holds no internet
+  permission.
+- The app lock re-locks after 30 seconds out of sight.
+- No health permissions in 1.0. No screen used them, so none are requested.
 - Full VADER lexicon bundled as an asset (7,517 entries, 30 KB deflated), so the
   scorer is the one the measured r = +0.663 was earned on rather than a subset.
 - Prosody extraction: autocorrelation pitch, RMS energy, pause structure, and
@@ -39,13 +46,20 @@ nothing here has shipped to a user.
 - **The recogniser failed in silence.** `onError` discarded the error code, so a
   missing offline language pack was indistinguishable from successfully
   recording silence, and the record button appeared permanently broken with no
-  explanation. The app cannot fetch that pack — it holds no network permission —
-  so it now names the Android setting that fixes it.
+  explanation. The error is now shown, with an offer to have the phone's speech
+  service download the pack (the app itself holds no network permission).
+- **Nothing a user says is lost.** A recogniser that never started, leaving
+  Speak while an entry was being filed, and an untranscribed first recording in
+  onboarding could each lose a recording; each now keeps it. A database upgrade
+  that could crash-loop an early install now checks before adding columns.
+- Brand fonts were rendering at their thinnest weight; titles now draw at the
+  weight intended.
 
-### Known unverified
-- The entity graph depends on Android's speech recogniser capitalising names.
-  That has not been tested across a broad range of physical devices, and it is
-  why there is no release date.
+### Known limitations
+- The names in the Twin depend on the phone's speech recogniser capitalising
+  them.
+- English only. No on-device LLM chat, no photo attachments and no health data
+  in 1.0.
 
 ## [1.11.0] — 2026-08-24
 

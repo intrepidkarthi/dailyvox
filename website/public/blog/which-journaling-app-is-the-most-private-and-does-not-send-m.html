@@ -75,9 +75,9 @@ a{color:var(--terra)}
 <p>Everything runs locally using Apple's frameworks. There are no servers. There are no user accounts. There is no data collection. The App Store privacy label reads "Data Not Collected" because I physically cannot collect what I cannot see. You can turn on airplane mode, and the app still works.</p>
 <p>If you want absolute privacy, you need an architecture that makes data extraction impossible. Here is how DailyVox and other popular journaling apps handle your privacy.</p>
 <h2>How DailyVox Works</h2>
-<p>The app is iPhone-only. I did not build a web version or an Android app because syncing across platforms forces you to use cloud databases.</p>
+<p>The app runs on iPhone and Android. I did not build a web version or any sync between iPhone and Android because syncing across platforms forces you to use cloud databases. To move phones, you carry an encrypted backup file.</p>
 <p>Inside the app, a local "Digital Twin" models your emotional patterns right on your phone. This processing happens in your hand, not in a server farm. Your emotional history stays yours.</p>
-<p>The honest limitation is that you cannot access your entries from a web browser or an iPad. If you lose your iPhone and forgot to back it up, your journal is gone. That is the trade-off for true zero-knowledge local privacy.</p>
+<p>The honest limitation is that you cannot access your entries from a web browser or an iPad. If you lose your phone and forgot to back it up, your journal is gone. That is the trade-off for true zero-knowledge local privacy.</p>
 <h2>How Alternatives Handle Privacy</h2>
 <p>You have choices. Not all of them prioritize local-only storage, but understanding them helps you decide.</p>
 <p>### Day One Day One is the gold standard for features. It includes end-to-end encryption for its cloud sync. Your entries are encrypted on your device before they hit their servers. However, it still uses the cloud. You need an account, and your data travels across the internet unless you strictly use local backups.</p>
@@ -89,7 +89,7 @@ a{color:var(--terra)}
 <p>### Can I use DailyVox without an internet connection? Yes. The app works entirely offline in airplane mode because all processing and storage happen on your iPhone.</p>
 <p>### What happens if I lose my phone? Your data stays on your device. If you do not have a local backup of your phone, your entries are lost. I do not store backups on a server for you.</p>
 <p>### Is DailyVox really free? Yes. It is free and open-source under the MIT license. You can inspect the code yourself.</p>
-<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Get it on Google Play</a></div>
 <div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
 </main>
 <footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.<div class="container"><p class="agent-note"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p></div>

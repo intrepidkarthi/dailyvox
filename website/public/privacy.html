@@ -271,7 +271,7 @@
         </ul>
 
         <h2>Where your data lives</h2>
-        <p>All data lives <strong>on your iPhone or iPad</strong>, in the app's sandboxed storage protected by iOS. The app's database is encrypted at rest with iOS Data Protection. When the device is locked, the data is mathematically inaccessible without your passcode or biometric.</p>
+        <p>On iPhone and iPad, all data lives <strong>on your device</strong>, in the app's sandboxed storage protected by iOS. The app's database is encrypted at rest with iOS Data Protection. When the device is locked, the data is mathematically inaccessible without your passcode or biometric.</p>
 
         <h2>Optional iCloud sync</h2>
         <p>If you enable iCloud sync in <strong>Settings → iCloud Sync</strong>, your entries sync between your own Apple devices via Apple's CloudKit. Your data is encrypted with your Apple ID — DailyVox cannot read it, and neither can Apple. This is end-to-end encrypted between your devices. iCloud sync is <strong>optional</strong> and disabled by default. The app works without it.</p>
@@ -308,6 +308,19 @@
         <h2>Photo storage</h2>
         <p>Photos you attach to entries are stored in your app's sandboxed storage with the rest of your journal data. They are never uploaded to a server. If you enable iCloud sync, photo attachments sync via Apple CloudKit alongside your text entries.</p>
 
+        <h2>On Android</h2>
+        <p>DailyVox for Android (on <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>, Android 13 or newer) follows the same rule by a different route, because Android does not provide Apple's frameworks.</p>
+        <ul>
+          <li><strong>No internet permission.</strong> The app does not request Android's <code>INTERNET</code> permission, so it cannot open a network connection at all. You can check this yourself in <strong>Settings › Apps › DailyVox › Permissions</strong>.</li>
+          <li><strong>Permissions it does request:</strong> Microphone (to record, only while you are recording), Notifications (the daily reminder, which you can switch off, and an ongoing notice while a recording is in progress), and Biometric (only for the optional app lock; the app receives a yes or no, never your fingerprint or face). It also declares vibration for haptics. It requests no health, location, contacts or storage permission.</li>
+          <li><strong>Transcription</strong> uses your phone's own on-device speech recogniser, and the app only ever asks for on-device recognition. If your phone does not yet have the offline speech pack for your language, the app can ask your phone's speech service to download it. That download is made by the speech service, not by DailyVox, and it carries a language code, never your voice or your journal.</li>
+          <li><strong>Mood, names and the Twin</strong> are computed in the app itself, on the phone: a bundled sentiment lexicon for mood and an on-device heuristic for names. No model is downloaded and nothing is sent anywhere.</li>
+          <li><strong>Where it lives:</strong> entries, recordings and everything the Twin learns are stored in the app's private storage, protected by Android's file-based encryption.</li>
+          <li><strong>No automatic cloud backup.</strong> Android Auto Backup is switched off for DailyVox, so Android does not copy your journal to Google Drive. There is no sync between devices; to move phones, use an encrypted backup (below), which also opens on an iPhone.</li>
+          <li><strong>Your keyboard is its own app.</strong> When you type into DailyVox, text passes through the keyboard you chose. A voice-typing key on that keyboard belongs to the keyboard, not to DailyVox; the app asks keyboards to hide it, but some ignore the request. To keep speech on the device, use DailyVox's own record buttons.</li>
+          <li>Android v1.0 has no photo attachments and reads no health data.</li>
+        </ul>
+
         <h2>Data retention</h2>
         <p>Your data stays on your device until you delete it. There is no automatic retention policy — entries from your first day are kept identically to entries from yesterday. Delete individual entries via swipe-left in the Timeline view. To remove all data, uninstall the app. For iCloud data, manage it through your device's iCloud settings.</p>
 
@@ -320,8 +333,11 @@
         <h2>App Store privacy label</h2>
         <p>Apple's App Store privacy nutrition label for DailyVox reads <strong>"Data Not Collected."</strong> This is verified by Apple as part of the App Store review process and matches the architectural reality described above.</p>
 
+        <h2>Google Play Data safety</h2>
+        <p>The Google Play Data safety section for DailyVox declares that the app <strong>collects no data and shares no data</strong>. That matches the permission list above, which you can read in Android's own settings.</p>
+
         <h2>Changes to this policy</h2>
-        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-08-22 (noted that you can put sleep on a share card yourself, and what that card will and will not show).</p>
+        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-10-02 (added DailyVox for Android: its permissions, on-device speech and the speech-pack download, no Auto Backup, and the Google Play Data safety declaration).</p>
 
         <h2>Contact</h2>
         <p>Questions about privacy? Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> — Karthikeyan reads every message personally.</p>
@@ -344,6 +360,7 @@
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
         <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>

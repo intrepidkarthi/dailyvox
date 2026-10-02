@@ -46,7 +46,7 @@ DailyVox is open source under the MIT license. Everything runs on your iPhone. S
 
 The App Store privacy label for DailyVox reads "Data Not Collected." It works with your phone set to airplane mode. There are no accounts, no analytics libraries, and no external servers. It includes an on-device Digital Twin that models your emotional patterns locally without sending prompts to an external API.
 
-The plain limitation: DailyVox is iPhone-only. If you switch to Android tomorrow, your journal does not follow you. There is no web app. There is no desktop version. If you want to type long entries on a mechanical keyboard, DailyVox is the wrong tool.
+The plain limitation: DailyVox runs on iPhone and Android phones only, and nothing syncs between them. If you switch phones tomorrow, you move your journal with an encrypted backup file. There is no web app. There is no desktop version. If you want to type long entries on a mechanical keyboard, DailyVox is the wrong tool.
 
 ## The apps that do not encrypt on your device
 

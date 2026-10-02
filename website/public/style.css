@@ -957,6 +957,11 @@ nav .container {
 
 .cta-button::after { content: '→'; font-size: 14px; }
 
+/* App Store + Google Play side by side; when they wrap on a phone the
+   second one drops below with a gap instead of touching the first. */
+.cta-button + .cta-button { margin: 10px 0 0 8px; }
+@media (max-width: 520px) { .cta-button + .cta-button { margin-left: 0; } }
+
 /* ─────────── FOOTER ─────────── */
 footer {
   padding: 32px 0 40px;

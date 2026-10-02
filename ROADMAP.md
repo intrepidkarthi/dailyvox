@@ -75,6 +75,12 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Rating prompt tuned: first ask at entry 3 (was 5) and after the first share
 - Anchored ASO keyword field (`mood tracker` + `digital twin`) and fresh App Store screenshots at current resolutions
 
+### Android v1.0 — First Android release *(shipped 2026-10-02)*
+- On [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app) for Android 13 or newer; its own version line, not a counterpart to an iOS version
+- On-device transcription, mood, the Twin's constellation, Insights, Ask with cited entries, typed or voice search, widget, Quick Settings tile, reminder, app lock, export, encrypted backup that opens on either platform
+- No internet permission; Auto Backup disabled
+- Not in v1.0: on-device LLM chat, health data, photo attachments, translations — see [Platforms](#platforms)
+
 ## Planned
 
 > **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7** (v2.0+ unchanged). *Since then: v1.8 became Research Pilot & retrieval-fix, v1.9 became Voice & Access, and Multi-Language moved again to v1.10.* The stage labels are the Twin's growth stages; App Store build numbers increment independently.
@@ -100,32 +106,33 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.11.0 *(shipped 2026-08-24)* | v1.0 *(built, unreleased)* |
-| Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ built *(unconditional; minSdk 33)* |
-| Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ built *(screen only)* |
-| Digital Twin personality models | ✅ | ✅ built |
-| Entity graph | ✅ | ✅ built *(heuristic NER, measured)* |
+| **Current** | v1.11.0 *(shipped 2026-08-24)* | v1.0 *(shipped 2026-10-02, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
+| Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ *(unconditional; minSdk 33)* |
+| Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ *(screen only)* |
+| Digital Twin personality models | ✅ | ✅ |
+| Entity graph | ✅ | ✅ *(heuristic NER, measured)* |
 | Semantic memory / search by meaning | ✅ `NLEmbedding` | ranked lexical only — no embedder yet |
-| Encrypted export / `.twin` | ✅ | ✅ built, **byte-compatible both directions** |
+| Encrypted export / `.twin` | ✅ | ✅ **byte-compatible both directions** |
 | Multi-language interface | ✅ 5 languages | English only — **no translations exist** |
-| Journaling goals and weekly targets | ✅ | ✅ built *(2026-08-25)* |
-| Photo attachments | ✅ | ✅ built |
-| PDF / JSON / Markdown / CSV export | ✅ | ✅ built |
-| Voice search | ✅ | ✅ built *(on-device, fixed 2026-08-25)* |
+| Journaling goals and weekly targets | ✅ | ✅ *(2026-08-25)* |
+| Photo attachments | ✅ | not in v1.0 |
+| PDF / JSON / Markdown / CSV export | ✅ | ✅ |
+| Voice search | ✅ | ✅ *(on-device, fixed 2026-08-25)* |
 | Findings engine ("Your Twin noticed") | ✅ *(in-app copy — see note)* | ✅ **engine-side** `Insights.kt` |
-| Body Twin (health signals) | ✅ HealthKit | ✅ built *(Health Connect, opt-in)* |
-| Prosody / voice biomarkers | ✅ | ✅ built |
+| Body Twin (health signals) | ✅ HealthKit | not in v1.0 — no health permission requested |
+| Prosody / voice biomarkers | ✅ | ✅ |
 | Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
-| Widgets | ✅ WidgetKit | ✅ built *(RemoteViews)* |
+| Widgets | ✅ WidgetKit | ✅ *(RemoteViews)* |
 | Live Activities / Dynamic Island | ✅ | ongoing notification; no Island analogue |
-| Quick Settings tile | n/a | ✅ built |
+| Quick Settings tile | n/a | ✅ |
 | On-device LLM chat | ✅ Apple Intelligence | **not planned** — structured Ask instead |
 
-**Built is not shipped.** Every ✅ in the Android column exists in a development
-build and has been exercised on an emulator. None of it has been tested across a
-range of physical devices, and none of it is on the Play Store. The blocking
-unknown is whether Android's speech recogniser capitalises names — the entity
-graph has no input if it does not, and no emulator can answer it.
+**Shipped 2026-10-02.** Every ✅ in the Android column is in v1.0 on Google
+Play. Two rows that development builds had — photo attachments and Health
+Connect — were left out of v1.0 rather than shipped half-reachable. One known
+limitation remains: the entity graph takes names from the phone's speech
+recogniser, so the names in the Twin depend on that recogniser capitalising
+them.
 
 **The transcription row was wrong until 2026-08-25**, and it is worth saying how.
 Android's capture had a second branch: where the on-device recogniser was

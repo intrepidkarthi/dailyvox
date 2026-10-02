@@ -55,8 +55,9 @@ For the iOS app:
 - **iOS 17+ SDK**
 - A Mac with macOS Sonoma or later
 
-(An Android app is in development. When it lands it will carry its own
-prerequisites, and neither app will require the other's toolchain.)
+(The Android app is on Google Play. It has its own prerequisites — JDK 21 and
+the Gradle wrapper — in [`android/README.md`](android/README.md), and neither app
+requires the other's toolchain.)
 - No third-party tools required — zero external dependencies
 
 ## Development Workflow

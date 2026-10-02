@@ -27,7 +27,7 @@ Daylio drops the text-heavy approach entirely. It uses a grid of icons and moods
 
 DailyVox handles this differently. You talk for two minutes while walking the dog. The local speech recognition captures the stream of consciousness. Then, a local "Digital Twin" models your emotional patterns directly on your phone. You get the speed of talking without sacrificing depth, and your personal data never leaves your hand. 
 
-There is one major limitation you should know about before downloading. DailyVox is iPhone-only. There is no web version and no Android app. If you switch between an iPhone and a Windows PC, or use an Android phone as your daily driver, this app will not work for you. 
+There is one major limitation you should know about before downloading. DailyVox runs on iPhone and Android phones only. There is no web version and no desktop app. If you want to switch between your phone and a Windows PC, this app will not work for you. 
 
 ## Frequently Asked Questions
 

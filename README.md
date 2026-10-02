@@ -4,11 +4,12 @@
 
 <h1 align="center">DailyVox</h1>
 <p align="center"><strong>Speak for 42 seconds. Watch your words become stars.</strong></p>
-<p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your phone. iPhone today; Android in development.</p>
+<p align="center">The free voice journal with on-device AI and a Digital Twin that learns who you are — entirely on your phone. On iPhone and Android.</p>
 <p align="center"><sub><b>Free forever</b> &nbsp;·&nbsp; 100% on-device &nbsp;·&nbsp; No account, no servers, no analytics &nbsp;·&nbsp; MIT licensed &nbsp;·&nbsp; <a href="https://www.producthunt.com/products/dailyvox">on Product Hunt</a></sub></p>
 
 <p align="center">
   <a href="https://apps.apple.com/app/id6760454642"><img src="https://img.shields.io/badge/Download_Free-App%20Store-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Download on App Store" /></a>
+  <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app"><img src="https://img.shields.io/badge/Get_it_on-Google%20Play-3DDC84?style=for-the-badge&logo=googleplay&logoColor=white" alt="Get it on Google Play" /></a>
   <a href="https://getdailyvox.com"><img src="https://img.shields.io/badge/Website-getdailyvox.com-5B7C6B?style=for-the-badge" alt="Website" /></a>
   <a href="https://github.com/intrepidkarthi/dailyvox/stargazers"><img src="https://img.shields.io/github/stars/intrepidkarthi/dailyvox?style=for-the-badge&logo=github" alt="GitHub stars" /></a>
 </p>
@@ -21,7 +22,7 @@
 <p align="center">
   <a href="https://getdailyvox.com/privacy.html"><img src="https://img.shields.io/badge/Apple_Privacy-Data%20Not%20Collected-brightgreen?style=flat-square&logo=apple" alt="Privacy" /></a>
   <img src="https://img.shields.io/badge/Platform-iOS%2017%2B%20%7C%20iPadOS%2017%2B-lightgrey?style=flat-square&logo=apple" alt="Platform" />
-  <img src="https://img.shields.io/badge/Android-in%20development-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android in development" />
+  <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app"><img src="https://img.shields.io/badge/Platform-Android%2013%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android 13+ on Google Play" /></a>
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/Price-Free%20Forever-D4A547?style=flat-square" alt="Free Forever" />
   <img src="https://img.shields.io/badge/AI-100%25%20On--Device-5B7C6B?style=flat-square" alt="On-Device AI" />
@@ -75,7 +76,7 @@ Behind the scenes, an **on-device Digital Twin** learns how you think, how you f
 
 <p align="center"><sub>Real screenshots from v1.11.0, seeded with a demo journal. Regenerate with <code>ios/AppStore/screenshot-src/make_screenshots.sh</code>.</sub></p>
 
-### Android — in development, not released
+### Android — v1.0, on Google Play
 
 <p align="center">
   <img src=".github/readme/android-speak.png" width="160" alt="Speak on Android: the recording dial, and a card saying nothing leaves this phone" />
@@ -85,7 +86,7 @@ Behind the scenes, an **on-device Digital Twin** learns how you think, how you f
   <img src=".github/readme/android-permissions.png" width="160" alt="Android app permissions for DailyVox: microphone and notifications, and no internet" />
 </p>
 
-<p align="center"><sub>The last one is Android's own permission screen, not ours. It is the claim this app is built around, in the one place a user can check it without trusting us. There is no Play Store listing and no date — see <a href="android/playstore/SUBMISSION_CHECKLIST.md">the submission checklist</a> for what is still blocking.</sub></p>
+<p align="center"><sub>The last one is Android's own permission screen, not ours. It is the claim this app is built around, in the one place a user can check it without trusting us: Settings › Apps › DailyVox › Permissions. <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">DailyVox on Google Play</a> · Android 13 or newer.</sub></p>
 
 ---
 
@@ -151,7 +152,7 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **Minimum** | iOS 17.0+ |
 | **Devices** | iPhone, iPad (Universal) |
 
-### Android — in development, not released
+### Android — v1.0
 
 | Layer | Technology |
 |:--|:--|
@@ -161,7 +162,7 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **Entities** | Model-free capitalisation heuristic — Android has no system NER, and the strong open models restrict commercial use |
 | **Speech** | `createOnDeviceSpeechRecognizer` only — no second branch. Where no on-device model is installed it stops and says so, rather than reaching for a network |
 | **Prosody** | MediaCodec + autocorrelation pitch/energy in plain Kotlin |
-| **Body** | Health Connect — opt-in, read-only, four record types |
+| **Body** | None in v1.0 — no health permission is requested; Health Connect is not wired |
 | **Minimum** | API 33 (Android 13) · targetSdk 36 — 33 is where on-device recognition arrived, and below it this app cannot transcribe at all |
 | **Permissions** | RECORD_AUDIO, POST_NOTIFICATIONS, VIBRATE, USE_BIOMETRIC. **No INTERNET permission of any kind.** |
 
@@ -190,11 +191,12 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ## Roadmap
 
-> **Platforms.** DailyVox is live on the App Store for iPhone and iPad. The
-> Android app is **in development and not released** — there is no Play Store
-> listing and no announced date. The single largest untested assumption is
-> whether Android's speech recogniser capitalises names, which the entity graph
-> depends on. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
+> **Platforms.** DailyVox is live on the [App Store](https://apps.apple.com/app/id6760454642)
+> for iPhone and iPad, and on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
+> for Android 13 or newer (Android v1.0, its own version line). Android has no
+> on-device LLM chat, no health data and no translations yet. One known
+> limitation: on Android, the names in the Twin depend on the phone's speech
+> recogniser capitalising them. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
 
 
 | Version | Focus | Status |
@@ -206,13 +208,13 @@ scored against the Apple frameworks they replace on the same real diary text.
 | v1.9.0 | Voice & Access — read-aloud, system voices, accessibility pass | Shipped Jul 2026 |
 | v1.10.0 | Spanish, French, German and Italian | Shipped Aug 2026 |
 | v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | **Shipped Aug 2026** |
-| — | **Android, first release** | In development |
+| Android v1.0 | **Android, first release** | **Shipped 2026-10-02** |
 | v1.12 | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.
 
-Phone-first by conviction: the phone is the Twin's body, and every feature works end-to-end on the phone alone — no Mac, no second computer, ever. That rule is what the Android port has to satisfy too, and it is why the port replaces Apple's frameworks with on-device substitutes rather than a server. Portability of your data lives in the `.twin` format (Twin Protocol) rather than in which app you happen to run. [Full roadmap](ROADMAP.md).
+Phone-first by conviction: the phone is the Twin's body, and every feature works end-to-end on the phone alone — no Mac, no second computer, ever. That rule is what the Android port satisfies too, and it is why the port replaces Apple's frameworks with on-device substitutes rather than a server. Portability of your data lives in the `.twin` format (Twin Protocol) rather than in which app you happen to run. [Full roadmap](ROADMAP.md).
 
 ---
 

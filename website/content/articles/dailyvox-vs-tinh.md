@@ -17,7 +17,7 @@ Most journaling apps send your words to a server. tinh and DailyVox are two that
 | Account | None | None |
 | Availability | On the App Store | TestFlight beta |
 | Focus | Voice journal + Digital Twin | Self-quantification, lifestyle database |
-| Platforms | iPhone | iPhone, Mac |
+| Platforms | iPhone, Android | iPhone, Mac |
 | Price | Free | Not yet announced |
 
 ## Where tinh fits

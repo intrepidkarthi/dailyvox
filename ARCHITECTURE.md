@@ -152,7 +152,7 @@ before it shipped.
 | Storage | Core Data + CloudKit | Room, no sync | Same schema shape; encrypted export is byte-compatible in both directions |
 | Backup | iCloud (opt-out) | Manual export only | Android Auto Backup explicitly disabled — see below |
 | Lock | Face ID + Secure Enclave | `BiometricPrompt` + Keystore | — |
-| Body | HealthKit | Health Connect | Opt-in, read-only, four record types |
+| Body | HealthKit | Health Connect (not in v1.0) | Read-only and opt-in when it lands; v1.0 requests no health permission, since no screen yet asks for it |
 
 **The Android backup decision is load-bearing.** `allowBackup` defaults to true,
 and Android Auto Backup copies `filesDir` — the Room database and every audio

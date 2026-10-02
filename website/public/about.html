@@ -676,12 +676,12 @@
     "description": "A voice journal for iPhone where every entry becomes a star in a private constellation. 100% on-device AI, no servers, no accounts, no data collection. Open source on GitHub.",
     "applicationCategory": "LifestyleApplication",
     "applicationSubCategory": "Journal",
-    "operatingSystem": "iOS 17.0 or later",
+    "operatingSystem": "iOS 17.0 or later, Android 13 or later",
     "url": "https://getdailyvox.com",
-    "downloadUrl": "https://apps.apple.com/app/id6760454642",
+    "downloadUrl": ["https://apps.apple.com/app/id6760454642", "https://play.google.com/store/apps/details?id=com.dailyvox.app"],
     "softwareVersion": "1.11.0",
     "datePublished": "2026-03-23",
-    "dateModified": "2026-07-04",
+    "dateModified": "2026-10-02",
     "image": "https://getdailyvox.com/app-icon.png",
     "screenshot": "https://getdailyvox.com/og-image.png?v=1111",
     "offers": {
@@ -760,7 +760,7 @@
           Then I couldn't anymore.
         </h1>
         <p class="subtitle">
-          <strong>DailyVox is a free voice journal for iPhone with on-device AI</strong>, built by Karthikeyan NG. I stopped writing — and <strong>started talking</strong>. That's how DailyVox was born, and why it runs entirely on your phone instead of someone else's server.
+          <strong>DailyVox is a free voice journal for iPhone and Android with on-device AI</strong>, built by Karthikeyan NG. I stopped writing — and <strong>started talking</strong>. That's how DailyVox was born, and why it runs entirely on your phone instead of someone else's server.
         </p>
         <div class="about-stats">
           <div class="st">
@@ -858,11 +858,11 @@
           <h2 class="sec-title">Why <em>iPhone first.</em></h2>
           <span class="sec-tag">platform</span>
         </div>
-        <p>DailyVox is on the App Store for iPhone and iPad. A native Android app is <strong>in development</strong> — not released yet, and no date announced.</p>
+        <p>DailyVox is on the App Store for iPhone and iPad, and on <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a> for Android 13 or newer. The Android app is at version 1.0, on a version line of its own.</p>
         <p>iPhone came first deliberately. Apple hands you the Secure Enclave, the Neural Engine and a whole on-device AI stack, and the promise of DailyVox is that your data never leaves your device. I wanted to be certain I could keep that promise before taking it anywhere else.</p>
         <p>Android turned out to be a harder version of the same problem, and a more interesting one. There is no system sentiment API and no system name recogniser, so both had to be rebuilt and then <em>measured</em> against the Apple frameworks they replace rather than assumed to be close enough. On the diary text I tested, both replacements came out ahead.</p>
-        <p>The condition was never negotiable: the Android app requests no internet permission at all. Not "we choose not to call a server" — the permission is absent, so no build could send your journal anywhere even if it tried. You can check that in Android's own app info screen without trusting a word of this page.</p>
-        <p>The <a href="/roadmap">roadmap</a> says where it actually stands, including what is still untested.</p>
+        <p>The condition was never negotiable: the Android app requests no internet permission at all, and Android's automatic backup is disabled so the journal is not copied to Google Drive. Not "we choose not to call a server" — the permission is absent, so no build could send your journal anywhere even if it tried. You can check that in Android Settings › Apps › DailyVox › Permissions without trusting a word of this page.</p>
+        <p>Android 1.0 does not have everything the iPhone app has: it is English only, it has no on-device chat with the Twin and no health data. The <a href="/roadmap">roadmap</a> says where each platform actually stands.</p>
       </section>
 
       <!-- §06 Values -->
@@ -990,7 +990,7 @@
             <div class="rd-body">
               <div class="rd-tag rd-done"><span class="rd-tag-text">Shipped · v1.11.0</span></div>
               <h3>The Twin speaks your language</h3>
-              <p><strong>Tech:</strong> Xcode String Catalogs, 358 strings in Spanish, French, German and Italian. Those four because every feature works fully in them — search by meaning needs on-device sentence embeddings, which Apple provides for a limited set of languages. Recording already worked in every language the iPhone can transcribe; this release changed the interface. iPhone-only by conviction — no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
+              <p><strong>Tech:</strong> Xcode String Catalogs, 358 strings in Spanish, French, German and Italian. Those four because every feature works fully in them — search by meaning needs on-device sentence embeddings, which Apple provides for a limited set of languages. Recording already worked in every language the iPhone can transcribe; this release changed the interface. Phone-first by conviction — no macOS or visionOS targets.</p>
             </div>
           </div>
           <div class="rd-item">
@@ -1091,9 +1091,14 @@
         </div>
         <h2>Start <em>talking.</em></h2>
         <p>Free. Private. No account needed. Just open and talk.</p>
-        <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
-          Download free on the App Store <span class="arr">→</span>
-        </a>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+          <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
+            Download free on the App Store <span class="arr">→</span>
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="btn-primary">
+            Get it on Google Play <span class="arr">→</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -1109,6 +1114,7 @@
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
         <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>

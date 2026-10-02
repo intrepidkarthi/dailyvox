@@ -34,7 +34,7 @@ I built DailyVox specifically for this use case on iPhone. Everything runs entir
 
 Because it is local, your audio and text never leave your hardware. DailyVox also includes an on-device Digital Twin that identifies your emotional patterns over time without sending your diary entries to a cloud server. 
 
-The limitation: DailyVox is iPhone-only. There is no web or Android version. Furthermore, Apple's on-device speech model is slightly less forgiving with heavy road noise than multi-gigabyte server models. If your car is loud, you need your microphone close to your mouth.
+The limitation: DailyVox runs on iPhone and Android phones only. There is no web version. Furthermore, the on-device speech model is slightly less forgiving with heavy road noise than multi-gigabyte server models. If your car is loud, you need your microphone close to your mouth.
 
 ### Day One
 Day One is a long-standing digital journal. It supports audio recording and can transcribe your voice entries. It works well if you already use Day One across multiple platforms and want your audio embedded alongside photos and calendar data. However, transcribing long voice files depends on their cloud sync infrastructure, and the interface is designed around typing first, with audio as an attachment rather than the core input method.

@@ -21,11 +21,11 @@ Here is how the genuine free alternatives compare, what they do well, and where 
 
 I built DailyVox because I dislike typing long journal entries on a glass screen, and I refuse to send my inner thoughts to a remote cloud server. 
 
-DailyVox is an iPhone-only voice journaling app. It is free and open source under the MIT license. You speak into it. It transcribes your entry on your device using Apple's local speech frameworks. It works in airplane mode. 
+DailyVox is a voice journaling app for iPhone and Android. It is free and open source under the MIT license. You speak into it. It transcribes your entry on your device using the phone's own speech recogniser. It works in airplane mode. 
 
 Where Reflectly uses cloud servers to parse your moods, DailyVox has a local "Digital Twin." This model processes your entries directly on your device to map your emotional patterns over time. It notices recurring stressors and mood shifts without any data leaving your phone. The App Store privacy label for DailyVox reads "Data Not Collected." There are no accounts, no tracking pixels, and no analytics databases.
 
-**The catch:** It is iPhone-only. If you use Android, a Mac desktop, or Windows, DailyVox is useless to you. It has no web interface and never will.
+**The catch:** It is phone-only. It runs on iPhone and Android, but if you want to journal on a Mac desktop or Windows, DailyVox is useless to you. It has no web interface and never will.
 
 ## 2. Apple Journal: The Cleanest Native Baseline
 
@@ -71,7 +71,7 @@ It helps you untangle problems by prompting you in real time. For people who get
 
 | App | Cost | Best For | Offline? | Platform |
 | :--- | :--- | :--- | :--- | :--- |
-| **DailyVox** | Free | Voice reflection and private mood patterns | Yes | iOS only |
+| **DailyVox** | Free | Voice reflection and private mood patterns | Yes | iPhone, Android |
 | **Apple Journal** | Free | Simple text tied to photos and workouts | Yes | iOS only |
 | **Daylio** | Free tier | 10-second icon tracking without writing | Yes | iOS, Android |
 | **Day One** | Free tier | Structured writing on a single device | Yes | Cross-platform |

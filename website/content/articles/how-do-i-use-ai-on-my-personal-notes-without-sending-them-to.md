@@ -39,7 +39,7 @@ Daylio tracks your moods and habits with clean charts. It is private and stores 
 
 I am keeping this honest. The limitation of local-only AI is hardware dependency. 
 
-DailyVox is iPhone-only. There is no web version and no Android app. Because the app relies entirely on Apple's on-device processing and local frameworks, it cannot run in a browser window or sync to a Windows PC. If you switch devices outside the Apple ecosystem, you have to export your data and start fresh. 
+DailyVox runs on iPhone and Android (Android 13 or newer). There is no web version and no desktop app. Because all the processing happens on the phone itself, it cannot run in a browser window or sync to a Windows PC. If you switch from iPhone to Android or back, you move your journal with an encrypted backup file; there is no sync between iPhone and Android. 
 
 That constraint buys you absolute privacy. You trade cross-platform convenience for the guarantee that your thoughts never touch a remote server. 
 
