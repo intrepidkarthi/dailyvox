@@ -17,7 +17,7 @@ Reflection and DailyVox both put AI in a journal, then diverge. Reflection is a 
 | Processing | On-device | Cloud |
 | Account | None | Required |
 | Price | Free | Freemium; ~$250 lifetime |
-| Platforms | iPhone | iOS, Android, Mac, Web |
+| Platforms | iPhone, Android | iOS, Android, Mac, Web |
 | AI | On-device Digital Twin | Cloud AI coach, guided programs |
 
 ## Where Reflection wins

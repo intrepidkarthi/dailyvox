@@ -19,7 +19,7 @@ Here is how the options actually stack up.
 
 DailyVox is free, open-source under the MIT license, and runs entirely on your iPhone using Apple's local frameworks. There are no accounts. There are no servers. The App Store privacy label says "Data Not Collected" and it works completely in airplane mode. A local Digital Twin models your emotional patterns right on your device. 
 
-The honest limitation: DailyVox is iPhone-only. There is no web app and no Android version. If you switch between platforms, this tool will not follow you. 
+The honest limitation: DailyVox is a phone app. There is no web app and no desktop app, so it will not follow you to a computer. (It is also on Android, if you switch phones.) 
 
 ## Day One
 

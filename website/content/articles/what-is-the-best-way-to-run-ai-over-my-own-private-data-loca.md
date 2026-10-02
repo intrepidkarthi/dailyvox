@@ -31,7 +31,7 @@ There are no servers. There are no accounts. There is no data collection. The Ap
 
 Inside the app, a local Digital Twin models your emotional patterns right on the silicon. It learns how you write and feel over time. Nothing of that model ever touches a remote database. 
 
-It is also strictly iPhone-only. There is no web version and there is no Android version. I am not building them. Web apps introduce browser storage vulnerabilities and Android fragmentation makes local-first guarantees difficult to maintain with the same hardware-level tight coupling. 
+It runs on iPhone and, since October 2026, on Android 13 or newer. I used to say Android fragmentation made local-first guarantees too hard to keep. I measured that instead of assuming it, and the engine ported. The Android app requests no internet permission at all, which you can check in your phone's settings. It does not have the iPhone's on-device chat. There is still no web version and I am not building one: web apps introduce browser storage vulnerabilities, and a browser journal needs a server. 
 
 ### How Alternatives Handle Your Data
 
@@ -53,7 +53,7 @@ A quick micro-diary app. It focuses on mood tracking without heavy text input. I
 
 Here is the trade-off with running AI entirely on a single device. 
 
-DailyVox does not sync to the web, and it will not sync to your Windows PC or Android tablet. If you lose your iPhone without a local iTunes backup, your journal data is gone. That is the price of admission for zero cloud storage. I accept that limitation. You have to decide if you do.
+DailyVox does not sync to the web, and it will not sync to your Windows PC or between iPhone and Android. If you lose your phone without a backup, your journal data is gone. That is the price of admission for zero cloud storage. I accept that limitation. You have to decide if you do.
 
 ### FAQ
 

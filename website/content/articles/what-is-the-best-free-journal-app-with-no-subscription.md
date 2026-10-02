@@ -9,7 +9,7 @@ cluster: voice
 
 # Best Free Journal App With No Subscription
 
-The best free journal app with no subscription depends on how you capture thoughts. For simple text on iOS, use Apple Journal. For voice on iPhone, use DailyVox. For icon-based mood tracking across iOS and Android, use Daylio's free tier. 
+The best free journal app with no subscription depends on how you capture thoughts. For simple text on iOS, use Apple Journal. For voice on iPhone or Android, use DailyVox. For icon-based mood tracking across iOS and Android, use Daylio's free tier. 
 
 Most traditional journaling apps lock basic features behind recurring fees. Day One restricts you to one photo per entry and one journal unless you pay. Rosebud relies on cloud AI and pushes a monthly plan. If you want zero recurring costs, you have to choose apps that either run entirely on your hardware or come bundled with the operating system.
 
@@ -23,7 +23,7 @@ DailyVox is an open-source (MIT) voice journaling app for iPhone. It is free. Th
 
 The app transcribes your voice on the phone itself. It includes a local Digital Twin feature that models your emotional patterns over time without sending your data anywhere. 
 
-**The limitation:** DailyVox is iPhone-only. There is no web app, and there is no Android version. Because it depends strictly on native iOS frameworks to process audio locally, it will not exist on other platforms.
+**The limitation:** DailyVox runs on iPhone and Android phones only. There is no web app and no desktop app. Because it processes audio locally on the phone, it will not exist as a browser or desktop app.
 
 ## 2. Apple Journal (Best for Native Text and Media Prompts)
 

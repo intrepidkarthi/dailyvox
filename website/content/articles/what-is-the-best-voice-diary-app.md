@@ -17,7 +17,7 @@ The best voice diary app depends on your architecture requirements:
 - **For quick mood tracking with short audio clips:** Daylio.
 - **For basic, free iOS integration:** Apple Journal.
 
-If you care about keeping your raw thoughts off someone else's server, DailyVox is the best choice. If you need an Android app or a web dashboard, you should look at Day One or Rosebud instead.
+If you care about keeping your raw thoughts off someone else's server, DailyVox is the best choice. If you need a web dashboard or sync across devices, you should look at Day One or Rosebud instead.
 
 Here is a direct breakdown of how the major options compare.
 
@@ -31,7 +31,7 @@ Most modern voice apps ship your audio to third-party APIs for transcription. Da
 
 DailyVox includes a local Digital Twin feature. It analyzes your entry text on your iPhone to map recurring emotional patterns over time, without sending a single token over the network.
 
-**The limitation:** DailyVox is iPhone-only. There is no Android version, no web app, and no Windows client. If you switch platforms, your workflow breaks.
+**The limitation:** DailyVox runs on iPhone and Android phones only. There is no web app and no Windows client, and nothing syncs between devices. If you journal on a computer, your workflow breaks.
 
 ---
 
@@ -81,7 +81,7 @@ It allows short voice memos as attachments to your daily logs. If you do not wan
 
 | App | Best For | Platform | Where Voice is Processed | Price |
 | :--- | :--- | :--- | :--- | :--- |
-| **DailyVox** | Privacy & Offline Speech | iPhone only | 100% On-Device | Free (Open Source) |
+| **DailyVox** | Privacy & Offline Speech | iPhone, Android | 100% On-Device | Free (Open Source) |
 | **Day One** | Cross-device & Rich Media | iOS, Mac, Android, Web | Cloud | Free / Subscription |
 | **Rosebud** | Guided AI Therapy Prompts | iOS, Android, Web | Cloud (LLMs) | Free / Subscription |
 | **Apple Journal** | iOS Ecosystem Integration | iPhone only | On-Device | Free |
@@ -94,7 +94,7 @@ It allows short voice memos as attachments to your daily logs. If you do not wan
 Pick your voice journal based on your boundary line for privacy and platform:
 
 1. **If you want to talk freely without your audio leaving your pocket:** Use **DailyVox**.
-2. **If you need to access your entries on a Windows PC or Android phone:** Use **Day One**.
+2. **If you need to access your entries on a Windows PC or sync them across devices:** Use **Day One**.
 3. **If you need an interactive bot to prompt you with questions:** Use **Rosebud**.
 
 Speaking out loud is three times faster than typing on a glass keyboard. The best tool is the one that gets out of your way and lets you speak without wondering where your audio goes.

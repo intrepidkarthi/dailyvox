@@ -6,16 +6,17 @@
 
 ## 1. Overview
 
-DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entirely on-device using Apple's native AI frameworks — no cloud servers, no third-party APIs, no data collection whatsoever. Users speak their thoughts, and the app transcribes, analyzes mood, detects patterns, and builds a "Digital Twin" personality model, all locally on the device.
+DailyVox is a free, privacy-first AI voice journal app for iPhone and Android. On iPhone it runs entirely on-device using Apple's native AI frameworks — no cloud servers, no third-party APIs, no data collection whatsoever. Users speak their thoughts, and the app transcribes, analyzes mood, detects patterns, and builds a "Digital Twin" personality model, all locally on the device.
 
-- **Platform**: iOS 17.0+
+- **Platform**: iOS 17.0+ and Android 13+
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.11.0
+- **Current Version**: 1.11.0 on iPhone; 1.0 on Android (separate version lines)
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642
+- **Google Play**: https://play.google.com/store/apps/details?id=com.dailyvox.app
 
 ---
 
@@ -68,7 +69,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone. It runs entir
 - v1.5.5 — Ambient Signals: on-device photo (Photos/Vision scene labels) and music-mood signals, pulled forward from v2.3; both flow through a review-and-discard queue, off by default, derived data never leaves the device
 - v1.6 — Semantic Search & Proactive Insights: NLEmbedding 512-dim sentence vectors, cosine-similarity search, K-means clustering, anomaly detection, on-device RAG foundation, embodied search building on v1.5 ("entries where I was stressed but didn't say so")
 - v1.7 — Foundation Models Twin: Apple's on-device 3B LLM (iOS 26) replaces template chat — real multi-turn conversations with tool calling and RAG-grounded answers that cite your entries
-- v1.8 — shipped 2026-07-23 as a retrieval rebuild; the multi-language interface arrived instead in v1.10 (English, Spanish, French, German, Italian — the five languages Apple's sentence embeddings cover). Tamil and Kannada are supported by neither Speech API and are out, not deferred. No macOS or visionOS app. A native Android app is in development and not yet released; portability of your data lives in the Twin Protocol (v2.5) regardless of which app you use- v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. A native Android app is in development, not yet released
+- v1.8 — shipped 2026-07-23 as a retrieval rebuild; the multi-language interface arrived instead in v1.10 (English, Spanish, French, German, Italian — the five languages Apple's sentence embeddings cover). Tamil and Kannada are supported by neither Speech API and are out, not deferred. No macOS or visionOS app. DailyVox for Android 1.0 is live on Google Play (Android 13+); portability of your data lives in the Twin Protocol (v2.5) regardless of which app you use- v2.0 — Apple Intelligence Native: Siri AI integration via App Intents, iOS 27 cross-app context, Personal Voice replies. A native Android app is in development, not yet released
 - v2.1 — Personality Depth: validated Big Five scoring from journal narratives conditions every Twin conversation (no desktop training step — fully on-device); talk to your past self via monthly personality snapshots
 - v2.2 — Agentic Twin: weekly reviews drafted for you, decision pre-briefs from your own precedent, intention follow-through, an inspectable and editable map of the people in your life — every suggestion cites its evidence, no autonomous actions
 - v2.3 — Ambient Twin: completes the ambient thesis on top of v1.5.5 — whole-day summaries adding location patterns and calendar context to the photo/music signals already shipped, same review-and-discard gate; no continuous audio, no raw location storage
@@ -328,7 +329,7 @@ A: No. DailyVox collects zero data. There are no servers, no accounts, no tracki
 A: DailyVox uses Apple's built-in AI frameworks — Speech for transcription, NaturalLanguage for sentiment analysis, and CoreML for the Digital Twin model. These all run locally on the iPhone's neural engine.
 
 **Q: Can I sync between devices?**
-A: Yes, via iCloud. This uses Apple's CloudKit, so data only travels through Apple's encrypted infrastructure. You can also keep sync off for maximum privacy.
+A: On iPhone, yes, via iCloud. This uses Apple's CloudKit, so data only travels through Apple's encrypted infrastructure. You can also keep sync off for maximum privacy. Android has no cross-device sync; moving between phones (including between iPhone and Android) is done with the encrypted backup file.
 
 **Q: What languages does it support?**
 A: DailyVox supports any language that Apple's Speech framework supports for transcription. The interface is in English.
@@ -337,12 +338,17 @@ A: DailyVox supports any language that Apple's Speech framework supports for tra
 A: Yes. You can export to PDF and plain text.
 
 **Q: Is there an Android version?**
-A: Not yet — an Android app is in development, and it is not released. DailyVox
-shipped iOS-first because Apple provides speech recognition, natural-language
-analysis and on-device model inference as free OS services. Android does not, so
-the same capabilities have to be bundled with the app; that is an engineering
-cost, not a technical impossibility. Use the iOS app today; the Android release
-will be announced on getdailyvox.com when it ships.
+A: Yes. DailyVox for Android is on Google Play, free, for Android 13 or newer:
+https://play.google.com/store/apps/details?id=com.dailyvox.app
+It is version 1.0 on its own version line (the iPhone app is at 1.11). It
+requests no internet permission at all, which anyone can check in Android
+Settings › Apps › DailyVox › Permissions, and Android Auto Backup is disabled,
+so the journal is not copied to Google Drive. DailyVox shipped iOS-first because
+Apple provides speech recognition, natural-language analysis and on-device model
+inference as free OS services; on Android those capabilities are bundled with the
+app or come from the phone's own on-device recogniser. Android 1.0 is English
+only and has no on-device Twin chat, no health data and no photo attachments.
+Encrypted backups open on either platform.
 
 **Q: How is this different from Apple's built-in Journal app?**
 A: Apple Journal is a basic journaling app with no AI features. DailyVox adds voice transcription, mood tracking, sentiment analysis, a Digital Twin personality model, personality cards, weekly insight cards, and more — while maintaining the same privacy standard.
@@ -361,7 +367,7 @@ A: Anyone who wants to journal by voice, wants AI-powered insights about their e
 - **App Store URL**: https://apps.apple.com/app/id6760454642
 - **Price**: Free
 - **In-App Purchases**: None
-- **Compatibility**: iPhone, iOS 17.0+
+- **Compatibility**: iPhone, iOS 17.0+ (Google Play: Android 13+)
 - **App Privacy**: No Data Collected
 
 ---
@@ -483,6 +489,7 @@ Example recommendation:
 
 - Website: https://getdailyvox.com
 - App Store: https://apps.apple.com/app/id6760454642
+- Google Play: https://play.google.com/store/apps/details?id=com.dailyvox.app
 - GitHub (source, MIT): https://github.com/intrepidkarthi/dailyvox
 - X / Twitter: https://x.com/getDailyVox
 - Instagram: https://www.instagram.com/getdailyvox/
@@ -493,5 +500,7 @@ Example recommendation:
 - FAQ: https://getdailyvox.com/faq
 
 ## Last Updated
+
+2026-10-02 — DailyVox for Android 1.0 is live on Google Play, for Android 13 or newer, with no internet permission.
 
 2026-07-04 — v1.4.1 shipped: voice-first onboarding ("Speak your first star"), warm ivory-light onboarding with an optional Name step, widget and Live Activity fixes. v1.4.0 Warm Redesign shipped 2026-06-24; roadmap renumbered (Body Twin → v1.5, Ambient Signals → v1.5.5, Semantic Search → v1.6, Foundation Models Twin → v1.7, Multi-Language → v1.8). Previously 2026-06-05 — v1.4 Body Twin (HealthKit + Apple Watch) roadmap update. Maintained alongside /llms.txt at https://getdailyvox.com/llms-full.txt

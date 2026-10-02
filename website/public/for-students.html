@@ -59,10 +59,10 @@
       "@type": "SoftwareApplication",
       "name": "DailyVox",
       "applicationCategory": "HealthApplication",
-      "operatingSystem": "iOS 17.0+",
+      "operatingSystem": "iOS 17.0+, Android 13+",
       "softwareVersion": "1.11.0",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "downloadUrl": "https://apps.apple.com/app/id6760454642"
+      "downloadUrl": ["https://apps.apple.com/app/id6760454642", "https://play.google.com/store/apps/details?id=com.dailyvox.app"]
     }
   }
   </script>
@@ -532,7 +532,10 @@
         <div class="cta-card">
           <h3>Free voice journal, no account.</h3>
           <p>Speak your first 42 seconds tonight. Verify in airplane mode if you don't trust the marketing.</p>
-          <a href="https://apps.apple.com/app/id6760454642">Download on the App Store</a>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <a href="https://apps.apple.com/app/id6760454642">Download on the App Store</a>
+            <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Get it on Google Play</a>
+          </div>
         </div>
 
         <h2>Related reading</h2>
@@ -557,6 +560,7 @@
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
         <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>

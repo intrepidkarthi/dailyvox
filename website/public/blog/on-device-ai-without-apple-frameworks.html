@@ -86,14 +86,14 @@ a{color:var(--terra)}
 <h2>What this adds up to</h2>
 <p>The graph and retrieval code was already Foundation-only, so it ports unchanged. Three models became a heuristic, a lexicon and a lookup table. The engineering surface did not double.</p>
 <p>None of this makes Android free.</p>
-<p>The on-device LLM chat has no Android equivalent worth shipping yet. Apple Intelligence gives iPhones a 3B model in the OS; Android's landscape is fragmented enough that "on-device LLM chat" means different things on different handsets, so it is device-gated and later.</p>
-<p>And sync is a real regression. iCloud gives iOS cross-device sync with no server on our side, which is the whole reason DailyVox can claim it runs no backend. Android has no equivalent that preserves that claim, so v1.0 is local-only with export. That is worse for the user, and naming it here is better than having it discovered in a review.</p>
+<p>The on-device LLM chat has no Android equivalent worth shipping yet. Apple Intelligence gives iPhones a 3B model in the OS; Android's landscape is fragmented enough that "on-device LLM chat" means different things on different handsets, so Android v1.0 ships without it. Ask your Twin on Android answers from your own entries and names the ones it used, but it is retrieval, not a chatbot.</p>
+<p>And sync is a real regression. iCloud gives iOS cross-device sync with no server on our side, which is the whole reason DailyVox can claim it runs no backend. Android has no equivalent that preserves that claim, so v1.0 is local-only, with export and an encrypted backup file you move between phones yourself. That is worse for the user, and naming it here is better than having it discovered in a review.</p>
 <h2>Why this generalises</h2>
 <p>If you are deciding whether to build something on-device, the useful question is not "does the platform provide a model" but "what accuracy does my actual corpus need, and what is the cheapest thing that reaches it."</p>
 <p>Three times in a row, the cheapest thing was much cheaper than a model, and once it was better. Not because the models are bad, but because a personal corpus is a narrow, repetitive, forgiving target, and general-purpose models are priced for the general case.</p>
 <p>Measure your case. The estimate I carried for two years was wrong in the direction that cost the most: it kept a platform closed on the strength of a number nobody had checked.</p>
-<p>DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.10; the Android port is in development. The engine measurements above are what changed that decision.</p>
-<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<p>DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.11, and the Android app is now on Google Play at v1.0, for Android 13 or newer. The engine measurements above are what changed that decision.</p>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Get it on Google Play</a></div>
 <div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
 </main>
 <footer class="dv-footer">

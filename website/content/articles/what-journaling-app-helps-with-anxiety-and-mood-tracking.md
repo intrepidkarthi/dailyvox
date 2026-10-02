@@ -53,7 +53,7 @@ DailyVox is a voice journal. You tap the screen, talk until you run out of thing
 
 To track mood, DailyVox includes a local Digital Twin. It reads your transcripts on-device to track emotional shifts, recurring stressors, and vocabulary patterns over time. You can see how your anxiety manifests across days without having to fill out a daily survey.
 
-There is one clear limitation to accept: DailyVox is iPhone-only. It has no web interface, no Android app, and no desktop version. If you do not have an iPhone, or if you need to access your entries from a Windows PC or Mac browser, it will not work for you.
+There is one clear limitation to accept: DailyVox runs on iPhone and Android phones only. It has no web interface and no desktop version. If you need to access your entries from a Windows PC or Mac browser, it will not work for you.
 
 ## How to Choose
 

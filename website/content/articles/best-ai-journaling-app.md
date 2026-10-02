@@ -29,9 +29,9 @@ The main tradeoff is privacy versus interactivity. An app that talks back to you
 
 DailyVox is built around a simple premise: speaking is faster than typing, but your private voice notes should never touch someone else's server. 
 
-I built it as an open-source (MIT), iPhone-only app. It uses Apple's native speech and language frameworks directly on the device. When you speak, the transcription happens in memory. When you finish, a feature called the Digital Twin processes your entry to track your emotional shifts, recurring themes, and vocal energy over time. It works in airplane mode. The App Store privacy label shows "Data Not Collected". There are no accounts, no subscriptions, and no analytics SDKs.
+I built it as an open-source (MIT) app for iPhone and Android. On iPhone it uses Apple's native speech and language frameworks directly on the device; on Android it uses the phone's own on-device speech recogniser. When you speak, the transcription happens in memory. When you finish, a feature called the Digital Twin processes your entry to track your emotional shifts, recurring themes, and vocal energy over time. It works in airplane mode. The App Store privacy label shows "Data Not Collected". There are no accounts, no subscriptions, and no analytics SDKs.
 
-The clear limitation: DailyVox does not talk back to you. If you want an AI chatbot that asks you why you feel angry at your coworker, DailyVox will disappoint you. It models your patterns, but it does not play therapist. It is also iPhone-only. If you use Android or want a web browser version, DailyVox cannot help you.
+The clear limitation: DailyVox does not talk back to you. If you want an AI chatbot that asks you why you feel angry at your coworker, DailyVox will disappoint you. It models your patterns, but it does not play therapist. It runs on iPhone and Android (Android 13 or newer), but there is no web browser version and no desktop app. If you want to read your journal on a laptop, DailyVox cannot help you.
 
 Best for: People who want fast voice journaling with local emotional tracking and zero privacy compromises.
 

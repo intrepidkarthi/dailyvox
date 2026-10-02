@@ -29,7 +29,7 @@ Rosebud focuses heavily on AI coaching and reflection prompts. That power comes 
 
 DailyVox takes a different path. It is free and open-source under the MIT license. Everything runs on-device using Apple's local frameworks. There is a local "Digital Twin" feature that models your emotional patterns right on your chip. It never touches a remote database. 
 
-The honest limitation: DailyVox is iPhone-only. There is no web app, no Android version, and no Windows client. If you switch between operating systems, this tool will not follow you. I accept that trade-off because keeping code strictly local on one device is the only way to guarantee absolute privacy.
+The honest limitation: DailyVox runs on iPhone and Android phones only. There is no web app and no Windows client, and nothing syncs between devices. If you switch phones, you move your journal with an encrypted backup file. I accept that trade-off because keeping code strictly local on one device is the only way to guarantee absolute privacy.
 
 ## Frequently Asked Questions
 

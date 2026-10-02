@@ -48,11 +48,11 @@ DailyVox also includes a "Digital Twin" feature. It maps your emotional patterns
 
 ## The Trade-off: One Stated Limitation
 
-DailyVox has a hard limitation: it is iPhone-only.
+DailyVox has a hard limitation: it is phone-only.
 
-There is no web dashboard. There is no Android app. If you switch to an Android device next month, you cannot run DailyVox.
+It runs on iPhone and Android, but there is no web dashboard and no desktop app, and nothing syncs between devices. If you switch phones next month, you move your journal with an encrypted backup file.
 
-Furthermore, while Apple's native Speech framework is fast, cloud-hosted models like OpenAI's Whisper sometimes handle rare jargon or heavy background noise better. If you need multi-device web access or conversational AI replies, DailyVox is the wrong tool for you. We chose strict offline privacy over cloud features.
+Furthermore, while on-device speech recognition is fast, cloud-hosted models like OpenAI's Whisper sometimes handle rare jargon or heavy background noise better. If you need multi-device web access or conversational AI replies, DailyVox is the wrong tool for you. We chose strict offline privacy over cloud features.
 
 ## Technical Differences: Cloud vs On-Device
 
@@ -72,7 +72,7 @@ Pick based on your actual constraints:
 - Choose **Rosebud** if you want an AI chatbot to ask you guided questions after you speak.
 - Choose **Apple Journal** if you want basic voice notes tied to your iOS activity prompts.
 - Choose **Daylio** if you prefer tap-based habit tracking over speaking.
-- Choose **DailyVox** if you want an iPhone-only voice journal that runs offline with zero data collection.
+- Choose **DailyVox** if you want a voice journal for iPhone or Android that runs offline with zero data collection.
 
 ### Frequently Asked Questions
 

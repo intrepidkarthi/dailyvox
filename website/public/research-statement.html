@@ -45,7 +45,7 @@
         "name": "Is there an Android version of DailyVox?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "A native Android app is in development and is not yet released. It is written in Kotlin and Jetpack Compose rather than being a wrapper around the iPhone app, and it holds no internet permission of any kind — the same privacy claim as iOS, verifiable in Android's own app info screen. DailyVox is currently available on iPhone and iPad."
+          "text": "Yes. DailyVox for Android is on Google Play, free, for Android 13 or newer: https://play.google.com/store/apps/details?id=com.dailyvox.app It is a native Kotlin and Jetpack Compose app rather than a wrapper around the iPhone app, and it requests no internet permission of any kind — verifiable in Android Settings › Apps › DailyVox › Permissions. Android has its own version line and starts at 1.0: English only, with no on-device Twin chat, no health data and no photo attachments yet. DailyVox is also on the App Store for iPhone and iPad."
         }
       },
       {
@@ -53,7 +53,7 @@
         "name": "When will the DailyVox Android app be released?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "There is no announced release date. The app is feature-complete against the iPhone version in development builds, but it has not been tested on a broad range of physical devices and has not been submitted to the Play Store."
+          "text": "It is already released. DailyVox 1.0 for Android is live on Google Play for Android 13 or newer: https://play.google.com/store/apps/details?id=com.dailyvox.app"
         }
       },
       {
@@ -61,7 +61,7 @@
         "name": "Will the Android version have the same privacy guarantees?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "That was the condition for building it. The Android app requests no INTERNET permission, so it cannot send a journal anywhere regardless of what its code does. Android's automatic cloud backup, which would otherwise copy the database and audio to Google Drive, is explicitly disabled. Health Connect is opt-in, read-only, and limited to four record types."
+          "text": "That was the condition for building it. The Android app requests no INTERNET permission, so it cannot send a journal anywhere regardless of what its code does. Android's automatic cloud backup, which would otherwise copy the database and audio to Google Drive, is explicitly disabled. The app reads no health data in version 1.0."
         }
       }
     ]
@@ -1386,6 +1386,7 @@
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
         <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>

@@ -11,7 +11,7 @@ cluster: voice
 
 If you want on-device transcription with zero data leaving your phone, DailyVox is the best audio journal app for iPhone. It runs Apple's native speech recognition locally, works in airplane mode, and never touches an external server. 
 
-If you want interactive AI coaching and guided conversations based on your entries, Rosebud is the better option. If you need desktop access, Android support, and deep photo integration, Day One remains the standard.
+If you want interactive AI coaching and guided conversations based on your entries, Rosebud is the better option. If you need desktop access, sync across devices, and deep photo integration, Day One remains the standard.
 
 Here is how the top options compare when you want to speak your mind and get clean text back.
 
@@ -34,7 +34,7 @@ When you record in DailyVox, your iPhone transcribes the audio locally using App
 
 DailyVox also includes a local Digital Twin feature. It analyzes your linguistic and emotional patterns over time to show how your state of mind shifts, computed entirely on your hardware.
 
-**The limitation:** DailyVox is iPhone-only. There is no web app, and there is no Android version. If you do not use an iPhone, you cannot use DailyVox.
+**The limitation:** DailyVox runs on iPhone and Android phones only. There is no web app and no desktop app. If you want to read your journal on a computer, you cannot use DailyVox.
 
 ### 2. Day One
 Day One is the most mature journaling app on the market. It handles audio well. You tap record, speak your entry, and Day One transcribes the audio into text inside your journal entry.
@@ -68,7 +68,7 @@ Pick **DailyVox** if you use an iPhone and value privacy above everything else. 
 
 Pick **Rosebud** if you want your journal to answer back and prompt you to reflect deeper on specific problems.
 
-Pick **Day One** if you need cross-device access on Android or desktop, along with traditional multi-journal organization.
+Pick **Day One** if you need cross-device sync or desktop access, along with traditional multi-journal organization.
 
 Pick **Apple Journal** if you only record occasional short voice clips alongside photos and places you visited.
 

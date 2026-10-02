@@ -68,7 +68,7 @@ It does not work offline. Every prompt you submit is processed through remote la
 
 | App | Works in Airplane Mode? | AI / ML Type | Data Leaves Device? | Primary Platform |
 | :--- | :--- | :--- | :--- | :--- |
-| **DailyVox** | Yes | Speech-to-text, Local Pattern Modeling | No | iOS only |
+| **DailyVox** | Yes | Speech-to-text, Local Pattern Modeling | No | iPhone, Android |
 | **Apple Journal** | Yes | On-device Activity Classification | No | iOS only |
 | **Day One** | Yes (Syncs later) | Basic local indexing | Optional (Sync) | iOS, Mac, Android, Web |
 | **Daylio** | Yes | Local statistical aggregation | Optional (Backup) | iOS, Android |
@@ -80,7 +80,7 @@ It does not work offline. Every prompt you submit is processed through remote la
 
 Local software has sharp constraints.
 
-DailyVox is iOS-only. There is no web app. There is no Android build. If you want to open a browser tab on a Windows laptop and read your past entries, you cannot do it. 
+DailyVox runs on iPhone and Android phones only. There is no web app. If you want to open a browser tab on a Windows laptop and read your past entries, you cannot do it. 
 
 Furthermore, local models cannot match the broad general knowledge of a 400-billion-parameter remote model running on a warehouse of GPUs. An offline voice journal can transcribe your speech accurately and detect your emotional patterns, but it will not write long-form analytical essays about your life philosophy. 
 
