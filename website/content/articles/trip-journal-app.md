@@ -31,7 +31,7 @@ I built DailyVox because I got tired of losing field notes on long flights and m
 
 It is an open-source, voice-first journal for iPhone. You tap record, talk, and Apple's native speech framework transcribes your words right on the phone. Everything stays local. It runs in airplane mode without a hiccup. The App Store privacy label is "Data Not Collected" because there are no analytics, no accounts, and no backend servers. It also has a local Digital Twin feature that tracks recurring emotional patterns across entries, running entirely on-device.
 
-The limitation is absolute: DailyVox does not handle photos, maps, or Android devices. If your idea of a travel log is a visual scrapbook with pins on a world map, DailyVox is not what you want. It is purely for the spoken record of what happened and how it felt.
+The limitation is absolute: DailyVox does not handle photos or maps. If your idea of a travel log is a visual scrapbook with pins on a world map, DailyVox is not what you want. It is purely for the spoken record of what happened and how it felt.
 
 ### 2. Day One: For traditional travel scrapbooking
 

@@ -1715,12 +1715,34 @@ section.band.g-paper2{background:var(--band)!important}
     <h2 class="nothing-stmt reveal" id="shield-h"><span class="big">Nothing</span> leaves your phone.<span class="nothing-aside">On purpose. It's the architecture, not a promise.</span></h2>
     <p class="proxy reveal">Attach a network proxy during a 2-minute voice entry. Run the transcription, NLP, and Twin update. Zero bytes leave the device.</p>
     <div class="tiles">
-      <div class="tile feature reveal"><div class="big">0</div><div class="lab">network calls</div><p class="sub">Every AI operation runs on Apple's Neural Engine. Zero outbound requests, ever.</p></div>
-      <div class="tile reveal"><div class="big">0</div><div class="lab">third-party SDKs</div><p class="sub">No analytics, crash reporting, or ad SDKs. Apple frameworks only.</p></div>
-      <div class="tile reveal"><div class="big">AES-256</div><div class="lab">encryption</div><p class="sub">GCM authenticated encryption for backups. Keys in the Secure Enclave.</p></div>
-      <div class="tile reveal"><div class="big">no</div><div class="lab">account required</div><p class="sub">Data Not Collected — Apple's strictest privacy label.</p></div>
+      <div class="tile feature reveal"><div class="big">0</div><div class="lab">network calls</div><p class="sub">Every AI operation runs on the phone itself, iPhone or Android. Zero outbound requests, ever.</p></div>
+      <div class="tile reveal"><div class="big">0</div><div class="lab">third-party SDKs</div><p class="sub">No analytics, crash reporting, or ad SDKs. Platform frameworks only, on both phones.</p></div>
+      <div class="tile reveal"><div class="big">AES-256</div><div class="lab">encryption</div><p class="sub">GCM authenticated encryption for backups, in one format that opens on iPhone and Android.</p></div>
+      <div class="tile reveal"><div class="big">no</div><div class="lab">account required</div><p class="sub">"Data Not Collected" on the App Store. No data collected or shared on Google Play.</p></div>
     </div>
     <p class="shielded reveal">✦ your constellation is shielded</p>
+  </div>
+</section>
+
+<!-- ANDROID -->
+<section class="g-paper2 clip band b-ivory" aria-labelledby="android-h">
+  <div class="wrap inner">
+    <div class="section-head reveal">
+      <p class="eyebrow terra">new · android 1.0</p>
+      <h2 id="android-h">Now on <span class="accent">Android.</span></h2>
+      <p class="deck" style="margin-top:18px">Same journal, same Twin, same rule. The Android app requests no internet permission at all, so an entry has no route off the phone. You can check that in Android's own Settings › Apps › DailyVox › Permissions, without trusting a word of this page.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile feature reveal"><div class="big">0</div><div class="lab">internet permission</div><p class="sub">Android's own permission screen lists the microphone and notifications. Nothing else. The operating system refuses a network connection on our behalf.</p></div>
+      <div class="tile reveal"><div class="big">13+</div><div class="lab">Android version</div><p class="sub">Where the on-device speech recogniser arrived. DailyVox never transcribes over a network instead.</p></div>
+      <div class="tile reveal"><div class="big">off</div><div class="lab">Google Drive backup</div><p class="sub">Android Auto Backup is switched off, so the system never copies your journal to the cloud.</p></div>
+      <div class="tile reveal"><div class="big">1</div><div class="lab">backup format</div><p class="sub">An encrypted backup made on Android opens on an iPhone, and the other way round.</p></div>
+      <div class="tile reveal"><div class="big">1.0</div><div class="lab">its own version line</div><p class="sub">No AI chat, health data or photos yet, and English only. The roadmap lists what comes next.</p></div>
+    </div>
+    <div class="reveal" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:34px">
+      <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="pill">Get it on Google Play →</a>
+      <a href="/blog/dailyvox-on-android" style="font-weight:700">Why it cannot reach the internet →</a>
+    </div>
   </div>
 </section>
 
