@@ -370,7 +370,14 @@ private struct SpeakScreen: View {
         }
         .onAppear(perform: autoDemo)
         .sheet(isPresented: $typing) {
-            TypeFirstEntryView(text: $typedText, onSave: finishTyped, onCancel: { typing = false })
+            // Shared with the Today screen (TypedEntryComposer.swift), so the
+            // typed path is the same product on day one and day one hundred.
+            TypedEntryComposer(text: $typedText,
+                               title: "Your first star",
+                               footnote: "Stored only on your phone.",
+                               style: .onboarding,
+                               onSave: finishTyped,
+                               onCancel: { typing = false })
         }
     }
 
@@ -495,59 +502,6 @@ private struct SpeakScreen: View {
             }
             finish()
         }
-    }
-}
-
-// MARK: - Type instead (escape hatch for "I can't talk right now")
-
-private struct TypeFirstEntryView: View {
-    @Binding var text: String
-    var onSave: () -> Void
-    var onCancel: () -> Void
-    @FocusState private var focused: Bool
-
-    private var isEmpty: Bool { text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Button("Cancel", action: onCancel).foregroundColor(OB.inkMute)
-                Spacer()
-                Text("Your first star")
-                    .font(.dv(.subheadline, design: .rounded, weight: .semibold)).foregroundColor(OB.ink)
-                Spacer()
-                Button("Save", action: onSave)
-                    .fontWeight(.semibold)
-                    .foregroundColor(isEmpty ? OB.inkMute : OB.sage)
-                    .disabled(isEmpty)
-            }
-            .font(.dv(.subheadline, design: .rounded))
-            .padding()
-
-            Text("How was your day, really?")
-                .font(.dv(.title2, design: .rounded, weight: .bold))
-                .foregroundColor(OB.ink)
-                .padding(.top, 4)
-
-            TextEditor(text: $text)
-                .font(.dv(.body, design: .rounded))
-                .foregroundColor(OB.ink)
-                .scrollContentBackground(.hidden)
-                .padding(12)
-                .background(OB.card)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(OB.rule, lineWidth: 1))
-                .frame(height: 200)
-                .padding()
-                .focused($focused)
-
-            Text("Stored only on your phone.")
-                .font(.dv(.caption, design: .rounded)).foregroundColor(OB.inkMute)
-
-            Spacer()
-        }
-        .background(OB.paper.ignoresSafeArea())
-        .onAppear { focused = true }
     }
 }
 

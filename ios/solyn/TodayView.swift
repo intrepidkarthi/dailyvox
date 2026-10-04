@@ -87,6 +87,7 @@ struct TodayView: View {
     @State private var showSettings = ScreenshotScene.current == .settings
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
+    @State private var errorTitle: String?
     @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var processingPhase: Int = 0
@@ -98,6 +99,11 @@ struct TodayView: View {
     /// B2b. True between Pause and Resume — the recording is open but not
     /// listening, which is a third state the screen never had.
     @State private var isPaused = false
+    /// "I can't talk right now" — the typed composer. The draft survives a
+    /// Cancel on purpose: someone interrupted mid-sentence by a coworker should
+    /// not lose what they had written.
+    @State private var typing = false
+    @State private var typedText = ""
 
     // Research pilot: optional post-recording self-label picker (Settings → Research).
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
@@ -203,11 +209,20 @@ struct TodayView: View {
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
+        .sheet(isPresented: $typing) {
+            TypedEntryComposer(text: $typedText,
+                               title: "Today",
+                               footnote: "Typed, not recorded. Nothing is sent to DailyVox.",
+                               style: .themed,
+                               onSave: saveTypedEntry,
+                               onCancel: { typing = false })
+        }
         // "Saved" fallbacks (offline / failed transcription) aren't errors —
         // don't greet a successfully kept recording with "Recording Error".
-        .alert(errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error", isPresented: Binding(
+        // A typed entry has no recording, so it brings its own title.
+        .alert(errorTitle ?? (errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error"), isPresented: Binding(
             get: { errorMessage != nil },
-            set: { if !$0 { errorMessage = nil } }
+            set: { if !$0 { errorMessage = nil; errorTitle = nil } }
         )) {
             Button("OK", role: .cancel) { }
         } message: {
@@ -395,6 +410,9 @@ struct TodayView: View {
                     .font(.dv(size: 10, weight: .semibold, design: .monospaced))
                     .tracking(1.4)
                     .foregroundColor(theme.secondaryTextColor)
+
+                typeInsteadButton
+                    .padding(.top, -10)
             }
 
             Color.clear.frame(height: DailyVoxTabBar.reservedHeight)
@@ -557,8 +575,38 @@ struct TodayView: View {
                 .tracking(1.4)
                 .foregroundColor(theme.secondaryTextColor)
                 .multilineTextAlignment(.center)
+
+            typeInsteadButton
+                .padding(.top, -20)   // reads as the caption's second line, not a fourth object
         }
         .frame(maxWidth: .infinity)
+    }
+
+    /// The quiet way out of speaking. Same words as onboarding's escape hatch
+    /// so the two read as one feature. A text link, not a second button: the
+    /// mic stays the only primary action, and this is there for the hours of
+    /// the day when speaking aloud is not possible — at work, around family.
+    private var typeInsteadButton: some View {
+        Button {
+            HapticManager.shared.buttonTap()
+            typing = true
+        } label: {
+            Text("I can\u{2019}t talk right now")
+                .font(.dv(.footnote, design: .rounded, weight: .medium))
+                .foregroundColor(theme.accentColor)
+                .frame(minHeight: 44)
+                .padding(.horizontal, 12)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        // Hidden rather than merely disabled while a recording is being
+        // transcribed: a typed save then would race the transcript's append to
+        // the same entry. Opacity, not removal, so the mic does not jump.
+        .opacity(recordingState == .idle ? 1 : 0)
+        .disabled(recordingState != .idle)
+        .accessibilityHidden(recordingState != .idle)
+        .accessibilityLabel("Type an entry instead")
+        .accessibilityHint("Opens a text editor. Saves to today\u{2019}s entry without recording.")
     }
 
     private var micCaption: String {
@@ -1146,8 +1194,10 @@ struct TodayView: View {
         }
     }
 
-    private func saveEntry(audioURL: URL, duration: TimeInterval) {
-        let now = Date()
+    /// The day's one entry, created if this is the first thing said (or typed)
+    /// today. Voice and typed captures both append to it, so a day that mixes
+    /// the two is still one star.
+    private func todayEntryForAppend(at now: Date) -> DiaryEntry {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: now)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? now
@@ -1157,17 +1207,139 @@ struct TodayView: View {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         fetchRequest.fetchLimit = 1
 
-        let entry: DiaryEntry
         if let existing = (try? viewContext.fetch(fetchRequest))?.first {
-            entry = existing
-        } else {
-            entry = DiaryEntry(context: viewContext)
-            entry.id = UUID()
-            entry.date = now
-            entry.createdAt = now
-            entry.text = ""
-            entry.isStarred = false
+            return existing
         }
+        let entry = DiaryEntry(context: viewContext)
+        entry.id = UUID()
+        entry.date = now
+        entry.createdAt = now
+        entry.text = ""
+        entry.isStarred = false
+        return entry
+    }
+
+    /// "I can't talk right now" → Save. Deliberately the same path a
+    /// transcript takes once it arrives (`commitText`), so a typed entry
+    /// updates the Twin, widgets, streak, reminders and Live Activities
+    /// exactly as a spoken one does. It touches no audio field, which is what
+    /// keeps play buttons and durations off it everywhere they are drawn.
+    private func saveTypedEntry() {
+        let segment = typedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !segment.isEmpty, recordingState == .idle else { return }
+        let entry = todayEntryForAppend(at: Date())
+        // No speech, so no duration for this segment. Passing the day's total
+        // would credit typed words to a recording's length.
+        guard commitText(segment, to: entry, twinDuration: 0) else {
+            // A brand-new entry that failed to save must not linger unsaved in
+            // the context, or the next capture would pick it up half-made.
+            if entry.isInserted { viewContext.delete(entry) }
+            typing = false
+            HapticManager.shared.error()
+            // After the sheet is gone: an alert raised while it is still
+            // dismissing is silently dropped.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                errorTitle = "Entry Not Saved"
+                errorMessage = "Couldn\u{2019}t save your entry. What you typed is kept \u{2014} tap \u{201C}I can\u{2019}t talk right now\u{201D} to try again."
+            }
+            return
+        }
+        entryCaptured(entry)
+        typedText = ""
+        typing = false
+    }
+
+    /// Appends a segment of text to the day's entry, saves, and tells
+    /// everything downstream. Shared by the transcript and the typed path.
+    @discardableResult
+    private func commitText(_ segment: String, to entry: DiaryEntry, twinDuration: Double) -> Bool {
+        let existingText = entry.text ?? ""
+        if existingText.isEmpty {
+            entry.text = segment
+        } else {
+            entry.text = existingText + "\n\n" + segment
+        }
+        entry.updatedAt = Date()
+        do {
+            try viewContext.save()
+        } catch {
+            entry.text = existingText
+            logger.error("Failed to save entry text: \(error.localizedDescription)")
+            return false
+        }
+        HapticManager.shared.entrySaved()
+        ReviewManager.shared.recordEntry()
+        WidgetCenter.shared.reloadAllTimelines()
+
+        // Show celebration for first-ever entry
+        if !UserDefaults.standard.bool(forKey: "hasCompletedFirstEntry") {
+            UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
+            withAnimation(.spring(response: 0.4)) {
+                self.showFirstEntryMoment = true
+            }
+        }
+
+        // Feed into Digital Twin for learning
+        DigitalTwinEngine.shared.processEntry(
+            text: segment,
+            mood: entry.mood,
+            date: entry.date ?? Date(),
+            duration: twinDuration,
+            entryId: entry.id?.uuidString
+        )
+
+        // Fire the "a new star appeared" Live Activity and
+        // refresh the persistent streak Live Activity (if opted in).
+        Task { @MainActor in
+            let streak = currentStreak(in: viewContext)
+            let total = totalEntryCount(in: viewContext)
+            // Celebrate only the FIRST entry of the day. Subsequent
+            // same-day entries must not stack a new "a new star
+            // appeared" Live Activity each time.
+            if entriesTodayCount(in: viewContext) <= 1 {
+                LiveActivityManager.shared.fireStarBirthActivity(
+                    streak: streak,
+                    totalStars: total,
+                    moodRaw: entry.mood ?? ""
+                )
+            }
+            LiveActivityManager.shared.refreshStreakActivity(
+                streak: streak,
+                hasEntryToday: true,
+                totalEntries: total
+            )
+        }
+        return true
+    }
+
+    /// What happens at the moment of capture: before the transcript for voice,
+    /// after the text for typing. Assumes the entry has just been saved.
+    private func entryCaptured(_ entry: DiaryEntry) {
+        // Clear any selected prompt once an entry has been saved
+        selectedPrompt = nil
+        WidgetCenter.shared.reloadAllTimelines()
+        // Tonight is spoken for, so drop tonight's reminder. The Settings
+        // card promises "skips once you've spoken" and this is the moment
+        // that makes it true.
+        ReminderManager.shared.refresh(in: viewContext)
+        // Body Twin: offer this moment's body signals to the review queue.
+        // Fire-and-forget — never delays or fails the save. Voice and typed
+        // captures on this screen are the ONLY capture sites (onboarding
+        // seeds, Siri, imports and edits deliberately never snapshot).
+        Task { await BodyTwinManager.shared.captureSnapshotIfEligible() }
+
+        // Research pilot: offer the one-tap self-label right at the capture
+        // moment (labels must never be retrospective). Does not wait for
+        // transcription; latest-wins if the day already carries a label.
+        if pilotLabelingEnabled
+            || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
+            withAnimation(.spring(response: 0.4)) { labelTarget = entry }
+        }
+    }
+
+    private func saveEntry(audioURL: URL, duration: TimeInterval) {
+        let now = Date()
+        let entry = todayEntryForAppend(at: now)
 
         entry.updatedAt = now
         let newFileName = audioURL.lastPathComponent
@@ -1184,26 +1356,7 @@ struct TodayView: View {
 
         do {
             try viewContext.save()
-            // Clear any selected prompt once an entry has been saved
-            selectedPrompt = nil
-            WidgetCenter.shared.reloadAllTimelines()
-            // Tonight is spoken for, so drop tonight's reminder. The Settings
-            // card promises "skips once you've spoken" and this is the moment
-            // that makes it true.
-            ReminderManager.shared.refresh(in: viewContext)
-            // Body Twin: offer this moment's body signals to the review queue.
-            // Fire-and-forget — never delays or fails the save, and this is the
-            // ONLY capture site (onboarding seeds, Siri, imports and edits
-            // deliberately never snapshot).
-            Task { await BodyTwinManager.shared.captureSnapshotIfEligible() }
-
-            // Research pilot: offer the one-tap self-label right at the recording
-            // moment (labels must never be retrospective). Does not wait for
-            // transcription; latest-wins if the day already carries a label.
-            if pilotLabelingEnabled
-                || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
-                withAnimation(.spring(response: 0.4)) { labelTarget = entry }
-            }
+            entryCaptured(entry)
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -1215,60 +1368,7 @@ struct TodayView: View {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let textSegment):
-                    let existingText = entry.text ?? ""
-                    if existingText.isEmpty {
-                        entry.text = textSegment
-                    } else {
-                        entry.text = existingText + "\n\n" + textSegment
-                    }
-                    entry.updatedAt = Date()
-                    do {
-                        try viewContext.save()
-                        HapticManager.shared.entrySaved()
-                        ReviewManager.shared.recordEntry()
-                        WidgetCenter.shared.reloadAllTimelines()
-
-                        // Show celebration for first-ever entry
-                        if !UserDefaults.standard.bool(forKey: "hasCompletedFirstEntry") {
-                            UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
-                            withAnimation(.spring(response: 0.4)) {
-                                self.showFirstEntryMoment = true
-                            }
-                        }
-
-                        // Feed into Digital Twin for learning
-                        DigitalTwinEngine.shared.processEntry(
-                            text: textSegment,
-                            mood: entry.mood,
-                            date: entry.date ?? Date(),
-                            duration: entry.duration,
-                            entryId: entry.id?.uuidString
-                        )
-
-                        // Fire the "a new star appeared" Live Activity and
-                        // refresh the persistent streak Live Activity (if opted in).
-                        Task { @MainActor in
-                            let streak = currentStreak(in: viewContext)
-                            let total = totalEntryCount(in: viewContext)
-                            // Celebrate only the FIRST entry of the day. Subsequent
-                            // same-day entries must not stack a new "a new star
-                            // appeared" Live Activity each time.
-                            if entriesTodayCount(in: viewContext) <= 1 {
-                                LiveActivityManager.shared.fireStarBirthActivity(
-                                    streak: streak,
-                                    totalStars: total,
-                                    moodRaw: entry.mood ?? ""
-                                )
-                            }
-                            LiveActivityManager.shared.refreshStreakActivity(
-                                streak: streak,
-                                hasEntryToday: true,
-                                totalEntries: total
-                            )
-                        }
-                    } catch {
-                        logger.error("Failed to update entry with transcription: \(error.localizedDescription)")
-                    }
+                    commitText(textSegment, to: entry, twinDuration: entry.duration)
                 case .failure(let error):
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
