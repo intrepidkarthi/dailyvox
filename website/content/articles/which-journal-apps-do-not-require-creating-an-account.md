@@ -31,7 +31,7 @@ There are no servers. There is no database. You open the app and speak. Apple's 
 
 DailyVox includes a local "Digital Twin" feature. It analyzes your syntax and emotional tone over time to surface personal reflection patterns. Because that model runs entirely on the iPhone processor, nothing leaves the hardware. The App Store privacy nutrition label states flatly: "Data Not Collected."
 
-The limitation is absolute: DailyVox is iPhone-only. There is no web app, no Android client, and no typing interface. If you do not want to speak your entries out loud, it is useless to you.
+The limitation is absolute: DailyVox runs on iPhone and Android phones only. There is no web app and no typing interface. If you do not want to speak your entries out loud, it is useless to you.
 
 ### 3. Daylio
 Daylio is a micro-journaling app based on mood selection and activity icons. You do not type long essays. You tap your mood, pick icons for what you did that day, and move on.

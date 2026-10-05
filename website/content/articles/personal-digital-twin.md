@@ -33,7 +33,7 @@ Different journaling tools solve different problems. Choosing the right one depe
 
 DailyVox is a free, open-source voice journaling app for iPhone. It builds a personal digital twin locally on your device using Apple's frameworks. Everything runs offline. Turn on airplane mode and the app works identically. Data syncs only through your personal CloudKit account if you choose to enable it. 
 
-The primary limitation of DailyVox is platform availability. It is iPhone-only. There is no web app, and there is no Android version. If you switch to Android, your twin stays behind.
+The primary limitation of DailyVox is platform availability. It runs on iPhone and Android phones only. There is no web app and no desktop app, and nothing syncs between devices. If you switch phones, you carry your journal over with an encrypted backup file. The Android version also does not have the on-device chat that the iPhone version has.
 
 Here is how other popular apps compare:
 

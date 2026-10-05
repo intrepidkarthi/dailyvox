@@ -42,7 +42,7 @@
     "headline":"DailyVox Technology: On-Device AI Architecture",
     "description":"Technical deep-dive into DailyVox's on-device AI pipeline.",
     "url":"https://getdailyvox.com/technology",
-    "datePublished":"2026-04-17","dateModified":"2026-07-27",
+    "datePublished":"2026-04-17","dateModified":"2026-10-02",
     "author":{"@type":"Person","name":"Karthikeyan NG","url":"https://github.com/intrepidkarthi"},
     "publisher":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com"},
     "image":"https://getdailyvox.com/og-image.png?v=1111"
@@ -952,12 +952,12 @@
     "description": "A voice journal for iPhone where every entry becomes a star in a private constellation. 100% on-device AI, no servers, no accounts, no data collection. Open source on GitHub.",
     "applicationCategory": "LifestyleApplication",
     "applicationSubCategory": "Journal",
-    "operatingSystem": "iOS 17.0 or later",
+    "operatingSystem": "iOS 17.0 or later, Android 13 or later",
     "url": "https://getdailyvox.com",
-    "downloadUrl": "https://apps.apple.com/app/id6760454642",
+    "downloadUrl": ["https://apps.apple.com/app/id6760454642", "https://play.google.com/store/apps/details?id=com.dailyvox.app"],
     "softwareVersion": "1.11.0",
     "datePublished": "2026-03-23",
-    "dateModified": "2026-07-04",
+    "dateModified": "2026-10-02",
     "image": "https://getdailyvox.com/app-icon.png",
     "screenshot": "https://getdailyvox.com/og-image.png?v=1111",
     "offers": {
@@ -1289,7 +1289,7 @@
           <span class="sec-tag">port.mapping[]</span>
         </div>
 
-        <p>DailyVox is live on iPhone. A native Android app is <strong>in development</strong> — not released, and not a wrapper around the iOS one. It is Kotlin and Jetpack Compose, built against the same Twin engine contracts, because the promise that has to survive the port is the one people actually chose the app for: <strong>nothing leaves the phone.</strong></p>
+        <p>DailyVox is live on iPhone, and on Android through <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a> — version 1.0, for Android 13 or newer. The Android app is native, not a wrapper around the iOS one. It is Kotlin and Jetpack Compose, built against the same Twin engine contracts, because the promise that has to survive the port is the one people actually chose the app for: <strong>nothing leaves the phone.</strong></p>
 
         <p>That promise turned out to be the hard part, and not for the reason you would guess. Apple hands you a whole on-device AI stack for free. Android does not — there is no system sentiment API, no system name recogniser, and the strong open NER models inherit training corpora that restrict commercial use. So every gap had to be closed with something measurable rather than something convenient.</p>
 
@@ -1316,7 +1316,7 @@
             <tr>
               <td>Storage</td>
               <td data-l="iPhone">Core Data</td>
-              <td data-l="Android">Room, same schema shape so exports are portable</td>
+              <td data-l="Android">Room, same schema shape so exports are portable; encrypted backups open on either platform</td>
             </tr>
             <tr>
               <td>Lock</td>
@@ -1326,7 +1326,7 @@
             <tr>
               <td>Body signals</td>
               <td data-l="iPhone">HealthKit</td>
-              <td data-l="Android">Health Connect — opt-in, read-only, four record types</td>
+              <td data-l="Android">Not in v1.0 — no health data on Android yet</td>
             </tr>
             <tr>
               <td>Voice analysis</td>
@@ -1353,9 +1353,9 @@
 
         <h3>What the port costs, stated plainly</h3>
 
-        <p>Android's on-device recogniser needs a language pack that this app <em>cannot download</em> — it holds no internet permission of any kind, which is the entire point. On a phone without the pack, recording fails and the app says so, and points at the Android setting that fixes it. It does not quietly transcribe over a network instead.</p>
+        <p>Android's on-device recogniser needs an offline speech pack, and DailyVox itself <em>cannot download</em> one — it holds no internet permission of any kind, which is the entire point. On a phone without the pack, the app offers to have the phone's own speech service download it. It does not quietly transcribe over a network instead. You can check the permission yourself in Android Settings › Apps › DailyVox › Permissions, and Android's automatic backup is disabled, so the journal is not copied to Google Drive.</p>
 
-        <p>There is also no free-form conversational Twin on Android. A model small enough to ship to every phone in the target audience would guess, and a Twin that guesses about your own life is worse than one that stays quiet. Ask answers structured questions from real statistics and cites the entries it used — which works on every device rather than only the newest ones.</p>
+        <p>There is also no free-form conversational Twin on Android. A model small enough to ship to every phone in the target audience would guess, and a Twin that guesses about your own life is worse than one that stays quiet. Ask answers from your own entries, names the entries it used, and says when it does not know — which works on every supported device rather than only the newest ones. Android 1.0 is also English only, and has no health data and no photo attachments.</p>
       </section>
 
       <!-- §04 Twin Engine -->
@@ -1619,8 +1619,8 @@
             <div class="rd-body">
               <div class="rd-tag rd-done-txt">Shipped · v1.10.0</div>
               <h3>The Twin speaks your language</h3>
-              <p>The interface ships in Spanish, French, German and Italian, chosen because every feature works fully in them — search by meaning relies on on-device sentence embeddings Apple provides for a limited set of languages. Recording already worked in every language the iPhone can transcribe; this release changed the interface. iPhone-only by conviction: no macOS or visionOS targets. Depth on one platform, breadth in languages.</p>
-              <div class="rd-tags"><span>String Catalogs</span><span>60+ Languages</span><span>iPhone-only</span></div>
+              <p>The interface ships in Spanish, French, German and Italian, chosen because every feature works fully in them — search by meaning relies on on-device sentence embeddings Apple provides for a limited set of languages. Recording already worked in every language the iPhone can transcribe; this release changed the interface. Phone-first by conviction: no macOS or visionOS targets.</p>
+              <div class="rd-tags"><span>String Catalogs</span><span>60+ Languages</span><span>Phone-first</span></div>
             </div>
           </div>
           <div class="rd-item">
@@ -1633,12 +1633,12 @@
             </div>
           </div>
           <div class="rd-item">
-            <div class="rd-dot rd-next">○</div>
+            <div class="rd-dot rd-done">✓</div>
             <div class="rd-body">
-              <div class="rd-tag rd-next-txt">In development · Android</div>
+              <div class="rd-tag rd-done-txt">Shipped · Android 1.0 · Google Play</div>
               <h3>The same Twin, on the other half of the world's phones</h3>
-              <p>A native Kotlin and Jetpack Compose app, not a wrapper. Every feature the iPhone app has, reached differently where Android gives you nothing to reach with: a bundled VADER lexicon instead of a system sentiment API, a model-free name detector instead of a licence-encumbered NER model, MediaCodec and plain arithmetic instead of Accelerate. Health Connect for body signals, opt-in and read-only. <strong>No internet permission of any kind</strong> — the same claim as iOS, verifiable the same way, in Android's own app info screen.</p>
-              <div class="rd-tags"><span>Kotlin</span><span>Jetpack Compose</span><span>Room</span><span>VADER</span><span>Health Connect</span><span>BiometricPrompt</span><span>Zero network permissions</span></div>
+              <p>A native Kotlin and Jetpack Compose app, not a wrapper, live on <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a> for Android 13 or newer. The same core, reached differently where Android gives you nothing to reach with: a bundled VADER lexicon instead of a system sentiment API, a model-free name detector instead of a licence-encumbered NER model, MediaCodec and plain arithmetic instead of Accelerate. Version 1.0 is English only, with no on-device chat and no health data. <strong>No internet permission of any kind</strong> — verifiable in Android Settings › Apps › DailyVox › Permissions.</p>
+              <div class="rd-tags"><span>Kotlin</span><span>Jetpack Compose</span><span>Room</span><span>VADER</span><span>BiometricPrompt</span><span>Zero network permissions</span></div>
             </div>
           </div>
           <div class="rd-item">
@@ -1753,9 +1753,14 @@
         </div>
         <h2>Try <em>DailyVox.</em></h2>
         <p>Free. Private. No account needed. All AI runs on your device.</p>
-        <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
-          Download free on the App Store <span class="arr">→</span>
-        </a>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+          <a href="https://apps.apple.com/app/id6760454642" class="btn-primary">
+            Download free on the App Store <span class="arr">→</span>
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="btn-primary">
+            Get it on Google Play <span class="arr">→</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -1771,6 +1776,7 @@
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
         <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>

@@ -59,7 +59,7 @@ DailyVox is an open-source (MIT) voice journaling app for iPhone. It runs entire
 
 You tap a button and talk. The app transcribes your speech locally. It also includes an on-device "Digital Twin" that maps your emotional patterns across entries over time without your data ever leaving your pocket.
 
-Here is the plain limitation: DailyVox is iPhone-only. There is no web dashboard, no iPad build, and no Android version. If you need cross-platform access or prefer typing on a physical keyboard, DailyVox is the wrong tool for you.
+Here is the plain limitation: DailyVox runs on iPhone and Android phones only. There is no web dashboard, no iPad build, no desktop app, and no sync between iPhone and Android. If you need cross-device access or prefer typing on a physical keyboard, DailyVox is the wrong tool for you.
 
 ## How to Pick
 

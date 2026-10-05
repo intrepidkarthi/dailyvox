@@ -47,7 +47,7 @@ A local model is not psychic. It cannot know that your tire blew out on the high
 
 The Digital Twin predicts baselines, not random shocks. It forecasts your internal rhythm based on past habits. If life throws a sudden crisis at you on a Tuesday morning that is usually calm, the initial prediction will be wrong. 
 
-The prediction corrects itself the moment you speak and the on-device transcription processes your actual voice. But if you expect an app to magically know what happened in your physical world without you telling it, nothing on the market does that. DailyVox is also iPhone-only. There is no web dashboard, and there is no Android build.
+The prediction corrects itself the moment you speak and the on-device transcription processes your actual voice. But if you expect an app to magically know what happened in your physical world without you telling it, nothing on the market does that. DailyVox is also phone-only. It runs on iPhone and Android, and there is no web dashboard.
 
 ## Why this has to run on-device
 

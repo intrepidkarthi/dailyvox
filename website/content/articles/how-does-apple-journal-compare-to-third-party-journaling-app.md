@@ -27,7 +27,7 @@ Third-party alternatives handle this better:
 
 - **Day One** has native apps across iOS, iPadOS, macOS, watchOS, and Android. You can start an entry on your phone and finish it on your laptop.
 - **Journey** works in any browser, on Windows, and on Android. 
-- **DailyVox** is also iPhone-only, but it targets voice instead of typing. 
+- **DailyVox** runs on iPhone and Android, and it targets voice instead of typing. There is no web or desktop version. 
 
 If cross-device access matters to you, Apple Journal is a non-starter.
 

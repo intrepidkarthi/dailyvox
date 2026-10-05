@@ -64,7 +64,7 @@ DailyVox has no servers. It requires no account, email, or phone number. The App
 
 Voice transcription runs on-device using Apple's native speech frameworks. The app includes a local "Digital Twin" that analyzes your emotional patterns over time, but that model runs entirely on the iPhone's neural engine. It functions identically with Wi-Fi and cellular turned off.
 
-Here is the honest limitation: DailyVox is iPhone-only. There is no web app, no iPad version, and no Android build. If you switch to an Android phone next year, your entries will not follow you through an automatic cross-platform sync engine. You have to export your data manually.
+Here is the honest limitation: DailyVox runs on iPhone and Android phones only. There is no web app and no iPad version. If you switch from iPhone to Android next year, your entries will not follow you through an automatic sync engine. You move them yourself with an encrypted backup file.
 
 | App | Account Required? | Works Fully Offline? | Open Source? | Cloud Sync Method |
 | :--- | :--- | :--- | :--- | :--- |

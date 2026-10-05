@@ -23,11 +23,11 @@ If you want absolute privacy, you need an architecture that makes data extractio
 
 ## How DailyVox Works
 
-The app is iPhone-only. I did not build a web version or an Android app because syncing across platforms forces you to use cloud databases. 
+The app runs on iPhone and Android. I did not build a web version or any sync between iPhone and Android because syncing across platforms forces you to use cloud databases. To move phones, you carry an encrypted backup file. 
 
 Inside the app, a local "Digital Twin" models your emotional patterns right on your phone. This processing happens in your hand, not in a server farm. Your emotional history stays yours. 
 
-The honest limitation is that you cannot access your entries from a web browser or an iPad. If you lose your iPhone and forgot to back it up, your journal is gone. That is the trade-off for true zero-knowledge local privacy. 
+The honest limitation is that you cannot access your entries from a web browser or an iPad. If you lose your phone and forgot to back it up, your journal is gone. That is the trade-off for true zero-knowledge local privacy. 
 
 ## How Alternatives Handle Privacy
 

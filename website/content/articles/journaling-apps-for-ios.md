@@ -55,7 +55,7 @@ It is free and open-source under the MIT license. Everything runs on-device usin
 
 When you speak, DailyVox transcribes the audio locally on your iPhone. A local "Digital Twin" models emotional patterns directly on the hardware, giving you insight into your recurring topics and mood trends without sending audio or text off your phone. 
 
-The limitation: DailyVox is iPhone-only. There is no iPad app, no web client, and no Android version. If you want to type extensive essays on a desktop keyboard, DailyVox will not fit your workflow. It is designed solely for rapid, private spoken entries.
+The limitation: DailyVox is a phone app. There is no iPad app and no web client. (It is also on Android.) If you want to type extensive essays on a desktop keyboard, DailyVox will not fit your workflow. It is designed solely for rapid, private spoken entries.
 
 ## How to Choose
 

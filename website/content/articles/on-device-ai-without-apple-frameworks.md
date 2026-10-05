@@ -49,9 +49,9 @@ The graph and retrieval code was already Foundation-only, so it ports unchanged.
 
 None of this makes Android free.
 
-The on-device LLM chat has no Android equivalent worth shipping yet. Apple Intelligence gives iPhones a 3B model in the OS; Android's landscape is fragmented enough that "on-device LLM chat" means different things on different handsets, so it is device-gated and later.
+The on-device LLM chat has no Android equivalent worth shipping yet. Apple Intelligence gives iPhones a 3B model in the OS; Android's landscape is fragmented enough that "on-device LLM chat" means different things on different handsets, so Android v1.0 ships without it. Ask your Twin on Android answers from your own entries and names the ones it used, but it is retrieval, not a chatbot.
 
-And sync is a real regression. iCloud gives iOS cross-device sync with no server on our side, which is the whole reason DailyVox can claim it runs no backend. Android has no equivalent that preserves that claim, so v1.0 is local-only with export. That is worse for the user, and naming it here is better than having it discovered in a review.
+And sync is a real regression. iCloud gives iOS cross-device sync with no server on our side, which is the whole reason DailyVox can claim it runs no backend. Android has no equivalent that preserves that claim, so v1.0 is local-only, with export and an encrypted backup file you move between phones yourself. That is worse for the user, and naming it here is better than having it discovered in a review.
 
 ## Why this generalises
 
@@ -61,4 +61,4 @@ Three times in a row, the cheapest thing was much cheaper than a model, and once
 
 Measure your case. The estimate I carried for two years was wrong in the direction that cost the most: it kept a platform closed on the strength of a number nobody had checked.
 
-DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.10; the Android port is in development. The engine measurements above are what changed that decision.
+DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.11, and the Android app is now on Google Play at v1.0, for Android 13 or newer. The engine measurements above are what changed that decision.

@@ -83,9 +83,9 @@ a{color:var(--terra)}
 <p>When you speak into DailyVox, the transcript generates in real time. The App Store privacy label confirms "Data Not Collected". It works in airplane mode. There are no user accounts, no subscriptions, and no remote databases.</p>
 <p>DailyVox also includes a "Digital Twin" feature. It maps your emotional patterns locally over time. It notices sentiment shifts across your entries without sending a single byte of data to an external API.</p>
 <h2>The Trade-off: One Stated Limitation</h2>
-<p>DailyVox has a hard limitation: it is iPhone-only.</p>
-<p>There is no web dashboard. There is no Android app. If you switch to an Android device next month, you cannot run DailyVox.</p>
-<p>Furthermore, while Apple's native Speech framework is fast, cloud-hosted models like OpenAI's Whisper sometimes handle rare jargon or heavy background noise better. If you need multi-device web access or conversational AI replies, DailyVox is the wrong tool for you. We chose strict offline privacy over cloud features.</p>
+<p>DailyVox has a hard limitation: it is phone-only.</p>
+<p>It runs on iPhone and Android, but there is no web dashboard and no desktop app, and nothing syncs between devices. If you switch phones next month, you move your journal with an encrypted backup file.</p>
+<p>Furthermore, while on-device speech recognition is fast, cloud-hosted models like OpenAI's Whisper sometimes handle rare jargon or heavy background noise better. If you need multi-device web access or conversational AI replies, DailyVox is the wrong tool for you. We chose strict offline privacy over cloud features.</p>
 <h2>Technical Differences: Cloud vs On-Device</h2>
 <p>How your voice is transcribed determines your privacy model.</p>
 <p>In a cloud-based voice app, your phone records an audio file. The app uploads that file over HTTPS to an API endpoint. A server transcribes the file, runs analysis, and returns text to your device. This requires an active internet connection and places trust in the developer's server security.</p>
@@ -93,12 +93,12 @@ a{color:var(--terra)}
 <p>If you turn on CloudKit in DailyVox, your data syncs exclusively through your personal iCloud account. We never see it because we do not operate servers.</p>
 <h2>Which App Fits Your Workflow?</h2>
 <p>Pick based on your actual constraints:</p>
-<p>- Choose <strong>Day One</strong> if you need web access, Android sync, or long-form media storage across devices. - Choose <strong>Rosebud</strong> if you want an AI chatbot to ask you guided questions after you speak. - Choose <strong>Apple Journal</strong> if you want basic voice notes tied to your iOS activity prompts. - Choose <strong>Daylio</strong> if you prefer tap-based habit tracking over speaking. - Choose <strong>DailyVox</strong> if you want an iPhone-only voice journal that runs offline with zero data collection.</p>
+<p>- Choose <strong>Day One</strong> if you need web access, Android sync, or long-form media storage across devices. - Choose <strong>Rosebud</strong> if you want an AI chatbot to ask you guided questions after you speak. - Choose <strong>Apple Journal</strong> if you want basic voice notes tied to your iOS activity prompts. - Choose <strong>Daylio</strong> if you prefer tap-based habit tracking over speaking. - Choose <strong>DailyVox</strong> if you want a voice journal for iPhone or Android that runs offline with zero data collection.</p>
 <p>### Frequently Asked Questions</p>
 <p><strong>What is the difference between a voice memo app and a voice journaling app?</strong> A voice memo app simply saves raw audio files. A voice journaling app transcribes your spoken audio into searchable text, organizes entries by date, and tracks sentiment or emotional patterns over time.</p>
 <p><strong>Does a voice journaling app work in airplane mode?</strong> Apps that run on-device, like DailyVox, work fully in airplane mode because transcription and analysis happen on your iPhone hardware. Apps that rely on cloud AI servers require an active internet connection to transcribe audio.</p>
 <p><strong>Are my voice entries private?</strong> Privacy depends on the app architecture. Cloud-based apps transfer audio to remote servers for processing. DailyVox processes audio on-device using Apple frameworks, earning the App Store "Data Not Collected" privacy label.</p>
-<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a></div>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Get it on Google Play</a></div>
 <div class="related"><a href="/blog/dailyvox-vs-reflection">DailyVox vs Reflection: on-device voice vs cloud AI coach</a><a href="/blog/dailyvox-vs-speakwise">DailyVox vs Speakwise: personal journal vs meeting notes</a><a href="/blog/dailyvox-vs-tinh">DailyVox vs tinh: two on-device voice journals</a><a href="/blog/dailyvox-vs-untold">DailyVox vs Untold: on-device vs cloud voice journaling</a></div>
 </main>
 <footer class="dv-footer">

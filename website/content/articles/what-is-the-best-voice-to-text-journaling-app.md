@@ -47,7 +47,7 @@ DailyVox is free and open-source under the MIT license. It runs entirely on your
 
 The app includes a local "Digital Twin" that maps your emotional patterns across past entries. That model lives on your phone. Nothing leaves the device. If you switch your phone to airplane mode, DailyVox works exactly the same as it does on Wi-Fi.
 
-Here is the honest limitation: DailyVox is iPhone-only. There is no web app, no Android version, and no desktop version. If you do not use an iPhone, you cannot use DailyVox. Furthermore, because it relies on Apple's on-device speech models rather than massive cloud servers, it occasionally misses obscure proper nouns or technical slang that an online transcription API might catch.
+Here is the honest limitation: DailyVox runs on iPhone and Android phones only. There is no web app and no desktop version. If you do not journal on your phone, you cannot use DailyVox. Furthermore, because it relies on the phone's on-device speech models rather than massive cloud servers, it occasionally misses obscure proper nouns or technical slang that an online transcription API might catch.
 
 ## How to Choose
 

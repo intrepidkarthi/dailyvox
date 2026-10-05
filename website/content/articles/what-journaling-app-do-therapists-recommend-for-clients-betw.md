@@ -55,7 +55,7 @@ Speaking is different. It lets you dump raw affect in two minutes while pacing y
 
 DailyVox runs entirely on your iPhone. There are no servers, no accounts, and no tracking. The App Store privacy label reads "Data Not Collected". It works in airplane mode. It uses Apple's on-device speech engine to transcribe your voice, and it includes a local Digital Twin that models your emotional patterns without your words ever leaving the silicon on your phone.
 
-Here is the honest limitation: DailyVox is iPhone-only. It has no web dashboard and no Android version. It also will not export a neat clinical report to hand to your doctor. If you want to share an entry with your therapist, you have to read it aloud from your phone or play them the audio.
+Here is the honest limitation: DailyVox runs on iPhone and Android phones only. It has no web dashboard. It also will not export a neat clinical report to hand to your doctor. If you want to share an entry with your therapist, you have to read it aloud from your phone or play them the audio.
 
 ### Apple Journal: Best for Frictionless iOS Integration
 

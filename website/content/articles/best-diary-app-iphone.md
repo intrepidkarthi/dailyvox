@@ -53,7 +53,7 @@ You open the app, press record, and talk. Everything runs locally on your iPhone
 
 DailyVox includes an on-device "Digital Twin" that models your emotional patterns and recurring themes over time. Because this processing happens locally, your emotional data never leaves your hardware.
 
-Here is the honest limitation: DailyVox is iPhone-only. There is no iPad app, no web client, and no Android version. If you prefer typing on a physical keyboard or want to view entries on a desktop monitor, DailyVox will not work for you. It is built strictly for hand-held, spoken reflection.
+Here is the honest limitation: DailyVox is a phone app. There is no iPad app and no web client. (It is also on Android, if you ever switch.) If you prefer typing on a physical keyboard or want to view entries on a desktop monitor, DailyVox will not work for you. It is built strictly for hand-held, spoken reflection.
 
 ## Quick Comparison
 

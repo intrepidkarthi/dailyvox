@@ -29,7 +29,7 @@ DailyVox is built for people who want the reflective utility of an AI journal wi
 
 You speak into it. The app transcribes your voice using Apple's local speech recognition. A local component called the Digital Twin builds a model of your emotional patterns over time, spotting recurring themes across your entries. Because this model runs locally on your iPhone, you can turn off Wi-Fi, put your phone in airplane mode, and use it without interruption.
 
-Here is the honest limitation: DailyVox is iPhone-only. There is no web app, no Mac app, and no Android version. Furthermore, an on-device model running on mobile hardware cannot carry out an open-ended, freeform conversation like a 70-billion-parameter cloud model can. It tracks and reflects emotional patterns across entries, but it will not write paragraphs of advice back to you like Rosebud does.
+Here is the honest limitation: DailyVox runs on iPhone and Android phones only. There is no web app and no Mac app. Furthermore, an on-device model running on mobile hardware cannot carry out an open-ended, freeform conversation like a 70-billion-parameter cloud model can. It tracks and reflects emotional patterns across entries, but it will not write paragraphs of advice back to you like Rosebud does.
 
 ## 2. Apple Journal (Native, locked-down text)
 
@@ -63,7 +63,7 @@ However, Daylio will not help you work through a complicated thought. It gives y
 | **Input Method** | Voice-first | Text & Voice | Text & Photos | Text, Media, Audio |
 | **Offline Support** | Full (Airplane mode) | Partial / None | Full | Full |
 | **Account Required** | No | Yes | No (Apple ID) | Yes |
-| **Platforms** | iPhone only | Web, iOS, Android | iPhone only | iOS, Mac, Android, Web |
+| **Platforms** | iPhone, Android | Web, iOS, Android | iPhone only | iOS, Mac, Android, Web |
 | **License / Pricing** | Free, Open Source (MIT) | Subscription | Free with iOS | Free tier / Subscription |
 
 ## How to choose

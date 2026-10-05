@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DailyVox Is on Android, and It Cannot Reach the Internet</title>
+<meta name="description" content="DailyVox is now on Google Play. The Android app requests no internet permission at all, so a journal entry has no route off the phone. Here is how that was built.">
+<link rel="canonical" href="https://getdailyvox.com/blog/dailyvox-on-android">
+<meta name="theme-color" content="#FAF8F5">
+<meta property="og:type" content="article"><meta property="og:title" content="DailyVox Is on Android, and It Cannot Reach the Internet">
+<meta property="og:description" content="DailyVox is now on Google Play. The Android app requests no internet permission at all, so a journal entry has no route off the phone. Here is how that was built."><meta property="og:url" content="https://getdailyvox.com/blog/dailyvox-on-android">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "DailyVox Is on Android, and It Cannot Reach the Internet", "description": "DailyVox is now on Google Play. The Android app requests no internet permission at all, so a journal entry has no route off the phone. Here is how that was built.", "url": "https://getdailyvox.com/blog/dailyvox-on-android", "author": {"@type": "Organization", "name": "DailyVox"}, "publisher": {"@type": "Organization", "name": "DailyVox", "url": "https://getdailyvox.com"}, "datePublished": "2026-10-04", "dateModified": "2026-10-04"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getdailyvox.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getdailyvox.com/blog"}, {"@type": "ListItem", "position": 3, "name": "DailyVox Is on Android, and It Cannot Reach the Internet"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is DailyVox on Android free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It is free on Google Play with no ads, no account and no subscription, the same as on iPhone."}}, {"@type": "Question", "name": "Which Android version does DailyVox need?", "acceptedAnswer": {"@type": "Answer", "text": "Android 13 or newer. Android 13 is where the on-device speech recogniser arrived, and DailyVox will not transcribe over a network instead."}}, {"@type": "Question", "name": "Does DailyVox for Android work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, once your phone has its offline speech pack. If it does not, the app offers to download it through your phone's speech service; after that, recording, transcription and the Twin work in airplane mode."}}, {"@type": "Question", "name": "Can I move my journal from iPhone to Android?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Export an encrypted backup on one phone and import it on the other. The backup format is the same on both platforms. There is no live sync between them."}}]}</script>
+<style>
+:root{--ivory:#FAF8F5;--ink:#2B2520;--sage:#5B7C6B;--gold:#D4A547;--terra:#C4956A}
+*{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--ink);font:18px/1.7 -apple-system,'Nunito',Segoe UI,sans-serif}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 22px}
+header{display:flex;gap:20px;align-items:center;padding:18px 22px;font-weight:700}
+header a{color:var(--ink);text-decoration:none;font-size:15px}header .logo{color:var(--sage);font-size:20px}
+h1{font-size:34px;line-height:1.2;margin:22px 0 8px}h2{font-size:23px;color:var(--sage);margin-top:34px}
+.bc{font-size:14px;color:#8a8175;margin-top:14px}.bc a{color:#8a8175}
+ol{padding-left:22px}ol li{margin:6px 0}
+.cta{background:var(--sage);color:#fff;border-radius:16px;padding:24px;margin:38px 0;text-align:center}
+.cta a{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 24px;border-radius:30px;text-decoration:none;margin-top:10px}
+details{border-top:1px solid #e7e0d6;padding:13px 0}summary{font-weight:700;cursor:pointer}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:15px}
+th,td{border:1px solid #e7e0d6;padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#f3efe8;color:var(--ink)}td:first-child{font-weight:600}
+.related{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 50px}.related a{background:#fff;border:1px solid #e7e0d6;border-radius:20px;padding:8px 15px;font-size:14px;color:var(--terra);text-decoration:none}
+footer{color:#8a8175;font-size:14px;padding:28px 22px 60px;border-top:1px solid #e7e0d6}
+a{color:var(--terra)}
+</style><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://getdailyvox.com/#organization",
+      "name": "DailyVox",
+      "url": "https://getdailyvox.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://getdailyvox.com/app-icon.png"
+      },
+      "sameAs": [
+        "https://apps.apple.com/app/id6760454642",
+        "https://play.google.com/store/apps/details?id=com.dailyvox.app",
+        "https://github.com/intrepidkarthi/dailyvox",
+        "https://x.com/getDailyVox",
+        "https://www.instagram.com/getdailyvox/",
+        "https://www.youtube.com/@dailyvoxapp",
+        "https://www.reddit.com/user/getDailyVox/",
+        "https://www.quora.com/profile/DailyVox"
+      ]
+    },
+    {
+      "@type": "Blog",
+      "@id": "https://getdailyvox.com/blog/dailyvox-on-android#blog",
+      "url": "https://getdailyvox.com/blog/dailyvox-on-android",
+      "publisher": {
+        "@id": "https://getdailyvox.com/#organization"
+      },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+<meta property="og:image" content="https://getdailyvox.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://getdailyvox.com/og-image.png">
+<meta name="robots" content="max-image-preview:large">
+</head>
+<body>
+<header><a class="logo" href="/">DailyVox</a><a href="/blog">Blog</a><a href="/faq">FAQ</a><a href="/privacy">Privacy</a></header>
+<main>
+<div class="bc"><a href="/">Home</a> &rsaquo; <a href="/blog">Blog</a></div>
+<h1>DailyVox Is on Android, and It Cannot Reach the Internet</h1>
+<p>DailyVox is on Google Play as of 2 October 2026. It needs Android 13 or newer and it is free. Its permission list is short: the microphone, notifications, vibration, biometric unlock, and one the Android libraries add for the app's own internal use. Internet is not on it.</p>
+<p>That last fact is the whole release. On iPhone, "nothing leaves your phone" is a promise backed by Apple's privacy label and a codebase you can read. On Android it is something you can check in ten seconds without trusting me: Settings › Apps › DailyVox › Permissions. An app without the internet permission cannot open a network connection. There is no setting to flip, no server to subpoena, no analytics SDK quietly phoning home. The operating system refuses on my behalf.</p>
+<h2>Why there was no Android app for two years</h2>
+<p>For a long time I said DailyVox would stay on iPhone, and I had a reason that sounded like engineering. Apple ships named-entity recognition, sentiment analysis and sentence embeddings as free on-device services. Android ships none of the three. A port looked like three models to bundle, three accuracy problems to own, and twice the surface area.</p>
+<p>Then I measured it. A capitalisation-and-recurrence heuristic found people's names in my own journal about as well as Apple's tagger. The open VADER sentiment lexicon tracked hand-labelled moods better than Apple's built-in scorer did: a correlation of 0.66 against 0.59 across 1,459 labelled entries. The argument for staying single-platform was an assumption I had never tested. Most of the people I would want to reach in India carry Android phones, so the assumption was also expensive.</p>
+<h2>The leak I almost shipped</h2>
+<p>The hard part of Android was not the Twin. It was speech.</p>
+<p>Android lets an app ask the system recogniser to prefer offline transcription. Prefer is the operative word. When the phone has an offline language pack, speech stays on the device. When it does not, Google's recogniser can quietly send the audio to a server and hand back text, and the app sees nothing unusual. My first build used that flag. Onboarding said "On-device. Nothing left your phone." On a phone without the pack, that sentence was false.</p>
+<p>The app's missing internet permission did not prevent it either, because the upload happens inside the recogniser's process, not inside DailyVox. My test was airplane mode, and airplane mode could never catch it: with no network there is nothing to leak to, so the test passed on exactly the phones that were leaking.</p>
+<p>The fix was to stop asking politely. DailyVox now uses only the on-device recogniser, which fails rather than falling back to the network. That is also why the app needs Android 13: older versions do not have an on-device recogniser to require. If your phone is missing its offline speech pack, the app tells you and offers to fetch it. Your phone's speech service does the download, the same way it would from Android's settings. DailyVox sends a language code to start it and never your voice.</p>
+<h2>Two more doors, closed</h2>
+<p>Android backs up app data to Google Drive by default. For a journal that would copy every entry and every recording to the cloud, with no network permission required from the app at all. Auto Backup is switched off.</p>
+<p>Voice search was the third route. The first version of the journal's search mic handed the microphone to the system voice-input screen, which is a different app with its own internet access, to transcribe a line from someone's diary. Search now goes through the same on-device path as recording.</p>
+<p>One door I cannot close: your keyboard. If you type into DailyVox and tap the microphone key on your keyboard, that dictation belongs to the keyboard app. DailyVox asks keyboards to hide that key. Some ignore the request. The record buttons inside DailyVox are the ones that stay on the phone.</p>
+<h2>What Android 1.0 does, and what it does not</h2>
+<p>The core is the same as on iPhone. You speak for about 42 seconds, the phone transcribes it, and the entry gets a mood and joins the constellation of people and places your Twin keeps. Insights show patterns once they hold up across enough entries. Ask your Twin answers from your own entries and names the ones it used, and when nothing in your journal supports an answer, it says so. There is a home-screen widget, a Quick Settings tile, a daily reminder and an app lock that uses your fingerprint, face or PIN.</p>
+<p>What it does not have yet: the on-device conversational Twin, which on iPhone runs on Apple's built-in language model and has no Android equivalent I would ship without a server. No health data, no photos, and English only for now. Android has its own version line for this reason. It is 1.0, not 1.11, because matching the iPhone number would claim a parity it has not earned.</p>
+<p>Nothing syncs between iPhone and Android, because syncing them would need a server and DailyVox does not have one. Moving a journal between phones uses an encrypted backup file, and the format is identical on both platforms. A backup made on an Android phone opens on an iPhone, and the other way round.</p>
+<h2>Check it yourself</h2>
+<p>Install it, open Android's own permission screen for DailyVox, and read the list. Microphone and notifications. That is all of it. Then put the phone in airplane mode and record an entry. The transcript, the mood and the star in your sky all still happen.</p>
+<p>The Android app's source is in the <a href="https://github.com/intrepidkarthi/dailyvox/tree/main/android">same public repository</a> as the iPhone app. Every claim in this post maps to a line of code you can read: the manifest with no internet permission, the recogniser that refuses to fall back, and the backup rules that keep Google Drive out.</p>
+<h2>Frequently Asked Questions</h2>
+<h3>Is DailyVox on Android free?</h3>
+<p>Yes. It is free on Google Play with no ads, no account and no subscription, the same as on iPhone.</p>
+<h3>Which Android version does DailyVox need?</h3>
+<p>Android 13 or newer. Android 13 is where the on-device speech recogniser arrived, and DailyVox will not transcribe over a network instead.</p>
+<h3>Does DailyVox for Android work offline?</h3>
+<p>Yes, once your phone has its offline speech pack. If it does not, the app offers to download it through your phone's speech service; after that, recording, transcription and the Twin work in airplane mode.</p>
+<h3>Can I move my journal from iPhone to Android?</h3>
+<p>Yes. Export an encrypted backup on one phone and import it on the other. The backup format is the same on both platforms. There is no live sync between them.</p>
+<div class="cta"><strong>DailyVox keeps your words on your phone.</strong><br><a href="https://apps.apple.com/app/id6760454642">Get it on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Get it on Google Play</a></div>
+<div class="related"><a href="/blog/on-device-ai-without-apple-frameworks">On-Device AI Without Apple's Frameworks</a><a href="/blog/is-your-diary-app-private">Is Your Diary App Private?</a><a href="/blog/voice-journaling-app">Voice Journaling App</a><a href="/privacy">How DailyVox handles your data</a></div>
+</main>
+<footer>DailyVox &middot; Private, on-device voice journaling. Your words never leave your phone.<div class="container"><p class="agent-note"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p></div>
+</footer>
+</body></html>
