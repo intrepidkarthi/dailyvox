@@ -1,0 +1,11 @@
+<resources>
+    <!-- System splash on a dark-mode phone: navy, not a cream flash. The
+         in-app theme is chosen at runtime (MainActivity sets the window
+         background before the first frame); this covers the frame before that. -->
+    <style name="Theme.DailyVox" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/brand_night</item>
+        <item name="android:windowSplashScreenBackground">@color/brand_night</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

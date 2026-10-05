@@ -3,7 +3,16 @@
          background do not flash a system colour before the first frame. -->
     <style name="Theme.DailyVox" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/brand_cream</item>
+        <item name="android:windowSplashScreenBackground">@color/brand_cream</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- The navy splash, for a launch that will open onto the night theme.
+         Chosen at runtime by MainActivity via setSplashScreenTheme, since the
+         default Sunset theme depends on the clock and XML cannot. -->
+    <style name="Theme.DailyVox.Night" parent="Theme.DailyVox">
+        <item name="android:windowBackground">@color/brand_night</item>
+        <item name="android:windowSplashScreenBackground">@color/brand_night</item>
     </style>
 </resources>

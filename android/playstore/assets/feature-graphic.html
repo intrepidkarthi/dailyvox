@@ -1,64 +1,44 @@
 <!doctype html><meta charset=utf-8>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel=stylesheet>
+<!-- Play feature graphic, 1024x500. Rebuilt 2026-09-29 with the vibrant screenshot
+     set (screenshot-src/compose.py): same gradient grammar, star dust and marker,
+     so the header and the first frame under it read as one listing. Fonts are the
+     app's bundled files; render with the command at the bottom of this file. -->
 <style>
+@font-face{font-family:Nunito;src:url("file:///Users/karthikeyanng/CascadeProjects/voicetotext/android/app/src/main/res/font/nunito_variable.ttf");font-weight:200 1000}
+@font-face{font-family:Inter;src:url("file:///Users/karthikeyanng/CascadeProjects/voicetotext/android/app/src/main/res/font/inter_variable.ttf");font-weight:100 900}
+@font-face{font-family:DMMono;src:url("file:///Users/karthikeyanng/CascadeProjects/voicetotext/android/app/src/main/res/font/dm_mono_medium.ttf")}
 *{margin:0;box-sizing:border-box}
-/* 1024x500 exactly. Sits above everything on the Play listing and has no iOS
-   equivalent, so it carries the argument rather than repeating the app name.
-   First version was a flat dark box with a circle in it — this one is built the
-   way the App Store set is: night sky, gold accent word, script line, and the
-   product's own four-point star as the mark. */
-.f{width:1024px;height:500px;position:relative;overflow:hidden;font-family:'Nunito',sans-serif;
-   background:
-     radial-gradient(620px 460px at 74% 12%, rgba(224,177,92,.30), transparent 62%),
-     radial-gradient(560px 430px at 8% 92%, rgba(120,156,138,.22), transparent 60%),
-     linear-gradient(156deg,#0F140F 0%,#161D16 58%,#0B0F0B 100%)}
-.grain{position:absolute;inset:0;z-index:9;opacity:.08;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.sp{position:absolute;color:#E0B15C;opacity:.55}
-.wrap{position:absolute;left:64px;top:0;bottom:0;width:600px;display:flex;flex-direction:column;justify-content:center;z-index:5}
-.k{font-family:'DM Mono',monospace;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:#E0B15C;opacity:.9}
-h1{margin-top:16px;color:#F5F1E8;font-weight:900;font-size:62px;line-height:.99;letter-spacing:-.032em}
-h1 em{font-style:normal;color:#E0B15C}
-.script{margin-top:16px;font-family:'Caveat',cursive;font-weight:700;font-size:36px;
-        color:rgba(245,241,232,.66);transform:rotate(-1.5deg)}
-/* The claim as an object, not a sentence. */
-.badge{position:absolute;right:70px;top:50%;transform:translateY(-50%);z-index:6;
-       width:262px;height:262px;border-radius:50%;
-       background:radial-gradient(circle,rgba(224,177,92,.16),rgba(224,177,92,.03) 66%,transparent 72%);
-       border:1px solid rgba(224,177,92,.34);
-       display:flex;flex-direction:column;align-items:center;justify-content:center}
-.badge .n{font-weight:900;font-size:118px;line-height:.82;color:#E0B15C;letter-spacing:-.05em}
-.badge .l{font-family:'DM Mono',monospace;font-size:11.5px;letter-spacing:.19em;
-          color:rgba(245,241,232,.68);text-transform:uppercase;margin-top:14px;text-align:center;line-height:1.75}
-.ring{position:absolute;right:44px;top:50%;transform:translateY(-50%);width:314px;height:314px;
-      border-radius:50%;border:1px solid rgba(224,177,92,.13);z-index:4}
-.star{position:absolute;right:150px;top:74px;z-index:6}
+.f{width:1024px;height:500px;position:relative;overflow:hidden;font-family:Nunito,sans-serif;
+   background:linear-gradient(120deg,#E8432A 0%,#F0612E 30%,#7B35F0 78%,#3B24C9 100%)}
+.f:before{content:"";position:absolute;inset:0;
+   background:radial-gradient(520px 420px at 8% 0%,rgba(255,255,255,.22),transparent 70%),
+              radial-gradient(600px 500px at 82% 60%,rgba(255,201,77,.22),transparent 70%)}
+.dust{position:absolute;inset:0;opacity:.5;
+   background-image:radial-gradient(circle,rgba(255,255,255,.8) 1.3px,transparent 2px),
+                    radial-gradient(circle,rgba(255,255,255,.45) 1px,transparent 1.7px);
+   background-size:97px 91px,61px 67px;background-position:9px 17px,37px 5px}
+.wrap{position:absolute;left:60px;top:70px;width:620px;z-index:3}
+.brand{display:flex;align-items:center;gap:16px}
+.brand img{width:64px;height:64px;border-radius:16px;box-shadow:0 10px 24px -8px rgba(0,0,0,.45)}
+.brand span{font-weight:900;font-size:34px;color:#fff;letter-spacing:-.02em}
+h1{margin-top:30px;color:#fff;font-weight:900;font-size:50px;line-height:1.04;letter-spacing:-.03em}
+mark{background:#FFE45C;color:#14201B;padding:0 12px 4px;border-radius:14px;display:inline-block;
+     transform:rotate(-1.6deg);margin-top:6px;box-shadow:0 12px 26px -12px rgba(0,0,0,.5)}
+.sub{margin-top:22px;font-family:Inter,sans-serif;font-weight:600;font-size:21px;color:rgba(255,255,255,.92)}
+.dev{position:absolute;right:70px;top:48px;width:300px;border-radius:40px;background:#0B0F14;padding:8px;z-index:3;
+     transform:rotate(6deg);box-shadow:0 40px 80px -24px rgba(0,0,0,.6)}
+.dev div{border-radius:33px;overflow:hidden;height:560px}
+.dev img{width:100%;display:block}
 </style>
 <div class=f>
-  <div id=st></div>
-  <div class=ring></div>
-  <svg class=star width="46" height="46" viewBox="0 0 24 24">
-    <path fill="#E0B15C" d="M12 1c.6 6.2 4.8 10.4 11 11-6.2.6-10.4 4.8-11 11-.6-6.2-4.8-10.4-11-11 6.2-.6 10.4-4.8 11-11z"/>
-  </svg>
+  <div class=dust></div>
   <div class=wrap>
-    <div class=k>private voice journal</div>
-    <h1>Speak 42 seconds.<br>It never <em>leaves</em><br>your phone.</h1>
-    <div class=script>and you can check that yourself</div>
+    <div class=brand><img src="icon-512.png"><span>DailyVox</span></div>
+    <h1>Speak for 42 seconds.<br><mark>It stays on your phone.</mark></h1>
+    <div class=sub>A private voice diary, and a Twin that learns you.</div>
   </div>
-  <div class=badge>
-    <div class=n>0</div>
-    <div class=l>network<br>permissions</div>
-  </div>
-  <div class=grain></div>
+  <div class=dev><div><img src="../screenshot-src/03-twin.png"></div></div>
 </div>
-<script>
-let s=24601; const rnd=()=>(s=(s*1103515245+12345)&0x7fffffff)/0x7fffffff;
-let h='';
-for(let i=0;i<58;i++){
-  const x=rnd()*1024, y=rnd()*500, r=0.6+rnd()*1.6, o=0.10+rnd()*0.40;
-  if (x>640 && y>90 && y<410) continue;          // keep the badge clean
-  if (x<680 && y>140 && y<420) continue;         // keep the headline clean
-  h+=`<div class=sp style="left:${x}px;top:${y}px;width:${r*2}px;height:${r*2}px;background:#E0B15C;border-radius:50%;opacity:${o}"></div>`;
-}
-document.getElementById('st').innerHTML=h;
-</script>
+<!-- "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu
+     --allow-file-access-from-files --virtual-time-budget=4000 --hide-scrollbars
+     --window-size=1024,500 --screenshot=feature-graphic.png file://$PWD/feature-graphic.html -->

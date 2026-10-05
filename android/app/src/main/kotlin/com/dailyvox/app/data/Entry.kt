@@ -63,6 +63,24 @@ data class Entry(
     val restingHrBpm: Float? = null,
     val stepsToday: Int? = null,
 ) {
+    /**
+     * Words actually spoken. `text.split(" ").size` returns **1** for an empty
+     * string, so an untranscribed entry reported "1 WORDS" and a pace of
+     * 1-over-duration wpm. Counting non-blank tokens is the only version that
+     * is right for both cases.
+     */
+    val wordCount: Int
+        get() = text.split(' ', '\n').count { it.isNotBlank() }
+
+    /**
+     * The microphone worked and the recogniser did not. There is audio and no
+     * words. Rendered differently everywhere rather than shown as a blank card,
+     * because a blank card looks like the app lost the entry — which is the
+     * exact impression this whole path exists to avoid.
+     */
+    val isUntranscribed: Boolean
+        get() = text.isBlank() && audioPath != null
+
     val entityList: List<String>
         get() = entities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 }
@@ -87,6 +105,18 @@ interface EntryDao {
 
     @Query("DELETE FROM entries WHERE id = :id")
     suspend fun delete(id: String)
+
+    /**
+     * Remove the demo journal from installs that already received it.
+     *
+     * Matched on the FULL text, exactly, against the fixed corpus in
+     * [DummyData] -- not on a date range, not on "everything before first
+     * launch", and not on a flag that was never written. Those alternatives all
+     * risk taking a real entry with them, and this table is somebody's diary.
+     * A person cannot accidentally dictate one of these paragraphs verbatim.
+     */
+    @Query("DELETE FROM entries WHERE text IN (:texts)")
+    suspend fun deleteByTexts(texts: List<String>): Int
 
     @Query("SELECT COUNT(*) FROM entries")
     suspend fun count(): Int

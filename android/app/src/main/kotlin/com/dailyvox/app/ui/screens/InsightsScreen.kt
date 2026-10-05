@@ -81,7 +81,7 @@ fun InsightsScreen(
             Modifier.combinedClickable(onClick = {}, onLongClick = onShareMilestone)
         ) {
             Row(verticalAlignment = Alignment.Bottom) {
-                Text("$streak", fontSize = 36.sp, fontWeight = FontWeight.ExtraBold,
+                Text("$streak", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold,
                      color = goldText)
                 Spacer(Modifier.width(8.dp))
                 Text(
@@ -144,7 +144,7 @@ fun InsightsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom,
                 ) {
-                    Text("$nights of $target", fontSize = 20.sp,
+                    Text("$nights of $target", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 20.sp,
                          fontWeight = FontWeight.ExtraBold, color = goldText)
                     MonoLabel(
                         // Never "you are behind". The only number the app will

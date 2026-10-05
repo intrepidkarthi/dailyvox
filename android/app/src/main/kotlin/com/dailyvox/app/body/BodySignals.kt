@@ -3,8 +3,6 @@ package com.dailyvox.app.body
 import android.content.Context
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
-import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
-import androidx.health.connect.client.records.RestingHeartRateRecord
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.request.AggregateRequest
@@ -19,14 +17,27 @@ import java.time.ZoneId
  * Body signals from Health Connect — the Android peer of the engine's
  * `HealthSnapshot` (DailyVoxTwinEngine/BodyTwin/BodyTwin.swift:87).
  *
- * READ ONLY, and only the four fields the Twin actually correlates against:
- * sleep, morning HRV, resting heart rate, steps. Health Connect will happily
- * grant read access to dozens of record types; asking for one the app does not
- * use would be indefensible on a screen that lists every permission it holds.
+ * READ ONLY, and only four fields. Health Connect will happily grant read
+ * access to dozens of record types; asking for one the app does not use would be
+ * indefensible on a screen that lists every permission it holds.
+ *
+ * Be precise about what each one earns, because this comment used to say all
+ * four were "fields the Twin actually correlates against" and only half of them
+ * are:
+ *
+ *   sleep  -> shown on the entry AND correlated  (engine Insights.kt:97)
+ *   steps  -> shown on the entry AND correlated  (engine Insights.kt:108)
+ *
+ * v1.0 used to read HRV and resting heart rate as well. Nothing analysed them --
+ * they were a number beside the entry -- and Play's minimum-necessary rule for
+ * health permissions is exactly the test that fails. Both were dropped before
+ * the first release. The Entry columns stay (nullable, and entries from builds
+ * that read them keep their values); add the reads back when the engine
+ * correlates them, not before. See playstore/HEALTH_DECLARATION.md.
  *
  * NOTHING is requested until the user turns the feature on. That is why the
  * library adds no permissions to the manifest by default and why the ledger in
- * Settings still reads the same for anyone who never enables it — the four
+ * Settings still reads the same for anyone who never enables it — the two
  * health permissions are declared, but declared is not held.
  *
  * The data never leaves the phone. Health Connect is an on-device datastore;
@@ -50,8 +61,6 @@ class BodySignals(private val context: Context) {
         /** Exactly what is read, and nothing else. */
         val PERMISSIONS: Set<String> = setOf(
             HealthPermission.getReadPermission(SleepSessionRecord::class),
-            HealthPermission.getReadPermission(HeartRateVariabilityRmssdRecord::class),
-            HealthPermission.getReadPermission(RestingHeartRateRecord::class),
             HealthPermission.getReadPermission(StepsRecord::class),
         )
     }
@@ -82,7 +91,7 @@ class BodySignals(private val context: Context) {
     /**
      * Reads the window the engine's correlations expect. Every field is
      * independently optional: a phone with a step counter but no wearable should
-     * report steps and stay silent about HRV, rather than reporting nothing.
+     * report steps and stay silent about sleep, rather than reporting nothing.
      */
     suspend fun read(): Snapshot {
         val c = client() ?: return Snapshot()
@@ -108,30 +117,6 @@ class BodySignals(private val context: Context) {
                 ?.let { it / 60.0 }
         }.getOrNull()
 
-        // HRV is a MORNING measure on purpose: it swings with posture, food and
-        // stress across a day, so an all-day average is noise. The engine's
-        // field is named morningHRVMs for the same reason.
-        val morningEnd = LocalDate.now(zone).atTime(11, 0).atZone(zone).toInstant()
-            .coerceAtMost(now)
-        val hrv = runCatching {
-            c.readRecords(
-                ReadRecordsRequest(
-                    HeartRateVariabilityRmssdRecord::class,
-                    TimeRangeFilter.between(todayStart, morningEnd),
-                )
-            ).records.map { it.heartRateVariabilityMillis }
-                .takeIf { it.isNotEmpty() }?.average()
-        }.getOrNull()
-
-        val restingHr = runCatching {
-            c.readRecords(
-                ReadRecordsRequest(
-                    RestingHeartRateRecord::class,
-                    TimeRangeFilter.between(todayStart, now),
-                )
-            ).records.lastOrNull()?.beatsPerMinute?.toDouble()
-        }.getOrNull()
-
         val steps = runCatching {
             c.aggregate(
                 AggregateRequest(
@@ -141,6 +126,6 @@ class BodySignals(private val context: Context) {
             )[StepsRecord.COUNT_TOTAL]?.toInt()
         }.getOrNull()
 
-        return Snapshot(sleepHours, hrv, restingHr, steps)
+        return Snapshot(sleepHours = sleepHours, stepsToday = steps)
     }
 }

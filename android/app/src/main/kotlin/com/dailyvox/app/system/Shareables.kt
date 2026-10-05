@@ -7,6 +7,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
+import android.graphics.fonts.Font
+import android.graphics.fonts.FontFamily
+import android.graphics.fonts.FontStyle
 import android.provider.Settings
 import com.dailyvox.app.data.Entry
 import java.io.File
@@ -102,6 +105,7 @@ object Shareables {
         val (w, h) = size(card)
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
+        BrandFaces.init(context)
         when (card) {
             Card.MY_SKY -> drawMySky(context, c, entries)
             Card.RECEIPT -> drawReceipt(c, entries)
@@ -313,7 +317,7 @@ object Shareables {
             "Computed by" to "this phone only",
         )
         val k = body(26f, "#99F1EDE2")
-        val v = body(26f, CREAM).apply { textAlign = Paint.Align.RIGHT; typeface = Typeface.DEFAULT_BOLD }
+        val v = body(26f, CREAM).apply { textAlign = Paint.Align.RIGHT; typeface = BrandFaces.inter(700) }
         var y = 470f
         rows.forEach { (key, value) ->
             c.drawText(key, 84f, y, k)
@@ -501,19 +505,23 @@ object Shareables {
 
     private fun paint() = Paint().apply { isAntiAlias = true }
 
+    // The brand's three roles (spec §8.2): DM Mono for data, Nunito 800 for
+    // headlines, Inter for body. These used to be the platform's MONOSPACE and
+    // SANS_SERIF, i.e. Roboto, so every card left the app off-brand.
     private fun mono(size: Float, colour: String) = paint().apply {
         color = Color.parseColor(colour); textSize = size
-        typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+        typeface = BrandFaces.mono()
         letterSpacing = 0.10f
     }
 
     private fun display(size: Float, colour: String) = paint().apply {
         color = Color.parseColor(colour); textSize = size
-        typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        typeface = BrandFaces.nunito(800)
     }
 
     private fun body(size: Float, colour: String = "#99F1EDE2") = paint().apply {
         color = Color.parseColor(colour); textSize = size
+        typeface = BrandFaces.inter(400)
     }
 
     private fun streak(entries: List<Entry>): Int {
@@ -571,4 +579,54 @@ object Shareables {
             .maxByOrNull { it.value }
             ?.let { "\"${it.key}\"" }
     }
+}
+
+/**
+ * The bundled brand faces, as android.graphics.Typeface for Canvas drawing.
+ *
+ * Nunito and Inter ship as VARIABLE fonts, and the obvious routes do not pick
+ * a weight from one: ResourcesCompat.getFont hands back the file's default
+ * instance (the same thin-weight bug Type.kt had), and Typeface.create(base,
+ * 800, false) does not move the axis. The weight has to be set on 'wght',
+ * which Font.Builder does (API 29; minSdk is 33).
+ *
+ * System fallback stays on: an entry in Tamil or with an emoji must still
+ * render, in the platform face, rather than as tofu on a card someone posts.
+ *
+ * Cached per weight: building a Font reads the file, and a card asks for the
+ * same three or four faces dozens of times.
+ */
+internal object BrandFaces {
+    private lateinit var res: android.content.res.Resources
+    private val cache = HashMap<String, Typeface>()
+
+    fun init(context: Context) {
+        if (!::res.isInitialized) res = context.applicationContext.resources
+    }
+
+    fun nunito(weight: Int) = variable("nunito", com.dailyvox.app.R.font.nunito_variable, weight)
+    fun inter(weight: Int) = variable("inter", com.dailyvox.app.R.font.inter_variable, weight)
+    /** DM Mono is a static Medium cut, so there is no axis to set. */
+    fun mono(): Typeface = face("dmmono", com.dailyvox.app.R.font.dm_mono_medium, 500, null)
+
+    private fun variable(name: String, id: Int, weight: Int) =
+        face(name, id, weight, "'wght' $weight")
+
+    @Synchronized
+    private fun face(name: String, id: Int, weight: Int, axes: String?): Typeface =
+        cache.getOrPut("$name:$weight") {
+            runCatching {
+                val font = Font.Builder(res, id)
+                    .setWeight(weight)
+                    .apply { if (axes != null) setFontVariationSettings(axes) }
+                    .build()
+                Typeface.CustomFallbackBuilder(FontFamily.Builder(font).build())
+                    .setStyle(FontStyle(weight, FontStyle.FONT_SLANT_UPRIGHT))
+                    .setSystemFallback(if (name == "dmmono") "monospace" else "sans-serif")
+                    .build()
+            }.getOrElse {
+                // A card in the platform face beats no card at all.
+                Typeface.create(Typeface.DEFAULT, weight, false)
+            }
+        }
 }

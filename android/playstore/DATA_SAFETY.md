@@ -21,15 +21,31 @@ transmit anything: the app holds **no `INTERNET` permission**. This is not a
 policy we follow, it is a capability we do not have.
 
 ```bash
-# The complete permission list in the built artifact:
-aapt dump permissions app-release.apk
-#   uses-permission: android.permission.RECORD_AUDIO
-#   uses-permission: android.permission.POST_NOTIFICATIONS
-#   uses-permission: android.permission.VIBRATE
-#   uses-permission: android.permission.USE_BIOMETRIC
-#   uses-permission: android.permission.USE_FINGERPRINT
-#   (+ health.READ_* only when Body signals is enabled by the user)
+# The complete permission list in the built artifact, verbatim:
+aapt2 dump permissions app-release.apk
+#   uses-permission: name='android.permission.RECORD_AUDIO'
+#   uses-permission: name='android.permission.POST_NOTIFICATIONS'
+#   uses-permission: name='android.permission.VIBRATE'
+#   uses-permission: name='android.permission.USE_BIOMETRIC'
+#   uses-permission: name='com.dailyvox.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 ```
+
+Nine, and this list is now generated from the artifact rather than typed. The
+version that stood here was wrong in both directions, in the one document that
+is a binding declaration to Google:
+
+  * it listed **USE_FINGERPRINT**, which the manifest explicitly removes
+    (`tools:node="remove"`, because androidx.biometric merges it in for API 27
+    and under and minSdk is 33). It is absent from the merged manifest and from
+    the APK.
+  * it omitted **DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION**, which androidx
+    defines for the app's own use and which *is* in the artifact.
+  * it said the four `health.READ_*` lines appear "only when Body signals is
+    enabled". They are **declared in the manifest always** — what is conditional
+    is whether they are ever *granted*. `aapt2` shows them on any build.
+
+Check it with `python3 playstore/verify.py`, which diffs this block against the
+built APK, rather than by reading it.
 
 There is no `INTERNET` line. An app without it cannot open a socket, so no
 third-party SDK inside it could exfiltrate anything either — which is also why
@@ -54,7 +70,6 @@ handles and where it stays:
 | Voice recordings | app-private internal storage | No |
 | Transcripts | local Room database | No |
 | Derived mood, names, prosody | local Room database | No |
-| Health data (opt-in) | read from Health Connect, stored locally | No |
 | Photos attached to entries | copied into app-private storage | No |
 | Exports and backups | **only where the user chooses to save them** | Only by the user's own action |
 
@@ -80,20 +95,10 @@ transfer, and silently losing a diary when changing phones is its own harm.
 
 ---
 
-## Section 4 — Health Connect (Play's health data policy)
+## Section 4 — Health Connect
 
-| Question | Answer |
-|---|---|
-| Which Health Connect data types? | Sleep, Heart rate variability (RMSSD), Resting heart rate, Steps |
-| Read or write? | **Read only.** The app never writes to Health Connect |
-| Purpose | Correlating the user's own physiology against their own journal, on-device |
-| Shared with third parties? | **No** — impossible, see Section 1 |
-| Required to use the app? | **No.** Fully optional; everything else works untouched |
-
-The app requests exactly the four types it reads. Play's health policy requires
-that the requested set match the used set, and a broader request would be both a
-violation and indefensible on a screen that prints every permission the app
-holds.
+Not applicable to v1.0: the app declares no `health.*` permission. Answer "No"
+to every health-data question in the Play form.
 
 ---
 
@@ -105,4 +110,3 @@ holds.
 | Works fully offline | airplane mode, fresh install, full journey exercised |
 | Speech never goes to a network | code: `SpeechCapture` constructs `createOnDeviceSpeechRecognizer` and nothing else. **Note what airplane mode cannot check** — until 2026-08-24 a fallback branch sent audio to the platform recognizer, and with no network there was nothing for it to leak to, so the offline test passed on exactly the phones that were leaking. minSdk 33 now guarantees the on-device recognizer exists. |
 | Auto Backup off | `ALLOW_BACKUP` absent from `dumpsys package` flags |
-| Health permissions not held until opt-in | `dumpsys package` shows `granted=false` for all four |

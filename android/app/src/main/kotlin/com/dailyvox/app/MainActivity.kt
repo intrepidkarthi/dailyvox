@@ -1,5 +1,8 @@
 package com.dailyvox.app
 
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
@@ -40,7 +43,29 @@ class MainActivity : FragmentActivity() {
         // windowOptOutEdgeToEdgeEnforcement is deprecated and disabled.
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        // The window behind the first frame follows the theme the app is about
+        // to draw. It was always cream, so the default (Sunset) theme opened
+        // after dark on a cream flash before the navy sky arrived.
+        val theme = getSharedPreferences("dailyvox", MODE_PRIVATE).getString("theme", "SUNSET")
+        val night = theme == "DARK" || (theme == "SUNSET" && com.dailyvox.app.system.SolarClock.isAfterSunset())
+        window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(
+            (if (night) com.dailyvox.app.ui.theme.NightBackground else com.dailyvox.app.ui.theme.DayBackground).toArgb()))
         setContent { DailyVoxApp(vm, this) }
+    }
+
+    /**
+     * The splash is drawn by the system before any of this code runs, so it
+     * cannot follow the Sunset theme on its own: after dark it flashed cream and
+     * then cut to navy. The platform remembers a splash theme for the NEXT
+     * launch, so leave it set to whatever the app looks like right now.
+     */
+    override fun onStop() {
+        super.onStop()
+        val theme = getSharedPreferences("dailyvox", MODE_PRIVATE).getString("theme", "SUNSET")
+        val night = theme == "DARK" || (theme == "SUNSET" && com.dailyvox.app.system.SolarClock.isAfterSunset())
+        runCatching {
+            splashScreen.setSplashScreenTheme(if (night) R.style.Theme_DailyVox_Night else R.style.Theme_DailyVox)
+        }
     }
 }
 
@@ -58,6 +83,29 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         mutableStateOf(prefs.getBoolean("lock", lockAvailableNow))
     }
     var unlocked by rememberSaveable { mutableStateOf(false) }
+    // Re-lock after the app has been away, as iOS does on backgrounding
+    // (AppLockManager.lock). Unlocking once used to keep the journal open until
+    // Android happened to kill the process -- days, on a phone with free RAM.
+    //
+    // A grace period, not ON_STOP alone: on Android the file picker, the share
+    // sheet and the permission dialogs all stop this activity, and locking
+    // there would drop the user onto the lock screen mid-backup.
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle) {
+        var stoppedAt = 0L
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            when (event) {
+                androidx.lifecycle.Lifecycle.Event.ON_STOP -> stoppedAt = android.os.SystemClock.elapsedRealtime()
+                androidx.lifecycle.Lifecycle.Event.ON_START ->
+                    if (stoppedAt != 0L && android.os.SystemClock.elapsedRealtime() - stoppedAt > RELOCK_AFTER_MS) {
+                        unlocked = false
+                    }
+                else -> Unit
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
     val lockAvailable = lockAvailableNow
     // DARK by default, not SYSTEM. The design package's recommended direction
     // (1c, "the middle path, and my recommendation") says it plainly: "dark by
@@ -169,12 +217,19 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     DailyVoxTheme(darkTheme = dark) {
         if (!onboarded) {
-            OnboardingScreen(onDone = { text, secs, path ->
+            OnboardingScreen(onDone = { text, secs, path, remind ->
                 // The first star is persisted as a REAL entry, exactly as iOS
                 // does — so "that star is yours" is true and the app opens onto
                 // a sky that already holds something.
-                if (text.isNotBlank()) vm.add(text, secs, path)
-                prefs.edit().putBoolean("onboarded", true).apply()
+                // Audio with no words is still the user's first entry: the
+                // recogniser failed, they did not. It stays, untranscribed.
+                if (text.isNotBlank() || path != null) vm.add(text, secs, path)
+                // The claim beat asked, and already requested the notification
+                // permission if the answer was yes -- so the bootstrap below has
+                // nothing left to ask. A no (or a denied dialog) turns it off.
+                reminderOn = remind
+                prefs.edit().putBoolean("onboarded", true)
+                    .putBoolean(com.dailyvox.app.system.Reminders.PREF_ENABLED, remind).apply()
                 onboarded = true
             })
             return@DailyVoxTheme
@@ -227,8 +282,21 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         // not dispatched, so each layer that owns back has to say so: detail
         // first, then overlays, then any tab returns to Speak, and only Speak
         // falls through and exits.
-        BackHandler(enabled = openEntry != null) { openEntry = null }
-        BackHandler(enabled = openEntry == null && overlay != Overlay.NONE) { overlay = Overlay.NONE }
+        //
+        // Detail and overlays use PredictiveBackHandler so the gesture PREVIEWS:
+        // the page shrinks toward 0.92 and rounds its corners as the thumb
+        // travels, and springs back if the swipe is abandoned (spec §3/§4).
+        // iOS's edge swipe has no equivalent; this is where Android gets to be
+        // better rather than equal.
+        var backPeek by remember { mutableFloatStateOf(0f) }
+        androidx.activity.compose.PredictiveBackHandler(enabled = openEntry != null || overlay != Overlay.NONE) { progress ->
+            try {
+                progress.collect { backPeek = it.progress }
+                if (openEntry != null) openEntry = null else overlay = Overlay.NONE
+            } finally {
+                backPeek = 0f
+            }
+        }
         BackHandler(enabled = openEntry == null && overlay == Overlay.NONE && current != Destination.SPEAK) {
             current = Destination.SPEAK
         }
@@ -284,12 +352,22 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         val nightSurface = darkTheme || current == com.dailyvox.app.ui.nav.Destination.TWIN
         androidx.compose.runtime.SideEffect {
             val window = (view.context as android.app.Activity).window
-            androidx.core.view.WindowCompat.getInsetsController(window, view)
-                .isAppearanceLightStatusBars = !nightSurface
+            androidx.core.view.WindowCompat.getInsetsController(window, view).apply {
+                isAppearanceLightStatusBars = !nightSurface
+                // The gesture handle too, or it stays dark on the navy sky.
+                isAppearanceLightNavigationBars = !nightSurface
+            }
         }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            // Navy edge to edge on Twin. The container stayed cream, so the
+            // status-bar strip and the gap round the floating nav were cream
+            // bands framing the "always night" sky. iOS ignores the top safe
+            // area there; this is the same thing.
+            containerColor = if (current == com.dailyvox.app.ui.nav.Destination.TWIN && overlay == Overlay.NONE && openEntry == null)
+                com.dailyvox.app.ui.theme.NightBackground
+            else androidx.compose.material3.MaterialTheme.colorScheme.background,
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
                     // Follows the SCREEN, not the theme — a cream bar under the
@@ -302,6 +380,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         ) { padding ->
             val inner = Modifier.padding(padding)
             val detail = openEntry
+            val peek = Modifier.graphicsLayer {
+                val p = backPeek
+                scaleX = 1f - 0.08f * p; scaleY = 1f - 0.08f * p
+                shape = androidx.compose.foundation.shape.RoundedCornerShape((28f * p).dp)
+                clip = p > 0f
+            }
 
             when {
                 detail != null -> EntryDetailScreen(
@@ -328,7 +412,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         openEntry = null
                         current = com.dailyvox.app.ui.nav.Destination.ASK
                     },
-                    modifier = inner,
+                    modifier = inner.then(peek),
                 )
 
                 overlay == Overlay.INSIGHTS ->
@@ -336,7 +420,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         entries = entries, streak = streak,
                         onShareMilestone = { shareCard = com.dailyvox.app.system.Shareables.Card.MILESTONE },
                         onBack = { overlay = Overlay.NONE },
-                        modifier = inner,
+                        modifier = inner.then(peek),
                     )
 
                 overlay == Overlay.SETTINGS -> run {
@@ -372,11 +456,17 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                             ) askNotifications.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                             else com.dailyvox.app.system.Reminders.schedule(context, hour)
                         },
-                        modifier = inner,
+                        modifier = inner.then(peek),
                     )
                 }
 
-                else -> when (current) {
+                // 150 ms cross-fade between tabs (spec §4); a hard cut read as
+                // the screen reloading.
+                else -> androidx.compose.animation.Crossfade(
+                    targetState = current,
+                    animationSpec = androidx.compose.animation.core.tween(150),
+                    label = "tab",
+                ) { tab -> when (tab) {
                     Destination.SPEAK -> SpeakScreen(
                         streak = streak,
                         resolution = resolution,
@@ -419,7 +509,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSeedConsumed = { askSeed = null },
                         modifier = inner,
                     )
-                }
+                } }
             }
         }
     }
@@ -500,3 +590,6 @@ private fun LockScreen(onUnlock: () -> Unit) {
         }
     }
 }
+
+/** How long the app may be out of sight before the lock re-engages. */
+private const val RELOCK_AFTER_MS = 30_000L

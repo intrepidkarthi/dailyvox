@@ -155,7 +155,9 @@ fun AskScreen(
     Column(modifier.fillMaxSize()) {
         Column(Modifier.padding(horizontal = 20.dp)) {
             Spacer(Modifier.height(12.dp))
-            ScreenTitle("Ask your Twin") { MonoLabel("0 calls") }
+            // One "0 calls" claim, under the title as iOS has it. The trailing
+            // "0 CALLS" beside the title said the same thing twice.
+            ScreenTitle("Ask your Twin")
             MonoLabel("answers with receipts · 0 network calls")
             Spacer(Modifier.height(14.dp))
         }
@@ -168,9 +170,13 @@ fun AskScreen(
             if (messages.isEmpty()) {
                 item {
                     Text(
+                        // The one sentence the old "what it can answer" card was
+                        // for: templates compute, free text quotes. Said once,
+                        // here, instead of a card that sat under every thread.
                         if (facts.hasEnoughData)
-                            "Ask something, or pick one below. Every answer is computed from " +
-                                "your own entries and names the ones it used."
+                            "Ask something, or pick one below. Every answer comes from your " +
+                                "own entries and names the ones it used. Anything else, it " +
+                                "finds rather than answers: the closest entries, quoted as you said them."
                         else
                             "A few more entries and the Twin will have something worth saying. " +
                                 "It only speaks from what you have actually said.",
@@ -253,54 +259,32 @@ fun AskScreen(
             }
 
             if (thinking) item { ThinkingRow() }
+        }
 
-            // Unasked questions only, so the bank shrinks as the conversation
-            // grows rather than repeating what was just answered.
-            val remaining = bank.filter { it !in asked }
-            if (remaining.isNotEmpty()) {
-                item {
-                    Column {
-                        Spacer(Modifier.height(8.dp))
-                        MonoLabel(if (messages.isEmpty()) "Try" else "Also")
-                        Spacer(Modifier.height(10.dp))
-                        remaining.take(if (messages.isEmpty()) 5 else 3).forEach { q ->
-                            Text(
-                                q.text, fontSize = 14.sp, fontWeight = FontWeight.Medium,
-                                color = scheme.primary,
-                                modifier = Modifier.fillMaxWidth()
-                                    .padding(bottom = 8.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .border(1.5.dp, scheme.primary.copy(alpha = 0.45f),
-                                            RoundedCornerShape(16.dp))
-                                    .clickable { send(q.text) }
-                                    .padding(horizontal = 14.dp, vertical = 13.dp),
-                            )
-                        }
-                    }
-                }
-            }
-
-            item {
-                Spacer(Modifier.height(12.dp))
-                DvCard {
-                    MonoLabel("what it can answer")
-                    Spacer(Modifier.height(8.dp))
+        // Suggestions sit on the input, not in the thread: iOS keeps them docked
+        // by the input bar so the canvas above stays the conversation's. Unasked
+        // questions only, so the set changes as the conversation grows rather
+        // than repeating what was just answered.
+        val remaining = bank.filter { it !in asked }.take(3)
+        if (remaining.isNotEmpty()) {
+            FlowRow(
+                Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                remaining.forEach { q ->
                     Text(
-                        "The questions above are computed from your journal — mood, people, " +
-                            "topics, habits — and every number comes with the entries behind it.",
-                        fontSize = 13.sp, lineHeight = 20.sp, color = scheme.onSurfaceVariant,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Type anything else and it finds rather than answers: the closest " +
-                            "entries, quoted as you said them. There is no free-form chat, and " +
-                            "that is a choice rather than a gap — a model small enough to ship " +
-                            "here would guess, and a Twin that guesses about your own life is " +
-                            "worse than one that quotes you back.",
-                        fontSize = 13.sp, lineHeight = 20.sp, color = scheme.onSurfaceVariant,
+                        q.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                        color = scheme.primary,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(scheme.primary.copy(alpha = 0.08f))
+                            .border(1.dp, scheme.primary.copy(alpha = 0.30f),
+                                    RoundedCornerShape(18.dp))
+                            .clickable { send(q.text) }
+                            .padding(horizontal = 14.dp, vertical = 9.dp),
                     )
                 }
-                Spacer(Modifier.height(4.dp))
             }
         }
 
@@ -315,6 +299,7 @@ fun AskScreen(
         ) {
             BasicTextField(
                 value = typed,
+                keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                 onValueChange = { typed = it },
                 singleLine = true,
                 textStyle = TextStyle(fontSize = 14.sp, color = scheme.onSurface),

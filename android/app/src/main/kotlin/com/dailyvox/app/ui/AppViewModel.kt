@@ -126,7 +126,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         refreshStats()
         com.dailyvox.app.system.StarWidget.refresh(getApplication())
         toast(context, if (added == 0) "Nothing new — those entries are already here."
-                       else "Added ${'$'}added entries.")
+                       else "Added $added entries.")
     }
 
     private fun toast(context: android.content.Context, msg: String) =
