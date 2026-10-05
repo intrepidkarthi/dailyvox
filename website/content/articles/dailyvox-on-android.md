@@ -49,7 +49,7 @@ Nothing syncs between iPhone and Android, because syncing them would need a serv
 
 Install it, open Android's own permission screen for DailyVox, and read the list. Microphone and notifications. That is all of it. Then put the phone in airplane mode and record an entry. The transcript, the mood and the star in your sky all still happen.
 
-The Android app's source is in the same public repository as the iPhone app. Every claim in this post maps to a line of code you can read.
+The Android app's source is in the [same public repository](https://github.com/intrepidkarthi/dailyvox/tree/main/android) as the iPhone app. Every claim in this post maps to a line of code you can read: the manifest with no internet permission, the recogniser that refuses to fall back, and the backup rules that keep Google Drive out.
 
 ## FAQ
 
