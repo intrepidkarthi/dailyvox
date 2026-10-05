@@ -136,6 +136,15 @@ object RetrievalAnswerComposer {
         TwinChatTurn(answer = "")
 }
 
+// ── Retrieval (Ask's evidence, journal search ranking) ───────────────────────
+object Retrieval {
+    data class Hit(val entryId: String, val score: Float)
+    const val TAU = 0.42f
+    fun words(text: String): Set<String> = emptySet()
+    fun rank(question: String, entries: List<ChatEntry>): List<Hit> = emptyList()
+    fun retrieve(question: String, entries: List<ChatEntry>, limit: Int = 3): List<Hit> = emptyList()
+}
+
 // ── Findings ─────────────────────────────────────────────────────────────────
 object Insights {
     data class Finding(val lead: String, val detail: String, val effect: Double)
