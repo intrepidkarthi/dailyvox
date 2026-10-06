@@ -136,3 +136,13 @@ xcrun altool --upload-app \
 - [ ] Set up App Store page URL for sharing
 - [ ] Monitor crash reports via Xcode Organizer
 - [ ] Plan v1.1 features based on user feedback
+
+## After the release is live
+
+Update the versions the website shows (top-bar badge, footer on every page, schema, "latest" lines), once the store actually serves the new build:
+
+```bash
+python3 website/set_version.py --ios 1.12 --android 1.1   # the numbers now live
+```
+
+Then add the release to website/public/changelog.html and the roadmap table by hand.
