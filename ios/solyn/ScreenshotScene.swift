@@ -28,12 +28,19 @@ enum ScreenshotScene: String {
     case search
     case ask
     case recording
+    /// Today with the typed composer open and a line already written: the
+    /// "I can't talk right now" frame (1.12).
+    case typing
 
     /// A canned query, so the search and Ask frames show a real answer rather
     /// than an empty field. Deliberately a sentence — the semantic index ranks
     /// short keyword queries poorly, and the store frame should show the
     /// feature working the way the UI asks you to use it.
     static let cannedQuery = "a quiet moment that made me feel grounded"
+
+    /// What the typing frame shows in the composer: the situation the feature
+    /// was asked for, in the words a user would write.
+    static let cannedTyped = "Long day. The team finally shipped, and I could not stop smiling on the train home. Mom called while I was making dinner."
 
     static var current: ScreenshotScene? {
         let args = ProcessInfo.processInfo.arguments
