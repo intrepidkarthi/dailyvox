@@ -1,0 +1,173 @@
+<!doctype html>
+<!--
+  DailyVox — App Store creative assets (iOS/iPadOS 27).
+  One idea: "Your voice becomes a star."  Real UI: the Twin constellation
+  (src/constellation.png, cropped from the shipping app's Twin tab) and the
+  recording waveform (src/waveform.png, from the recording screen).
+
+  Render one canvas per query string:
+    creative.html?v=universal   5244 x 2950   (art safe area 1921,660 1402x962)
+    creative.html?v=header      3840 x 1646   (art safe area 1097,493 1646x661)
+    creative.html?v=search      3840 x 2560   (art safe area  836,765 2168x1030)
+  Safe areas are read from Apple's official PSD templates (see NOTES.md).
+  Add &guides=1 to outline the safe area (preview only, never a deliverable).
+  See render.sh.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>DailyVox creative</title>
+<style>
+  @font-face { font-family: "Nunito"; src: url("../../../android/app/src/main/res/font/nunito_variable.ttf") format("truetype"); font-weight: 200 1000; }
+  @font-face { font-family: "DM Mono"; src: url("../../../android/app/src/main/res/font/dm_mono_medium.ttf") format("truetype"); font-weight: 500; }
+  :root {
+    --navy: #101B2D; --gold: #D4A547; --gold-hi: #FFC94D; --sage: #5B7C6B; --cream: #F7F3EA;
+  }
+  html, body { margin: 0; padding: 0; background: var(--navy); overflow: hidden; }
+  #c { position: relative; overflow: hidden; background: var(--navy); }
+  #sky { position: absolute; inset: 0; }
+  .glow { position: absolute; border-radius: 50%; pointer-events: none; }
+  .const {
+    position: absolute;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, rgba(0,0,0,.6) 62%, transparent 71%);
+            mask-image: radial-gradient(circle at 50% 50%, #000 52%, rgba(0,0,0,.6) 62%, transparent 71%);
+  }
+  .wave { position: absolute; opacity: .9;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 100%); }
+  .phrase {
+    position: absolute; margin: 0;
+    font-family: "Nunito"; font-weight: 800; color: var(--cream);
+    letter-spacing: -0.015em; line-height: 1.02;
+  }
+  .phrase em { font-style: normal; color: var(--gold-hi); }
+  .guide { position: absolute; outline: 6px dashed #39FF6A; outline-offset: -3px; pointer-events: none; }
+  .guide span { position: absolute; left: 0; bottom: 0; background: #39FF6A; color: #000; font: 700 48px/1 "DM Mono"; padding: 10px 16px; }
+</style>
+</head>
+<body>
+<div id="c">
+  <svg id="sky"></svg>
+</div>
+<script>
+const Q = new URLSearchParams(location.search);
+const V = Q.get('v') || 'universal';
+
+// Canvas + Apple art-safe-area (x, y, w, h) + layout of the key elements.
+// All key elements (constellation core + phrase) sit inside the safe rect.
+const L = {
+  universal: { W: 5244, H: 2950, safe: [1921, 660, 1402, 962],
+    // stacked: constellation above, phrase (two lines) below
+    con: { cx: 2622, cy: 1000, size: 820 },        // visible disc ~ 0.71*820 ≈ 580 tall
+    text: { x: 2622, y: 1316, size: 118, align: 'center', lines: ['Your voice', 'becomes a <em>star.</em>'] },
+    wave: { x: 1080, y: 948, h: 104 } },
+  header: { W: 3840, H: 1646, safe: [1097, 493, 1646, 661],
+    // side by side: constellation left, phrase right
+    con: { cx: 1440, cy: 823, size: 930 },
+    text: { x: 1830, y: 0, size: 118, align: 'left', lines: ['Your voice', 'becomes a <em>star.</em>'] },
+    wave: { x: 300, y: 771, h: 104 } },
+  search: { W: 3840, H: 2560, safe: [836, 765, 2168, 1030],
+    con: { cx: 1340, cy: 1280, size: 1420 },
+    text: { x: 1890, y: 0, size: 146, align: 'left', lines: ['Your voice', 'becomes a <em>star.</em>'] },
+    wave: { x: 40, y: 1200, h: 160 } },
+}[V];
+
+const c = document.getElementById('c');
+c.style.width = L.W + 'px'; c.style.height = L.H + 'px';
+
+// --- Seeded starfield (full bleed, so any crop still reads as night sky) -------
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const r = rng(27);
+const sky = document.getElementById('sky');
+sky.setAttribute('width', L.W); sky.setAttribute('height', L.H);
+sky.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
+const unit = L.W / 3840;
+let svg = `
+<defs>
+  <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#D4A547" stop-opacity=".20"/>
+    <stop offset=".45" stop-color="#D4A547" stop-opacity=".06"/>
+    <stop offset="1" stop-color="#101B2D" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="vig" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0B1422" stop-opacity=".55"/>
+    <stop offset=".5" stop-color="#101B2D" stop-opacity="0"/>
+    <stop offset="1" stop-color="#0B1422" stop-opacity=".6"/>
+  </linearGradient>
+</defs>
+<rect width="${L.W}" height="${L.H}" fill="url(#vig)"/>
+<ellipse cx="${L.con.cx}" cy="${L.con.cy}" rx="${L.con.size * 1.05}" ry="${L.con.size * 0.95}" fill="url(#g1)"/>`;
+const n = Math.round(L.W * L.H / 9000);
+const pal = ['#F7F3EA', '#F7F3EA', '#F7F3EA', '#FFC94D', '#5B7C6B', '#7FA08C'];
+for (let i = 0; i < n; i++) {
+  const x = r() * L.W, y = r() * L.H;
+  // Inside the art safe area keep only faint specks, so nothing competes with
+  // the phrase or reads as a stray mark on the letters.
+  const inSafe = x > L.safe[0] && x < L.safe[0] + L.safe[2] && y > L.safe[1] && y < L.safe[1] + L.safe[3];
+  const big = !inSafe && r() < 0.06;
+  const rad = (big ? 2.2 + r() * 3.2 : 0.8 + r() * 1.6) * unit * 1.6;
+  const op = (big ? 0.35 + r() * 0.4 : 0.12 + r() * 0.28) * (inSafe ? 0.5 : 1);
+  svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rad.toFixed(2)}" fill="${pal[Math.floor(r() * pal.length)]}" opacity="${op.toFixed(2)}"/>`;
+}
+// A faint dotted path: the voice (waveform) travelling to the sky (constellation)
+const wx = L.wave.x + L.wave.h * 3.4, wy = L.wave.y + L.wave.h / 2;
+const tx = L.con.cx - L.con.size * 0.36, ty = L.con.cy;
+for (let i = 0; i <= 18; i++) {
+  const t = i / 18;
+  const x = wx + (tx - wx) * t, y = wy + (ty - wy) * t - Math.sin(t * Math.PI) * 40 * unit;
+  svg += `<circle cx="${x}" cy="${y}" r="${(3 + 4 * t) * unit}" fill="#D4A547" opacity="${(0.15 + 0.45 * t).toFixed(2)}"/>`;
+}
+sky.innerHTML = svg;
+
+// --- Real UI: Twin constellation + recording waveform -------------------------
+const con = new Image();
+con.src = 'src/constellation.png';
+con.className = 'const';
+con.style.width = con.style.height = L.con.size + 'px';
+con.style.left = (L.con.cx - L.con.size / 2) + 'px';
+con.style.top = (L.con.cy - L.con.size / 2) + 'px';
+c.appendChild(con);
+
+const wv = new Image();
+wv.src = 'src/waveform.png';
+wv.className = 'wave';
+wv.style.height = L.wave.h + 'px';
+wv.style.left = L.wave.x + 'px';
+wv.style.top = L.wave.y + 'px';
+c.appendChild(wv);
+
+// --- The phrase ------------------------------------------------------------------
+const p = document.createElement('h1');
+p.className = 'phrase';
+p.innerHTML = L.text.lines.join('<br>');
+p.style.fontSize = L.text.size + 'px';
+p.style.textAlign = L.text.align;
+c.appendChild(p);
+const [sx, sy, sw, sh] = L.safe;
+document.fonts.ready.then(() => {
+  const b = p.getBoundingClientRect();
+  if (L.text.align === 'center') {
+    p.style.left = (L.text.x - b.width / 2) + 'px';
+    p.style.top = L.text.y + 'px';
+  } else {
+    p.style.left = L.text.x + 'px';
+    p.style.top = (sy + sh / 2 - b.height / 2) + 'px';   // vertically centred in the safe rect
+  }
+  // Self-check: report any key element outside the safe rect in the title.
+  const inside = el => { const q = el.getBoundingClientRect(); return q.left >= sx && q.top >= sy && q.right <= sx + sw && q.bottom <= sy + sh; };
+  const coreR = L.con.size * 0.31;   // the labelled constellation (centre + 4 named stars)
+  const coreOk = L.con.cx - coreR >= sx && L.con.cx + coreR <= sx + sw && L.con.cy - coreR >= sy && L.con.cy + coreR <= sy + sh;
+  const pb = p.getBoundingClientRect();
+  document.title = `text:${inside(p) ? 'IN' : 'OUT'} [${Math.round(pb.left)},${Math.round(pb.top)},${Math.round(pb.right)},${Math.round(pb.bottom)}] core:${coreOk ? 'IN' : 'OUT'}`;
+});
+
+if (Q.get('guides')) {
+  const g = document.createElement('div');
+  g.className = 'guide';
+  Object.assign(g.style, { left: sx + 'px', top: sy + 'px', width: sw + 'px', height: sh + 'px' });
+  g.innerHTML = '<span>ART SAFE AREA</span>';
+  c.appendChild(g);
+}
+</script>
+</body>
+</html>
