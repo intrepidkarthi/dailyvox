@@ -2,6 +2,18 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.12.0] (iOS) and [Android 1.1] — 2026-10-06
+
+### Added
+- **Type an entry any time.** "I can't talk right now" now sits under the record
+  button on the main screen, not only in onboarding. It opens a composer and saves
+  the entry the same way a spoken one is saved: mood, people, streak, widgets and
+  the Twin all update. Asked for by a user who journals at work and at home, around
+  people, where speaking out loud is not an option.
+- Typed entries show no player or duration anywhere.
+- iOS: the onboarding composer is now one shared view, so both paths behave the
+  same. A UI test covers type → save → shown on Today.
+
 ## [Android 1.0] — 2026-10-02
 
 The Android app is **released on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)**

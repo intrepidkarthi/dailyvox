@@ -45,8 +45,8 @@ android {
         // not evidence the number is free — check the Play Console release
         // list, or `./gradlew :app:bundleRelease` will happily produce a
         // duplicate Play refuses on upload.
-        versionCode = 4
-        versionName = "1.0"
+        versionCode = 5
+        versionName = "1.1"
 
         // Demo journal entries, for store screenshots ONLY.
         //
