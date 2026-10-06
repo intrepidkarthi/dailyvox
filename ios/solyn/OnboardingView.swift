@@ -63,7 +63,7 @@ struct OnboardingView: View {
                     // can check independently, and checking it costs one swipe
                     // down and a tap. Everything after this is easier to believe
                     // once someone has watched the app work in airplane mode.
-                    LedgerScreen { advance() }
+                    LedgerScreen(demo: demo) { advance() }
                 case 1:
                     InviteScreen(demo: demo) { advance() }
                 case 2:
@@ -136,6 +136,10 @@ struct OnboardingView: View {
 /// DailyVox, because there is no DailyVox server. Overclaiming on the one screen
 /// whose job is to be checkable would be the worst possible place to do it.
 private struct LedgerScreen: View {
+    /// -OnboardingDemo: hold long enough to read, then move on. The demo was
+    /// written when onboarding began at the invite, and the ledger added in
+    /// front of it never advanced, so a recorded demo sat on this screen.
+    var demo: Bool = false
     let onNext: () -> Void
 
     @State private var appear = false
@@ -213,6 +217,12 @@ private struct LedgerScreen: View {
         .offset(y: appear ? 0 : 12)
         .onAppear {
             withAnimation(.easeOut(duration: 0.5)) { appear = true }
+            if demo {
+                Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 3_500_000_000)
+                    onNext()
+                }
+            }
         }
     }
 }

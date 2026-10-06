@@ -102,8 +102,8 @@ struct TodayView: View {
     /// "I can't talk right now" — the typed composer. The draft survives a
     /// Cancel on purpose: someone interrupted mid-sentence by a coworker should
     /// not lose what they had written.
-    @State private var typing = false
-    @State private var typedText = ""
+    @State private var typing = ScreenshotScene.current == .typing
+    @State private var typedText = ScreenshotScene.current == .typing ? ScreenshotScene.cannedTyped : ""
 
     // Research pilot: optional post-recording self-label picker (Settings → Research).
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false

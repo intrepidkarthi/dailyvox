@@ -19,6 +19,9 @@ DailyVox is a private voice journal that turns your spoken thoughts into a searc
 YOUR VOICE, YOUR DIARY
 Record your thoughts naturally with voice. DailyVox transcribes everything on-device using Apple's speech recognition - no servers, no uploads, no compromises. Your voice literally never leaves your phone.
 
+CAN'T TALK RIGHT NOW? (NEW)
+At work, on a train, next to someone sleeping: tap "I can't talk right now" under the record button and type your entry instead. It gets a mood, finds the people you mention, and counts toward your streak, exactly like a spoken one.
+
 YOUR DIGITAL TWIN
 This is what makes DailyVox different. As you journal, DailyVox tracks and visualizes patterns in your life:
 
@@ -27,14 +30,11 @@ This is what makes DailyVox different. As you journal, DailyVox tracks and visua
 - Writing Patterns: When you journal, how much you write, your streaks and consistency
 - Top Themes: The subjects that come up most in your entries, ranked by importance
 
-Your twin grows with every entry, giving you a clearer picture of your journaling journey over time.
-
-ASK YOUR TWIN (NEW)
+ASK YOUR TWIN
 Ask anything in your own words. On iPhones with Apple Intelligence, your Twin answers with Apple's on-device model — grounded in your entries, every answer citing the exact entries it drew from. On every other iPhone, your question searches the journal by meaning and answers with your closest entries, quoted and dated. Either way: if you haven't written about it, DailyVox says so instead of guessing. The whole conversation happens on this iPhone.
 
 MEMORY & YOUR DAY
 - Search by meaning: find an entry by what you meant, not the exact words — "the day I decided to leave my job." Entirely on-device.
-- A first learned trait: openness now comes from a small on-device model trained on real, consented human writing — and it never claims more confidence than it earned.
 - Predictions say how sure they are: tentative, moderate, or strong. No prediction pretends to be an oracle.
 - Your Day, off by default: DailyVox can read the kind of photos you took and the music you reached for — on-device — and turn each into a one-line note you keep or let go. Only derived labels; your photos and audio never leave this iPhone.
 
@@ -48,13 +48,12 @@ With your permission, the Body Twin reads five signals on this iPhone — sleep,
 RICH JOURNALING
 - Voice recording with real-time audio visualization
 - Audio playback with scrubbing and speed control (0.5x-2x)
-- Photo attachments (up to 5 per entry, stored on-device only)
 - Search and filter your entire history; writing streaks and goals
 - Mood tagging, starred entries, weekly summaries of your emotional arc
 - Export to PDF, JSON, Markdown, CSV, or plain text
 
-LOCK SCREEN & WIDGETS
-Home and Lock Screen widgets: today's entry, streak, mood, and one-tap recording.
+LOCK SCREEN, WIDGETS & DYNAMIC ISLAND
+Home and Lock Screen widgets: today's entry, streak, mood, and one-tap recording. Watch your words appear live in the Dynamic Island while you speak.
 
 SECURITY & PRIVACY
 - Face ID / Touch ID app lock
@@ -65,11 +64,11 @@ SECURITY & PRIVACY
 - No tracking, no analytics, no ads
 - No third-party servers - ever
 
-8 BEAUTIFUL THEMES
-System, Light, Sage, Lavender, Rose, Ocean, Warm, and Dark themes to match your style.
+DAY, NIGHT, OR SUNSET
+Three themes. Sunset follows the real sunset where you are, so the app turns to night when your evening does.
 
 BUILT FOR CONSISTENCY
-DailyVox helps you build a journaling habit. Daily reminder notifications, writing prompts to get you started, and journaling goals with weekly targets and milestone celebrations.
+Daily reminders, writing prompts, and weekly goals with milestone celebrations.
 
 Your thoughts deserve a home. DailyVox is that home.
 

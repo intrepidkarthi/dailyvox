@@ -51,7 +51,7 @@ shoot () {
     --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
 
   xcrun simctl launch "$DEV" "$BUNDLE" -ScreenshotMode "$@" >/dev/null
-  sleep 5                                    # the launch seeds and folds
+  sleep "${WAIT:-5}"                         # the launch seeds and folds
   xcrun simctl io "$DEV" screenshot --type=png "$RAW/$name.png" >/dev/null 2>&1
   echo "  captured $name"
 }
@@ -61,11 +61,13 @@ echo "capturing…"
 # in-app set used.
 shoot twin      -StartTab twin                            # S1  a sky made of you
 shoot speak     -StartTab speak                           # S2  42 seconds is the app
-shoot ask       -StartTab ask    -ScreenshotScene ask     # S3  answers with receipts
+# Ask fades its answer in; at 5 s the 2026-10-06 capture caught it half-drawn.
+WAIT=14 shoot ask -StartTab ask -ScreenshotScene ask     # S3  answers with receipts
 shoot search    -StartTab journal -ScreenshotScene search # S4  describe it, find it
 shoot insights  -StartTab twin   -ScreenshotScene insights # S5 it spots the streak
 shoot settings  -StartTab speak  -ScreenshotScene settings # S6 private by design
 shoot recording -StartTab speak  -ScreenshotScene recording # S7 speak once
+shoot typing    -StartTab speak  -ScreenshotScene typing    # S8 can't talk? type it
 
 # Not in the store set, but captured so the raw folder covers every surface a
 # future frame might want.

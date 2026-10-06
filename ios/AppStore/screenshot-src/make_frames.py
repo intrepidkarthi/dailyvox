@@ -197,6 +197,32 @@ FRAMES = [
          figure="1", gloss="star. then a sky.",
          sticker=dict(title="your first star", sub="born from your voice",
                       bg="#D9A441", fg="#101B2D", rot=4, pos=(int(24 * 3), int(520 * 3)))),
+
+    # 1.12. Asked for by a user who journals at work and at home, around people,
+    # where speaking out loud is not an option.
+    dict(name="08_cant_talk_type_it", shot="typing.png",
+         bg="#14385C", fg="#F1EDE2", accent="#8FD3FF",
+         eyebrow="CAN'T TALK RIGHT NOW?",
+         head=[("then type", None), (None, "instead")],
+         figure=None, gloss="it counts just the same",
+         sticker=dict(title="typed, not recorded", sub="still counts for your streak",
+                      bg="#F7F3EA", fg="#1E2A26", rot=-3, pos=(int(196 * 3), int(760 * 3)))),
+
+    dict(name="09_share_a_star", shot="share.png",
+         bg="#5A2341", fg="#FBF3EA", accent="#F2B6C8",
+         eyebrow="SHARE A STAR",
+         head=[("your sky,", None), (None, "not your words")],
+         figure="35", gloss="nights kept, on the card",
+         sticker=dict(title="no words on it", sub="ever",
+                      bg="#D9A441", fg="#101B2D", rot=4, pos=(int(24 * 3), int(420 * 3)))),
+
+    dict(name="10_every_night_kept", shot="journal.png",
+         bg="#3D3410", fg="#F7F3EA", accent="#F2C14E",
+         eyebrow="YOUR JOURNAL",
+         head=[("every night,", None), (None, "kept")],
+         figure=None, gloss="a colour for every mood",
+         sticker=dict(title="mood at a glance", sub="one line per entry",
+                      bg="#F7F3EA", fg="#1E2A26", rot=-4, pos=(int(246 * 3), int(380 * 3)))),
 ]
 
 
@@ -247,6 +273,9 @@ SIZES = {
     "iPhone_6.5_1284x2778": (1284, 2778),
     "iPhone_6.3_1206x2622": (1206, 2622),
     "iPhone_6.1_1170x2532": (1170, 2532),
+    # The ONE size App Store Connect requires as of October 2026 ("iPhone with
+    # Dynamic Island, medium display"); the others are optional or scaled from it.
+    "iPhone_DI_medium_1179x2556": (1179, 2556),
 }
 
 base = os.path.dirname(OUT.rstrip("/"))
