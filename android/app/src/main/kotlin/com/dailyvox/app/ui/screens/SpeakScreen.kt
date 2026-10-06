@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import com.dailyvox.app.ui.components.MonoLabel
+import com.dailyvox.app.ui.components.PrivateKeyboard
 import com.dailyvox.app.ui.theme.Gold
 import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
@@ -86,6 +92,14 @@ fun SpeakScreen(
     val mic = com.dailyvox.app.system.rememberMicPermission()
     val granted = mic.granted
 
+    // "I can't talk right now" -- the onboarding escape hatch, kept for good.
+    // Most of a day is spent around coworkers, customers or family, where
+    // speaking to a journal aloud is not an option; a user asked for typing to
+    // stay rather than vanish after the first star. Saveable, so a rotation or
+    // a trip to another app mid-sentence does not lose the draft.
+    var typing by rememberSaveable { mutableStateOf(false) }
+    var typed by rememberSaveable { mutableStateOf("") }
+
     val state by capture.state.collectAsState()
     val captureError by capture.error.collectAsState()
     val partial by capture.partial.collectAsState()
@@ -101,9 +115,9 @@ fun SpeakScreen(
             .lastOrNull()
     }
 
-    LaunchedEffect(state) {
+    LaunchedEffect(state, typing) {
         onRecordingChanged(
-            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED
+            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED || typing
         )
     }
 
@@ -216,11 +230,14 @@ fun SpeakScreen(
     // Recording is a full-screen moment, not a state of this screen. The design
     // gives it its own navy dial (B2b), so hand off entirely rather than trying
     // to morph the idle layout around it.
-    LaunchedEffect(state) {
+    LaunchedEffect(state, typing) {
         onRecordingChanged(
-            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED
+            state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED || typing
         )
     }
+
+    // Back closes the composer rather than leaving the app; the draft stays.
+    androidx.activity.compose.BackHandler(enabled = typing) { typing = false }
 
     if (state == SpeechCapture.State.RECORDING || state == SpeechCapture.State.PAUSED) {
         RecordingDial(
@@ -258,7 +275,7 @@ fun SpeakScreen(
     val tall = androidx.compose.ui.platform.LocalConfiguration.current.screenHeightDp >= 780
 
     Column(
-        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
+        modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(14.dp))
@@ -327,42 +344,87 @@ fun SpeakScreen(
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        Spacer(Modifier.height(if (tall) 44.dp else 20.dp))
-        // Scaled to the window. At a fixed 232dp the button plus the headline
-        // filled a 640dp-tall phone on its own and pushed the airplane-mode card
-        // below the fold -- that card is the product's entire argument, and
-        // burying it on small devices is the one thing this screen cannot do.
-        RecordButton(
-            diameter = androidx.compose.ui.platform.LocalConfiguration.current
-                .screenHeightDp.dp.times(0.30f).coerceIn(168.dp, 232.dp),
-            state = state,
-            level = level,
-            elapsed = elapsed,
-            firstEver = firstEver,
-            onTap = {
-                if (!granted) mic.request()
-                else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
-                // Only from IDLE. A tap during PROCESSING used to reach here:
-                // capture.start() returned early, recorder.start() did not, and
-                // a second MediaRecorder opened over the entry being filed.
-                else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
-            },
-        )
+        if (typing) {
+            Spacer(Modifier.height(if (tall) 28.dp else 16.dp))
+            TypedComposer(
+                text = typed,
+                onText = { typed = it },
+                onSave = {
+                    val t = typed.trim()
+                    if (t.isNotEmpty()) {
+                        // The same path a spoken entry takes, with no seconds and
+                        // no audio: Journal and Entry detail already read that
+                        // pair as "typed", and the Today card shows no play chip.
+                        onSaved(t, 0, null)
+                        if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                        else haptics.entrySaved()
+                        typed = ""
+                        typing = false
+                    }
+                },
+                onBack = { typing = false },
+            )
+        } else {
+            Spacer(Modifier.height(if (tall) 44.dp else 20.dp))
+            // Scaled to the window. At a fixed 232dp the button plus the headline
+            // filled a 640dp-tall phone on its own and pushed the airplane-mode card
+            // below the fold -- that card is the product's entire argument, and
+            // burying it on small devices is the one thing this screen cannot do.
+            RecordButton(
+                diameter = androidx.compose.ui.platform.LocalConfiguration.current
+                    .screenHeightDp.dp.times(0.30f).coerceIn(168.dp, 232.dp),
+                state = state,
+                level = level,
+                elapsed = elapsed,
+                firstEver = firstEver,
+                onTap = {
+                    if (!granted) mic.request()
+                    else if (state == SpeechCapture.State.RECORDING) { haptics.recordStop(); capture.stop() }
+                    // Only from IDLE. A tap during PROCESSING used to reach here:
+                    // capture.start() returned early, recorder.start() did not, and
+                    // a second MediaRecorder opened over the entry being filed.
+                    else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                },
+            )
 
-        Spacer(Modifier.height(22.dp))
-        Text(
-            if (state == SpeechCapture.State.RECORDING) "%d:%02d".format(elapsed / 60, elapsed % 60)
-            else if (!granted) "Allow the microphone to begin" else "Tap to record \u00B7 42 seconds",
-            fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            if (partial.isNotBlank()) partial else "Also on your home screen and Quick Settings",
-            fontSize = 13.sp, lineHeight = 19.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.widthIn(max = 420.dp),
-        )
+            Spacer(Modifier.height(22.dp))
+            Text(
+                if (state == SpeechCapture.State.RECORDING) "%d:%02d".format(elapsed / 60, elapsed % 60)
+                else if (!granted) "Allow the microphone to begin" else "Tap to record \u00B7 42 seconds",
+                fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                if (partial.isNotBlank()) partial else "Also on your home screen and Quick Settings",
+                fontSize = 13.sp, lineHeight = 19.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.widthIn(max = 420.dp),
+            )
+
+            // Quiet, and only at rest. Same words as onboarding so the two read
+            // as one feature. Offered with the microphone denied too: that user
+            // has the strongest reason to want it. Not during PROCESSING, when
+            // the entry being filed is still the screen's business.
+            if (state == SpeechCapture.State.IDLE) {
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "I can't talk right now",
+                    fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable { capture.clearError(); typing = true }
+                        .semantics {
+                            role = Role.Button
+                            contentDescription = "Type an entry instead"
+                        }
+                        .defaultMinSize(minHeight = 48.dp)
+                        .padding(horizontal = 14.dp)
+                        .wrapContentHeight(Alignment.CenterVertically),
+                )
+            }
+        }
 
         // The failure, where the user is looking when it happens. Silently
         // returning to "Tap to start" taught people the button was broken.
@@ -478,6 +540,67 @@ fun SpeakScreen(
             MonoLabel("0 calls")
         }
         Spacer(Modifier.height(if (tall) 132.dp else 112.dp))   // clears the floating nav pill
+    }
+}
+
+/**
+ * The typed composer. Onboarding's typed beat, lifted out for the Speak screen:
+ * the same outlined field, the same mic-less keyboard, the same pair of
+ * actions. It takes the record button's place rather than opening a sheet, so
+ * the question above it is still the question being answered.
+ */
+@Composable
+private fun TypedComposer(
+    text: String,
+    onText: (String) -> Unit,
+    onSave: () -> Unit,
+    onBack: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+    val canSave = text.isNotBlank()
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = onText,
+            keyboardOptions = PrivateKeyboard,
+            placeholder = { Text("How was your day, really?") },
+            minLines = 4,
+            shape = RoundedCornerShape(18.dp),
+            modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp).focusRequester(focus),
+        )
+        Spacer(Modifier.height(8.dp))
+        MonoLabel("typed, not recorded \u00B7 stays on this phone")
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "Save to today",
+            fontSize = 16.sp, fontWeight = FontWeight.Bold,
+            color = if (canSave) scheme.onPrimary else scheme.onPrimary.copy(alpha = 0.6f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 460.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(if (canSave) scheme.primary else scheme.primary.copy(alpha = 0.35f))
+                .clickable(enabled = canSave, onClick = onSave)
+                .semantics { role = Role.Button }
+                .padding(vertical = 18.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally),
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Back to speaking",
+            fontSize = 14.sp,
+            color = scheme.onSurfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onBack)
+                .semantics { role = Role.Button }
+                .padding(vertical = 12.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally),
+        )
     }
 }
 
