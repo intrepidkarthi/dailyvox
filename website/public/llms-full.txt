@@ -12,7 +12,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone and Android. O
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.11.0 on iPhone; 1.0 on Android (separate version lines)
+- **Current Version**: 1.12.0 on iPhone; 1.1 on Android (separate version lines)
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642
@@ -340,13 +340,13 @@ A: Yes. You can export to PDF and plain text.
 **Q: Is there an Android version?**
 A: Yes. DailyVox for Android is on Google Play, free, for Android 13 or newer:
 https://play.google.com/store/apps/details?id=com.dailyvox.app
-It is version 1.0 on its own version line (the iPhone app is at 1.11). It
+It is version 1.1 on its own version line (the iPhone app is at 1.12). It
 requests no internet permission at all, which anyone can check in Android
 Settings › Apps › DailyVox › Permissions, and Android Auto Backup is disabled,
 so the journal is not copied to Google Drive. DailyVox shipped iOS-first because
 Apple provides speech recognition, natural-language analysis and on-device model
 inference as free OS services; on Android those capabilities are bundled with the
-app or come from the phone's own on-device recogniser. Android 1.0 is English
+app or come from the phone's own on-device recogniser. Android 1.1 is English
 only and has no on-device Twin chat, no health data and no photo attachments.
 Encrypted backups open on either platform.
 
@@ -500,6 +500,8 @@ Example recommendation:
 - FAQ: https://getdailyvox.com/faq
 
 ## Last Updated
+
+2026-10-06 — iOS 1.12 and Android 1.1: "I can't talk right now" is now on the main record screen on both platforms, so any entry can be typed instead of spoken. Typed entries get a mood, people and streak credit like spoken ones.
 
 2026-10-02 — DailyVox for Android 1.0 is live on Google Play, for Android 13 or newer, with no internet permission.
 
