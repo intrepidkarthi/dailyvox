@@ -11,14 +11,19 @@
 
 EXPB-CONSENT-2.1 describes a study in which each participant sends their full diary export (transcripts, labels, timestamps) to one researcher, who reads it, stores it on an encrypted disk, and trains models on it, including models built from other participants' entries and tested on theirs.
 
-The new design reverses the data flow. Each participant runs the analysis on their own laptop and sends only a numbers-only result file. No researcher ever receives diary text. Several promises in 2.1 become false (they describe things that no longer happen), and a few new facts need to be disclosed. The list below goes section by section through 2.1.
+The new design reverses the data flow. Each participant runs the analysis on their own laptop. No researcher ever receives diary text. What travels is:
+
+1. a numbers-only result file;
+2. optionally, a file of **model weights** fitted on the participant's own entries (`weights.json`), used to build the "models built from other people" comparisons in two rounds (section 3 below).
+
+Several promises in 2.1 become false (they describe things that no longer happen), and a few new facts need to be disclosed. The list below goes section by section through 2.1.
 
 ## 1. Data flow (consent sections 3, 4, 5, 7)
 
 | 2.1 says | Must now say |
 |---|---|
 | Section 3: "Training happens on my own encrypted computer." "I read your diary text. One named person, me, on one machine." | Training and scoring happen on **your own laptop**, using an open-source tool you install. **Nobody reads your diary text**, including the researcher. |
-| Section 4 step 5: "Export research data, send me the file." | Export to your own laptop, run `dailyvox-study run`, then send **only** `result.json`. |
+| Section 4 step 5: "Export research data, send me the file." | Export to your own laptop and run `dailyvox-study run`. Send `result.json`, plus `weights.json` if you agree to the comparison with other people's models. Later you receive a donors file, run the tool once more on the **same** export, and send the new `result.json`. |
 | Section 5: "Exactly what is in the file you send" lists full transcripts, labels, dates, durations, device details. | That list now describes the **export, which stays with you**. A new list describes `result.json` (section 2 below). |
 | Section 7: email passes through a mail provider; the 48-hour mailbox deletion promise. | The emailed file holds numbers only. Keep a retention promise for the mailbox, but the 48-hour rule can be relaxed; PI to decide. |
 | Section 4, section 13(c): "journal on an iPhone", "Journal by voice". | iPhone **or Android**. Typed entries count ("I can't talk right now"). |
@@ -40,6 +45,7 @@ Replace the "file you send" list with the contents of `result.json`:
 - how many entries you labelled, how many were voice and how many typed, and how many times you chose each of the seven feelings;
 - accuracy numbers for each model on your later entries, win and loss flags, and simple statistics about your labelling (how varied, how streaky);
 - statistics from shuffled-label checks;
+- after round 2: how well the models built from other participants' weights predicted your later entries (accuracies only), and a fingerprint of the donors build used;
 - tool and model versions, and a software line (Python and library versions, operating-system family and processor type of your laptop);
 - a fingerprint (SHA-256) of your export file, from which nothing can be read back.
 
@@ -47,15 +53,36 @@ Never in it: any of your words, any entry date or time, entry ids, audio, name, 
 
 **PI decision:** the per-person publication list in 8a ("your accuracy curves ... a checksum of the file you sent") should match the fields above. In particular: are per-person label counts and the laptop software line published per person, or only as cohort summaries? 2.1 publishes device details only as a cohort summary; the same rule is suggested for platform, app version and software line.
 
-## 3. Models built from other people (consent section 3b, section 11, section 15a)
+## 3. Models built from other people: now built from shared weights (consent section 3b, section 11, section 15a)
 
-The cross-participant models no longer exist: no machine ever holds two participants' entries (DEVIATIONS.md D4).
+2.1 section 3b built these models from other participants' **entries** on the researcher's machine. Under 3.0 they are built from other participants' **weights**, in two rounds (DEVIATIONS.md D4). Section 3b must be rewritten, not deleted. It must say the following.
 
-- **Delete section 3b** entirely, including its refusal path ("If you would rather your entries were used only in models about you, this study cannot take you").
-- **Delete the third question in 15a** (agreement to cross-participant models).
-- **Section 11** promises "how well a model of everyone-but-you did". This can no longer be delivered and must be removed.
-- **Section 9 and section 10** promise deletion of "every comparison model that had your entries in it". There are none; remove.
-- If the sufficient-statistics extension in DEVIATIONS.md D4 is ever adopted, it needs a new, separate consent clause; it shares derived matrices, not just accuracies.
+**What `weights.json` is.**
+- The small emotion models fitted on **your own** entries, on your laptop. Each one is a table of 385 x 7 numbers.
+- The file holds 18 such tables: models after your first 5, 10 and 25 entries, and after all your early entries, at a few settings. It is about 650 KB.
+- It holds no words, no dates, no entry ids and no labels per entry. The tool checks that before writing it, and you can open it in a text editor.
+
+**That it is derived from your journal.** These numbers are calculated from your entries and your labels. Mathematically, each table is the generic model plus a weighted sum of the numerical summaries (embeddings) of your own entries, with weights set by how you labelled them. So it carries information about what you wrote, in compressed numerical form.
+
+**Residual risk, stated plainly** (PI to confirm wording):
+- *Attribute inference.* Someone holding your weights and the same public language model could probe them. For example, they could ask which kinds of sentence your model links with sadness, and so learn the themes you associate with each feeling, such as "work" with anger.
+- *Membership inference.* Someone holding a candidate sentence could test whether it is likely to have been among your entries.
+- *Text reconstruction* is much harder. The models see only sentence embeddings, not words, and embedding-inversion attacks on an average of up to 25 entries per table are not known to recover readable text. We do not promise it is impossible.
+- Who sees your weights: only the coordinator (the researcher, and the named collaborators if the PI so decides). **No other participant ever receives your weights.** Each participant receives only averages over at least two other people, and the tool refuses to build donors for fewer than 3 participants.
+
+**Rewrite the rest of section 3b and the related clauses:**
+- **Keep 3b's explanation of why** ("is the personal model really about you, or about how anyone talks into a phone?"). Replace "I fit models on OTHER participants' entries" with "I average models that other participants fitted on their own laptops".
+- **Refusal path: PI decision** (DEVIATIONS.md open item 2).
+  - Either keep 2.1's line, "If you would rather your weights were not used in comparisons, this study cannot take you". The comparison needs everyone's round-2 result.
+  - Or make weights optional. The price is that one decline makes the person-specific test unrunnable for the whole cohort.
+- **15a third question:** reword to "I understand that my model weights (numbers derived from my entries, no text) will be averaged with other participants' weights to build comparison models, and that I will be asked to run the tool a second time."
+- **Section 11:** the promise "how well a model of everyone-but-you did" can be delivered again. It is the `pooled_lopo` number in your round-2 `result.json`.
+
+## 3a. Retention and withdrawal for weights
+
+- **Retention:** weights files and the donors files built from them are kept by the coordinator until the pooled analysis is published (or [N] months after, PI to set), then deleted. The donors manifest (participant codes and file fingerprints only) is kept with the research record.
+- **Withdrawal before the data freeze:** your weights file is deleted, the donors files are rebuilt without you, and every remaining participant is asked to run round 2 again. The consent should say that withdrawing causes this, so nobody is surprised.
+- **Withdrawal after the claim-bearing run:** 2.1's X10 window (iii) applies unchanged. The registered result stands beside a recomputation without you; the recomputation also uses donors rebuilt without you. Your weights are deleted either way.
 
 ## 4. The optional box (consent section 8, section 15b)
 
@@ -66,7 +93,7 @@ The optional "use my entries to help train the generic emotion model that ships 
 | 2.1 says | Must now say |
 |---|---|
 | Raw exports deleted [3] years after publication. | The researcher never holds raw exports. Result files are kept for [N] years after publication (PI to set), on [storage]. |
-| Every model fitted on your data deleted when analysis closes. | No models are held by the researcher. Models exist only in memory on your laptop while the tool runs. |
+| Every model fitted on your data deleted when analysis closes. | The researcher holds only the weights you chose to send and the averaged donors built from them; both are deleted on the schedule in section 3a. No other model of yours leaves your laptop. |
 | The participant-code-to-identity link kept in one file, deleted with the exports. | Keep: the enrolment email links your participant code to you. State where it is kept and when it is deleted. |
 | (new) | Pooled reports and their JSON are kept as research records and may be published. |
 
@@ -84,10 +111,10 @@ The optional "use my entries to help train the generic emotion model that ships 
 Rewrite for three windows:
 
 1. **Before you send anything:** nothing has left your devices. Stop at any time; delete the export from your laptop if you wish.
-2. **After you send `result.json`, before the data freeze:** email your participant code; the result file is deleted and you are not in the cohort.
+2. **After you send `result.json` (and `weights.json`), before the data freeze:** email your participant code; the result file and the weights file are deleted, the donors are rebuilt without you (section 3a), and you are not in the cohort.
 3. **After the pooled analysis has run:** keep 2.1's honest rule (prereg X10 window iii): the registered result was computed with your numbers, so it is reported alongside a result recomputed without you, and the paper says a participant withdrew. A published total cannot be un-published.
 
-Remove every clause about deleting embeddings, intermediate files and comparison models held by the researcher; there are none.
+Remove the clauses about deleting embeddings and intermediate files held by the researcher; there are none. Replace the clause about comparison models with section 3a.
 
 ## 8. Results-timing promise (consent section 11, K-27)
 
@@ -100,7 +127,7 @@ Remove every clause about deleting embeddings, intermediate files and comparison
 - Thresholds: under 30 labelled entries is not analysed; under 35 is not in the main comparison (section 4).
 - Not a crisis or monitoring service, and the support numbers (section 12).
 - Being studied may change how you notice feelings (section 12).
-- No payment (section 11, minus the everyone-but-you number).
+- No payment (section 11), and the everyone-but-you number is back (round 2).
 - The plan is pre-registered before anyone's results are pooled (section 14), now with the tool's protocol hash.
 
 ## 10. Consent string

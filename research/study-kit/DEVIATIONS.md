@@ -2,7 +2,7 @@
 
 **Reference document:** `preregistration-FINAL-draft.md` (v2.1, 2026-08-04) in the private DailyVoxTwin repository, `docs/research-affect/expB-prereg/deliverables/`, with `harness-fix-spec.md` (F-numbers) and `consent-v2.md` (EXPB-CONSENT-2.1).
 
-**Implementation:** `dailyvox-study` 0.1.0, protocol hash printed by `dailyvox-study --version` and stamped in every result file.
+**Implementation:** `dailyvox-study` 0.2.0, protocol hash printed by `dailyvox-study --version` and stamped in every result file.
 
 **Purpose of this file:** the pre-registration was written for a researcher-held design: participants send their diary export to one researcher, who runs a Swift harness over Apple `NLEmbedding` on one macOS machine. This tool implements the same protocol for a decentralised design in which each participant runs the analysis on their own laptop and shares only a numbers-only result file. Some changes are forced by that design or by moving to open, cross-platform components. Every one is listed below so the protocol can be re-registered with the changes stated rather than discovered. Nothing here was chosen after seeing participant data: no real export has been processed by this tool.
 
@@ -38,14 +38,41 @@ Status labels: **FORCED** (the decentralised or open-component design makes the 
   3. **The label-free disagreement probe (section 6.6) is no longer separable from outcomes:** `d` travels in the same file as the accuracies. Mitigation: the lambda fallback branch and the low-`d` branch are applied by `combine` as a deterministic function of `d` alone, with no human step, so knowing outcomes cannot change which branch is taken. The prereg's requirement that the probe log be committed before unblinding becomes "the `combine` code that applies the branch is committed and hashed before the freeze".
   4. **Result-file integrity rests on trust.** A participant could edit their result file. `input_sha256` lets a participant prove later which export produced it, but the researcher cannot verify it without the export, which by design they never receive. Disclose as a limitation.
 
-## D4. Cross-participant arms cannot be computed: donor, donorPlusPrior, pooledLOPO (FORCED)
+## D4. Cross-participant arms rebuilt from shared heads: donor, donorPlusPrior, pooledLOPO (ADAPTED, two-round design)
 
 - **Prereg:** section 7.3 (donor, `donorPlusPrior`, `pooledLOPO`), section 3.1 H3b, section 6.1 Step 4, section 6.4 rows 1, 2, 3 and 13, section 3.3 S6, F2b, F16.2, and `consent-v2.md` section 3b and section 11 ("how well a model of everyone-but-you did").
-- **Now:** these arms fit a head on other participants' entries and score it on this participant's test tail. In the decentralised design no machine ever holds two participants' rows, so none of them can be computed. **Step 4 (H3b) is unrunnable for the whole cohort.**
-- **Registered rule applied:** section 7.3, "Enforcement", already says that if Step 4 is ever unrunnable for the whole cohort, "claim-map row 3 fires". `combine` implements exactly that: whenever Steps 1, 1b, 2 and 3 all reject, the published sentence is row 3 ("we cannot separate personalization from shared spoken-register adaptation at this cohort size"). Rows 1 and 2 are unreachable. Row 13 is printed as "not evaluable". The section 7.3 donor-gate verdict is printed as "unrunnable".
-- **Consequence for Step 5 (H4):** the fixed sequence stops at the first step that does not reject, and an unrunnable Step 4 stops it. H4 is therefore always computed but never carries alpha. **PI DECISION:** either accept this, or re-register the sequence as H1, 1b, H2, H3, H4 with H3b dropped from the confirmatory tier. The second option keeps H4 confirmatory at no cost to familywise error, because H3b never runs.
-- **Consequence for the title claim:** the words "a model of *you*" (section 3.1) are not licensable in this design, because H3b is what licenses them. The strongest available claim is row 3's.
-- **Possible future route, not implemented:** each participant could share sufficient statistics of their adaptation-window rows (`X'X`, a 385 x 385 matrix, and `X'Y`, 385 x 7) and the cross-participant ridge heads could be assembled from those without text. These matrices are derived from text embeddings and carry far more information than accuracies; they would need their own consent clause, a privacy analysis (embedding inversion), and ideally secure aggregation. Recorded so the option is not lost.
+- **The problem:** these arms fit a head on other participants' entries and score it on this participant's test tail. In the decentralised design no machine ever holds two participants' rows.
+- **Resolution (tool 0.2.0, chosen by Karthik): two rounds of weight sharing, no text shared.**
+  1. *Round 1.* `run` also writes `weights.json`: the participant's own ridge heads (385 x 7 numbers each), fitted on their adaptation pool only. These are the K = 5, 10, 25 heads on the first min(K, pool) rows (exactly the rows F2b's donor rule draws from each donor), plus heads on the whole pool at lambda / d for d in {1, 2, 4, 8, 16, 32}. Both sets are written for lambda = 10 and the registered fallback lambda = 1. The participant chooses whether to send it.
+  2. *Coordinator.* `donors` builds, for each participant P, heads computed only from the OTHER non-P0 participants' weights (leave-P-out; P0 excluded per section 7.3 (d)).
+  3. *Round 2.* `run --donors` scores those heads on P's own fixed test tail. donorPlusPrior is P's own bias-only refit (section 7.2 closed form) on top of the donor head, done locally, exactly as section 7.3 defines it. The donors file carries P's round-1 `input_sha256` and round 2 refuses any other export, so data cannot be swapped between rounds.
+- **How the heads stand in for row-level refits (the residual difference).** The prereg fits each arm on pooled ROWS. Here the coordinator only has HEADS, so the arms use the standard divide-and-conquer ridge approximation. If each person's Gram matrix X'X is similar, the mean of D people's heads fitted at mu approximates the ridge fit on all their rows pooled at D x mu.
+  - **donor** (prereg: exactly K rows round-robin over other participants in sorted-id order, lambda) becomes the **mean of all other participants' K-row heads at lambda**. Each donor contributes about K / D rows' worth, so volume is matched in expectation, not row for row. Averaging over all donors also removes the arbitrariness of which donor rows the round-robin happens to pick.
+  - **pooledLOPO** (prereg: one refit on all other participants' pool rows, lambda) becomes the **mean of the others' pool heads fitted at lambda / d**, where d is the shipped divisor closest in log2 to the number of others (D = 9 gives d = 8; d is capped at 32, so cohorts above about 45 lose accuracy).
+  - The coordinator also asked whether a plain "pooled mean of heads" at lambda would do. Measured, it does not. On the synthetic register-only cohort its test predictions agree with the true pooled refit only 41% of the time at lambda = 10, against 85% for lambda / d. The lambda / d rule is therefore used.
+- **Measured fidelity** (selfcheck, synthetic cohorts of 10, lambda = 10; agreement = share of test-tail predictions identical to the exact row-level refit):
+
+  | Cohort | donor agreement | donor acc exact / heads | pooledLOPO agreement | pooledLOPO acc exact / heads |
+  |---|---|---|---|---|
+  | personal-signal (private cues) | 0.805 | 0.241 / 0.232 | 0.872 | 0.236 / 0.236 |
+  | register-only (shared cues) | 0.753 | 0.291 / 0.296 | 0.850 | 0.872 / 0.725 |
+
+  **Consequence:** donor and donorPlusPrior track the prereg arms closely in accuracy, so H3b's contrast is essentially preserved. pooledLOPO from heads is **weaker** than the true pooled refit when the shared signal is strong (0.725 vs 0.872 above). So `personalized - pooledLOPO` is biased in favour of the personal head, and **claim-map row 13 fires less often than it would centrally.** This bias runs in the direction that flatters the study's thesis, so it must be stated in the paper beside row 13. Row 13 still fired 10 of 10 on the register-only synthetic cohort.
+- **Demonstrated on synthetic data** (selfcheck, cohorts of 10, every participant n >= 35):
+
+  | Cohort | Step 1 (personal vs generic) | H3b mean(personal - donorPlusPrior) | H3b p | Verdict | Claim row |
+  |---|---|---|---|---|---|
+  | personal-signal | +11.9 pts | +8.4 pts | 0.0020 | retained | 1 |
+  | register-only | +8.0 pts | +0.7 pts (upper 95% +2.9) | 0.30 | cannot separate | 4b, with row 13 firing |
+
+- **Registered rules now active:** Step 4 runs with the section 7.3 three-way verdict (retained if the sign-flip p <= 0.05 with N_eff(H3b) >= 5; withdrawn if the upper 95% bootstrap bound on the mean is below +2 pts; otherwise cannot separate). The verdict is computed and printed on every run and carries alpha only when Steps 1 to 3 rejected. Rows 1, 2, 3 and 13 are reachable, Step 5 (H4) can carry alpha again, and the words "a model of *you*" are licensable again under section 3.1's rule.
+- **When Step 4 is still unrunnable:** if any analysed result lacks round-2 arms, or there are only round-1 results, `combine` keeps Step 4 unrunnable, names the missing participants, and applies the section 7.3 "Enforcement" rule (claim-map row 3). Round-2 results from different donors builds (different manifest hashes) are refused outright.
+- **Remaining differences from the central design:**
+  1. **Donor pool membership** is the set of people who sent weights, frozen by the donors manifest hash. Under the central design it was the scored cohort. Someone who sends weights but no round-2 result still sits in everyone's donor pool. Register: the donors build happens once, after `D_freeze`, from the weights of the frozen cohort.
+  2. **Withdrawal (X10)** now means deleting that person's weights, rebuilding the donors, and every remaining participant re-running round 2. After the claim-bearing run, X10 window (iii) applies unchanged.
+  3. **Minimum cohort:** the donors step refuses fewer than 3 non-P0 participants with weights. That is stricter than the prereg's N10 >= 2, so that no donors file ever contains a single other person's head.
+  4. **Volume matching** is in expectation (above), not exact.
+- **Privacy:** see CONSENT-CHANGES.md section 3. In dual form a ridge head is W0 plus a label-weighted sum of the person's own entry embeddings, so weights are derived from the journal and carry some information about it.
 
 ## D5. Consent stamp, eligibility checks and multiple exports (ADAPTED)
 
@@ -111,8 +138,8 @@ Status labels: **FORCED** (the decentralised or open-component design makes the 
 
 ## Open items for the PI before re-registration
 
-1. D4: keep H4 behind an unrunnable H3b (H4 never carries alpha), or re-register the sequence without H3b.
-2. D4: accept that the title claim is capped at claim-map row 3 in this design, or plan the sufficient-statistics extension with its own consent.
+1. D4: accept the two-round weights design as the registered implementation of section 7.3. That means donor = mean of others' K heads, pooledLOPO = mean of others' pool heads at lambda / d, the donor pool frozen by the manifest, and the minimum of 3 participants. Also register the pooledLOPO bias disclosure beside claim-map row 13.
+2. D4: decide whether weights sharing is required for enrolment or optional. If optional, anyone who declines makes Step 4 unrunnable for the whole cohort, which falls back to row 3. Requiring it makes the consent's refusal path "this study cannot take you", as in 2.1's section 3b.
 3. D7: typed entries in the primary analysis (current default) or in a sensitivity only.
 4. D3: register the collection procedure that replaces the software interlock (unopened results folder, receipt ledger with hashes, single pooled run after `D_freeze`).
 5. D10: decide which export v2 fields to add before enrolment (consent timestamp, intensity, per-week counters).
