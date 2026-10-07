@@ -142,15 +142,22 @@ final class BackupService {
     /// User-initiated share only — this file is handed to the share sheet
     /// and goes wherever the participant chooses to send it.
     func exportResearchJSON(entries: [DiaryEntry]) throws -> URL {
-        let rows: [ResearchExportV1.Row] = entries.map { entry in
+        // A row with no date or no id is left out rather than patched. A
+        // missing date used to become year 0001, which sorted first and
+        // silently joined the participant's adaptation entries; a missing id
+        // became a fresh UUID on every export, so two exports of the same
+        // journal never matched. Both are rare (pre-1.0 restores) and neither
+        // is a row the analysis can place in time.
+        let rows: [ResearchExportV1.Row] = entries.compactMap { entry in
+            guard let id = entry.id, let when = entry.createdAt ?? entry.date else { return nil }
             let audio = AudioFileList.parse(entry.value(forKey: "audioFileNames") as? String,
                                             legacy: entry.value(forKey: "audioFileName") as? String)
             return ResearchExportV1.Row(
-                id: entry.id ?? UUID(),
+                id: id,
                 // createdAt is when the day's entry was first spoken; `date`
                 // is the same instant on every creation path and is the
                 // fallback for rows restored from a backup that lacked it.
-                createdAt: entry.createdAt ?? entry.date ?? .distantPast,
+                createdAt: when,
                 text: entry.text ?? "",
                 selfLabel: entry.value(forKey: "selfLabelEmotion") as? String,
                 hasAudio: !audio.isEmpty,
