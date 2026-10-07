@@ -1,5 +1,6 @@
 package com.dailyvox.app
 
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
@@ -190,6 +191,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
     // Plain-text exports write straight through the resolver: no temp file, so
     // nothing readable is left in app storage after the share.
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     fun writeText(uri: android.net.Uri, body: String) {
         runCatching {
             context.contentResolver.openOutputStream(uri)?.use { it.write(body.toByteArray()) }
@@ -197,10 +199,15 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     val saveMd = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/markdown")
-    ) { uri -> if (uri != null) writeText(uri, com.dailyvox.app.system.Exporters.markdown(entries)) }
+    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.markdown(vm.allEntries())) } }
     val saveCsv = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
-    ) { uri -> if (uri != null) writeText(uri, com.dailyvox.app.system.Exporters.csv(entries)) }
+    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.csv(vm.allEntries())) } }
+    // The study export: the user picks where it lands and the app never sends
+    // it anywhere.
+    val saveResearch = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/json")
+    ) { uri -> if (uri != null) vm.writeResearchExport(context, uri) }
 
     val query by vm.query.collectAsStateWithLifecycle()
     val streak by vm.streak.collectAsStateWithLifecycle()
@@ -443,6 +450,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onExportEncrypted = { saveBackup.launch("dailyvox-backup.dvx") },
                         onExportPdf = { vm.exportPdf(context) },
                         onImport = { pickBackup.launch(arrayOf("application/json", "text/plain", "*/*")) },
+                        onExportResearch = { saveResearch.launch("dailyvox-research.json") },
                         reminderOn = reminderOn,
                         reminderHour = reminderHour,
                         onReminder = { on, hour ->

@@ -350,10 +350,6 @@ fun EntryDetailScreen(
     }
 }
 
-/** The seven labels are the iOS self-label set, unchanged, so a cohort's
- *  responses stay comparable across platforms. */
-private val SELF_LABELS = listOf("joy", "calm", "sad", "angry", "anxious", "tired", "neutral")
-
 /**
  * The transcript editor.
  *
@@ -392,14 +388,24 @@ private fun EntryTextEditor(
     )
 }
 
+/**
+ * The preregistered canon, worded as on iOS (SelfLabels). A label saved under
+ * the old Android set is shown on its canon chip when it has one (sad lights
+ * Sadness); calm and tired have none, so they keep a chip of their own, as
+ * they were, until the user picks something else or clears it.
+ */
 @Composable
 private fun SelfLabelRow(current: String?, onPick: (String?) -> Unit) {
+    val labels = com.dailyvox.app.system.SelfLabels
+    val selected = labels.canonical(current) ?: current
+    val legacy = current?.takeIf { labels.canonical(it) == null }
+    val chips = labels.CANON + listOfNotNull(legacy?.let { it to it })
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SELF_LABELS.forEach { label ->
-            val on = label == current
+        chips.forEach { (label, word) ->
+            val on = label == selected
             Text(
-                label, fontSize = 15.sp,
+                word, fontSize = 15.sp,
                 color = if (on) MaterialTheme.colorScheme.onPrimary
                         else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier

@@ -143,6 +143,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
      */
     suspend fun buildExport(): String = renderJson(repo.observeAll().first())
 
+    /**
+     * Every entry, regardless of the Journal search box. `entries` is the
+     * search-filtered list, so exporting from it while a query was typed
+     * silently wrote a partial journal to the file.
+     */
+    suspend fun allEntries(): List<Entry> = repo.observeAll().first()
+
     private fun renderJson(all: List<Entry>): String = buildString {
         append("{\n  \"app\": \"DailyVox for Android\",\n  \"entries\": [\n")
         all.forEachIndexed { i, e ->
@@ -175,6 +182,24 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             },
         )
     }
+
+    /**
+     * The study export. Reads the whole table, not [entries]: that flow is the
+     * Journal's search results, and an export taken with a search still typed
+     * in would silently hand the study a fraction of someone's diary.
+     */
+    fun writeResearchExport(context: android.content.Context, uri: android.net.Uri) =
+        viewModelScope.launch {
+            val all = repo.observeAll().first()
+            val json = com.dailyvox.app.system.Research.export(
+                all, com.dailyvox.app.system.Research.device(context))
+            val ok = runCatching {
+                context.contentResolver.openOutputStream(uri)!!.use {
+                    it.write(json.toByteArray(Charsets.UTF_8))
+                }
+            }.isSuccess
+            toast(context, if (ok) "Research file written." else "Could not write there.")
+        }
 
     fun delete(id: String) = viewModelScope.launch {
         repo.delete(id); refreshStats()
