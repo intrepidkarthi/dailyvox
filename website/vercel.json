@@ -143,6 +143,11 @@
       "source": "/blog/best-journaling-app",
       "destination": "/blog/best-free-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/best-men-s-journal-app-for-men",
+      "destination": "/blog/best-journal-app-for-men",
+      "statusCode": 301
     }
   ],
   "headers": [
