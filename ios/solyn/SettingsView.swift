@@ -53,6 +53,9 @@ struct SettingsView: View {
     @AppStorage("authorDescription") private var authorDescription: String = ""
     @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled: Bool = true
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled: Bool = false
+    // Read once per Settings visit; generated on first read and fixed after.
+    @State private var participantCode: String = ResearchParticipant.code()
+    @State private var participantCodeCopied = false
 
     enum ExportPeriod: String, CaseIterable, Identifiable {
         case monthly = "Monthly"
@@ -980,6 +983,34 @@ struct SettingsView: View {
             .tint(DS.Palette.gold)
 
             if pilotLabelingEnabled {
+                // The study code goes on the consent form and rides every
+                // export, so it is shown where the export is — and copyable,
+                // because hand-copying six characters is where typos come from.
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Participant code")
+                            .font(.dv(.subheadline, weight: .semibold))
+                        Text(participantCode)
+                            .font(.dv(.body, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .textSelection(.enabled)
+                    }
+                    Spacer()
+                    Button {
+                        #if canImport(UIKit)
+                        UIPasteboard.general.string = participantCode
+                        #endif
+                        participantCodeCopied = true
+                    } label: {
+                        Label(participantCodeCopied ? "Copied" : "Copy",
+                              systemImage: participantCodeCopied ? "checkmark" : "doc.on.doc")
+                            .font(.dv(.caption, weight: .semibold))
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(DS.Palette.gold)
+                }
+                .accessibilityElement(children: .combine)
+
                 Button {
                     exportResearchData()
                 } label: {
@@ -1005,13 +1036,7 @@ struct SettingsView: View {
 
     private func exportResearchData() {
         do {
-            // Device AI availability rides the export per the research
-            // protocol (NLEmbedding/OS version skew is an analysis variable).
-            let aiAvailable = TwinBrainManager.shared.status == .ready
-            exportURL = try BackupService.shared.exportResearchJSON(
-                entries: Array(entries),
-                appleIntelligenceAvailable: aiAvailable
-            )
+            exportURL = try BackupService.shared.exportResearchJSON(entries: Array(entries))
         } catch {
             exportError = "Research export failed: \(error.localizedDescription)"
         }

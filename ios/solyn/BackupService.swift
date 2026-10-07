@@ -135,54 +135,26 @@ final class BackupService {
         return try exportToJSON(entries: filteredEntries)
     }
 
-    // MARK: - Research Export (pilot)
+    // MARK: - Research Export (dailyvox-research-export/1)
 
-    /// One row of the pilot research export: the fields the affect research
-    /// protocol requires (docs/research-affect, R1 §"what the pilot MUST
-    /// collect") — transcript, recording-time self-label + intensity,
-    /// timestamp, duration — joinable on the entry's stable id.
-    struct ResearchEntry: Codable {
-        let id: UUID
-        let date: Date
-        let text: String
-        let emotions: [String]      // corpus-shaped: [selfLabelEmotion rawValue]
-        let intensity: Int?         // 1–3, nil when the participant skipped it
-        let duration: Double
-        let audioCount: Int         // >1 flags a multi-recording day (label = latest)
-    }
-
-    struct ResearchExport: Codable {
-        let name: String
-        let source: String
-        let exportDate: Date
-        let deviceModel: String
-        let systemVersion: String
-        let appleIntelligenceAvailable: Bool
-        let entryCount: Int
-        let entries: [ResearchEntry]
-    }
-
-    /// Export ONLY self-labeled entries as research JSON, chronological
-    /// (the analysis protocol splits per-user by time, never randomly).
+    /// Export ONLY self-labelled entries in the shared cross-platform format
+    /// (ResearchExport.swift has the shape and the reasons for it).
     /// User-initiated share only — this file is handed to the share sheet
     /// and goes wherever the participant chooses to send it.
-    func exportResearchJSON(entries: [DiaryEntry], appleIntelligenceAvailable: Bool) throws -> URL {
-        let labeled = entries
-            .filter { ($0.value(forKey: "selfLabelEmotion") as? String)?.isEmpty == false }
-            .sorted { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
-
-        let rows: [ResearchEntry] = labeled.map { entry in
-            let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
+    func exportResearchJSON(entries: [DiaryEntry]) throws -> URL {
+        let rows: [ResearchExportV1.Row] = entries.map { entry in
             let audio = AudioFileList.parse(entry.value(forKey: "audioFileNames") as? String,
                                             legacy: entry.value(forKey: "audioFileName") as? String)
-            return ResearchEntry(
+            return ResearchExportV1.Row(
                 id: entry.id ?? UUID(),
-                date: entry.date ?? Date(),
+                // createdAt is when the day's entry was first spoken; `date`
+                // is the same instant on every creation path and is the
+                // fallback for rows restored from a backup that lacked it.
+                createdAt: entry.createdAt ?? entry.date ?? .distantPast,
                 text: entry.text ?? "",
-                emotions: [(entry.value(forKey: "selfLabelEmotion") as? String) ?? ""],
-                intensity: intensity > 0 ? Int(intensity) : nil,
-                duration: entry.duration,
-                audioCount: audio.count
+                selfLabel: entry.value(forKey: "selfLabelEmotion") as? String,
+                hasAudio: !audio.isEmpty,
+                duration: entry.duration
             )
         }
 
@@ -194,21 +166,14 @@ final class BackupService {
         let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
         #endif
 
-        let export = ResearchExport(
-            name: "dailyvox-pilot-export",
-            source: "DailyVox research pilot — writer self-report at recording time",
-            exportDate: Date(),
-            deviceModel: model,
-            systemVersion: osVersion,
-            appleIntelligenceAvailable: appleIntelligenceAvailable,
-            entryCount: rows.count,
-            entries: rows
+        let export = ResearchExportV1.build(
+            rows: rows,
+            participantCode: ResearchParticipant.code(),
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
+            osVersion: osVersion,
+            deviceModel: model
         )
-
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(export)
+        let data = try ResearchExportV1.encode(export)
 
         let fileName = "dailyvox_research_\(formattedDate()).json"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
