@@ -16,8 +16,11 @@ on four refusals, each of which fails loudly and lists the offending files:
 The tests follow the fixed sequence in prereg section 6.1: Step 1 exact
 sign-flip on per-person Delta-acc at K=25; Step 1b per-user McNemar combined
 by Fisher; Step 2 win-rate with ties = losses against exact k*(N25); Step 3
-personalized vs prior-only; Step 4 (H3b) is unrunnable here (DEVIATIONS D4);
-Step 5 win-rate at K=10 over N10. Everything else is descriptive.
+personalized vs prior-only; Step 4 (H3b) personalized vs donorPlusPrior with
+the section 7.3 three-way verdict, runnable only when every analysed result
+carries round-2 donor arms from one donors build (otherwise unrunnable, with
+the reason printed, and claim-map row 3 applies); Step 5 win-rate at K=10 over
+N10. Everything else is descriptive.
 """
 
 from __future__ import annotations
@@ -34,7 +37,7 @@ import numpy as np
 
 from .claims import ClaimInput, select_claim
 from .protocol import (
-    ALPHA, BOOTSTRAP_DRAWS, FALLBACK_D_MIN, GAP_SENSITIVITY_MAX, INFERIORITY_DELTA,
+    ALPHA, BOOTSTRAP_DRAWS, DONOR_NONINFERIORITY_MARGIN, FALLBACK_D_MIN, GAP_SENSITIVITY_MAX, INFERIORITY_DELTA,
     INFERIORITY_WIN_PROB, K_BREADTH, K_GRID, K_PRIMARY, LAMBDA_ADAPT, LAMBDA_FALLBACK,
     LAMBDA_SWEEP, LOW_D_THRESHOLD, MIN_LABELLED_ANY, TEST_CAP,
 )
@@ -102,6 +105,17 @@ def check_cohort(results: list[tuple[Path, dict[str, Any]]]) -> None:
         if len(groups) > 1:
             detail = "; ".join(f"{v[:20]} <- {', '.join(f)}" for v, f in sorted(groups.items()))
             problems.append(f"mixed {key}: {detail}")
+    # Round-2 results must all come from ONE donors build: different donor pools
+    # are different comparators.
+    manifests = defaultdict(list)
+    for p, d in results:
+        arms = d.get("donor_arms")
+        if arms:
+            manifests[arms["donors_manifest_sha256"]].append(str(p))
+    if len(manifests) > 1:
+        detail = "; ".join(f"{v[:16]} <- {', '.join(f)}" for v, f in sorted(manifests.items()))
+        problems.append(f"mixed donors manifests (round-2 results from different donor builds): "
+                        f"{detail}")
     if problems:
         raise CombineError("refusing to combine:\n  - " + "\n  - ".join(problems))
 
@@ -145,6 +159,16 @@ class Person:
     c_po: int
     in_n25: bool
     doc: dict[str, Any]
+    b_dpp: int | None = None          # vs donorPlusPrior at K=25 (round 2 only)
+    c_dpp: int | None = None
+    pooled_ge_personal: bool | None = None
+    delta_pooled: float | None = None
+
+    @property
+    def delta_h3b(self) -> float | None:
+        if self.b_dpp is None:
+            return None
+        return (self.c_dpp - self.b_dpp) / self.m
 
     @property
     def delta1(self) -> float:
@@ -180,11 +204,20 @@ def person(doc: dict[str, Any], lam_key: str | None) -> Person:
         b10, c10 = blk["discordance_k10"]["b"], blk["discordance_k10"]["c"]
         po = blk.get("discordance_vs_prior_only_k25") or {}
         b_po, c_po = po.get("b", 0), po.get("c", 0)
-    return Person(code=doc["participant_code"], platform=doc["platform"], m=m,
-                  n=doc["n_labelled"], n_typed=doc["n_typed"],
-                  acc_generic=doc["acc"]["generic"], acc25=acc25 if acc25 is not None else float("nan"),
-                  acc10=acc10, acc_po25=acc_po25 if acc_po25 is not None else float("nan"),
-                  b=b, c=c, d=d, b10=b10, c10=c10, b_po=b_po, c_po=c_po, in_n25=in25, doc=doc)
+    p = Person(code=doc["participant_code"], platform=doc["platform"], m=m,
+               n=doc["n_labelled"], n_typed=doc["n_typed"],
+               acc_generic=doc["acc"]["generic"], acc25=acc25 if acc25 is not None else float("nan"),
+               acc10=acc10, acc_po25=acc_po25 if acc_po25 is not None else float("nan"),
+               b=b, c=c, d=d, b10=b10, c10=c10, b_po=b_po, c_po=c_po, in_n25=in25, doc=doc)
+    arms = doc.get("donor_arms")
+    if arms:
+        blk = arms[lam_key or f"lambda_{int(LAMBDA_ADAPT)}"]
+        vs = blk.get("vs_donor_plus_prior_k25")
+        if vs:
+            p.b_dpp, p.c_dpp = vs["b"], vs["c"]
+            p.pooled_ge_personal = blk["pooled_lopo_ge_personalized"]
+            p.delta_pooled = blk["delta_vs_pooled_lopo"]
+    return p
 
 
 def wtl(values: Iterable[float]) -> dict[str, int]:
@@ -284,6 +317,46 @@ def analyse_cohort(results: list[dict[str, Any]], p0_codes: set[str] | None = No
     deltas3 = [p.delta3 for p in people25]
     s3 = sign_flip_test(deltas3) if people25 else {"p": None, "n_eff": 0}
     s3_reject = bool(people25) and s3["p"] <= ALPHA and s3["n_eff"] >= 5
+    # --- Step 4 (H3b): needs round-2 donor arms for EVERY analysed participant ----
+    missing = [r["participant_code"] for r in n10_docs if not r.get("donor_arms")]
+    round2 = bool(people25) and not missing
+    if round2:
+        deltas4 = [p.delta_h3b for p in people25]
+        s4 = sign_flip_test(deltas4)
+        ties4 = sum(1 for x in deltas4 if x == 0)
+        neff4 = n25 - ties4
+        s4_reject = s4["p"] <= ALPHA and neff4 >= 5
+        upper4 = bootstrap_upper(deltas4, 0.95, BOOTSTRAP_DRAWS)
+        if s4_reject:
+            verdict = "retained"
+        elif upper4 < DONOR_NONINFERIORITY_MARGIN:
+            verdict = "withdrawn"
+        else:
+            verdict = "cannot_separate"
+        pooled_majority = sum(1 for p in people25 if p.pooled_ge_personal) > n25 / 2
+        step4 = {**s4, "runnable": True, "ties": ties4, "n_eff": neff4, "reject": s4_reject,
+                 "mean_delta": _mean(deltas4), "upper_95_bootstrap": upper4, "verdict": verdict,
+                 "per_user_delta": {p.code: p.delta_h3b for p in people25},
+                 "interval_90": one_sided_intervals(deltas4, 0.90, BOOTSTRAP_DRAWS)
+                 if len(deltas4) >= 2 else None,
+                 "pooled_lopo_ge_personalized_count": sum(1 for p in people25 if p.pooled_ge_personal),
+                 "pooled_lopo_majority": pooled_majority,
+                 "mean_personalized_minus_pooled_lopo": _mean([p.delta_pooled for p in people25])}
+        s4_unrunnable_reason = None
+    else:
+        s4_reject = None
+        pooled_majority = None
+        if not people25:
+            reason = "no participant in N25"
+        elif all(not r.get("donor_arms") for r in n10_docs):
+            reason = ("only round-1 results: no donor arms yet. Run `dailyvox-study donors` on the "
+                      "participants' weights.json files, send each participant their donors file, "
+                      "and pool the round-2 result files")
+        else:
+            reason = (f"{len(missing)} of {len(n10_docs)} analysed results lack round-2 donor arms "
+                      f"({', '.join(missing)}); Step 4 needs every participant's round-2 result")
+        step4 = {"runnable": False, "verdict": "unrunnable", "reason": reason}
+        s4_unrunnable_reason = reason
     # --- Step 5 ---------------------------------------------------------------
     deltas10 = [p.delta10 for p in people10]
     w10 = wtl(deltas10)
@@ -319,7 +392,7 @@ def analyse_cohort(results: list[dict[str, Any]], p0_codes: set[str] | None = No
             steps.append(("1b", "Step 1b McNemar+Fisher", s1b["reject"]))
         steps += [("2", "H2 win-rate (ties = losses)", s2_pass),
                   ("3", "H3 personalized vs prior-only", s3_reject),
-                  ("4", "H3b personalized vs donorPlusPrior", None),
+                  ("4", "H3b personalized vs donorPlusPrior", s4_reject),
                   ("5", "H4 win-rate at K=10 over N10", s5_pass)]
         alive = True
         for step, test, ok in steps:
@@ -327,11 +400,13 @@ def analyse_cohort(results: list[dict[str, Any]], p0_codes: set[str] | None = No
                 record(step, test, "reject" if ok else "not rejected", False)
                 continue
             if not alive:
-                record(step, test, "computed, no alpha (sequence stopped)" if ok is not None
-                       else "UNRUNNABLE (DEVIATIONS D4)", False)
+                record(step, test, ("computed, no alpha (sequence stopped): "
+                                    + ("reject" if ok else "not rejected")) if ok is not None
+                       else "UNRUNNABLE (round-2 donor arms missing)", False)
                 continue
             if ok is None:
-                record(step, test, "UNRUNNABLE (DEVIATIONS D4): sequence stops here", False)
+                record(step, test, "UNRUNNABLE (round-2 donor arms missing): sequence stops here",
+                       False)
                 alive, stopped_at = False, step
                 continue
             record(step, test, "reject" if ok else "not rejected", True)
@@ -345,8 +420,7 @@ def analyse_cohort(results: list[dict[str, Any]], p0_codes: set[str] | None = No
         "step2": {**w1, "n25": n25, "k_star": kstar25, "pass": s2_pass, "exact_p": s2_p},
         "step3": {**s3, "ties": sum(1 for x in deltas3 if x == 0), "reject": s3_reject,
                   "mean_delta": _mean(deltas3)},
-        "step4": {"runnable": False, "verdict": "unrunnable",
-                  "reason": "donorPlusPrior needs other participants' rows (DEVIATIONS D4)"},
+        "step4": step4,
         "step5": {**w10, "n10": len(people10), "k_star": kstar10, "pass": s5_pass,
                   "exact_p": binom_sf(w10["wins"], len(people10), 0.5) if people10 else None},
         "sequence": seq, "stopped_at": stopped_at,
@@ -406,20 +480,46 @@ def analyse_cohort(results: list[dict[str, Any]], p0_codes: set[str] | None = No
         low_d_branch=low_d, s1_reject=primary_reject,
         # In the low-d branch Step 1b IS the primary, so there is no separate co-primary row.
         s1b_reject=s1b["reject"] if not low_d else True,
-        s2_pass=s2_pass, s3_reject=s3_reject, s4_runnable=False, inferiority_met=inferiority,
+        s2_pass=s2_pass, s3_reject=s3_reject, s4_runnable=round2,
+        s4_verdict=step4["verdict"], s4_unrunnable_reason=s4_unrunnable_reason,
+        pooled_majority=pooled_majority, inferiority_met=inferiority,
         p1=s1.get("p"), p1b=s1b.get("p"), sub_chance=sub_chance, sub_chance_points=over_chance,
         persistence_majority=persistence_majority, d_zero_majority=d_zero_majority,
         active_lambda=active_lambda, h3_vs_compound_disagree=h3_vs_compound,
         strata_given=bool(strata), stranger_won=stranger_won, recency_wins=recency_wins))
     rep["claim"] = {"row": claim.row, "headline": claim.headline, "qualifiers": claim.qualifiers,
-                    "notes": claim.notes + ["Section 7.3 donor-gate verdict: unrunnable in the "
-                                            "result-file-only design (DEVIATIONS D4)."]}
+                    "notes": claim.notes}
+    rep["donor_descriptive"] = donor_descriptive(n10_docs, active_lambda) if round2 else None
 
     rep["descriptive"] = descriptive(n25_docs, n10_docs, people25)
     rep["null"] = null_summary(n25_docs, people25, w1["wins"])
     rep["platforms"] = platform_breakdown(non_p0, people25)
     rep["sensitivity"] = sensitivity(people25)
     return rep
+
+
+def donor_descriptive(n10_docs, active_lambda: float) -> dict[str, Any]:
+    """S4/S6 for the donor arms: win/tie/loss of personalized vs donor and donorPlusPrior per K."""
+    lk = f"lambda_{int(active_lambda)}"
+    out: dict[str, Any] = {}
+    for k in (5, 10, 25):
+        row = {}
+        for arm in ("donor", "donor_plus_prior"):
+            vals = []
+            for r in n10_docs:
+                pers = r["arms"]["personalized"].get(f"k{k}") if lk == f"lambda_{int(LAMBDA_ADAPT)}" \
+                    else r["lambda_variants"][lk]["acc"].get(f"k{k}")
+                other = r["donor_arms"][lk][arm].get(f"k{k}")
+                if pers is not None and other is not None:
+                    vals.append(pers - other)
+            row[f"vs_{arm}"] = {**wtl(vals), "mean": _mean(vals), "n": len(vals)}
+        out[f"k{k}"] = row
+    pooled = [r["donor_arms"][lk]["pooled_lopo"] for r in n10_docs]
+    out["pooled_lopo_mean_acc"] = _mean(pooled)
+    out["n_donors"] = sorted({r["donor_arms"]["n_donors"] for r in n10_docs})
+    out["pool_divisor"] = sorted({r["donor_arms"]["pool_divisor"] for r in n10_docs})
+    out["manifest_sha256"] = n10_docs[0]["donor_arms"]["donors_manifest_sha256"]
+    return out
 
 
 def descriptive(n25_docs, n10_docs, people25) -> dict[str, Any]:

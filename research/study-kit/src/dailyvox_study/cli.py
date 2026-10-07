@@ -1,9 +1,10 @@
-"""Command line: `dailyvox-study run | combine | synth | selfcheck | build-generic-head`.
+"""Command line: `dailyvox-study run | donors | combine | synth | selfcheck | build-generic-head`.
 
 Exit codes: 0 ok; 1 selfcheck failed; 2 invalid export or result files;
-3 consent mismatch (prereg X1); 4 combine refused (duplicates or mixed
-versions); 22 data-freeze interlock (the prereg's own number for "refuses to
-score real data before the freeze").
+3 consent mismatch (prereg X1); 4 combine or donors refused (duplicates, mixed
+versions, too few participants); 5 round 2 refused (donors file does not match
+this export); 22 data-freeze interlock (the prereg's own number for "refuses
+to score real data before the freeze").
 """
 
 from __future__ import annotations
@@ -20,34 +21,65 @@ from .protocol import embedding_model_string, protocol_hash
 
 def _cmd_run(args: argparse.Namespace) -> int:
     from .analyze import LeakError
-    from .pipeline import run_export
+    from .pipeline import run_export_full
     from .schema import ConsentMismatch, ExportError
+    from .weights import DonorError
 
     t0 = time.perf_counter()
     try:
-        result, text, warnings = run_export(Path(args.export))
+        out = run_export_full(Path(args.export),
+                              donors_path=Path(args.donors) if args.donors else None)
     except ExportError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     except ConsentMismatch as exc:
         print(f"error (consent, prereg X1): {exc}", file=sys.stderr)
         return 3
+    except DonorError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 5
     except LeakError as exc:  # should be impossible; refuse to write anything
         print(f"internal error, nothing written: {exc}", file=sys.stderr)
         return 2
-    for w in warnings:
+    for w in out.warnings:
         print(f"warning: {w}", file=sys.stderr)
-    out = Path(args.output)
-    out.write_text(text, encoding="utf-8")
-    print(f"Wrote {out} in {time.perf_counter() - t0:.1f}s.")
+    result = out.result
+    rpath = Path(args.output)
+    rpath.write_text(out.text, encoding="utf-8")
+    print(f"Wrote {rpath} in {time.perf_counter() - t0:.1f}s (round {result['round']}).")
     print(f"  participant {result['participant_code']} ({result['platform']}), "
           f"{result['n_labelled']} labelled entries ({result['n_voice']} voice, "
           f"{result['n_typed']} typed), status: {result['status']}")
     if result["status"] != "ok":
         print("  Fewer than 35 labelled entries: this file is still worth sending; it is "
               "counted and reported, just not in the main comparison.")
-    print("  The file contains numbers only: no entry text, no entry ids, no entry dates.")
-    print("  Open it in any text editor to check before you send it. Send ONLY this file.")
+    print("  result.json contains numbers only: no entry text, no entry ids, no entry dates.")
+    if out.weights_text is not None:
+        wpath = Path(args.weights_output)
+        wpath.write_text(out.weights_text, encoding="utf-8")
+        print(f"Also wrote {wpath}: your fitted model weights (numbers derived from your entries,")
+        print("  no text). Sending it is YOUR choice. It lets the study compare your model with")
+        print("  models built from other participants; if you send it you will later receive a")
+        print("  donors file and run this tool once more. See README 'What weights.json is'.")
+    elif result["round"] == 2:
+        print("  Round 2 done: the comparison with other participants' models is included.")
+    print("  Open the files in any text editor to check them before you send anything.")
+    return 0
+
+
+def _cmd_donors(args: argparse.Namespace) -> int:
+    from .weights import DonorError, build_donors, load_weights, write_donors
+
+    try:
+        weights = load_weights([Path(p) for p in args.inputs])
+        donors, manifest = build_donors(weights, set(args.p0 or []))
+    except DonorError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 4
+    paths = write_donors(Path(args.output), donors, manifest)
+    print(f"Wrote {len(paths)} donors files and donors-manifest.json to {args.output} "
+          f"(manifest {manifest['manifest_sha256'][:16]}). Send each participant ONLY their "
+          "own donors-<code>.json.")
     return 0
 
 
@@ -83,7 +115,8 @@ def _cmd_combine(args: argparse.Namespace) -> int:
 def _cmd_synth(args: argparse.Namespace) -> int:
     from .synth import write_synthetic
 
-    paths = write_synthetic(Path(args.output), args.participants, seed=args.seed)
+    paths = write_synthetic(Path(args.output), args.participants, seed=args.seed,
+                            shared_mapping=args.shared_mapping)
     print(f"Wrote {len(paths)} SYNTHETIC exports to {args.output} (marked \"synthetic\": true).")
     return 0
 
@@ -123,7 +156,18 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("run", help="analyse your own export and write result.json")
     r.add_argument("export", help="the research export file from the DailyVox app")
     r.add_argument("-o", "--output", default="result.json")
+    r.add_argument("-w", "--weights-output", default="weights.json",
+                   help="round 1: where to write your model weights (you choose whether to send it)")
+    r.add_argument("--donors", help="round 2: the donors-<code>.json file you received")
     r.set_defaults(func=_cmd_run)
+
+    dn = sub.add_parser("donors", help="coordinator: build each participant's donor heads "
+                        "from everyone else's weights.json")
+    dn.add_argument("inputs", nargs="+", help="weights files and/or directories of them")
+    dn.add_argument("-o", "--output", required=True, help="output directory")
+    dn.add_argument("--p0", action="append", help="participant code of P0, excluded from every "
+                    "donor pool (prereg section 7.3 (d))")
+    dn.set_defaults(func=_cmd_donors)
 
     c = sub.add_parser("combine", help="pool result files into a cohort report")
     c.add_argument("inputs", nargs="+", help="result files and/or directories of them")
@@ -140,6 +184,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("-o", "--output", required=True)
     s.add_argument("--participants", type=int, default=10)
     s.add_argument("--seed", type=int, default=42)
+    s.add_argument("--shared-mapping", action="store_true",
+                   help="every persona shares the same cues (register-only signal)")
     s.set_defaults(func=_cmd_synth)
 
     k = sub.add_parser("selfcheck", help="end-to-end check on synthetic data")

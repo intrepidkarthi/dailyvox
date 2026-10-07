@@ -35,7 +35,11 @@ LABEL_INDEX: dict[str, int] = {lab: i for i, lab in enumerate(CANON_LABELS)}
 
 # --- Schemas and consent (contract sections 1-2; prereg X1) ---
 EXPORT_SCHEMA = "dailyvox-research-export/1"
-RESULT_SCHEMA = "dailyvox-study-result/1"
+RESULT_SCHEMA = "dailyvox-study-result/2"
+RESULT_SCHEMAS_READABLE: tuple[str, ...] = ("dailyvox-study-result/1", RESULT_SCHEMA)
+WEIGHTS_SCHEMA = "dailyvox-study-weights/1"
+DONORS_SCHEMA = "dailyvox-study-donors/1"
+DONOR_MANIFEST_SCHEMA = "dailyvox-study-donor-manifest/1"
 # X1: only exports stamped with an admissible consent version are analysed.
 # "3.0" is the result-file-only consent (see CONSENT-CHANGES.md).
 ADMISSIBLE_CONSENT_VERSIONS: tuple[str, ...] = ("3.0",)
@@ -71,6 +75,13 @@ DONOR_NONINFERIORITY_MARGIN = 0.02 # section 7.3 (unrunnable here; kept for the 
 LOW_D_THRESHOLD = 2                # section 6.6: median d <= 2 branch
 FALLBACK_D_MIN = 4                 # section 6.6: median d at lambda=1 >= 4
 LABEL_RATE_FLAG = 0.15             # S11 (not computable from export v1)
+
+# --- Two-round donor arms (section 7.3; DEVIATIONS D4) ---
+DONOR_KS: tuple[int, ...] = (5, 10, 25)     # donor heads at each K > 0 (first min(K, pool) rows)
+DONOR_LAMBDAS: tuple[float, ...] = (LAMBDA_ADAPT, LAMBDA_FALLBACK)
+POOL_DIVISORS: tuple[int, ...] = (1, 2, 4, 8, 16, 32)  # pool heads at lambda / d
+MIN_WEIGHTS_PARTICIPANTS = 3       # >= 2 OTHERS per donor head (prereg N10 >= 2; never one person's head)
+WEIGHTS_SIG_DIGITS = 9
 
 # --- Embedding model (DEVIATION D1: replaces Apple NLEmbedding) ---
 EMBEDDING_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
@@ -151,6 +162,21 @@ def frozen_constants() -> dict[str, Any]:
             "row_filter": "single canonical class after mapping; >= min_words words; exact-duplicate text dropped",
             "min_words": GENERIC_MIN_WORDS,
             "per_class_cap": GENERIC_PER_CLASS_CAP,
+        },
+        "donor_arms": {
+            "weights_shared": "personal heads at K in donor_ks (first min(K, pool) rows, lambda) "
+                              "and pool heads (all pool rows, lambda / d for d in pool_divisors), "
+                              "for each lambda in donor_lambdas",
+            "donor_ks": list(DONOR_KS),
+            "donor_lambdas": list(DONOR_LAMBDAS),
+            "pool_divisors": list(POOL_DIVISORS),
+            "donor_rule": "mean of all other non-P0 participants' K heads (leave-P-out)",
+            "donor_plus_prior_rule": "prior-only (bias) refit on P's own first K rows over the donor head",
+            "pooled_lopo_rule": "mean of other non-P0 participants' pool heads fitted at lambda / d, "
+                                "d = divisor closest to the number of others in log2",
+            "min_participants": MIN_WEIGHTS_PARTICIPANTS,
+            "weights_significant_digits": WEIGHTS_SIG_DIGITS,
+            "noninferiority_margin": DONOR_NONINFERIORITY_MARGIN,
         },
         "head": "one-vs-rest ridge over [embedding, 1], one-hot 0/1 targets, bias penalised",
         "adaptation": "W = argmin ||XW - Y||^2 + lambda ||W - W_generic||^2 (closed form)",

@@ -93,7 +93,7 @@ def test_mixed_protocol_refused(synthetic_cohort, tmp_path):
     f = sorted(d.glob("*.json"))[1]
     doc = json.loads(f.read_text("utf-8"))
     doc["protocol_hash"] = "0" * 64
-    doc["tool_version"] = "0.2.0"
+    doc["tool_version"] = "9.9.9"
     f.write_text(json.dumps(doc), "utf-8")
     with pytest.raises(CombineError) as exc:
         check_cohort(load_results(sorted(d.glob("*.json"))))

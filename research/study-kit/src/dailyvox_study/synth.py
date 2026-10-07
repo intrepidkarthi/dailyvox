@@ -79,11 +79,21 @@ def uniform_labels(n: int, rng: np.random.Generator) -> list[str]:
 
 
 def make_persona_export(index: int, n_entries: int, seed: int = 42,
-                        cue_rate: float = 0.35, typed_rate: float = 0.2) -> dict[str, Any]:
+                        cue_rate: float = 0.35, typed_rate: float = 0.2,
+                        shared_mapping: bool = False) -> dict[str, Any]:
+    """One synthetic persona.
+
+    shared_mapping=False: each persona has its OWN topic -> emotion mapping
+    (person-specific signal: a personal head should beat other people's heads).
+    shared_mapping=True: every persona uses the SAME mapping (a shared
+    "register" signal the generic head lacks, but that other participants'
+    heads carry just as well: personal should be about equal to donor).
+    """
     rng = np.random.default_rng([seed, index])
     code = participant_code(rng)
     platform = "ios" if index % 2 == 0 else "android"
-    topics = rng.permutation(len(TOPICS))
+    mapping_rng = np.random.default_rng([seed, 9999]) if shared_mapping else rng
+    topics = mapping_rng.permutation(len(TOPICS))
     personal = {lab: [TOPICS[t] for t in topics[3 * i:3 * i + 3]]
                 for i, lab in enumerate(CANON_LABELS)}
     labels = uniform_labels(n_entries, rng)
@@ -131,11 +141,13 @@ def make_persona_export(index: int, n_entries: int, seed: int = 42,
 
 
 def write_synthetic(out_dir: Path, participants: int, seed: int = 42,
-                    counts: tuple[int, ...] = ENTRY_COUNTS) -> list[Path]:
+                    counts: tuple[int, ...] = ENTRY_COUNTS,
+                    shared_mapping: bool = False) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     paths = []
     for i in range(participants):
-        doc = make_persona_export(i, counts[i % len(counts)], seed=seed)
+        doc = make_persona_export(i, counts[i % len(counts)], seed=seed,
+                                  shared_mapping=shared_mapping)
         path = out_dir / f"synthetic-export-{i:02d}-{doc['participant_code']}.json"
         path.write_text(json.dumps(doc, indent=1, ensure_ascii=False), encoding="utf-8")
         paths.append(path)

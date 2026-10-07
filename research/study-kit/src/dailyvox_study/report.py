@@ -94,12 +94,25 @@ def render(rep: dict[str, Any]) -> str:
     L.append(f"**Step 3 (H3).** personalized minus prior-only: mean {pct(s3.get('mean_delta'), True)}, "
              f"sign-flip p = {num(s3.get('p'))}, ties = {s3.get('ties')}, "
              f"N_eff(H3) = {s3.get('n_eff')}.")
-    L.append(f"**Step 4 (H3b).** {st['step4']['verdict']}: {st['step4']['reason']}.")
+    s4 = st["step4"]
+    if s4["runnable"]:
+        iv = s4.get("interval_90") or {}
+        L.append(f"**Step 4 (H3b), vs donorPlusPrior.** mean(personalized - donorPlusPrior) = "
+                 f"{pct(s4['mean_delta'], True)} (one-sided 90% lower bound: percentile "
+                 f"{pct(iv.get('percentile_lower'), True)}, BCa {pct(iv.get('bca_lower'), True)}; "
+                 f"upper 95% bound {pct(s4['upper_95_bootstrap'], True)}); sign-flip p = "
+                 f"{num(s4['p'])}, ties = {s4['ties']}, N_eff(H3b) = {s4['n_eff']}. "
+                 f"**VERDICT: {s4['verdict'].replace('_', ' ')}** [retained | withdrawn (upper 95% "
+                 "bound < +2.0 pts) | cannot separate].")
+        L.append(f"pooledLOPO >= personalized at K=25 for {s4['pooled_lopo_ge_personalized_count']} "
+                 f"of N25 (row 13 fires on a majority); mean personalized - pooledLOPO "
+                 f"{pct(s4['mean_personalized_minus_pooled_lopo'], True)}.")
+    else:
+        L.append(f"**Step 4 (H3b).** unrunnable: {s4['reason']}.")
     s5 = st["step5"]
     L.append(f"**Step 5 (H4).** K=10 wins {s5['wins']} / ties {s5['ties']} / losses {s5['losses']} "
              f"of N10 = {s5['n10']}; k*(N10) = {num(s5['k_star'])}; exact p = {num(s5['exact_p'])}. "
-             "Carries alpha only if Steps 1-4 all rejected, which cannot happen while Step 4 is "
-             "unrunnable.")
+             "Carries alpha only if Steps 1-4 all rejected.")
     L.append("")
     comp = rep["compound"]
     L.append(f"**Compound win (section 3.2, description only).** {comp['wins']} of {comp['n25']}"
@@ -164,7 +177,22 @@ def render(rep: dict[str, Any]) -> str:
         L.append(f"| {k[1:]} | {f(row['vs_generic'])} | {f(row['vs_prior_only'])} | "
                  f"{f(row['vs_recency_last_k'])} |")
     L.append("")
-    L.append("Donor, donorPlusPrior and pooledLOPO: n/a in the result-file-only design (DEVIATIONS D4).")
+    dd = rep.get("donor_descriptive")
+    if dd:
+        L.append(f"**Donor arms (two-round, from shared heads; donors per participant "
+                 f"{dd['n_donors']}, pool divisor {dd['pool_divisor']}, manifest "
+                 f"`{dd['manifest_sha256'][:16]}`):**")
+        L.append("")
+        L.append("| K | vs donor (W/T/L, mean) | vs donorPlusPrior (W/T/L, mean) |")
+        L.append("|---|---|---|")
+        for k in ("k5", "k10", "k25"):
+            a, b = dd[k]["vs_donor"], dd[k]["vs_donor_plus_prior"]
+            L.append(f"| {k[1:]} | {a['wins']}/{a['ties']}/{a['losses']}, {pct(a['mean'], True)} | "
+                     f"{b['wins']}/{b['ties']}/{b['losses']}, {pct(b['mean'], True)} |")
+        L.append("")
+        L.append(f"pooledLOPO mean accuracy {pct(dd['pooled_lopo_mean_acc'])}.")
+    else:
+        L.append("Donor, donorPlusPrior and pooledLOPO: not available (round-1 results only; see Step 4).")
     L.append("")
     rec = rep["recency"]
     L.append(f"**Section 7.7 recency arm.** mean first-K minus last-K: K=5 "

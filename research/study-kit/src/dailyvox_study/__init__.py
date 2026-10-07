@@ -6,4 +6,4 @@ README.md for the privacy model and DEVIATIONS.md for how this implementation
 differs from the Experiment B pre-registration.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

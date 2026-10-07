@@ -7,8 +7,9 @@ function of the test outcomes makes the choice mechanical. The sentences are
 copied from preregistration-FINAL-draft.md section 6.4 (v2.1) with only the
 blanks filled; the precedence order is the one registered there.
 
-One registered rule matters specially here: the decentralised design cannot
-run the donor arms, so Step 4 (H3b) is unrunnable for the whole cohort. The
+One registered rule matters specially here: the donor arms exist only after the
+two-round weights exchange (weights.py). Until every analysed participant's
+round-2 result is in, Step 4 (H3b) is unrunnable for the cohort, and the
 prereg's own rule for that case (section 7.3, "Enforcement") is that claim-map
 row 3 fires in place of rows 1 and 2. See DEVIATIONS.md D4.
 """
@@ -111,6 +112,9 @@ class ClaimInput:
     strata_given: bool
     stranger_won: bool | None
     recency_wins: bool
+    s4_verdict: str = "unrunnable"        # retained | withdrawn | cannot_separate | unrunnable
+    s4_unrunnable_reason: str | None = None
+    pooled_majority: bool | None = None   # row 13 trigger; None = not evaluable
 
 
 @dataclass
@@ -141,11 +145,15 @@ def select_claim(ci: ClaimInput) -> Claim:
         elif not ci.s4_runnable:
             claim = Claim("3", ROWS["3"])
             claim.notes.append(
-                "Step 4 (H3b) is unrunnable in the result-file-only design (DEVIATIONS.md D4); "
-                "per prereg section 7.3 'Enforcement', claim-map row 3 fires. The "
-                "personalized - donorPlusPrior estimate does not exist and is reported as such.")
-        else:  # pragma: no cover - Step 4 is never runnable in this tool
-            claim = Claim("closing", ROWS["closing"])
+                "Step 4 (H3b) is unrunnable for this set of results ("
+                + (ci.s4_unrunnable_reason or "no donor arms") + "); per prereg section 7.3 "
+                "'Enforcement', claim-map row 3 fires.")
+        elif ci.s4_verdict == "retained":
+            claim = Claim("1", ROWS["1"])
+        elif ci.s4_verdict == "withdrawn":
+            claim = Claim("2", ROWS["2"])
+        else:
+            claim = Claim("3", ROWS["3"])
     else:
         if ci.inferiority_met:
             claim = Claim("8", ROWS["8"])
@@ -166,8 +174,14 @@ def select_claim(ci: ClaimInput) -> Claim:
     if ci.h3_vs_compound_disagree:
         claim.qualifiers.append("Row 11: H3 and the compound win-rate disagree; the H3 wording "
                                 "governs and the compound is a descriptive count only.")
-    claim.qualifiers.append("Row 13: not evaluable. pooledLOPO cannot be computed without pooling "
-                            "participants' text (DEVIATIONS.md D4).")
+    if claim.row in ("4", "4b", "5"):
+        claim.qualifiers.append(f"Section 7.3 donor-gate verdict (carries no alpha here): "
+                                f"{ci.s4_verdict.replace('_', ' ')}.")
+    if ci.pooled_majority is None:
+        claim.qualifiers.append("Row 13: not evaluable (no round-2 pooledLOPO arm for this set of "
+                                "results).")
+    elif ci.pooled_majority:
+        claim.qualifiers.append("Row 13 (abstract): " + ROWS["13"])
     if ci.strata_given and ci.stranger_won is False:
         claim.qualifiers.append("Row 14: " + ROWS["14"])
     if ci.persistence_majority:

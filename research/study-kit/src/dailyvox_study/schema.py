@@ -18,7 +18,7 @@ from datetime import datetime
 from typing import Any
 
 from .protocol import (
-    ADMISSIBLE_CONSENT_VERSIONS, CANON_LABELS, EXPORT_SCHEMA, RESULT_SCHEMA,
+    ADMISSIBLE_CONSENT_VERSIONS, CANON_LABELS, EXPORT_SCHEMA, RESULT_SCHEMA, RESULT_SCHEMAS_READABLE,
 )
 
 PARTICIPANT_CODE_RE = re.compile(r"^DV-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{2}$")
@@ -37,6 +37,7 @@ ENTRY_REQUIRED = {
     "input": str, "duration_sec": (int, float),
 }
 MAX_ERRORS = 25
+PLAUSIBLE_YEAR_MIN = 2015
 
 
 class ExportError(ValueError):
@@ -164,6 +165,11 @@ def validate_export(doc: Any) -> list[str]:
                     if prev_dt is not None and dt < prev_dt:
                         errors.append(f"{where} is older than the entry before it; entries must be "
                                       "in chronological order (oldest first)")
+                    if dt.year < PLAUSIBLE_YEAR_MIN:
+                        # iOS writes Date.distantPast (year 0001) for an entry with no date;
+                        # it then sorts first and silently joins the adaptation window.
+                        warnings.append(f"{where}.created_at is {ca}: the entry has no real date "
+                                        "and will be treated as the oldest entry")
                     prev_dt = dt
     if errors:
         raise ExportError(errors)
@@ -210,8 +216,8 @@ def validate_result(doc: Any, source: str = "result") -> None:
             errs.append(f"missing '{key}'")
         elif not _type_ok(doc[key], typ):
             errs.append(f"'{key}' must be a {_type_name(typ)}")
-    if doc.get("schema") != RESULT_SCHEMA:
-        errs.append(f"schema must be '{RESULT_SCHEMA}'")
+    if doc.get("schema") not in RESULT_SCHEMAS_READABLE:
+        errs.append(f"schema must be one of {RESULT_SCHEMAS_READABLE} (current: '{RESULT_SCHEMA}')")
     if doc.get("status") not in RESULT_STATUSES:
         errs.append(f"status must be one of {RESULT_STATUSES}")
     if isinstance(doc.get("participant_code"), str) and not PARTICIPANT_CODE_RE.match(doc["participant_code"]):
@@ -228,6 +234,11 @@ def validate_result(doc: Any, source: str = "result") -> None:
         raise ResultError(f"{source}: " + "; ".join(errs))
 
 
+def is_hash_field(key: Any, value: str) -> bool:
+    """A nested '*_sha256' key holding a 64-hex digest is a fingerprint, not text."""
+    return str(key).endswith("_sha256") and bool(SHA256_RE.match(value))
+
+
 def find_free_text(obj: Any, path: str = "$") -> list[str]:
     """Paths of string values outside the small whitelist of metadata keys."""
     bad: list[str] = []
@@ -237,7 +248,7 @@ def find_free_text(obj: Any, path: str = "$") -> list[str]:
             if not RESULT_KEY_RE.match(str(k)):
                 bad.append(f"{path} (key {str(k)[:12]!r}...)")
             if isinstance(v, str):
-                if not (path == "$" and k in RESULT_STRING_KEYS):
+                if not (path == "$" and k in RESULT_STRING_KEYS) and not is_hash_field(k, v):
                     bad.append(p)
             else:
                 bad.extend(find_free_text(v, p))

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dailyvox-study"
-version = "0.1.0"
+version = "0.2.0"
 description = "Run the DailyVox K-curve study on your own laptop; share only a numbers-only result file."
 readme = "README.md"
 requires-python = ">=3.10"

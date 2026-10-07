@@ -17,8 +17,10 @@ because their text never travels. So this module computes, for one person:
     participant code (F4) so it never depends on who else is in the cohort,
   * descriptive S2/S3/S5/S10/S12 quantities and the E2 uncapped-tail delta.
 
-What it can NOT compute is anything that needs another participant's rows:
-the donor, donorPlusPrior and pooledLOPO arms. See DEVIATIONS.md D4.
+Arms that need other participants' data (donor, donorPlusPrior, pooledLOPO)
+are filled in round 2 from a donors file built out of the other participants'
+shared heads (weights.py); in round 1 this module writes this participant's own
+heads for that exchange. See DEVIATIONS.md D4.
 
 Every value written is a number, a boolean, null, or one of a few metadata
 strings (schema.RESULT_STRING_KEYS). `schema.find_free_text` enforces that,
@@ -42,9 +44,11 @@ from .protocol import (
     LAMBDA_SWEEP, MIN_LABELLED_PRIMARY, N_CLASSES, NULL_PERMUTATIONS, RESULT_SCHEMA, SEED,
     embedding_model_string, protocol_hash,
 )
+from .protocol import DONOR_KS, DONOR_LAMBDAS
 from .schema import check_consent, find_free_text
 from .split import Split, make_split, tier
 from .stats import empirical_chance_threshold
+from .weights import build_weights, find_free_text_generic, lam_key, WEIGHTS_STRING_KEYS
 
 NEUTRAL = LABEL_INDEX["neutral"]
 DECIMALS = 6
@@ -239,9 +243,56 @@ def null_arm(Xb: np.ndarray, y: np.ndarray, sp: Split, W0: np.ndarray, code: str
     return out
 
 
+def donor_arms(Xb: np.ndarray, y: np.ndarray, sp: Split, W0: np.ndarray,
+               donors: dict[str, Any], pers_by_lambda: dict[str, dict[int, np.ndarray]]
+               ) -> dict[str, Any]:
+    """Round 2: score the donor heads (built from OTHER people's weights) on this test tail."""
+    test, gold = Xb[sp.test_slice], y[sp.test_slice]
+    m = sp.m
+    out: dict[str, Any] = {"donors_manifest_sha256": donors["manifest_sha256"],
+                           "n_donors": donors["n_donors"], "pool_divisor": donors["pool_divisor"]}
+    for lam in DONOR_LAMBDAS:
+        lk = lam_key(lam)
+        heads = {k: np.asarray(v, dtype=np.float64) for k, v in donors["heads"][lk].items()}
+        pers = pers_by_lambda[lk]
+        blk: dict[str, Any] = {"donor": {}, "donor_plus_prior": {}}
+        dpp_pred: dict[int, np.ndarray] = {}
+        for k in DONOR_KS:
+            if not sp.available(k):
+                blk["donor"][kkey(k)] = blk["donor_plus_prior"][kkey(k)] = None
+                continue
+            Wd = heads[f"donor_k{k}"]
+            Wdp = fit_prior_only(Xb[:k], y[:k], Wd, lam)
+            dpp_pred[k] = predict(test, Wdp)
+            blk["donor"][kkey(k)] = r6(correct_count(predict(test, Wd), gold) / m)
+            blk["donor_plus_prior"][kkey(k)] = r6(correct_count(dpp_pred[k], gold) / m)
+        pooled_pred = predict(test, heads["pooled_lopo"])
+        blk["pooled_lopo"] = r6(correct_count(pooled_pred, gold) / m)
+        if K_PRIMARY in dpp_pred:
+            dis = discordance(pers[K_PRIMARY], dpp_pred[K_PRIMARY], gold)
+            blk["vs_donor_plus_prior_k25"] = dis
+            blk["delta_vs_donor_plus_prior"] = r6((dis["c"] - dis["b"]) / m)
+            pacc = correct_count(pers[K_PRIMARY], gold)
+            blk["delta_vs_pooled_lopo"] = r6((pacc - correct_count(pooled_pred, gold)) / m)
+            blk["pooled_lopo_ge_personalized"] = correct_count(pooled_pred, gold) >= pacc
+        else:
+            blk["vs_donor_plus_prior_k25"] = None
+            blk["delta_vs_donor_plus_prior"] = None
+            blk["delta_vs_pooled_lopo"] = None
+            blk["pooled_lopo_ge_personalized"] = None
+        out[lk] = blk
+    return out
+
+
 def analyze(doc: dict[str, Any], raw_bytes: bytes, W0: np.ndarray, head_sha256: str,
-            embed: Callable[[list[str]], np.ndarray]) -> dict[str, Any]:
-    """Compute the full result for one validated export."""
+            embed: Callable[[list[str]], np.ndarray], donors: dict[str, Any] | None = None
+            ) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Compute the full result for one validated export.
+
+    Returns (result, weights). Round 1 (donors None): weights is this
+    participant's head set for the donor step (None if under 30 entries).
+    Round 2: the donor arms are scored and weights is None.
+    """
     check_consent(doc)
     entries = doc["entries"]
     kept = [e for e in entries if e["text"].strip()]
@@ -267,6 +318,8 @@ def analyze(doc: dict[str, Any], raw_bytes: bytes, W0: np.ndarray, head_sha256: 
         "n_typed": n_typed,
         "label_counts": {lab: int(np.sum(y == i)) for i, lab in enumerate(CANON_LABELS)},
         "k_primary": K_PRIMARY,
+        "round": 2 if donors is not None else 1,
+        "donor_arms": None,
     }
     t = tier(n)
     result["in_n25"] = t == "primary"
@@ -275,7 +328,7 @@ def analyze(doc: dict[str, Any], raw_bytes: bytes, W0: np.ndarray, head_sha256: 
     if t == "excluded":
         result["note"] = "fewer than 30 labelled entries: not analysed (prereg X4)"
         result["created_at"] = _now()
-        return result
+        return result, None
 
     sp = make_split(n)
     texts = [e["text"] for e in kept]
@@ -381,8 +434,23 @@ def analyze(doc: dict[str, Any], raw_bytes: bytes, W0: np.ndarray, head_sha256: 
     result["null_arm"] = null_arm(Xb, y, sp, W0, doc["participant_code"], observed_net)
     result["solver"] = {"attempted": counter.attempted, "failed": counter.failed}
     result["environment"] = environment()
+    weights = None
+    if donors is not None:
+        pers_by_lambda = {lam_key(LAMBDA_ADAPT): pers}
+        for lam in DONOR_LAMBDAS:
+            if lam != LAMBDA_ADAPT:
+                pers_by_lambda[lam_key(lam)] = arm_predictions(
+                    Xb, y, sp, W0, lam, ks=(K_PRIMARY,) if sp.available(K_PRIMARY) else ()
+                )["personalized"]
+        result["donor_arms"] = donor_arms(Xb, y, sp, W0, donors, pers_by_lambda)
+    else:
+        weights = build_weights(Xb, y, sp, W0, {
+            "tool_version": __version__, "protocol_hash": result["protocol_hash"],
+            "generic_head_sha256": head_sha256, "embedding_model": result["embedding_model"],
+            "participant_code": result["participant_code"], "input_sha256": result["input_sha256"],
+            "synthetic": result["synthetic"]})
     result["created_at"] = _now()
-    return result
+    return result, weights
 
 
 def _now() -> str:
@@ -393,9 +461,11 @@ class LeakError(RuntimeError):
     """The result would carry something from the export other than numbers."""
 
 
-def assert_no_leak(result: dict[str, Any], doc: dict[str, Any], serialised: str) -> None:
-    """Refuse to write a result containing free text, entry text, ids or entry timestamps."""
-    bad = find_free_text(result)
+def assert_no_leak(result: dict[str, Any], doc: dict[str, Any], serialised: str,
+                   kind: str = "result") -> None:
+    """Refuse to write a result (or weights) file with free text, entry text, ids or timestamps."""
+    bad = (find_free_text(result) if kind == "result"
+           else find_free_text_generic(result, WEIGHTS_STRING_KEYS))
     if bad:
         raise LeakError(f"result has free-text fields: {bad[:5]}")
     for e in doc.get("entries", []):
