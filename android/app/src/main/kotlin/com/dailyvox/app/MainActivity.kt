@@ -201,6 +201,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val saveCsv = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
     ) { uri -> if (uri != null) writeText(uri, com.dailyvox.app.system.Exporters.csv(entries)) }
+    // The study export: the user picks where it lands and the app never sends
+    // it anywhere.
+    val saveResearch = rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/json")
+    ) { uri -> if (uri != null) vm.writeResearchExport(context, uri) }
 
     val query by vm.query.collectAsStateWithLifecycle()
     val streak by vm.streak.collectAsStateWithLifecycle()
@@ -443,6 +448,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onExportEncrypted = { saveBackup.launch("dailyvox-backup.dvx") },
                         onExportPdf = { vm.exportPdf(context) },
                         onImport = { pickBackup.launch(arrayOf("application/json", "text/plain", "*/*")) },
+                        onExportResearch = { saveResearch.launch("dailyvox-research.json") },
                         reminderOn = reminderOn,
                         reminderHour = reminderHour,
                         onReminder = { on, hour ->

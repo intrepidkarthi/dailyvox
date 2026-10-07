@@ -176,6 +176,24 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
+    /**
+     * The study export. Reads the whole table, not [entries]: that flow is the
+     * Journal's search results, and an export taken with a search still typed
+     * in would silently hand the study a fraction of someone's diary.
+     */
+    fun writeResearchExport(context: android.content.Context, uri: android.net.Uri) =
+        viewModelScope.launch {
+            val all = repo.observeAll().first()
+            val json = com.dailyvox.app.system.Research.export(
+                all, com.dailyvox.app.system.Research.device(context))
+            val ok = runCatching {
+                context.contentResolver.openOutputStream(uri)!!.use {
+                    it.write(json.toByteArray(Charsets.UTF_8))
+                }
+            }.isSuccess
+            toast(context, if (ok) "Research file written." else "Could not write there.")
+        }
+
     fun delete(id: String) = viewModelScope.launch {
         repo.delete(id); refreshStats()
         com.dailyvox.app.system.StarWidget.refresh(getApplication())

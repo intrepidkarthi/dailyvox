@@ -55,6 +55,7 @@ fun SettingsScreen(
     onExportCsv: () -> Unit = {},
     onExportEncrypted: () -> Unit = {},
     onImport: () -> Unit = {},
+    onExportResearch: () -> Unit = {},
     reminderOn: Boolean = false,
     reminderHour: Int = 21,
     onReminder: (Boolean, Int) -> Unit = { _, _ -> },
@@ -311,6 +312,40 @@ fun SettingsScreen(
             ChevronRow("Export as CSV", "· spreadsheets", onExportCsv)
             ChevronRow("Encrypted backup", "· opens on any phone", onExportEncrypted)
             ChevronRow("Import backup", "· adds, never replaces", onImport)
+        }
+
+        // ── RESEARCH ───────────────────────────────────────────────────────
+        // For study participants. The code reads its own preference, like the
+        // weekly goal above: nothing else in the app needs it. It goes on the
+        // consent form and rides every export, so it is shown beside the export
+        // and copies in one tap -- hand-copying it is where typos come from.
+        SettingsCard {
+            SectionLabel("RESEARCH", scheme.onSurfaceVariant)
+            Spacer(Modifier.height(11.dp))
+            val code = remember { com.dailyvox.app.system.Research.participantCode(context) }
+            var copied by remember { mutableStateOf(false) }
+            LedgerRow("Participant code") {
+                Text(
+                    if (copied) "$code  \u2713" else code,
+                    fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 12.sp,
+                    letterSpacing = 0.5.sp, fontWeight = FontWeight.SemiBold, color = goldText,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                        .clickable {
+                            val cm = context.getSystemService(android.content.ClipboardManager::class.java)
+                            cm?.setPrimaryClip(android.content.ClipData.newPlainText("Participant code", code))
+                            copied = true
+                        }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                )
+            }
+            ChevronRow("Export research data", "· labelled entries", onExportResearch)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Nothing leaves this phone unless you share the file yourself.",
+                fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+            )
         }
 
         SettingsCard {
