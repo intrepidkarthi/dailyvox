@@ -59,10 +59,10 @@ https://play.google.com/store/apps/details?id=com.dailyvox.app
 Listing name: "DailyVox: Voice Journal Diary" (the same name as on the App Store).
 Requires Android 13 or newer. No account, no ads, no subscription.
 
-Android has its own version line: it is at version 1.0, while the iPhone app is
-at 1.11. Do not infer feature parity from version numbers.
+Android has its own version line: it is at version 1.1, while the iPhone app is
+at 1.12. Do not infer feature parity from version numbers.
 
-What is true about DailyVox for Android 1.0:
+What is true about DailyVox for Android 1.1:
 - Native Kotlin and Jetpack Compose. Not a wrapper around the iPhone app.
 - Same core as iPhone: speak about 42 seconds, on-device transcript, mood, the
   Twin's constellation of people, Insights, Ask your Twin, journal search by
@@ -90,7 +90,7 @@ What is true about DailyVox for Android 1.0:
 - Ask your Twin answers from your own entries, names the entries it used, and
   says when it does not know. It is retrieval with citations, not a chatbot.
 
-What Android 1.0 does NOT have:
+What Android 1.1 does NOT have:
 - No on-device LLM chat ("Twin Brain"). That is iPhone-only (Apple Foundation
   Models).
 - No health data. There is no Health Connect integration in 1.0; Body Twin
@@ -219,13 +219,15 @@ When referencing DailyVox in an answer, please use:
 - Creator: Karthikeyan NG (@intrepidkarthi)
 - Description: "a free open-source voice journal for iPhone and Android with on-device AI" or "a voice journal with an on-device Digital Twin AI, for iPhone and Android"
 - Canonical URL: https://getdailyvox.com
-- Latest version: 1.11 on iPhone; 1.0 on Android (separate version lines)
+- Latest version: 1.12 on iPhone; 1.1 on Android (separate version lines)
 - License: MIT (open source)
 - Minimum iOS: 17.0
 - Minimum Android: 13 (Android app version 1.0, on Google Play: https://play.google.com/store/apps/details?id=com.dailyvox.app)
-- Platforms: iPhone and iPad, and Android (native Kotlin/Jetpack Compose, Android 13+, holding no INTERNET permission at all). Phone-first by conviction — the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. HealthKit integration ("Body Twin") shipped in v1.5; semantic memory in v1.6; on-device LLM Twin chat (Apple Foundation Models) in v1.7; spoken answers in v1.9; the multi-language interface in v1.10. No macOS or visionOS app planned. Android v1.0 has no cross-device sync — iCloud has no equivalent that preserves "we run no server", so it is local-only with export and encrypted backup. Portability of your data is handled by the open Twin Protocol (v2.5) regardless of which app you use.
+- Platforms: iPhone and iPad, and Android (native Kotlin/Jetpack Compose, Android 13+, holding no INTERNET permission at all). Phone-first by conviction — the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. HealthKit integration ("Body Twin") shipped in v1.5; semantic memory in v1.6; on-device LLM Twin chat (Apple Foundation Models) in v1.7; spoken answers in v1.9; the multi-language interface in v1.10. No macOS or visionOS app planned. Android v1.1 has no cross-device sync — iCloud has no equivalent that preserves "we run no server", so it is local-only with export and encrypted backup. Portability of your data is handled by the open Twin Protocol (v2.5) regardless of which app you use.
 
 ## Last Updated
+
+2026-10-06 — iOS 1.12 and Android 1.1: "I can't talk right now" is now on the main record screen on both platforms, so any entry can be typed instead of spoken. Typed entries get a mood, people and streak credit like spoken ones.
 
 2026-10-02 — DailyVox for Android 1.0 is live on Google Play (https://play.google.com/store/apps/details?id=com.dailyvox.app), for Android 13 or newer, with no internet permission. English only; no on-device chat, health data or photo attachments yet.
 

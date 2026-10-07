@@ -173,7 +173,11 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New — v1.11.0 (August 2026)
+## What's New — v1.12.0 and Android 1.1 (October 2026)
+
+**Type when you can't talk.** "I can't talk right now" now sits under the record button on the main screen, on iPhone and Android, not only during setup. A typed entry gets a mood, finds the people you mention and counts toward your streak, the same as a spoken one. A reader asked for it: they journal at work and at home, around people, where speaking out loud is not an option.
+
+## Previously — v1.11.0 (August 2026)
 
 **Live transcription.** The recording screen and the Dynamic Island show what you are saying as you say it, with a gold star when a name is caught. On-device, always. The Island carries the 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.
 
@@ -193,7 +197,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 > **Platforms.** DailyVox is live on the [App Store](https://apps.apple.com/app/id6760454642)
 > for iPhone and iPad, and on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
-> for Android 13 or newer (Android v1.0, its own version line). Android has no
+> for Android 13 or newer (Android v1.1, its own version line). Android has no
 > on-device LLM chat, no health data and no translations yet. One known
 > limitation: on Android, the names in the Twin depend on the phone's speech
 > recogniser capitalising them. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
@@ -207,9 +211,10 @@ scored against the Apple frameworks they replace on the same real diary text.
 | v1.8.0 | Retrieval rebuilt — hybrid scoring, threshold re-measured at τ=0.29 | Shipped Jul 2026 |
 | v1.9.0 | Voice & Access — read-aloud, system voices, accessibility pass | Shipped Jul 2026 |
 | v1.10.0 | Spanish, French, German and Italian | Shipped Aug 2026 |
-| v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | **Shipped Aug 2026** |
-| Android v1.0 | **Android, first release** | **Shipped 2026-10-02** |
-| v1.12 | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
+| v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | Shipped Aug 2026 |
+| Android v1.0 | Android, first release | Shipped 2026-10-02 |
+| v1.12.0 · Android v1.1 | Type an entry any time ("I can't talk right now" on the main screen) | **Shipped Oct 2026** |
+| Next | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.

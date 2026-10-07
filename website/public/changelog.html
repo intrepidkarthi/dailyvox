@@ -203,7 +203,7 @@
   </header>
 
   <section class="hero wrap">
-    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-08-24</div>
+    <div class="marker"><span class="diamond">◆</span>RELEASE HISTORY · UPDATED 2026-10-06</div>
     <h1>Every <em>version</em>, every change.</h1>
     <p class="lede">DailyVox shipped its first version in March 2026. Here is every release since — what we built, what we changed, and (occasionally) what we shouldn't have done. For the developer-facing diff, see the <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/CHANGELOG.md" style="color:var(--uv); text-decoration:underline;">GitHub CHANGELOG</a>.</p>
   </section>
@@ -212,7 +212,21 @@
 
       <section class="version" style="border-left:3px solid var(--uv);padding-left:18px;">
         <div class="v-head">
-          <div class="v-tag" style="color:var(--uv);">◆ latest · v1.11.0</div>
+          <div class="v-tag" style="color:var(--uv);">◆ latest · iPhone v1.12.0 · Android v1.1</div>
+          <h2 id="v1-12-shipped">Version 1.12.0 (iPhone) and 1.1 (Android) — Type when you can't talk</h2>
+          <p><strong>"I can't talk right now" is always there now.</strong> It used to appear only while setting up the app, so after your first entry DailyVox was voice or nothing. Now it sits under the record button on the main screen, on iPhone and on Android. Tap it, type your entry, save. It gets a mood, finds the people you mention and counts toward your streak, exactly like a spoken one, and it never shows a player because there is no recording.</p>
+          <p>A reader asked for this. They journal at work and at home, around coworkers, customers and family, where speaking out loud is not an option. That is most people, most days, and the app should have been built for it from the start.</p>
+          <p style="color:var(--ink-soft); font-size:14px;">Typed or spoken, nothing is sent to DailyVox.</p>
+        </div>
+        <div class="v-block">
+          <div class="v-tag">Android v1.0 · 2 October 2026</div>
+          <h2 id="android-1-0">DailyVox for Android 1.0 — on Google Play</h2>
+        </div>
+        <div class="v-body">
+          <p>The first Android release, for Android 13 or newer, on <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" style="color:var(--uv); text-decoration:underline;">Google Play</a>. It requests no internet permission at all, which you can check in Android's own Settings › Apps › DailyVox › Permissions. Android has its own version line, so 1.0 is not a counterpart to any iPhone number: it is English only, and does not yet have the on-device chat, health data or photos. <a href="/blog/dailyvox-on-android" style="color:var(--uv); text-decoration:underline;">How it was built</a>.</p>
+        </div>
+        <div class="v-block">
+          <div class="v-tag">v1.11.0</div>
           <h2 id="v1-11-shipped">Version 1.11.0 — Live Transcription (shipped)</h2>
           <p><strong>You can watch the words arrive.</strong> The recording screen and the Dynamic Island now show what you are saying as you say it, with a gold star the moment a name is caught. The Island carries the full 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.</p>
           <p><strong>A correction that matters more than any feature here.</strong> Until this release, the transcriber preferred on-device recognition only when the phone was offline — which meant that on a connected iPhone, nearly every user nearly always, the recording went to Apple's speech servers for better punctuation. Every claim this product makes rested on that not happening. On-device recognition is now unconditional: where no on-device model is installed, transcription stops and says why rather than reaching for the network. Voice search had the same fault and the same fix.</p>
@@ -568,7 +582,7 @@
       </nav>
     </div>
     <div class="dv-f-base">
-      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span>&copy; 2026 DailyVox &middot; iOS 1.12 &middot; Android 1.1 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
   </div>

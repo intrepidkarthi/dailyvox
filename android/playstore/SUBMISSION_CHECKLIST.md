@@ -147,3 +147,13 @@ python3 screenshot-src/compose.py     # needs Chrome; uses the app's bundled fon
 The feature graphic's render command is at the bottom of
 `assets/feature-graphic.html`. If the emulator's display goes black, cold-boot
 it — `emulator -avd <name> -wipe-data -no-snapshot` — rather than restarting.
+
+## After the release is live
+
+Update the versions the website shows (top-bar badge, footer on every page, schema, "latest" lines), once the store actually serves the new build:
+
+```bash
+python3 website/set_version.py --ios 1.12 --android 1.1   # the numbers now live
+```
+
+Then add the release to website/public/changelog.html and the roadmap table by hand.
