@@ -11,8 +11,8 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DailyVox Research — Measuring a Model of One</title>
-  <meta name="description" content="The research programme behind DailyVox: a falsifiable, on-device evaluation methodology for private personal models, what the instrument found against its own model, and the open problems anyone can pick up.">
+  <title>DailyVox Research — Help Build a Private Digital Twin</title>
+  <meta name="description" content="Help answer two open questions behind a private, on-device digital twin. Pick a role, start in three steps, and turn your contribution into published research. No prior research experience needed for most roles.">
   <meta name="keywords" content="dailyvox research, on-device model evaluation, personal model, digital twin evaluation, falsifiable AI methodology, private AI research">
   <meta name="theme-color" content="#FAF8F5">
   <meta property="og:type" content="article">
@@ -1102,6 +1102,80 @@
   background:var(--uv,#5B7C6B);color:#fff;padding:12px 20px;
   border-radius:0 0 8px 0;font-family:var(--ui,'Nunito',system-ui,sans-serif);font-weight:700}
 .skip:focus{left:0}
+
+/* ===== Onramp: the page a newcomer reads first. Everything here is plain
+   language; the numbered programme below it is unchanged and for researchers. */
+.on-sec{margin:64px 0 0}
+.on-sec:first-child{margin-top:44px}
+.on-h{font-family:var(--display);font-weight:800;font-size:clamp(26px,3.2vw,34px);letter-spacing:-.02em;margin:0 0 8px}
+.on-h em{color:var(--uv);font-style:italic;font-weight:600}
+.on-sub{color:var(--ink-dim);font-size:16.5px;line-height:1.6;max-width:68ch;margin:0 0 22px}
+.on-three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.on-card{background:var(--card);border:1px solid var(--rule-2);border-radius:16px;padding:20px 20px 18px}
+.on-card .k{font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--uv);margin-bottom:10px}
+.on-card h3{font-family:var(--display);font-size:19px;margin:0 0 8px;letter-spacing:-.01em;line-height:1.3}
+.on-card p{margin:0;font-size:15px;line-height:1.6;color:var(--ink-dim)}
+.on-roles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.on-roles .role{grid-column:span 2}
+.on-roles .role.featured{grid-column:span 3}
+.role{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--rule-2);border-radius:16px;padding:20px}
+.role.featured{border-color:var(--uv-edge);box-shadow:0 0 0 3px var(--uv-wash)}
+.role .who{font:600 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute)}
+.role h3{font-family:var(--display);font-size:20px;margin:8px 0 8px;letter-spacing:-.01em}
+.role p{margin:0 0 12px;font-size:15px;line-height:1.55;color:var(--ink-dim)}
+.role dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:14px}
+.role dt{font:600 10.5px/1.9 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute)}
+.role dd{margin:0;line-height:1.5}
+.role .go{margin-top:auto;font-weight:700;color:var(--uv);text-decoration:none}
+.role .go:hover{text-decoration:underline}
+.steps{list-style:none;counter-reset:st;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.steps li{counter-increment:st;background:var(--paper-2);border-radius:16px;padding:20px 20px 18px;position:relative}
+.steps li::before{content:counter(st);display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  background:var(--uv);color:#fff;font:800 15px/1 var(--display);margin-bottom:12px}
+.steps h3{font-family:var(--display);font-size:18px;margin:0 0 6px}
+.steps p{margin:0;font-size:14.8px;line-height:1.55;color:var(--ink-dim)}
+.steps code,.on-code{font-family:var(--mono);font-size:13px;background:var(--card);border:1px solid var(--rule-2);border-radius:6px;padding:1px 6px}
+.on-pre{font-family:var(--mono);font-size:12px;white-space:pre;max-width:100%;background:#1A1A2E;color:#F2EDE8;border-radius:12px;padding:14px 16px;overflow-x:auto;margin:12px 0 0;line-height:1.6}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.status .col{border-radius:16px;padding:18px 18px 8px;border:1px solid var(--rule-2);background:var(--card)}
+.status h3{font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.status h3::before{content:"";width:9px;height:9px;border-radius:50%}
+.status .done h3::before{background:var(--uv)}
+.status .next h3::before{background:var(--bio)}
+.status .blocked h3::before{background:var(--ray)}
+.status ul{list-style:none;margin:0;padding:0}
+.status li{font-size:14.6px;line-height:1.5;padding:0 0 10px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch}
+.flow .st{padding:18px 18px;border:1px solid var(--rule-2);background:var(--card);position:relative}
+.flow .st:first-child{border-radius:16px 0 0 16px}
+.flow .st:last-child{border-radius:0 16px 16px 0;background:var(--uv-wash);border-color:var(--uv-edge)}
+.flow .st + .st{border-left:0}
+.flow .st:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  width:20px;height:20px;border-radius:50%;background:var(--paper);display:grid;place-items:center;color:var(--uv);font-weight:800;z-index:1}
+.flow .k{font:600 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px}
+.flow h3{font-family:var(--display);font-size:17px;margin:0 0 6px}
+.flow p{margin:0;font-size:14.3px;line-height:1.5;color:var(--ink-dim)}
+.faq-on{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 14px}
+.faq-on details{background:var(--paper-2);border-radius:12px;padding:12px 16px}
+.faq-on summary{cursor:pointer;font-weight:700;font-size:15.5px}
+.faq-on p{margin:8px 0 2px;font-size:14.8px;line-height:1.6;color:var(--ink-dim)}
+.map{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px}
+.map a{display:flex;gap:12px;align-items:baseline;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink)}
+.map a:hover{background:var(--paper-2)}
+.map .n{font:600 11px/1 var(--mono);color:var(--uv);min-width:28px}
+.map span:last-child{color:var(--ink-dim);font-size:14.5px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;border:1.5px solid var(--uv-edge);
+  color:var(--uv);font-weight:700;text-decoration:none}
+.btn-ghost:hover{background:var(--uv-wash)}
+@media (max-width:640px){.dbr{display:none}}
+.prog-divider{margin:84px 0 0;padding:28px 0 0;border-top:2px solid var(--ink)}
+.prog-divider .kicker{margin-bottom:10px}
+@media (max-width:900px){.on-roles{grid-template-columns:repeat(2,minmax(0,1fr))}.on-roles .role,.on-roles .role.featured{grid-column:auto}
+  .on-three,.steps,.status{grid-template-columns:minmax(0,1fr)}.flow{grid-template-columns:1fr 1fr}
+  .flow .st{border-radius:0!important;border-left:1px solid var(--rule-2)!important}
+  .flow .st:not(:last-child)::after{display:none}}
+@media (max-width:640px){.faq-on,.map,.flow,.on-roles{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -1132,13 +1206,144 @@
   <main id="main">
     <section class="hero">
       <div class="wrap">
-        <div class="kicker">research</div>
-        <h1>Measuring a model<br>of <em>one</em>.</h1>
-        <p class="lede">A model built to be private cannot be watched in production. With no egress there is no dashboard, no population A/B test, no confusion matrix — and its single user is the only witness. So it has to be evaluated on the device, before it ships, or its fidelity claims cannot be checked at all.</p>
-        <p class="lede lede-2">This page is the programme built around that problem — and an open invitation. It is one person's work so far, which is its main weakness. If any of it is close to what you work on, I would rather do it with you than alone: co-authorship, joint supervision, a student project, or just an argument about whether the method holds. <a href="#work-with">How to start a conversation</a> is at the bottom.</p>
-        <p class="lede lede-2"><strong>If you are reading this as a prospective academic collaborator</strong> — a supervisor, a group with an ethics process, a student looking for a project — start with the <a href="/research-statement">research statement</a> &mdash; or the <a href="/research-brief">two-page brief</a> if you would rather print something. It is the formal version: one falsifiable question, the study that is designed and powered but cannot run, publication targets with dates, and an explicit division of labour.</p>
+        <div class="kicker">research · open to contributors</div>
+        <h1>Help build a digital twin<br class="dbr"> that never leaves <em>the phone</em>.</h1>
+        <p class="lede">DailyVox is a free voice journal that learns a private model of one person, on their own phone, from what they say each day. Two questions decide whether that model is worth building. This page explains them in plain language and shows how you can help answer them. Most roles need no research experience.</p>
+        <div class="hero-ctas">
+          <a href="#roles" class="btn-primary">Find a way to help <span class="arr">→</span></a>
+          <a href="#in-60-seconds" class="btn-ghost">The idea in 60 seconds</a>
+        </div>
+        <p class="lede lede-2" style="font-size:15px">Academic or supervisor? The formal version is the <a href="/research-statement">research statement</a> (or the printable <a href="/research-brief">two-page brief</a>), and the full programme starts at <a href="#programme">§01 below</a>.</p>
       </div>
     </section>
+
+
+    <div class="wrap">
+
+      <section class="on-sec" id="in-60-seconds">
+        <h2 class="on-h">The idea in <em>60 seconds</em>.</h2>
+        <div class="on-three">
+          <div class="on-card"><div class="k">the goal</div><h3>A model of one person, on their own phone</h3><p>Built only from their own journal. It runs where the data is made, belongs to them, and sends nothing to a server. It is a mirror of what they have said, not an oracle that pretends to be them.</p></div>
+          <div class="on-card"><div class="k">the problem</div><h3>Private means you cannot watch it</h3><p>Because nothing leaves the phone, there is no dashboard and no way to check the model in use. If we cannot measure whether it is any good, every claim about it is marketing. So the measuring has to be designed first.</p></div>
+          <div class="on-card"><div class="k">the two questions</div><h3>Does the phone matter? Does it learn <em>you</em>?</h3><p>Do iPhone and Android hear people differently enough to change what the twin learns? And does a model trained on your own entries understand your feelings better than one trained on strangers?</p></div>
+        </div>
+      </section>
+
+      <section class="on-sec" id="roles">
+        <h2 class="on-h">Choose how you want to <em>help</em>.</h2>
+        <p class="on-sub">Pick one. Each card says how long it takes, what you need, and what it leads to. Everyone who takes part also journals for two months: you cannot run a study well that you have not been through.</p>
+        <div class="on-roles">
+          <div class="role featured">
+            <div class="who">students · ~6 weeks</div>
+            <h3>Study 1: Does the phone change the twin?</h3>
+            <p>Read short scripted diary entries into DailyVox on three to five phones, iPhone and Android, and score what each one heard: wrong words, missed names, names not capitalised.</p>
+            <dl><dt>You need</dt><dd>A phone, a spreadsheet, patience</dd><dt>Leads to</dt><dd>The cross-platform section of a methods paper</dd></dl>
+            <a class="go" href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/START-HERE.md#study-1-does-the-phone-change-the-twin">Read the Study 1 brief →</a>
+          </div>
+          <div class="role featured">
+            <div class="who">students · ~16 weeks</div>
+            <h3>Study 2: Does a model of you beat the generic one?</h3>
+            <p>Test the analysis tool, then, after ethics approval, help 15 to 20 volunteers through two months of journaling and two short analysis runs on their own laptops.</p>
+            <dl><dt>You need</dt><dd>Basic Python, a laptop, care with people</dd><dt>Leads to</dt><dd>A registered report, published whatever the result</dd></dl>
+            <a class="go" href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/START-HERE.md#study-2-does-a-model-of-you-beat-the-generic-one">Read the Study 2 brief →</a>
+          </div>
+          <div class="role">
+            <div class="who">anyone · ~2 months, a minute a day</div>
+            <h3>Volunteer participant</h3>
+            <p>Journal on iPhone or Android, tap how each day felt, then run one tool on your own laptop. Only numbers leave your machine, never your words.</p>
+            <dl><dt>You need</dt><dd>A phone and a laptop</dd><dt>When</dt><dd>After ethics approval. Register interest now</dd></dl>
+            <a class="go" href="mailto:hello@getdailyvox.com?subject=Volunteer%20for%20the%20DailyVox%20study">Register interest →</a>
+          </div>
+          <div class="role">
+            <div class="who">academics · a few hours</div>
+            <h3>Review or supervise</h3>
+            <p>Attack the study design before it is frozen, offer an ethics route, or supervise a student. If the method has a hole, finding it is the most valuable contribution there is.</p>
+            <dl><dt>You need</dt><dd>Research methods or stats background</dd><dt>Leads to</dt><dd>Co-authorship, agreed in writing</dd></dl>
+            <a class="go" href="#study">See the study design →</a>
+          </div>
+          <div class="role">
+            <div class="who">developers · any time</div>
+            <h3>Build the tools</h3>
+            <p>The app (Swift and Kotlin) and the analysis tool (Python) are open source. Improve the tool, add tests, or make the export and the study flow easier for participants.</p>
+            <dl><dt>You need</dt><dd>Python, Swift or Kotlin</dd><dt>Leads to</dt><dd>Credit under the Software role</dd></dl>
+            <a class="go" href="https://github.com/intrepidkarthi/dailyvox/tree/main/research/study-kit">Open the study kit →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="on-sec" id="start-steps">
+        <h2 class="on-h">Start in <em>three steps</em>.</h2>
+        <ol class="steps">
+          <li><h3>Use the app</h3><p>Install DailyVox from the <a href="https://apps.apple.com/app/id6760454642">App Store</a> or <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>. Record an entry, or type one with "I can't talk right now", and tap how the day felt.</p></li>
+          <li><h3>Run the tool once</h3><p>Install the study kit and run its self-check on made-up data. Nothing personal is involved yet.</p><pre class="on-pre">pipx install "git+https://github.com/intrepidkarthi/dailyvox#subdirectory=research/study-kit"
+dailyvox-study selfcheck</pre></li>
+          <li><h3>Say hello</h3><p>Pick a role and email one paragraph on what you think could go wrong with it to <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>. A good objection is the best introduction.</p></li>
+        </ol>
+      </section>
+
+      <section class="on-sec" id="status">
+        <h2 class="on-h">Where things <em>stand</em>.</h2>
+        <div class="status">
+          <div class="col done"><h3>Ready</h3><ul>
+            <li>The app, live on iPhone and Android</li>
+            <li>Self-labelling of how each day felt, on both</li>
+            <li>The analysis tool: runs on your own laptop, writes numbers only</li>
+            <li>A full study design with power analysis and pre-written outcomes</li>
+          </ul></div>
+          <div class="col next"><h3>Next</h3><ul>
+            <li>The shared research export reaches both apps in their next updates</li>
+            <li>Study 1 can start now, with team members only</li>
+            <li>Academic review of the study design before it is frozen</li>
+          </ul></div>
+          <div class="col blocked"><h3>Waiting on</h3><ul>
+            <li>Ethics approval through a university partner</li>
+            <li>The new consent form, which says only numbers are shared</li>
+            <li>No volunteers are recruited until both are in place</li>
+          </ul></div>
+        </div>
+      </section>
+
+      <section class="on-sec" id="becomes">
+        <h2 class="on-h">How your work becomes <em>research</em>.</h2>
+        <div class="flow">
+          <div class="st"><div class="k">you</div><h3>Do the work</h3><p>Record and score scripts, test the tool, support volunteers, or review the design.</p></div>
+          <div class="st"><div class="k">the study</div><h3>Get a clean answer</h3><p>One analysis, run once, after the data is frozen. No peeking, no tuning.</p></div>
+          <div class="st"><div class="k">the paper</div><h3>Publish it</h3><p>A registered report and a methods paper. Your name on it if you meet the authorship criteria.</p></div>
+          <div class="st"><div class="k">the twin</div><h3>Decide what to build</h3><p>Whether the twin works on Android, and whether personal on-device models are worth building at all.</p></div>
+        </div>
+      </section>
+
+      <section class="on-sec" id="questions">
+        <h2 class="on-h">Common <em>questions</em>.</h2>
+        <div class="faq-on">
+          <details><summary>Do I need research experience?</summary><p>No, for Study 1 and for volunteering. Study 2 needs basic Python. Reviewing the design needs a methods or statistics background.</p></details>
+          <details><summary>Will anyone read my journal?</summary><p>No. The tool runs on your own laptop and writes only numbers: results and your personal model's weights. No one in the study ever sees anyone's entries.</p></details>
+          <details><summary>Is this paid?</summary><p>No. There is no funding. What there is: a real app as a testbed, open questions, and a path to publication.</p></details>
+          <details><summary>Will my name be on a paper?</summary><p>Every contribution is recorded with the standard CRediT roles. Anyone who meets the journal's authorship criteria is eligible for co-authorship, agreed in writing before work starts.</p></details>
+          <details><summary>What if the result is negative?</summary><p>It still gets published. The main study is a registered report: the journal accepts the design before any data exists, so "it did not help" or "we could not tell" are results too.</p></details>
+          <details><summary>iPhone or Android?</summary><p>Either. Both apps export the same file, and one open-source tool analyses both the same way, so results can be compared across phones.</p></details>
+        </div>
+      </section>
+
+      <section class="on-sec" id="programme-map">
+        <h2 class="on-h">Go <em>deeper</em>.</h2>
+        <p class="on-sub">The full programme below is written for researchers. Here is what each part covers.</p>
+        <ul class="map">
+          <li><a href="#the-goal"><span class="n">§01</span><span>What a personal digital twin is, and what stands in the way</span></a></li>
+          <li><a href="#paper"><span class="n">§02</span><span>The paper: measuring a model of one</span></a></li>
+          <li><a href="#found"><span class="n">§03</span><span>What the measurement found against its own model</span></a></li>
+          <li><a href="#open"><span class="n">§04</span><span>Open problems you could take on now</span></a></li>
+          <li><a href="#later"><span class="n">§05</span><span>Problems further out</span></a></li>
+          <li><a href="#data"><span class="n">§06</span><span>What data exists</span></a></li>
+          <li><a href="#study"><span class="n">§07</span><span>The study, designed and powered</span></a></li>
+          <li><a href="#work-with"><span class="n">§08</span><span>Working together: terms and ethics</span></a></li>
+        </ul>
+      </section>
+
+      <div class="prog-divider" id="programme">
+        <div class="kicker">the full programme · for researchers</div>
+      </div>
+    </div>
 
     <div class="wrap">
 
@@ -1185,7 +1390,7 @@
       </section>
 
       <!-- PAPER -->
-      <section class="sec-block">
+      <section class="sec-block" id="paper">
         <div class="sec-head">
           <span class="sec-num">§02</span>
           <h2 class="sec-title">The <em>paper</em>.</h2>
@@ -1236,7 +1441,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         </div>
 
       <!-- FINDINGS -->
-      <section class="sec-block">
+      <section class="sec-block" id="found">
         <div class="sec-head">
           <span class="sec-num">§03</span>
           <h2 class="sec-title">What it <em>found</em>.</h2>
@@ -1253,7 +1458,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       </section>
 
       <!-- OPEN PROBLEMS -->
-      <section class="sec-block">
+      <section class="sec-block" id="open">
         <div class="sec-head">
           <span class="sec-num">§04</span>
           <h2 class="sec-title">Open <em>problems</em>.</h2>
@@ -1297,7 +1502,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
            implied that was the whole programme. These are the directions after
            them: further out, less defined, and the ones most worth arguing
            about with someone who knows the literature. -->
-      <section class="sec-block">
+      <section class="sec-block" id="later">
         <div class="sec-head">
           <span class="sec-num">§05</span>
           <h2 class="sec-title">Where it <em>goes after that</em>.</h2>
@@ -1334,7 +1539,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
       </section>
 
       <!-- DATA -->
-      <section class="sec-block">
+      <section class="sec-block" id="data">
         <div class="sec-head">
           <span class="sec-num">§06</span>
           <h2 class="sec-title">What <em>data</em> exists.</h2>
@@ -1390,38 +1595,10 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         <p>The full pre-registration draft — power tables, split rule, outcome sentences, consent draft, and the decision log — is available on request, and the right first response to it is suspicion: if your instinct is that the design is wrong somewhere, that instinct is the collaboration. The formal write-up of all of this, including venues and dates, is the <a href="/research-statement">research statement</a>. <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></p>
       </section>
 
-      <!-- START CONTRIBUTING -->
-      <section class="sec-block" id="start">
-        <div class="sec-head">
-          <span class="sec-num">§08</span>
-          <h2 class="sec-title">Start <em>contributing</em>.</h2>
-          <span class="sec-tag">for students and researchers</span>
-        </div>
-
-        <p>The concrete version of everything above: what you would work on, what it produces, and how it becomes a paper. The full guide is <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/START-HERE.md">START-HERE.md</a>.</p>
-
-        <div class="shape-grid">
-          <div class="shp"><div class="shp-n">study 1 · ~6 weeks</div><p><strong>Does the phone change the twin?</strong> Read 30 to 40 scripted diary entries into DailyVox on three to five phones, iPhone and Android, and score each transcript: word error rate, names caught, names capitalised. Becomes the cross-platform section of a methods paper.</p></div>
-          <div class="shp"><div class="shp-n">study 2 · ~16 weeks</div><p><strong>Does a model of you beat the generic one?</strong> Test the analysis tool, then run the two-round study with 15 to 20 volunteers after ethics approval. Becomes a registered report, published whatever the result.</p></div>
-          <div class="shp"><div class="shp-n">everyone</div><p><strong>Be participant one.</strong> Journal for two months and label how each day felt. Typed entries count.</p></div>
-          <div class="shp"><div class="shp-n">credit</div><p>CRediT roles for every contribution; co-authorship for anyone who meets the journal's criteria, agreed in writing before work starts.</p></div>
-        </div>
-
-        <h3 class="sub-h">The rules</h3>
-        <ul class="dlist">
-          <li>Nobody handles anyone else's journal text. Only result and weight files move.</li>
-          <li>The tool runs on the participant's own laptop, never in a hosted notebook.</li>
-          <li>No recruiting outside the team until ethics approval and the new consent are in place.</li>
-          <li>The analysis runs once, after data collection ends.</li>
-        </ul>
-
-        <p style="margin-top:22px">First week: install DailyVox, record a labelled entry, run <code>dailyvox-study selfcheck</code>, pick a study, and email one paragraph on what you think could go wrong with it to <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>.</p>
-      </section>
-
       <!-- CONTRIBUTING -->
       <section class="sec-block" id="work-with">
         <div class="sec-head">
-          <span class="sec-num">§09</span>
+          <span class="sec-num">§08</span>
           <h2 class="sec-title">Let's do it <em>together</em>.</h2>
           <span class="sec-tag">open invitation</span>
         </div>
