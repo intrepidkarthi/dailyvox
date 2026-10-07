@@ -1,0 +1,11 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+# never commit anyone's export or result files
+*export*.json
+result*.json
+!src/dailyvox_study/data/*.json
+!tests/fixtures/*.json

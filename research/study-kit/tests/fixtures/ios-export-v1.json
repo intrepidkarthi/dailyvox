@@ -1,0 +1,333 @@
+{
+  "app_version" : "1.12.0",
+  "consent_version" : "3.0",
+  "device_model" : "iPhone",
+  "entries" : [
+    {
+      "created_at" : "2026-08-01T20:30:42Z",
+      "duration_sec" : 114,
+      "id" : "0939E93D-823B-0633-0000-000000000000",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 1."
+    },
+    {
+      "created_at" : "2026-08-02T20:14:57Z",
+      "duration_sec" : 54,
+      "id" : "34F9144C-D17B-9B49-0000-000000000001",
+      "input" : "voice",
+      "self_label" : "anger",
+      "text" : "Found out the rent is going up next month. Entry 2."
+    },
+    {
+      "created_at" : "2026-08-03T20:24:33Z",
+      "duration_sec" : 68,
+      "id" : "01C3874C-857C-C098-0000-000000000002",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "My sister called about the wedding plans. Entry 3."
+    },
+    {
+      "created_at" : "2026-08-04T20:50:16Z",
+      "duration_sec" : 0,
+      "id" : "151A530E-B452-A652-0000-000000000003",
+      "input" : "typed",
+      "self_label" : "fear",
+      "text" : "Nothing much happened today, just errands. Entry 4."
+    },
+    {
+      "created_at" : "2026-08-05T20:27:09Z",
+      "duration_sec" : 40,
+      "id" : "1D061C03-07F6-830B-0000-000000000004",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "She said \"fine\", \\ really.\nThen\ttab\u0001done"
+    },
+    {
+      "created_at" : "2026-08-06T20:08:02Z",
+      "duration_sec" : 51,
+      "id" : "0D056921-39D9-0955-0000-000000000005",
+      "input" : "voice",
+      "self_label" : "fear",
+      "text" : "Found out the rent is going up next month. Entry 6."
+    },
+    {
+      "created_at" : "2026-08-07T20:01:11Z",
+      "duration_sec" : 37,
+      "id" : "1F0D5E71-DFE3-3F1D-0000-000000000006",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "My sister called about the wedding plans. Entry 7."
+    },
+    {
+      "created_at" : "2026-08-08T20:58:50Z",
+      "duration_sec" : 116,
+      "id" : "2E62F559-05E5-08F7-0000-000000000007",
+      "input" : "voice",
+      "self_label" : "anger",
+      "text" : "Long day at work, the standup ran over again. Entry 8."
+    },
+    {
+      "created_at" : "2026-08-09T20:55:29Z",
+      "duration_sec" : 23,
+      "id" : "3E13420A-54A5-1400-0000-000000000008",
+      "input" : "voice",
+      "self_label" : "sadness",
+      "text" : "The bus broke down and I was late for everything. Entry 9."
+    },
+    {
+      "created_at" : "2026-08-10T20:30:57Z",
+      "duration_sec" : 18,
+      "id" : "27E74193-5B2C-A3D1-0000-000000000009",
+      "input" : "voice",
+      "self_label" : "fear",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 10."
+    },
+    {
+      "created_at" : "2026-08-11T20:21:46Z",
+      "duration_sec" : 0,
+      "id" : "3AB5016E-B175-632C-0000-00000000000A",
+      "input" : "typed",
+      "self_label" : "surprise",
+      "text" : "Nothing much happened today, just errands. Entry 11."
+    },
+    {
+      "created_at" : "2026-08-12T20:02:22Z",
+      "duration_sec" : 0,
+      "id" : "21D4680F-ADFC-5B75-0000-00000000000B",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 12."
+    },
+    {
+      "created_at" : "2026-08-13T20:22:05Z",
+      "duration_sec" : 79,
+      "id" : "36918953-3148-D9DE-0000-00000000000C",
+      "input" : "voice",
+      "self_label" : "joy",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 13."
+    },
+    {
+      "created_at" : "2026-08-14T20:12:53Z",
+      "duration_sec" : 35,
+      "id" : "35C09E6C-560E-8857-0000-00000000000D",
+      "input" : "voice",
+      "self_label" : "surprise",
+      "text" : "Café with Zoë, naïve plan but lovely 😊"
+    },
+    {
+      "created_at" : "2026-08-15T20:30:34Z",
+      "duration_sec" : 64,
+      "id" : "3031A59C-BEC7-BE1D-0000-00000000000E",
+      "input" : "voice",
+      "self_label" : "joy",
+      "text" : "The bus broke down and I was late for everything. Entry 15."
+    },
+    {
+      "created_at" : "2026-08-16T20:32:42Z",
+      "duration_sec" : 84,
+      "id" : "325FCBD9-B09B-8D8F-0000-00000000000F",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Walked by the lake after dinner and the light was beautiful. Entry 16."
+    },
+    {
+      "created_at" : "2026-08-17T20:11:29Z",
+      "duration_sec" : 97,
+      "id" : "0C3EA6B5-56E9-6E4B-0000-000000000010",
+      "input" : "voice",
+      "self_label" : "fear",
+      "text" : "Nothing much happened today, just errands. Entry 17."
+    },
+    {
+      "created_at" : "2026-08-18T20:13:11Z",
+      "duration_sec" : 0,
+      "id" : "371F44D0-2ABA-668D-0000-000000000011",
+      "input" : "typed",
+      "self_label" : "disgust",
+      "text" : "Long day at work, the standup ran over again. Entry 18."
+    },
+    {
+      "created_at" : "2026-08-19T20:52:35Z",
+      "duration_sec" : 59,
+      "id" : "118A0240-A783-CA63-0000-000000000012",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Nothing much happened today, just errands. Entry 19."
+    },
+    {
+      "created_at" : "2026-08-20T20:50:17Z",
+      "duration_sec" : 88,
+      "id" : "3579F74E-9A6E-F0E3-0000-000000000013",
+      "input" : "voice",
+      "self_label" : "surprise",
+      "text" : "Long day at work, the standup ran over again. Entry 20."
+    },
+    {
+      "created_at" : "2026-08-21T20:16:54Z",
+      "duration_sec" : 30,
+      "id" : "28EACE2A-2C52-9830-0000-000000000014",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Found out the rent is going up next month. Entry 21."
+    },
+    {
+      "created_at" : "2026-08-21T20:16:54Z",
+      "duration_sec" : 22,
+      "id" : "1EDC9159-42B3-841C-0000-000000000015",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Nothing much happened today, just errands. Entry 22."
+    },
+    {
+      "created_at" : "2026-08-23T20:20:42Z",
+      "duration_sec" : 54,
+      "id" : "25BA66DB-64D5-C80E-0000-000000000016",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "இன்று நல்ல நாள், மழை பெய்தது"
+    },
+    {
+      "created_at" : "2026-08-24T20:01:28Z",
+      "duration_sec" : 82,
+      "id" : "3AD25912-DCFE-CB4C-0000-000000000017",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Found out the rent is going up next month. Entry 24."
+    },
+    {
+      "created_at" : "2026-08-25T20:27:51Z",
+      "duration_sec" : 0,
+      "id" : "2A434336-C4B0-AC61-0000-000000000018",
+      "input" : "typed",
+      "self_label" : "neutral",
+      "text" : "Nothing much happened today, just errands. Entry 25."
+    },
+    {
+      "created_at" : "2026-08-26T20:14:43Z",
+      "duration_sec" : 93,
+      "id" : "0D8C1438-38DC-C977-0000-000000000019",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "My sister called about the wedding plans. Entry 26."
+    },
+    {
+      "created_at" : "2026-08-27T20:18:52Z",
+      "duration_sec" : 100,
+      "id" : "0A87497C-5D7A-D6F0-0000-00000000001A",
+      "input" : "voice",
+      "self_label" : "joy",
+      "text" : "Nothing much happened today, just errands. Entry 27."
+    },
+    {
+      "created_at" : "2026-08-28T20:22:30Z",
+      "duration_sec" : 41,
+      "id" : "2C3EDDB1-4204-0C09-0000-00000000001B",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Walked by the lake after dinner and the light was beautiful. Entry 28."
+    },
+    {
+      "created_at" : "2026-08-29T20:33:37Z",
+      "duration_sec" : 6,
+      "id" : "10CCB69F-A89D-4A7A-0000-00000000001C",
+      "input" : "voice",
+      "self_label" : "anger",
+      "text" : "Walked by the lake after dinner and the light was beautiful. Entry 29."
+    },
+    {
+      "created_at" : "2026-08-30T20:25:16Z",
+      "duration_sec" : 17,
+      "id" : "2885B14B-574E-1572-0000-00000000001D",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "The bus broke down and I was late for everything. Entry 30."
+    },
+    {
+      "created_at" : "2026-08-31T20:01:28Z",
+      "duration_sec" : 80,
+      "id" : "1B993813-CA33-14DC-0000-00000000001E",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 31."
+    },
+    {
+      "created_at" : "2026-09-01T20:53:00Z",
+      "duration_sec" : 0,
+      "id" : "2874E6DA-143E-D5F4-0000-00000000001F",
+      "input" : "typed",
+      "self_label" : "neutral",
+      "text" : "a/b test for the path c:\\temp and http://x.y/z"
+    },
+    {
+      "created_at" : "2026-09-02T20:48:36Z",
+      "duration_sec" : 44,
+      "id" : "22CB7A46-BDCB-DD10-0000-000000000020",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Long day at work, the standup ran over again. Entry 33."
+    },
+    {
+      "created_at" : "2026-09-03T20:45:28Z",
+      "duration_sec" : 33,
+      "id" : "1070843E-C964-7C70-0000-000000000021",
+      "input" : "voice",
+      "self_label" : "neutral",
+      "text" : "Walked by the lake after dinner and the light was beautiful. Entry 34."
+    },
+    {
+      "created_at" : "2026-09-04T20:04:23Z",
+      "duration_sec" : 35,
+      "id" : "30D7190E-7AF4-9FEA-0000-000000000022",
+      "input" : "voice",
+      "self_label" : "sadness",
+      "text" : "My sister called about the wedding plans. Entry 35."
+    },
+    {
+      "created_at" : "2026-09-05T20:46:24Z",
+      "duration_sec" : 48,
+      "id" : "1AF0604A-0465-CE6D-0000-000000000023",
+      "input" : "voice",
+      "self_label" : "joy",
+      "text" : "Cooked the new recipe, it actually worked. Entry 36."
+    },
+    {
+      "created_at" : "2026-09-06T20:39:53Z",
+      "duration_sec" : 57,
+      "id" : "2589842A-0E19-590B-0000-000000000024",
+      "input" : "voice",
+      "self_label" : "fear",
+      "text" : "Couldn't sleep, kept thinking about the interview. Entry 37."
+    },
+    {
+      "created_at" : "2026-09-07T20:41:55Z",
+      "duration_sec" : 47,
+      "id" : "1CB2866F-1206-B50E-0000-000000000025",
+      "input" : "voice",
+      "self_label" : "disgust",
+      "text" : "Nothing much happened today, just errands. Entry 38."
+    },
+    {
+      "created_at" : "2026-09-08T20:22:03Z",
+      "duration_sec" : 0,
+      "id" : "0705E48A-495D-2851-0000-000000000026",
+      "input" : "typed",
+      "self_label" : "joy",
+      "text" : "The bus broke down and I was late for everything. Entry 39."
+    },
+    {
+      "created_at" : "2026-09-09T20:24:27Z",
+      "duration_sec" : 41,
+      "id" : "1408F9E2-EDB9-ADCD-0000-000000000027",
+      "input" : "voice",
+      "self_label" : "sadness",
+      "text" : "Walked by the lake after dinner and the light was beautiful. Entry 40."
+    }
+  ],
+  "entry_count" : 40,
+  "exported_at" : "2026-10-07T10:00:00Z",
+  "os_version" : "iOS 26.3",
+  "participant_code" : "DV-7K3Q-M9",
+  "platform" : "ios",
+  "schema" : "dailyvox-research-export/1"
+}
