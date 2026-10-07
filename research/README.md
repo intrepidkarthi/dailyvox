@@ -4,6 +4,8 @@ DailyVox builds a private, fully on-device model of one person — the Digital T
 
 This directory holds the public research artifacts.
 
+**Want to contribute?** Start with [`START-HERE.md`](START-HERE.md): the two open studies, roles, how a contribution becomes a paper, and the rules. The analysis tool participants run on their own laptop is in [`study-kit/`](study-kit/).
+
 ## The measurement principles
 
 - **Lift over a baseline, or it doesn't count.** A do-nothing model scores ~75% on naive agreement metrics for these tasks. Every number we report is lift over an explicit baseline (a constant-prior dummy, persistence/climatology for forecasting, a population mean for personality) plus a tracking correlation.

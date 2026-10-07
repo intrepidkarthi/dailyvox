@@ -1375,7 +1375,10 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         </ul>
 
         <h3 class="sub-h">What is deliberately not done</h3>
-        <p>Three things are open on purpose, because they are the parts a collaborator should co-own rather than inherit. The pre-registration is a <em>draft</em> — unamendable once frozen, so it stays unfrozen until someone qualified has attacked it. The consent document needs its second version to land before a single participant is enrolled; the in-app recruitment funnel is held closed until it does. And the ethics route is an open decision — a university process is the credible answer, and it is exactly the piece one person without an institution cannot supply.</p>
+        <p>Three things are open on purpose, because they are the parts a collaborator should co-own rather than inherit. The pre-registration is a <em>draft</em> — unamendable once frozen, so it stays unfrozen until someone qualified has attacked it. Consent is being rewritten for the design below, and no one outside the core team is enrolled until it lands. And the ethics route is an open decision — a university process is the credible answer, and it is exactly the piece one person without an institution cannot supply.</p>
+
+        <h3 class="sub-h">No one reads anyone's journal</h3>
+        <p>The study now runs where the data lives. Each participant, on iPhone or Android, exports their own entries and runs an open-source tool, <code>dailyvox-study</code>, on their own laptop. It writes two small files of numbers, the results and their personal model's weights, and those are all that leave. A second round sends each person a model built from everyone else's weights, which they score on their own entries: that is what keeps the donor arm, and with it the claim that the model learned <em>you</em>, without any text moving. One open embedding model and one generic head for everyone makes iPhone and Android results comparable.</p>
 
         <h3 class="sub-h">The shape of the collaboration</h3>
         <ul class="offer">
@@ -1387,10 +1390,38 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         <p>The full pre-registration draft — power tables, split rule, outcome sentences, consent draft, and the decision log — is available on request, and the right first response to it is suspicion: if your instinct is that the design is wrong somewhere, that instinct is the collaboration. The formal write-up of all of this, including venues and dates, is the <a href="/research-statement">research statement</a>. <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a></p>
       </section>
 
+      <!-- START CONTRIBUTING -->
+      <section class="sec-block" id="start">
+        <div class="sec-head">
+          <span class="sec-num">§08</span>
+          <h2 class="sec-title">Start <em>contributing</em>.</h2>
+          <span class="sec-tag">for students and researchers</span>
+        </div>
+
+        <p>The concrete version of everything above: what you would work on, what it produces, and how it becomes a paper. The full guide is <a href="https://github.com/intrepidkarthi/dailyvox/blob/main/research/START-HERE.md">START-HERE.md</a>.</p>
+
+        <div class="shape-grid">
+          <div class="shp"><div class="shp-n">study 1 · ~6 weeks</div><p><strong>Does the phone change the twin?</strong> Read 30 to 40 scripted diary entries into DailyVox on three to five phones, iPhone and Android, and score each transcript: word error rate, names caught, names capitalised. Becomes the cross-platform section of a methods paper.</p></div>
+          <div class="shp"><div class="shp-n">study 2 · ~16 weeks</div><p><strong>Does a model of you beat the generic one?</strong> Test the analysis tool, then run the two-round study with 15 to 20 volunteers after ethics approval. Becomes a registered report, published whatever the result.</p></div>
+          <div class="shp"><div class="shp-n">everyone</div><p><strong>Be participant one.</strong> Journal for two months and label how each day felt. Typed entries count.</p></div>
+          <div class="shp"><div class="shp-n">credit</div><p>CRediT roles for every contribution; co-authorship for anyone who meets the journal's criteria, agreed in writing before work starts.</p></div>
+        </div>
+
+        <h3 class="sub-h">The rules</h3>
+        <ul class="dlist">
+          <li>Nobody handles anyone else's journal text. Only result and weight files move.</li>
+          <li>The tool runs on the participant's own laptop, never in a hosted notebook.</li>
+          <li>No recruiting outside the team until ethics approval and the new consent are in place.</li>
+          <li>The analysis runs once, after data collection ends.</li>
+        </ul>
+
+        <p style="margin-top:22px">First week: install DailyVox, record a labelled entry, run <code>dailyvox-study selfcheck</code>, pick a study, and email one paragraph on what you think could go wrong with it to <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a>.</p>
+      </section>
+
       <!-- CONTRIBUTING -->
       <section class="sec-block" id="work-with">
         <div class="sec-head">
-          <span class="sec-num">§08</span>
+          <span class="sec-num">§09</span>
           <h2 class="sec-title">Let's do it <em>together</em>.</h2>
           <span class="sec-tag">open invitation</span>
         </div>
@@ -1400,7 +1431,7 @@ https://getdailyvox.com/paper/measuring-a-model-of-one.pdf</code></pre>
         <p>There is no funding, no institutional sponsor and nothing to pay anyone, so this is not a job offer. What there is:</p>
 
         <ul class="offer">
-          <li><strong>A shipping testbed.</strong> A real app, on the App Store, with real users — not a notebook and a Kaggle set.</li>
+          <li><strong>A shipping testbed.</strong> A real app, on the App Store and Google Play, with real users — not a notebook and a Kaggle set.</li>
           <li><strong>An instrument that already exists.</strong> TwinEval runs, with baselines, nulls and negative controls in place. You would not be starting from an empty repository.</li>
           <li><strong>Problems that are actually open.</strong> Not homework with a known answer at the back.</li>
           <li><strong>Authorship, stated up front.</strong> If your work is in a paper, your name is on it. That gets agreed in writing before anyone starts, not after.</li>
