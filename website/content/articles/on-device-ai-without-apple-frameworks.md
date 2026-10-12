@@ -61,4 +61,4 @@ Three times in a row, the cheapest thing was much cheaper than a model, and once
 
 Measure your case. The estimate I carried for two years was wrong in the direction that cost the most: it kept a platform closed on the strength of a number nobody had checked.
 
-DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.11, and the Android app is now on Google Play at v1.0, for Android 13 or newer. The engine measurements above are what changed that decision.
+DailyVox is a free, open-source voice journal that runs its AI entirely on the device. The iOS app is at v1.12, and the Android app is now on Google Play at v1.0, for Android 13 or newer. The engine measurements above are what changed that decision.

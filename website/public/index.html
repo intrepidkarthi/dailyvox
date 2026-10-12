@@ -62,7 +62,7 @@
   </script>
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+, Android 13+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"]},"downloadUrl":["https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"],"softwareVersion":"1.11.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"]}
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"DailyVox","description":"Free on-device AI voice journal with a Digital Twin personality model. Ask Your Twin, mood predictions, shareable personality cards — all on your iPhone, zero cloud.","url":"https://getdailyvox.com","applicationCategory":"HealthApplication","operatingSystem":"iOS 17.0+, Android 13+","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"DailyVox","url":"https://getdailyvox.com","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"]},"downloadUrl":["https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"],"softwareVersion":"1.12.0","datePublished":"2026-03-01","sameAs":["https://github.com/intrepidkarthi/dailyvox","https://apps.apple.com/app/id6760454642","https://play.google.com/store/apps/details?id=com.dailyvox.app"]}
   </script>
 
   <style>
@@ -169,7 +169,10 @@ h3{font-weight:700; font-size:clamp(22px,2.4vw,28px); line-height:1.2; letter-sp
   will-change:backdrop-filter; contain:layout paint}
 .nav-in{display:flex; align-items:center; justify-content:space-between; padding-block:15px; gap:16px}
 .wordmark{display:inline-flex; align-items:baseline; gap:8px; font-family:var(--display); font-weight:800; font-size:23px; letter-spacing:-.01em}
-.wordmark .ver{font-family:var(--mono); font-weight:500; font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-mute);
+/* Two apps, two version lines: always name the platform. A bare number read
+   as "the app's version" and told Android visitors their app was behind. */
+.brand{display:inline-flex; align-items:center; gap:10px}
+.brand .ver{font-family:var(--mono); font-weight:500; font-size:10.5px; text-transform:none; letter-spacing:.04em; color:var(--ink-mute);
   border:1px solid var(--rule-2); border-radius:var(--r-pill); padding:2px 7px}
 .nav-links{display:flex; align-items:center; gap:30px}
 .nav-links a{font-size:15px; color:var(--ink-dim); transition:color .2s}
@@ -205,7 +208,7 @@ h3{font-weight:700; font-size:clamp(22px,2.4vw,28px); line-height:1.2; letter-sp
 }
 /* small phones: free up nav space so the Download button never collides with the version badge */
 @media(max-width:480px){
-  .wordmark .ver{display:none}
+  .brand .ver{display:none}
   .nav-in{gap:10px}
   .pill.sm{padding:10px 16px}
 }
@@ -1271,7 +1274,7 @@ section.band.g-paper2{background:var(--band)!important}
 <header id="siteHeader">
 <nav class="nav" aria-label="Primary">
   <div class="wrap nav-in">
-    <a href="/" class="wordmark"><img class="logo-mark" src="/apple-touch-icon.png" alt="" width="30" height="30"><span class="logo-text">DailyVox</span><span class="ver">v1.11.0</span></a>
+    <span class="brand"><a href="/" class="wordmark"><img class="logo-mark" src="/apple-touch-icon.png" alt="" width="30" height="30"><span class="logo-text">DailyVox</span></a><a href="/changelog" class="ver" title="Release history">iOS 1.12 &middot; Android 1.1</a></span>
     <div class="nav-links">
       <a href="/technology">Technology</a>
       <a href="/roadmap">Roadmap</a>
@@ -1728,7 +1731,7 @@ section.band.g-paper2{background:var(--band)!important}
 <section class="g-paper2 clip band b-ivory" aria-labelledby="android-h">
   <div class="wrap inner">
     <div class="section-head reveal">
-      <p class="eyebrow terra">new · android 1.0</p>
+      <p class="eyebrow terra">new · android 1.1</p>
       <h2 id="android-h">Now on <span class="accent">Android.</span></h2>
       <p class="deck" style="margin-top:18px">Same journal, same Twin, same rule. The Android app requests no internet permission at all, so an entry has no route off the phone. You can check that in Android's own Settings › Apps › DailyVox › Permissions, without trusting a word of this page.</p>
     </div>
@@ -1737,7 +1740,7 @@ section.band.g-paper2{background:var(--band)!important}
       <div class="tile reveal"><div class="big">13+</div><div class="lab">Android version</div><p class="sub">Where the on-device speech recogniser arrived. DailyVox never transcribes over a network instead.</p></div>
       <div class="tile reveal"><div class="big">off</div><div class="lab">Google Drive backup</div><p class="sub">Android Auto Backup is switched off, so the system never copies your journal to the cloud.</p></div>
       <div class="tile reveal"><div class="big">1</div><div class="lab">backup format</div><p class="sub">An encrypted backup made on Android opens on an iPhone, and the other way round.</p></div>
-      <div class="tile reveal"><div class="big">1.0</div><div class="lab">its own version line</div><p class="sub">No AI chat, health data or photos yet, and English only. The roadmap lists what comes next.</p></div>
+      <div class="tile reveal"><div class="big">1.1</div><div class="lab">its own version line</div><p class="sub">No AI chat, health data or photos yet, and English only. The roadmap lists what comes next.</p></div>
     </div>
     <div class="reveal" style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top:34px">
       <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="pill">Get it on Google Play →</a>
@@ -1991,7 +1994,7 @@ section.band.g-paper2{background:var(--band)!important}
       </nav>
     </div>
     <div class="dv-f-base">
-      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span>&copy; 2026 DailyVox &middot; iOS 1.12 &middot; Android 1.1 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
   </div>
