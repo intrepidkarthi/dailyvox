@@ -7,4 +7,37 @@
     <string name="shortcut_journal_long">Open my journal</string>
     <string name="shortcut_ask_short">Ask Twin</string>
     <string name="shortcut_ask_long">Ask your Twin about your journal</string>
+
+    <!-- The daily reminder. No streak guilt, and the welcome-back never says
+         how long it has been. -->
+    <string name="reminder_title">Tonight\'s star is waiting</string>
+    <string name="reminder_text">Whenever you\'re ready. Forty-two seconds.</string>
+    <string name="reminder_welcome_back_title">Your sky kept your place</string>
+    <string name="reminder_welcome_back_text">No catching up to do. One sentence is plenty, whenever you\'re ready.</string>
+
+    <!-- The reflection card on Speak, after an entry is saved. Every line is
+         built from the entry itself; a line with nothing under it is not shown. -->
+    <string name="reflection_label">Filed to your sky</string>
+    <plurals name="reflection_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <string name="reflection_typed">typed</string>
+    <string name="reflection_wordless">Your voice is saved. The words can come later.</string>
+    <string name="reflection_tone_light">Your words lean light tonight.</string>
+    <string name="reflection_tone_even">Your words sit fairly even tonight.</string>
+    <string name="reflection_tone_heavy">Your words carry some weight tonight. That is allowed here.</string>
+    <string name="reflection_drift_lighter">Lighter than your last few entries.</string>
+    <string name="reflection_drift_heavier">Heavier than your last few entries.</string>
+    <string name="reflection_drift_similar">Close to how your last few entries read.</string>
+    <string name="reflection_person">%1$s is in this one.</string>
+    <plurals name="reflection_person_earlier">
+        <item quantity="one">%1$s is in this one, and in %2$d other entry this month.</item>
+        <item quantity="other">%1$s is in this one, and in %2$d other entries this month.</item>
+    </plurals>
+    <string name="reflection_tomorrow_label">For tomorrow, in your words</string>
+    <string name="reflection_tomorrow_quote">“%1$s”</string>
+    <string name="reflection_done">Done</string>
+    <string name="reflection_done_description">Close the reflection</string>
+    <string name="reflection_how_read">Read on this phone from your words. Nothing was sent anywhere.</string>
 </resources>

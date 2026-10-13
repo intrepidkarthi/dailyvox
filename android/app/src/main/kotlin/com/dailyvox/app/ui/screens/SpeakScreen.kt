@@ -25,14 +25,19 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dailyvox.app.R
 import com.dailyvox.app.audio.AudioRecorder
+import com.dailyvox.app.system.Reflection
 import com.dailyvox.app.audio.SpeechCapture
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -68,6 +73,9 @@ fun SpeakScreen(
     autoStart: Boolean = false,
     onAutoStarted: () -> Unit = {},
     onSaved: (String, Int, String?) -> Unit,
+    /** What the app read back from the entry just saved; null hides the card. */
+    reflection: com.dailyvox.app.system.Reflection.Card? = null,
+    onDismissReflection: () -> Unit = {},
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
@@ -383,7 +391,7 @@ fun SpeakScreen(
                     // Only from IDLE. A tap during PROCESSING used to reach here:
                     // capture.start() returned early, recorder.start() did not, and
                     // a second MediaRecorder opened over the entry being filed.
-                    else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
                 },
             )
 
@@ -414,7 +422,7 @@ fun SpeakScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .clickable { capture.clearError(); typing = true }
+                        .clickable { onDismissReflection(); capture.clearError(); typing = true }
                         .semantics {
                             role = Role.Button
                             contentDescription = "Type an entry instead"
@@ -431,6 +439,13 @@ fun SpeakScreen(
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
             SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
+        }
+
+        // Something back for what was just given. Only at rest: while the next
+        // entry is being filed, that entry is the screen's business.
+        if (reflection != null && state == SpeechCapture.State.IDLE && !typing) {
+            Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+            ReflectionCard(reflection, onDismiss = onDismissReflection, goldText = goldText)
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -542,6 +557,127 @@ fun SpeakScreen(
         Spacer(Modifier.height(if (tall) 132.dp else 112.dp))   // clears the floating nav pill
     }
 }
+
+/**
+ * The payoff for an entry: a few calm lines read off what was just saved.
+ *
+ * Every line comes from [Reflection], which only reads the entry's own valence,
+ * names, length and words, so nothing on this card is a guess. Lines with
+ * nothing under them are not drawn at all, and the "for tomorrow" line is the
+ * user's own sentence, quoted, or absent.
+ *
+ * TalkBack reads the card as one unit and announces it when it appears, since
+ * a saved entry otherwise gives a screen-reader user nothing but a haptic.
+ */
+@Composable
+private fun ReflectionCard(
+    card: Reflection.Card,
+    onDismiss: () -> Unit,
+    goldText: Color,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val res = LocalContext.current.resources
+    val lines = buildList {
+        if (card.wordless) add(res.getString(R.string.reflection_wordless))
+        when (card.tone) {
+            Reflection.Tone.LIGHT -> add(res.getString(R.string.reflection_tone_light))
+            Reflection.Tone.EVEN -> add(res.getString(R.string.reflection_tone_even))
+            Reflection.Tone.HEAVY -> add(res.getString(R.string.reflection_tone_heavy))
+            null -> Unit
+        }
+        when (card.drift) {
+            Reflection.Drift.LIGHTER -> add(res.getString(R.string.reflection_drift_lighter))
+            Reflection.Drift.HEAVIER -> add(res.getString(R.string.reflection_drift_heavier))
+            Reflection.Drift.SIMILAR -> add(res.getString(R.string.reflection_drift_similar))
+            null -> Unit
+        }
+        card.person?.let { name ->
+            add(
+                if (card.personEarlier > 0) res.getQuantityString(
+                    R.plurals.reflection_person_earlier, card.personEarlier, name, card.personEarlier)
+                else res.getString(R.string.reflection_person, name)
+            )
+        }
+    }
+    val meta = buildList {
+        if (!card.wordless) add(res.getQuantityString(R.plurals.reflection_words, card.words, card.words))
+        if (card.typed) add(res.getString(R.string.reflection_typed))
+        else add("%d:%02d".format(card.seconds / 60, card.seconds % 60))
+    }.joinToString(" · ")
+    val label = stringResource(R.string.reflection_label)
+    val tomorrowLabel = stringResource(R.string.reflection_tomorrow_label)
+    val tomorrowQuote = card.tomorrow?.let { stringResource(R.string.reflection_tomorrow_quote, it) }
+    val spoken = (listOf("$label. $meta.") + lines +
+        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" })).joinToString(" ")
+    val doneDescription = stringResource(R.string.reflection_done_description)
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .widthIn(max = 460.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(scheme.surface)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
+                contentDescription = spoken
+                liveRegion = LiveRegionMode.Polite
+            },
+        ) {
+            Text(
+                "✦ $label",
+                fontSize = 13.sp, fontWeight = FontWeight.Bold, color = goldText,
+            )
+            Spacer(Modifier.height(4.dp))
+            MonoLabel(meta)
+            lines.forEach { line ->
+                Spacer(Modifier.height(10.dp))
+                Text(line, fontSize = 15.sp, lineHeight = 21.sp, color = scheme.onSurface)
+            }
+            tomorrowQuote?.let { quote ->
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    tomorrowLabel,
+                    fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
+                    color = scheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    quote, fontSize = 15.sp, lineHeight = 21.sp,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    color = scheme.onSurface,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.reflection_how_read),
+                fontSize = 12.sp, lineHeight = 17.sp,
+                color = scheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(6.dp))
+        // Same quiet text-button shape as "I can't talk right now", with the
+        // touch target the size Play's pre-launch report measures.
+        Text(
+            stringResource(R.string.reflection_done),
+            fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+            color = scheme.primary,
+            modifier = Modifier
+                .align(Alignment.End)
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onDismiss)
+                .semantics {
+                    role = Role.Button
+                    contentDescription = doneDescription
+                }
+                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                .padding(horizontal = 14.dp)
+                .wrapContentHeight(Alignment.CenterVertically),
+        )
+    }
+}
+
 
 /**
  * The typed composer. Onboarding's typed beat, lifted out for the Speak screen:

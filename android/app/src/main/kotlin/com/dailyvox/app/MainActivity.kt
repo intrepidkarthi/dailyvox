@@ -55,6 +55,18 @@ class MainActivity : FragmentActivity() {
     }
 
     /**
+     * Every return to the app counts as "opened" for the reminder's seven-evening
+     * horizon, and re-arms the alarm a reboot may have cleared. Composition only
+     * runs its bootstrap on a cold start, so a resume from the background would
+     * otherwise leave a lapsed-looking stamp on someone using the app daily.
+     * No dialog is raised here; the permission ask stays in the bootstrap.
+     */
+    override fun onResume() {
+        super.onResume()
+        com.dailyvox.app.system.Reminders.rescheduleIfEnabled(this)
+    }
+
+    /**
      * The splash is drawn by the system before any of this code runs, so it
      * cannot follow the Sunset theme on its own: after dark it flashed cream and
      * then cut to navy. The platform remembers a splash theme for the NEXT
@@ -212,6 +224,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val query by vm.query.collectAsStateWithLifecycle()
     val streak by vm.streak.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
+    val reflection by vm.reflection.collectAsStateWithLifecycle()
 
     val dark = when (theme) {
         ThemeChoice.LIGHT -> false
@@ -491,6 +504,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
+                        reflection = reflection,
+                        onDismissReflection = vm::dismissReflection,
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },

@@ -20,6 +20,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val _resolution = MutableStateFlow(0)
     val resolution: StateFlow<Int> = _resolution
 
+    /**
+     * The reflection on the entry just saved, for the Speak screen. Null until
+     * something is saved and again once the user closes it or starts the next
+     * one. Process death drops it, which is fine: it is a moment, not a record.
+     */
+    private val _reflection = MutableStateFlow<com.dailyvox.app.system.Reflection.Card?>(null)
+    val reflection: StateFlow<com.dailyvox.app.system.Reflection.Card?> = _reflection
+
+    fun dismissReflection() { _reflection.value = null }
+
     val entries: StateFlow<List<Entry>> = _query
         .flatMapLatest { q -> if (q.isBlank()) repo.observeAll() else repo.search(q) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -42,7 +52,12 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             runCatching { body.read() }.getOrNull()
         } else null
 
-        repo.add(text, durationSec, audioPath, snapshot)
+        val saved = repo.add(text, durationSec, audioPath, snapshot)
+        // Off the saved row and the rest of the table, nothing else. Wrapped so
+        // a reflection that cannot be built never looks like a failed save.
+        _reflection.value = runCatching {
+            com.dailyvox.app.system.Reflection.of(saved, repo.observeAll().first())
+        }.getOrNull()
         refreshStats()
         // The widget is the only surface that can go stale without anyone
         // noticing -- it has no lifecycle of its own and its update period is an
