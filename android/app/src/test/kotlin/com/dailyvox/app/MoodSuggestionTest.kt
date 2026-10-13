@@ -14,8 +14,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The suggested mood. Two rules under test: a weak signal suggests nothing,
- * and a suggestion never becomes the user's label unless the user makes it so.
+ * The suggested mood. Two rules under test: a weak or mixed signal suggests
+ * nothing, and a suggestion never becomes the user's label unless the user
+ * makes it so.
  */
 class MoodSuggestionTest {
 
@@ -23,46 +24,66 @@ class MoodSuggestionTest {
         java.io.File("src/main/assets/vader.txt").useLines { Sentiment.parseLexicon(it) }
     }
 
-    private fun suggest(text: String): String? = MoodSuggestion.from(
-        Sentiment.valence(text, shipped), text.split(' ').count { it.isNotBlank() },
-    )
+    private fun suggest(text: String): String? = MoodSuggestion.from(text, shipped)
 
-    @Test fun `strong positive suggests joy, strong negative suggests sadness`() {
-        assertEquals("joy", MoodSuggestion.from(0.5f, 8))
-        assertEquals("joy", MoodSuggestion.from(0.93f, 8))
-        assertEquals("sadness", MoodSuggestion.from(-0.5f, 8))
-        assertEquals("sadness", MoodSuggestion.from(-0.93f, 8))
-    }
-
-    @Test fun `a weak signal suggests nothing, and nothing is not neutral`() {
+    @Test fun `a strong score leans, a weak one does not, and nothing is not neutral`() {
+        assertEquals(1, MoodSuggestion.lean(0.5f, 8))
+        assertEquals(1, MoodSuggestion.lean(0.93f, 8))
+        assertEquals(-1, MoodSuggestion.lean(-0.5f, 8))
+        assertEquals(-1, MoodSuggestion.lean(-0.93f, 8))
         listOf(0f, 0.05f, -0.05f, 0.3f, -0.3f, 0.49f, -0.49f).forEach {
-            assertNull("suggested something at $it", MoodSuggestion.from(it, 20))
+            assertEquals("leaned at $it", 0, MoodSuggestion.lean(it, 20))
         }
     }
 
     @Test fun `too few words suggests nothing however strong the score`() {
-        assertNull(MoodSuggestion.from(0.9f, MoodSuggestion.MIN_WORDS - 1))
-        assertNull(MoodSuggestion.from(-0.9f, 0))
-        assertEquals("joy", MoodSuggestion.from(0.9f, MoodSuggestion.MIN_WORDS))
+        assertEquals(0, MoodSuggestion.lean(0.9f, MoodSuggestion.MIN_WORDS - 1))
+        assertEquals(0, MoodSuggestion.lean(-0.9f, 0))
+        assertEquals(1, MoodSuggestion.lean(0.9f, MoodSuggestion.MIN_WORDS))
+        assertNull(suggest("So happy, wonderful day."))
     }
 
     @Test fun `a broken score suggests nothing`() {
-        assertNull(MoodSuggestion.from(Float.NaN, 20))
+        assertEquals(0, MoodSuggestion.lean(Float.NaN, 20))
     }
 
-    @Test fun `only joy and sadness are ever suggested, both from the canon`() {
-        val seen = (-100..100).mapNotNull { MoodSuggestion.from(it / 100f, 20) }.toSet()
-        assertEquals(setOf("joy", "sadness"), seen)
+    @Test fun `clear entries get joy or sadness, both from the canon`() {
+        val joy = listOf(
+            "Best afternoon in weeks, lunch with my sister was wonderful.",
+            "So happy today, we laughed all evening and I feel grateful.",
+        )
+        val sad = listOf(
+            "I feel awful and lonely tonight, everything went wrong.",
+            "I cried most of the evening, I miss her so much and it hurts.",
+        )
+        joy.forEach { assertEquals(it, "joy", suggest(it)) }
+        sad.forEach { assertEquals(it, "sadness", suggest(it)) }
         val canon = SelfLabels.CANON.map { it.first }.toSet()
-        assertTrue(seen.all { it in canon })
+        assertTrue("joy" in canon && "sadness" in canon)
     }
 
-    @Test fun `real diary phrasing through the shipped lexicon`() {
-        assertEquals("joy", suggest("Best afternoon in weeks, lunch with my sister was wonderful."))
-        assertEquals("sadness", suggest("I feel awful and lonely tonight, everything went wrong."))
-        // Mixed, and plain logistics: nothing to go on, so nothing suggested.
-        assertNull(suggest("Went to the shop, then the bank, then home again."))
-        assertNull(suggest("Great start to the day but I am sad about how it ended."))
+    @Test fun `mixed, sarcastic, grieving, angry and frightened entries get nothing`() {
+        listOf(
+            // Plain logistics: nothing to go on.
+            "Went to the shop, then the bank, then home again.",
+            // Mixed: one clear word the other way is enough to abstain.
+            "Great start to the day but I am sad about how it ended.",
+            "My grandmother died today. Everyone was so kind and loving and supportive at the funeral.",
+            "I won the award but I feel empty and numb inside.",
+            "Good morning good night good grief.",
+            // Sarcasm reads as praise to a lexicon.
+            "Oh great, another wonderful Monday stuck in traffic for two hours.",
+            "Yeah, fantastic, my boss yelled at me again, just perfect.",
+            // Pleasantries add up without anyone saying they felt good.
+            "Thank you thank you, okay, sure, fine, whatever.",
+            // Strongly negative, but not sadness: never relabelled as sad.
+            "I was so angry, furious, I wanted to scream at him.",
+            "Terrified about the biopsy results tomorrow, scared and anxious.",
+            "So sad and so angry at how they treated her today.",
+            // Negated.
+            "Honestly I was not happy at all with it.",
+            "Not sad, just tired after a long day.",
+        ).forEach { assertNull(it, suggest(it)) }
     }
 
     // ---------------------------------------------------------- storage rules
@@ -105,12 +126,12 @@ class MoodSuggestionTest {
 
     @Test fun `an edit re-suggests only while the suggestion is still live`() {
         // Live suggestion: follows the corrected words.
-        assertEquals("sadness", Repo.resuggest(entry(), words = 10, valence = -0.8f))
-        assertNull(Repo.resuggest(entry(), words = 10, valence = 0.1f))
+        assertEquals("sadness", Repo.resuggest(entry(), "sadness"))
+        assertNull(Repo.resuggest(entry(), null))
         // The user picked: the record of what they were shown stays.
-        assertEquals("joy", Repo.resuggest(entry(label = "anger"), words = 10, valence = -0.8f))
+        assertEquals("joy", Repo.resuggest(entry(label = "anger"), "sadness"))
         // The user cleared: nothing comes back.
-        assertNull(Repo.resuggest(entry(suggested = null), words = 10, valence = 0.9f))
+        assertNull(Repo.resuggest(entry(suggested = null), "joy"))
     }
 
     @Test fun `the card applies the same rule as the row`() {

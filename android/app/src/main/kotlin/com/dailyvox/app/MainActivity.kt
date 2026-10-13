@@ -426,7 +426,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         // same rule the row is saved with.
                         openEntry = detail.copy(text = edited).let {
                             it.copy(suggestedMood = com.dailyvox.app.data.Repo.resuggest(
-                                detail, it.wordCount, com.dailyvox.twin.Sentiment.valence(edited)))
+                                detail, com.dailyvox.app.system.MoodSuggestion.from(
+                                    edited, com.dailyvox.app.data.Lexicon.table)))
                         }
                     },
                     onAsk = { question ->

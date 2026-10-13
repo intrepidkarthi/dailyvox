@@ -43,7 +43,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     entities = com.dailyvox.twin.NameDetector
                         .detect(text, corpus = listOf(text))
                         .joinToString(","),
-                    suggestedMood = resuggest(it, it.copy(text = text).wordCount, valence),
+                    suggestedMood = resuggest(it, MoodSuggestion.from(text, Lexicon.table)),
                 )
             )
         }
@@ -154,7 +154,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
         ).let {
             // A suggestion only, in its own column. selfLabel stays null until
             // the user picks one; nothing at save time can choose for them.
-            it.copy(suggestedMood = MoodSuggestion.from(valence, it.wordCount))
+            it.copy(suggestedMood = MoodSuggestion.from(text, Lexicon.table))
         }
         db.entries().upsert(entry)
         // Returned so the Speak screen can reflect on exactly what was saved.
@@ -293,10 +293,9 @@ class Repo private constructor(private val db: DailyVoxDb) {
          * picked a label, the old suggestion is the record of what they were
          * shown; once they have cleared the mood, there is nothing to revive.
          */
-        internal fun resuggest(before: Entry, words: Int, valence: Float): String? =
-            if (before.selfLabel == null && before.suggestedMood != null) {
-                MoodSuggestion.from(valence, words)
-            } else before.suggestedMood
+        internal fun resuggest(before: Entry, fresh: String?): String? =
+            if (before.selfLabel == null && before.suggestedMood != null) fresh
+            else before.suggestedMood
 
         /** Picking keeps the suggestion beside the choice; clearing drops both. */
         internal fun withLabel(entry: Entry, label: String?): Entry = entry.copy(

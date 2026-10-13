@@ -537,8 +537,7 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
             // when the words do not lean clearly either way.
             val suggested = remember(transcript) {
                 com.dailyvox.app.system.MoodSuggestion.from(
-                    com.dailyvox.twin.Sentiment.valence(transcript),
-                    transcript.split(' ', '\n').count { it.isNotBlank() },
+                    transcript, com.dailyvox.app.data.Lexicon.table,
                 )
             }
             suggested?.let {
