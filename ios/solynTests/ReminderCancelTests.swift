@@ -127,7 +127,6 @@ final class EntryReflectionAnchorTests: XCTestCase {
     }
 
     func testNothingToSayIsNoReflection() {
-        XCTAssertNil(EntryReflection.make(entryText: "   \n ", entryID: UUID(),
-                                          suggestedResponse: "Something.", people: [], places: []))
+        XCTAssertNil(EntryReflection.make(entryText: "   \n ", entryID: UUID()))
     }
 }

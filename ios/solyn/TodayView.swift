@@ -109,6 +109,13 @@ struct TodayView: View {
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
     @State private var labelTarget: DiaryEntry?
 
+    /// What the entry gives back once it is saved — the reflection that used
+    /// to sit behind a collapsed toggle on the detail screen.
+    @State private var reflection: EntryReflection?
+    /// A recording has been kept and its transcript is still on the way, so
+    /// the reflection slot shows that it is coming rather than a stale one.
+    @State private var awaitingReflection = false
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -712,6 +719,27 @@ struct TodayView: View {
         }
     }
 
+    // MARK: - Reflection
+
+    /// Below the entry card, once there is something to say. While a new
+    /// recording is still being transcribed into a day that already has text,
+    /// the slot says so instead of showing the reflection for the earlier part
+    /// of the day as if it were new. A first recording of the day needs no
+    /// placeholder here — the card above already reads "Understanding your
+    /// words...".
+    @ViewBuilder
+    private func reflectionSlot(for entry: DiaryEntry) -> some View {
+        if awaitingReflection, recordingState == .processing {
+            if let text = entry.text, !text.isEmpty {
+                TodayReflectionCard(reflection: nil)
+                    .transition(.opacity)
+            }
+        } else if let reflection, reflection.entryID == entry.id {
+            TodayReflectionCard(reflection: reflection)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
     // MARK: - Entry Card Section
 
     private var entryCardSection: some View {
@@ -790,6 +818,8 @@ struct TodayView: View {
                     .dsShadowSoft()
                 }
                 .buttonStyle(.plain)
+
+                reflectionSlot(for: entry)
             } else {
                 // No entry yet - show welcome card for first-time users
                 if allEntries.isEmpty {
@@ -1288,11 +1318,13 @@ struct TodayView: View {
             entryId: entry.id?.uuidString
         )
 
-        // No reflection on save yet. The engine's only way to get one,
-        // `LocalAIEngine.analyze(text:)`, also rewrites the persisted user
-        // profile on every call, so calling it here would recount the day's
-        // earlier segments on each recording. `EntryReflection` is wired in
-        // once the engine has a read-only entry point.
+        // Something back for what was just said. The whole day's text, as the
+        // detail screen reads it, so a second recording refreshes the
+        // reflection rather than answering only its last sentence.
+        withAnimation(.spring(response: 0.4)) {
+            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
+            awaitingReflection = false
+        }
 
         // Fire the "a new star appeared" Live Activity and
         // refresh the persistent streak Live Activity (if opted in).
@@ -1363,6 +1395,7 @@ struct TodayView: View {
         do {
             try viewContext.save()
             entryCaptured(entry)
+            awaitingReflection = true
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -1376,6 +1409,8 @@ struct TodayView: View {
                 case .success(let textSegment):
                     commitText(textSegment, to: entry, twinDuration: entry.duration)
                 case .failure(let error):
+                    // No words, so nothing to reflect on — never a guess.
+                    awaitingReflection = false
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {

@@ -13,14 +13,11 @@ import DailyVoxTwinEngine
 /// after saving. Before this, speaking for a minute got you four lines of your
 /// own transcript back and nothing else.
 ///
-/// Not shown yet. The only source for the reflection today is
-/// `LocalAIEngine.analyze(text:)`, and that call is not read-only: it also
-/// updates and saves the user profile (entry count, topics, people, places).
-/// Running it on every save would recount a day's earlier segments with each
-/// new recording, and the inflated counts feed back into the reflection
-/// ("'<topic>' comes up often for you") and the Twin. So this type only
-/// shapes a result handed to it, and calls nothing in the engine; the Today
-/// screen wires it in once the engine has a side-effect-free entry point.
+/// It is the same on-device analysis the detail screen runs, and nothing leaves
+/// the phone. It runs with `learn: false`: this is called after every
+/// recording with the whole day's text, so learning here would count the
+/// day's earlier segments again on each save and inflate the profile the Twin
+/// later quotes back as patterns.
 struct EntryReflection: Equatable {
     /// The entry this belongs to, so a reflection never outlives its day.
     let entryID: UUID?
@@ -29,24 +26,18 @@ struct EntryReflection: Equatable {
     /// A name the entry actually contains, to carry into tomorrow — or nil.
     let anchor: String?
 
-    /// Builds the reflection from an analysis already made of the entry's
-    /// full text. Pure: it never runs the engine itself.
-    static func make(entryText: String, entryID: UUID?, analysis: AIAnalysisResult) -> EntryReflection? {
-        make(entryText: entryText, entryID: entryID,
-             suggestedResponse: analysis.suggestedResponse,
-             people: analysis.people, places: analysis.places)
-    }
-
-    static func make(entryText: String, entryID: UUID?, suggestedResponse: String,
-                     people: [String], places: [String]) -> EntryReflection? {
+    /// Builds the reflection for an entry's full text — the same input the
+    /// detail screen analyses.
+    static func make(entryText: String, entryID: UUID?) -> EntryReflection? {
         let text = entryText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
-        let reflection = suggestedResponse.trimmingCharacters(in: .whitespacesAndNewlines)
+        let analysis = LocalAIEngine.shared.analyze(text: text, learn: false)
+        let reflection = analysis.suggestedResponse.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !reflection.isEmpty else { return nil }
         return EntryReflection(
             entryID: entryID,
             reflection: reflection,
-            anchor: groundedAnchor(people: people, places: places, in: text))
+            anchor: groundedAnchor(people: analysis.people, places: analysis.places, in: text))
     }
 
     /// One person or place to pick up tomorrow, only if the entry says it.
