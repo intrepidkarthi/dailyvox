@@ -4,6 +4,123 @@
     "" : {
       "shouldTranslate" : false
     },
+    "Different question" : {
+      "comment" : "Button under the question of the day that shows another question."
+    },
+    "Double-tap for a different question. You can speak about anything." : {
+      "comment" : "VoiceOver hint on the question of the day above the mic."
+    },
+    "How are things there?" : {
+      "comment" : "Question of the day asking after a place the user named recently; the place is named in the line above."
+    },
+    "How are things with %@?" : {
+      "comment" : "Question of the day asking after a person the user named recently. %@ is the name. Do not add pronouns."
+    },
+    "How did you sleep last night?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "How does your body feel right now?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "If you spoke to yourself like a friend, what would you say?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Is there a conversation from today you keep coming back to?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Just log your day" : {
+      "comment" : "Research pilot: a neutral question of the day."
+    },
+    "Plain notes" : {
+      "comment" : "Research pilot: a neutral question of the day."
+    },
+    "Walk through today, start to finish." : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "Walk through your day start to finish - what you did, where, with whom. Facts are enough." : {
+      "comment" : "Research pilot: guidance under the neutral question of the day."
+    },
+    "What are a few small things you’re glad about?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What are you looking forward to?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did the weather do to your day?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did today actually look like? No reflection needed - just what happened." : {
+      "comment" : "Research pilot: guidance under the neutral question of the day."
+    },
+    "What did you eat today, and with whom?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "What did you hear, read or watch that stayed with you?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you learn today, even something tiny?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you notice on your way somewhere?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you work on today?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "What made you curious today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What was the quietest part of your day?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What went a little better than expected?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What would you tell a friend about today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one gentle intention for tomorrow?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one moment from today you’d like to keep?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one small thing you finished?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one worry you could put down for tonight?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s something you’re in the middle of?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s still on your mind from today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Where did you go today?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "Where did your energy go today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Who did you spend time with today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Who made you laugh lately?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "You mentioned %@ a few days ago." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 2-6 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ a week ago." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 7 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ recently." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 8-14 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ yesterday." : {
+      "comment" : "Line above a question of the day that asks after a name from yesterday's entry. %@ is the name exactly as the user said it."
+    },
     "%lld days ago you said" : {
       "comment" : "Header of the Today card quoting the user's entry from 6 or 8 days ago."
     },
