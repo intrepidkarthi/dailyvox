@@ -27,6 +27,8 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.dailyvox.app.R
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.ui.components.valenceColor
 import com.dailyvox.app.ui.theme.*
@@ -255,9 +257,25 @@ fun TwinScreen(
                      color = NightBackground)   // ink on the gold disc, both themes
             }
             Text(
-                summary(entries),
+                summary(entries) ?: stringResource(
+                    if (com.dailyvox.app.system.EarlySignals.shows(entries.size))
+                        R.string.twin_still_listening_early
+                    else R.string.twin_still_listening
+                ),
                 fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
                 color = NightText,
+            )
+        }
+
+        // Week one: what can already be counted, until the patterns can speak.
+        // Here because the Twin tab is where a new user goes looking.
+        val zone = remember { java.time.ZoneId.systemDefault() }
+        val early = remember(entries, zone) { com.dailyvox.app.system.EarlySignals.of(entries, zone) }
+        if (early != null) {
+            Spacer(Modifier.height(10.dp))
+            com.dailyvox.app.ui.components.EarlySignalsCard(
+                early, com.dailyvox.app.ui.components.EarlySignalsColors.night,
+                Modifier.padding(horizontal = 16.dp),
             )
         }
 
@@ -316,8 +334,9 @@ private fun CasingNote(
     )
 }
 
-private fun summary(entries: List<Entry>): String {
-    if (entries.size < 5) return "Still listening. A few more nights and there will be something to say."
+/** The one sentence, or null while there are too few entries to say it. */
+private fun summary(entries: List<Entry>): String? {
+    if (entries.size < 5) return null
     val v = entries.map { it.valence }.average()
     val tone = when {
         v > 0.25 -> "warm, steady"
