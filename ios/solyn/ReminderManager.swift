@@ -11,6 +11,7 @@ final class ReminderManager: ObservableObject {
     private let reminderEnabledKey = "solyn_reminder_enabled"
     private let reminderHourKey = "solyn_reminder_hour"
     private let reminderMinuteKey = "solyn_reminder_minute"
+    private let quotePastKey = "solyn_reminder_quote_past"
     private let notificationIdentifier = "solyn_daily_reminder"
     /// The one note past the horizon. A suffix of the daily identifier so it
     /// is visibly part of the same family when reading the pending list.
@@ -41,6 +42,20 @@ final class ReminderManager: ObservableObject {
         }
     }
 
+    /// Whether the evening reminder may quote a line from a week ago.
+    ///
+    /// OFF unless the user turns it on, and Settings says why: a notification
+    /// is shown on the lock screen, so anything it quotes can be read by
+    /// whoever picks the phone up. A journal says nothing out loud by default.
+    /// Every change re-arms the pending week at once, so switching it off
+    /// takes the quotes off reminders already scheduled, not just future ones.
+    @Published var includesPastLine: Bool {
+        didSet {
+            UserDefaults.standard.set(includesPastLine, forKey: quotePastKey)
+            if isEnabled { refresh(in: PersistenceController.shared.container.viewContext) }
+        }
+    }
+
     var reminderTime: Date {
         get {
             var components = DateComponents()
@@ -59,6 +74,7 @@ final class ReminderManager: ObservableObject {
         self.isEnabled = UserDefaults.standard.bool(forKey: reminderEnabledKey)
         self.reminderHour = UserDefaults.standard.object(forKey: reminderHourKey) as? Int ?? 20
         self.reminderMinute = UserDefaults.standard.object(forKey: reminderMinuteKey) as? Int ?? 0
+        self.includesPastLine = UserDefaults.standard.bool(forKey: quotePastKey)
     }
 
     func requestPermissionIfNeeded(completion: @escaping (Bool) -> Void) {
@@ -86,13 +102,18 @@ final class ReminderManager: ObservableObject {
             return
         }
         let cal = Calendar.current
-        let from = cal.startOfDay(for: Date())
-        let request = NSFetchRequest<NSManagedObject>(entityName: "DiaryEntry")
+        let today = cal.startOfDay(for: Date())
+        // With quoting on, reach back to tonight's week-ago day — the
+        // earliest any evening in the horizon quotes from.
+        let from = includesPastLine
+            ? cal.date(byAdding: .day, value: -7, to: today) ?? today
+            : today
+        let request = NSFetchRequest<DiaryEntry>(entityName: "DiaryEntry")
         request.predicate = NSPredicate(format: "date >= %@", from as NSDate)
-        let days = ((try? context.fetch(request)) ?? []).compactMap { obj -> Date? in
-            (obj.value(forKey: "date") as? Date).map { cal.startOfDay(for: $0) }
-        }
-        scheduleReminder(spokenDays: Set(days))
+        let entries = (try? context.fetch(request)) ?? []
+        let days = entries.compactMap { $0.date }.filter { $0 >= today }.map { cal.startOfDay(for: $0) }
+        scheduleReminder(spokenDays: Set(days),
+                         pastEntries: includesPastLine ? PastEntry.snapshots(of: entries) : [])
     }
 
     /// Re-arms the next `horizon` days of reminders, skipping any evening on
@@ -142,17 +163,31 @@ final class ReminderManager: ObservableObject {
     /// The full plan — the week of evening reminders plus the one welcome-back
     /// note — with no side effects, so the identifier coverage `cancelReminder`
     /// depends on can be asserted without notification authorization.
-    func plannedReminders(spokenDays: Set<Date>, now: Date = Date()) -> [PlannedReminder] {
+    ///
+    /// `quotePast` defaults to the user's setting. Only when it is on, and
+    /// only for an evening exactly a week after an entry in `pastEntries`,
+    /// does a reminder quote one; every other reminder keeps the generic copy.
+    /// Exactly a week, not the Today card's 6-to-8-day fallback: with the
+    /// fallback one entry would be quoted three evenings running.
+    func plannedReminders(spokenDays: Set<Date>, now: Date = Date(),
+                          pastEntries: [PastEntry] = [],
+                          quotePast: Bool? = nil) -> [PlannedReminder] {
+        let quoting = quotePast ?? includesPastLine
         var out = plannedFireDates(spokenDays: spokenDays, now: now).enumerated().map { offset, fire in
-            PlannedReminder(
+            let past = quoting
+                ? Resurfacing.weekAgo(in: pastEntries, now: fire, offsets: [7],
+                                      limit: Resurfacing.notificationExcerptLimit)
+                : nil
+            return PlannedReminder(
                 identifier: "\(notificationIdentifier).\(offset)",
                 fireDate: fire,
                 title: String(localized: "Tonight's star is waiting",
                               comment: "Evening reminder notification title."),
                 // No streak guilt, and it names the size of the ask: small
                 // commitments get acted on, and 42s is the product's own unit.
-                body: String(localized: "Whenever you're ready. Forty-two seconds.",
-                             comment: "Evening reminder notification body."))
+                body: past.map(Self.pastLineBody)
+                    ?? String(localized: "Whenever you're ready. Forty-two seconds.",
+                              comment: "Evening reminder notification body."))
         }
         if let fire = welcomeBackDate(now: now) {
             out.append(PlannedReminder(
@@ -164,6 +199,12 @@ final class ReminderManager: ObservableObject {
                              comment: "Body of the one-off welcome-back notification. No streak guilt.")))
         }
         return out
+    }
+
+    /// The opt-in body: the entry's own words, quoted. Nothing added to them.
+    static func pastLineBody(_ past: Resurfaced) -> String {
+        String(localized: "A week ago you said: \u{201C}\(past.excerpt)\u{201D}",
+               comment: "Opt-in evening reminder body quoting the user's own entry from a week ago. The quote is verbatim; keep it in quotation marks.")
     }
 
     /// When the single welcome-back note fires: `welcomeBackDay` days out, at
@@ -185,7 +226,7 @@ final class ReminderManager: ObservableObject {
         return cal.date(from: comps)
     }
 
-    func scheduleReminder(spokenDays: Set<Date> = []) {
+    func scheduleReminder(spokenDays: Set<Date> = [], pastEntries: [PastEntry] = []) {
         let center = UNUserNotificationCenter.current()
         // Clears the welcome-back note too: it is replaced on every re-arm,
         // never stacked.
@@ -193,7 +234,7 @@ final class ReminderManager: ObservableObject {
 
         let cal = Calendar.current
 
-        for planned in plannedReminders(spokenDays: spokenDays) {
+        for planned in plannedReminders(spokenDays: spokenDays, pastEntries: pastEntries) {
             let content = UNMutableNotificationContent()
             content.title = planned.title
             content.body = planned.body
