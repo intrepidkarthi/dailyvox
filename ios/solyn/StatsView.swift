@@ -26,6 +26,10 @@ struct StatsView: View {
     /// here all week. Counted from the entries in a task, not in `body`.
     @State private var recap: WeeklyRecap?
 
+    /// Moves when the app comes forward, so the recap week rolls over even
+    /// while Insights stays open.
+    @State private var recapClock = Date()
+
     /// Embodied insights, computed off the render path in onAppear — the
     /// correlation math must never run inside body (Twin-perf lesson).
     @State private var bodyInsights: [BodyInsight] = []
@@ -100,7 +104,10 @@ struct StatsView: View {
         }
         .background { WarmBackground() }
         .navigationTitle("Insights")
-        .task(id: entries.count) { refreshRecap() }
+        .task(id: recapKey) { refreshRecap() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            recapClock = Date()
+        }
         .onAppear {
             refreshBodyInsights()
             // Reached milestones now surface as a gold line INSIDE the streak
@@ -121,6 +128,15 @@ struct StatsView: View {
     }
 
     // MARK: - Weekly Recap
+
+    /// Changes when anything the recap reads does: the week it covers, and
+    /// any entry added, deleted or edited — an edit must never leave the
+    /// recap quoting words the entry no longer has.
+    private var recapKey: String {
+        let week = Resurfacing.latestRecapWeek(now: recapClock)?.start.timeIntervalSince1970 ?? 0
+        let edited = entries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
+        return "\(week)|\(entries.count)|\(edited)"
+    }
 
     private func refreshRecap() {
         let now = Date()

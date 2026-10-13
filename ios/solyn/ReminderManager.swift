@@ -230,7 +230,7 @@ final class ReminderManager: ObservableObject {
         let center = UNUserNotificationCenter.current()
         // Clears the welcome-back note too: it is replaced on every re-arm,
         // never stacked.
-        center.removePendingNotificationRequests(withIdentifiers: cancellableIdentifiers)
+        withdrawAll(from: center)
 
         let cal = Calendar.current
 
@@ -281,7 +281,19 @@ final class ReminderManager: ObservableObject {
     /// numbered reminders survived it, so someone who switched reminders off
     /// went on being reminded for up to seven more evenings.
     func cancelReminder() {
-        let center = UNUserNotificationCenter.current()
+        withdrawAll(from: UNUserNotificationCenter.current())
+    }
+
+    /// Takes back every reminder under `cancellableIdentifiers` — the ones
+    /// still waiting AND the ones that already fired. A delivered reminder
+    /// stays in Notification Center and on the lock screen until removed, so
+    /// clearing only the pending list would leave an opted-in quote readable
+    /// after quoting is switched off or its entry is edited or deleted. Every
+    /// one of those paths re-arms through `scheduleReminder` or
+    /// `cancelReminder`, so both sets are cleared here, together, every time;
+    /// `ReminderCancelTests` holds the plan's identifiers to this list.
+    private func withdrawAll(from center: UNUserNotificationCenter) {
         center.removePendingNotificationRequests(withIdentifiers: cancellableIdentifiers)
+        center.removeDeliveredNotifications(withIdentifiers: cancellableIdentifiers)
     }
 }
