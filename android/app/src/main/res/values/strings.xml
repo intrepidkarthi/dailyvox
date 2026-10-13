@@ -65,4 +65,46 @@
     <!-- Onboarding, under the first entry. The entry is saved a moment later
          with this same suggestion, and the card that follows lets it change. -->
     <string name="onboarding_suggested_mood">Reads like %1$s. Only a suggestion: you can change it in a moment.</string>
+    <!-- Your past, brought back. Every quote is the entry's own words, cut
+         only at a sentence or word; nothing here is paraphrased. -->
+    <string name="past_week_ago">A week ago you said</string>
+    <plurals name="past_days_ago">
+        <item quantity="one">A day ago you said</item>
+        <item quantity="other">%1$d days ago you said</item>
+    </plurals>
+    <plurals name="past_months_ago">
+        <item quantity="one">On this day, a month ago</item>
+        <item quantity="other">On this day, %1$d months ago</item>
+    </plurals>
+    <plurals name="past_years_ago">
+        <item quantity="one">On this day, a year ago</item>
+        <item quantity="other">On this day, %1$d years ago</item>
+    </plurals>
+    <string name="past_quote">“%1$s”</string>
+    <!-- TalkBack: the label, the quote, then what a tap does. -->
+    <string name="past_card_description">%1$s: %2$s. Opens the entry.</string>
+
+    <string name="recap_label">Your week</string>
+    <string name="recap_range">%1$s – %2$s</string>
+    <plurals name="recap_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <plurals name="recap_days">
+        <item quantity="one">on %1$d day</item>
+        <item quantity="other">on %1$d days</item>
+    </plurals>
+    <plurals name="recap_name">
+        <item quantity="one">%1$s came up in %2$d entry.</item>
+        <item quantity="other">%1$s came up in %2$d entries.</item>
+    </plurals>
+    <string name="recap_line_label">One line from the week</string>
+    <string name="recap_line_description">One line from the week: %1$s. Opens the entry.</string>
+    <string name="recap_how_counted">Counted from your entries on this phone.</string>
+
+    <!-- The reminder, when the user has opted in to a quote. Off by default:
+         a notification can be read on a locked phone. -->
+    <string name="reminder_past_text">A week ago you said: “%1$s”</string>
+    <string name="settings_reminder_quote">Include a line from your past in reminders</string>
+    <string name="settings_reminder_quote_note">Off by default. When on, tonight\'s reminder can quote what you said a week ago, and anyone who can see your lock screen can read it.</string>
 </resources>

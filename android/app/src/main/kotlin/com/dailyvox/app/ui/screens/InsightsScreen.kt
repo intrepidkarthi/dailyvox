@@ -50,6 +50,9 @@ fun InsightsScreen(
     streak: Int,
     onBack: () -> Unit = {},
     onShareMilestone: () -> Unit = {},
+    /** Last full week, counted from its entries. Null when it had none. */
+    recap: com.dailyvox.app.system.Resurface.Recap? = null,
+    onOpenEntry: (Entry) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -62,6 +65,18 @@ fun InsightsScreen(
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
         Spacer(Modifier.height(12.dp))
         ScreenTitle("Insights", onBack = onBack)
+
+        // The weekly recap lives here every day of the week, and on Today
+        // only on recap day.
+        recap?.let {
+            val n = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+            com.dailyvox.app.ui.components.RecapCard(
+                it,
+                if (n) com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText,
+                onOpenEntry,
+            )
+            Spacer(Modifier.height(12.dp))
+        }
 
         val week = entries.filter { it.createdAt > System.currentTimeMillis() - 7L * 86_400_000 }
         val prior = entries.filter {

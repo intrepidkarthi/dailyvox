@@ -218,6 +218,39 @@ fun SettingsScreen(
                     }
                 }
             }
+            // The quote is a separate, explicit yes. Reads and writes its own
+            // preference like the weekly goal below; only the receiver uses it.
+            if (reminderOn) {
+                var quotePast by remember {
+                    mutableStateOf(com.dailyvox.app.system.Reminders.quotesPast(context))
+                }
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_reminder_quote),
+                        fontSize = 12.sp, lineHeight = 17.sp,
+                        fontWeight = FontWeight.Medium, color = scheme.onSurface,
+                        modifier = Modifier.weight(1f).padding(end = 12.dp),
+                    )
+                    Switch(
+                        checked = quotePast,
+                        onCheckedChange = {
+                            quotePast = it
+                            com.dailyvox.app.system.Reminders.setQuotesPast(context, it)
+                        },
+                        colors = dvSwitchColors(),
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_reminder_quote_note),
+                    fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+                )
+            }
             Spacer(Modifier.height(8.dp))
             // Both halves are claims the app has to actually honour: the receiver
             // reads today's entries and returns without notifying if one exists,
