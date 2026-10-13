@@ -128,7 +128,8 @@ enum EarlySignals {
     }
 
     /// The part of the day with the most entries — only when it has at least
-    /// two and strictly more than any other part. A tie is not a habit.
+    /// two and more than half of all entries. A tie is not a habit, and two
+    /// of four is not "mostly".
     static func timeOfDay(_ entries: [Entry], calendar: Calendar) -> TimeOfDay? {
         guard !entries.isEmpty else { return nil }
         var counts: [PartOfDay: Int] = [:]
@@ -138,6 +139,7 @@ enum EarlySignals {
         let ranked = counts.sorted { $0.value > $1.value }
         guard let top = ranked.first, top.value >= 2 else { return nil }
         if ranked.count > 1, ranked[1].value == top.value { return nil }
+        guard top.value * 2 > entries.count else { return nil }
         return TimeOfDay(part: top.key, count: top.value, total: entries.count)
     }
 

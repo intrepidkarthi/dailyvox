@@ -59,6 +59,20 @@ final class EarlySignalsTests: XCTestCase {
         XCTAssertNil(r.timeOfDay)
     }
 
+    /// The most, but not most of them: two of four is not "mostly".
+    func testPluralityWithoutMajoritySaysNothing() {
+        let r = EarlySignals.report([entry(1, 8), entry(2, 9), entry(3, 14), entry(4, 20)], calendar: cal)
+        XCTAssertNil(r.timeOfDay)
+        let five = EarlySignals.report([entry(1, 8), entry(2, 9), entry(3, 14), entry(4, 20), entry(5, 23)], calendar: cal)
+        XCTAssertNil(five.timeOfDay)
+    }
+
+    /// Three of five is a majority.
+    func testMajorityIsSaid() {
+        let r = EarlySignals.report([entry(1, 8), entry(2, 9), entry(3, 10), entry(4, 14), entry(5, 20)], calendar: cal)
+        XCTAssertEqual(r.timeOfDay, EarlySignals.TimeOfDay(part: .morning, count: 3, total: 5))
+    }
+
     /// One in each part of the day: nothing to say.
     func testNoPartWithTwoSaysNothing() {
         let r = EarlySignals.report([entry(1, 8), entry(2, 14), entry(3, 23)], calendar: cal)
