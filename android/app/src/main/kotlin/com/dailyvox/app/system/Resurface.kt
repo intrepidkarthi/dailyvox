@@ -41,6 +41,12 @@ object Resurface {
     private const val EXCERPT_SOFT_MIN = 30
     /** Fewer words than this is a fragment, not something worth quoting back. */
     const val MIN_WORDS = 4
+    /**
+     * The same bar for scripts written without spaces, where a whole sentence
+     * is one space-separated "word": letters, counted one by one. Eight is
+     * about four words of Japanese or Chinese.
+     */
+    const val MIN_UNSPACED_LETTERS = 8
     /** Week-ago days, in the order they are tried. */
     private val WEEK_AGO_DAYS = listOf(7L, 6L, 8L)
     /** Months back that "on this day" looks at, besides whole years. */
@@ -303,9 +309,29 @@ object Resurface {
      */
     private fun quotable(all: List<Entry>): List<Pair<Entry, String>> =
         all.asSequence()
-            .filter { !it.isUntranscribed && it.wordCount >= MIN_WORDS }
+            .filter { !it.isUntranscribed && longEnough(it) }
             .mapNotNull { e -> excerpt(e.text)?.let { e to it } }
             .toList()
+
+    /**
+     * More than a fragment. [Entry.wordCount] splits on spaces, so a Japanese,
+     * Chinese or Thai entry is one "word" however much was said; for those
+     * scripts the letters are counted instead. Not BreakIterator words: the
+     * JVM and Android segment these scripts differently, and the rule has to
+     * be the one the tests check.
+     */
+    private fun longEnough(e: Entry): Boolean =
+        e.wordCount >= MIN_WORDS || unspacedLetters(e.text) >= MIN_UNSPACED_LETTERS
+
+    private fun unspacedLetters(text: String): Int =
+        text.codePoints().filter { Character.isLetter(it) && Character.UnicodeScript.of(it) in UNSPACED }.count().toInt()
+
+    /** Scripts written without spaces between words. */
+    private val UNSPACED = setOf(
+        Character.UnicodeScript.HAN, Character.UnicodeScript.HIRAGANA, Character.UnicodeScript.KATAKANA,
+        Character.UnicodeScript.THAI, Character.UnicodeScript.LAO, Character.UnicodeScript.KHMER,
+        Character.UnicodeScript.MYANMAR, Character.UnicodeScript.TIBETAN,
+    )
 
     /** On a day with several entries, the one with the most said; the earliest on a tie. */
     private fun best(day: List<Pair<Entry, String>>?): Pair<Entry, String>? =

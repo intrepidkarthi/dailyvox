@@ -89,6 +89,26 @@ class ResurfaceTest {
     }
 
     @Test
+    fun `scripts without spaces are long enough to quote`() {
+        // One space-separated "word" each, and well worth bringing back.
+        val ja = "今日は友達と海に行ってとても楽しかったです。夜は早く寝ました。"
+        val now = at(2026, 10, 13, 20, tokyo)
+        val week = entry(ja, at(2026, 10, 6, 21, tokyo))
+        assertEquals(ja, Resurface.weekAgo(listOf(week), now, tokyo)!!.excerpt)
+
+        val year = entry(ja, at(2025, 10, 13, 21, tokyo))
+        assertEquals(ja, Resurface.onThisDay(listOf(year), now, tokyo).single().excerpt)
+
+        val r = Resurface.recap(listOf(entry(ja, at(2026, 10, 5, 21, tokyo))), LocalDate.of(2026, 10, 4), tokyo)!!
+        assertEquals(ja, r.line!!.excerpt)
+
+        assertNotNull(Resurface.weekAgo(listOf(entry("我今天和朋友去海边玩了。", at(2026, 10, 6, 21, tokyo))), now, tokyo))
+        assertNotNull(Resurface.weekAgo(listOf(entry("วันนี้ฉันไปทะเลกับเพื่อน", at(2026, 10, 6, 21, tokyo))), now, tokyo))
+        // A fragment is still a fragment in any script.
+        assertNull(Resurface.weekAgo(listOf(entry("疲れた。", at(2026, 10, 6, 21, tokyo))), now, tokyo))
+    }
+
+    @Test
     fun `a deleted entry is never shown`() {
         val keep = entry("The quiet one I kept for myself today.", at(2026, 10, 6, 8))
         val gone = entry("A much longer entry that was later deleted by the person who said it.", at(2026, 10, 6, 20))
