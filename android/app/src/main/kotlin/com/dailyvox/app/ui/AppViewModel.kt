@@ -30,6 +30,17 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun dismissReflection() { _reflection.value = null }
 
+    /**
+     * A mood picked (or cleared, with null) on the reflection card. The card
+     * updates at once and the row follows; both apply the same rule, so the
+     * suggestion is kept beside a choice and dropped with a clear.
+     */
+    fun setReflectionMood(label: String?) {
+        val card = _reflection.value ?: return
+        _reflection.value = card.withMood(label)
+        viewModelScope.launch { repo.setSelfLabel(card.entryId, label) }
+    }
+
     val entries: StateFlow<List<Entry>> = _query
         .flatMapLatest { q -> if (q.isBlank()) repo.observeAll() else repo.search(q) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -79,6 +90,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setSelfLabel(id: String, label: String?) = viewModelScope.launch {
+        // Picked on the entry page while that entry's card is still up on
+        // Speak: the card must not go on showing the old mood.
+        _reflection.value?.takeIf { it.entryId == id }?.let { _reflection.value = it.withMood(label) }
         repo.setSelfLabel(id, label)
     }
 

@@ -53,14 +53,19 @@ class MigrationTest {
     private fun migrateAll(db: SupportSQLiteDatabase) {
         Repo.MIGRATION_1_2.migrate(db)
         Repo.MIGRATION_2_3.migrate(db)
+        Repo.MIGRATION_3_4.migrate(db)
     }
 
     private fun assertMigrated(db: SupportSQLiteDatabase) {
         val cols = columns(db)
-        listOf("speakingRate", "dayOfWeek", "hrvMs", "restingHrBpm", "stepsToday")
+        listOf("speakingRate", "dayOfWeek", "hrvMs", "restingHrBpm", "stepsToday", "suggestedMood")
             .forEach { assertTrue("missing $it", it in cols) }
         db.query("SELECT text FROM entries WHERE id = 'a'").use { c ->
             assertTrue(c.moveToFirst()); assertEquals("Dinner with Priya", c.getString(0))
+        }
+        // Existing entries are not re-scored: no suggestion, and no label.
+        db.query("SELECT suggestedMood, selfLabel FROM entries WHERE id = 'a'").use { c ->
+            assertTrue(c.moveToFirst()); assertTrue(c.isNull(0)); assertTrue(c.isNull(1))
         }
     }
 
@@ -71,4 +76,17 @@ class MigrationTest {
 
     @Test fun runningTwiceIsHarmless() =
         open("v1-twice.db", base).let { migrateAll(it); migrateAll(it); assertMigrated(it) }
+
+    /** A version-3 database, the shape before this column, keeps its label. */
+    @Test fun versionThreeKeepsItsSelfLabel() {
+        val v3 = base + prosody + ", `hrvMs` REAL, `restingHrBpm` REAL, `stepsToday` INTEGER"
+        open("v3.db", v3).let { db ->
+            db.execSQL("UPDATE entries SET selfLabel = 'joy' WHERE id = 'a'")
+            Repo.MIGRATION_3_4.migrate(db)
+            assertTrue("suggestedMood" in columns(db))
+            db.query("SELECT selfLabel, suggestedMood FROM entries WHERE id = 'a'").use { c ->
+                assertTrue(c.moveToFirst()); assertEquals("joy", c.getString(0)); assertTrue(c.isNull(1))
+            }
+        }
+    }
 }

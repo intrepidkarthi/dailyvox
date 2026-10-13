@@ -34,6 +34,18 @@ data class Entry(
     val selfLabel: String? = null,
 
     /**
+     * The mood the APP suggested from the words ([MoodSuggestion]), a canon key
+     * or null. Its own column so it can never be mistaken for [selfLabel]: the
+     * research export reads only that one, and nothing here writes a guess
+     * into it.
+     *
+     * Kept after the user picks a label, so "suggested joy, chose joy" and
+     * "suggested joy, chose sadness" stay tellable apart. Cleared when the
+     * user clears the mood, because "no mood" is then their answer.
+     */
+    val suggestedMood: String? = null,
+
+    /**
      * Prosody, extracted from the recording. Null on text-only or unanalysable
      * entries — the engine's contract calls that `.unavailable` and folds
      * nothing, which is better than folding a zero and dragging the baseline.
@@ -83,6 +95,18 @@ data class Entry(
 
     val entityList: List<String>
         get() = entities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
+    /**
+     * The mood to show: the user's own label when there is one, otherwise the
+     * app's suggestion. Every surface that draws it must also check
+     * [moodIsSuggested] and mark the second case as a suggestion.
+     */
+    val mood: String?
+        get() = selfLabel ?: suggestedMood
+
+    /** True when [mood] is the app's guess rather than the user's choice. */
+    val moodIsSuggested: Boolean
+        get() = selfLabel == null && suggestedMood != null
 }
 
 @Dao
@@ -132,6 +156,9 @@ interface EntryDao {
 }
 
 /**
+ * Version 4 adds suggestedMood. Nullable, so every existing entry keeps no
+ * suggestion -- old entries are not re-scored behind the user's back.
+ *
  * Version 3 adds the Health Connect columns (hrvMs, restingHrBpm, stepsToday).
  * sleepHours already existed from v1.
  *
@@ -143,7 +170,7 @@ interface EntryDao {
  * existing install crashed on launch. Bumping the number is only half the fix —
  * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
  */
-@Database(entities = [Entry::class], version = 3, exportSchema = true)
+@Database(entities = [Entry::class], version = 4, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }

@@ -532,6 +532,27 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
                     .padding(horizontal = 20.dp, vertical = 16.dp),
             )
             Spacer(Modifier.height(16.dp))
+            // The same suggestion the entry is saved with a moment later, worked
+            // out the same way, so this line and the card after it agree. Absent
+            // when the words do not lean clearly either way.
+            val suggested = remember(transcript) {
+                com.dailyvox.app.system.MoodSuggestion.from(
+                    transcript, com.dailyvox.app.data.Lexicon.table,
+                )
+            }
+            suggested?.let {
+                Text(
+                    androidx.compose.ui.res.stringResource(
+                        com.dailyvox.app.R.string.onboarding_suggested_mood,
+                        com.dailyvox.app.ui.components.moodWord(it),
+                    ),
+                    fontSize = 14.sp, lineHeight = 21.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.widthIn(max = 420.dp),
+                )
+                Spacer(Modifier.height(16.dp))
+            }
         }
         Text(
             if (transcript.isBlank()) "Speak whenever you are ready. Nothing is required of you tonight."
