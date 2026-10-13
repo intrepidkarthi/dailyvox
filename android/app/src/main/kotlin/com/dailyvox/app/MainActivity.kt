@@ -244,6 +244,19 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             all, com.dailyvox.app.system.Resurface.lastWeekStart(today, firstDay), zone)
     }
 
+    // The question above the record button. A function of the date and the
+    // live table, so it holds all day, survives a relaunch, and forgets a
+    // name the moment its entry is deleted. The pilot switch lives in
+    // Settings, so it is re-read whenever an overlay closes.
+    val pilot = remember(overlay) { com.dailyvox.app.system.DailyQuestion.isPilot(context) }
+    var questionTurn by remember(today) {
+        mutableIntStateOf(com.dailyvox.app.system.DailyQuestion.turn(context, today))
+    }
+    val question = remember(all, today, pilot, questionTurn) {
+        com.dailyvox.app.system.DailyQuestion.forDay(
+            all, System.currentTimeMillis(), zone, pilot, questionTurn)
+    }
+
     val dark = when (theme) {
         ThemeChoice.LIGHT -> false
         ThemeChoice.DARK -> true
@@ -542,6 +555,11 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                             com.dailyvox.app.system.Resurface.isRecapDay(today, firstDay)
                         },
                         onOpenEntry = { openEntry = it },
+                        question = question,
+                        onAnotherQuestion = {
+                            questionTurn += 1
+                            com.dailyvox.app.system.DailyQuestion.setTurn(context, today, questionTurn)
+                        },
                         modifier = inner,
                     )
                     Destination.JOURNAL -> JournalScreen(
