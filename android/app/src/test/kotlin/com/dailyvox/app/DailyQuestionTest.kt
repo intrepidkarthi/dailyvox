@@ -283,6 +283,25 @@ class DailyQuestionTest {
     }
 
     @Test
+    fun `a longer name is ruled out by a hard entry that says part of it`() {
+        val now = at(tuesday)
+        val aunt = entry("Had lunch with Aunt Priya.", tuesday.minusDays(3), "Aunt Priya")
+        assertEquals(Question.Grounded("Aunt Priya", 3), DailyQuestion.grounded(listOf(aunt), now, la))
+        val died = entry("Priya died this morning.", tuesday.minusDays(2), "Priya", valence = -0.6f)
+        assertNull(DailyQuestion.grounded(listOf(aunt, died), now, la))
+
+        val full = entry("Priya Sharma came over for tea.", tuesday.minusDays(4), "Priya Sharma")
+        val fight = entry("Priya and I had a huge fight.", tuesday.minusDays(1), "Priya", valence = -0.5f)
+        assertNull(DailyQuestion.grounded(listOf(full, fight), now, la))
+        // The detector's filing counts too, even when the text puts it another way.
+        val filed = entry("Hard night. Didn't sleep.", tuesday.minusDays(1), "Priya", valence = -0.5f)
+        assertNull(DailyQuestion.grounded(listOf(full, filed), now, la))
+        // Someone else is still fine.
+        val arjun = entry("Coffee with Arjun, lots of laughing.", tuesday.minusDays(4), "Arjun")
+        assertEquals(Question.Grounded("Arjun", 4), DailyQuestion.grounded(listOf(full, fight, arjun), now, la))
+    }
+
+    @Test
     fun `the name said most often wins, then the most recent`() {
         val a1 = entry("Lunch with Arjun.", tuesday.minusDays(6), "Arjun")
         val a2 = entry("Arjun called about the trip.", tuesday.minusDays(5), "Arjun")

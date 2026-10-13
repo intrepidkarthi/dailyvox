@@ -145,8 +145,8 @@ object DailyQuestion {
     /**
      * A name from the last two weeks, or null. Null is the usual answer:
      * only on [GROUNDED_DAYS], only a name the text says as written and never
-     * says lowercase, and never a name that appears in any entry of the last
-     * month that read as hard. The name the user said in the most entries
+     * says lowercase, and never a name any word of which appears in an entry
+     * of the last month that read as hard. The name the user said in the most entries
      * wins, the latest on a tie.
      */
     fun grounded(all: List<Entry>, now: Long, zone: ZoneId): Question.Grounded? {
@@ -167,7 +167,12 @@ object DailyQuestion {
             // "Will" opened a sentence once and "will" is everywhere else: a
             // word the user also says lowercase is a word, not a name.
             .filter { name -> withText.none { saidAsWritten(name.lowercase(), it.text) } }
-            .filter { name -> hard.none { saidAsWritten(name, it.text) } }
+            // "Aunt Priya" is still Priya: one word of the name in a hard
+            // entry, as written or as the detector filed it, is enough.
+            .filter { name ->
+                val parts = name.split(' ').filter { it.isNotEmpty() } + name
+                hard.none { e -> parts.any { saidAsWritten(it, e.text) || it in hardWords(e) } }
+            }
             .filter { name -> saidToday.none { saidAsWritten(name, it.text) } }
             .map { name ->
                 val hits = recent.filter { saidAsWritten(name, it.text) }
@@ -187,6 +192,10 @@ object DailyQuestion {
         val mood = SelfLabels.canonical(e.selfLabel) ?: e.selfLabel ?: e.suggestedMood
         return mood in HARD_MOODS || e.valence <= NEGATIVE || SENSITIVE.containsMatchIn(e.text)
     }
+
+    /** The capitalised words of the names a hard entry's detector filed. */
+    private fun hardWords(e: Entry): Set<String> =
+        e.entityList.filter { looksLikeName(it) }.flatMap { it.split(' ') }.filter { it.isNotEmpty() }.toSet()
 
     /** Capitalised, a word or a few. "will" is never Will. */
     internal fun looksLikeName(name: String): Boolean {
