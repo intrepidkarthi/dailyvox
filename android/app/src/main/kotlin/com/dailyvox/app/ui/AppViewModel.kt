@@ -14,9 +14,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
 
-    private val _streak = MutableStateFlow(0)
-    val streak: StateFlow<Int> = _streak
-
     private val _resolution = MutableStateFlow(0)
     val resolution: StateFlow<Int> = _resolution
 
@@ -243,7 +240,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun refreshStats() {
-        _streak.value = repo.streakDays()
         _resolution.value = repo.resolution()
     }
 }

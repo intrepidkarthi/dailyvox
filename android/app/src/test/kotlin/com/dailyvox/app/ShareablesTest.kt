@@ -69,14 +69,33 @@ class ShareablesTest {
         assertEquals(0, m.invoke(Shareables, entries))
     }
 
+    /** Nine in the evening, [back] local days ago, in this JVM's zone. */
+    private fun localEvening(back: Long): Long =
+        java.time.LocalDate.now().minusDays(back).atTime(21, 0)
+            .atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
+
     @Test
     fun `a run ending yesterday still counts, since today is not over`() {
-        val today = System.currentTimeMillis() / day
-        val entries = (1..4).map {
-            entry(it, "Spoke.").copy(createdAt = (today - it) * day + 60_000L)
+        val entries = (1..4).map { entry(it, "Spoke.").copy(createdAt = localEvening(it.toLong())) }
+        val m = call("streak", List::class.java)
+        assertEquals(4, m.invoke(Shareables, entries))
+    }
+
+    @Test
+    fun `the receipt counts a grace day the way the app does`() {
+        // One quiet day inside the run: the receipt and the header must print
+        // the same number, and the missed day is not in it.
+        val entries = listOf(0L, 1L, 3L, 4L).mapIndexed { i, back ->
+            entry(i, "Spoke.").copy(createdAt = localEvening(back))
         }
         val m = call("streak", List::class.java)
         assertEquals(4, m.invoke(Shareables, entries))
+        assertEquals(
+            com.dailyvox.app.system.Streak.of(
+                entries.map { it.createdAt }, System.currentTimeMillis(),
+                java.time.ZoneId.systemDefault()).current,
+            m.invoke(Shareables, entries),
+        )
     }
 
     @Test

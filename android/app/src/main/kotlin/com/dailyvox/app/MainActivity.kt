@@ -222,7 +222,6 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     ) { uri -> if (uri != null) vm.writeResearchExport(context, uri) }
 
     val query by vm.query.collectAsStateWithLifecycle()
-    val streak by vm.streak.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
     val reflection by vm.reflection.collectAsStateWithLifecycle()
 
@@ -238,6 +237,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     val onThisDay = remember(all, today) {
         com.dailyvox.app.system.Resurface.onThisDay(all, System.currentTimeMillis(), zone)
+    }
+    // The streak, from the live table and the local date, so it is right after
+    // an import or a delete and moves on at midnight without a write. Every
+    // screen below reads this one value (Streak.kt).
+    val streak = remember(all, today) {
+        com.dailyvox.app.system.Streak.of(all.map { it.createdAt }, System.currentTimeMillis(), zone)
     }
     val recap = remember(all, today, firstDay) {
         com.dailyvox.app.system.Resurface.recap(
@@ -385,7 +390,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             mutableStateOf<com.dailyvox.app.system.Shareables.Card?>(null)
         }
         shareCard?.let { c ->
-            ShareSheet(entries = entries, initial = c, onDismiss = { shareCard = null })
+            ShareSheet(entries = all, initial = c, onDismiss = { shareCard = null })
         }
 
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
@@ -474,7 +479,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
                 overlay == Overlay.INSIGHTS ->
                     InsightsScreen(
-                        entries = entries, streak = streak,
+                        entries = all, streak = streak,
                         onShareMilestone = { shareCard = com.dailyvox.app.system.Shareables.Card.MILESTONE },
                         recap = recap,
                         onOpenEntry = { openEntry = it },
@@ -537,8 +542,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                             c.get(java.util.Calendar.YEAR) == thisYear
                         },
                         firstEver = entries.isEmpty(),
-                        todayEntry = entries.firstOrNull {
-                            it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+                        todayEntry = all.firstOrNull {
+                            com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) == today
                         },
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
@@ -571,7 +576,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     )
                     Destination.TWIN -> TwinScreen(
                         onShare = { shareCard = com.dailyvox.app.system.Shareables.Card.MY_SKY },
-                        entries = entries, resolution = resolution,
+                        entries = all, resolution = resolution,
                         onAsk = { current = Destination.ASK },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         modifier = inner,

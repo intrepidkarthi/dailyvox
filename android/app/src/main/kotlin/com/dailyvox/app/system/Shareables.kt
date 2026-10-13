@@ -524,18 +524,14 @@ object Shareables {
         typeface = BrandFaces.inter(400)
     }
 
-    private fun streak(entries: List<Entry>): Int {
-        if (entries.isEmpty()) return 0
-        val days = entries.map { it.createdAt / 86_400_000L }.distinct().sortedDescending()
-        val today = System.currentTimeMillis() / 86_400_000L
-        // A streak that has already missed today is still alive until tomorrow,
-        // so it may start at today or yesterday — anything older is broken.
-        var cursor = if (days.first() == today || days.first() == today - 1) days.first()
-                     else return 0
-        var n = 0
-        days.forEach { d -> if (d == cursor) { n++; cursor-- } }
-        return n
-    }
+    /**
+     * The live run, by the same rules as every other surface ([Streak]): local
+     * days and one grace day a week. A broken run prints 0 here rather than a
+     * welcome back, because the receipt is a table of counts.
+     */
+    private fun streak(entries: List<Entry>): Int =
+        Streak.of(entries.map { it.createdAt }, System.currentTimeMillis(),
+                  java.time.ZoneId.systemDefault()).current
 
     private fun warmestMonth(entries: List<Entry>): String {
         if (entries.isEmpty()) return "—"

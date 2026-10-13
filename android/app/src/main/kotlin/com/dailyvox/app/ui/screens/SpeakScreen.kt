@@ -67,7 +67,7 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun SpeakScreen(
-    streak: Int,
+    streak: com.dailyvox.app.system.Streak.State,
     resolution: Int,
     /** Stars filed since 1 January — the right-hand chip in spec §2.2. */
     yearCount: Int = 0,
@@ -174,12 +174,16 @@ fun SpeakScreen(
     // Saving is driven by the capture's own terminal state rather than by the
     // tap handler, so a recognizer that ends on silence saves the same way a
     // deliberate stop does.
+    // Read through rememberUpdatedState: this collector is launched once, and
+    // a plain capture would judge every later save against the streak as it
+    // stood when the screen first opened.
+    val liveStreak by rememberUpdatedState(streak)
     LaunchedEffect(Unit) {
         capture.finished.collect { text ->
             val path = recorder.stop()?.absolutePath
             if (text.isNotBlank()) {
                 onSaved(text, elapsed.coerceAtLeast(1), path)
-                if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                if (streakMilestone(liveStreak)) haptics.streakMilestone()
                 else haptics.entrySaved()
             }
         }
@@ -333,8 +337,16 @@ fun SpeakScreen(
                        modifier = Modifier.clip(RoundedCornerShape(12.dp))
                            .clickable(onClick = onInsights)
                            .padding(horizontal = 8.dp, vertical = 6.dp)) {
+                    // Someone coming back is welcomed, not shown the line a
+                    // brand-new user sees. Insights carries what they kept.
                     Text(
-                        if (streak > 0) "$streak-day streak" else "no streak yet",
+                        when (streak.kind) {
+                            com.dailyvox.app.system.Streak.Kind.ACTIVE -> androidx.compose.ui.res.pluralStringResource(
+                                R.plurals.streak_header, streak.current, streak.current)
+                            com.dailyvox.app.system.Streak.Kind.RETURNING ->
+                                stringResource(R.string.streak_header_welcome_back)
+                            com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_none_yet)
+                        },
                         fontSize = 12.5.sp, fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
@@ -418,7 +430,7 @@ fun SpeakScreen(
                         // no audio: Journal and Entry detail already read that
                         // pair as "typed", and the Today card shows no play chip.
                         onSaved(t, 0, null)
-                        if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                        if (streakMilestone(streak)) haptics.streakMilestone()
                         else haptics.entrySaved()
                         typed = ""
                         typing = false
@@ -1041,6 +1053,14 @@ private fun RecordButton(
 
 /** Shortest wordless recording worth keeping as an audio-only entry. */
 private const val MIN_KEPT_SECONDS = 2
+
+/**
+ * Every seventh day of a run, felt once: on the entry that makes it, not on a
+ * second entry the same day. Read off [Streak.State.ifSpokenToday], so a grace
+ * day is never counted towards the seven.
+ */
+private fun streakMilestone(s: com.dailyvox.app.system.Streak.State): Boolean =
+    !s.spokenToday && s.ifSpokenToday % 7 == 0
 
 /**
  * The words for a [DailyQuestion.Question]. Picking is pure and lives in
