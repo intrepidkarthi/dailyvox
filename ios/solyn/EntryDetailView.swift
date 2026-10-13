@@ -958,6 +958,8 @@ struct EntryDetailView: View {
             do {
                 try viewContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
+                // An opted-in reminder may be quoting the old words.
+                if trimmed != oldText { ReminderManager.shared.refresh(in: viewContext) }
 
                 // Feed into Digital Twin — use reprocess if text was edited
                 if !trimmed.isEmpty {

@@ -119,6 +119,12 @@ struct TodayView: View {
     /// picker's working value.
     @State private var moodPickerEntry: DiaryEntry?
     @State private var pickedMood: Mood = .none
+    /// The past brought back — a week ago, on this day, the weekly recap.
+    /// Worked out in a task keyed on the entries, never inside `body`.
+    @State private var resurface = ResurfaceSnapshot.empty
+    /// "Now" for resurfacing, moved on when the app comes forward so a screen
+    /// left open overnight does not keep showing yesterday's week-ago entry.
+    @State private var resurfaceClock = Date()
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -489,6 +495,8 @@ struct TodayView: View {
                         // something: the BODY row of an entry's ledger, and the
                         // Body card on the Twin tab.
                             entryCardSection
+                            pastSection
+                                .padding(.top, 12)
                         }
 
                         Spacer(minLength: 0)
@@ -510,8 +518,54 @@ struct TodayView: View {
             Color.clear.frame(height: DailyVoxTabBar.reservedHeight - 10)
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
+        .task(id: resurfaceKey) {
+            resurface = ResurfaceSnapshot.make(from: PastEntry.snapshots(of: allEntries), now: Date())
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             Task { await BodyWhisperProvider.shared.refreshIfNeeded() }
+            resurfaceClock = Date()
+        }
+    }
+
+    // MARK: - Your Past
+
+    /// Changes when anything resurfacing depends on does: the day, whether the
+    /// recap is due, and any entry added, deleted or edited.
+    private var resurfaceKey: String {
+        let day = Calendar.current.startOfDay(for: resurfaceClock).timeIntervalSince1970
+        let recapDue = Resurfacing.recapWeekIfDue(now: resurfaceClock) != nil
+        let edited = allEntries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
+        return "\(day)|\(recapDue)|\(allEntries.count)|\(edited)"
+    }
+
+    /// Only what exists: each card is absent, not empty, when there is no
+    /// entry behind it. The recap leads on the evening it is due.
+    @ViewBuilder
+    private var pastSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if let recap = resurface.recap {
+                WeeklyRecapCard(recap: recap,
+                                title: String(localized: "Your week",
+                                              comment: "Title of the weekly recap card on the Today screen."),
+                                entries: allEntries)
+            }
+            if let weekAgo = resurface.weekAgo {
+                ResurfacedEntryLink(entryID: weekAgo.entryID, entries: allEntries) {
+                    PastLineCard(item: weekAgo)
+                }
+            }
+            if !resurface.onThisDay.isEmpty {
+                Text("On this day")
+                    .font(.dv(.caption, design: .rounded, weight: .bold))
+                    .foregroundColor(theme.secondaryTextColor)
+                    .padding(.top, 4)
+                    .accessibilityAddTraits(.isHeader)
+                ForEach(resurface.onThisDay, id: \.entryID) { item in
+                    ResurfacedEntryLink(entryID: item.entryID, entries: allEntries) {
+                        PastLineCard(item: item)
+                    }
+                }
+            }
         }
     }
 
