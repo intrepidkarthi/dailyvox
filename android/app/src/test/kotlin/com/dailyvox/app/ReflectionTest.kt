@@ -103,6 +103,23 @@ class ReflectionTest {
     }
 
     @Test
+    fun `a name is matched as a whole word, never inside another word`() {
+        // "Ann" is not in "Annual review", so the card names nobody.
+        val inside = Reflection.of(entry("Annual review went fine", 0.3f, entities = "Ann"), emptyList())
+        assertNull(inside.person)
+
+        val others = listOf(
+            entry("prepping the Annual review deck", 0f, at = now - 2 * day, id = "a"),
+            entry("bought a Samsung charger", 0f, at = now - 3 * day, id = "b"),
+            entry("Ann's birthday dinner", 0f, at = now - 4 * day, id = "c"),
+        )
+        val saved = entry("long call with Ann tonight", 0.3f, entities = "Ann")
+        val card = Reflection.of(saved, others + saved)
+        assertEquals("Ann", card.person)
+        assertEquals(1, card.personEarlier)
+    }
+
+    @Test
     fun `the for-tomorrow line is the user's own sentence or nothing`() {
         val card = Reflection.of(
             entry("Long day. The interview is tomorrow at ten. I feel ready.", 0.2f), emptyList())

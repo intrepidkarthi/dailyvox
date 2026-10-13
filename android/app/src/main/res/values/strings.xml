@@ -24,16 +24,16 @@
     </plurals>
     <string name="reflection_typed">typed</string>
     <string name="reflection_wordless">Your voice is saved. The words can come later.</string>
-    <string name="reflection_tone_light">Your words lean light tonight.</string>
-    <string name="reflection_tone_even">Your words sit fairly even tonight.</string>
-    <string name="reflection_tone_heavy">Your words carry some weight tonight. That is allowed here.</string>
+    <string name="reflection_tone_light">Your words lean light.</string>
+    <string name="reflection_tone_even">Your words sit fairly even.</string>
+    <string name="reflection_tone_heavy">Your words carry some weight. That is allowed here.</string>
     <string name="reflection_drift_lighter">Lighter than your last few entries.</string>
     <string name="reflection_drift_heavier">Heavier than your last few entries.</string>
     <string name="reflection_drift_similar">Close to how your last few entries read.</string>
     <string name="reflection_person">%1$s is in this one.</string>
     <plurals name="reflection_person_earlier">
-        <item quantity="one">%1$s is in this one, and in %2$d other entry this month.</item>
-        <item quantity="other">%1$s is in this one, and in %2$d other entries this month.</item>
+        <item quantity="one">%1$s is in this one, and in %2$d other entry in the last 30 days.</item>
+        <item quantity="other">%1$s is in this one, and in %2$d other entries in the last 30 days.</item>
     </plurals>
     <string name="reflection_tomorrow_label">For tomorrow, in your words</string>
     <string name="reflection_tomorrow_quote">“%1$s”</string>

@@ -27,7 +27,7 @@ object Reflection {
         val tone: Tone?,
         /** Null without enough recent entries to compare against. */
         val drift: Drift?,
-        /** A name the detector found that ALSO appears verbatim in the text. */
+        /** A name the detector found that ALSO appears in the text as a whole word. */
         val person: String?,
         /** Other entries in the last 30 days that name the same person. */
         val personEarlier: Int,
@@ -77,12 +77,13 @@ object Reflection {
 
         // Grounded twice: the detector named them AND the name is in the text
         // as written. A detector hit that the text does not contain would put
-        // a name on screen the user never said.
-        val person = entry.entityList.firstOrNull { entry.text.contains(it) }
+        // a name on screen the user never said. Whole words only, so "Ann"
+        // is not found inside "Annual" and "Sam" not inside "Samsung".
+        val person = entry.entityList.firstOrNull { nameIn(it, entry.text) }
         val personEarlier = if (person == null) 0 else earlier.count { e ->
             entry.createdAt - e.createdAt <= 30 * DAY &&
                 (e.entityList.any { it.equals(person, ignoreCase = true) } ||
-                    e.text.contains(person))
+                    nameIn(person, e.text))
         }
 
         return Card(
@@ -96,6 +97,14 @@ object Reflection {
             tomorrow = tomorrowSentence(entry.text),
         )
     }
+
+    /**
+     * The name as a whole word, case as written. Letters and digits on either
+     * side mean it is part of a longer word; "Sarah's" still counts.
+     */
+    internal fun nameIn(name: String, text: String): Boolean =
+        Regex("(?<![\\p{L}\\p{N}])" + Regex.escape(name) + "(?![\\p{L}\\p{N}])")
+            .containsMatchIn(text)
 
     /**
      * The first sentence that says "tomorrow", trimmed to fit a card. Matched
