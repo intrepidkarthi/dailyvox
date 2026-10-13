@@ -301,7 +301,8 @@ enum DailyQuestions {
 
     /// The names worth asking after: from entries in the local days
     /// `[today − groundingWindowDays, today)`, gentle ones only, newest entry
-    /// first, people before places within an entry, each name once.
+    /// first, people before places within an entry and each in the order it
+    /// was said, each name once.
     ///
     /// Today's own entries are left out, so recording does not change the
     /// question mid-day. `read` is the tagger; it only proposes — a proposal
@@ -320,12 +321,22 @@ enum DailyQuestions {
         for entry in recent {
             let reading = read(entry.text)
             guard isGentle(entry, reading: reading) else { continue }
-            let proposals = reading.people.map { ($0, Subject.Kind.person) }
-                + reading.places.map { ($0, Subject.Kind.place) }
-            for (proposal, kind) in proposals {
-                guard let name = writtenName(proposal, in: entry.text),
-                      seen.insert(name.lowercased()).inserted
-                else { continue }
+            // The engine's names come out of a Set, in an order that changes
+            // between launches; put them in the order they were said so the
+            // day's question does not.
+            let accepted = (reading.people.map { ($0, Subject.Kind.person) }
+                            + reading.places.map { ($0, Subject.Kind.place) })
+                .compactMap { proposal, kind -> (name: String, kind: Subject.Kind, at: String.Index)? in
+                    guard let name = writtenName(proposal, in: entry.text),
+                          let at = EntityMatch.properNounRanges(of: name, in: entry.text).first?.lowerBound
+                    else { return nil }
+                    return (name, kind, at)
+                }
+                .sorted {
+                    if $0.kind != $1.kind { return $0.kind == .person }
+                    return $0.at != $1.at ? $0.at < $1.at : $0.name < $1.name
+                }
+            for (name, kind, _) in accepted where seen.insert(name.lowercased()).inserted {
                 out.append(Subject(name: name, kind: kind, entryID: entry.id, date: entry.date))
             }
         }

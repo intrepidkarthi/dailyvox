@@ -375,6 +375,34 @@ final class DailyQuestionTests: XCTestCase {
         XCTAssertEqual(found.map(\.name), ["Arjun", "Priya"])
     }
 
+    func testTheTaggersOrderDoesNotPickTheName() {
+        // The engine hands names over from a Set, so their order changes
+        // between launches; the question must not.
+        let cal = calendar()
+        let gday = groundingDay(from: date(2026, 10, 1, in: cal), in: cal)
+        let entries = [source(cal.date(byAdding: .day, value: -1, to: gday)!,
+                              "Dinner with Ravi and Priya and Anand tonight.")]
+        func lineup(_ people: [String], _ places: [String]) -> [DailyQuestion] {
+            DailyQuestions.lineup(on: gday, entries: entries, pilotEnabled: false, calendar: cal,
+                                  read: tagger(people: people, places: places))
+        }
+        let one = lineup(["Ravi", "Priya"], ["Anand"])
+        XCTAssertEqual(one, lineup(["Priya", "Ravi"], ["Anand"]))
+        XCTAssertEqual(DailyQuestions.subjects(in: entries, now: gday, calendar: cal,
+                                               read: tagger(people: ["Priya", "Ravi"], places: ["Anand"]))
+                        .map(\.name), ["Ravi", "Priya", "Anand"])
+        for weeks in 0..<3 {
+            let day = cal.date(byAdding: .day, value: 7 * weeks, to: gday)!
+            let moved = [source(cal.date(byAdding: .day, value: -1, to: day)!,
+                                "Dinner with Ravi and Priya and Anand tonight.")]
+            let a = DailyQuestions.lineup(on: day, entries: moved, pilotEnabled: false, calendar: cal,
+                                          read: tagger(people: ["Ravi", "Priya", "Anand"]))
+            let b = DailyQuestions.lineup(on: day, entries: moved, pilotEnabled: false, calendar: cal,
+                                          read: tagger(people: ["Anand", "Priya", "Ravi"]))
+            XCTAssertEqual(a[0], b[0])
+        }
+    }
+
     // MARK: - Deleted entries
 
     func testDeletedEntriesAreNeverSnapshotted() throws {
