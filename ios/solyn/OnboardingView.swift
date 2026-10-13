@@ -47,6 +47,10 @@ struct OnboardingView: View {
     @State private var starBorn = false
     @State private var transcript = ""
     @State private var firstEntry: OnboardingFirstEntry?
+    /// The mood read from the first recording (`.none` when the words did not
+    /// say clearly), and whether the user then picked one themselves.
+    @State private var firstMood: Mood = .none
+    @State private var firstMoodChosen = false
 
     private var demo: Bool { ProcessInfo.processInfo.arguments.contains("-OnboardingDemo") }
 
@@ -70,11 +74,16 @@ struct OnboardingView: View {
                     SpeakScreen(demo: demo) { entry in
                         firstEntry = entry
                         transcript = entry.transcript
+                        firstMood = SuggestedMood.suggest(for: entry.transcript) ?? .none
+                        firstMoodChosen = false
                         withAnimation(.easeInOut(duration: 0.8)) { starBorn = true }
                         advance()
                     }
                 default:
-                    ClaimScreen(transcript: transcript, onEnter: complete)
+                    ClaimScreen(transcript: transcript,
+                                mood: $firstMood,
+                                moodChosen: $firstMoodChosen,
+                                onEnter: complete)
                 }
             }
             .transition(.opacity)
@@ -104,6 +113,12 @@ struct OnboardingView: View {
         e.updatedAt = now
         e.text = text
         e.isStarred = false
+        // The ledger promised "the transcript, the mood, the star". The mood
+        // is the one read from these words — or the one the user picked on
+        // the Claim screen — and stays nil when neither happened.
+        if firstMoodChosen || firstMood != .none {
+            e.mood = firstMood.rawValue
+        }
         if let fileName = entry.audioFileName {
             e.setValue(AudioFileList.encode([fileName]), forKey: "audioFileNames")
             e.setValue(fileName, forKey: "audioFileName")
@@ -112,7 +127,15 @@ struct OnboardingView: View {
         do {
             try viewContext.save()
             UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
-            DigitalTwinEngine.shared.processEntry(text: text, mood: nil, date: now, duration: entry.duration, entryId: e.id?.uuidString)
+            if firstMoodChosen {
+                SuggestedMoodStore.shared.markChosenByUser(e.id)
+            } else if e.mood != nil {
+                SuggestedMoodStore.shared.markSuggested(e.id)
+            }
+            // A suggestion is not a report, so the Twin hears only a mood the
+            // user picked.
+            DigitalTwinEngine.shared.processEntry(text: text, mood: firstMoodChosen ? firstMood.rawValue : nil,
+                                                  date: now, duration: entry.duration, entryId: e.id?.uuidString)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // Non-fatal: onboarding still completes; worst case the star isn't pre-seeded.
@@ -593,8 +616,11 @@ private struct VoiceStar: View {
 
 private struct ClaimScreen: View {
     let transcript: String
+    @Binding var mood: Mood
+    @Binding var moodChosen: Bool
     let onEnter: () -> Void
     @State private var appear = false
+    @State private var pickingMood = false
     /// Pre-checked: the daily nudge is the whole habit loop for a once-a-day app, and until now
     /// it was off by default and only reachable from Settings. The user can uncheck it here
     /// before entering, and change it any time in Settings.
@@ -656,6 +682,10 @@ private struct ClaimScreen: View {
                     .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(OB.rule, lineWidth: 1))
                     .padding(.horizontal, 26)
 
+                if mood != .none {
+                    claimMoodChip
+                }
+
                 Text("It lives on your phone — nowhere else.\nSpeak again tomorrow, and your sky grows.")
                     .font(.dv(.subheadline, design: .rounded, weight: .regular))
                     .foregroundColor(OB.inkDim)
@@ -707,6 +737,50 @@ private struct ClaimScreen: View {
             .padding(.bottom, 44)
         }
         .onAppear { withAnimation(.spring(response: 0.6, dampingFraction: 0.7).delay(0.15)) { appear = true } }
+        .sheet(isPresented: $pickingMood) {
+            MoodPickerSheet(selectedMood: $mood,
+                            isSuggestion: !moodChosen,
+                            onSave: { moodChosen = true })
+        }
+    }
+
+    /// The mood the first recording suggested, marked as a suggestion until
+    /// the user picks — same dashed-outline language as the Today screen.
+    private var claimMoodChip: some View {
+        Button { pickingMood = true } label: {
+            HStack(spacing: 8) {
+                Image(systemName: mood.icon)
+                    .font(.dv(.footnote, weight: .semibold))
+                    .foregroundColor(mood.color)
+                Group {
+                    if moodChosen {
+                        Text("Feeling \(mood.displayName.lowercased())")
+                    } else {
+                        Text("Sounds \(mood.displayName.lowercased()) \u{2014} tap to change")
+                    }
+                }
+                .font(.dv(.footnote, design: .rounded, weight: .semibold))
+                .foregroundColor(OB.ink.opacity(moodChosen ? 0.9 : 0.75))
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(minHeight: 44)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(mood.color.opacity(moodChosen ? 0.12 : 0.06)))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(
+                    mood.color.opacity(moodChosen ? 0 : 0.45),
+                    style: StrokeStyle(lineWidth: 1, dash: moodChosen ? [] : [4, 3]))
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(moodChosen
+            ? Text("Mood: \(mood.displayName.lowercased()).")
+            : Text("Suggested mood: \(mood.displayName.lowercased())."))
+        .accessibilityHint(Text("Double-tap to change."))
+        .accessibilityAddTraits(.isButton)
     }
 }
 

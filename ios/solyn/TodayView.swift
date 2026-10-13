@@ -115,6 +115,10 @@ struct TodayView: View {
     /// A recording has been kept and its transcript is still on the way, so
     /// the reflection slot shows that it is coming rather than a stale one.
     @State private var awaitingReflection = false
+    /// The entry whose mood is being changed from the Today screen, and the
+    /// picker's working value.
+    @State private var moodPickerEntry: DiaryEntry?
+    @State private var pickedMood: Mood = .none
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -215,6 +219,11 @@ struct TodayView: View {
         ))
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
+        }
+        .sheet(item: $moodPickerEntry) { entry in
+            MoodPickerSheet(selectedMood: $pickedMood,
+                            isSuggestion: entry.isMoodSuggested,
+                            onSave: { chooseMood(pickedMood, for: entry) })
         }
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
@@ -734,9 +743,33 @@ struct TodayView: View {
                 TodayReflectionCard(reflection: nil)
                     .transition(.opacity)
             }
-        } else if let reflection, reflection.entryID == entry.id {
-            TodayReflectionCard(reflection: reflection)
-                .transition(.opacity.combined(with: .move(edge: .top)))
+        } else {
+            if let reflection, reflection.entryID == entry.id {
+                TodayReflectionCard(reflection: reflection)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+            TodayMoodChip(entry: entry) {
+                pickedMood = Mood(rawValue: entry.mood ?? "") ?? .none
+                moodPickerEntry = entry
+            }
+            .transition(.opacity)
+        }
+    }
+
+    /// Anything picked here — a mood or "No mood" — is the user's, and from
+    /// then on no suggestion is ever written over it.
+    private func chooseMood(_ mood: Mood, for entry: DiaryEntry) {
+        entry.mood = mood.rawValue
+        // Also marks the entry changed when the user confirms the very mood
+        // that was suggested, so the chip redraws as theirs.
+        entry.updatedAt = Date()
+        SuggestedMoodStore.shared.markChosenByUser(entry.id)
+        HapticManager.shared.moodSelected()
+        do {
+            try viewContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            logger.error("Failed to save mood: \(error.localizedDescription)")
         }
     }
 
@@ -1309,10 +1342,11 @@ struct TodayView: View {
             }
         }
 
-        // Feed into Digital Twin for learning
+        // Feed into Digital Twin for learning. The user's mood only — a
+        // suggestion is the app's reading of these same words, not a report.
         DigitalTwinEngine.shared.processEntry(
             text: segment,
-            mood: entry.mood,
+            mood: entry.userMood,
             date: entry.date ?? Date(),
             duration: twinDuration,
             entryId: entry.id?.uuidString
@@ -1324,6 +1358,12 @@ struct TodayView: View {
         withAnimation(.spring(response: 0.4)) {
             reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
             awaitingReflection = false
+            // A mood read from the whole day's words, only where there is none
+            // or the one there was our own suggestion. The words are already
+            // saved; a failed save here only loses the suggestion.
+            if entry.refreshSuggestedMood() {
+                try? viewContext.save()
+            }
         }
 
         // Fire the "a new star appeared" Live Activity and
@@ -1338,7 +1378,7 @@ struct TodayView: View {
                 LiveActivityManager.shared.fireStarBirthActivity(
                     streak: streak,
                     totalStars: total,
-                    moodRaw: entry.mood ?? ""
+                    moodRaw: entry.userMood ?? ""
                 )
             }
             LiveActivityManager.shared.refreshStreakActivity(
@@ -1508,6 +1548,73 @@ struct StatBadge: View {
         .padding(.horizontal, DS.Space.sm)
         .padding(.vertical, 7)
         .background(Capsule().fill(color.opacity(0.12)))
+    }
+}
+
+// MARK: - Mood Chip
+
+/// The entry's mood under the Today card, and the one tap to change it.
+///
+/// A suggested mood is drawn as a suggestion — dashed outline, "Sounds calm" —
+/// so it never reads as something the user said about themselves. Once they
+/// pick, it is solid and plainly theirs. No mood, no chip: an empty slot is
+/// better than an invitation the reflection card already crowds.
+struct TodayMoodChip: View {
+    @ObservedObject var entry: DiaryEntry
+    let onTap: () -> Void
+    @ObservedObject private var theme = ThemeManager.shared
+
+    private var mood: Mood? {
+        guard let m = Mood(rawValue: entry.mood ?? ""), m != .none else { return nil }
+        return m
+    }
+
+    var body: some View {
+        if let mood {
+            let suggested = entry.isMoodSuggested
+            Button(action: onTap) {
+                HStack(spacing: 8) {
+                    Image(systemName: mood.icon)
+                        .font(.dv(.footnote, weight: .semibold))
+                        .foregroundColor(mood.color)
+                    Group {
+                        if suggested {
+                            Text("Sounds \(mood.displayName.lowercased()) \u{2014} tap to change")
+                        } else {
+                            Text("Feeling \(mood.displayName.lowercased())")
+                        }
+                    }
+                    .font(.dv(.footnote, design: .rounded, weight: .semibold))
+                    .foregroundColor(theme.textColor.opacity(suggested ? 0.75 : 0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.dv(.caption2, weight: .semibold))
+                        .foregroundColor(theme.secondaryTextColor)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .frame(minHeight: 44)
+                // A rounded rectangle, not a capsule: at large Dynamic Type
+                // the label wraps, and a capsule that tall reads as a blob.
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(mood.color.opacity(suggested ? 0.06 : 0.12))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(
+                        mood.color.opacity(suggested ? 0.45 : 0.0),
+                        style: StrokeStyle(lineWidth: 1, dash: suggested ? [4, 3] : []))
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(suggested
+                ? Text("Suggested mood: \(mood.displayName.lowercased()).")
+                : Text("Mood: \(mood.displayName.lowercased())."))
+            .accessibilityHint(Text("Double-tap to change."))
+            .accessibilityAddTraits(.isButton)
+        }
     }
 }
 

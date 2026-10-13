@@ -191,6 +191,12 @@ struct EntryDetailView: View {
         .onChange(of: selectedPhotos) { _, newItems in
             handlePhotoSelection(newItems)
         }
+        // A suggested mood can land after this screen opened (the transcript
+        // arrives, then the mood is read from it). Without following it, the
+        // next save would write the stale "no mood" back over it.
+        .onChange(of: entry.mood) { _, newValue in
+            selectedMood = Mood(rawValue: newValue ?? "") ?? .none
+        }
         .onChange(of: entry.text) { _, newValue in
             // Update local text when entry.text changes (e.g., after transcription completes)
             // Only update if not currently editing to avoid overwriting user edits
@@ -199,7 +205,9 @@ struct EntryDetailView: View {
             }
         }
         .sheet(isPresented: $showMoodPicker) {
-            MoodPickerSheet(selectedMood: $selectedMood, onSave: saveMood)
+            MoodPickerSheet(selectedMood: $selectedMood,
+                            isSuggestion: entry.isMoodSuggested,
+                            onSave: saveMood)
         }
     }
 
@@ -227,6 +235,12 @@ struct EntryDetailView: View {
                         .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
                         .tracking(1.1)
                         .foregroundColor(theme.accentColor)
+                } else if entry.isMoodSuggested {
+                    // Read from the words, not chosen: says so, and is quieter.
+                    Text("SOUNDS \(selectedMood.displayName.uppercased())?")
+                        .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
+                        .tracking(1.1)
+                        .foregroundColor(selectedMood.color.opacity(0.75))
                 } else {
                     Text(selectedMood.displayName.uppercased())
                         .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
@@ -236,6 +250,8 @@ struct EntryDetailView: View {
             }
             .buttonStyle(.plain)
             .frame(minHeight: 44)
+            .accessibilityLabel(moodAccessibilityLabel)
+            .accessibilityHint(Text("Double-tap to change."))
         }
     }
 
@@ -449,7 +465,16 @@ struct EntryDetailView: View {
     private var moodLine: String {
         guard selectedMood != .none else { return "not set" }
         let v = (Double(selectedMood.moodValue) - 3.0) / 2.0
-        return String(format: "%@ %+.1f", selectedMood.displayName, v)
+        let line = String(format: "%@ %+.1f", selectedMood.displayName, v)
+        return entry.isMoodSuggested ? line + " \u{00B7} suggested" : line
+    }
+
+    private var moodAccessibilityLabel: Text {
+        guard selectedMood != .none else { return Text("Add mood") }
+        let name = selectedMood.displayName.lowercased()
+        return entry.isMoodSuggested
+            ? Text("Suggested mood: \(name).")
+            : Text("Mood: \(name).")
     }
 
     /// Body context for the day this entry was spoken, if any was kept.
@@ -941,7 +966,7 @@ struct EntryDetailView: View {
                         DigitalTwinEngine.shared.reprocessEditedEntry(
                             oldText: oldText,
                             newText: trimmed,
-                            mood: selectedMood.rawValue,
+                            mood: entry.userMood,
                             date: entry.date ?? Date(),
                             duration: entry.duration,
                             entryId: entry.id?.uuidString
@@ -949,7 +974,7 @@ struct EntryDetailView: View {
                     } else {
                         DigitalTwinEngine.shared.processEntry(
                             text: trimmed,
-                            mood: selectedMood.rawValue,
+                            mood: entry.userMood,
                             date: entry.date ?? Date(),
                             duration: entry.duration,
                             entryId: entry.id?.uuidString
@@ -979,6 +1004,8 @@ struct EntryDetailView: View {
     private func saveMood() {
         entry.setValue(selectedMood.rawValue, forKey: "mood")
         entry.updatedAt = Date()
+        // Picked by hand, so it is the user's — never suggested over again.
+        SuggestedMoodStore.shared.markChosenByUser(entry.id)
         HapticManager.shared.moodSelected()
         do {
             try viewContext.save()
@@ -993,6 +1020,9 @@ struct EntryDetailView: View {
 
 struct MoodPickerSheet: View {
     @Binding var selectedMood: Mood
+    /// The current mood was suggested from the entry's words, not chosen, so
+    /// the checkmark next to it is not mistaken for something the user did.
+    var isSuggestion: Bool = false
     var onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -1021,7 +1051,7 @@ struct MoodPickerSheet: View {
                     }
                 }
 
-                Section(header: Text("Select a mood")) {
+                Section(header: Text("Select a mood"), footer: suggestionFooter) {
                     ForEach(Mood.selectableMoods) { mood in
                         Button(action: {
                             selectedMood = mood
@@ -1052,6 +1082,13 @@ struct MoodPickerSheet: View {
                     Button("Cancel") { dismiss() }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var suggestionFooter: some View {
+        if isSuggestion, selectedMood != .none {
+            Text("\(selectedMood.displayName) was suggested from your words. Pick a mood to make it yours, or choose No mood.")
         }
     }
 }
