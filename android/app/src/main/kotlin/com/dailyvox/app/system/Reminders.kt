@@ -60,6 +60,25 @@ object Reminders {
     const val PREF_HOUR = "reminderHour"
     /** When the app was last opened; the horizon is counted from here. */
     const val PREF_LAST_OPENED = "reminderLastOpened"
+    /**
+     * Quote a line from a week ago in the daily reminder. OFF by default and
+     * only ever on because the user turned it on: a notification is readable
+     * on a locked phone, and a journal's words do not go there unasked.
+     */
+    const val PREF_QUOTE_PAST = "reminderQuotePast"
+
+    fun quotesPast(context: Context): Boolean = prefs(context).getBoolean(PREF_QUOTE_PAST, false)
+
+    /**
+     * Turning the quote off also takes down a reminder already showing one.
+     * The switch is about what can be read on the lock screen, and a quote
+     * left sitting there after "off" would make the switch a liar. The
+     * pending alarm needs nothing: the text is chosen when it fires.
+     */
+    fun setQuotesPast(context: Context, on: Boolean) {
+        prefs(context).edit().putBoolean(PREF_QUOTE_PAST, on).apply()
+        if (!on) NotificationManagerCompat.from(context.applicationContext).cancel(ID_DAILY)
+    }
 
     /** Called from the app's own UI, so it is also an "opened" moment. */
     fun schedule(context: Context, hourOfDay: Int) {
@@ -189,11 +208,16 @@ object Reminders {
                 try {
                     val now = System.currentTimeMillis()
                     val zone = ZoneId.systemDefault()
-                    val spokenToday = runCatching {
+                    val all = runCatching {
                         com.dailyvox.app.data.Repo.get(context).allBlocking()
-                            .any { ReminderPlan.sameLocalDay(it.createdAt, now, zone) }
-                    }.getOrDefault(false)
-                    if (!spokenToday) notify(context, kind)
+                    }.getOrDefault(emptyList())
+                    val spokenToday = all.any { ReminderPlan.sameLocalDay(it.createdAt, now, zone) }
+                    // Read at fire time from the live table, so an entry
+                    // deleted since the alarm was set is never quoted.
+                    val quote = if (kind == ReminderPlan.Kind.DAILY && prefs.getBoolean(PREF_QUOTE_PAST, false))
+                        runCatching { Resurface.weekAgo(all, now, zone)?.excerpt }.getOrNull()
+                    else null
+                    if (!spokenToday) notify(context, kind, quote)
                     // The chain: one alarm at a time, so the next one is set
                     // here. A minute ahead, so an alarm delivered a hair early
                     // cannot pick tonight's slot a second time.
@@ -204,7 +228,8 @@ object Reminders {
             }
         }
 
-        private fun notify(context: Context, kind: ReminderPlan.Kind) {
+        /** [quote] is a verbatim line from a week ago, or null for the generic copy. */
+        private fun notify(context: Context, kind: ReminderPlan.Kind, quote: String? = null) {
             // Checked here rather than only at schedule time. The alarm is set
             // while the permission is held and fires days later -- long enough
             // for the user to have revoked notifications, or for Android to have
@@ -229,10 +254,15 @@ object Reminders {
                     com.dailyvox.app.R.string.reminder_welcome_back_title,
                     com.dailyvox.app.R.string.reminder_welcome_back_text, ID_WELCOME_BACK)
             }
+            val body = quote?.let {
+                context.getString(com.dailyvox.app.R.string.reminder_past_text,
+                    androidx.core.text.BidiFormatter.getInstance().unicodeWrap(it))
+            } ?: context.getString(text)
             val n = NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(com.dailyvox.app.R.drawable.ic_nav_speak)
                 .setContentTitle(context.getString(title))
-                .setContentText(context.getString(text))
+                .setContentText(body)
+                .apply { if (quote != null) setStyle(NotificationCompat.BigTextStyle().bigText(body)) }
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()

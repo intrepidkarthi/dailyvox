@@ -226,6 +226,24 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val resolution by vm.resolution.collectAsStateWithLifecycle()
     val reflection by vm.reflection.collectAsStateWithLifecycle()
 
+    // The past, brought back. Read from the whole table, keyed on the local
+    // date so the cards move on at midnight rather than at the next write.
+    val all by vm.all.collectAsStateWithLifecycle()
+    val zone = java.time.ZoneId.systemDefault()
+    val today = java.time.LocalDate.now(zone)
+    val firstDay = com.dailyvox.app.system.Resurface.firstDayOfWeek(
+        context.resources.configuration.locales[0])
+    val weekAgo = remember(all, today) {
+        com.dailyvox.app.system.Resurface.weekAgo(all, System.currentTimeMillis(), zone)
+    }
+    val onThisDay = remember(all, today) {
+        com.dailyvox.app.system.Resurface.onThisDay(all, System.currentTimeMillis(), zone)
+    }
+    val recap = remember(all, today, firstDay) {
+        com.dailyvox.app.system.Resurface.recap(
+            all, com.dailyvox.app.system.Resurface.lastWeekStart(today, firstDay), zone)
+    }
+
     val dark = when (theme) {
         ThemeChoice.LIGHT -> false
         ThemeChoice.DARK -> true
@@ -445,6 +463,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     InsightsScreen(
                         entries = entries, streak = streak,
                         onShareMilestone = { shareCard = com.dailyvox.app.system.Shareables.Card.MILESTONE },
+                        recap = recap,
+                        onOpenEntry = { openEntry = it },
                         onBack = { overlay = Overlay.NONE },
                         modifier = inner.then(peek),
                     )
@@ -516,6 +536,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
+                        weekAgo = weekAgo,
+                        onThisDay = onThisDay,
+                        recap = recap?.takeIf {
+                            com.dailyvox.app.system.Resurface.isRecapDay(today, firstDay)
+                        },
+                        onOpenEntry = { openEntry = it },
                         modifier = inner,
                     )
                     Destination.JOURNAL -> JournalScreen(

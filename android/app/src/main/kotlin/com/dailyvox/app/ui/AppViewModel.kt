@@ -45,6 +45,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         .flatMapLatest { q -> if (q.isBlank()) repo.observeAll() else repo.search(q) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    /**
+     * Every entry, never search-filtered. What Today brings back from the past
+     * must not depend on whatever is still typed in the Journal search box.
+     */
+    val all: StateFlow<List<Entry>> = repo.observeAll()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     init {
         viewModelScope.launch {
             repo.seedIfEmpty(getApplication())

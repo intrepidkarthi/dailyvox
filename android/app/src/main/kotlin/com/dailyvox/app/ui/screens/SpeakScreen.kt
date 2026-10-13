@@ -83,6 +83,13 @@ fun SpeakScreen(
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
+    /** The entry from about a week ago, quoted; null hides the card. */
+    weekAgo: com.dailyvox.app.system.Resurface.Memory? = null,
+    /** Same date, earlier months and years. Empty hides them. */
+    onThisDay: List<com.dailyvox.app.system.Resurface.Memory> = emptyList(),
+    /** Last week, counted. Only passed on recap day. */
+    recap: com.dailyvox.app.system.Resurface.Recap? = null,
+    onOpenEntry: (com.dailyvox.app.data.Entry) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -536,6 +543,24 @@ fun SpeakScreen(
                     fontSize = 12.sp, lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
                 )
+            }
+        }
+
+        // The user's own past, quoted (the diary's payoff). At rest only, and
+        // each card only when there is a real entry under it, so a new user
+        // sees nothing here rather than an empty promise.
+        if (state == SpeechCapture.State.IDLE && !typing) {
+            recap?.let {
+                Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+                com.dailyvox.app.ui.components.RecapCard(it, goldText, onOpenEntry)
+            }
+            weekAgo?.let {
+                Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+                com.dailyvox.app.ui.components.PastCard(it, goldText, onOpenEntry)
+            }
+            onThisDay.forEach {
+                Spacer(Modifier.height(12.dp))
+                com.dailyvox.app.ui.components.PastCard(it, goldText, onOpenEntry)
             }
         }
 
