@@ -33,6 +33,10 @@ struct ExportableEntry: Codable, Identifiable {
     /// pre-existing backups decode unchanged and older builds ignore them.
     let selfLabelEmotion: String?
     let selfLabelIntensity: Int?
+    /// The mood the app suggested from the words, so a restore still knows
+    /// the mood is a suggestion and not the user's. Optional: older backups
+    /// decode unchanged, and their moods were all chosen by hand.
+    let suggestedMood: String?
 
     init(from entry: DiaryEntry) {
         self.id = entry.id ?? UUID()
@@ -48,6 +52,7 @@ struct ExportableEntry: Codable, Identifiable {
         self.selfLabelEmotion = entry.value(forKey: "selfLabelEmotion") as? String
         let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
         self.selfLabelIntensity = intensity > 0 ? Int(intensity) : nil
+        self.suggestedMood = entry.suggestedMood
     }
 }
 
@@ -223,6 +228,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
+                newEntry.suggestedMood = exportedEntry.suggestedMood
 
                 importedCount += 1
             }
@@ -259,7 +265,7 @@ final class BackupService {
         for entry in sortedEntries {
             let date = entry.date ?? Date()
             let text = entry.text ?? "(No text)"
-            let mood = entry.value(forKey: "mood") as? String ?? ""
+            let mood = moodLabel(of: entry)
             let starred = entry.isStarred ? " \u{2726}" : ""
             
             textContent += """
@@ -268,7 +274,7 @@ final class BackupService {
             """
             
             if !mood.isEmpty {
-                textContent += "\nMood: \(moodLabel(mood))"
+                textContent += "\nMood: \(mood)"
             }
             
             textContent += """
@@ -355,7 +361,7 @@ final class BackupService {
                 for entry in monthEntries {
                     let date = entry.date ?? Date()
                     let text = entry.text ?? "(No text)"
-                    let mood = entry.value(forKey: "mood") as? String ?? ""
+                    let mood = moodLabel(of: entry)
                     let starred = entry.isStarred ? " \u{2726}" : ""
                     
                     let dayFormatter = DateFormatter()
@@ -364,7 +370,7 @@ final class BackupService {
                     mdContent += "### \(dayFormatter.string(from: date))\(starred)\n\n"
                     
                     if !mood.isEmpty {
-                        mdContent += "**Mood:** \(mood.capitalized)\n\n"
+                        mdContent += "**Mood:** \(mood)\n\n"
                     }
                     
                     mdContent += "\(text)\n\n---\n\n"
@@ -396,7 +402,9 @@ final class BackupService {
         for entry in sortedEntries {
             let date = entry.date ?? Date()
             let text = (entry.text ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            let mood = entry.value(forKey: "mood") as? String ?? ""
+            // The raw value, as this column always held; a suggestion says so.
+            let raw = entry.mood ?? ""
+            let mood = entry.isMoodSuggested ? raw + " (suggested)" : raw
             let starred = entry.isStarred ? "Yes" : "No"
             let wordCount = text.split { $0.isWhitespace || $0.isNewline }.count
             
@@ -456,7 +464,7 @@ final class BackupService {
 
             for entry in sortedEntries {
                 let date = entry.date ?? Date()
-                let mood = entry.value(forKey: "mood") as? String ?? ""
+                let mood = moodLabel(of: entry)
                 let starred = entry.isStarred ? "  ★" : ""
                 let header = dateFormatter.string(from: date) + starred
                 let body = entry.text ?? "(No text)"
@@ -479,7 +487,7 @@ final class BackupService {
                 cursorY += 22
 
                 if !mood.isEmpty {
-                    "Mood: \(mood.capitalized)".draw(
+                    "Mood: \(mood)".draw(
                         at: CGPoint(x: margin, y: cursorY),
                         withAttributes: [.font: metaFont, .foregroundColor: UIColor.secondaryLabel])
                     cursorY += 16
@@ -566,6 +574,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.photoFileNames, forKey: "photoFileNames")
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
+                newEntry.suggestedMood = exportedEntry.suggestedMood
 
                 importedCount += 1
             }
@@ -605,9 +614,12 @@ final class BackupService {
     /// §8.9: no emoji anywhere in the product, and an export is the product in
     /// someone else's hands — it is the copy most likely to be read years from
     /// now, in an app whose emoji font we do not control. The mood is written
-    /// out as the word it always was.
-    private func moodLabel(_ mood: String) -> String {
-        mood.isEmpty ? "" : mood.capitalized
+    /// out as the word it always was — and a mood the app suggested says so,
+    /// because a file read years from now cannot show "Sounds calm?".
+    private func moodLabel(of entry: DiaryEntry) -> String {
+        let mood = entry.mood ?? ""
+        guard !mood.isEmpty else { return "" }
+        return entry.isMoodSuggested ? "\(mood.capitalized) (suggested)" : mood.capitalized
     }
 }
 

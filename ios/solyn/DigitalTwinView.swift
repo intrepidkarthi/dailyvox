@@ -493,7 +493,7 @@ struct DigitalTwinView: View {
     private var twinSummary: String {
         let scored = entries.compactMap { entry -> Double? in
             guard entry.date != nil else { return nil }
-            let mood = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+            let mood = Mood(rawValue: entry.userMood ?? "") ?? Mood.none
             return (Double(mood.moodValue) - 3.0) / 2.0
         }
         guard scored.count >= 5 else {
@@ -567,7 +567,7 @@ struct DigitalTwinView: View {
 
     private var heartValue: String {
         let scored = entries.compactMap { entry -> Double? in
-            let mood = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+            let mood = Mood(rawValue: entry.userMood ?? "") ?? Mood.none
             guard mood != .none else { return nil }
             return (Double(mood.moodValue) - 3.0) / 2.0
         }

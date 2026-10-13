@@ -18,6 +18,17 @@ struct WidgetDataFetcher {
     static let shared = WidgetDataFetcher()
     let persistenceController = WidgetPersistenceController.shared
     
+    /// The mood only if the user chose it. While `mood` still equals
+    /// `suggestedMood` it is the app's reading of the words, and a widget has
+    /// no room to say "sounds calm?" — so it shows no mood rather than
+    /// "Today's Mood: Calm" as if the user had said it.
+    private func chosenMood(of entry: NSManagedObject) -> String? {
+        let mood = entry.value(forKey: "mood") as? String
+        guard let mood, let suggested = entry.value(forKey: "suggestedMood") as? String,
+              mood == suggested else { return mood }
+        return nil
+    }
+
     /// Fetch today's entry
     func fetchTodayEntry() -> (text: String?, mood: String?, hasEntry: Bool) {
         let context = persistenceController.container.viewContext
@@ -35,8 +46,7 @@ struct WidgetDataFetcher {
             let results = try context.fetch(request)
             if let entry = results.first {
                 let text = entry.value(forKey: "text") as? String
-                let moodString = entry.value(forKey: "mood") as? String
-                return (text, moodString, true)
+                return (text, chosenMood(of: entry), true)
             }
         } catch {
             logger.error("Widget fetch error: \(error.localizedDescription)")
@@ -105,7 +115,7 @@ struct WidgetDataFetcher {
             var moodCounts: [String: Int] = [:]
             
             for entry in entries {
-                if let mood = entry.value(forKey: "mood") as? String, !mood.isEmpty {
+                if let mood = chosenMood(of: entry), !mood.isEmpty {
                     moodCounts[mood, default: 0] += 1
                 }
             }
