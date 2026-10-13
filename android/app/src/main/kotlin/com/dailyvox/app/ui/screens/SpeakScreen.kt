@@ -43,6 +43,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import com.dailyvox.app.ui.components.MonoLabel
+import com.dailyvox.app.ui.components.MoodPicker
+import com.dailyvox.app.ui.components.moodWord
 import com.dailyvox.app.ui.components.PrivateKeyboard
 import com.dailyvox.app.ui.theme.Gold
 import com.dailyvox.app.ui.theme.StarGold
@@ -76,6 +78,8 @@ fun SpeakScreen(
     /** What the app read back from the entry just saved; null hides the card. */
     reflection: com.dailyvox.app.system.Reflection.Card? = null,
     onDismissReflection: () -> Unit = {},
+    /** A mood picked on the reflection card, or null when it was cleared. */
+    onReflectionMood: (String?) -> Unit = {},
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
@@ -445,7 +449,8 @@ fun SpeakScreen(
         // entry is being filed, that entry is the screen's business.
         if (reflection != null && state == SpeechCapture.State.IDLE && !typing) {
             Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
-            ReflectionCard(reflection, onDismiss = onDismissReflection, goldText = goldText)
+            ReflectionCard(reflection, onDismiss = onDismissReflection,
+                           onMood = onReflectionMood, goldText = goldText)
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -568,11 +573,16 @@ fun SpeakScreen(
  *
  * TalkBack reads the card as one unit and announces it when it appears, since
  * a saved entry otherwise gives a screen-reader user nothing but a haptic.
+ *
+ * The mood row is the one part that is a guess, so it is marked as one in the
+ * words, in the chip's outline and in what TalkBack says. It sits outside the
+ * merged unit so each chip can be reached and tapped on its own.
  */
 @Composable
 private fun ReflectionCard(
     card: Reflection.Card,
     onDismiss: () -> Unit,
+    onMood: (String?) -> Unit,
     goldText: Color,
 ) {
     val scheme = MaterialTheme.colorScheme
@@ -607,9 +617,20 @@ private fun ReflectionCard(
     val label = stringResource(R.string.reflection_label)
     val tomorrowLabel = stringResource(R.string.reflection_tomorrow_label)
     val tomorrowQuote = card.tomorrow?.let { stringResource(R.string.reflection_tomorrow_quote, it) }
+    // Announced with the card as it first appeared, and frozen there: if the
+    // live region's text changed on every chip tap, TalkBack would read the
+    // whole card again each time. The chips announce their own state.
+    val firstSuggestion = remember(card.entryId) { card.suggestedMood?.takeIf { card.moodIsSuggested } }
+    val moodLine = firstSuggestion?.let {
+        stringResource(R.string.reflection_mood_suggested_line, moodWord(it))
+    }
     val spoken = (listOf("$label. $meta.") + lines +
-        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" })).joinToString(" ")
+        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" }, moodLine)).joinToString(" ")
     val doneDescription = stringResource(R.string.reflection_done_description)
+    // Shown once there was a mood to show, and kept after a clear so the user
+    // can still pick one; a section that vanished on "Clear" would take the
+    // picker with it.
+    val showMood = remember(card.entryId) { card.mood != null }
 
     Column(
         Modifier
@@ -656,6 +677,10 @@ private fun ReflectionCard(
                 color = scheme.onSurfaceVariant,
             )
         }
+        if (showMood) {
+            Spacer(Modifier.height(16.dp))
+            ReflectionMood(card, onMood)
+        }
         Spacer(Modifier.height(6.dp))
         // Same quiet text-button shape as "I can't talk right now", with the
         // touch target the size Play's pre-launch report measures.
@@ -678,6 +703,60 @@ private fun ReflectionCard(
     }
 }
 
+/**
+ * The mood on the reflection card: the app's suggestion, plainly called one,
+ * or the user's own pick once they have made it. The picker is the entry
+ * page's, so a mood chosen here is the same label in the same column.
+ *
+ * Tapping the outlined chip keeps the suggestion as the user's own; tapping
+ * any other picks that instead; Clear leaves the entry with no mood at all.
+ */
+@Composable
+private fun ReflectionMood(card: Reflection.Card, onMood: (String?) -> Unit) {
+    val scheme = MaterialTheme.colorScheme
+    val mood = card.mood
+    val (heading, body) = when {
+        mood == null -> stringResource(R.string.reflection_mood_heading_mine) to
+            stringResource(R.string.reflection_mood_none)
+        card.moodIsSuggested -> stringResource(R.string.reflection_mood_heading_suggested) to
+            stringResource(R.string.reflection_mood_suggested_body, moodWord(mood))
+        else -> stringResource(R.string.reflection_mood_heading_mine) to
+            stringResource(R.string.reflection_mood_chosen_body, moodWord(mood))
+    }
+    val clearDescription = stringResource(
+        if (card.moodIsSuggested) R.string.reflection_mood_clear_suggested_description
+        else R.string.reflection_mood_clear_description
+    )
+
+    Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.semantics(mergeDescendants = true) {}) {
+            Text(heading, fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
+                 color = scheme.onSurfaceVariant)
+            Spacer(Modifier.height(3.dp))
+            Text(body, fontSize = 15.sp, lineHeight = 21.sp, color = scheme.onSurface)
+        }
+        Spacer(Modifier.height(10.dp))
+        MoodPicker(current = card.chosenMood, suggested = card.suggestedMood, onPick = onMood)
+        if (mood != null) {
+            Text(
+                stringResource(R.string.reflection_mood_clear),
+                fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                color = scheme.primary,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onMood(null) }
+                    .semantics {
+                        role = Role.Button
+                        contentDescription = clearDescription
+                    }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 14.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
+    }
+}
 
 /**
  * The typed composer. Onboarding's typed beat, lifted out for the Speak screen:

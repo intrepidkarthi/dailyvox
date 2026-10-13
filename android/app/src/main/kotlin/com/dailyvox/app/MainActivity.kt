@@ -414,7 +414,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     onDelete = { vm.delete(detail.id); openEntry = null },
                     onSelfLabel = { label ->
                         vm.setSelfLabel(detail.id, label)
-                        openEntry = detail.copy(selfLabel = label)
+                        openEntry = com.dailyvox.app.data.Repo.withLabel(detail, label)
                     },
                     onPhoto = { path ->
                         vm.attachPhoto(detail.id, path)
@@ -422,7 +422,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     },
                     onEdit = { edited ->
                         vm.editText(detail.id, edited)
-                        openEntry = detail.copy(text = edited)
+                        // The suggestion follows the corrected words, by the
+                        // same rule the row is saved with.
+                        openEntry = detail.copy(text = edited).let {
+                            it.copy(suggestedMood = com.dailyvox.app.data.Repo.resuggest(
+                                detail, it.wordCount, com.dailyvox.twin.Sentiment.valence(edited)))
+                        }
                     },
                     onAsk = { question ->
                         // Close the entry and land on Ask with the question
@@ -506,6 +511,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
                         reflection = reflection,
                         onDismissReflection = vm::dismissReflection,
+                        onReflectionMood = vm::setReflectionMood,
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import com.dailyvox.app.BuildConfig
+import com.dailyvox.app.system.MoodSuggestion
 import java.util.UUID
 
 
@@ -34,20 +35,27 @@ class Repo private constructor(private val db: DailyVoxDb) {
     /** Re-analyses the corrected text so the Twin learns from the fix, not the flub. */
     suspend fun updateText(id: String, text: String) {
         db.entries().byId(id)?.let {
+            val valence = com.dailyvox.twin.Sentiment.valence(text)
             db.entries().upsert(
                 it.copy(
                     text = text,
-                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    valence = valence,
                     entities = com.dailyvox.twin.NameDetector
                         .detect(text, corpus = listOf(text))
                         .joinToString(","),
+                    suggestedMood = resuggest(it, it.copy(text = text).wordCount, valence),
                 )
             )
         }
     }
 
+    /**
+     * The user's own label, or null to clear the mood. Clearing also drops the
+     * app's suggestion: "no mood" is an answer, and a guess reappearing in its
+     * place would overrule it.
+     */
     suspend fun setSelfLabel(id: String, label: String?) {
-        db.entries().byId(id)?.let { db.entries().upsert(it.copy(selfLabel = label)) }
+        db.entries().byId(id)?.let { db.entries().upsert(withLabel(it, label)) }
     }
 
     suspend fun attachPhoto(id: String, path: String?) {
@@ -119,12 +127,13 @@ class Repo private constructor(private val db: DailyVoxDb) {
             }
             ?.takeIf { it.available }
 
+        val valence = com.dailyvox.twin.Sentiment.valence(text)
         val entry = Entry(
             id = UUID.randomUUID().toString(),
             text = text,
             createdAt = now,
             durationSec = durationSec,
-            valence = com.dailyvox.twin.Sentiment.valence(text),
+            valence = valence,
             entities = entities.joinToString(","),
             audioPath = audioPath,
             speakingRate = prosody?.speakingRate?.toFloat(),
@@ -142,7 +151,11 @@ class Repo private constructor(private val db: DailyVoxDb) {
             hrvMs = body?.morningHrvMs?.toFloat(),
             restingHrBpm = body?.restingHrBpm?.toFloat(),
             stepsToday = body?.stepsToday,
-        )
+        ).let {
+            // A suggestion only, in its own column. selfLabel stays null until
+            // the user picks one; nothing at save time can choose for them.
+            it.copy(suggestedMood = MoodSuggestion.from(valence, it.wordCount))
+        }
         db.entries().upsert(entry)
         // Returned so the Speak screen can reflect on exactly what was saved.
         entry
@@ -263,6 +276,34 @@ class Repo private constructor(private val db: DailyVoxDb) {
             }
         }
 
+        /**
+         * The app's suggested mood. Nullable and never backfilled: entries
+         * written before this existed were not suggested anything, and saying
+         * so is more honest than scoring them now.
+         */
+        val MIGRATION_3_4 = object : androidx.room.migration.Migration(3, 4) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                addColumnIfMissing(db, "suggestedMood TEXT")
+            }
+        }
+
+        /**
+         * After a transcript edit the suggestion follows the corrected words,
+         * but only while it is still a live suggestion. Once the user has
+         * picked a label, the old suggestion is the record of what they were
+         * shown; once they have cleared the mood, there is nothing to revive.
+         */
+        internal fun resuggest(before: Entry, words: Int, valence: Float): String? =
+            if (before.selfLabel == null && before.suggestedMood != null) {
+                MoodSuggestion.from(valence, words)
+            } else before.suggestedMood
+
+        /** Picking keeps the suggestion beside the choice; clearing drops both. */
+        internal fun withLabel(entry: Entry, label: String?): Entry = entry.copy(
+            selfLabel = label,
+            suggestedMood = if (label == null) null else entry.suggestedMood,
+        )
+
         /** Body context. Nullable, so pre-Health-Connect entries stay honest
          *  about having none rather than reporting zero steps and no pulse. */
         val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
@@ -296,7 +337,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
             Lexicon.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                     // NO fallbackToDestructiveMigration. On a journal app that
                     // reads as "if the schema confuses us, delete their diary".
                     // Every future schema change needs a real migration here;

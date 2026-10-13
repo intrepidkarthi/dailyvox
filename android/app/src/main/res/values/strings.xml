@@ -40,4 +40,29 @@
     <string name="reflection_done">Done</string>
     <string name="reflection_done_description">Close the reflection</string>
     <string name="reflection_how_read">Read on this phone from your words. Nothing was sent anywhere.</string>
+
+    <!-- The suggested mood. Always called a suggestion until the user taps it:
+         the app read the words, it did not ask how they felt. -->
+    <string name="reflection_mood_heading_suggested">Suggested mood</string>
+    <string name="reflection_mood_heading_mine">Your mood</string>
+    <string name="reflection_mood_suggested_body">%1$s, going by how your words read. Tap it to keep it, or pick another.</string>
+    <string name="reflection_mood_suggested_line">Suggested mood: %1$s. Only a suggestion, from your words.</string>
+    <string name="reflection_mood_chosen_body">%1$s. Your choice.</string>
+    <string name="reflection_mood_none">None. Pick one if you like.</string>
+    <string name="reflection_mood_clear">Clear</string>
+    <string name="reflection_mood_clear_suggested_description">Clear the suggested mood</string>
+    <string name="reflection_mood_clear_description">Clear your mood</string>
+
+    <!-- The mood picker's chips, on the entry page and the reflection card. -->
+    <string name="mood_chip_suggested">%1$s · suggested</string>
+    <!-- TalkBack: state is read after the word, the action after "Double-tap to". -->
+    <string name="mood_chip_state_suggested">Suggested from your words, not chosen</string>
+    <string name="mood_chip_state_chosen">Your mood</string>
+    <string name="mood_chip_action_choose">choose</string>
+    <string name="mood_chip_action_keep">keep this mood</string>
+    <string name="mood_chip_action_clear">clear</string>
+
+    <!-- Onboarding, under the first entry. The entry is saved a moment later
+         with this same suggestion, and the card that follows lets it change. -->
+    <string name="onboarding_suggested_mood">Reads like %1$s. Only a suggestion: you can change it in a moment.</string>
 </resources>
