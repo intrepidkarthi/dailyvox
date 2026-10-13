@@ -71,6 +71,12 @@ struct DigitalTwinView: View {
                     // way in to ask. That is the whole screen the design draws.
                     twinSummaryCard
 
+                    // The first week, while the summary and the patterns are
+                    // still waiting on enough entries: what can be counted.
+                    if let early = EarlySignals.report(for: entries) {
+                        EarlySignalsCard(report: early)
+                    }
+
                     dimensionStats
 
                     // Insights and Share, as NAMED actions.
@@ -497,7 +503,13 @@ struct DigitalTwinView: View {
             return (Double(mood.moodValue) - 3.0) / 2.0
         }
         guard scored.count >= 5 else {
-            return "Still listening. A few more nights and there will be something to say."
+            // From the third entry the early signals card sits just below
+            // this line, so it says where to look instead of only "wait".
+            return EarlySignals.report(for: entries) != nil
+                ? String(localized: "Still listening. Early signals below show what can already be counted.",
+                         comment: "Twin tab summary line before five entries, while the early signals card is shown under it.")
+                : String(localized: "Still listening. A few more nights and there will be something to say.",
+                         comment: "Twin tab summary line before the third entry.")
         }
         let v = scored.reduce(0, +) / Double(scored.count)
         let tone: String
