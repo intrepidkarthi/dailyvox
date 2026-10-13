@@ -91,6 +91,7 @@
 				"Fonts/Nunito-Variable.ttf",
 				RecordingControlIntents.swift,
 				solyn.xcdatamodeld,
+				Streak.swift,
 			);
 			target = FD8D5118AB594947E3082E3B /* DailyVoxWidgets */;
 		};

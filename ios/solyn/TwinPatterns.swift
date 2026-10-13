@@ -35,8 +35,9 @@ struct TwinPattern: Identifiable {
 /// `BodyTwinManager`, which the Insights screen already shows separately.
 enum TwinPatterns {
 
-    /// Below this there is not enough of anything to be sure.
-    private static let minimumEntries = 8
+    /// Below this there is not enough of anything to be sure. Until then,
+    /// Insights shows `EarlySignals` instead — counts, not claims.
+    static let minimumEntries = 8
     /// At most this many day-of-week findings, so one weekday quirk cannot fill
     /// the whole list.
     private static let dayOfWeekCap = 2

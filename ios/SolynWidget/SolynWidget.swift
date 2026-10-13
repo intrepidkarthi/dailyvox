@@ -55,50 +55,22 @@ struct WidgetDataFetcher {
         return (nil, nil, false)
     }
     
-    /// Calculate current streak
-    func calculateStreak() -> Int {
+    /// Where the journal's streak stands, by `Streak` — the same file the
+    /// app compiles, so the Home Screen cannot disagree with the Today header.
+    /// This used to be a fourth copy of the rule, without the grace day.
+    func streakStatus() -> Streak.Status {
         let context = persistenceController.container.viewContext
         let request: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "DiaryEntry")
-        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-        
-        do {
-            let entries = try context.fetch(request)
-            let calendar = Calendar.current
-            var streak = 0
-            var checkDate = calendar.startOfDay(for: Date())
-            
-            // Check if today has an entry
-            let todayHasEntry = entries.contains { entry in
-                guard let entryDate = entry.value(forKey: "date") as? Date else { return false }
-                return calendar.isDate(entryDate, inSameDayAs: checkDate)
-            }
-            
-            if !todayHasEntry {
-                // Start checking from yesterday
-                checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-            }
-            
-            // Count consecutive days
-            while true {
-                let hasEntry = entries.contains { entry in
-                    guard let entryDate = entry.value(forKey: "date") as? Date else { return false }
-                    return calendar.isDate(entryDate, inSameDayAs: checkDate)
-                }
-                
-                if hasEntry {
-                    streak += 1
-                    checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate
-                } else {
-                    break
-                }
-            }
-            
-            return streak
-        } catch {
-            return 0
-        }
+        let dates = (try? context.fetch(request))?
+            .compactMap { $0.value(forKey: "date") as? Date } ?? []
+        return Streak.status(dates: dates)
     }
-    
+
+    /// Spoken days in the current run.
+    func calculateStreak() -> Int {
+        streakStatus().current
+    }
+
     /// Get mood distribution for the week
     func getWeekMoods() -> [String: Int] {
         let context = persistenceController.container.viewContext
@@ -552,6 +524,52 @@ struct SmallStreakView: View {
     let entry: StreakWidgetEntry
     
     var body: some View {
+        if entry.streak == 0 {
+            restingView
+        } else {
+            runningView
+        }
+    }
+
+    /// No run right now. A flame over "0 day streak" said the same thing to
+    /// someone who had never spoken and to someone with a year of entries.
+    private var restingView: some View {
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(Color.yellow.opacity(0.2))
+                    .frame(width: 60, height: 60)
+                Image(systemName: "star.fill")
+                    .font(.dv(size: 26))
+                    .foregroundColor(.yellow)
+            }
+            .accessibilityHidden(true)
+
+            if entry.totalEntries > 0 {
+                Text("Welcome back")
+                    .font(.dv(.headline, design: .rounded))
+                    .foregroundColor(.primary)
+                Text("Your sky kept your place.")
+                    .font(.dv(.caption))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            } else {
+                Text("Speak tonight")
+                    .font(.dv(.headline, design: .rounded))
+                    .foregroundColor(.primary)
+                Text("Your first star is one entry away.")
+                    .font(.dv(.caption))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .minimumScaleFactor(0.8)
+        .accessibilityElement(children: .combine)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .containerBackground(WidgetSkin(night: scheme == .dark).background, for: .widget)
+    }
+
+    private var runningView: some View {
         VStack(spacing: 8) {
             // Streak flame
             ZStack {
@@ -583,6 +601,7 @@ struct SmallStreakView: View {
                     .foregroundColor(entry.hasEntryToday ? .green : .secondary)
             }
         }
+        .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .containerBackground(WidgetSkin(night: scheme == .dark).background, for: .widget)
     }
@@ -600,11 +619,20 @@ struct CircularStreakView: View {
     var body: some View {
         ZStack {
             AccessoryWidgetBackground()
-            VStack(spacing: 0) {
-                Image(systemName: "flame.fill")
-                    .font(.dv(.caption))
-                Text("\(entry.streak)")
-                    .font(.dv(size: 18, weight: .bold, design: .rounded))
+            // No "0" on the Lock Screen: between runs it is just the star.
+            if entry.streak == 0 {
+                Image(systemName: "star.fill")
+                    .font(.dv(.title3))
+                    .accessibilityLabel(entry.totalEntries > 0 ? "Welcome back" : "Speak tonight")
+            } else {
+                VStack(spacing: 0) {
+                    Image(systemName: "flame.fill")
+                        .font(.dv(.caption))
+                    Text("\(entry.streak)")
+                        .font(.dv(size: 18, weight: .bold, design: .rounded))
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Day \(entry.streak)")
             }
         }
     }
@@ -801,7 +829,7 @@ struct StreakWidget: Widget {
             StreakWidgetView(entry: entry)
         }
         .configurationDisplayName("Streak Counter")
-        .description("Track your journaling streak.")
+        .description("Your run of spoken days. One missed day a week won't break it.")
         .supportedFamilies([.systemSmall, .accessoryCircular])
     }
 }
@@ -974,6 +1002,7 @@ struct WidgetPersistenceController {
 } timeline: {
     StreakWidgetEntry(date: Date(), streak: 7, hasEntryToday: true, totalEntries: 42)
     StreakWidgetEntry(date: Date(), streak: 30, hasEntryToday: false, totalEntries: 100)
+    StreakWidgetEntry(date: Date(), streak: 0, hasEntryToday: false, totalEntries: 12)
 }
 
 #Preview("Mood Tracker - Small", as: .systemSmall) {

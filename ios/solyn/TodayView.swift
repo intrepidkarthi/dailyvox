@@ -611,16 +611,23 @@ struct TodayView: View {
                         .foregroundColor(theme.secondaryTextColor)
                 }
                 Spacer()
+                let streak = streakStatus
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(streakCount > 0 ? "\(streakCount)-day streak" : "no streak yet")
+                    Text(streakLine(streak))
                         .font(.dv(size: 12.5, weight: .bold, design: .rounded))
                         .foregroundColor(theme.textColor)
+                        .multilineTextAlignment(.trailing)
                     // GOLD REWARDS: the year count is a made thing, so it is
                     // the one figure up here allowed to be gold.
                     Text("\u{2726} \(daysRecordedThisYear) this year")
                         .font(.dv(size: 11, weight: .semibold, design: .rounded))
                         .foregroundColor(theme.goldText)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityValue(streak.kind == .returning
+                    ? String(localized: "Your sky kept your place. Longest run \(streak.longest) days.",
+                             comment: "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days.")
+                    : "")
                 Button { showSettings = true } label: {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
@@ -1612,8 +1619,24 @@ struct TodayView: View {
         return days.filter { calendar.component(.year, from: $0) == currentYear }.count
     }
 
-    private var streakCount: Int {
-        Streak.current(dates: allEntries.compactMap(\.date))
+    private var streakStatus: Streak.Status {
+        Streak.status(dates: allEntries.compactMap(\.date))
+    }
+
+    /// A returning user is not a new one: "no streak yet" is for an empty
+    /// journal only.
+    private func streakLine(_ status: Streak.Status) -> String {
+        switch status.kind {
+        case .new:
+            return String(localized: "no streak yet",
+                          comment: "Today header, top right, for a journal with no entries.")
+        case .active:
+            return String(localized: "\(status.current)-day streak",
+                          comment: "Today header, top right. Spoken days in the current run; one missed day a week does not end it.")
+        case .returning:
+            return String(localized: "Welcome back",
+                          comment: "Today header, top right, for someone with entries whose run has ended. Replaces 'no streak yet'. No guilt.")
+        }
     }
 }
 

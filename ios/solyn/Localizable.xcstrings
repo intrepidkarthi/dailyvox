@@ -4,6 +4,87 @@
     "" : {
       "shouldTranslate" : false
     },
+    "Early signals · from %lld entries" : {
+      "comment" : "Title of the first-week card on Insights and the Twin tab. The number is how many entries it is read from (3 to 7)."
+    },
+    "These will firm up as you keep going. Patterns arrive at %lld entries." : {
+      "comment" : "Subtitle of the early signals card. The number is the entry count at which the full patterns appear."
+    },
+    "Words you came back to" : {
+      "comment" : "Early signals: heading for words that appear in two or more entries."
+    },
+    "You haven't picked a mood yet." : {
+      "comment" : "Early signals: shown when the user has not chosen a mood on any entry."
+    },
+    "You picked: %@" : {
+      "comment" : "Early signals: moods the user chose, with counts, e.g. 'Calm ×2 · Tired ×1'."
+    },
+    "Suggested from your words, not picked: %@" : {
+      "comment" : "Early signals: moods the app suggested and the user left unchanged, with counts. Must say they were suggested."
+    },
+    "Moods so far" : {
+      "comment" : "Early signals: heading for the mood counts."
+    },
+    "You mostly speak in the morning." : {
+      "comment" : "Early signals: most entries are between 5 am and noon."
+    },
+    "You mostly speak in the afternoon." : {
+      "comment" : "Early signals: most entries are between noon and 5 pm."
+    },
+    "You mostly speak in the evening." : {
+      "comment" : "Early signals: most entries are between 5 pm and 10 pm."
+    },
+    "You mostly speak late at night." : {
+      "comment" : "Early signals: most entries are between 10 pm and 5 am."
+    },
+    "%lld of your %lld entries." : {
+      "comment" : "Early signals: how many entries fall in that part of the day, out of all of them."
+    },
+    "About %lld words an entry." : {
+      "comment" : "Early signals: average words per entry."
+    },
+    "Your recent entries run longer: %lld words on average, up from %lld." : {
+      "comment" : "Early signals: the later half of entries is longer than the earlier half. Numbers are average words."
+    },
+    "Your recent entries run shorter: %lld words on average, down from %lld." : {
+      "comment" : "Early signals: the later half of entries is shorter than the earlier half. Numbers are average words."
+    },
+    "About the same length from the first to the latest." : {
+      "comment" : "Early signals: entry length has not changed much."
+    },
+    "“%@” — in %lld entries" : {
+      "comment" : "Early signals: a word the user said, quoted exactly, and how many entries it appears in (always 2 or more)."
+    },
+    "Until then, Early signals at the top shows what can already be counted." : {
+      "comment" : "Insights: appended to the 'not enough yet' line while the early signals card is showing."
+    },
+    "Early signals appear from your third entry." : {
+      "comment" : "Insights: appended to the 'not enough yet' line before the third entry."
+    },
+    "Welcome back. Your sky kept your place." : {
+      "comment" : "Insights streak card, for someone with entries whose run has ended. Warm, no guilt."
+    },
+    "%lld days spoken so far. A new run starts whenever you speak." : {
+      "comment" : "Insights streak card, under the welcome-back line. The number is distinct days with an entry."
+    },
+    "Yesterday was a rest day, and your run is held. One missed day is forgiven once a week." : {
+      "comment" : "Insights streak card: yesterday had no entry and the grace day is keeping the run."
+    },
+    "One missed day won't break a run — once a week." : {
+      "comment" : "Insights streak card: explains the grace day rule in one line."
+    },
+    "Your sky kept your place. Longest run %lld days." : {
+      "comment" : "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days."
+    },
+    "Welcome back" : {
+      "comment" : "Today header, top right, for someone with entries whose run has ended. Replaces 'no streak yet'. No guilt."
+    },
+    "Still listening. Early signals below show what can already be counted." : {
+      "comment" : "Twin tab summary line before five entries, while the early signals card is shown under it."
+    },
+    "Still listening. A few more nights and there will be something to say." : {
+      "comment" : "Twin tab summary line before the third entry."
+    },
     "Different question" : {
       "comment" : "Button under the question of the day that shows another question."
     },
