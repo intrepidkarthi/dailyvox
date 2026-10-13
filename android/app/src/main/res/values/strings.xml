@@ -107,4 +107,56 @@
     <string name="reminder_past_text">A week ago you said: “%1$s”</string>
     <string name="settings_reminder_quote">Include a line from your past in reminders</string>
     <string name="settings_reminder_quote_note">Off by default. When on, tonight\'s reminder can quote what you said a week ago, and anyone who can see your lock screen can read it.</string>
+
+    <!-- The question of the day, above the record button. One a day, picked
+         from the date (DailyQuestion.kt), so it holds all day. Item 0 is the
+         original and the fallback. Questions, never instructions: speaking
+         about anything else is just as welcome. Keep the count in step with
+         DailyQuestion.EVERYDAY_COUNT. -->
+    <string-array name="daily_questions">
+        <item>How was your day, really?</item>
+        <item>What\'s one moment from today you want to keep?</item>
+        <item>Who did you talk to today?</item>
+        <item>How does your body feel right now?</item>
+        <item>What went better than you expected?</item>
+        <item>What made you smile today?</item>
+        <item>What\'s on your mind tonight?</item>
+        <item>What did you eat today? Anything good?</item>
+        <item>What\'s one small thing that went right?</item>
+        <item>What surprised you today?</item>
+        <item>Where did the hours go today?</item>
+        <item>What are you looking forward to?</item>
+        <item>Who was kind to you lately?</item>
+        <item>How did you sleep, and how did the day follow?</item>
+        <item>What did you notice outside today?</item>
+        <item>What would you like to set down tonight?</item>
+        <item>What did you learn today, even something small?</item>
+        <item>What\'s taking most of your energy this week?</item>
+        <item>What\'s one thing from today worth doing again?</item>
+        <item>What are you curious about lately?</item>
+        <item>How\'s your energy: tired, wired, or somewhere between?</item>
+        <item>What did today sound like?</item>
+        <item>Who\'s been on your mind?</item>
+        <item>Where were you today, and what was it like?</item>
+        <item>What\'s something you\'re quietly glad about?</item>
+        <item>What felt heavy today, and what felt light?</item>
+    </string-array>
+    <!-- The research pilot's plain days: every third day of the year a pilot
+         participant's question is one of these. Same sense as iOS
+         EntryPrompt.neutralPrompts, in the same order. -->
+    <string-array name="daily_questions_plain">
+        <item>Just log your day: what you did, where, with whom. Facts are enough.</item>
+        <item>What did today actually look like? No reflection needed, just what happened.</item>
+    </string-array>
+    <!-- A name the user said, given back. The name is theirs, word for word;
+         nothing here knows whether it is a person or a place, so no he, she or
+         they, and the follow-up fits either. -->
+    <string name="daily_question_grounded_yesterday">Yesterday you mentioned %1$s. How are things?</string>
+    <string name="daily_question_grounded_days">A few days ago you mentioned %1$s. How are things?</string>
+    <string name="daily_question_grounded_week">Last week you mentioned %1$s. How are things?</string>
+    <string name="daily_question_another">Another question</string>
+    <!-- TalkBack: read after the question, as what a double-tap does. -->
+    <string name="daily_question_another_action">ask another question</string>
+    <string name="settings_pilot">Research pilot</string>
+    <string name="settings_pilot_note">For study participants. Every third day, the question is a plain one: just log your day. Nothing is sent anywhere.</string>
 </resources>
