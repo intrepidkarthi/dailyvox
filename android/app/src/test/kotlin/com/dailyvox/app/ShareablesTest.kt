@@ -23,6 +23,7 @@ class ShareablesTest {
 
     private val day = 86_400_000L
     private val base = 1_700_000_000_000L
+    private val utc = java.time.ZoneOffset.UTC
 
     private fun entry(i: Int, text: String, people: List<String> = emptyList(), v: Float = 0.3f) =
         Entry(
@@ -117,10 +118,10 @@ class ShareablesTest {
         fun nights(n: Int) = (0 until n).map {
             entry(it, "Spoke.").copy(createdAt = (today - it) * day + 60_000L)
         }
-        assertNull(Shareables.milestoneReached(nights(41)))
-        assertEquals(42, Shareables.milestoneReached(nights(42)))
-        assertEquals(42, Shareables.milestoneReached(nights(99)))
-        assertEquals(100, Shareables.milestoneReached(nights(100)))
+        assertNull(Shareables.milestoneReached(nights(41), utc))
+        assertEquals(42, Shareables.milestoneReached(nights(42), utc))
+        assertEquals(42, Shareables.milestoneReached(nights(99), utc))
+        assertEquals(100, Shareables.milestoneReached(nights(100), utc))
     }
 
     @Test
@@ -136,7 +137,52 @@ class ShareablesTest {
         }
         assertEquals(60, twicePerNight.size)
         assertNull("60 entries over 30 nights must not mint night 42",
-                   Shareables.milestoneReached(twicePerNight))
+                   Shareables.milestoneReached(twicePerNight, utc))
+    }
+
+    @Test
+    fun `nights are local days, the same count as days spoken`() {
+        // 23:30 in Los Angeles is 07:30 UTC the next day, and 00:30 in Kolkata
+        // is 19:00 UTC the day before. Counting UTC days would split or merge
+        // these, and the card would disagree with the Insights screen.
+        val la = java.time.ZoneId.of("America/Los_Angeles")
+        val ist = java.time.ZoneId.of("Asia/Kolkata")
+        fun at(zone: java.time.ZoneId, d: Int, h: Int, m: Int) =
+            java.time.LocalDateTime.of(2026, 10, d, h, m).atZone(zone).toInstant().toEpochMilli()
+
+        // LA: 16:00 and 23:30 on the 1st is one local night, two UTC days.
+        val laEntries = listOf(entry(0, "a").copy(createdAt = at(la, 1, 16, 0)),
+                               entry(1, "b").copy(createdAt = at(la, 1, 23, 30)))
+        assertEquals(1, Shareables.nights(laEntries, la))
+        assertEquals(2, Shareables.nights(laEntries, utc))
+
+        // IST: 22:00 on the 1st and 00:30 on the 2nd is two local nights, one UTC day.
+        val istEntries = listOf(entry(0, "a").copy(createdAt = at(ist, 1, 22, 0)),
+                                entry(1, "b").copy(createdAt = at(ist, 2, 0, 30)))
+        assertEquals(2, Shareables.nights(istEntries, ist))
+        assertEquals(1, Shareables.nights(istEntries, utc))
+
+        // And it is the number Streak reports as days spoken.
+        val now = at(ist, 3, 12, 0)
+        assertEquals(
+            com.dailyvox.app.system.Streak.of(istEntries.map { it.createdAt }, now, ist).daysSpoken,
+            Shareables.nights(istEntries, ist),
+        )
+    }
+
+    @Test
+    fun `the milestone mints on the local night, not the UTC one`() {
+        // 42 evenings at 20:00 in Kolkata, the last just after local midnight:
+        // 41 UTC days hold 41 of them, and the 42nd crosses into its own local day.
+        val ist = java.time.ZoneId.of("Asia/Kolkata")
+        val start = java.time.LocalDate.of(2026, 1, 1)
+        val entries = (0 until 41).map { d ->
+            entry(d, "Spoke.").copy(createdAt = start.plusDays(d.toLong()).atTime(20, 0)
+                .atZone(ist).toInstant().toEpochMilli())
+        } + entry(41, "Late.").copy(createdAt = start.plusDays(41).atTime(0, 30)
+            .atZone(ist).toInstant().toEpochMilli())
+        assertEquals(42, Shareables.milestoneReached(entries, ist))
+        assertNull(Shareables.milestoneReached(entries, utc))
     }
 
     @Test

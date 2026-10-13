@@ -108,7 +108,8 @@ object EarlySignals {
 
     /**
      * The part of the day most entries came in, only when it holds at least
-     * two of them and clearly leads. A tie is not a usual time.
+     * two of them and more than half of all of them. The card says "usually",
+     * and 2 of 5 is not usually; a tie is not a usual time either.
      */
     internal fun timeOfDay(entries: List<Entry>, zone: ZoneId): TimeOfDay? {
         // The stored hour first: the entry knows when it was spoken, and a
@@ -119,6 +120,7 @@ object EarlySignals {
         val ranked = parts.groupingBy { it }.eachCount().entries.sortedByDescending { it.value }
         val top = ranked.firstOrNull() ?: return null
         if (top.value < 2) return null
+        if (top.value * 2 <= entries.size) return null
         if (ranked.size > 1 && ranked[1].value == top.value) return null
         return TimeOfDay(top.key, top.value, entries.size)
     }

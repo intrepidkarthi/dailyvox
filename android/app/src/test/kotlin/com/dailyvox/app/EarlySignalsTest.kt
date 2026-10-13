@@ -82,6 +82,24 @@ class EarlySignalsTest {
     }
 
     @Test
+    fun `usual means more than half, not just the most`() {
+        // Evening leads 2 to 1 to 1 to 1, but three of five were not evening.
+        // "You usually speak in the evening" would be false.
+        val plurality = listOf(entry("a", at(1), hour = 20), entry("b", at(2), hour = 21),
+                               entry("c", at(3), hour = 8), entry("d", at(4), hour = 13),
+                               entry("e", at(5), hour = 2))
+        assertNull(EarlySignals.timeOfDay(plurality, la))
+        // Half exactly is not more than half either.
+        assertNull(EarlySignals.timeOfDay(plurality.take(4), la))
+        // Three of five is.
+        val majority = plurality.take(4) + entry("f", at(6), hour = 19)
+        val t = EarlySignals.timeOfDay(majority, la)!!
+        assertEquals(EarlySignals.Part.EVENING, t.part)
+        assertEquals(3, t.count)
+        assertEquals(5, t.of)
+    }
+
+    @Test
     fun `time of day falls back to the local clock, not UTC`() {
         // 21:00 in Los Angeles is 04:00 UTC, the small hours. No stored hour.
         val es = List(3) { entry("x", at(1 + it, 21)) }
