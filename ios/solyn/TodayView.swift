@@ -109,6 +109,13 @@ struct TodayView: View {
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
     @State private var labelTarget: DiaryEntry?
 
+    /// What the entry gives back once it is saved — the reflection that used
+    /// to sit behind a collapsed toggle on the detail screen.
+    @State private var reflection: EntryReflection?
+    /// A recording has been kept and its transcript is still on the way, so
+    /// the reflection slot shows that it is coming rather than a stale one.
+    @State private var awaitingReflection = false
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -712,6 +719,27 @@ struct TodayView: View {
         }
     }
 
+    // MARK: - Reflection
+
+    /// Below the entry card, once there is something to say. While a new
+    /// recording is still being transcribed into a day that already has text,
+    /// the slot says so instead of showing the reflection for the earlier part
+    /// of the day as if it were new. A first recording of the day needs no
+    /// placeholder here — the card above already reads "Understanding your
+    /// words...".
+    @ViewBuilder
+    private func reflectionSlot(for entry: DiaryEntry) -> some View {
+        if awaitingReflection, recordingState == .processing {
+            if let text = entry.text, !text.isEmpty {
+                TodayReflectionCard(reflection: nil)
+                    .transition(.opacity)
+            }
+        } else if let reflection, reflection.entryID == entry.id {
+            TodayReflectionCard(reflection: reflection)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+        }
+    }
+
     // MARK: - Entry Card Section
 
     private var entryCardSection: some View {
@@ -790,6 +818,8 @@ struct TodayView: View {
                     .dsShadowSoft()
                 }
                 .buttonStyle(.plain)
+
+                reflectionSlot(for: entry)
             } else {
                 // No entry yet - show welcome card for first-time users
                 if allEntries.isEmpty {
@@ -1288,6 +1318,14 @@ struct TodayView: View {
             entryId: entry.id?.uuidString
         )
 
+        // Something back for what was just said. The whole day's text, as the
+        // detail screen reads it, so a second recording refreshes the
+        // reflection rather than answering only its last sentence.
+        withAnimation(.spring(response: 0.4)) {
+            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
+            awaitingReflection = false
+        }
+
         // Fire the "a new star appeared" Live Activity and
         // refresh the persistent streak Live Activity (if opted in).
         Task { @MainActor in
@@ -1357,6 +1395,7 @@ struct TodayView: View {
         do {
             try viewContext.save()
             entryCaptured(entry)
+            awaitingReflection = true
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -1370,6 +1409,8 @@ struct TodayView: View {
                 case .success(let textSegment):
                     commitText(textSegment, to: entry, twinDuration: entry.duration)
                 case .failure(let error):
+                    // No words, so nothing to reflect on — never a guess.
+                    awaitingReflection = false
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
@@ -1467,6 +1508,89 @@ struct StatBadge: View {
         .padding(.horizontal, DS.Space.sm)
         .padding(.vertical, 7)
         .background(Capsule().fill(color.opacity(0.12)))
+    }
+}
+
+// MARK: - Reflection Card
+
+/// The payoff after saving: the entry's reflection, and — only when the entry
+/// itself names someone or somewhere — one thread to pick up tomorrow.
+/// `reflection == nil` is the quiet state while the words are still arriving.
+///
+/// Text styles throughout, never point sizes, so it grows with Dynamic Type
+/// like the text around it. Read as one VoiceOver element: a reflection is a
+/// single thought, not three things to swipe through.
+struct TodayReflectionCard: View {
+    let reflection: EntryReflection?
+    @ObservedObject private var theme = ThemeManager.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkle")
+                    .font(.dv(.caption, weight: .semibold))
+                Text("Reflection")
+                    .font(.dv(.caption, design: .rounded, weight: .bold))
+                Spacer(minLength: 0)
+                Text("On this iPhone")
+                    .font(.dv(.caption2, design: .monospaced))
+                    .foregroundColor(theme.secondaryTextColor)
+            }
+            .foregroundColor(theme.goldText)
+
+            if let reflection {
+                Text(reflection.reflection)
+                    .font(.dv(.callout))
+                    .lineSpacing(3)
+                    .foregroundColor(theme.textColor.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let anchor = reflection.anchor {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Image(systemName: "moon.stars")
+                            .font(.dv(.footnote))
+                            .foregroundColor(theme.accentColor)
+                        Text("For tomorrow: you mentioned \(anchor). Maybe start there.")
+                            .font(.dv(.footnote, design: .rounded, weight: .semibold))
+                            .foregroundColor(theme.textColor.opacity(0.85))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, 2)
+                }
+            } else {
+                HStack(spacing: 10) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Listening back to what you said\u{2026}")
+                        .font(.dv(.footnote))
+                        .foregroundColor(theme.secondaryTextColor)
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(theme.cardBackgroundColor)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(DS.Palette.gold.opacity(0.28), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityText)
+    }
+
+    private var accessibilityText: Text {
+        guard let reflection else {
+            return Text("Reflection is on its way.")
+        }
+        var label = Text("Reflection: \(reflection.reflection)")
+        if let anchor = reflection.anchor {
+            label = label + Text(verbatim: " ")
+                + Text("For tomorrow: you mentioned \(anchor). Maybe start there.")
+        }
+        return label
     }
 }
 
