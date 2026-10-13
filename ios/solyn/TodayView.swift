@@ -759,11 +759,10 @@ struct TodayView: View {
     /// Anything picked here — a mood or "No mood" — is the user's, and from
     /// then on no suggestion is ever written over it.
     private func chooseMood(_ mood: Mood, for entry: DiaryEntry) {
-        entry.mood = mood.rawValue
+        entry.setMoodChosenByUser(mood.rawValue)
         // Also marks the entry changed when the user confirms the very mood
         // that was suggested, so the chip redraws as theirs.
         entry.updatedAt = Date()
-        SuggestedMoodStore.shared.markChosenByUser(entry.id)
         HapticManager.shared.moodSelected()
         do {
             try viewContext.save()

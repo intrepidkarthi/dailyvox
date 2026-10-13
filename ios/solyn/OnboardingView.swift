@@ -116,8 +116,11 @@ struct OnboardingView: View {
         // The ledger promised "the transcript, the mood, the star". The mood
         // is the one read from these words — or the one the user picked on
         // the Claim screen — and stays nil when neither happened.
-        if firstMoodChosen || firstMood != .none {
+        if firstMoodChosen {
+            e.setMoodChosenByUser(firstMood.rawValue)
+        } else if firstMood != .none {
             e.mood = firstMood.rawValue
+            e.suggestedMood = firstMood.rawValue
         }
         if let fileName = entry.audioFileName {
             e.setValue(AudioFileList.encode([fileName]), forKey: "audioFileNames")
@@ -127,11 +130,6 @@ struct OnboardingView: View {
         do {
             try viewContext.save()
             UserDefaults.standard.set(true, forKey: "hasCompletedFirstEntry")
-            if firstMoodChosen {
-                SuggestedMoodStore.shared.markChosenByUser(e.id)
-            } else if e.mood != nil {
-                SuggestedMoodStore.shared.markSuggested(e.id)
-            }
             // A suggestion is not a report, so the Twin hears only a mood the
             // user picked.
             DigitalTwinEngine.shared.processEntry(text: text, mood: firstMoodChosen ? firstMood.rawValue : nil,

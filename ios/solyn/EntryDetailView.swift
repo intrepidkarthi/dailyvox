@@ -1002,10 +1002,9 @@ struct EntryDetailView: View {
     }
 
     private func saveMood() {
-        entry.setValue(selectedMood.rawValue, forKey: "mood")
-        entry.updatedAt = Date()
         // Picked by hand, so it is the user's — never suggested over again.
-        SuggestedMoodStore.shared.markChosenByUser(entry.id)
+        entry.setMoodChosenByUser(selectedMood.rawValue)
+        entry.updatedAt = Date()
         HapticManager.shared.moodSelected()
         do {
             try viewContext.save()

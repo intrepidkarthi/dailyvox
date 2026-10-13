@@ -3,6 +3,7 @@
 //  solynTests
 //
 
+import CoreData
 import XCTest
 import DailyVoxTwinEngine
 @testable import solyn
@@ -83,6 +84,10 @@ final class SuggestedMoodTests: XCTestCase {
 
     func testTiedFeelingsSuggestNothing() {
         XCTAssertNil(suggest(-0.6, [.sadness: 0.5, .anger: 0.5]))
+        XCTAssertNil(suggest(0.6, [.fear: 1, .joy: 1], "I feel blessed and grateful but anxious about money"),
+                     "a tie is mixed feelings; a lexicon word must not pick one side")
+        XCTAssertNil(suggest(-0.6, [.sadness: 1, .joy: 1], "long day and I am exhausted"),
+                     "nor may the tired fallback")
         XCTAssertNil(SuggestedMood.dominantFeeling([.sadness: 0.5, .anger: 0.5]))
         XCTAssertEqual(SuggestedMood.dominantFeeling([.sadness: 0.6, .anger: 0.5, .neutral: 1]), .sadness,
                        "neutral is the absence of a feeling, never the winner")
@@ -92,6 +97,39 @@ final class SuggestedMoodTests: XCTestCase {
         XCTAssertEqual(suggest(0, [:], "long day at work and I am so tired"), .tired)
         XCTAssertNil(suggest(0, [.joy: 0.3], "long day at work and I am so tired"))
         XCTAssertNil(suggest(0.3, [:], "long day at work and I am so tired"))
+    }
+
+    // MARK: Negation
+
+    func testNegatedWordsAreNotSaid() {
+        XCTAssertEqual(SuggestedMood.affirmed(in: "I am not sad, just tired"),
+                       ["i", "am", "not", SuggestedMood.denied, "just", "tired"],
+                       "a negation stops at the end of its clause")
+        XCTAssertEqual(SuggestedMood.affirmed(in: "I didn\u{2019}t feel tired at all today"),
+                       ["i", "didn't", SuggestedMood.denied, SuggestedMood.denied, SuggestedMood.denied, "all", "today"])
+        XCTAssertEqual(SuggestedMood.affirmed(in: "can't wait for tomorrow"), ["can't", "wait", "for", "tomorrow"],
+                       "\"can't wait\" is eagerness")
+    }
+
+    func testNegatedLexiconWordSuggestsNothing() {
+        XCTAssertNil(suggest(-0.8, [:], "I'm not tired at all today, I slept really well"))
+        XCTAssertNil(suggest(-0.8, [:], "I'm not exhausted and I feel ready for the week"))
+        XCTAssertNil(suggest(0.6, [:], "never felt calm in that office at all"))
+        XCTAssertEqual(suggest(-0.6, [:], "not a great week and I am so tired"), .tired,
+                       "a negation elsewhere does not cancel what was said plainly")
+    }
+
+    /// The cases that came back as the very mood denied, through the real
+    /// engine. Whatever the OS model scores, none of these may say it.
+    func testRealEngineHonoursNegation() {
+        XCTAssertNil(SuggestedMood.suggest(for: "I am not sad, I am actually doing fine today"))
+        XCTAssertNil(SuggestedMood.suggest(for: "I'm not tired at all today, I slept really well"))
+        XCTAssertNotEqual(SuggestedMood.suggest(for: "I'm not exhausted, I feel rested and ready for the week"),
+                          .tired)
+    }
+
+    func testRealEngineMixedFeelingsSuggestNothing() {
+        XCTAssertNil(SuggestedMood.suggest(for: "I feel blessed and grateful, but also really anxious about money"))
     }
 
     func testLexiconMatchesWholeWordsOnly() {
@@ -113,51 +151,60 @@ final class SuggestedMoodTests: XCTestCase {
 
     // MARK: Never over the user
 
+    private func decide(_ current: String?, suggested: String? = nil, _ suggestion: Mood?) -> SuggestedMoodUpdate {
+        SuggestedMoodUpdate.decide(currentMood: current, lastSuggested: suggested, suggestion: suggestion)
+    }
+
     func testNeverTouchesAMoodTheUserChose() {
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "sad", isSuggested: false, userChose: true,
-                                                  suggestion: .happy), .leave)
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "", isSuggested: false, userChose: true,
-                                                  suggestion: .happy), .leave,
-                       "\"No mood\", picked on purpose, is a choice too")
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "sad", isSuggested: false, userChose: false,
-                                                  suggestion: .happy), .leave,
-                       "a mood from before suggestions existed is the user's")
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "", isSuggested: false, userChose: false,
-                                                  suggestion: .happy), .leave)
+        XCTAssertEqual(decide("sad", .happy), .leave)
+        XCTAssertEqual(decide("", .happy), .leave, "\"No mood\", picked on purpose, is a choice too")
+        XCTAssertEqual(decide("", suggested: "calm", .happy), .leave)
+    }
+
+    /// Device A suggested calm; on device B the user picked sad, and it synced
+    /// back. The value no longer matches what A suggested, so it is the user's.
+    func testAMoodChangedElsewhereIsTheUsers() {
+        XCTAssertEqual(decide("sad", suggested: "calm", .calm), .leave)
+        XCTAssertEqual(decide("sad", suggested: "calm", nil), .leave, "nor withdrawn")
     }
 
     func testFillsOnlyAnEmptyMood() {
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: nil, isSuggested: false, userChose: false,
-                                                  suggestion: .calm), .suggest(.calm))
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: nil, isSuggested: false, userChose: false,
-                                                  suggestion: nil), .leave)
+        XCTAssertEqual(decide(nil, .calm), .suggest(.calm))
+        XCTAssertEqual(decide(nil, nil), .leave)
+        XCTAssertEqual(decide(nil, suggested: "calm", .sad), .suggest(.sad))
     }
 
     func testOwnSuggestionFollowsTheWords() {
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "calm", isSuggested: true, userChose: false,
-                                                  suggestion: .sad), .suggest(.sad))
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "calm", isSuggested: true, userChose: false,
-                                                  suggestion: .calm), .leave)
-        XCTAssertEqual(SuggestedMoodUpdate.decide(currentMood: "calm", isSuggested: true, userChose: false,
-                                                  suggestion: nil), .clear,
+        XCTAssertEqual(decide("calm", suggested: "calm", .sad), .suggest(.sad))
+        XCTAssertEqual(decide("calm", suggested: "calm", .calm), .leave)
+        XCTAssertEqual(decide("calm", suggested: "calm", nil), .clear,
                        "a suggestion the longer day no longer supports is withdrawn, not left standing")
     }
 
-    func testStoreTracksSuggestedThenChosen() throws {
-        let suite = "SuggestedMoodTests.\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        defer { defaults.removePersistentDomain(forName: suite) }
-        let store = SuggestedMoodStore(defaults: defaults)
-        let id = UUID()
+    /// The marker lives on the entry, so it syncs and restores with the mood.
+    func testEntryKnowsSuggestedFromChosen() throws {
+        let context = PersistenceController(inMemory: true).container.viewContext
+        let e = DiaryEntry(context: context)
+        e.id = UUID()
+        e.text = "I am so happy today, the whole family came over and it was wonderful"
+        XCTAssertFalse(e.isMoodSuggested)
 
-        XCTAssertFalse(store.isSuggested(id))
-        store.markSuggested(id)
-        XCTAssertTrue(store.isSuggested(id))
-        XCTAssertTrue(SuggestedMoodStore(defaults: defaults).isSuggested(id), "survives a relaunch")
+        e.mood = "happy"
+        e.suggestedMood = "happy"
+        XCTAssertTrue(e.isMoodSuggested)
+        XCTAssertNil(e.userMood, "a suggestion is never reported as the user's mood")
 
-        store.markChosenByUser(id)
-        XCTAssertFalse(store.isSuggested(id))
-        XCTAssertTrue(store.userChose(id))
-        XCTAssertFalse(store.isSuggested(nil))
+        // Another device, or an older build, sets the mood without knowing
+        // about suggestions: it is the user's from then on.
+        e.mood = "sad"
+        XCTAssertFalse(e.isMoodSuggested)
+        XCTAssertEqual(e.userMood, "sad")
+        XCTAssertFalse(e.refreshSuggestedMood(), "and it is never written over")
+        XCTAssertEqual(e.mood, "sad")
+
+        e.setMoodChosenByUser("happy")
+        XCTAssertNil(e.suggestedMood)
+        XCTAssertEqual(e.userMood, "happy", "confirming the suggested value makes it theirs")
+        try context.save()
     }
 }
