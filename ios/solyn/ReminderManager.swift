@@ -12,6 +12,9 @@ final class ReminderManager: ObservableObject {
     private let reminderHourKey = "solyn_reminder_hour"
     private let reminderMinuteKey = "solyn_reminder_minute"
     private let notificationIdentifier = "solyn_daily_reminder"
+    /// The one note past the horizon. A suffix of the daily identifier so it
+    /// is visibly part of the same family when reading the pending list.
+    private let welcomeBackIdentifier = "solyn_daily_reminder.welcome_back"
 
     @Published var isEnabled: Bool {
         didSet {
@@ -79,8 +82,7 @@ final class ReminderManager: ObservableObject {
     /// coming days already have an entry, then re-arms.
     func refresh(in context: NSManagedObjectContext) {
         guard isEnabled else {
-            UNUserNotificationCenter.current()
-                .removePendingNotificationRequests(withIdentifiers: identifiers(for: horizon))
+            cancelReminder()
             return
         }
         let cal = Calendar.current
@@ -128,26 +130,81 @@ final class ReminderManager: ObservableObject {
         return out
     }
 
+    /// One notification the plan wants armed: which slot it occupies, when it
+    /// fires and what it says.
+    struct PlannedReminder: Equatable {
+        let identifier: String
+        let fireDate: Date
+        let title: String
+        let body: String
+    }
+
+    /// The full plan — the week of evening reminders plus the one welcome-back
+    /// note — with no side effects, so the identifier coverage `cancelReminder`
+    /// depends on can be asserted without notification authorization.
+    func plannedReminders(spokenDays: Set<Date>, now: Date = Date()) -> [PlannedReminder] {
+        var out = plannedFireDates(spokenDays: spokenDays, now: now).enumerated().map { offset, fire in
+            PlannedReminder(
+                identifier: "\(notificationIdentifier).\(offset)",
+                fireDate: fire,
+                title: String(localized: "Tonight's star is waiting",
+                              comment: "Evening reminder notification title."),
+                // No streak guilt, and it names the size of the ask: small
+                // commitments get acted on, and 42s is the product's own unit.
+                body: String(localized: "Whenever you're ready. Forty-two seconds.",
+                             comment: "Evening reminder notification body."))
+        }
+        if let fire = welcomeBackDate(now: now) {
+            out.append(PlannedReminder(
+                identifier: welcomeBackIdentifier,
+                fireDate: fire,
+                title: String(localized: "Your sky is still here",
+                              comment: "One-off notification a few days after the weekly reminders run out. No streak guilt."),
+                body: String(localized: "No catching up to do. Forty-two seconds, whenever you're ready.",
+                             comment: "Body of the one-off welcome-back notification. No streak guilt.")))
+        }
+        return out
+    }
+
+    /// When the single welcome-back note fires: `welcomeBackDay` days out, at
+    /// the usual reminder time.
+    ///
+    /// The week of reminders is only re-armed when the app comes forward or an
+    /// entry is saved, so someone who steps away for longer than the horizon
+    /// used to get silence from day 8 on — the app simply went quiet. This is
+    /// one gentle note past that edge, never a series: it does not count missed
+    /// days, mention a streak or escalate, and every re-arm pushes it out again,
+    /// so anyone who keeps opening the app never sees it at all.
+    func welcomeBackDate(now: Date = Date()) -> Date? {
+        let cal = Calendar.current
+        guard let day = cal.date(byAdding: .day, value: welcomeBackDay,
+                                 to: cal.startOfDay(for: now)) else { return nil }
+        var comps = cal.dateComponents([.year, .month, .day], from: day)
+        comps.hour = reminderHour
+        comps.minute = reminderMinute
+        return cal.date(from: comps)
+    }
+
     func scheduleReminder(spokenDays: Set<Date> = []) {
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: identifiers(for: horizon))
+        // Clears the welcome-back note too: it is replaced on every re-arm,
+        // never stacked.
+        center.removePendingNotificationRequests(withIdentifiers: cancellableIdentifiers)
 
         let cal = Calendar.current
 
-        for (offset, fireDate) in plannedFireDates(spokenDays: spokenDays).enumerated() {
+        for planned in plannedReminders(spokenDays: spokenDays) {
             let content = UNMutableNotificationContent()
-            content.title = "Tonight's star is waiting"
-            // No streak guilt, and it names the size of the ask: small
-            // commitments get acted on, and 42s is the product's own unit.
-            content.body = "Whenever you're ready. Forty-two seconds."
+            content.title = planned.title
+            content.body = planned.body
             content.sound = .default
 
             let trigger = UNCalendarNotificationTrigger(
                 dateMatching: cal.dateComponents([.year, .month, .day, .hour, .minute],
-                                                 from: fireDate),
+                                                 from: planned.fireDate),
                 repeats: false)
             let request = UNNotificationRequest(
-                identifier: "\(notificationIdentifier).\(offset)",
+                identifier: planned.identifier,
                 content: content, trigger: trigger)
 
             center.add(request) { error in
@@ -163,13 +220,27 @@ final class ReminderManager: ObservableObject {
     /// reminders cannot outlive a change of mind about the time.
     private var horizon: Int { 7 }
 
+    /// Three days past the last evening the week covers: long enough that it
+    /// is not just another reminder, soon enough that the habit is still warm.
+    private var welcomeBackDay: Int { 10 }
+
     private func identifiers(for days: Int) -> [String] {
         (0..<days).map { "\(notificationIdentifier).\($0)" } + [notificationIdentifier]
     }
 
+    /// Every identifier this manager schedules under: the week's numbered
+    /// slots, the bare identifier the old repeating trigger used (so an install
+    /// upgraded from that build is cleaned up too), and the welcome-back note.
+    var cancellableIdentifiers: [String] {
+        identifiers(for: horizon) + [welcomeBackIdentifier]
+    }
 
+    /// Turning reminders off has to mean off. This used to remove only the
+    /// bare identifier, which nothing schedules any more — the week of
+    /// numbered reminders survived it, so someone who switched reminders off
+    /// went on being reminded for up to seven more evenings.
     func cancelReminder() {
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: [notificationIdentifier])
+        center.removePendingNotificationRequests(withIdentifiers: cancellableIdentifiers)
     }
 }
