@@ -10,8 +10,8 @@ Fixes #
 
 ## Testing
 
-- [ ] Builds successfully in Xcode
-- [ ] Tested on iOS Simulator
+- [ ] Builds successfully (Xcode for `ios/`, `./gradlew :app:assembleDebug` for `android/`)
+- [ ] Tested on a simulator, emulator or device
 - [ ] No new warnings introduced
 - [ ] No user data is sent off-device
 

@@ -1,7 +1,7 @@
 # What every permission is for, and where the app uses it
 
-Nine permissions, and this is the file that answers "why do you need that?" for
-each. The store listing invites people to read the permission list in app info,
+Five permissions in the built APK, and this is the file that answers "why do you
+need that?" for each. The store listing invites people to read the permission list in app info,
 so each line here is traced to the code that uses it rather than described.
 
 Regenerate the list itself from the artifact — `python3 playstore/verify.py`
@@ -53,7 +53,12 @@ Two notifications, and no others.
 1. An evening reminder to record the day's entry, at 9 pm unless the user picks
    another time. It is on by default, Android asks for notification permission
    before it can post anything, one switch in Settings turns it off, and it
-   does not post if they have already recorded that day.
+   does not post if they have already recorded that day. If the app is not
+   opened for a week the reminders stop, after one last note on the tenth
+   evening. Only if the user turns on "Include a line from your past in
+   reminders" (off by default) can the reminder quote a line from their own
+   entry of a week earlier; that text is shown in the notification, including
+   on the lock screen, and never leaves the phone.
 
 2. An ongoing notification shown only while a recording is actually in progress,
    displaying the elapsed time with a control to finish the entry. It appears
@@ -70,7 +75,9 @@ No marketing, promotional or engagement notifications are ever sent.
 
 *Where:* `system/Reminders.kt`, channel `dailyvox.reminder`, gated on the
 `reminder` preference which defaults to **on** (`MainActivity.kt`, retention is
-the measured constraint), and checked again at fire time; and `system/RecordingLive.kt`,
+the measured constraint), and checked again at fire time; when each reminder
+fires is decided in `system/ReminderPlan.kt`, and the quote is gated on
+`reminderQuotePast`, which defaults to **off**; and `system/RecordingLive.kt`,
 channel `dailyvox.recording`, shown from `SpeakScreen.kt` while the state is
 RECORDING.
 
@@ -113,11 +120,11 @@ read.
 
 ---
 
-## Health Connect — none in v1.0
+## Health Connect — none
 
 Earlier builds declared sleep and steps, but no screen ever asked for them.
 Declared-and-unreachable permissions buy a health-apps review and nothing else,
-so v1.0 declares none. `body/BodySignals.kt` is kept for when Body signals get a
+so no release since v1.0 declares any. `body/BodySignals.kt` is kept for when Body signals get a
 real opt-in; `HEALTH_DECLARATION.md` has the form wording for that day.
 
 ---

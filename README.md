@@ -41,7 +41,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Swift-5.9-FA7343?style=flat-square&logo=swift&logoColor=white" alt="Swift" />
   <img src="https://img.shields.io/badge/SwiftUI-5-0080FF?style=flat-square&logo=swift&logoColor=white" alt="SwiftUI" />
-  <img src="https://img.shields.io/badge/Xcode-15%2B-147EFB?style=flat-square&logo=xcode&logoColor=white" alt="Xcode" />
+  <img src="https://img.shields.io/badge/Xcode-26-147EFB?style=flat-square&logo=xcode&logoColor=white" alt="Xcode" />
   <img src="https://img.shields.io/badge/Core%20Data-%2B%20CloudKit-3776AB?style=flat-square&logo=icloud&logoColor=white" alt="Core Data + CloudKit" />
   <img src="https://img.shields.io/badge/Neural%20Engine-Core%20ML-FF6B6B?style=flat-square&logo=apple&logoColor=white" alt="Neural Engine / Core ML" />
   <img src="https://img.shields.io/badge/Speech-On--Device-5B7C6B?style=flat-square&logo=apple&logoColor=white" alt="On-device Speech" />
@@ -122,19 +122,18 @@ Ask your Twin questions. It answers from your history, running entirely on your 
 Speak at 150 words/minute instead of typing at 40. No blank page anxiety. DailyVox transcribes on-device using Apple Speech — no internet required.
 
 ### Mood Tracking & Predictions
-Automatic sentiment analysis on every entry. Trends across days, weeks, and months. Your Twin predicts tomorrow's mood based on your patterns.
+Automatic sentiment analysis on every entry, and a suggested mood that is marked as a suggestion, changes with one tap, and never replaces a mood you chose. Trends across days, weeks, and months. Your Twin predicts tomorrow's mood based on your patterns.
 
 ### Privacy by Architecture
-Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest privacy label: **"Data Not Collected."** Your journal is encrypted on-device. Optional iCloud sync uses your personal account with Apple's end-to-end encryption.
+Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest privacy label: **"Data Not Collected."** Your journal is encrypted on-device. Optional iCloud sync (off by default) goes to your own private iCloud database; Apple encrypts it, and it is end-to-end encrypted only if you have Advanced Data Protection turned on.
 
 ### Everything Else
 - **Biometric lock** — Face ID / Touch ID
-- **Photo attachments** — up to 5 per entry, stored locally
 - **Encrypted exports** — PDF, JSON, Markdown, CSV, AES-256 backup
 - **Widgets** — Home Screen & Lock Screen for streaks and quick recording
-- **Siri Shortcuts** — "Hey Siri, open my journal"
+- **Siri Shortcuts** — record an entry, add a typed one, read today's, or ask your Twin
 - **Journaling goals** — weekly targets with milestone celebrations
-- **4 themes** — System, Ivory, Light, Dark
+- **3 themes** — Day, Night, and Sunset, which follows the real sunset where you are
 
 ---
 
@@ -152,7 +151,7 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **Minimum** | iOS 17.0+ |
 | **Devices** | iPhone, iPad (Universal) |
 
-### Android — v1.0
+### Android
 
 | Layer | Technology |
 |:--|:--|
@@ -162,7 +161,7 @@ Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest pri
 | **Entities** | Model-free capitalisation heuristic — Android has no system NER, and the strong open models restrict commercial use |
 | **Speech** | `createOnDeviceSpeechRecognizer` only — no second branch. Where no on-device model is installed it stops and says so, rather than reaching for a network |
 | **Prosody** | MediaCodec + autocorrelation pitch/energy in plain Kotlin |
-| **Body** | None in v1.0 — no health permission is requested; Health Connect is not wired |
+| **Body** | None — no health permission is requested; Health Connect is not wired |
 | **Minimum** | API 33 (Android 13) · targetSdk 36 — 33 is where on-device recognition arrived, and below it this app cannot transcribe at all |
 | **Permissions** | RECORD_AUDIO, POST_NOTIFICATIONS, VIBRATE, USE_BIOMETRIC. **No INTERNET permission of any kind.** |
 
@@ -173,9 +172,25 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New — v1.11.0 (August 2026)
+## What's New — v1.13.0 and Android 1.2 (October 2026)
 
-**Live transcription.** The recording screen and the Dynamic Island show what you are saying as you say it, with a gold star when a name is caught. On-device, always. The Island carries the 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.
+A release about the first week: the app now gives something back every time you speak, instead of only after weeks of entries. Everything here is on iPhone and Android, and all of it runs on the phone.
+
+**Something back after every entry.** A short reflection appears under each saved entry. When the entry names a person or place, one line carries it into tomorrow; when it names no one, that line is left out rather than guessed.
+
+**A suggested mood.** Each entry gets a mood suggested from what you said, marked as a suggestion and changeable with one tap. It never replaces a mood you chose, and it holds back on short, mixed or negated entries rather than guess.
+
+**Your past, brought back.** "A week ago you said…" quotes that entry word for word, "On this day" brings back the same date in earlier months and years, and a weekly recap is counted from the entries themselves. Reminders quote a line from your past only if you turn that on: it is off by default, because reminders show on the lock screen.
+
+**A question that changes each day**, with another one a tap away. **Early signals from the third entry** — when you usually speak, how long your entries run, words that recur — each a count, labelled early. And **a streak that welcomes you back**: one missed day a week no longer breaks a run.
+
+**Fixed:** turning reminders off on iPhone left already-scheduled ones in place; after a week away reminders went silent on iPhone and repeated forever on Android, and both now send one note on day 10 and stop; Android's "already spoke today" check used UTC days and its reminder times drifted at daylight-saving changes; and the streak on widgets, the Lock Screen, Live Activities and share cards now follows one rule everywhere.
+
+## Previously
+
+**v1.12.0 and Android 1.1 — type when you can't talk.** "I can't talk right now" sits under the record button on the main screen, on iPhone and Android, not only during setup. A typed entry gets a mood, finds the people you mention and counts toward your streak, the same as a spoken one. A reader asked for it: they journal at work and at home, around people, where speaking out loud is not an option.
+
+**v1.11.0 (August 2026) — live transcription.** The recording screen and the Dynamic Island show what you are saying as you say it, with a gold star when a name is caught. On-device, always. The Island carries the 42-second ring, the phrase being heard, and Finish or Discard without opening the app. A "Speak" control can go in Control Centre, on the Lock Screen, or on the Action Button.
 
 **The correction that mattered more than any feature.** Until this release the transcriber preferred on-device recognition only when the phone was offline — which meant that on a connected iPhone, nearly every user nearly always, the recording went to Apple's speech servers for better punctuation. Every claim this project makes rested on that not happening. On-device recognition is now unconditional: where no on-device model is installed, transcription stops and says why rather than reaching for the network. Voice search had the same fault and the same fix.
 
@@ -193,7 +208,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 > **Platforms.** DailyVox is live on the [App Store](https://apps.apple.com/app/id6760454642)
 > for iPhone and iPad, and on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
-> for Android 13 or newer (Android v1.0, its own version line). Android has no
+> for Android 13 or newer (Android has its own version line). Android has no
 > on-device LLM chat, no health data and no translations yet. One known
 > limitation: on Android, the names in the Twin depend on the phone's speech
 > recogniser capitalising them. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
@@ -207,9 +222,11 @@ scored against the Apple frameworks they replace on the same real diary text.
 | v1.8.0 | Retrieval rebuilt — hybrid scoring, threshold re-measured at τ=0.29 | Shipped Jul 2026 |
 | v1.9.0 | Voice & Access — read-aloud, system voices, accessibility pass | Shipped Jul 2026 |
 | v1.10.0 | Spanish, French, German and Italian | Shipped Aug 2026 |
-| v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | **Shipped Aug 2026** |
-| Android v1.0 | **Android, first release** | **Shipped 2026-10-02** |
-| v1.12 | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
+| v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | Shipped Aug 2026 |
+| Android v1.0 | Android, first release | Shipped 2026-10-02 |
+| v1.12.0 · Android v1.1 | Type an entry any time ("I can't talk right now" on the main screen) | Shipped Oct 2026 |
+| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **Oct 2026** |
+| Next | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.
@@ -232,7 +249,7 @@ Yes. Every feature — voice transcription, AI analysis, Digital Twin — works 
 
 <details>
 <summary><strong>Where is my data stored?</strong></summary>
-On your device in an encrypted Core Data store. Optional iCloud sync goes through your personal iCloud account (end-to-end encrypted by Apple). DailyVox never has access.
+On your device in an encrypted Core Data store. Optional iCloud sync (off by default) goes to your own private iCloud database, which DailyVox never has access to. Apple encrypts it in transit and at rest; it is end-to-end encrypted only if you have turned on Advanced Data Protection for iCloud.
 </details>
 
 <details>
@@ -294,7 +311,7 @@ DailyVox is open source (MIT) and built solo, in the open. If the mission — a 
 - 🛠️ **Contribute** — issues and PRs welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [ARCHITECTURE.md](ARCHITECTURE.md)
 - 🗣️ **Try it and tell me what's missing** — [download free](https://apps.apple.com/app/id6760454642) or [explore the interactive demo](https://getdailyvox.com/demo)
 
-It's a genuinely fun codebase to hack on: 100% on-device AI, SwiftUI, a Canvas-rendered constellation, and a Digital Twin engine — no backend to spin up, no API keys, just clone and run.
+It's a genuinely fun codebase to hack on: 100% on-device AI, SwiftUI and Jetpack Compose, a Canvas-rendered constellation — no backend to spin up and no API keys. One caveat before you clone: the Digital Twin engine is a separate private package, so the iOS app builds only with it checked out beside this repo. [CONTRIBUTING.md](CONTRIBUTING.md) says exactly what you can build without it.
 
 ---
 
