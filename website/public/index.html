@@ -1262,6 +1262,191 @@ section.band.g-paper2{background:var(--band)!important}
 @media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}
   .dv-f-brand{grid-column:1 / -1}}
 @media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
+
+/* --- HERO: the beat you are on ---------------------------------------------
+   The screens swap on a timer, so the hero needs to say how long a beat lasts
+   and how many there are. Four segments, one per beat, filling over the same
+   3.6s the timer uses. Absolutely placed in the gap above the caption, so it
+   adds no height to a stage that is already tight on a short laptop. */
+.beats{position:absolute;left:0;bottom:calc(100% + 6px);display:flex;gap:6px}
+.beats i{position:relative;width:26px;height:3px;border-radius:2px;background:var(--rule-2);overflow:hidden}
+.beats i::after{content:"";position:absolute;inset:0;background:var(--uv);transform:scaleX(0);transform-origin:left}
+.beats i.done::after{transform:scaleX(1)}
+@media (max-width:900px){.beats{left:50%;translate:-50% 0}}
+@media (prefers-reduced-motion:no-preference){
+  .beats i.on::after{animation:beatFill 3.6s linear forwards}
+  /* the underline under "Twin" is drawn once, as the page arrives */
+  .pin-head .uline path{stroke-dasharray:140;stroke-dashoffset:140;animation:ulineDraw 1.1s .5s cubic-bezier(.6,.1,.3,1) forwards}
+  .divider span{display:inline-block;animation:starTurn 6s ease-in-out infinite}
+}
+@media (prefers-reduced-motion:reduce){.beats{display:none}}
+@keyframes beatFill{to{transform:scaleX(1)}}
+@keyframes ulineDraw{to{stroke-dashoffset:0}}
+@keyframes starTurn{0%,100%{transform:none;opacity:1}50%{transform:scale(.82) rotate(45deg);opacity:.65}}
+
+/* --- FOOTER: Bengaluru at dusk ----------------------------------------------
+   The gold CTA band is the last of the daylight; the footer is the evening
+   after it. Vidhana Soudha at the centre, the Lalbagh glasshouse lit from
+   inside, a Purple Line train crossing behind them, jacaranda and gulmohar,
+   an auto on the road, and the stars coming out, which is the app's own
+   picture of a journal: one star per entry.
+
+   All inline SVG, no requests. Motion runs only while the footer is on
+   screen (.is-live) and never under reduced motion. Composition is centred on
+   x=720 because preserveAspectRatio="slice" crops the sides on a phone, so
+   the glasshouse, the Soudha and the towers sit inside the middle 700 units. */
+.dv-footer{
+  --dvs-top:#241F46; --dvs-mid:#5A3F6E; --dvs-low:#BF675A; --dvs-hor:#EFA65F;
+  --dvs-ground:#1B1830; --dvs-far:#7A5277; --dvs-sil:#2B2346; --dvs-near:#221C3A;
+  --dvs-lamp:#F6CE74; --dvs-star:#FFF4D6; --dvs-jac:#7E64AE; --dvs-gul:#B5503C;
+  --ink:#F1EDE2; --ink-dim:rgba(241,237,226,.78); --ink-mute:rgba(241,237,226,.66);
+  --rule:rgba(241,237,226,.14); --uv-text:#EDCB86;
+  --dvs-n1:#0F0C25; --dvs-n2:#211A45; --dvs-n3:#45305A; --dvs-fly:#E8F09A; --dvs-kite:#2A2246;
+  background:var(--dvs-ground); border-top:0; padding:0; color:var(--ink);
+}
+@media (prefers-color-scheme:dark){
+  .dv-footer{--dvs-top:#120F27; --dvs-mid:#2D2752; --dvs-low:#6F4561; --dvs-hor:#B8714F;
+    --dvs-ground:#14112A; --dvs-far:#4B3B63; --dvs-sil:#1F1A39; --dvs-near:#18142D;
+    --dvs-jac:#5D4C8A; --dvs-gul:#8A3E33;
+    --dvs-n1:#08071A; --dvs-n2:#131030; --dvs-n3:#2E2246; --dvs-fly:#D5E08A; --dvs-kite:#1B1634}
+}
+.dvs{position:relative;height:clamp(220px,26vw,520px);overflow:hidden;
+  background:linear-gradient(180deg,var(--dvs-top) 0%,var(--dvs-mid) 46%,var(--dvs-low) 74%,var(--dvs-hor) 93%)}
+/* night: a second sky laid over the dusk one. It is the resting state, so
+   without script (or with reduced motion) the scene is simply night, all lit. */
+.dvs::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.86;
+  background:linear-gradient(180deg,var(--dvs-n1) 0%,var(--dvs-n2) 46%,var(--dvs-n3) 78%,rgba(0,0,0,0) 100%);
+  transition:opacity 3.6s cubic-bezier(.45,0,.25,1) .2s}
+.dvs svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.dvs-star{fill:var(--dvs-star);transition:opacity 1.4s ease calc(2.6s + var(--d,0s))}
+.dvs-cline{fill:none;stroke:var(--dvs-star);stroke-opacity:.4;stroke-width:1;stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 2.4s cubic-bezier(.5,0,.3,1) 5s}
+.dvs-sunset{transform:translateY(46px);transition:transform 3.8s cubic-bezier(.5,0,.3,1)}
+.dvs-glow{opacity:.5;transition:opacity 3.8s ease}
+.dvs-w{transition:opacity .45s ease var(--d,0s)}
+.dvs-pool{fill:var(--dvs-lamp);opacity:.2}
+.dvs-train-glow{fill:var(--dvs-lamp);opacity:.3}
+.dvs-kite{fill:none;stroke:var(--dvs-kite);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:center}
+.dvs-fly{fill:var(--dvs-fly);stroke:var(--dvs-fly);stroke-opacity:.22;stroke-width:3;opacity:.7}
+.dvs-flies{transition:opacity 2.4s ease 4.4s}
+.dvs-meteor{fill:none;stroke:url(#dvsMet);stroke-width:1.5;stroke-linecap:round}
+.dvs-shoot g{opacity:0}
+.dvs-mystar{fill:var(--dvs-star);transform-box:fill-box;transform-origin:center;animation:dvsPop .8s cubic-bezier(.2,1.6,.4,1) both}
+.dvs-ring{fill:none;stroke:var(--dvs-star);stroke-width:.7;transform-box:fill-box;transform-origin:center;animation:dvsRing 1.1s ease-out forwards}
+.dvs-myline{fill:none;stroke:var(--dvs-star);stroke-opacity:.42;stroke-width:1;stroke-dasharray:1;stroke-dashoffset:1;animation:dvsDraw 1s cubic-bezier(.5,0,.3,1) forwards}
+.dvs-sun{fill:#FCD58C}
+.dvs-far{fill:var(--dvs-far)}
+#dvsWin rect,#dvsWin2 rect{fill:var(--dvs-lamp)}
+#dvsRib path{stroke:#F6D9A0}
+.dvs-lit{opacity:.85;transition:opacity 1.6s ease .4s}
+use.dvs-lit{opacity:.3}
+.dvs-cols{fill:var(--dvs-lamp);opacity:.6}
+.dvs-colbars,.dvs-mid,.dvs-vs{fill:var(--dvs-sil)}
+.dvs-finial{stroke:var(--dvs-sil);stroke-width:2;fill:none}
+.dvs-gold{fill:#F2C565}
+.dvs-blink{fill:#E8584A}
+.dvs-glass path{fill:url(#dvsGlass);stroke:#F6D9A0;stroke-opacity:.7;stroke-width:1.2}
+.dvs-glass .dvs-ribs{opacity:.35;stroke:none}
+.dvs-glass .dvs-finial{stroke:var(--dvs-sil)}
+.dvs-metro{fill:var(--dvs-near)}
+.dvs-train rect{fill:#6E4C9E}
+.dvs-train .dvs-train-band{fill:#CDB8EE}
+.dvs-train-win{fill:var(--dvs-lamp)}
+.dvs-train-gap{stroke:var(--dvs-sil);stroke-width:1.5}
+.dvs-trunk{stroke:var(--dvs-near);stroke-width:3}
+.dvs-jac{fill:var(--dvs-jac)} .dvs-gul{fill:var(--dvs-gul)} .dvs-rain{fill:var(--dvs-near)}
+.dvs-p{transform-box:fill-box;transform-origin:center;opacity:0}
+.dvs-pj{fill:#A58AD6} .dvs-pg{fill:#E06A4C}
+.dvs-road{fill:var(--dvs-ground)}
+.dvs-lane{stroke:var(--dvs-lamp);stroke-opacity:.22;stroke-width:1.5;stroke-dasharray:14 18}
+.dvs-post{stroke:#3B3458;stroke-width:2;fill:none}
+.dvs-lamps circle{fill:var(--dvs-lamp)} .dvs-lamps .dvs-halo{opacity:.2}
+.dvs-auto-top{fill:#EDBE36} .dvs-auto-body{fill:#2E7D4F}
+.dvs-auto-glass{fill:#F6E7C1;opacity:.55} .dvs-tyre{fill:#0E0C18}
+.dvs-head{fill:#FFF3C9} .dvs-beam{fill:var(--dvs-lamp);opacity:.13}
+
+/* nightfall, in one take. Script arms the scene back to dusk; when the sky
+   is a third on screen it plays forward: the sky deepens and the sun sinks
+   (0-4s), rooms switch on one at a time (0.4-3.6s), the street lamps catch
+   with a flicker (1.8-3.2s), stars come out (2.6-5s), the constellation
+   draws itself (5-7.4s), and last the fireflies. Without script none of this
+   is armed, so the resting state is the finished night. */
+.dvs-armed:not(.is-lit) .dvs::before,.dvs-armed:not(.is-lit) .dvs *{transition:none}
+.dvs-armed .dvs::before{opacity:0}
+.dvs-armed .dvs-sunset{transform:none}
+.dvs-armed .dvs-glow{opacity:1}
+.dvs-armed .dvs-star,.dvs-armed .dvs-lit,.dvs-armed .dvs-lamp,.dvs-armed .dvs-flies{opacity:0}
+.dvs-armed .dvs-chunked{opacity:.85}
+.dvs-armed .dvs-w{opacity:0}
+.dvs-armed .dvs-cline{stroke-dashoffset:1}
+.dvs-armed.is-lit .dvs::before{opacity:.86}
+.dvs-armed.is-lit .dvs-sunset{transform:translateY(46px)}
+.dvs-armed.is-lit .dvs-glow{opacity:.5}
+.dvs-armed.is-lit .dvs-star,.dvs-armed.is-lit .dvs-w,.dvs-armed.is-lit .dvs-flies{opacity:1}
+.dvs-armed.is-lit .dvs-w.off{opacity:0}
+.dvs-armed.is-lit .dvs-lit{opacity:.85}
+.dvs-armed.is-lit use.dvs-lit{opacity:.3}
+.dvs-armed.is-lit .dvs-cline{stroke-dashoffset:0}
+.dvs-armed.is-lit .dvs-lamp{animation:dvsFlick 1.2s steps(1,end) var(--d,0s) both}
+@media (prefers-reduced-motion:no-preference){
+  .dvs-train{animation:dvsTrain 26s linear infinite}
+  .dvs-auto{animation:dvsAuto 34s linear infinite}
+  .dvs-auto-bob{animation:dvsBob .5s ease-in-out infinite alternate}
+  .dvs-beam{transform-box:fill-box;transform-origin:100% 36%;animation:dvsBeam 2.2s ease-in-out infinite alternate}
+  .dvs-tw{animation:dvsTwinkle 3.4s ease-in-out infinite alternate}
+  .dvs-blink{animation:dvsBlink 2.4s steps(1) infinite}
+  .dvs-p{animation:dvsFall var(--fd,8s) cubic-bezier(.35,0,.6,1) var(--dl,0s) infinite}
+  .dvs-fly{transform-box:fill-box;animation:dvsFly var(--dur,3s) ease-in-out var(--dl,0s) infinite alternate}
+  .dvs-kx{animation:dvsKx var(--kt,11s) ease-in-out infinite alternate}
+  .dvs-ky{animation:dvsKy var(--kt,11s) ease-in-out calc(var(--kt,11s) / -2) infinite alternate}
+  .dvs-kite{animation:dvsFlap 3.2s ease-in-out infinite alternate}
+  .dvs-shoot g.go{animation:dvsShoot 1.3s cubic-bezier(.3,.1,.55,1) both}
+  .dv-f-steam path{transform-origin:center;animation:dvsSteam 3.2s ease-in-out infinite}
+  .dv-f-steam path:nth-child(2){animation-delay:1.05s}
+  .dv-f-steam path:nth-child(3){animation-delay:2.1s}
+  /* depth: the sky lags the scroll most, the far skyline less, the road not at all */
+  .dvs-px1{--py:-30px} .dvs-px2{--py:-12px} .dvs-px3{--py:-5px}
+  .dvs-armed.dvs-pxjs .dvs-px{transform:translateY(calc((1 - var(--pk,1)) * var(--py)))}
+  @supports (animation-timeline:view()){
+    .dvs{view-timeline:--dvs block}
+    .dvs-armed .dvs-px{animation:dvsPx linear both;animation-timeline:--dvs;animation-range:entry 0% entry 100%}
+  }
+}
+/* nothing moves while the footer is off screen or the tab is hidden (and
+   without script the scene stays still, because .is-live is never set) */
+.dv-footer:not(.is-live) .dvs :not(.dvs-px),.dv-footer:not(.is-live) .dv-f-steam path{animation-play-state:paused}
+@keyframes dvsTrain{from{transform:translateX(-280px)}to{transform:translateX(1460px)}}
+@keyframes dvsAuto{from{transform:translate(1500px,350px)}to{transform:translate(-120px,350px)}}
+@keyframes dvsBob{to{transform:translateY(-.8px)}}
+@keyframes dvsBeam{0%{opacity:.09;transform:rotate(-2.5deg)}100%{opacity:.16;transform:rotate(2deg)}}
+@keyframes dvsTwinkle{to{fill-opacity:.3}}
+@keyframes dvsBlink{0%{opacity:1}50%{opacity:.15}}
+@keyframes dvsFlick{0%{opacity:0}12%{opacity:.75}20%{opacity:.08}38%{opacity:.9}46%{opacity:.25}62%,100%{opacity:1}}
+@keyframes dvsFall{0%{opacity:0;transform:none}10%{opacity:.9}
+  35%{transform:translate(calc(var(--px,-20px) * .2 + 7px),11px) rotate(90deg)}
+  65%{transform:translate(calc(var(--px,-20px) * .6 - 6px),23px) rotate(170deg)}
+  85%{opacity:.75}
+  100%{opacity:0;transform:translate(var(--px,-20px),34px) rotate(250deg)}}
+@keyframes dvsFly{0%{opacity:.05;transform:none}45%{opacity:1}100%{opacity:.2;transform:translate(var(--fx,8px),var(--fy,-6px))}}
+@keyframes dvsKx{from{transform:translateX(calc(var(--kr,60px) * -1))}to{transform:translateX(var(--kr,60px))}}
+@keyframes dvsKy{from{transform:translateY(-14px)}to{transform:translateY(14px)}}
+@keyframes dvsFlap{0%,60%{transform:none}100%{transform:scaleY(.55)}}
+@keyframes dvsShoot{0%{opacity:0;transform:none}12%{opacity:1}100%{opacity:0;transform:translate(-200px,66px)}}
+@keyframes dvsPx{from{transform:translateY(var(--py))}to{transform:none}}
+@keyframes dvsPop{from{opacity:0;transform:scale(0)}}
+@keyframes dvsRing{from{opacity:.85;transform:scale(.4)}to{opacity:0;transform:scale(3.4)}}
+@keyframes dvsDraw{to{stroke-dashoffset:0}}
+@keyframes dvsSteam{0%{opacity:0;transform:translate(0,3px)}40%{opacity:.7;transform:translate(-.6px,0)}
+  100%{opacity:0;transform:translate(1px,-6px) scaleX(-.7)}}
+
+.dv-footer .dv-f-wrap{padding:clamp(10px,2vh,22px) 0 clamp(22px,3vh,32px)}
+.dv-footer .dv-f-mark{color:var(--ink)}
+.dv-footer .dv-f-mark img{box-shadow:0 0 0 1px rgba(241,237,226,.18)}
+.dv-f-brand .dv-f-made{display:flex;max-width:none;align-items:center;gap:10px;margin:18px 0 0;
+  font:800 17px/1.25 var(--display,'Nunito',system-ui,sans-serif);color:var(--ink)}
+.dv-f-brand .dv-f-made small{display:block;margin-top:3px;font:500 13px/1.3 var(--sans,'Inter',system-ui,sans-serif);color:var(--ink-mute)}
+.dv-f-cup{flex:none;width:38px;height:38px;overflow:visible}
+.dv-f-steam path{fill:none;stroke:#F1EDE2;stroke-width:1.4;stroke-linecap:round;opacity:.55;transform-box:fill-box}
+.dv-footer .dv-f-col a:hover,.dv-footer .dv-f-base a:hover{color:var(--uv-text)}
 </style>
 </head>
 
@@ -1374,6 +1559,7 @@ section.band.g-paper2{background:var(--band)!important}
           that <span class="accent">knows you.</span></h1>
       </div>
         <div class="caps">
+        <div class="beats" aria-hidden="true"><i data-i="0"></i><i data-i="1"></i><i data-i="2"></i><i data-i="3"></i></div>
         <div class="cap on" data-i="0">
           <h2>You start talking.</h2>
           <p>The mic is the whole interface — no prompt, no blank page, nothing to fill in.</p>
@@ -1934,11 +2120,158 @@ section.band.g-paper2{background:var(--band)!important}
 </main>
 
 <footer class="dv-footer">
+  <!-- Bengaluru at dusk: decorative, so it is hidden from assistive tech and carries no words -->
+  <div class="dvs" aria-hidden="true">
+    <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice" focusable="false">
+      <defs>
+       <pattern id="dvsWin" width="12" height="14" patternUnits="userSpaceOnUse"><rect x="4" y="4" width="4" height="6"/></pattern>
+       <pattern id="dvsWin2" width="20" height="17" patternUnits="userSpaceOnUse"><rect x="3" y="4" width="3" height="5"/><rect x="13" y="10" width="3" height="5"/></pattern>
+       <pattern id="dvsRib" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0.5 0V8" stroke-width="1"/></pattern>
+       <radialGradient id="dvsSun"><stop offset="0" stop-color="#FFE7AE"/><stop offset=".28" stop-color="#F6B062" stop-opacity=".75"/><stop offset="1" stop-color="#E0884F" stop-opacity="0"/></radialGradient>
+       <linearGradient id="dvsGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE3AE" stop-opacity=".62"/><stop offset="1" stop-color="#F0A85E" stop-opacity=".3"/></linearGradient>
+       <linearGradient id="dvsMet" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FFF8E4"/><stop offset=".25" stop-color="#FFE9B8" stop-opacity=".7"/><stop offset="1" stop-color="#FFE9B8" stop-opacity="0"/></linearGradient>
+       <path id="dvsFar" d="M0 372 V300 H30 V300 H82 V344 H106 V300 H136 V306 H154 V338 H198 V312 H242 V306 H260 V306 H304 V324 H328 V312 H380 V318 H410 V318 H462 V306 H480 V306 H532 V330 H584 V306 H636 V300 H666 V306 H690 V306 H708 V324 H726 V312 H770 V300 H794 V312 H812 V318 H836 V324 H872 V324 H896 V312 H914 V318 H966 V300 H990 V330 H1020 V318 H1050 V344 H1086 V300 H1116 V262 H1160 V262 H1184 V262 H1214 V330 H1250 V306 H1280 V306 H1310 V324 H1334 V338 H1378 V318 H1430 V318 H1440 V372 Z"/>
+      </defs>
+      <g class="dvs-px dvs-px1">
+      <g class="dvs-stars"><circle class="dvs-star dvs-tw" cx="1047.6" cy="120.6" r="0.8" style="--d:0ms"/><circle class="dvs-star" cx="1419.5" cy="138.4" r="0.8" style="--d:70ms"/><circle class="dvs-star" cx="927.1" cy="120.3" r="1.2" style="--d:140ms"/><circle class="dvs-star dvs-tw" cx="1187.7" cy="187.6" r="1" style="--d:210ms"/><circle class="dvs-star" cx="1150.3" cy="141" r="0.8" style="--d:280ms"/><circle class="dvs-star" cx="289.9" cy="106" r="1.4" style="--d:350ms"/><circle class="dvs-star dvs-tw" cx="1245.4" cy="68.6" r="1.4" style="--d:420ms"/><circle class="dvs-star" cx="1047.5" cy="117.3" r="1" style="--d:490ms"/><circle class="dvs-star" cx="1233.9" cy="161.4" r="1.4" style="--d:560ms"/><circle class="dvs-star dvs-tw" cx="1329.8" cy="65.4" r="1" style="--d:630ms"/><circle class="dvs-star" cx="1340.8" cy="157.6" r="0.8" style="--d:700ms"/><circle class="dvs-star" cx="848.9" cy="110.7" r="1" style="--d:770ms"/><circle class="dvs-star dvs-tw" cx="749.2" cy="144.1" r="1.4" style="--d:840ms"/><circle class="dvs-star" cx="1343.7" cy="67.4" r="1" style="--d:910ms"/><circle class="dvs-star" cx="176.1" cy="55.8" r="1" style="--d:980ms"/><circle class="dvs-star dvs-tw" cx="646.5" cy="87.4" r="1.8" style="--d:1050ms"/><circle class="dvs-star" cx="313.3" cy="79" r="1.4" style="--d:1120ms"/><circle class="dvs-star" cx="717.3" cy="179.9" r="1" style="--d:1190ms"/><circle class="dvs-star dvs-tw" cx="678.2" cy="174.9" r="0.8" style="--d:1260ms"/><circle class="dvs-star" cx="739.1" cy="51.7" r="1.2" style="--d:1330ms"/><circle class="dvs-star" cx="326.8" cy="137.2" r="1.4" style="--d:1400ms"/><circle class="dvs-star dvs-tw" cx="1028.9" cy="165" r="1" style="--d:1470ms"/><circle class="dvs-star" cx="57.2" cy="171.6" r="1" style="--d:1540ms"/><circle class="dvs-star" cx="410" cy="123.9" r="1" style="--d:1610ms"/><circle class="dvs-star dvs-tw" cx="188.3" cy="141.6" r="0.8" style="--d:1680ms"/><circle class="dvs-star" cx="481.5" cy="80" r="1.8" style="--d:1750ms"/><circle class="dvs-star" cx="1024.7" cy="96.9" r="1.4" style="--d:1820ms"/><circle class="dvs-star dvs-tw" cx="178.3" cy="76.9" r="0.8" style="--d:1890ms"/><circle class="dvs-star" cx="78.1" cy="193.5" r="1.2" style="--d:1960ms"/><circle class="dvs-star" cx="797.7" cy="86.3" r="1.4" style="--d:2030ms"/><circle class="dvs-star dvs-tw" cx="297.4" cy="68" r="1.2" style="--d:2100ms"/><circle class="dvs-star" cx="13.8" cy="140.1" r="1.2" style="--d:2170ms"/><circle class="dvs-star" cx="714.5" cy="59.3" r="1.4" style="--d:2240ms"/><circle class="dvs-star dvs-tw" cx="872.3" cy="117.3" r="1.4" style="--d:2310ms"/><path class="dvs-cline" d="M822 74 L866 52 L914 80 L958 58 L994 98" pathLength="1"/><circle class="dvs-star" cx="822" cy="74" r="1.6" style="--d:900ms"/><circle class="dvs-star" cx="866" cy="52" r="2.2" style="--d:1060ms"/><circle class="dvs-star" cx="914" cy="80" r="1.6" style="--d:1220ms"/><circle class="dvs-star" cx="958" cy="58" r="2.2" style="--d:1380ms"/><circle class="dvs-star" cx="994" cy="98" r="1.6" style="--d:1540ms"/></g>
+      <g class="dvs-mine-g"></g>
+      <g class="dvs-shoot" transform="translate(900 70)"><g><path class="dvs-meteor" d="M0 0L66-22"/></g></g>
+      <g class="dvs-kites">
+       <g transform="translate(700 214)"><g class="dvs-kx" style="--kr:70px;--kt:13s"><g class="dvs-ky"><path class="dvs-kite" d="M-11 1.5Q-6-3.5 0 1Q6-3.5 11 1.5"/></g></g></g>
+       <g transform="translate(842 186)"><g class="dvs-kx" style="--kr:46px;--kt:9.5s"><g class="dvs-ky"><path class="dvs-kite" d="M-8 1Q-4-2.5 0 .8Q4-2.5 8 1" style="animation-delay:-1.4s"/></g></g></g>
+      </g>
+      <g class="dvs-sunset">
+       <circle class="dvs-glow" cx="604" cy="368" r="170" fill="url(#dvsSun)"/>
+       <circle class="dvs-sun" cx="604" cy="352" r="34"/>
+      </g>
+      </g>
+      <g class="dvs-px dvs-px2">
+      <rect class="dvs-far" x="0" y="368" width="1440" height="32"/>
+      <use href="#dvsFar" class="dvs-far"/>
+      <use href="#dvsFar" class="dvs-lit" fill="url(#dvsWin2)" opacity=".3"/>
+      </g>
+      <g class="dvs-px dvs-px3">
+      <g class="dvs-metro">
+       <rect x="0" y="317" width="1440" height="5"/>
+       <path d="M96 322h10v50h-10zM316 322h10v50h-10zM536 322h10v50h-10zM756 322h10v50h-10zM976 322h10v50h-10zM1196 322h10v50h-10zM1416 322h10v50h-10z"/>
+      </g>
+      <g class="dvs-train" transform="translate(1086 0)">
+       <ellipse class="dvs-train-glow" cx="125" cy="318.5" rx="150" ry="2.6"/>
+       <rect x="0" y="301" width="250" height="15" rx="5"/>
+       <rect class="dvs-train-band" x="2" y="311" width="246" height="2"/>
+       <path class="dvs-train-win" d="M10 304h16v5H10zM34 304h16v5H34zM58 304h16v5H58zM90 304h16v5H90zM114 304h16v5h-16zM138 304h16v5h-16zM170 304h16v5h-16zM194 304h16v5h-16zM218 304h16v5h-16z"/>
+       <path d="M83 301v15M163 301v15" class="dvs-train-gap"/>
+      </g>
+      <g class="dvs-mid">
+       <path d="M18 372V346l22-14 22 14v26zM70 372V352h40v20zM70 352l20-12 20 12zM118 372V340l26-16 26 16v32zM186 372V350h52v22zM186 350l26-13 26 13zM250 372V344l20-12 20 12v28z"/>
+       <path d="M300 372v-60h6v-8h6v8h6v60z"/>
+       <path d="M1258 372V336h56v36zM1258 336l28-14 28 14zM1326 372V344h34v28zM1370 372V330l22-12 22 12v42z"/>
+      </g>
+      <g class="dvs-glass">
+       <path d="M382 372V338q0-12 12-12h169q12 0 12 12v34z"/>
+       <path d="M438 372V318a40 40 0 0 1 80 0v54z"/>
+       <path d="M382 372V338q0-12 12-12h169q12 0 12 12v34zM438 372V318a40 40 0 0 1 80 0v54z" class="dvs-ribs" fill="url(#dvsRib)"/>
+       <path d="M478 278v-10" class="dvs-finial"/>
+      </g>
+      <g class="dvs-vs">
+       <path d="M600 372l12-10h266l12 10z"/>
+       <rect x="616" y="322" width="268" height="40"/>
+       <rect x="640" y="304" width="220" height="18"/>
+       <rect x="628" y="290" width="22" height="32"/><path d="M626 291c0-20 26-20 26 0z"/>
+       <rect x="850" y="290" width="22" height="32"/><path d="M848 291c0-20 26-20 26 0z"/>
+       <rect x="672" y="292" width="16" height="12"/><path d="M670 293c0-13 20-13 20 0z"/>
+       <rect x="812" y="292" width="16" height="12"/><path d="M810 293c0-13 20-13 20 0z"/>
+       <rect x="724" y="254" width="42" height="24"/>
+       <path d="M719 256c0-44 52-44 52 0z"/>
+       <path d="M699 294l46-18 46 18z"/><rect x="703" y="293" width="84" height="29"/>
+       <path class="dvs-finial" d="M745 223v-14M639 276v-7M861 276v-7M680 284v-5M820 284v-5"/>
+       <circle class="dvs-gold" cx="745" cy="207" r="2.4"/>
+      </g>
+      <g class="dvs-lit">
+       <rect x="622" y="328" width="256" height="30" fill="url(#dvsWin)"/>
+       <rect x="646" y="306" width="208" height="14" fill="url(#dvsWin)"/>
+       <path class="dvs-cols" d="M707 298h76v24h-76z"/>
+      </g>
+      <path class="dvs-colbars" d="M711 298h3v24h-3zM719 298h3v24h-3zM727 298h3v24h-3zM735 298h3v24h-3zM743 298h3v24h-3zM751 298h3v24h-3zM759 298h3v24h-3zM767 298h3v24h-3zM775 298h3v24h-3z"/>
+      <g class="dvs-mid">
+       <rect x="904" y="252" width="44" height="120"/><path d="M904 252l22-10 22 10z"/>
+       <rect x="958" y="214" width="40" height="158"/><rect x="965" y="200" width="26" height="14"/>
+       <path class="dvs-finial" d="M978 200v-30"/>
+       <rect x="1008" y="276" width="58" height="96"/>
+      </g>
+      <g class="dvs-lit">
+       <rect x="908" y="258" width="36" height="110" fill="url(#dvsWin)"/>
+       <rect x="962" y="220" width="32" height="148" fill="url(#dvsWin2)"/>
+       <rect x="1012" y="282" width="50" height="86" fill="url(#dvsWin)"/>
+      </g>
+      <circle class="dvs-blink" cx="978" cy="169" r="2"/>
+      </g>
+      <g class="dvs-trees">
+       <path class="dvs-trunk" d="M590 372v-16M596 372v-12M893 372v-16M1050 372v-18M1062 372v-14M44 372v-12M352 372v-14M1190 372v-16"/>
+       <g class="dvs-jac"><circle cx="584" cy="350" r="12"/><circle cx="598" cy="344" r="13"/><circle cx="607" cy="355" r="9"/><circle cx="1044" cy="350" r="14"/><circle cx="1060" cy="342" r="15"/><circle cx="1074" cy="353" r="11"/><circle cx="345" cy="352" r="12"/><circle cx="360" cy="346" r="11"/></g>
+       <g class="dvs-gul"><circle cx="886" cy="352" r="11"/><circle cx="898" cy="346" r="12"/><circle cx="906" cy="357" r="8"/><circle cx="36" cy="354" r="12"/><circle cx="52" cy="349" r="11"/></g>
+       <g class="dvs-rain"><circle cx="1176" cy="352" r="14"/><circle cx="1194" cy="344" r="17"/><circle cx="1212" cy="354" r="12"/><circle cx="1230" cy="358" r="10"/><circle cx="148" cy="358" r="12"/><circle cx="164" cy="352" r="13"/></g>
+      </g>
+      <g class="dvs-petals">
+       <ellipse class="dvs-p dvs-pj" cx="600" cy="338" rx="2" ry="1.2" style="--px:-26px;--dl:0s"/>
+       <ellipse class="dvs-p dvs-pj" cx="1064" cy="334" rx="2" ry="1.2" style="--px:-34px;--dl:2.4s"/>
+       <ellipse class="dvs-p dvs-pg" cx="899" cy="340" rx="2" ry="1.2" style="--px:22px;--dl:1.2s"/>
+       <ellipse class="dvs-p dvs-pj" cx="352" cy="340" rx="2" ry="1.2" style="--px:-20px;--dl:3.6s"/>
+       <ellipse class="dvs-p dvs-pj" cx="1052" cy="338" rx="1.8" ry="1.1" style="--px:18px;--dl:5s"/>
+       <ellipse class="dvs-p dvs-pg" cx="46" cy="344" rx="2" ry="1.2" style="--px:-16px;--dl:4.2s"/>
+       <ellipse class="dvs-p dvs-pj" cx="590" cy="342" rx="1.7" ry="1" style="--px:30px;--dl:6.1s;--fd:9s"/>
+       <ellipse class="dvs-p dvs-pg" cx="892" cy="338" rx="1.8" ry="1.1" style="--px:-28px;--dl:3s;--fd:7s"/>
+       <ellipse class="dvs-p dvs-pj" cx="1070" cy="340" rx="2" ry="1.2" style="--px:-40px;--dl:7.4s;--fd:9.5s"/>
+       <ellipse class="dvs-p dvs-pj" cx="360" cy="338" rx="1.7" ry="1" style="--px:24px;--dl:1.8s"/>
+      </g>
+      <g class="dvs-flies">
+       <circle class="dvs-fly" cx="572" cy="352" r="1.1" style="--fx:9px;--fy:-7px;--dur:2.6s;--dl:-.4s"/>
+       <circle class="dvs-fly" cx="616" cy="340" r=".9" style="--fx:-7px;--fy:-9px;--dur:3.4s;--dl:-1.9s"/>
+       <circle class="dvs-fly" cx="1034" cy="338" r="1" style="--fx:11px;--fy:5px;--dur:3s;--dl:-1.1s"/>
+       <circle class="dvs-fly" cx="1086" cy="350" r="1.1" style="--fx:-8px;--fy:-8px;--dur:2.4s;--dl:-.2s"/>
+       <circle class="dvs-fly" cx="874" cy="344" r=".9" style="--fx:6px;--fy:-10px;--dur:3.7s;--dl:-2.6s"/>
+       <circle class="dvs-fly" cx="336" cy="342" r="1" style="--fx:-9px;--fy:6px;--dur:2.9s;--dl:-.8s"/>
+       <circle class="dvs-fly" cx="1206" cy="336" r="1.1" style="--fx:8px;--fy:-6px;--dur:3.2s;--dl:-1.5s"/>
+       <circle class="dvs-fly" cx="160" cy="346" r=".9" style="--fx:7px;--fy:-8px;--dur:2.7s;--dl:-2.2s"/>
+      </g>
+      <rect class="dvs-road" x="0" y="372" width="1440" height="28"/>
+      <path class="dvs-lane" d="M0 389H1440"/>
+      <g class="dvs-lamps">
+       <path class="dvs-post" d="M240 372v-24h8M680 372v-24h8M1120 372v-24h8M1380 372v-24h8"/>
+       <g class="dvs-lamp" style="--d:2.45s"><ellipse class="dvs-pool" cx="248" cy="377" rx="30" ry="3.6"/><circle cx="248" cy="349" r="9" class="dvs-halo"/><circle cx="248" cy="349" r="2.2"/></g>
+       <g class="dvs-lamp" style="--d:1.8s"><ellipse class="dvs-pool" cx="688" cy="377" rx="30" ry="3.6"/><circle cx="688" cy="349" r="9" class="dvs-halo"/><circle cx="688" cy="349" r="2.2"/></g>
+       <g class="dvs-lamp" style="--d:2.15s"><ellipse class="dvs-pool" cx="1128" cy="377" rx="30" ry="3.6"/><circle cx="1128" cy="349" r="9" class="dvs-halo"/><circle cx="1128" cy="349" r="2.2"/></g>
+       <g class="dvs-lamp" style="--d:2.9s"><ellipse class="dvs-pool" cx="1388" cy="377" rx="30" ry="3.6"/><circle cx="1388" cy="349" r="9" class="dvs-halo"/><circle cx="1388" cy="349" r="2.2"/></g>
+      </g>
+      <g class="dvs-auto" transform="translate(940 350)">
+       <g class="dvs-auto-bob">
+        <ellipse class="dvs-pool" cx="-50" cy="33" rx="30" ry="2.6"/>
+        <path class="dvs-beam" d="M-1 20L-70 12V34z"/>
+        <path class="dvs-auto-top" d="M8 5q2-5 12-5h20q7 0 7 6v8H8z"/>
+        <path class="dvs-auto-body" d="M3 14h44v12q0 4-4 4H7q-4 0-4-4zM3 15q-6 3-4 13h6z"/>
+        <path class="dvs-auto-glass" d="M10 6h11v8H10z"/>
+        <circle class="dvs-tyre" cx="9" cy="31" r="4"/><circle class="dvs-tyre" cx="40" cy="31" r="4"/>
+        <circle class="dvs-head" cx="-1" cy="20" r="1.8"/>
+       </g>
+      </g>
+    </svg>
+  </div>
   <div class="dv-f-wrap">
     <div class="dv-f-grid">
       <div class="dv-f-brand">
         <a href="/" class="dv-f-mark"><img src="/apple-touch-icon.png" alt="" width="28" height="28"><span>DailyVox</span></a>
         <p>A personal AI that lives on your phone. Free, open source, private by construction.</p>
+        <p class="dv-f-made">
+          <svg class="dv-f-cup" viewBox="0 0 34 34" aria-hidden="true" focusable="false">
+            <g class="dv-f-steam"><path d="M13 9q-2-2 0-4t0-4"/><path d="M17 9q-2-2 0-4t0-4"/><path d="M21 9q-2-2 0-4t0-4"/></g>
+            <path d="M10.5 12h13l-1.7 13h-9.6z" fill="#C3C8D0"/>
+            <path d="M12.6 14l1.2 10" stroke="#EEF0F3" stroke-width="1.2" stroke-linecap="round"/>
+            <ellipse cx="17" cy="12" rx="6.5" ry="1.7" fill="#D7B48A"/>
+            <path d="M4 25h26q-1.2 6-7 6H11q-5.8 0-7-6z" fill="#A9B0BB"/>
+            <ellipse cx="17" cy="25" rx="13" ry="2" fill="#D5D9DF"/>
+          </svg>
+          <span>Made in Bengaluru, India<small><span lang="kn">ಬೆಂಗಳೂರು</span>, over a lot of filter coffee</small></span>
+        </p>
       </div>
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
@@ -2144,14 +2477,16 @@ section.band.g-paper2{background:var(--band)!important}
   var scrs  = [].slice.call(wrap.querySelectorAll('.scr')),
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
       cos   = [].slice.call(wrap.querySelectorAll('.sticker')),
+      bars  = [].slice.call(wrap.querySelectorAll('.beats i')),
       N = 4, cur = -1, i = 0;
 
   function set(n){
     if(n === cur) return;
     cur = n;
-    [scrs, caps, cos].forEach(function(group){
+    [scrs, caps, cos, bars].forEach(function(group){
       group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === n); });
     });
+    bars.forEach(function(el){ el.classList.toggle('done', +el.dataset.i < n); });
   }
 
   /* The beats used to be driven by scroll position across a 420vh section.
@@ -2168,7 +2503,106 @@ section.band.g-paper2{background:var(--band)!important}
      into nothing and the beat on return is the one that was showing. */
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){ clearInterval(timer); timer = null; }
-    else if(!timer){ timer = setInterval(tick, 3600); }
+    else if(!timer){
+      /* restart the current segment's fill so it matches the fresh timer */
+      var b = bars[cur];
+      if(b){ b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); }
+      timer = setInterval(tick, 3600);
+    }
+  });
+})();
+</script>
+
+<!-- footer: night falls when the footer arrives, and the scene only moves while it is visible.
+     Under reduced motion, or without script, nothing is armed and the night is simply there. -->
+<script>
+(function(){
+  var f = document.querySelector('.dv-footer'), sky = f && f.querySelector('.dvs'),
+      svg = sky && sky.querySelector('svg');
+  if(!svg || !('IntersectionObserver' in window) || !svg.getScreenCTM) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var NS = 'http://www.w3.org/2000/svg', R = Math.random, wins = [];
+  function el(tag, at){ var n = document.createElementNS(NS, tag); for(var k in at) n.setAttribute(k, at[k]); return n; }
+
+  // Split each lit window band into one rect per pattern cell, so rooms can
+  // switch on one at a time. The pattern is in user space, so the cut rects
+  // line up with the windows exactly; a few rooms stay dark.
+  [].forEach.call(svg.querySelectorAll('g.dvs-lit'), function(g){
+    g.classList.add('dvs-chunked');
+    [].slice.call(g.children).forEach(function(r){
+      if(r.tagName.toLowerCase() !== 'rect'){
+        r.classList.add('dvs-w'); r.style.setProperty('--d', (1.4 + R()).toFixed(2) + 's'); return;
+      }
+      var fill = r.getAttribute('fill'), wide = fill.indexOf('Win2') > -1,
+          cw = wide ? 20 : 12, ch = wide ? 17 : 14,
+          x0 = +r.getAttribute('x'), y0 = +r.getAttribute('y'),
+          x1 = x0 + +r.getAttribute('width'), y1 = y0 + +r.getAttribute('height'),
+          frag = document.createDocumentFragment();
+      for(var y = Math.floor(y0 / ch) * ch; y < y1; y += ch)
+        for(var x = Math.floor(x0 / cw) * cw; x < x1; x += cw){
+          var ax = Math.max(x, x0), ay = Math.max(y, y0), bx = Math.min(x + cw, x1), by = Math.min(y + ch, y1);
+          if(bx - ax < 1 || by - ay < 1) continue;
+          var c = el('rect', {x:ax, y:ay, width:bx - ax, height:by - ay, fill:fill, 'class':'dvs-w' + (R() < .12 ? ' off' : '')});
+          c.style.setProperty('--d', (.4 + Math.pow(R(), .8) * 3.2).toFixed(2) + 's');
+          frag.appendChild(c); wins.push(c);
+        }
+      r.parentNode.replaceChild(frag, r);
+    });
+  });
+  f.classList.add('dvs-armed');
+
+  // parallax fallback where scroll-driven animations are missing: one rAF per scroll, only while on screen
+  var cssPx = window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'), raf = 0;
+  if(!cssPx) f.classList.add('dvs-pxjs');
+  function px(){ raf = 0; var b = sky.getBoundingClientRect(), k = (innerHeight - b.top) / b.height;
+    sky.style.setProperty('--pk', Math.max(0, Math.min(1, k)).toFixed(3)); }
+  function onScroll(){ if(!raf) raf = requestAnimationFrame(px); }
+
+  // the rare things: a shooting star every 20-40s, and now and then a room going dark or coming on
+  var met = svg.querySelector('.dvs-shoot'), metG = met.firstElementChild, tMet = 0, tWin = 0;
+  metG.addEventListener('animationend', function(){ metG.classList.remove('go'); });
+  function shoot(){
+    met.setAttribute('transform', 'translate(' + (520 + R() * 480 | 0) + ' ' + (30 + R() * 80 | 0) + ')');
+    metG.classList.add('go'); tMet = setTimeout(shoot, 20000 + R() * 20000);
+  }
+  function room(){ var w = wins[R() * wins.length | 0]; if(w) w.classList.toggle('off'); tWin = setTimeout(room, 3000 + R() * 6000); }
+
+  var inView = false, live = false;
+  function update(){
+    var on = inView && !document.hidden;
+    if(on === live) return;
+    live = on; f.classList.toggle('is-live', on);
+    if(on){
+      tMet = setTimeout(shoot, 9000 + R() * 8000); tWin = setTimeout(room, 6000);
+      if(!cssPx){ addEventListener('scroll', onScroll, {passive:true}); px(); }
+    } else {
+      clearTimeout(tMet); clearTimeout(tWin);
+      if(!cssPx) removeEventListener('scroll', onScroll);
+    }
+  }
+  new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      inView = e.isIntersecting;
+      if(e.intersectionRatio >= .3) f.classList.add('is-lit');
+      update();
+    });
+  }, {threshold:[0, .3]}).observe(sky);
+  document.addEventListener('visibilitychange', update);
+
+  // every entry is a star: a tap on the sky puts one there and joins it to the last, up to twelve
+  var mine = svg.querySelector('.dvs-mine-g'), n = 0, last = null;
+  svg.addEventListener('pointerdown', function(e){
+    if(n >= 12 || !f.classList.contains('is-lit')) return;
+    var m = svg.getScreenCTM(); if(!m) return;
+    var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; pt = pt.matrixTransform(m.inverse());
+    if(pt.y > 250) return;
+    var x = pt.x.toFixed(1), y = pt.y.toFixed(1); n++;
+    if(last) mine.appendChild(el('path', {d:'M' + last + 'L' + x + ' ' + y, pathLength:1, 'class':'dvs-myline'}));
+    var ring = el('circle', {cx:x, cy:y, r:3, 'class':'dvs-ring'});
+    ring.addEventListener('animationend', function(){ ring.remove(); });
+    mine.appendChild(ring);
+    mine.appendChild(el('circle', {cx:x, cy:y, r:1.9, 'class':'dvs-mystar'}));
+    last = x + ' ' + y;
   });
 })();
 </script>
