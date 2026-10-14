@@ -45,7 +45,7 @@ def main() -> None:
     ap.add_argument("--ios", required=True, help="e.g. 1.13 (shown); 1.13.0 is derived for schema")
     ap.add_argument("--android", required=True, help="e.g. 1.2")
     a = ap.parse_args()
-    ios = a.ios.rstrip(".0") if a.ios.count(".") > 1 and a.ios.endswith(".0") else a.ios
+    ios = a.ios[:-2] if a.ios.count(".") > 1 and a.ios.endswith(".0") else a.ios
     ios_full = ios if ios.count(".") >= 2 else ios + ".0"
     vals = dict(ios=ios, ios_full=ios_full, android=a.android)
     changed = 0
