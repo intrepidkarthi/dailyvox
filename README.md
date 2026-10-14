@@ -125,7 +125,7 @@ Speak at 150 words/minute instead of typing at 40. No blank page anxiety. DailyV
 Automatic sentiment analysis on every entry, and a suggested mood that is marked as a suggestion, changes with one tap, and never replaces a mood you chose. Trends across days, weeks, and months. Your Twin predicts tomorrow's mood based on your patterns.
 
 ### Privacy by Architecture
-Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest privacy label: **"Data Not Collected."** Your journal is encrypted on-device. Optional iCloud sync uses your personal account with Apple's end-to-end encryption.
+Zero network calls. Zero third-party SDKs. Zero analytics. Apple's strictest privacy label: **"Data Not Collected."** Your journal is encrypted on-device. Optional iCloud sync (off by default) goes to your own private iCloud database; Apple encrypts it, and it is end-to-end encrypted only if you have Advanced Data Protection turned on.
 
 ### Everything Else
 - **Biometric lock** — Face ID / Touch ID
@@ -249,7 +249,7 @@ Yes. Every feature — voice transcription, AI analysis, Digital Twin — works 
 
 <details>
 <summary><strong>Where is my data stored?</strong></summary>
-On your device in an encrypted Core Data store. Optional iCloud sync goes through your personal iCloud account (end-to-end encrypted by Apple). DailyVox never has access.
+On your device in an encrypted Core Data store. Optional iCloud sync (off by default) goes to your own private iCloud database, which DailyVox never has access to. Apple encrypts it in transit and at rest; it is end-to-end encrypted only if you have turned on Advanced Data Protection for iCloud.
 </details>
 
 <details>
