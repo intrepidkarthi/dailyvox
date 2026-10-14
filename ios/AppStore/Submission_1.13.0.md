@@ -70,9 +70,18 @@ Keep the 1.11.0 notes (`ReviewNotes_1.11.0.md`) and add:
 
 | Field | Why it stays |
 |---|---|
-| App Name, Subtitle, Keywords, Description | Unchanged |
+| App Name, Subtitle, Keywords | Unchanged |
 | Category, Age Rating, Price | Unchanged |
 | **App Privacy ("Data Not Collected")** | Still correct: every new feature runs on the device; nothing is sent anywhere |
+
+---
+
+## 5a. Description — PASTE INTO "Description"
+
+Updated for this release: a new "IT TALKS BACK (NEW)" section, "Can't talk right
+now?" is no longer marked new, the streak line mentions the rest day, and the
+iCloud line no longer implies how sync is encrypted. The full text is
+`localization.en-US.description` in `metadata.json` (3983 of 4,000 characters).
 
 ---
 
