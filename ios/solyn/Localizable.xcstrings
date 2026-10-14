@@ -3250,30 +3250,30 @@
         }
       }
     },
-    "End-to-end encrypted with your Apple ID" : {
+    "Encrypted by Apple; end-to-end only with Advanced Data Protection" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ende-zu-Ende-verschlüsselt mit deiner Apple-ID"
+            "value" : "Von Apple verschlüsselt; Ende-zu-Ende nur mit erweitertem Datenschutz"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cifrado de extremo a extremo con tu Apple ID"
+            "value" : "Cifrado por Apple; de extremo a extremo solo con la protección de datos avanzada"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chiffré de bout en bout avec ton identifiant Apple"
+            "value" : "Chiffré par Apple ; de bout en bout uniquement avec la protection avancée des données"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crittografato end-to-end con il tuo Apple ID"
+            "value" : "Crittografato da Apple; end-to-end solo con la protezione avanzata dei dati"
           }
         }
       }
