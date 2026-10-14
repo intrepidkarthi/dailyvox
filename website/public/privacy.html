@@ -274,7 +274,7 @@
         <p>On iPhone and iPad, all data lives <strong>on your device</strong>, in the app's sandboxed storage protected by iOS. The app's database is encrypted at rest with iOS Data Protection. When the device is locked, the data is mathematically inaccessible without your passcode or biometric.</p>
 
         <h2>Optional iCloud sync</h2>
-        <p>If you enable iCloud sync in <strong>Settings → iCloud Sync</strong>, your entries sync between your own Apple devices via Apple's CloudKit. Your data is encrypted with your Apple ID — DailyVox cannot read it, and neither can Apple. This is end-to-end encrypted between your devices. iCloud sync is <strong>optional</strong> and disabled by default. The app works without it.</p>
+        <p>If you enable iCloud sync in <strong>Settings → iCloud Sync</strong>, your entries sync between your own Apple devices via Apple's CloudKit. They go to your own private iCloud database, which DailyVox has no access to. Apple encrypts them in transit and on its servers. They are end-to-end encrypted, so that Apple cannot read them either, only if you have turned on Advanced Data Protection for iCloud. iCloud sync is <strong>optional</strong> and disabled by default. The app works without it.</p>
 
         <h2>What we do NOT do</h2>
         <ul>
@@ -296,7 +296,7 @@
           <li><strong>Speech Recognition</strong> — required for on-device transcription.</li>
           <li><strong>Face ID / Touch ID</strong> — optional, used only if you enable the App Lock feature.</li>
           <li><strong>Photo Library</strong> — optional, requested only when you tap "Attach Photo."</li>
-          <li><strong>Notifications</strong> — optional, used for the daily reminder if you enable it.</li>
+          <li><strong>Notifications</strong> — optional, used for the daily reminder if you enable it. Reminders say nothing from your journal unless you turn on <strong>Include a line from your past in reminders</strong> (off by default); then a reminder may quote a line from one of your own entries, which anyone who can see your Lock Screen can read. The notification is created on your phone and nothing is sent anywhere.</li>
           <li><strong>Health (read-only)</strong> — optional, requested only if you turn on Body Twin in Settings. Reads sleep, heart rate, HRV, steps, and mindful minutes so your Twin can understand what your body felt around each entry.</li>
           <li><strong>Motion &amp; Fitness</strong> — optional, used with Body Twin to tell whether you were moving when you recorded, so body signals are interpreted in the right context.</li>
         </ul>
@@ -312,7 +312,7 @@
         <p>DailyVox for Android (on <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>, Android 13 or newer) follows the same rule by a different route, because Android does not provide Apple's frameworks.</p>
         <ul>
           <li><strong>No internet permission.</strong> The app does not request Android's <code>INTERNET</code> permission, so it cannot open a network connection at all. You can check this yourself in <strong>Settings › Apps › DailyVox › Permissions</strong>.</li>
-          <li><strong>Permissions it does request:</strong> Microphone (to record, only while you are recording), Notifications (the daily reminder, which you can switch off, and an ongoing notice while a recording is in progress), and Biometric (only for the optional app lock; the app receives a yes or no, never your fingerprint or face). It also declares vibration for haptics. It requests no health, location, contacts or storage permission.</li>
+          <li><strong>Permissions it does request:</strong> Microphone (to record, only while you are recording), Notifications (the daily reminder, which you can switch off and which quotes a line from one of your own past entries only if you turn that on, and an ongoing notice while a recording is in progress), and Biometric (only for the optional app lock; the app receives a yes or no, never your fingerprint or face). It also declares vibration for haptics. It requests no health, location, contacts or storage permission.</li>
           <li><strong>Transcription</strong> uses your phone's own on-device speech recogniser, and the app only ever asks for on-device recognition. If your phone does not yet have the offline speech pack for your language, the app can ask your phone's speech service to download it. That download is made by the speech service, not by DailyVox, and it carries a language code, never your voice or your journal.</li>
           <li><strong>Mood, names and the Twin</strong> are computed in the app itself, on the phone: a bundled sentiment lexicon for mood and an on-device heuristic for names. No model is downloaded and nothing is sent anywhere.</li>
           <li><strong>Where it lives:</strong> entries, recordings and everything the Twin learns are stored in the app's private storage, protected by Android's file-based encryption.</li>
@@ -337,7 +337,7 @@
         <p>The Google Play Data safety section for DailyVox declares that the app <strong>collects no data and shares no data</strong>. That matches the permission list above, which you can read in Android's own settings.</p>
 
         <h2>Changes to this policy</h2>
-        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: 2026-10-02 (added DailyVox for Android: its permissions, on-device speech and the speech-pack download, no Auto Backup, and the Google Play Data safety declaration).</p>
+        <p>If we ever change our privacy model (which would require adding servers), we will: announce it in advance, give users the option to opt out, and update this page with the change date. The current page is the source of truth. Last updated: RELEASE-DATE (corrected the iCloud sync encryption description: end-to-end only with Advanced Data Protection; added the optional reminder that can quote one of your own past entries on the Lock Screen). Previously: 2026-10-02 (added DailyVox for Android: its permissions, on-device speech and the speech-pack download, no Auto Backup, and the Google Play Data safety declaration).</p>
 
         <h2>Contact</h2>
         <p>Questions about privacy? Email <a href="mailto:hello@getdailyvox.com">hello@getdailyvox.com</a> — Karthikeyan reads every message personally.</p>
