@@ -119,32 +119,33 @@ class Repo private constructor(private val db: DailyVoxDb) {
             }
             ?.takeIf { it.available }
 
-        db.entries().upsert(
-            Entry(
-                id = UUID.randomUUID().toString(),
-                text = text,
-                createdAt = now,
-                durationSec = durationSec,
-                valence = com.dailyvox.twin.Sentiment.valence(text),
-                entities = entities.joinToString(","),
-                audioPath = audioPath,
-                speakingRate = prosody?.speakingRate?.toFloat(),
-                pitchMean = prosody?.pitchMean?.toFloat(),
-                pitchVariability = prosody?.pitchVariability?.toFloat(),
-                energyMean = prosody?.energyMean?.toFloat(),
-                pauseRatio = prosody?.pauseRatio?.toFloat(),
-                longPauseCount = prosody?.longPauseCount,
-                hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
-                dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
-                // Captured at write time, so the entry keeps the body context it
-                // was actually spoken in. Reading it later would attach today's
-                // sleep to last week's entry.
-                sleepHours = body?.sleepHours?.toFloat(),
-                hrvMs = body?.morningHrvMs?.toFloat(),
-                restingHrBpm = body?.restingHrBpm?.toFloat(),
-                stepsToday = body?.stepsToday,
-            )
+        val entry = Entry(
+            id = UUID.randomUUID().toString(),
+            text = text,
+            createdAt = now,
+            durationSec = durationSec,
+            valence = com.dailyvox.twin.Sentiment.valence(text),
+            entities = entities.joinToString(","),
+            audioPath = audioPath,
+            speakingRate = prosody?.speakingRate?.toFloat(),
+            pitchMean = prosody?.pitchMean?.toFloat(),
+            pitchVariability = prosody?.pitchVariability?.toFloat(),
+            energyMean = prosody?.energyMean?.toFloat(),
+            pauseRatio = prosody?.pauseRatio?.toFloat(),
+            longPauseCount = prosody?.longPauseCount,
+            hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
+            dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
+            // Captured at write time, so the entry keeps the body context it
+            // was actually spoken in. Reading it later would attach today's
+            // sleep to last week's entry.
+            sleepHours = body?.sleepHours?.toFloat(),
+            hrvMs = body?.morningHrvMs?.toFloat(),
+            restingHrBpm = body?.restingHrBpm?.toFloat(),
+            stepsToday = body?.stepsToday,
         )
+        db.entries().upsert(entry)
+        // Returned so the Speak screen can reflect on exactly what was saved.
+        entry
     }
 
     /** Streak in days, counting back from today while an entry exists each day. */
