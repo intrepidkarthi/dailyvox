@@ -2,19 +2,45 @@
 
 Thanks for your interest in contributing to DailyVox! This guide will help you get started.
 
-## Quick Start (5 minutes)
+## Before you clone: the engine is private
+
+This repository is the app. The Digital Twin engine it depends on is a separate,
+**private** on-device package (`DailyVoxTwinEngine`), and both apps expect it
+checked out at `DailyVoxTwin/` in the root of this repository. The Xcode project
+points at `../DailyVoxTwin` from `ios/`, and the Android build at
+`../DailyVoxTwin/kotlin/engine` from `android/`. The folder is gitignored.
+
+What that means for you:
+
+| | With engine access | Without engine access |
+|---|---|---|
+| **iOS** | Builds and runs | **Does not build.** Xcode cannot resolve the `DailyVoxTwin` package, and there is no stub for it |
+| **Android** | Builds, runs, unit tests pass | Compiles against a generated stub (`android/tools/make-engine-stub.sh`). A stub build detects no names, scores every mood 0.0 and reports no prosody, so it is for checking that your change compiles, not for judging behaviour |
+
+No API keys and no server setup in either case. Everything runs on-device.
+
+## Quick Start
 
 1. **Fork & clone**
    ```bash
    git clone https://github.com/<your-username>/dailyvox.git
    cd dailyvox
    ```
-2. **Open in Xcode** — `ios/solyn.xcodeproj` (shared scheme is included, no setup needed)
-3. **Build & run** — select any iOS 17+ Simulator and hit `Cmd+R`
-4. **Run tests** — `Cmd+U` to run the unit test suite
+2. **Add the engine** — with access:
+   ```bash
+   git clone git@github.com:intrepidkarthi/DailyVoxTwin.git   # lands at dailyvox/DailyVoxTwin
+   ```
+   Without access, for Android only:
+   ```bash
+   android/tools/make-engine-stub.sh
+   ```
+3. **iOS** — open `ios/solyn.xcodeproj` in Xcode 26 or later (the shared `solyn` scheme is included), pick an iOS 17+ Simulator and hit `Cmd+R`. `Cmd+U` runs the tests.
+4. **Android** — see [`android/README.md`](android/README.md): JDK 21, an Android SDK, then `./gradlew :app:assembleDebug` from `android/`.
 5. **Pick an issue** — look for [`good first issue`](https://github.com/intrepidkarthi/dailyvox/labels/good%20first%20issue) or [`help wanted`](https://github.com/intrepidkarthi/dailyvox/labels/help%20wanted) labels
 
-That's it — no API keys, no server setup, no dependencies to install. Everything runs on-device.
+If you have no engine access and want to work on the iOS app, open an issue
+first, so we can find a piece of work that can be checked without a local build
+(copy, accessibility labels, docs) or agree another way to test it.
 
 ## Where to Start
 
@@ -33,10 +59,12 @@ Not sure what to work on? Here are some ways to jump in:
 - Add new themes to `ThemeManager.swift`
 
 ### Intermediate tasks
-- Add new insight types in `InsightsEngine.swift`
-- Extend the knowledge graph in `DigitalTwinEngine.swift`
-- Improve Twin chat responses in `TwinChatView.swift`
+- Improve the Twin chat interface in `TwinChatView.swift`
 - Add new export formats in `BackupService.swift`
+- Bring an iOS-only detail to Android, or the other way round (see the parity matrix in [ROADMAP.md](ROADMAP.md#platforms))
+
+Insight types, the knowledge graph and the personality models live in the
+private engine, so they are not open to outside changes.
 
 ### Advanced tasks (check the [Roadmap](ROADMAP.md))
 - **v1.4**: Body Twin — HealthKit integration + Apple Watch companion app
@@ -51,14 +79,15 @@ check [ROADMAP.md](ROADMAP.md) for what is actually open before starting work.
 
 For the iOS app:
 
-- **Xcode 15+** (latest stable recommended)
-- **iOS 17+ SDK**
-- A Mac with macOS Sonoma or later
+- **Xcode 26 or later.** The app runs on iOS 17, but it calls iOS 26 APIs
+  (`SpeechAnalyzer`) behind availability checks, so it needs the iOS 26 SDK to compile
+- The private engine at `DailyVoxTwin/` (see above)
 
-(The Android app is on Google Play. It has its own prerequisites — JDK 21 and
-the Gradle wrapper — in [`android/README.md`](android/README.md), and neither app
-requires the other's toolchain.)
-- No third-party tools required — zero external dependencies
+For the Android app: JDK 21, an Android SDK (`ANDROID_HOME`, or `sdk.dir` in
+`android/local.properties`) and the Gradle wrapper — details in
+[`android/README.md`](android/README.md). Neither app requires the other's toolchain.
+
+No third-party libraries or tools beyond those.
 
 ## Development Workflow
 
@@ -71,16 +100,19 @@ requires the other's toolchain.)
 4. **Test thoroughly** — ensure the app builds and runs correctly on the Simulator (`Cmd+U` for tests)
 5. **Open a Pull Request** against `main` with a clear description of your changes
 
-CI will automatically build and run tests on your PR.
+CI runs on pull requests that touch `ios/` or `android/`. The Android workflow
+builds against the stub when it has no engine access, so it checks that the app
+compiles and that no network permission or Auto Backup has crept in; it runs the
+unit tests only with the real engine. The iOS workflow has no engine access
+either, so at present it cannot build the app: treat its result as no signal,
+and say in your PR how you built and tested.
 
 ## Understanding the Codebase
 
-All app code lives in `ios/solyn/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the full module map, but here's the quick version:
+iOS app code lives in `ios/solyn/`, Android app code in `android/app/src/main/kotlin/`. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the full module map, but here's the quick version for iOS:
 
 ```
-Microphone → AudioRecorder → SpeechTranscriber → LocalAIEngine → DigitalTwinEngine → Core Data
-                                                       ↓
-                                                 InsightsEngine → UI Views
+Microphone → AudioRecorder → SpeechTranscriber → [private engine] → Core Data → UI Views
 ```
 
 Key files to know:
@@ -88,9 +120,9 @@ Key files to know:
 |---|---|
 | `ContentView.swift` | Main tab navigation |
 | `TodayView.swift` | Daily journaling & recording |
-| `DigitalTwinEngine.swift` | Core Twin personality model |
-| `LocalAIEngine.swift` | NLP analysis (sentiment, entities) |
 | `Persistence.swift` | Core Data layer |
+| `SuggestedMood.swift` | The suggested mood, and the rule that never overwrites one the user chose |
+| `ReminderManager.swift` | Daily reminders |
 | `TwinChatView.swift` | "Ask Your Twin" chat interface |
 
 ## Code Style
