@@ -4,306 +4,6 @@
     "" : {
       "shouldTranslate" : false
     },
-    "Early signals · from %lld entries" : {
-      "comment" : "Title of the first-week card on Insights and the Twin tab. The number is how many entries it is read from (3 to 7)."
-    },
-    "These will firm up as you keep going. Patterns arrive at %lld entries." : {
-      "comment" : "Subtitle of the early signals card. The number is the entry count at which the full patterns appear."
-    },
-    "Words you came back to" : {
-      "comment" : "Early signals: heading for words that appear in two or more entries."
-    },
-    "You haven't picked a mood yet." : {
-      "comment" : "Early signals: shown when the user has not chosen a mood on any entry."
-    },
-    "You picked: %@" : {
-      "comment" : "Early signals: moods the user chose, with counts, e.g. 'Calm ×2 · Tired ×1'."
-    },
-    "Suggested from your words, not picked: %@" : {
-      "comment" : "Early signals: moods the app suggested and the user left unchanged, with counts. Must say they were suggested."
-    },
-    "Moods so far" : {
-      "comment" : "Early signals: heading for the mood counts."
-    },
-    "You mostly speak in the morning." : {
-      "comment" : "Early signals: most entries are between 5 am and noon."
-    },
-    "You mostly speak in the afternoon." : {
-      "comment" : "Early signals: most entries are between noon and 5 pm."
-    },
-    "You mostly speak in the evening." : {
-      "comment" : "Early signals: most entries are between 5 pm and 10 pm."
-    },
-    "You mostly speak late at night." : {
-      "comment" : "Early signals: most entries are between 10 pm and 5 am."
-    },
-    "%lld of your %lld entries." : {
-      "comment" : "Early signals: how many entries fall in that part of the day, out of all of them."
-    },
-    "About %lld words an entry." : {
-      "comment" : "Early signals: average words per entry."
-    },
-    "Your recent entries run longer: %lld words on average, up from %lld." : {
-      "comment" : "Early signals: the later half of entries is longer than the earlier half. Numbers are average words."
-    },
-    "Your recent entries run shorter: %lld words on average, down from %lld." : {
-      "comment" : "Early signals: the later half of entries is shorter than the earlier half. Numbers are average words."
-    },
-    "About the same length from the first to the latest." : {
-      "comment" : "Early signals: entry length has not changed much."
-    },
-    "“%@” — in %lld entries" : {
-      "comment" : "Early signals: a word the user said, quoted exactly, and how many entries it appears in (always 2 or more)."
-    },
-    "Until then, Early signals at the top shows what can already be counted." : {
-      "comment" : "Insights: appended to the 'not enough yet' line while the early signals card is showing."
-    },
-    "Early signals appear from your third entry." : {
-      "comment" : "Insights: appended to the 'not enough yet' line before the third entry."
-    },
-    "Welcome back. Your sky kept your place." : {
-      "comment" : "Insights streak card, for someone with entries whose run has ended. Warm, no guilt."
-    },
-    "%lld days spoken so far. A new run starts whenever you speak." : {
-      "comment" : "Insights streak card, under the welcome-back line. The number is distinct days with an entry."
-    },
-    "Yesterday was a rest day, and your run is held. One missed day is forgiven once a week." : {
-      "comment" : "Insights streak card: yesterday had no entry and the grace day is keeping the run."
-    },
-    "One missed day won't break a run — once a week." : {
-      "comment" : "Insights streak card: explains the grace day rule in one line."
-    },
-    "Your sky kept your place. Longest run %lld days." : {
-      "comment" : "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days."
-    },
-    "Welcome back" : {
-      "comment" : "Today header, top right, for someone with entries whose run has ended. Replaces 'no streak yet'. No guilt."
-    },
-    "Still listening. Early signals below show what can already be counted." : {
-      "comment" : "Twin tab summary line before five entries, while the early signals card is shown under it."
-    },
-    "Still listening. A few more nights and there will be something to say." : {
-      "comment" : "Twin tab summary line before the third entry."
-    },
-    "Different question" : {
-      "comment" : "Button under the question of the day that shows another question."
-    },
-    "Double-tap for a different question. You can speak about anything." : {
-      "comment" : "VoiceOver hint on the question of the day above the mic."
-    },
-    "How are things there?" : {
-      "comment" : "Question of the day asking after a place the user named recently; the place is named in the line above."
-    },
-    "How are things with %@?" : {
-      "comment" : "Question of the day asking after a person the user named recently. %@ is the name. Do not add pronouns."
-    },
-    "How did you sleep last night?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "How does your body feel right now?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "If you spoke to yourself like a friend, what would you say?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "Is there a conversation from today you keep coming back to?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "Just log your day" : {
-      "comment" : "Research pilot: a neutral question of the day."
-    },
-    "Plain notes" : {
-      "comment" : "Research pilot: a neutral question of the day."
-    },
-    "Walk through today, start to finish." : {
-      "comment" : "Question of the day on the Today screen. A plain log of the day."
-    },
-    "Walk through your day start to finish - what you did, where, with whom. Facts are enough." : {
-      "comment" : "Research pilot: guidance under the neutral question of the day."
-    },
-    "What are a few small things you’re glad about?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What are you looking forward to?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What did the weather do to your day?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What did today actually look like? No reflection needed - just what happened." : {
-      "comment" : "Research pilot: guidance under the neutral question of the day."
-    },
-    "What did you eat today, and with whom?" : {
-      "comment" : "Question of the day on the Today screen. A plain log of the day."
-    },
-    "What did you hear, read or watch that stayed with you?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What did you learn today, even something tiny?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What did you notice on your way somewhere?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What did you work on today?" : {
-      "comment" : "Question of the day on the Today screen. A plain log of the day."
-    },
-    "What made you curious today?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What was the quietest part of your day?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What went a little better than expected?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What would you tell a friend about today?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s one gentle intention for tomorrow?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s one moment from today you’d like to keep?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s one small thing you finished?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s one worry you could put down for tonight?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s something you’re in the middle of?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "What’s still on your mind from today?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "Where did you go today?" : {
-      "comment" : "Question of the day on the Today screen. A plain log of the day."
-    },
-    "Where did your energy go today?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "Who did you spend time with today?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "Who made you laugh lately?" : {
-      "comment" : "Question of the day on the Today screen."
-    },
-    "You mentioned %@ a few days ago." : {
-      "comment" : "Line above a question of the day that asks after a name from an entry 2-6 days ago. %@ is the name exactly as the user said it."
-    },
-    "You mentioned %@ a week ago." : {
-      "comment" : "Line above a question of the day that asks after a name from an entry 7 days ago. %@ is the name exactly as the user said it."
-    },
-    "You mentioned %@ recently." : {
-      "comment" : "Line above a question of the day that asks after a name from an entry 8-14 days ago. %@ is the name exactly as the user said it."
-    },
-    "You mentioned %@ yesterday." : {
-      "comment" : "Line above a question of the day that asks after a name from yesterday's entry. %@ is the name exactly as the user said it."
-    },
-    "%lld days ago you said" : {
-      "comment" : "Header of the Today card quoting the user's entry from 6 or 8 days ago."
-    },
-    "%lld years ago today" : {
-      "comment" : "Header of the On-this-day card for an entry from the same date n years ago."
-    },
-    "^[%lld entry](inflect: true) · ^[%lld day](inflect: true) spoken" : {
-      "comment" : "Weekly recap: number of entries and of distinct days with an entry, counted from the entries."
-    },
-    "A month ago today" : {
-      "comment" : "Header of the On-this-day card for an entry from the same date last month."
-    },
-    "A week ago you said" : {
-      "comment" : "Header of the Today card quoting the user's entry from 7 days ago."
-    },
-    "A week ago you said: “%@”" : {
-      "comment" : "Opt-in evening reminder body quoting the user's own entry from a week ago. %@ is a verbatim excerpt; keep it in quotation marks."
-    },
-    "A year ago today" : {
-      "comment" : "Header of the On-this-day card for an entry from the same date last year."
-    },
-    "From your week" : {
-      "comment" : "Label above the one verbatim line quoted in the weekly recap."
-    },
-    "Include a line from your past in reminders" : {
-      "comment" : "Settings > Daily Reminder toggle. Off by default."
-    },
-    "Last week" : {
-      "comment" : "Title of the weekly recap in Insights for the previous full week."
-    },
-    "On this day" : {
-      "comment" : "Today screen: small header above entries from the same date in earlier months or years."
-    },
-    "Opens the entry." : {
-      "comment" : "VoiceOver hint on a resurfaced past entry or recap line."
-    },
-    "Quotes a few words you said a week ago. Reminders show on your lock screen, so anyone who sees your phone can read them." : {
-      "comment" : "Settings > Daily Reminder: explanation under the past-line toggle."
-    },
-    "This week" : {
-      "comment" : "Title of the weekly recap in Insights once the current week's recap is due."
-    },
-    "You mentioned %@ ^[%lld time](inflect: true)." : {
-      "comment" : "Weekly recap: %@ is a person, place or topic as the user wrote it; shown only when it appears at least twice that week."
-    },
-    "Your week" : {
-      "comment" : "Title of the weekly recap card on the Today screen."
-    },
-    "%@ was suggested from your words. Pick a mood to make it yours, or choose No mood." : {
-      "comment" : "Footer in the mood picker when the current mood was suggested, not chosen. %@ is the mood name."
-    },
-    "Double-tap to change." : {
-      "comment" : "VoiceOver hint on a mood chip or mood button."
-    },
-    "Feeling %@" : {
-      "comment" : "Mood chip on Today and onboarding once the user chose the mood. %@ is the mood, lowercased (e.g. calm)."
-    },
-    "For tomorrow: you mentioned %@. Maybe start there." : {
-      "comment" : "Today reflection card. %@ is a person or place the entry itself names."
-    },
-    "Lighter bars are moods suggested from your words. Tap the mood on an entry to change it." : {
-      "comment" : "Insights mood trends: caption shown when some bars are suggested moods."
-    },
-    "Listening back to what you said…" : {
-      "comment" : "Today reflection card while the new recording is still being transcribed."
-    },
-    "Mood: %@." : {
-      "comment" : "VoiceOver label for a mood the user chose. %@ is the mood, lowercased."
-    },
-    "Moods appear here as you record — suggested from your words, or set by you." : {
-      "comment" : "Insights mood trends, empty state."
-    },
-    "No catching up to do. Forty-two seconds, whenever you're ready." : {
-      "comment" : "Body of the one-off welcome-back notification. No streak guilt."
-    },
-    "On this iPhone" : {
-      "comment" : "Small label on the Today reflection card: the reflection was made on the device."
-    },
-    "Reflection is on its way." : {
-      "comment" : "VoiceOver label for the Today reflection card while it is still being made."
-    },
-    "Reflection: %@" : {
-      "comment" : "VoiceOver label for the Today reflection card. %@ is the reflection text."
-    },
-    "SOUNDS %@?" : {
-      "comment" : "Entry detail header: a suggested mood, in the mono caps style. %@ is the mood name in caps."
-    },
-    "Sounds %@ — tap to change" : {
-      "comment" : "Mood chip on Today and onboarding: a mood suggested from the entry's words. %@ is the mood, lowercased (e.g. calm)."
-    },
-    "Suggested mood: %@." : {
-      "comment" : "VoiceOver label for a suggested mood chip. %@ is the mood, lowercased."
-    },
-    "Tonight's star is waiting" : {
-      "comment" : "Evening reminder notification title."
-    },
-    "Whenever you're ready. Forty-two seconds." : {
-      "comment" : "Evening reminder notification body."
-    },
-    "Your sky is still here" : {
-      "comment" : "One-off notification a few days after the weekly reminders run out. No streak guilt."
-    },
     "·" : {
       "comment" : "A period.",
       "isCommentAutoGenerated" : true
@@ -338,6 +38,9 @@
     },
     "“%@”" : {
       "shouldTranslate" : false
+    },
+    "“%@” — in %lld entries" : {
+      "comment" : "Early signals: a word the user said, quoted exactly, and how many entries it appears in (always 2 or more)."
     },
     "%@ · %lld%%" : {
       "localizations" : {
@@ -393,6 +96,9 @@
           }
         }
       }
+    },
+    "%@ was suggested from your words. Pick a mood to make it yours, or choose No mood." : {
+      "comment" : "Footer in the mood picker when the current mood was suggested, not chosen. %@ is the mood name."
     },
     "%@, intensity %lld" : {
       "localizations" : {
@@ -506,6 +212,9 @@
         }
       }
     },
+    "%lld days ago you said" : {
+      "comment" : "Header of the Today card quoting the user's entry from 6 or 8 days ago."
+    },
     "%lld days left" : {
       "localizations" : {
         "de" : {
@@ -533,6 +242,9 @@
           }
         }
       }
+    },
+    "%lld days spoken so far. A new run starts whenever you speak." : {
+      "comment" : "Insights streak card, under the welcome-back line. The number is distinct days with an entry."
     },
     "%lld days. That is a habit now." : {
       "comment" : "A description of the milestone streak. The argument is the milestone streak.",
@@ -597,6 +309,9 @@
           }
         }
       }
+    },
+    "%lld of your %lld entries." : {
+      "comment" : "Early signals: how many entries fall in that part of the day, out of all of them."
     },
     "%lld RECORDINGS" : {
       "comment" : "A label that reads \"RECORDINGS\" when there is more than one recording in a day.",
@@ -693,9 +408,11 @@
         }
       }
     },
+    "%lld years ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date n years ago."
+    },
     "%lld-day streak" : {
-      "comment" : "A label that shows the streak of days the user has been using DailyVox. The argument is the number of days in the streak.",
-      "isCommentAutoGenerated" : true
+      "comment" : "Today header, top right. Spoken days in the current run; one missed day a week does not end it."
     },
     "%lld-Day Streak" : {
       "extractionState" : "stale",
@@ -742,6 +459,9 @@
     },
     "%lldx" : {
       "shouldTranslate" : false
+    },
+    "^[%lld entry](inflect: true) · ^[%lld day](inflect: true) spoken" : {
+      "comment" : "Weekly recap: number of entries and of distinct days with an entry, counted from the entries."
     },
     "✕" : {
       "comment" : "A discard button.",
@@ -899,6 +619,9 @@
         }
       }
     },
+    "A month ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date last month."
+    },
     "A private AI that learns who you are — entirely on your device." : {
       "localizations" : {
         "de" : {
@@ -928,6 +651,7 @@
       }
     },
     "A starting thought" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -954,6 +678,15 @@
           }
         }
       }
+    },
+    "A week ago you said" : {
+      "comment" : "Header of the Today card quoting the user's entry from 7 days ago."
+    },
+    "A week ago you said: “%@”" : {
+      "comment" : "Opt-in evening reminder body quoting the user's own entry from a week ago. The quote is verbatim; keep it in quotation marks."
+    },
+    "A year ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date last year."
     },
     "About" : {
       "localizations" : {
@@ -982,6 +715,12 @@
           }
         }
       }
+    },
+    "About %lld words an entry." : {
+      "comment" : "Early signals: average words per entry."
+    },
+    "About the same length from the first to the latest." : {
+      "comment" : "Early signals: entry length has not changed much."
     },
     "Add ${text} to my diary" : {
       "localizations" : {
@@ -2476,6 +2215,14 @@
         }
       }
     },
+    "Copied" : {
+      "comment" : "A label that says \"Copied\" when the user has copied the participant code.",
+      "isCommentAutoGenerated" : true
+    },
+    "Copy" : {
+      "comment" : "A button that copies the participant code to the clipboard.",
+      "isCommentAutoGenerated" : true
+    },
     "Daily Reminder" : {
       "localizations" : {
         "de" : {
@@ -2962,6 +2709,9 @@
         }
       }
     },
+    "Different question" : {
+      "comment" : "Button under the question of the day that shows another question."
+    },
     "Discard recording" : {
       "comment" : "Title of an intent to discard a recording.",
       "isCommentAutoGenerated" : true
@@ -3050,6 +2800,12 @@
         }
       }
     },
+    "Double-tap for a different question. You can speak about anything." : {
+      "comment" : "VoiceOver hint on the question of the day above the mic."
+    },
+    "Double-tap to change." : {
+      "comment" : "VoiceOver hint on a mood chip or mood button."
+    },
     "Duplicate entries are automatically skipped" : {
       "localizations" : {
         "de" : {
@@ -3077,6 +2833,12 @@
           }
         }
       }
+    },
+    "Early signals · from %lld entries" : {
+      "comment" : "Title of the first-week card on Insights and the Twin tab. The number is how many entries it is read from (3 to 7)."
+    },
+    "Early signals appear from your third entry." : {
+      "comment" : "Insights: appended to the 'not enough yet' line before the third entry."
     },
     "Edit" : {
       "localizations" : {
@@ -3218,6 +2980,34 @@
         }
       }
     },
+    "Encrypted by Apple; end-to-end only with Advanced Data Protection" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von Apple verschlüsselt; Ende-zu-Ende nur mit erweitertem Datenschutz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cifrado por Apple; de extremo a extremo solo con la protección de datos avanzada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiffré par Apple ; de bout en bout uniquement avec la protection avancée des données"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crittografato da Apple; end-to-end solo con la protezione avanzata dei dati"
+          }
+        }
+      }
+    },
     "Encryption at rest" : {
       "comment" : "A label for the encryption of your data.",
       "isCommentAutoGenerated" : true
@@ -3246,34 +3036,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Password di crittografia"
-          }
-        }
-      }
-    },
-    "Encrypted by Apple; end-to-end only with Advanced Data Protection" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Von Apple verschlüsselt; Ende-zu-Ende nur mit erweitertem Datenschutz"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cifrado por Apple; de extremo a extremo solo con la protección de datos avanzada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiffré par Apple ; de bout en bout uniquement avec la protection avancée des données"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crittografato da Apple; end-to-end solo con la protezione avanzata dei dati"
           }
         }
       }
@@ -3762,6 +3524,9 @@
         }
       }
     },
+    "Feeling %@" : {
+      "comment" : "Mood chip on Today and onboarding once the user chose the mood. %@ is the mood, lowercased (e.g. calm)."
+    },
     "File saved to your device only" : {
       "localizations" : {
         "de" : {
@@ -3907,6 +3672,9 @@
         }
       }
     },
+    "For tomorrow: you mentioned %@. Maybe start there." : {
+      "comment" : "Today reflection card. %@ is a person or place the entry itself names."
+    },
     "From" : {
       "localizations" : {
         "de" : {
@@ -3967,6 +3735,9 @@
           }
         }
       }
+    },
+    "From your week" : {
+      "comment" : "Label above the one verbatim line quoted in the weekly recap."
     },
     "Get insights from your journal data" : {
       "localizations" : {
@@ -4230,6 +4001,12 @@
     "Hide Twin detail" : {
 
     },
+    "How are things there?" : {
+      "comment" : "Question of the day asking after a place the user named recently; the place is named in the line above."
+    },
+    "How are things with %@?" : {
+      "comment" : "Question of the day asking after a person the user named recently. %@ is the name. Do not add pronouns."
+    },
     "How are you feeling?" : {
       "localizations" : {
         "de" : {
@@ -4285,6 +4062,12 @@
           }
         }
       }
+    },
+    "How did you sleep last night?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "How does your body feel right now?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "HOW IT KNOWS" : {
       "comment" : "A button that reveals how your twin knows you.",
@@ -4346,11 +4129,8 @@
         }
       }
     },
-    "How was your day,\nreally?" : {
-      "comment" : "A question that asks the user how their day went.",
-      "isCommentAutoGenerated" : true
-    },
     "How was your day, really?" : {
+      "comment" : "Question of the day on the Today screen. The original, and the fallback.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4434,6 +4214,10 @@
         }
       }
     },
+    "I can’t talk right now" : {
+      "comment" : "A button that lets the user type a diary entry instead of speaking.",
+      "isCommentAutoGenerated" : true
+    },
     "I don't have enough entries to answer that yet." : {
       "comment" : "Text displayed in a result when the assistant can't answer the user's question.",
       "isCommentAutoGenerated" : true
@@ -4465,6 +4249,9 @@
           }
         }
       }
+    },
+    "If you spoke to yourself like a friend, what would you say?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "Import Backup" : {
       "localizations" : {
@@ -4605,6 +4392,9 @@
           }
         }
       }
+    },
+    "Include a line from your past in reminders" : {
+      "comment" : "Settings > Daily Reminder toggle. Off by default."
     },
     "Include all entries" : {
       "localizations" : {
@@ -4753,6 +4543,9 @@
           }
         }
       }
+    },
+    "Is there a conversation from today you keep coming back to?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "It lives on your phone — nowhere else.\nSpeak again tomorrow, and your sky grows." : {
       "localizations" : {
@@ -4926,6 +4719,9 @@
         }
       }
     },
+    "Just log your day" : {
+      "comment" : "Research pilot: a neutral question of the day."
+    },
     "Keep" : {
       "localizations" : {
         "de" : {
@@ -5039,6 +4835,9 @@
         }
       }
     },
+    "Last week" : {
+      "comment" : "Title of the weekly recap in Insights for the previous full week."
+    },
     "Learn more" : {
       "localizations" : {
         "de" : {
@@ -5122,6 +4921,12 @@
           }
         }
       }
+    },
+    "Lighter bars are moods suggested from your words. Tap the mood on an entry to change it." : {
+      "comment" : "Insights mood trends: caption shown when some bars are suggested moods."
+    },
+    "Listening back to what you said…" : {
+      "comment" : "Today reflection card while the new recording is still being transcribed."
     },
     "Live Activities" : {
       "localizations" : {
@@ -5404,6 +5209,15 @@
         }
       }
     },
+    "Mood: %@." : {
+      "comment" : "VoiceOver label for a mood the user chose. %@ is the mood, lowercased."
+    },
+    "Moods appear here as you record — suggested from your words, or set by you." : {
+      "comment" : "Insights mood trends, empty state."
+    },
+    "Moods so far" : {
+      "comment" : "Early signals: heading for the mood counts."
+    },
     "Music mood" : {
       "localizations" : {
         "de" : {
@@ -5608,6 +5422,9 @@
       "comment" : "A description of the constellation.",
       "isCommentAutoGenerated" : true
     },
+    "No catching up to do. Forty-two seconds, whenever you're ready." : {
+      "comment" : "Body of the one-off welcome-back notification. No streak guilt."
+    },
     "No entries found" : {
       "localizations" : {
         "de" : {
@@ -5750,8 +5567,7 @@
       }
     },
     "no streak yet" : {
-      "comment" : "A description of a streak of 0 days.",
-      "isCommentAutoGenerated" : true
+      "comment" : "Today header, top right, for a journal with no entries."
     },
     "No text yet" : {
       "localizations" : {
@@ -5814,8 +5630,7 @@
       "isCommentAutoGenerated" : true
     },
     "Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence." : {
-      "comment" : "A description of the \"YOUR TWIN NOTICED\" section.",
-      "isCommentAutoGenerated" : true
+      "comment" : "Insights: shown under 'Your Twin noticed' when no pattern has passed its gates."
     },
     "Not measured yet. %lld questions to answer." : {
       "localizations" : {
@@ -6033,6 +5848,12 @@
       "comment" : "A label describing the transcription of a voice recording.",
       "isCommentAutoGenerated" : true
     },
+    "On this day" : {
+      "comment" : "Today screen: small header above entries from the same date in earlier months or years."
+    },
+    "On this iPhone" : {
+      "comment" : "Small label on the Today reflection card: the reflection was made on the device."
+    },
     "On-device only. DailyVox reads the kind of photos you took and the music you reached for, turns them into a one-line note, and holds it for you to keep or let go — nothing reaches your Twin until you say so. Only derived labels are ever produced; your photos and audio never leave this iPhone. Off by default." : {
       "localizations" : {
         "de" : {
@@ -6060,6 +5881,9 @@
           }
         }
       }
+    },
+    "One missed day won't break a run — once a week." : {
+      "comment" : "Insights streak card: explains the grace day rule in one line."
     },
     "One nudge at %@. Change it any time in Settings." : {
       "localizations" : {
@@ -6237,6 +6061,10 @@
         }
       }
     },
+    "Opens a text editor. Saves to today’s entry without recording." : {
+      "comment" : "A hint for the \"Type Instead\" button.",
+      "isCommentAutoGenerated" : true
+    },
     "Opens getdailyvox.com. Taking part is voluntary and consented; nothing about your journal is collected or transmitted by the app. Self-labels stay on this phone until you export and share them yourself, under the pilot consent covering research and model-training use." : {
       "localizations" : {
         "de" : {
@@ -6265,6 +6093,9 @@
         }
       }
     },
+    "Opens the entry." : {
+      "comment" : "VoiceOver hint on a resurfaced past entry or recap line."
+    },
     "Paper size" : {
       "localizations" : {
         "de" : {
@@ -6292,6 +6123,10 @@
           }
         }
       }
+    },
+    "Participant code" : {
+      "comment" : "A label displayed above the user's participant code.",
+      "isCommentAutoGenerated" : true
     },
     "Password" : {
       "localizations" : {
@@ -6520,6 +6355,9 @@
           }
         }
       }
+    },
+    "Plain notes" : {
+      "comment" : "Research pilot: a neutral question of the day."
     },
     "Play" : {
       "comment" : "A button that plays audio.",
@@ -6813,6 +6651,9 @@
       "comment" : "The name of the parameter for the question.",
       "isCommentAutoGenerated" : true
     },
+    "Quotes a few words you said a week ago. Reminders show on your lock screen, so anyone who sees your phone can read them." : {
+      "comment" : "Settings > Daily Reminder: explanation under the past-line toggle."
+    },
     "Read aloud" : {
       "localizations" : {
         "de" : {
@@ -7019,6 +6860,7 @@
       "isCommentAutoGenerated" : true
     },
     "Record entries with moods to see trends" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7103,6 +6945,7 @@
       }
     },
     "Recording Error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7159,6 +7002,7 @@
       }
     },
     "Recording Saved" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7213,6 +7057,12 @@
           }
         }
       }
+    },
+    "Reflection is on its way." : {
+      "comment" : "VoiceOver label for the Today reflection card while it is still being made."
+    },
+    "Reflection: %@" : {
+      "comment" : "VoiceOver label for the Today reflection card. %@ is the reflection text."
     },
     "Remind me each evening" : {
       "localizations" : {
@@ -8069,6 +7919,12 @@
         }
       }
     },
+    "Sounds %@ — tap to change" : {
+      "comment" : "Mood chip on Today and onboarding: a mood suggested from the entry's words. %@ is the mood, lowercased (e.g. calm)."
+    },
+    "SOUNDS %@?" : {
+      "comment" : "Entry detail header: a suggested mood, in the mono caps style. %@ is the mood name in caps."
+    },
     "Speak" : {
       "comment" : "Title of the intent to start speaking.",
       "isCommentAutoGenerated" : true
@@ -8236,6 +8092,12 @@
         }
       }
     },
+    "Still listening. A few more nights and there will be something to say." : {
+      "comment" : "Twin tab summary line before the third entry."
+    },
+    "Still listening. Early signals below show what can already be counted." : {
+      "comment" : "Twin tab summary line before five entries, while the early signals card is shown under it."
+    },
     "Stop" : {
       "localizations" : {
         "de" : {
@@ -8365,6 +8227,7 @@
       }
     },
     "Stored only on your phone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8419,6 +8282,12 @@
           }
         }
       }
+    },
+    "Suggested from your words, not picked: %@" : {
+      "comment" : "Early signals: moods the app suggested and the user left unchanged, with counts. Must say they were suggested."
+    },
+    "Suggested mood: %@." : {
+      "comment" : "VoiceOver label for a suggested mood chip. %@ is the mood, lowercased."
     },
     "Switch to the Record tab to begin" : {
       "extractionState" : "stale",
@@ -8737,6 +8606,9 @@
         }
       }
     },
+    "These will firm up as you keep going. Patterns arrive at %lld entries." : {
+      "comment" : "Subtitle of the early signals card. The number is the entry count at which the full patterns appear."
+    },
     "Thinking…" : {
       "localizations" : {
         "de" : {
@@ -8792,6 +8664,9 @@
           }
         }
       }
+    },
+    "This week" : {
+      "comment" : "Title of the weekly recap in Insights once the current week's recap is due."
     },
     "This Week" : {
       "localizations" : {
@@ -8909,6 +8784,9 @@
           }
         }
       }
+    },
+    "Tonight's star is waiting" : {
+      "comment" : "Evening reminder notification title."
     },
     "Topics" : {
       "localizations" : {
@@ -9207,6 +9085,10 @@
         }
       }
     },
+    "Type an entry instead" : {
+      "comment" : "A button that opens a text editor to type a diary entry.",
+      "isCommentAutoGenerated" : true
+    },
     "Understanding your words..." : {
       "localizations" : {
         "de" : {
@@ -9266,6 +9148,9 @@
     "Unstar this entry" : {
       "comment" : "A button that un-stars an entry.",
       "isCommentAutoGenerated" : true
+    },
+    "Until then, Early signals at the top shows what can already be counted." : {
+      "comment" : "Insights: appended to the 'not enough yet' line while the early signals card is showing."
     },
     "Updated %@" : {
       "extractionState" : "stale",
@@ -9409,6 +9294,12 @@
         }
       }
     },
+    "Walk through today, start to finish." : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "Walk through your day start to finish - what you did, where, with whom. Facts are enough." : {
+      "comment" : "Research pilot: guidance under the neutral question of the day."
+    },
     "Weekly Goal" : {
       "localizations" : {
         "de" : {
@@ -9521,9 +9412,54 @@
         }
       }
     },
+    "Welcome back" : {
+      "comment" : "Today header, top right, for someone with entries whose run has ended. Replaces 'no streak yet'. No guilt."
+    },
+    "Welcome back. Your sky kept your place." : {
+      "comment" : "Insights streak card, for someone with entries whose run has ended. Warm, no guilt."
+    },
+    "What are a few small things you’re glad about?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What are you looking forward to?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did the weather do to your day?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did today actually look like? No reflection needed - just what happened." : {
+      "comment" : "Research pilot: guidance under the neutral question of the day."
+    },
+    "What did you eat today, and with whom?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "What did you hear, read or watch that stayed with you?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you learn today, even something tiny?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you notice on your way somewhere?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What did you work on today?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "What made you curious today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What was the quietest part of your day?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What went a little better than expected?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
     "What would you like to ask your Twin?" : {
       "comment" : "Label for the question parameter in the Ask your Twin intent.",
       "isCommentAutoGenerated" : true
+    },
+    "What would you tell a friend about today?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "WHAT YOUR TWIN FILED ✦" : {
       "comment" : "A label displayed above the list of things the Twin",
@@ -9561,6 +9497,24 @@
     "What’s on your mind?" : {
       "comment" : "A title for the first-time-focused experience.",
       "isCommentAutoGenerated" : true
+    },
+    "What’s one gentle intention for tomorrow?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one moment from today you’d like to keep?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one small thing you finished?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s one worry you could put down for tonight?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s something you’re in the middle of?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "What’s still on your mind from today?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "When DailyVox notices context from your day — the kind of photos you took, the music you reached for — it waits here for you to keep or let go." : {
       "localizations" : {
@@ -9617,6 +9571,21 @@
           }
         }
       }
+    },
+    "Whenever you're ready. Forty-two seconds." : {
+      "comment" : "Evening reminder notification body."
+    },
+    "Where did you go today?" : {
+      "comment" : "Question of the day on the Today screen. A plain log of the day."
+    },
+    "Where did your energy go today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Who did you spend time with today?" : {
+      "comment" : "Question of the day on the Today screen."
+    },
+    "Who made you laugh lately?" : {
+      "comment" : "Question of the day on the Today screen."
     },
     "Wipe All Health Snapshots" : {
       "localizations" : {
@@ -9701,6 +9670,9 @@
           }
         }
       }
+    },
+    "Words you came back to" : {
+      "comment" : "Early signals: heading for words that appear in two or more entries."
     },
     "Writing Stats" : {
       "localizations" : {
@@ -9814,6 +9786,12 @@
         }
       }
     },
+    "Yesterday was a rest day, and your run is held. One missed day is forgiven once a week." : {
+      "comment" : "Insights streak card: yesterday had no entry and the grace day is keeping the run."
+    },
+    "You haven't picked a mood yet." : {
+      "comment" : "Early signals: shown when the user has not chosen a mood on any entry."
+    },
     "You haven't recorded anything today yet. Would you like to add an entry?" : {
       "localizations" : {
         "de" : {
@@ -9841,6 +9819,36 @@
           }
         }
       }
+    },
+    "You mentioned %@ ^[%lld time](inflect: true)." : {
+      "comment" : "Weekly recap: %@ is a person, place or topic as the user wrote it; shown only when it appears at least twice that week."
+    },
+    "You mentioned %@ a few days ago." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 2-6 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ a week ago." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 7 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ recently." : {
+      "comment" : "Line above a question of the day that asks after a name from an entry 8-14 days ago. %@ is the name exactly as the user said it."
+    },
+    "You mentioned %@ yesterday." : {
+      "comment" : "Line above a question of the day that asks after a name from yesterday's entry. %@ is the name exactly as the user said it."
+    },
+    "You mostly speak in the afternoon." : {
+      "comment" : "Early signals: most entries are between noon and 5 pm."
+    },
+    "You mostly speak in the evening." : {
+      "comment" : "Early signals: most entries are between 5 pm and 10 pm."
+    },
+    "You mostly speak in the morning." : {
+      "comment" : "Early signals: most entries are between 5 am and noon."
+    },
+    "You mostly speak late at night." : {
+      "comment" : "Early signals: most entries are between 10 pm and 5 am."
+    },
+    "You picked: %@" : {
+      "comment" : "Early signals: moods the user chose, with counts, e.g. 'Calm ×2 · Tired ×1'."
     },
     "You've asked all the questions! Tap any to ask again." : {
       "localizations" : {
@@ -10380,6 +10388,12 @@
         }
       }
     },
+    "Your recent entries run longer: %lld words on average, up from %lld." : {
+      "comment" : "Early signals: the later half of entries is longer than the earlier half. Numbers are average words."
+    },
+    "Your recent entries run shorter: %lld words on average, down from %lld." : {
+      "comment" : "Early signals: the later half of entries is shorter than the earlier half. Numbers are average words."
+    },
     "Your sky" : {
       "comment" : "The title of the digital twin.",
       "isCommentAutoGenerated" : true
@@ -10411,6 +10425,12 @@
           }
         }
       }
+    },
+    "Your sky is still here" : {
+      "comment" : "One-off notification a few days after the weekly reminders run out. No streak guilt."
+    },
+    "Your sky kept your place. Longest run %lld days." : {
+      "comment" : "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days."
     },
     "Your sky starts\nwith your voice" : {
       "localizations" : {
@@ -10701,6 +10721,9 @@
           }
         }
       }
+    },
+    "Your week" : {
+      "comment" : "Title of the weekly recap card on the Today screen."
     },
     "Your Week, Decoded" : {
       "localizations" : {
