@@ -535,9 +535,11 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
             // The same suggestion the entry is saved with a moment later, worked
             // out the same way, so this line and the card after it agree. Absent
             // when the words do not lean clearly either way.
+            val context = androidx.compose.ui.platform.LocalContext.current
             val suggested = remember(transcript) {
-                com.dailyvox.app.system.MoodSuggestion.from(
+                com.dailyvox.app.system.MoodSuggestion.offered(
                     transcript, com.dailyvox.app.data.Lexicon.table,
+                    com.dailyvox.app.system.DailyQuestion.isPilot(context),
                 )
             }
             suggested?.let {
