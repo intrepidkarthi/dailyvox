@@ -76,12 +76,14 @@ Keep the 1.11.0 notes (`ReviewNotes_1.11.0.md`) and add:
 
 ---
 
-## 6. CloudKit — DONE before this build
+## 6. CloudKit — confirm before submitting
 
 Build 46 adds an optional `suggestedMood` attribute to `DiaryEntry`. The schema
-(`CD_DiaryEntry.CD_suggestedMood`) has been deployed to Production. Production
-previously had **no** record types at all, so iCloud sync could not have worked
-for any user before this deploy. Confirm with a TestFlight build: turn sync on,
+(`CD_DiaryEntry.CD_suggestedMood`) must be in **Production** before this build
+ships: switch the CloudKit Dashboard to Production and check that `CD_DiaryEntry`
+lists `CD_suggestedMood`. Production previously had **no** record types at all,
+so iCloud sync could not have worked for any user before this deploy. Then confirm
+with a TestFlight build: turn sync on,
 save an entry, and check Production → Records for a `CD_DiaryEntry`.
 
 ---
