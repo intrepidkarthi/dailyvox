@@ -52,15 +52,9 @@ Speak for a minute, get something back: a reflection, a mood, a line from a week
 
 ## 4. App Review Information → Notes
 
-Keep the 1.11.0 notes (`ReviewNotes_1.11.0.md`) and add:
-
-- **Reminder quoting is off by default.** Settings → "Include a line from your
-  past in reminders". When on, the evening reminder may quote an entry from
-  exactly seven days earlier. Entry text never appears in a notification
-  otherwise.
-- **Suggested moods** are produced on the device from the entry text and are
-  labelled as suggestions everywhere they appear, including exports
-  ("Calm (suggested)").
+Replace the existing notes with the full contents of
+`ios/AppStore/ReviewNotes_1.13.0.txt` (3,119 of 4,000 characters). It stands on
+its own: appending to the 1.11.0 notes (3,687) would exceed the limit.
 
 **Demo account:** none required. No accounts exist.
 
