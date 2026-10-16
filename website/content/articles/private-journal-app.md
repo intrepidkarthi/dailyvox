@@ -74,6 +74,8 @@ Here is the honest limitation: DailyVox runs on iPhone and Android phones only. 
 | **Daylio** | No | Yes | No | Google Drive / iCloud |
 | **Rosebud** | Yes | No | No | Remote Cloud Servers |
 
+Related reading: [The Most Private Journaling App Without Cloud Storage](/blog/which-journaling-app-is-the-most-private-and-does-not-send-m).
+
 ## FAQ
 
 ### How can I verify that a journal app is not secretly sending data?
