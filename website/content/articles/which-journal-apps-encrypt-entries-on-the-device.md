@@ -70,6 +70,8 @@ Second, check the App Store privacy label. Look for "Data Not Collected." If an 
 
 Third, check for open source code. Proprietary apps require blind trust. Open-source apps allow anyone to inspect how files are written to the disk.
 
+Related reading: [AI Journaling in 2026: The Shift to On-Device, the Rise of Digital Twins](/blog/ai-journaling-2026).
+
 ## Frequently Asked Questions
 
 ### Does Apple Journal encrypt entries on the device?
