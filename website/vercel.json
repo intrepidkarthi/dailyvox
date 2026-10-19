@@ -153,6 +153,11 @@
       "source": "/blog/journal-apps-for-iphone",
       "destination": "/blog/best-diary-app-iphone",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/what-is-the-best-voice-to-text-journaling-app",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
