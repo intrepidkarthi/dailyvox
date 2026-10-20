@@ -1341,6 +1341,9 @@ section.band.g-paper2{background:var(--band)!important}
 use.dvs-lit{opacity:.3}
 .dvs-cols{fill:var(--dvs-lamp);opacity:.6}
 .dvs-colbars,.dvs-mid,.dvs-vs{fill:var(--dvs-sil)}
+.dvs-steps{fill:none;stroke:var(--dvs-lamp);stroke-opacity:.18;stroke-width:1}
+/* the domes catch the city light, so the Soudha keeps its outline against a night sky */
+.dvs-rim{fill:none;stroke:var(--dvs-lamp);stroke-opacity:.32;stroke-width:1.1}
 .dvs-finial{stroke:var(--dvs-sil);stroke-width:2;fill:none}
 .dvs-gold{fill:#F2C565}
 .dvs-blink{fill:#E8584A}
@@ -2173,26 +2176,44 @@ use.dvs-lit{opacity:.3}
        <path d="M382 372V338q0-12 12-12h169q12 0 12 12v34zM438 372V318a40 40 0 0 1 80 0v54z" class="dvs-ribs" fill="url(#dvsRib)"/>
        <path d="M478 278v-10" class="dvs-finial"/>
       </g>
+      <!-- Vidhana Soudha: plinth and steps, the long block, corner pavilions and wing kiosks
+           with their own domes, the twelve-column portico under a flat entablature (no
+           pediment), and the great dome on its arched drum, crowned by the Ashoka lions. -->
       <g class="dvs-vs">
-       <path d="M600 372l12-10h266l12 10z"/>
-       <rect x="616" y="322" width="268" height="40"/>
-       <rect x="640" y="304" width="220" height="18"/>
-       <rect x="628" y="290" width="22" height="32"/><path d="M626 291c0-20 26-20 26 0z"/>
-       <rect x="850" y="290" width="22" height="32"/><path d="M848 291c0-20 26-20 26 0z"/>
-       <rect x="672" y="292" width="16" height="12"/><path d="M670 293c0-13 20-13 20 0z"/>
-       <rect x="812" y="292" width="16" height="12"/><path d="M810 293c0-13 20-13 20 0z"/>
-       <rect x="724" y="254" width="42" height="24"/>
-       <path d="M719 256c0-44 52-44 52 0z"/>
-       <path d="M699 294l46-18 46 18z"/><rect x="703" y="293" width="84" height="29"/>
-       <path class="dvs-finial" d="M745 223v-14M639 276v-7M861 276v-7M680 284v-5M820 284v-5"/>
-       <circle class="dvs-gold" cx="745" cy="207" r="2.4"/>
+       <rect x="606" y="360" width="278" height="12"/>
+       <path d="M698 372l10-12h74l10 12z"/>
+       <rect x="620" y="314" width="250" height="46"/>
+       <rect x="616" y="310" width="258" height="4"/>
+       <path d="M617.4 310a1.6 1.6 0 0 1 3.2 0zM623.4 310a1.6 1.6 0 0 1 3.2 0zM629.4 310a1.6 1.6 0 0 1 3.2 0zM635.4 310a1.6 1.6 0 0 1 3.2 0zM641.4 310a1.6 1.6 0 0 1 3.2 0zM647.4 310a1.6 1.6 0 0 1 3.2 0zM653.4 310a1.6 1.6 0 0 1 3.2 0zM659.4 310a1.6 1.6 0 0 1 3.2 0zM665.4 310a1.6 1.6 0 0 1 3.2 0zM671.4 310a1.6 1.6 0 0 1 3.2 0zM677.4 310a1.6 1.6 0 0 1 3.2 0zM683.4 310a1.6 1.6 0 0 1 3.2 0zM689.4 310a1.6 1.6 0 0 1 3.2 0zM695.4 310a1.6 1.6 0 0 1 3.2 0zM701.4 310a1.6 1.6 0 0 1 3.2 0zM707.4 310a1.6 1.6 0 0 1 3.2 0zM713.4 310a1.6 1.6 0 0 1 3.2 0zM719.4 310a1.6 1.6 0 0 1 3.2 0zM725.4 310a1.6 1.6 0 0 1 3.2 0zM731.4 310a1.6 1.6 0 0 1 3.2 0zM737.4 310a1.6 1.6 0 0 1 3.2 0zM743.4 310a1.6 1.6 0 0 1 3.2 0zM749.4 310a1.6 1.6 0 0 1 3.2 0zM755.4 310a1.6 1.6 0 0 1 3.2 0zM761.4 310a1.6 1.6 0 0 1 3.2 0zM767.4 310a1.6 1.6 0 0 1 3.2 0zM773.4 310a1.6 1.6 0 0 1 3.2 0zM779.4 310a1.6 1.6 0 0 1 3.2 0zM785.4 310a1.6 1.6 0 0 1 3.2 0zM791.4 310a1.6 1.6 0 0 1 3.2 0zM797.4 310a1.6 1.6 0 0 1 3.2 0zM803.4 310a1.6 1.6 0 0 1 3.2 0zM809.4 310a1.6 1.6 0 0 1 3.2 0zM815.4 310a1.6 1.6 0 0 1 3.2 0zM821.4 310a1.6 1.6 0 0 1 3.2 0zM827.4 310a1.6 1.6 0 0 1 3.2 0zM833.4 310a1.6 1.6 0 0 1 3.2 0zM839.4 310a1.6 1.6 0 0 1 3.2 0zM845.4 310a1.6 1.6 0 0 1 3.2 0zM851.4 310a1.6 1.6 0 0 1 3.2 0zM857.4 310a1.6 1.6 0 0 1 3.2 0zM863.4 310a1.6 1.6 0 0 1 3.2 0zM869.4 310a1.6 1.6 0 0 1 3.2 0z"/>
+       <rect x="620" y="296" width="34" height="64"/><rect x="618" y="292" width="38" height="4"/>
+       <rect x="836" y="296" width="34" height="64"/><rect x="834" y="292" width="38" height="4"/>
+       <path d="M619.1 292a1.4 1.4 0 0 1 2.8 0zM624.1 292a1.4 1.4 0 0 1 2.8 0zM629.1 292a1.4 1.4 0 0 1 2.8 0zM634.1 292a1.4 1.4 0 0 1 2.8 0zM639.1 292a1.4 1.4 0 0 1 2.8 0zM644.1 292a1.4 1.4 0 0 1 2.8 0zM649.1 292a1.4 1.4 0 0 1 2.8 0zM835.1 292a1.4 1.4 0 0 1 2.8 0zM840.1 292a1.4 1.4 0 0 1 2.8 0zM845.1 292a1.4 1.4 0 0 1 2.8 0zM850.1 292a1.4 1.4 0 0 1 2.8 0zM855.1 292a1.4 1.4 0 0 1 2.8 0zM860.1 292a1.4 1.4 0 0 1 2.8 0zM865.1 292a1.4 1.4 0 0 1 2.8 0z"/>
+       <rect x="628" y="284" width="18" height="8"/><path d="M626 284C626 273.0 632.0 268.0 637 264C642.0 268.0 648 273.0 648 284z"/>
+       <rect x="844" y="284" width="18" height="8"/><path d="M842 284C842 273.0 848.0 268.0 853 264C858.0 268.0 864 273.0 864 284z"/>
+       <rect x="676" y="300" width="12" height="10"/><path d="M674 300C674 292.3 678.4 288.8 682 286C685.6 288.8 690 292.3 690 300z"/>
+       <rect x="802" y="300" width="12" height="10"/><path d="M800 300C800 292.3 804.4 288.8 808 286C811.6 288.8 816 292.3 816 300z"/>
+       <rect x="704" y="300" width="82" height="60"/>
+       <rect x="700" y="296" width="90" height="8"/><rect x="702" y="290" width="86" height="6"/>
+       <path d="M703.4 290a1.6 1.6 0 0 1 3.2 0zM709.4 290a1.6 1.6 0 0 1 3.2 0zM715.4 290a1.6 1.6 0 0 1 3.2 0zM721.4 290a1.6 1.6 0 0 1 3.2 0zM727.4 290a1.6 1.6 0 0 1 3.2 0zM733.4 290a1.6 1.6 0 0 1 3.2 0zM739.4 290a1.6 1.6 0 0 1 3.2 0zM745.4 290a1.6 1.6 0 0 1 3.2 0zM751.4 290a1.6 1.6 0 0 1 3.2 0zM757.4 290a1.6 1.6 0 0 1 3.2 0zM763.4 290a1.6 1.6 0 0 1 3.2 0zM769.4 290a1.6 1.6 0 0 1 3.2 0zM775.4 290a1.6 1.6 0 0 1 3.2 0zM781.4 290a1.6 1.6 0 0 1 3.2 0z"/>
+       <rect x="714" y="280" width="62" height="10"/>
+       <rect x="722" y="250" width="46" height="3"/><rect x="726" y="253" width="38" height="27"/>
+       <path d="M720 250C720 225.8 733.8 214.8 745 206C756.2 214.8 770 225.8 770 250z"/>
+       <rect x="741" y="197" width="8" height="9"/><rect x="737" y="193" width="16" height="4"/>
+       <path d="M738 193c0-8 4-12 7-14c3 2 7 6 7 14z"/>
+       <path class="dvs-finial" d="M637 264v-6M853 264v-6M682 286v-4M808 286v-4"/>
+       <circle class="dvs-gold" cx="745" cy="195" r="1.6"/>
       </g>
+      <path class="dvs-rim" d="M626 284C626 273.0 632.0 268.0 637 264C642.0 268.0 648 273.0 648 284M842 284C842 273.0 848.0 268.0 853 264C858.0 268.0 864 273.0 864 284M674 300C674 292.3 678.4 288.8 682 286C685.6 288.8 690 292.3 690 300M800 300C800 292.3 804.4 288.8 808 286C811.6 288.8 816 292.3 816 300M720 250C720 225.8 733.8 214.8 745 206C756.2 214.8 770 225.8 770 250"/>
+      <path class="dvs-steps" d="M701 369h88M704 366h82M707 363h76"/>
       <g class="dvs-lit">
-       <rect x="622" y="328" width="256" height="30" fill="url(#dvsWin)"/>
-       <rect x="646" y="306" width="208" height="14" fill="url(#dvsWin)"/>
-       <path class="dvs-cols" d="M707 298h76v24h-76z"/>
+       <rect x="660" y="322" width="36" height="28" fill="url(#dvsWin)"/>
+       <rect x="792" y="322" width="36" height="28" fill="url(#dvsWin)"/>
+       <rect x="624" y="308" width="24" height="42" fill="url(#dvsWin)"/>
+       <rect x="840" y="308" width="24" height="42" fill="url(#dvsWin)"/>
+       <path class="dvs-cols" d="M708 306h74v48h-74z"/>
+       <path class="dvs-cols" d="M732 277v-12a3 3 0 0 1 6 0v12zM742 277v-12a3 3 0 0 1 6 0v12zM752 277v-12a3 3 0 0 1 6 0v12z"/>
       </g>
-      <path class="dvs-colbars" d="M711 298h3v24h-3zM719 298h3v24h-3zM727 298h3v24h-3zM735 298h3v24h-3zM743 298h3v24h-3zM751 298h3v24h-3zM759 298h3v24h-3zM767 298h3v24h-3zM775 298h3v24h-3z"/>
+      <path class="dvs-colbars" d="M708.0 306h3v48h-3zM714.5 306h3v48h-3zM720.9 306h3v48h-3zM727.4 306h3v48h-3zM733.8 306h3v48h-3zM740.3 306h3v48h-3zM746.7 306h3v48h-3zM753.2 306h3v48h-3zM759.6 306h3v48h-3zM766.1 306h3v48h-3zM772.5 306h3v48h-3zM779.0 306h3v48h-3z"/>
       <g class="dvs-mid">
        <rect x="904" y="252" width="44" height="120"/><path d="M904 252l22-10 22 10z"/>
        <rect x="958" y="214" width="40" height="158"/><rect x="965" y="200" width="26" height="14"/>
