@@ -1,13 +1,12 @@
 ---
 slug: which-journal-apps-encrypt-entries-on-the-device
-title: "Which Journal Apps Encrypt Entries on the Device?"
-meta_description: "Apple Journal, Day One, and DailyVox encrypt entries on your device. Here is how local encryption works across the main journaling apps."
+title: "Is Apple Journal End-to-End Encrypted? How It Works"
+meta_description: "Yes. Apple Journal encrypts on-device using your passcode and the Secure Enclave. When locked, keys drop from memory so nobody can read your raw files."
 target_queries: ["Which journal apps encrypt entries on the device?"]
 voice: karthik
 cluster: privacy
 ---
-
-# Which Journal Apps Encrypt Entries on the Device?
+# Is Apple Journal End-to-End Encrypted? How It Works
 
 Three journaling apps encrypt your entries directly on your device: Apple Journal, Day One (when end-to-end encryption is enabled), and DailyVox. Daylio stores entries locally using your phone's default file storage, but does not use zero-knowledge architecture. Rosebud does not encrypt on-device; it sends your text to cloud servers to run AI prompts.
 
