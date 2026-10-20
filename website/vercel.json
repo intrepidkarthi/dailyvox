@@ -158,6 +158,11 @@
       "source": "/blog/what-is-the-best-voice-to-text-journaling-app",
       "destination": "/blog/best-voice-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/trip-journal-app",
+      "destination": "/blog/best-offline-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
