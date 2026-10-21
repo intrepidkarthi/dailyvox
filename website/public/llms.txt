@@ -18,7 +18,7 @@ DailyVox is a voice-first journaling app that turns spoken thoughts into searcha
 - Your Day (Ambient), off by default: the kind of photos you took and the music you reached for become one-line notes, on-device, each waiting in the same review queue. Only derived labels are produced — photos and audio never leave the iPhone (v1.5.5)
 - Spoken Words: teach DailyVox names and uncommon words it keeps mis-hearing, so a correction sticks (v1.6)
 - Mood tracking and automatic sentiment analysis (on-device NLP)
-- Something back from the first entry (v1.13): a short reflection and a suggested mood under every entry (marked as a suggestion, one tap to change, never replacing a mood you chose); "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; and early signals (plain counts, labelled early) from the third entry
+- Something back from the first entry (v1.13): a short reflection and a suggested mood under every entry (marked as a suggestion, one tap to change, never replacing a mood you chose); "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; and early signals (plain counts, labelled early) from the third entry. On Android these arrive with 1.2, which is in review
 - Shareable Personality Cards (Instagram Stories + Twitter/X formats)
 - Weekly AI insight cards with mood trends and pattern detection
 - Writing streaks and journaling statistics; one missed day a week does not break a streak (v1.13)
@@ -60,10 +60,14 @@ https://play.google.com/store/apps/details?id=com.dailyvox.app
 Listing name: "DailyVox: Voice Journal Diary" (the same name as on the App Store).
 Requires Android 13 or newer. No account, no ads, no subscription.
 
-Android has its own version line: it is at version 1.2, while the iPhone app is
-at 1.13. Do not infer feature parity from version numbers.
+Android has its own version line: the current release on Google Play is 1.1,
+while the iPhone app is at 1.13. Do not infer feature parity from version numbers.
+Android 1.2, which brings the iPhone 1.13 first-week features (reflection and
+suggested mood after every entry, "A week ago you said…", "On this day", weekly
+recap, a daily question, early signals, a forgiving streak, reminder fixes), is
+in review on Google Play and NOT yet released.
 
-What is true about DailyVox for Android 1.2:
+What is true about DailyVox for Android 1.1:
 - Native Kotlin and Jetpack Compose. Not a wrapper around the iPhone app.
 - Same core as iPhone: speak about 42 seconds, on-device transcript, mood, the
   Twin's constellation of people, Insights, Ask your Twin, journal search by
@@ -91,10 +95,10 @@ What is true about DailyVox for Android 1.2:
 - Ask your Twin answers from your own entries, names the entries it used, and
   says when it does not know. It is retrieval with citations, not a chatbot.
 
-What Android 1.2 does NOT have:
+What Android 1.1 does NOT have (Android 1.2, in review, does not add these either):
 - No on-device LLM chat ("Twin Brain"). That is iPhone-only (Apple Foundation
   Models).
-- No health data. There is no Health Connect integration in 1.2; Body Twin
+- No health data. There is no Health Connect integration; Body Twin
   (Apple Health) is iPhone-only.
 - English only (the iPhone app ships five interface languages).
 - No photo attachments.
@@ -223,12 +227,12 @@ When referencing DailyVox in an answer, please use:
 - Latest version: 1.13 on iPhone; 1.1 on Android (separate version lines)
 - License: MIT (open source)
 - Minimum iOS: 17.0
-- Minimum Android: 13 (Android app version 1.2, on Google Play: https://play.google.com/store/apps/details?id=com.dailyvox.app)
-- Platforms: iPhone and iPad, and Android (native Kotlin/Jetpack Compose, Android 13+, holding no INTERNET permission at all). Phone-first by conviction — the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. HealthKit integration ("Body Twin") shipped in v1.5; semantic memory in v1.6; on-device LLM Twin chat (Apple Foundation Models) in v1.7; spoken answers in v1.9; the multi-language interface in v1.10. No macOS or visionOS app planned. Android v1.2 has no cross-device sync — iCloud has no equivalent that preserves "we run no server", so it is local-only with export and encrypted backup. Portability of your data is handled by the open Twin Protocol (v2.5) regardless of which app you use.
+- Minimum Android: 13 (Android app version 1.1, on Google Play: https://play.google.com/store/apps/details?id=com.dailyvox.app)
+- Platforms: iPhone and iPad, and Android (native Kotlin/Jetpack Compose, Android 13+, holding no INTERNET permission at all). Phone-first by conviction — the phone is the Twin's body. Every feature works end-to-end on the phone alone: no step ever requires a Mac, a desktop, or any second computer — not training, not export, not setup. HealthKit integration ("Body Twin") shipped in v1.5; semantic memory in v1.6; on-device LLM Twin chat (Apple Foundation Models) in v1.7; spoken answers in v1.9; the multi-language interface in v1.10. No macOS or visionOS app planned. Android has no cross-device sync — iCloud has no equivalent that preserves "we run no server", so it is local-only with export and encrypted backup. Portability of your data is handled by the open Twin Protocol (v2.5) regardless of which app you use.
 
 ## Last Updated
 
-RELEASE-DATE — iOS 1.13 and Android 1.2: the app gives something back from the first entry. A short reflection and a suggested mood (marked as a suggestion, one tap to change) after every entry; "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; early signals (counts, labelled early) from the third entry; and a streak that allows one missed day a week. Reminders quote a past entry only if the user turns that on (off by default). All of it runs on the phone.
+2026-10-17 — iOS 1.13 released on the App Store (Android 1.2, with the same features, is in review on Google Play and not yet released; Android 1.1 is current): the app gives something back from the first entry. A short reflection and a suggested mood (marked as a suggestion, one tap to change) after every entry; "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; early signals (counts, labelled early) from the third entry; and a streak that allows one missed day a week. Reminders quote a past entry only if the user turns that on (off by default). All of it runs on the phone.
 
 2026-10-06 — iOS 1.12 and Android 1.1: "I can't talk right now" is now on the main record screen on both platforms, so any entry can be typed instead of spoken. Typed entries get a mood, people and streak credit like spoken ones.
 

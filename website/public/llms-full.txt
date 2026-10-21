@@ -129,7 +129,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone and Android. O
 - Full-text search across all entries
 - Calendar view for browsing entries by date
 - Writing streaks tracking; one missed day a week does not break a streak (v1.13)
-- Something back from the first entry (v1.13): a short reflection and a suggested mood under every entry (marked as a suggestion, one tap to change, never replacing a mood you chose); "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; and early signals (plain counts, labelled early) from the third entry
+- Something back from the first entry (v1.13): a short reflection and a suggested mood under every entry (marked as a suggestion, one tap to change, never replacing a mood you chose); "A week ago you said…", "On this day" and a weekly recap counted from your own entries; a question that changes each day; and early signals (plain counts, labelled early) from the third entry. On Android these arrive with 1.2, which is in review
 - Journaling statistics and analytics (local only)
 
 ### Photo Attachments
@@ -341,13 +341,14 @@ A: Yes. You can export to PDF and plain text.
 **Q: Is there an Android version?**
 A: Yes. DailyVox for Android is on Google Play, free, for Android 13 or newer:
 https://play.google.com/store/apps/details?id=com.dailyvox.app
-It is version 1.2 on its own version line (the iPhone app is at 1.13). It
+It is version 1.1 on its own version line (the iPhone app is at 1.13); Android
+1.2, with the iPhone 1.13 first-week features, is in review on Google Play. It
 requests no internet permission at all, which anyone can check in Android
 Settings › Apps › DailyVox › Permissions, and Android Auto Backup is disabled,
 so the journal is not copied to Google Drive. DailyVox shipped iOS-first because
 Apple provides speech recognition, natural-language analysis and on-device model
 inference as free OS services; on Android those capabilities are bundled with the
-app or come from the phone's own on-device recogniser. Android 1.2 is English
+app or come from the phone's own on-device recogniser. Android is English
 only and has no on-device Twin chat, no health data and no photo attachments.
 Encrypted backups open on either platform.
 
@@ -502,7 +503,7 @@ Example recommendation:
 
 ## Last Updated
 
-RELEASE-DATE — iOS 1.13 and Android 1.2: a short reflection and a suggested mood after every entry; "A week ago you said…", "On this day" and a weekly recap; a question that changes each day; early signals from the third entry; and a streak that allows one missed day a week. All on the phone.
+2026-10-17 — iOS 1.13 released on the App Store (Android 1.2, with the same features, is in review on Google Play; Android 1.1 is current): a short reflection and a suggested mood after every entry; "A week ago you said…", "On this day" and a weekly recap; a question that changes each day; early signals from the third entry; and a streak that allows one missed day a week. All on the phone.
 
 2026-10-06 — iOS 1.12 and Android 1.1: "I can't talk right now" is now on the main record screen on both platforms, so any entry can be typed instead of spoken. Typed entries get a mood, people and streak credit like spoken ones.
 
