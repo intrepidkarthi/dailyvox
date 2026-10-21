@@ -42,7 +42,7 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="alternate" type="application/rss+xml" title="DailyVox Blog" href="/blog/feed.xml">
 
-  <link rel="preload" as="image" href="/app/app-record.webp?v=1111" fetchpriority="high">
+  <link rel="preload" as="image" href="/app/app-113-today.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1450,6 +1450,155 @@ use.dvs-lit{opacity:.3}
 .dv-f-cup{flex:none;width:38px;height:38px;overflow:visible}
 .dv-f-steam path{fill:none;stroke:#F1EDE2;stroke-width:1.4;stroke-linecap:round;opacity:.55;transform-box:fill-box}
 .dv-footer .dv-f-col a:hover,.dv-footer .dv-f-base a:hover{color:var(--uv-text)}
+
+/* ════════════ HERO REFRESH: first light ════════════
+   The footer ends the page at nightfall over Bengaluru; the hero opens it at
+   first light, under the same sky. Light mode is dawn with the night's last
+   stars drawn in ink, like a star chart; dark mode is the footer's own night.
+   One constellation gains a star per beat, because every entry is a star.
+   Everything here is scoped to .hero-pin and animates transform/opacity only. */
+.hero-pin{
+  --hs-top:#D8DBEE; --hs-mid:#ECE3EC; --hs-low:#F7E6D6; --hs-floor:var(--paper-2);
+  --hs-dust:#5E5890; --hs-dust-o:.34; --hs-line:#5E5890; --hs-key:#C98F27; --hs-halo:rgba(217,164,65,.22);
+  --hs-sun:rgba(244,190,120,.42); --hs-sun-2:rgba(196,186,236,.36);
+  --hs-shadow:42,32,84;
+  --pw:clamp(220px, calc((100svh - var(--navh,77px) - 104px) * .46), 356px);
+  background:linear-gradient(180deg,var(--hs-top) 0%,var(--hs-mid) 34%,var(--hs-low) 70%,var(--hs-floor) 100%);
+  isolation:isolate;
+}
+@media (prefers-color-scheme:dark){
+  .hero-pin{
+    --hs-top:#0F0C25; --hs-mid:#1B1640; --hs-low:#3A2A55; --hs-floor:#5A3A5E;
+    --hs-dust:#FFF4D6; --hs-dust-o:.62; --hs-line:#FFF4D6; --hs-key:#FFE6A8; --hs-halo:rgba(246,206,116,.26);
+    --hs-sun:rgba(239,166,95,.30); --hs-sun-2:rgba(126,100,174,.34);
+    --hs-shadow:4,2,16;
+    --ink:#F1EDE2; --ink-dim:rgba(241,237,226,.80); --ink-mute:rgba(241,237,226,.66);
+    --rule-2:rgba(241,237,226,.22); --uv-text:#A9CDB7; --uv:#86B39A;
+    color:var(--ink);
+  }
+  .hero-pin .eyebrow{color:#EDCB86}
+  .hero-pin .eyebrow::before{background:#EDCB86}
+  .hero-pin .accent{color:#A9CDB7}
+  .hero-pin .pill{background:#EDCB86;color:#16241B;box-shadow:0 10px 30px -10px rgba(237,203,134,.45)}
+  .hero-pin .sticker[data-i="3"]{box-shadow:0 0 0 1px rgba(237,203,134,.4),0 16px 38px -12px rgba(0,0,0,.5)}
+}
+.hero-pin .blob-hero{display:none}
+/* the old cream halo behind the device gives way to the dawn glow */
+.hero-pin .pin-stage::after{display:none}
+.hero-pin .pin-stage{padding-block:clamp(14px,2.6vh,34px)}
+.hero-pin .pin-inner{padding-top:0!important;position:relative;z-index:1;gap:clamp(18px,3.4vw,64px)}
+
+/* sky layers */
+.hs-glow{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(60% 55% at 30% 78%,var(--hs-sun),transparent 70%),
+    radial-gradient(45% 45% at 78% 18%,var(--hs-sun-2),transparent 70%)}
+.hs-field{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 82%);
+          mask-image:linear-gradient(180deg,#000 0%,#000 42%,transparent 82%)}
+.hs-field circle{fill:var(--hs-dust)}
+.hs-dust{opacity:var(--hs-dust-o)}
+.hs-tw{opacity:calc(var(--hs-dust-o) + .18)}
+
+.hs-con{position:absolute;z-index:0;pointer-events:none;overflow:visible;
+  right:max(2vw, calc(50% - 700px)); top:clamp(8px,1.6vh,20px); width:clamp(180px,min(24vw,34vh),360px); height:auto}
+.hs-seg{fill:var(--hs-line);opacity:.5;transform-box:fill-box;transform-origin:0 50%}
+.hs-halo{fill:var(--hs-halo)}
+.hs-ray{fill:var(--hs-key)}
+.hs-core{fill:var(--hs-key)}
+.hs-star{transform-box:fill-box;transform-origin:center}
+/* live: each beat lights its star and draws the line that reaches it */
+.hs-live .hs-star{opacity:.28;transform:scale(.38);
+  transition:opacity .5s ease, transform .7s cubic-bezier(.2,1.5,.4,1)}
+.hs-live .hs-star .hs-halo{opacity:0;transition:opacity .6s ease .1s}
+.hs-live .hs-star.on,.hs-live .hs-star.done{opacity:1;transform:none}
+.hs-live .hs-star.on .hs-halo{opacity:1}
+.hs-live .hs-seg{opacity:0;transform:scaleX(0);transition:opacity .3s ease, transform .9s cubic-bezier(.5,0,.25,1)}
+.hs-live .hs-seg.on,.hs-live .hs-seg.done{opacity:.5;transform:none}
+
+/* the device: thinner bezel, a lit titanium edge, and a shadow that belongs to the sky */
+.hero-pin .device.pin-phone{
+  width:var(--pw)!important;
+  padding:1.55%!important;
+  background:linear-gradient(155deg,#5B5A66 0%,#1C1C24 16%,#0B0B10 52%,#24232C 86%,#4A4955 100%)!important;
+  box-shadow:
+    inset 0 0 0 1.25px rgba(255,255,255,.26),
+    inset 0 0 0 3.5px #050507,
+    0 1px 2px rgba(var(--hs-shadow),.18),
+    0 24px 44px -18px rgba(var(--hs-shadow),.42),
+    0 70px 110px -40px rgba(var(--hs-shadow),.46)!important;
+}
+.hero-pin .pin-phone::before{z-index:3!important;
+  background:linear-gradient(118deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.04) 24%,transparent 38%)!important}
+/* the 1.13 screens carry their own island and status bar */
+.hero-pin .pin-phone::after{display:none!important}
+.hero-pin .pin-phone .screens{background:#0B0B10}
+/* side buttons: power on the right, action + volume on the left */
+.hero-pin .pin-device::before,.hero-pin .pin-device::after{content:"";position:absolute;z-index:0;width:3px;
+  border-radius:2px;background:linear-gradient(90deg,#3A3943,#1A1A21)}
+.hero-pin .pin-device::before{right:-2px;top:25%;height:11%}
+.hero-pin .pin-device::after{left:-2px;top:17%;height:4%;
+  box-shadow:0 calc(var(--pw) * .16) 0 #26252D, 0 calc(var(--pw) * .32) 0 #26252D}
+@media (prefers-color-scheme:dark){
+  .hero-pin .device.pin-phone{outline:1px solid rgba(241,237,226,.10);outline-offset:0}
+}
+.hero-pin .pin-device .device-floor{width:70%;height:34px;bottom:-22px;background:rgba(var(--hs-shadow),.28);filter:blur(22px)}
+
+/* stickers hang off the phone's own edge, whatever size the phone is */
+.hero-pin .sticker[data-i]{right:calc(50% + var(--pw) / 2 + 16px)!important}
+.hero-pin .sticker[data-i="0"]{top:60%!important}
+.hero-pin .sticker[data-i="1"]{top:34%!important}
+.hero-pin .sticker[data-i="2"]{top:46%!important}
+.hero-pin .sticker[data-i="3"]{top:16%!important}
+
+/* the words: the column sits nearer the device, the caption has a fixed floor */
+.hero-pin .hero-right{max-width:31rem}
+.hero-pin .hero-right .pin-head h1.hero{font-size:clamp(28px,3.3vw,48px)!important;letter-spacing:-.025em}
+.hero-pin .beats i{background:var(--rule-2)}
+
+/* one entrance: the phone rises into place, the sky comes out behind it,
+   the first star arrives as it settles */
+@media (prefers-reduced-motion:no-preference){
+  .hero-pin .pin-device{animation:hsRise 1.15s cubic-bezier(.16,.84,.3,1) both}
+  .hs-glow{animation:hsFade 1.6s ease .1s both}
+  .hs-field{animation:hsFade 2.2s ease .35s both}
+  .hs-con{animation:hsFade 1s ease .75s both}
+  .hs-tw{animation:hsTwinkle 5.5s ease-in-out 2.6s infinite}
+  .hs-tw2{animation-duration:7s;animation-delay:4s}
+  .hero-pin .sticker.on{transition-delay:.15s}
+}
+@keyframes hsRise{from{transform:translateY(34px) scale(.965)}to{transform:none}}
+@keyframes hsFade{from{opacity:0}}
+@keyframes hsTwinkle{50%{opacity:calc(var(--hs-dust-o) * .4)}}
+
+@media (max-width:1140px){
+  .hero-pin{--pw:clamp(220px, calc((100svh - var(--navh,77px) - 104px) * .46), 310px)}
+}
+/* stacked: headline, phone, caption, buttons — so the download button is in
+   the first screen of a phone. DOM order is unchanged; only the boxes move. */
+@media (max-width:900px){
+  .hero-pin{--pw:clamp(176px, calc((100svh - 428px) * .46), 290px)}
+  .hero-pin .pin-inner{display:flex!important;flex-direction:column!important;align-items:center;gap:14px}
+  .hero-pin .hero-right{display:contents}
+  .hero-pin .pin-head{order:1;margin-bottom:0}
+  .hero-pin .hero-left{order:2}
+  .hero-pin .caps{order:3;margin-top:10px;min-height:0}
+  .hero-pin .hero-cta{order:4;margin-top:2px}
+  .hero-pin .hero-right .pin-head h1.hero{font-size:clamp(25px,6.6vw,34px)!important;max-width:18ch;padding-bottom:8px!important}
+  .hero-pin .pin-head .eyebrow{font-size:11px;letter-spacing:.12em;margin-bottom:8px}
+  .hero-pin .beats{bottom:calc(100% + 4px)}
+  /* the chain stands upright in the gutter beside the phone */
+  .hs-con{width:140px;top:205px;right:max(0px, calc(25vw - var(--pw) / 4 - 70px));transform:rotate(-62deg)}
+  .hs-glow{background:
+    radial-gradient(80% 40% at 50% 62%,var(--hs-sun),transparent 72%),
+    radial-gradient(60% 30% at 85% 8%,var(--hs-sun-2),transparent 70%)}
+}
+@media (max-width:420px){
+  .hero-pin .hero-cta .pill{font-size:15px;padding:12px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hs-star,.hs-seg,.hs-halo{transition:none}
+}
 </style>
 </head>
 
@@ -1497,8 +1646,20 @@ use.dvs-lit{opacity:.3}
      The device never moves; the screen inside it does. -->
 <section class="hero-pin" id="pinWrap" aria-labelledby="hero-h">
   <div class="pin-stage">
-    <!-- blob lives inside the sticky stage, not the 420vh section, or it sits off-screen -->
-    <div class="blob blob-hero" aria-hidden="true"></div>
+    <!-- The sky: first light at the top of the page, the same world as the
+         Bengaluru dusk in the footer. Decorative, inline, no requests. The
+         constellation gains one star per beat, because every entry is a star. -->
+    <div class="hs-glow" aria-hidden="true"></div>
+    <svg class="hs-field" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false"><g class="hs-dust"><circle cx="470" cy="169" r="0.9"/><circle cx="838" cy="61" r="0.7"/><circle cx="1184" cy="42" r="1.1"/><circle cx="841" cy="271" r="1.1"/><circle cx="448" cy="303" r="0.7"/><circle cx="811" cy="274" r="1"/><circle cx="841" cy="115" r="0.8"/><circle cx="126" cy="154" r="1.1"/><circle cx="1402" cy="51" r="1.3"/><circle cx="120" cy="147" r="0.9"/><circle cx="854" cy="147" r="1"/><circle cx="1000" cy="42" r="1.3"/><circle cx="1177" cy="121" r="0.7"/><circle cx="711" cy="58" r="1.6"/><circle cx="715" cy="100" r="1"/><circle cx="1237" cy="139" r="0.8"/><circle cx="224" cy="115" r="1.1"/><circle cx="269" cy="107" r="0.9"/><circle cx="1363" cy="293" r="0.7"/><circle cx="658" cy="444" r="1"/><circle cx="577" cy="77" r="0.9"/><circle cx="863" cy="42" r="1.1"/><circle cx="46" cy="79" r="0.7"/><circle cx="174" cy="213" r="0.8"/><circle cx="155" cy="420" r="1.1"/><circle cx="524" cy="240" r="1.3"/><circle cx="1236" cy="385" r="1.6"/><circle cx="326" cy="197" r="1.6"/><circle cx="1409" cy="533" r="0.9"/><circle cx="1048" cy="172" r="1.6"/><circle cx="1341" cy="228" r="0.8"/><circle cx="695" cy="7" r="1.6"/><circle cx="948" cy="502" r="0.9"/><circle cx="133" cy="385" r="0.8"/><circle cx="49" cy="217" r="1.1"/><circle cx="1402" cy="293" r="0.7"/><circle cx="1145" cy="53" r="1.1"/><circle cx="605" cy="70" r="1.1"/><circle cx="1167" cy="363" r="1.6"/><circle cx="635" cy="185" r="1.1"/><circle cx="764" cy="318" r="0.7"/><circle cx="731" cy="215" r="1.1"/><circle cx="293" cy="62" r="0.8"/><circle cx="1003" cy="572" r="0.8"/><circle cx="1203" cy="268" r="1.3"/><circle cx="440" cy="65" r="0.8"/><circle cx="1384" cy="104" r="1.3"/><circle cx="1192" cy="65" r="0.8"/><circle cx="516" cy="54" r="1.3"/><circle cx="36" cy="131" r="1.6"/><circle cx="335" cy="191" r="1.6"/><circle cx="610" cy="74" r="0.7"/><circle cx="1145" cy="183" r="1.1"/><circle cx="1226" cy="34" r="1.1"/><circle cx="603" cy="11" r="0.9"/><circle cx="82" cy="113" r="0.9"/><circle cx="643" cy="209" r="0.7"/><circle cx="32" cy="485" r="1"/></g><g class="hs-tw"><circle cx="161" cy="243" r="1.8"/><circle cx="316" cy="41" r="1.3"/><circle cx="585" cy="269" r="1.8"/><circle cx="1259" cy="139" r="1.6"/><circle cx="962" cy="158" r="1.3"/><circle cx="392" cy="8" r="1.4"/></g><g class="hs-tw hs-tw2"><circle cx="357" cy="155" r="1.6"/><circle cx="1112" cy="83" r="1.5"/><circle cx="42" cy="107" r="2.1"/><circle cx="230" cy="199" r="1.4"/><circle cx="1038" cy="420" r="2.1"/><circle cx="728" cy="567" r="2.1"/></g></svg>
+    <svg class="hs-con" viewBox="0 0 320 150" aria-hidden="true" focusable="false">
+      <g transform="translate(20 122) rotate(-32.8)"><rect class="hs-k hs-seg" data-i="1" x="0" y="-.6" width="107.1" height="1.2" rx=".6"/></g>
+      <g transform="translate(110 64) rotate(18.43)"><rect class="hs-k hs-seg" data-i="2" x="0" y="-.6" width="94.9" height="1.2" rx=".6"/></g>
+      <g transform="translate(200 94) rotate(-35.54)"><rect class="hs-k hs-seg" data-i="3" x="0" y="-.6" width="120.4" height="1.2" rx=".6"/></g>
+      <g transform="translate(20 122)"><g class="hs-k hs-star" data-i="0"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
+      <g transform="translate(110 64)"><g class="hs-k hs-star" data-i="1"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
+      <g transform="translate(200 94)"><g class="hs-k hs-star" data-i="2"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
+      <g transform="translate(298 24)"><g class="hs-k hs-star" data-i="3"><circle class="hs-halo" r="16"/><path class="hs-ray" d="M0-14 L2-2 14 0 2 2 0 14-2 2-14 0-2-2Z"/><circle class="hs-core" r="3.6"/></g></g>
+    </svg>
     <div class="wrap pin-inner">
       <!-- The 0:00-0:42 rail is gone with the scroll driver: it was a scroll
            progress indicator for a section that no longer scrolls. -->
@@ -1512,20 +1673,20 @@ use.dvs-lit{opacity:.3}
         <div class="device pin-phone">
           <div class="screens">
             <figure class="scr on" data-i="0">
-              <img src="/app/app-record.webp?v=1111" width="900" height="1955" fetchpriority="high"
-                   alt="The DailyVox home screen: a journal entry transcribed from speech about a morning walk, a 32-day streak, and a microphone button labelled “your voice stays on this device”.">
+              <img src="/app/app-113-today.webp" width="900" height="1957" fetchpriority="high"
+                   alt="The DailyVox Today screen: a 33-day streak, this morning’s entry about Sarah calling on the drive home, a mood card reading Feeling calm, a card recalling that you mentioned Sarah a week ago, and the daily question “How are things with Sarah?” above the microphone button.">
             </figure>
             <figure class="scr" data-i="1">
-              <img src="/app/app-live.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="Recording in progress: a 42-second dial at 28 seconds, a live waveform, and the words being transcribed on the phone as they are spoken.">
+              <img src="/app/app-113-record.webp" width="900" height="1957" loading="lazy"
+                   alt="Recording in progress: a gold dial at 0:28 of 0:42 with 28 ticks lit, a live waveform marked Listening, a header reading recording, on-device, 0 B out, and buttons to discard, stop and keep, or pause.">
             </figure>
             <figure class="scr" data-i="2">
-              <img src="/app/app-entry.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="An entry with the names Sarah, James and Emma underlined in gold, and a ledger below it reading MOOD grateful, MENTIONED Sarah, James, Emma, Lisa.">
+              <img src="/app/app-113-entry.webp" width="900" height="1957" loading="lazy"
+                   alt="A journal entry about hosting a dinner party, with Sarah, James and Emma underlined in gold, and a panel below titled What your Twin filed: mood Grateful +1.0, mentioned Sarah, James, Emma, Lisa and Thai.">
             </figure>
             <figure class="scr" data-i="3">
-              <img src="/app/app-twin.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="The Digital Twin sky: a constellation of 35 entries with Sarah, Mike, Emma and James named among them, and a summary reading warm, steady, expansive.">
+              <img src="/app/app-113-sky.webp" width="900" height="1957" loading="lazy"
+                   alt="Your sky, the Twin screen: a constellation of 35 stars, one per entry, with Sarah, Mike, Emma and James joined to a bright centre, and the line Who you are: warm, steady, expansive.">
             </figure>
           </div>
         </div>
@@ -2499,15 +2660,19 @@ use.dvs-lit{opacity:.3}
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
       cos   = [].slice.call(wrap.querySelectorAll('.sticker')),
       bars  = [].slice.call(wrap.querySelectorAll('.beats i')),
+      stars = [].slice.call(wrap.querySelectorAll('.hs-k')),
       N = 4, cur = -1, i = 0;
 
   function set(n){
     if(n === cur) return;
     cur = n;
-    [scrs, caps, cos, bars].forEach(function(group){
+    [scrs, caps, cos, bars, stars].forEach(function(group){
       group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === n); });
     });
-    bars.forEach(function(el){ el.classList.toggle('done', +el.dataset.i < n); });
+    /* the constellation keeps what it has already drawn, like the beat bars */
+    [bars, stars].forEach(function(group){
+      group.forEach(function(el){ el.classList.toggle('done', +el.dataset.i < n); });
+    });
   }
 
   /* The beats used to be driven by scroll position across a 420vh section.
@@ -2516,6 +2681,8 @@ use.dvs-lit{opacity:.3}
      leaves it there. */
   set(0);
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* Without this class (no script, or reduced motion) the constellation is drawn whole. */
+  wrap.classList.add('hs-live');
 
   var timer = setInterval(tick, 3600);
   function tick(){ i = (i + 1) % N; set(i); }
