@@ -163,6 +163,11 @@
       "source": "/blog/trip-journal-app",
       "destination": "/blog/best-offline-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/is-there-a-journaling-app-that-works-completely-offline-with",
+      "destination": "/blog/best-offline-journal-app",
+      "statusCode": 301
     }
   ],
   "headers": [
