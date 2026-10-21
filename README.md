@@ -172,7 +172,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New — v1.13.0 and Android 1.2 (October 2026)
+## What's New — v1.13.0 (iPhone, 17 October 2026) · Android 1.2 in review
 
 A release about the first week: the app now gives something back every time you speak, instead of only after weeks of entries. Everything here is on iPhone and Android, and all of it runs on the phone.
 
@@ -225,7 +225,7 @@ A release about the first week: the app now gives something back every time you 
 | v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | Shipped Aug 2026 |
 | Android v1.0 | Android, first release | Shipped 2026-10-02 |
 | v1.12.0 · Android v1.1 | Type an entry any time ("I can't talk right now" on the main screen) | Shipped Oct 2026 |
-| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **Oct 2026** |
+| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **17 Oct 2026** (iOS) · Android in review |
 | Next | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 

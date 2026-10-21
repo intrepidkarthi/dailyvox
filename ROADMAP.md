@@ -85,7 +85,7 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - "I can't talk right now" on the main record screen on both platforms, not only in onboarding; typed entries are saved like spoken ones (mood, people, streak, the Twin) and never show a player
 - Requested by a user who journals around coworkers and family, where speaking aloud is not an option
 
-### v1.13.0 and Android v1.2 — Something back from the first week *(October 2026; iOS build 46, Android versionCode 6)*
+### v1.13.0 and Android v1.2 — Something back from the first week *(iOS: shipped 17 October 2026, build 46 · Android: versionCode 6, in review on Google Play)*
 - **Reflection after each entry**: a short reflection under every saved entry, and one line carried into tomorrow when the entry names a person or place — left out, not guessed, when it names no one
 - **Suggested mood**: each entry gets a mood suggested from its words, marked as a suggestion, one tap to change; it never replaces a mood the user chose and holds back on short, mixed or negated entries. Kept in its own field, apart from the mood the user sets, so a suggestion the user never touched is not counted as their own answer
 - **Your past, brought back**: "A week ago you said…" quoted word for word, "On this day" from earlier months and years, and a weekly recap counted from the entries themselves
@@ -119,7 +119,7 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.13.0 *(October 2026)* | v1.2 *(October 2026, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
+| **Current** | v1.13.0 *(17 October 2026)* | v1.1 on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app); v1.2 in review |
 | Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ *(unconditional; minSdk 33)* |
 | Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ *(screen only)* |
 | Digital Twin personality models | ✅ | ✅ |
@@ -135,12 +135,12 @@ milestones; this table says which platform has reached them.
 | Body Twin (health signals) | ✅ HealthKit | no — no health permission requested |
 | Prosody / voice biomarkers | ✅ | ✅ |
 | Typed entries ("I can't talk right now") | ✅ *(v1.12)* | ✅ *(v1.1)* |
-| Reflection and suggested mood after each entry | ✅ *(v1.13)* | ✅ *(v1.2)* |
-| Week ago, On this day, weekly recap | ✅ *(v1.13)* | ✅ *(v1.2)* |
-| Daily question | ✅ *(v1.13)* | ✅ *(v1.2)* |
-| Early signals before the full patterns | ✅ *(v1.13)* | ✅ *(v1.2)* |
-| Streak with one grace day a week | ✅ *(v1.13)* | ✅ *(v1.2)* |
-| Reminder quoting a line from a week ago (opt-in) | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Reflection and suggested mood after each entry | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
+| Week ago, On this day, weekly recap | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
+| Daily question | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
+| Early signals before the full patterns | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
+| Streak with one grace day a week | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
+| Reminder quoting a line from a week ago (opt-in) | ✅ *(v1.13)* | ⏳ *(v1.2, in review)* |
 | Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
 | Widgets | ✅ WidgetKit | ✅ *(RemoteViews)* |
 | Live Activities / Dynamic Island | ✅ | ongoing notification; no Island analogue |
