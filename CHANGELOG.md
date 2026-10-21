@@ -2,7 +2,11 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.13.0] (iOS) and [Android 1.2] — unreleased
+## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
+
+Live on the App Store since 17 October 2026 (build 46). Android 1.2
+(versionCode 6) carries the same features and is in review; Android 1.1 is the
+current Play release until it is approved.
 
 A release about the first week: the app now gives something back every time you
 speak, instead of only after weeks of entries.
