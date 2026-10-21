@@ -183,6 +183,11 @@
       "source": "/blog/talk-to-your-past-self-digital-twin",
       "destination": "/blog/how-digital-twin-learns-personality",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/voice-journaling-for-therapy",
+      "destination": "/blog/voice-journaling-vs-therapy",
+      "statusCode": 301
     }
   ],
   "headers": [
