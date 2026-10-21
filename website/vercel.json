@@ -178,6 +178,11 @@
       "source": "/blog/journaling-for-mental-fitness",
       "destination": "/blog/how-to-journal-for-mental-health",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/talk-to-your-past-self-digital-twin",
+      "destination": "/blog/how-digital-twin-learns-personality",
+      "statusCode": 301
     }
   ],
   "headers": [
