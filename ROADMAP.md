@@ -75,6 +75,10 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - Rating prompt tuned: first ask at entry 3 (was 5) and after the first share
 - Anchored ASO keyword field (`mood tracker` + `digital twin`) and fresh App Store screenshots at current resolutions
 
+### v1.12.0 and Android v1.1 — Type an entry any time *(October 2026)*
+- "I can't talk right now" on the main record screen on both platforms, not only in onboarding; typed entries are saved like spoken ones (mood, people, streak, the Twin) and never show a player
+- Requested by a user who journals around coworkers and family, where speaking aloud is not an option
+
 ### Android v1.0 — First Android release *(shipped 2026-10-02)*
 - On [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app) for Android 13 or newer; its own version line, not a counterpart to an iOS version
 - On-device transcription, mood, the Twin's constellation, Insights, Ask with cited entries, typed or voice search, widget, Quick Settings tile, reminder, app lock, export, encrypted backup that opens on either platform
@@ -106,7 +110,7 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.11.0 *(shipped 2026-08-24)* | v1.0 *(shipped 2026-10-02, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
+| **Current** | v1.12.0 *(October 2026)* | v1.1 *(October 2026, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
 | Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ *(unconditional; minSdk 33)* |
 | Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ *(screen only)* |
 | Digital Twin personality models | ✅ | ✅ |
