@@ -1,138 +1,74 @@
 # DailyVox - App Store Submission Checklist
 
+The steps every iOS update goes through. The App Store record already exists, so
+there is no "create the app" step any more. Each release also gets its own
+`Submission_<version>.md` in this folder (version and build, What's New,
+Promotional Text, review notes, anything release-specific), and that file wins
+where the two differ.
+
 ## Pre-Submission
 
 ### Code & Build
-- [ ] All source files compile without errors
-- [ ] No warnings in Release build
-- [ ] Minimum deployment target set (iOS 16.0 recommended)
-- [ ] Bundle identifier: `com.dailyvox.app`
-- [ ] Version: 1.0.0
-- [ ] Build number: 1
-- [ ] App Group configured: `group.com.dailyvox.app`
-- [ ] Archive builds successfully in Release configuration
+- [ ] The private engine is checked out at `DailyVoxTwin/` in the repository root (see `CONTRIBUTING.md`); without it the app does not build
+- [ ] Builds in Xcode 26 or later; `solynTests` green
+- [ ] `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` bumped in `ios/solyn.xcodeproj` (all targets, including the widget)
+- [ ] Minimum deployment target unchanged at iOS 17.0
+- [ ] Bundle identifier: `com.dailyvox.app` (widget: `com.dailyvox.app.DailyVoxWidgets`)
+- [ ] App Group: `group.com.dailyvox.app`
+- [ ] `ITSAppUsesNonExemptEncryption = false` still in `Info.plist`, so App Store Connect does not ask about export compliance
+- [ ] Archive builds in Release configuration
 
-### App Icon
-- [ ] 1024x1024 App Store icon (already in Assets.xcassets)
-- [ ] No transparency or alpha channel
-- [ ] No rounded corners (iOS applies them automatically)
+### Data model and CloudKit
+- [ ] If the Core Data model changed, the new fields are deployed to the CloudKit **Production** schema before the build ships, then checked with a TestFlight build: turn sync on, save an entry, and look for the record in Production
 
-### Screenshots (Required)
-- [ ] iPhone 6.7" display (1290 x 2796) - at least 3 screenshots
-- [ ] iPhone 6.5" display (1284 x 2778) - at least 3 screenshots
-- [ ] iPhone 5.5" display (1242 x 2208) - at least 3 screenshots
-- [ ] iPad 12.9" display (2048 x 2732) - if supporting iPad
-- See `ScreenshotAssets.md` for caption text and layout guide
+### Device pass
+- [ ] Every new screen and card looked at on a real iPhone, at the largest Dynamic Type size and with VoiceOver
+- [ ] With the phone **online**, recording still transcribes on-device (airplane mode cannot catch a network fallback, because with no network there is nothing to leak to)
 
-### Metadata (Ready in AppStoreMetadata.md)
-- [x] App Name: "DailyVox - AI Voice Diary"
-- [x] Subtitle: "Your Private Digital Twin"
-- [x] Description (under 4000 chars)
-- [x] Keywords (under 100 chars)
-- [x] Promotional Text
-- [x] What's New text
-- [x] Category: Health & Fitness / Lifestyle
-- [x] Age Rating: 4+
-- [x] Copyright
-- [x] Support URL
-- [x] Privacy Policy URL
+### Screenshots
+- [ ] Unchanged screens are still accurate; regenerate only if the release changes what they show: `bash ios/AppStore/screenshot-src/make_screenshots.sh`
+- Current sets live in `screenshots/` (iPhone 6.1", 6.3", 6.5", 6.9", and the Dynamic Island medium size)
 
-### Privacy (Ready in PrivacyPolicy.md)
-- [x] Privacy Policy written
-- [x] Privacy Policy hosted at URL
-- [x] App Privacy labels configured (Data Not Collected)
+### Metadata (`AppStoreMetadata.md`)
+- [ ] App Name: "DailyVox: Voice Journal Diary"
+- [ ] Subtitle: "Private On-Device Audio Diary"
+- [ ] Description, keywords and Promotional Text current
+- [ ] A "What's New (Version x.y.z)" section added at the top of the What's New list, matching what goes into App Store Connect
+- [ ] Category: Health & Fitness / Productivity
+- [ ] Age Rating: 4+
+- [ ] Support URL: https://getdailyvox.com/support
+- [ ] Privacy Policy URL: https://getdailyvox.com/privacy
+
+### Privacy
+- [ ] App Privacy label still "Data Not Collected" (nothing new leaves the device)
+- [ ] If the release changes what the app reads or shows, the published policy at getdailyvox.com/privacy and `PrivacyPolicy.md` both say so
 
 ### App Review
-- [x] Review notes prepared (in metadata.json)
-- [ ] Demo video prepared (optional but recommended)
-- [ ] No placeholder content in screenshots
-- [ ] All links in app work (support URL, privacy URL)
+- [ ] Review notes: the latest `ReviewNotes_<version>.md`, plus anything the release's `Submission_<version>.md` adds
+- [ ] Demo account: none required. No accounts exist
 
-## App Store Connect Setup
+## Upload
 
-### Create App Record
-1. Go to App Store Connect > My Apps > "+"
-2. Platform: iOS
-3. Name: DailyVox - AI Voice Diary
-4. Primary Language: English (US)
-5. Bundle ID: com.dailyvox.app
-6. SKU: dailyvox-ios-v1
+1. Xcode → Product → Archive
+2. Window → Organizer → Distribute App → App Store Connect
+3. Wait for processing, then attach the build to the new version in App Store Connect
+4. Paste What's New, Promotional Text and the review notes from `Submission_<version>.md`
+5. Submit
 
-### App Information
-1. Category: Health & Fitness
-2. Secondary Category: Lifestyle
-3. Content Rights: Does not contain third-party content
-4. Age Rating: Configure with `rating_config.json`
-
-### Pricing and Availability
-1. Price: Free
-2. Availability: All territories
-
-### App Privacy
-1. Data Collection: "No, we do not collect data from this app"
-2. No data types to declare
-
-### Version Information
-1. Upload screenshots for each device size
-2. Add promotional text
-3. Add description
-4. Add keywords
-5. Add What's New
-6. Add support URL
-7. Add marketing URL (optional)
-
-## Upload Process
-
-### Using Xcode
-1. Archive: Product > Archive
-2. Distribute App > App Store Connect
-3. Upload
-4. Wait for processing (5-30 minutes)
-
-### Using Fastlane (Recommended)
-```bash
-# Install fastlane
-gem install fastlane
-
-# Initialize (first time)
-cd dailyvox
-fastlane init
-
-# Upload metadata
-fastlane deliver
-
-# Build and upload
-fastlane gym
-fastlane deliver --ipa path/to/dailyvox.ipa
-```
-
-### Using xcrun
-```bash
-# Archive
-xcodebuild archive \
-  -project dailyvox.xcodeproj \
-  -scheme dailyvox \
-  -archivePath build/dailyvox.xcarchive
-
-# Export IPA
-xcodebuild -exportArchive \
-  -archivePath build/dailyvox.xcarchive \
-  -exportPath build/ \
-  -exportOptionsPlist ExportOptions.plist
-
-# Upload
-xcrun altool --upload-app \
-  -f build/dailyvox.ipa \
-  -t ios \
-  -u YOUR_APPLE_ID \
-  -p YOUR_APP_SPECIFIC_PASSWORD
-```
+`Deliverfile` in this folder is from the first release and is out of date; it is not part of this process.
 
 ## Post-Submission
 
 - [ ] Monitor App Store Connect for review status
 - [ ] Respond to any App Review feedback within 24 hours
-- [ ] Prepare marketing materials for launch day
-- [ ] Set up App Store page URL for sharing
 - [ ] Monitor crash reports via Xcode Organizer
-- [ ] Plan v1.1 features based on user feedback
+
+## After the release is live
+
+Update the versions the website shows (top-bar badge, footer on every page, schema, "latest" lines), once the store actually serves the new build:
+
+```bash
+python3 website/set_version.py --ios <version> --android <version>   # the numbers now live
+```
+
+Then add the release to website/public/changelog.html and the roadmap table by hand.
