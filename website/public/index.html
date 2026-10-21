@@ -1450,6 +1450,204 @@ use.dvs-lit{opacity:.3}
 .dv-f-cup{flex:none;width:38px;height:38px;overflow:visible}
 .dv-f-steam path{fill:none;stroke:#F1EDE2;stroke-width:1.4;stroke-linecap:round;opacity:.55;transform-box:fill-box}
 .dv-footer .dv-f-col a:hover,.dv-footer .dv-f-base a:hover{color:var(--uv-text)}
+
+/* --- HERO B: the night sky ---------------------------------------------------
+   The footer ends the page at nightfall over Bengaluru, with stars joining into
+   a constellation. The top of the page is that sky, so the page opens and
+   closes on the app's own picture of a journal: every entry is a star.
+   The headline is centred and large over it; the phone sits in the middle with
+   its screen swapping through the four beats; the caption and buttons are on
+   its left, and on its right a constellation gains one star per beat, each
+   sticker hanging off the star it belongs to.
+   The two hero columns are display:contents, so the eight pieces are placed
+   straight onto one grid without changing the DOM (or the reading) order.
+   Deliberately dark in both colour schemes; only the hero changes. */
+#pinWrap{
+  --hv-n0:#0C0A26; --hv-n1:#171440; --hv-n2:#2B2158; --hv-n3:#4A3468;
+  --hv-haze:rgba(126,100,174,.22); --hv-warm:rgba(239,166,95,.30);
+  --hv-star:#FFF4D6; --hv-gold:#EDCB86; --hv-text:#F4EFE3; --hv-dim:rgba(244,239,227,.78);
+  --hv-glass:rgba(23,20,64,.62); --hv-edge:rgba(255,244,214,.16);
+  --pw:clamp(196px,calc((100svh - 400px) * .48),292px);
+  min-height:calc(100svh - var(--navh,77px))!important; color:var(--hv-text);
+  background:var(--hv-n0);
+}
+@media (prefers-color-scheme:dark){
+  #pinWrap{--hv-n0:#08071C; --hv-n1:#110F33; --hv-n2:#211A49; --hv-n3:#38295A; --hv-warm:rgba(184,113,79,.26)}
+}
+#pinWrap .pin-stage{
+  overflow:hidden; display:block!important; padding:0!important;
+  min-height:calc(100svh - var(--navh,77px));
+  background:
+    radial-gradient(60% 46% at 50% 100%, var(--hv-warm), transparent 70%),
+    radial-gradient(42% 60% at 76% 34%, var(--hv-haze), transparent 72%),
+    radial-gradient(36% 50% at 18% 62%, rgba(91,124,107,.12), transparent 70%),
+    linear-gradient(180deg, var(--hv-n0) 0%, var(--hv-n1) 38%, var(--hv-n2) 78%, var(--hv-n3) 100%);
+}
+/* a glow for the phone to be lit against */
+#pinWrap .pin-stage::after{
+  top:auto; bottom:-8%; left:50%; translate:-50% 0; width:min(820px,120vw);
+  background:radial-gradient(closest-side, rgba(237,203,134,.16), rgba(126,100,174,.10) 52%, transparent 76%);
+}
+/* the horizon: the page below rises into the sky as a curve, with a warm rim */
+#pinWrap .pin-stage::before{
+  content:""; position:absolute; z-index:1; left:-25%; right:-25%; bottom:-1px; height:clamp(28px,3.6vw,52px);
+  border-radius:50% 50% 0 0 / 100% 100% 0 0; background:var(--paper-2,#F2EDE8);
+  box-shadow:0 -1px 0 rgba(239,166,95,.55), 0 -14px 40px rgba(239,166,95,.22);
+  pointer-events:none;
+}
+.hv-sky{position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none}
+.hv-sky g{fill:var(--hv-star)}
+.hv-far{opacity:.42} .hv-near{opacity:.8} .hv-tw{opacity:.9}
+
+/* --- the grid ------------------------------------------------------------- */
+#pinWrap .pin-inner{
+  position:relative; z-index:2; display:grid!important; max-width:1240px!important; margin-inline:auto;
+  grid-template-columns:minmax(0,1fr) var(--pw) minmax(0,1fr)!important;
+  grid-template-rows:auto 1fr 1fr;
+  grid-template-areas:"head head head" "cap phone sky" "cta phone sky";
+  column-gap:clamp(28px,4.4vw,72px)!important; row-gap:0!important;
+  align-items:stretch; justify-items:stretch;
+  padding:clamp(22px,4.4vh,48px) var(--pad-x) clamp(60px,9vh,84px)!important;
+  min-height:calc(100svh - var(--navh,77px));
+}
+#pinWrap .hero-left,#pinWrap .hero-right{display:contents}
+#pinWrap .pin-head{grid-area:head; text-align:center!important; max-width:none!important;
+  margin:0 0 clamp(20px,3.6vh,40px)!important; justify-self:center}
+#pinWrap .pin-device{grid-area:phone; align-self:center; justify-self:center; z-index:4; margin:0}
+#pinWrap .caps{grid-area:cap; align-self:end; justify-self:end; width:min(100%,21rem)!important;
+  min-height:0!important; height:auto!important; margin:0!important; position:relative}
+#pinWrap .hero-cta{grid-area:cta; align-self:start; justify-self:end; width:min(100%,21rem);
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px; margin:clamp(18px,2.6vh,28px) 0 0!important}
+#pinWrap .hv-cst{grid-area:sky; position:relative; width:100%; height:100%; overflow:visible; z-index:3}
+
+/* --- headline over the sky ------------------------------------------------- */
+#pinWrap .pin-head .eyebrow{
+  justify-content:center; margin:0 0 clamp(12px,1.8vh,18px)!important;
+  font:600 15px/1.3 var(--sans)!important; letter-spacing:.01em!important; text-transform:none!important;
+  color:var(--hv-gold)!important;
+}
+#pinWrap .pin-head .eyebrow::before{width:7px; height:7px; background:var(--hv-gold);
+  box-shadow:0 0 0 4px rgba(237,203,134,.14), 0 0 14px rgba(237,203,134,.7)}
+#pinWrap .pin-head h1.hero{
+  color:var(--hv-text)!important; font-size:clamp(34px,4.3vw,62px)!important; line-height:1.04!important;
+  letter-spacing:-.025em; max-width:15em!important; margin:0 auto!important; padding:0 0 .1em!important;
+  text-shadow:0 2px 30px rgba(12,10,38,.6);
+}
+#pinWrap .pin-head .accent{color:var(--hv-gold)}
+#pinWrap .pin-head .uline path{stroke:var(--hv-gold)}
+
+/* --- the phone -------------------------------------------------------------- */
+#pinWrap .device.pin-phone{
+  width:var(--pw)!important; max-width:none!important;
+  box-shadow:0 0 0 1px rgba(255,244,214,.22), 0 0 0 7px rgba(255,244,214,.035),
+             0 40px 90px -24px rgba(5,4,20,.85), 0 0 120px -10px rgba(237,203,134,.22)!important;
+}
+#pinWrap .pin-phone::before{background:linear-gradient(150deg,rgba(255,255,255,.16),transparent 38%)!important}
+#pinWrap .pin-phone::after{display:none}
+#pinWrap .device-floor{display:none}
+
+/* --- caption + beat bar ------------------------------------------------------ */
+#pinWrap .cap{text-align:left!important}
+#pinWrap .cap h2{color:var(--hv-text); font-size:clamp(20px,1.9vw,27px)!important; line-height:1.14; letter-spacing:-.015em; margin:0 0 7px!important}
+#pinWrap .cap p{color:var(--hv-dim); font-size:15.5px; line-height:1.55; margin:0!important; max-width:34ch}
+#pinWrap .beats{position:static; translate:none; margin:0 0 16px}
+#pinWrap .beats i{background:rgba(244,239,227,.2); width:30px}
+#pinWrap .beats i::after{background:var(--hv-gold)}
+
+/* --- buttons ------------------------------------------------------------------ */
+#pinWrap .hero-cta .pill{min-width:15.5rem; justify-content:center}
+#pinWrap .hero-cta .pill:first-child{background:var(--hv-star); color:#15123A;
+  box-shadow:0 10px 30px -10px rgba(237,203,134,.55)}
+#pinWrap .hero-cta .pill:nth-child(2){background:rgba(255,244,214,.07); color:var(--hv-text);
+  box-shadow:inset 0 0 0 1.5px rgba(255,244,214,.34)}
+#pinWrap .hero-cta .pill:nth-child(2):hover{background:rgba(255,244,214,.13)}
+#pinWrap .hero-cta .pill:focus-visible,#pinWrap .hero-ph:focus-visible{outline:2px solid var(--hv-gold); outline-offset:3px}
+#pinWrap .hero-ph{margin-top:4px}
+
+/* --- the constellation ----------------------------------------------------------- */
+.hv-cst line{stroke:var(--hv-star); stroke-opacity:.5; stroke-width:1.2; vector-effect:non-scaling-stroke;
+  transform-box:view-box}
+.hv-cst path{fill:none; stroke:var(--hv-star); stroke-linecap:round; stroke-width:6; vector-effect:non-scaling-stroke}
+.hv-cst path.h{stroke:var(--hv-gold); stroke-width:22; opacity:.14}
+.hv-cst path.m{stroke-width:3; opacity:.45}
+.hv-cst g.on path{stroke:#FFE7A8}
+.hv-cst g.on path.h{opacity:.32}
+
+/* --- stickers, re-cut for the night: glass labels pinned beside their star ---- */
+#pinWrap .sticker{
+  grid-area:sky; position:absolute; z-index:5; right:auto!important; bottom:auto;
+  max-width:14rem; padding:11px 15px 10px; border-radius:14px;
+  background:var(--hv-glass)!important; color:var(--hv-text)!important;
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  box-shadow:inset 0 0 0 1px var(--hv-edge), 0 18px 40px -16px rgba(5,4,20,.8)!important;
+  translate:0 -50%;
+}
+#pinWrap .sticker b{color:var(--hv-text); font-size:16px}
+#pinWrap .sticker i{color:var(--hv-gold); opacity:1; font-size:17px}
+#pinWrap .st-arrow{display:none}
+/* each sits just off its own star (star coordinates are the viewBox percentages above) */
+#pinWrap .sticker[data-i="0"]{left:calc(16% + 22px)!important; top:80%!important}
+#pinWrap .sticker[data-i="1"]{left:calc(34% + 22px)!important; top:50%!important}
+#pinWrap .sticker[data-i="2"]{left:calc(66% - 150px)!important; top:calc(64% + 58px)!important}
+#pinWrap .sticker[data-i="3"]{left:auto!important; right:calc(26% + 22px)!important; top:24%!important}
+
+/* --- one entrance: the stars come out, the phone rises into place, the first
+       star of the constellation lights. Text is never hidden (it is the LCP). */
+@media (prefers-reduced-motion:no-preference){
+  .hv-far{animation:hvFade 1.6s ease both}
+  .hv-near{animation:hvFade 1.6s ease .35s both}
+  .hv-tw{animation:hvFade 1.6s ease .7s both}
+  .hv-tw circle{animation:hvTw 3.8s ease-in-out infinite alternate}
+  .hv-tw circle:nth-child(2n){animation-duration:5.2s; animation-delay:-2s}
+  .hv-tw circle:nth-child(3n){animation-duration:4.4s; animation-delay:-1s}
+  #pinWrap .pin-device{animation:hvRise 1.2s cubic-bezier(.2,.75,.25,1) both}
+  .hv-armed .hv-cst [data-i]:not(.lit){opacity:0}
+  .hv-armed .hv-cst line:not(.lit){transform:scale(0)}
+  .hv-armed .hv-cst line.lit{transition:transform 1s cubic-bezier(.5,0,.25,1)}
+  .hv-armed .hv-cst g.lit{transition:opacity .6s ease .55s}
+  .hv-armed .hv-cst g[data-i="0"].lit{animation:hvFade .8s ease .9s both}
+  .hv-armed .hv-cst g.on path.h{animation:hvPulse 1.8s ease-in-out .3s infinite alternate}
+}
+@keyframes hvFade{from{opacity:0}}
+@keyframes hvTw{to{opacity:.3}}
+@keyframes hvRise{from{transform:translateY(26px)}}
+@keyframes hvPulse{to{opacity:.12}}
+
+/* --- narrower: one column. Headline, buttons, phone, caption. The
+       constellation moves to the strip of sky right of the phone. ---------- */
+@media (max-width:900px){
+  #pinWrap{--pw:min(60vw,272px)}
+  #pinWrap .pin-inner{
+    grid-template-columns:1fr!important; grid-template-rows:none;
+    grid-template-areas:"head" "cta" "phone" "cap";
+    padding-top:clamp(22px,4vh,36px)!important; padding-bottom:clamp(56px,10vw,80px)!important;
+    min-height:0;
+  }
+  #pinWrap .pin-head{margin-bottom:18px!important}
+  #pinWrap .pin-head h1.hero{font-size:clamp(31px,8.4vw,46px)!important; line-height:1.07!important}
+  #pinWrap .hero-cta{justify-self:center; align-items:center; width:100%; margin:0 0 30px!important;
+    flex-direction:row; flex-wrap:wrap; justify-content:center; gap:10px}
+  #pinWrap .hero-cta .pill{min-width:0; flex:1 1 15rem; max-width:22rem; padding:13px 18px; font-size:15.5px}
+  #pinWrap .hero-ph{flex-basis:100%; justify-content:center; margin-top:2px}
+  #pinWrap .caps{justify-self:center; text-align:center; width:min(100%,34ch)!important; margin-top:24px!important}
+  #pinWrap .cap{text-align:center!important}
+  #pinWrap .cap p{margin-inline:auto!important}
+  #pinWrap .beats{justify-content:center}
+  #pinWrap .hv-cst{grid-area:phone; position:absolute; height:100%;
+    left:calc(50% + var(--pw) / 2 + 6px); width:calc(50% - var(--pw) / 2 - 6px); max-width:120px}
+  #pinWrap .sticker{display:none}
+}
+@media (max-width:420px){
+  #pinWrap .pin-head .eyebrow{font-size:14px!important}
+  #pinWrap .hero-cta .pill{flex-basis:100%}
+}
+/* short laptop windows: keep the buttons on screen */
+@media (min-width:901px) and (max-height:760px){
+  #pinWrap .pin-head h1.hero{font-size:clamp(32px,3.9vw,52px)!important}
+  #pinWrap .hero-cta{gap:8px}
+  #pinWrap .hero-cta .pill{padding-block:11px}
+}
+
 </style>
 </head>
 
@@ -1497,8 +1695,13 @@ use.dvs-lit{opacity:.3}
      The device never moves; the screen inside it does. -->
 <section class="hero-pin" id="pinWrap" aria-labelledby="hero-h">
   <div class="pin-stage">
-    <!-- blob lives inside the sticky stage, not the 420vh section, or it sits off-screen -->
-    <div class="blob blob-hero" aria-hidden="true"></div>
+    <!-- The night sky the footer ends on, at the top of the page instead. Decorative,
+         inline, no requests: a far and a near field of stars, and a handful that twinkle. -->
+    <svg class="hv-sky" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<g class="hv-far"><circle cx="918" cy="29" r="0.8"/><circle cx="358" cy="127" r="0.6"/><circle cx="971" cy="768" r="0.6"/><circle cx="848" cy="35" r="0.6"/><circle cx="320" cy="439" r="0.6"/><circle cx="807" cy="618" r="0.9"/><circle cx="323" cy="510" r="0.6"/><circle cx="1088" cy="144" r="0.9"/><circle cx="493" cy="140" r="0.8"/><circle cx="155" cy="332" r="0.8"/><circle cx="1213" cy="522" r="0.6"/><circle cx="1046" cy="465" r="0.9"/><circle cx="122" cy="258" r="1.0"/><circle cx="1267" cy="316" r="0.7"/><circle cx="1010" cy="47" r="0.7"/><circle cx="1108" cy="847" r="0.7"/><circle cx="1240" cy="332" r="0.9"/><circle cx="307" cy="235" r="0.6"/><circle cx="875" cy="154" r="0.7"/><circle cx="666" cy="238" r="1.0"/><circle cx="322" cy="284" r="0.6"/><circle cx="335" cy="35" r="0.8"/><circle cx="580" cy="64" r="1.0"/><circle cx="1254" cy="276" r="0.9"/><circle cx="386" cy="218" r="1.0"/><circle cx="839" cy="316" r="0.7"/><circle cx="734" cy="85" r="0.6"/><circle cx="1233" cy="138" r="0.7"/><circle cx="1135" cy="368" r="0.6"/><circle cx="367" cy="479" r="0.6"/><circle cx="976" cy="106" r="1.0"/><circle cx="1076" cy="663" r="0.8"/><circle cx="168" cy="378" r="0.9"/><circle cx="15" cy="623" r="0.8"/><circle cx="1390" cy="657" r="1.0"/><circle cx="1306" cy="750" r="0.8"/><circle cx="1205" cy="441" r="0.7"/><circle cx="227" cy="658" r="1.0"/><circle cx="1364" cy="794" r="0.6"/><circle cx="525" cy="847" r="0.8"/><circle cx="350" cy="213" r="1.0"/><circle cx="1355" cy="81" r="0.9"/><circle cx="1169" cy="841" r="1.0"/><circle cx="1097" cy="117" r="0.9"/><circle cx="1355" cy="149" r="1.0"/><circle cx="1249" cy="369" r="0.7"/><circle cx="1329" cy="651" r="0.7"/><circle cx="1022" cy="348" r="0.8"/><circle cx="329" cy="296" r="1.0"/><circle cx="1015" cy="58" r="0.6"/><circle cx="1296" cy="740" r="0.6"/><circle cx="776" cy="624" r="1.0"/><circle cx="681" cy="676" r="0.7"/><circle cx="144" cy="569" r="0.8"/><circle cx="611" cy="406" r="0.6"/><circle cx="96" cy="628" r="0.6"/></g>
+<g class="hv-near"><circle cx="277" cy="399" r="1.2"/><circle cx="1226" cy="471" r="1.2"/><circle cx="777" cy="32" r="1.2"/><circle cx="1208" cy="156" r="1.9"/><circle cx="435" cy="814" r="1.2"/><circle cx="116" cy="76" r="1.4"/><circle cx="1338" cy="487" r="1.2"/><circle cx="1073" cy="79" r="1.9"/><circle cx="205" cy="306" r="1.2"/></g>
+<g class="hv-tw"><circle cx="368" cy="176" r="1.9"/><circle cx="1231" cy="760" r="1.4"/><circle cx="1399" cy="237" r="1.9"/><circle cx="995" cy="619" r="1.9"/><circle cx="100" cy="499" r="1.4"/><circle cx="306" cy="607" r="1.4"/><circle cx="203" cy="549" r="1.9"/></g>
+    </svg>
     <div class="wrap pin-inner">
       <!-- The 0:00-0:42 rail is gone with the scroll driver: it was a scroll
            progress indicator for a section that no longer scrolls. -->
@@ -1512,25 +1715,43 @@ use.dvs-lit{opacity:.3}
         <div class="device pin-phone">
           <div class="screens">
             <figure class="scr on" data-i="0">
-              <img src="/app/app-record.webp?v=1111" width="900" height="1955" fetchpriority="high"
-                   alt="The DailyVox home screen: a journal entry transcribed from speech about a morning walk, a 32-day streak, and a microphone button labelled “your voice stays on this device”.">
+              <img src="/app/app-113-today.webp" width="900" height="1957" fetchpriority="high"
+                   alt="The DailyVox Today screen: this morning’s spoken entry about a call with Sarah, a mood chip reading “Feeling calm”, a card reading “A week ago you said”, and today’s question, “How are things with Sarah?”, above a microphone button and a 33-day streak.">
             </figure>
             <figure class="scr" data-i="1">
-              <img src="/app/app-live.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="Recording in progress: a 42-second dial at 28 seconds, a live waveform, and the words being transcribed on the phone as they are spoken.">
+              <img src="/app/app-113-record.webp" width="900" height="1957" loading="lazy"
+                   alt="Recording in progress on a dark screen: a gold dial at 0:28 of 0:42, a waveform marked “Listening…”, a status line reading “Recording, on-device, 0 B out”, and Discard, Stop and keep, and Pause buttons.">
             </figure>
             <figure class="scr" data-i="2">
-              <img src="/app/app-entry.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="An entry with the names Sarah, James and Emma underlined in gold, and a ledger below it reading MOOD grateful, MENTIONED Sarah, James, Emma, Lisa.">
+              <img src="/app/app-113-entry.webp" width="900" height="1957" loading="lazy"
+                   alt="A saved entry from Sep 18 about a dinner party, with the names Sarah, James and Emma underlined in gold, and a card below it headed “What your Twin filed”: mood Grateful, mentioned Sarah, James, Emma, Lisa and Thai.">
             </figure>
             <figure class="scr" data-i="3">
-              <img src="/app/app-twin.webp?v=1111" width="900" height="1955" loading="lazy"
-                   alt="The Digital Twin sky: a constellation of 35 entries with Sarah, Mike, Emma and James named among them, and a summary reading warm, steady, expansive.">
+              <img src="/app/app-113-sky.webp" width="900" height="1957" loading="lazy"
+                   alt="“Your sky”: a constellation of 35 entries around a gold centre, with Sarah, Mike, Emma and James as the brightest named stars, and a summary card reading “Who you are: warm, steady, expansive.”">
             </figure>
           </div>
         </div>
         <div class="device-floor" aria-hidden="true"></div>
       </div>
+        <!-- The constellation: one star per beat, joined as the beats play. Each
+             sticker hangs off its own star. viewBox is stretched to the area it
+             sits in, so the stars are zero-length round-capped strokes with
+             non-scaling width: they stay round however the box is shaped. -->
+        <svg class="hv-cst" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <g class="hv-ln">
+            <line data-i="1" x1="16" y1="80" x2="34" y2="54" style="transform-origin:16px 80px"/>
+            <line data-i="2" x1="34" y1="54" x2="66" y2="64" style="transform-origin:34px 54px"/>
+            <line data-i="3" x1="66" y1="64" x2="74" y2="24" style="transform-origin:66px 64px"/>
+          </g>
+          <path class="m" d="M7 44h0M24 30h0M47 88h0M50 40h0M90 52h0M88 84h0M86 10h0M58 18h0"/>
+          <g class="hv-st">
+            <g data-i="0"><path class="h" d="M16 80h0"/><path d="M16 80h0"/></g>
+            <g data-i="1"><path class="h" d="M34 54h0"/><path d="M34 54h0"/></g>
+            <g data-i="2"><path class="h" d="M66 64h0"/><path d="M66 64h0"/></g>
+            <g data-i="3"><path class="h" d="M74 24h0"/><path d="M74 24h0"/></g>
+          </g>
+        </svg>
         <!-- Stickers, not crops. The App Store frames project a CLAIM beside a
              whole phone screen — a rotated card with a bold line and a
              handwritten one under it. No zoom window, no arrow. The crop
@@ -2499,7 +2720,8 @@ use.dvs-lit{opacity:.3}
       caps  = [].slice.call(wrap.querySelectorAll('.cap')),
       cos   = [].slice.call(wrap.querySelectorAll('.sticker')),
       bars  = [].slice.call(wrap.querySelectorAll('.beats i')),
-      N = 4, cur = -1, i = 0;
+      cst   = [].slice.call(wrap.querySelectorAll('.hv-cst [data-i]')),
+      N = 4, cur = -1, i = 0, reach = -1;
 
   function set(n){
     if(n === cur) return;
@@ -2508,6 +2730,13 @@ use.dvs-lit{opacity:.3}
       group.forEach(function(el){ el.classList.toggle('on', +el.dataset.i === n); });
     });
     bars.forEach(function(el){ el.classList.toggle('done', +el.dataset.i < n); });
+    /* the constellation keeps what it has learned: a star stays lit once its
+       beat has played, so the first pass draws it and later passes trace it */
+    reach = Math.max(reach, n);
+    cst.forEach(function(el){
+      el.classList.toggle('lit', +el.dataset.i <= reach);
+      el.classList.toggle('on', +el.dataset.i === n);
+    });
   }
 
   /* The beats used to be driven by scroll position across a 420vh section.
@@ -2516,6 +2745,9 @@ use.dvs-lit{opacity:.3}
      leaves it there. */
   set(0);
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* only now hide the unlit stars: without script, or with reduced motion,
+     the constellation is simply there, whole */
+  wrap.classList.add('hv-armed');
 
   var timer = setInterval(tick, 3600);
   function tick(){ i = (i + 1) % N; set(i); }
