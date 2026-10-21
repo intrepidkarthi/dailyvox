@@ -177,8 +177,8 @@ FRAMES = [
          bg="#0F3E46", fg="#F1EDE2", accent="#D9A441",
          eyebrow="YOUR PATTERNS",
          head=[("it spots the", None), (None, "streak"), (" first", None)],
-         figure="32", gloss="days in a row, your longest",
-         sticker=dict(title="32-day streak", sub="your longest yet",
+         figure="33", gloss="days in a row, your longest",
+         sticker=dict(title="33-day streak", sub="your longest yet",
                       bg="#5ECCD3", fg="#0F3E46", rot=-4, pos=(int(246 * 3), int(346 * 3)))),
 
     dict(name="06_private_by_design", shot="settings.png",
