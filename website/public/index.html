@@ -1451,113 +1451,60 @@ use.dvs-lit{opacity:.3}
 .dv-f-steam path{fill:none;stroke:#F1EDE2;stroke-width:1.4;stroke-linecap:round;opacity:.55;transform-box:fill-box}
 .dv-footer .dv-f-col a:hover,.dv-footer .dv-f-base a:hover{color:var(--uv-text)}
 
-/* ════════════ HERO REFRESH ════════════
-   Flat, like the app: the hero sits on the same paper as the nav, with no
-   gradients, glows or sky. What changed is the phone (bigger, the 1.13
-   screens), the composition, and one constellation drawn in ink that gains a
-   star per beat, because every entry is a star. The site has no dark mode
-   outside the footer, so neither does this.
-   Everything here is scoped to .hero-pin and animates transform/opacity only. */
-.hero-pin{
-  --hs-line:var(--uv); --hs-key:#C98F27; --hs-halo:rgba(201,143,39,.16);
-  --hs-shadow:31,42,36;
-  --pw:clamp(220px, calc((100svh - var(--navh,77px) - 104px) * .46), 356px);
-  background:var(--paper);
-  isolation:isolate;
-}
-.hero-pin .blob-hero{display:none}
-/* no halo behind the device: the hero is flat */
-.hero-pin .pin-stage::after{display:none}
-.hero-pin .pin-stage{padding-block:clamp(14px,2.6vh,34px)}
-.hero-pin .pin-inner{padding-top:0!important;position:relative;z-index:1;gap:clamp(18px,3.4vw,64px)}
-
-.hs-con{position:absolute;z-index:0;pointer-events:none;overflow:visible;
-  right:max(2vw, calc(50% - 700px)); top:clamp(8px,1.6vh,20px); width:clamp(180px,min(24vw,34vh),360px); height:auto}
-.hs-seg{fill:var(--hs-line);opacity:.5;transform-box:fill-box;transform-origin:0 50%}
-.hs-halo{fill:var(--hs-halo)}
-.hs-ray{fill:var(--hs-key)}
-.hs-core{fill:var(--hs-key)}
-.hs-star{transform-box:fill-box;transform-origin:center}
-/* live: each beat lights its star and draws the line that reaches it */
-.hs-live .hs-star{opacity:.28;transform:scale(.38);
-  transition:opacity .5s ease, transform .7s cubic-bezier(.2,1.5,.4,1)}
-.hs-live .hs-star .hs-halo{opacity:0;transition:opacity .6s ease .1s}
-.hs-live .hs-star.on,.hs-live .hs-star.done{opacity:1;transform:none}
-.hs-live .hs-star.on .hs-halo{opacity:1}
-.hs-live .hs-seg{opacity:0;transform:scaleX(0);transition:opacity .3s ease, transform .9s cubic-bezier(.5,0,.25,1)}
-.hs-live .hs-seg.on,.hs-live .hs-seg.done{opacity:.5;transform:none}
-
-/* the device: thinner bezel, a flat frame, one soft shadow */
-.hero-pin .device.pin-phone{
-  width:var(--pw)!important;
-  padding:1.55%!important;
-  background:#16161C!important;
-  box-shadow:
-    inset 0 0 0 1.25px rgba(255,255,255,.26),
-    inset 0 0 0 3.5px #050507,
-    0 1px 2px rgba(var(--hs-shadow),.18),
-    0 24px 44px -18px rgba(var(--hs-shadow),.42),
-    0 70px 110px -40px rgba(var(--hs-shadow),.46)!important;
-}
-.hero-pin .pin-phone::before{z-index:3!important;
-  background:none!important}
-/* the 1.13 screens carry their own island and status bar */
-.hero-pin .pin-phone::after{display:none!important}
-.hero-pin .pin-phone .screens{background:#0B0B10}
-/* side buttons: power on the right, action + volume on the left */
-.hero-pin .pin-device::before,.hero-pin .pin-device::after{content:"";position:absolute;z-index:0;width:3px;
-  border-radius:2px;background:#2A2930}
-.hero-pin .pin-device::before{right:-2px;top:25%;height:11%}
-.hero-pin .pin-device::after{left:-2px;top:17%;height:4%;
-  box-shadow:0 calc(var(--pw) * .16) 0 #26252D, 0 calc(var(--pw) * .32) 0 #26252D}
-
-.hero-pin .pin-device .device-floor{width:70%;height:34px;bottom:-22px;background:rgba(var(--hs-shadow),.28);filter:blur(22px)}
-
-/* stickers hang off the phone's own edge, whatever size the phone is */
-.hero-pin .sticker[data-i]{right:calc(50% + var(--pw) / 2 + 16px)!important}
-.hero-pin .sticker[data-i="0"]{top:60%!important}
-.hero-pin .sticker[data-i="1"]{top:34%!important}
-.hero-pin .sticker[data-i="2"]{top:46%!important}
-.hero-pin .sticker[data-i="3"]{top:16%!important}
-
-/* the words: the column sits nearer the device, the caption has a fixed floor */
-.hero-pin .hero-right{max-width:31rem}
-.hero-pin .hero-right .pin-head h1.hero{font-size:clamp(28px,3.3vw,48px)!important;letter-spacing:-.025em}
-.hero-pin .beats i{background:var(--rule-2)}
-
-/* one entrance: the phone rises into place and the first star arrives as it settles */
+/* ════════════ HERO: one entry, four moments ════════════
+   Flat, like the app and its App Store frames: the hero shares the nav's paper,
+   the headline leads, and the four moments of an entry sit on solid tiles in
+   the frames' own colours, each with the real 1.13 screen rising out of the
+   tile's floor and a handwritten sticker. No gradients, glows or sky. */
+.hero-bento{background:var(--paper);padding-block:clamp(28px,6vh,72px) clamp(40px,7vh,88px)}
+.hb-head{display:flex;flex-direction:column;align-items:center;text-align:center}
+.hb-head .eyebrow{margin:0 0 14px}
+.hb-head h1.hero{font-family:var(--display);font-weight:800;font-size:clamp(38px,6.1vw,86px);line-height:1.02;
+  letter-spacing:-.035em;color:var(--ink);margin:0;max-width:14ch;text-wrap:balance}
+.hb-head h1.hero .accent{color:var(--uv)}
+.hb-head h1.hero{line-height:1.05}
+.hb-head h1.hero .uline svg{bottom:.02em;height:.15em}
+.hb-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:clamp(20px,3.4vh,34px)}
+.hb-cta .hero-ph{display:inline-flex}
+.hb-grid{list-style:none;margin:clamp(36px,6vh,64px) 0 0;padding:0;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.4vw,20px)}
+.hb-tile{--bg:#1D5038;--fg:#F7F3EA;--ac:#A9E58B;
+  position:relative;overflow:hidden;border-radius:26px;background:var(--bg);color:var(--fg);
+  padding:22px 22px 0;min-height:clamp(420px,52vh,520px);display:flex;flex-direction:column;min-width:0}
+.hb-t2{--bg:#A34324;--fg:#FBF3EA;--ac:#F2C879}
+.hb-t3{--bg:#3A3153;--fg:#F7F3EA;--ac:#B9A5F2}
+.hb-t4{--bg:#D9A441;--fg:#101B2D;--ac:#101B2D}
+.hb-step{font:500 12px/1 var(--mono);letter-spacing:.14em;color:var(--ac);margin-bottom:12px}
+.hb-tile h2{font:800 clamp(19px,1.55vw,23px)/1.15 var(--display);letter-spacing:-.015em;margin:0 0 8px;color:var(--fg);text-wrap:balance}
+.hb-tile p{font:400 14.5px/1.45 var(--sans);margin:0;color:var(--fg);opacity:.82;max-width:30ch}
+.hb-phone{margin:auto auto 0;width:min(78%,250px);aspect-ratio:900/1350;overflow:hidden;
+  border-radius:30px 30px 0 0;background:#16161C;padding:7px 7px 0;transform:translateY(18px);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hb-phone img{display:block;width:100%;height:auto;border-radius:24px 24px 0 0}
+.hb-tile:hover .hb-phone{transform:translateY(6px)}
+.hb-sticker{position:absolute;z-index:2;right:12px;bottom:clamp(150px,19vh,190px);transform:rotate(var(--rot));
+  background:#F7F3EA;color:#1E2A26;border-radius:12px;padding:9px 13px 8px;box-shadow:0 10px 22px -12px rgba(0,0,0,.45);max-width:62%}
+.hb-t4 .hb-sticker{background:#101B2D;color:#F1EDE2}
+.hb-sticker b{display:block;font:800 15px/1.15 var(--display)}
+.hb-sticker i{display:block;font:600 16px/1.1 'Caveat',cursive;font-style:normal;margin-top:2px;opacity:.8}
 @media (prefers-reduced-motion:no-preference){
-  .hero-pin .pin-device{animation:hsRise 1.15s cubic-bezier(.16,.84,.3,1) both}
-  .hs-con{animation:hsFade 1s ease .75s both}
-  .hero-pin .sticker.on{transition-delay:.15s}
+  .hb-tile{animation:hbRise .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.12s + var(--i) * .08s)}
+  .hb-head h1.hero .uline path{stroke-dasharray:140;stroke-dashoffset:140;animation:ulineDraw 1.1s .45s cubic-bezier(.6,.1,.3,1) forwards}
 }
-@keyframes hsRise{from{transform:translateY(34px) scale(.965)}to{transform:none}}
-@keyframes hsFade{from{opacity:0}}
-
-@media (max-width:1140px){
-  .hero-pin{--pw:clamp(220px, calc((100svh - var(--navh,77px) - 104px) * .46), 310px)}
+@keyframes hbRise{from{transform:translateY(22px)}to{transform:none}}
+@media (max-width:1100px){
+  .hb-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hb-tile{min-height:440px}
 }
-/* stacked: headline, phone, caption, buttons — so the download button is in
-   the first screen of a phone. DOM order is unchanged; only the boxes move. */
-@media (max-width:900px){
-  .hero-pin{--pw:clamp(176px, calc((100svh - 428px) * .46), 290px)}
-  .hero-pin .pin-inner{display:flex!important;flex-direction:column!important;align-items:center;gap:14px}
-  .hero-pin .hero-right{display:contents}
-  .hero-pin .pin-head{order:1;margin-bottom:0}
-  .hero-pin .hero-left{order:2}
-  .hero-pin .caps{order:3;margin-top:10px;min-height:0}
-  .hero-pin .hero-cta{order:4;margin-top:2px}
-  .hero-pin .hero-right .pin-head h1.hero{font-size:clamp(25px,6.6vw,34px)!important;max-width:18ch;padding-bottom:8px!important}
-  .hero-pin .pin-head .eyebrow{font-size:11px;letter-spacing:.12em;margin-bottom:8px}
-  .hero-pin .beats{bottom:calc(100% + 4px)}
-  /* the chain stands upright in the gutter beside the phone */
-  .hs-con{width:140px;top:205px;right:max(0px, calc(25vw - var(--pw) / 4 - 70px));transform:rotate(-62deg)}
-}
-@media (max-width:420px){
-  .hero-pin .hero-cta .pill{font-size:15px;padding:12px 20px}
-}
-@media (prefers-reduced-motion:reduce){
-  .hs-star,.hs-seg,.hs-halo{transition:none}
+/* phones: the tiles become a row you swipe, inside their own scroller */
+@media (max-width:640px){
+  .hb-head h1.hero{max-width:12ch}
+  .hb-cta .pill{width:100%;justify-content:center}
+  .hb-cta{width:100%;max-width:360px}
+  .hb-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;
+    margin-inline:-16px;padding:0 16px 6px;scrollbar-width:none}
+  .hb-grid::-webkit-scrollbar{display:none}
+  .hb-tile{flex:0 0 78%;scroll-snap-align:center;min-height:430px}
 }
 </style>
 </head>
@@ -1604,102 +1551,14 @@ use.dvs-lit{opacity:.3}
 
 <!-- HERO — pinned device, one 42-second recording playing out across four beats.
      The device never moves; the screen inside it does. -->
-<section class="hero-pin" id="pinWrap" aria-labelledby="hero-h">
-  <div class="pin-stage">
-    <!-- The sky: first light at the top of the page, the same world as the
-         Bengaluru dusk in the footer. Decorative, inline, no requests. The
-         constellation gains one star per beat, because every entry is a star. -->
-    <svg class="hs-con" viewBox="0 0 320 150" aria-hidden="true" focusable="false">
-      <g transform="translate(20 122) rotate(-32.8)"><rect class="hs-k hs-seg" data-i="1" x="0" y="-.6" width="107.1" height="1.2" rx=".6"/></g>
-      <g transform="translate(110 64) rotate(18.43)"><rect class="hs-k hs-seg" data-i="2" x="0" y="-.6" width="94.9" height="1.2" rx=".6"/></g>
-      <g transform="translate(200 94) rotate(-35.54)"><rect class="hs-k hs-seg" data-i="3" x="0" y="-.6" width="120.4" height="1.2" rx=".6"/></g>
-      <g transform="translate(20 122)"><g class="hs-k hs-star" data-i="0"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
-      <g transform="translate(110 64)"><g class="hs-k hs-star" data-i="1"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
-      <g transform="translate(200 94)"><g class="hs-k hs-star" data-i="2"><circle class="hs-halo" r="13"/><path class="hs-ray" d="M0-11 L1.6-1.6 11 0 1.6 1.6 0 11-1.6 1.6-11 0-1.6-1.6Z"/><circle class="hs-core" r="3"/></g></g>
-      <g transform="translate(298 24)"><g class="hs-k hs-star" data-i="3"><circle class="hs-halo" r="16"/><path class="hs-ray" d="M0-14 L2-2 14 0 2 2 0 14-2 2-14 0-2-2Z"/><circle class="hs-core" r="3.6"/></g></g>
-    </svg>
-    <div class="wrap pin-inner">
-      <!-- The 0:00-0:42 rail is gone with the scroll driver: it was a scroll
-           progress indicator for a section that no longer scrolls. -->
-
-      <!-- Two columns: the phone on one side, the words and the buttons on the
-           other. Stacked, the CTA kept slipping past the fold on a short
-           window, and the device had no room around it for anything to point
-           AT — which is what the callouts below need. -->
-      <div class="hero-left">
-        <div class="pin-device">
-        <div class="device pin-phone">
-          <div class="screens">
-            <figure class="scr on" data-i="0">
-              <img src="/app/app-113-today.webp" width="900" height="1957" fetchpriority="high"
-                   alt="The DailyVox Today screen: a 33-day streak, this morning’s entry about Sarah calling on the drive home, a mood card reading Feeling calm, a card recalling that you mentioned Sarah a week ago, and the daily question “How are things with Sarah?” above the microphone button.">
-            </figure>
-            <figure class="scr" data-i="1">
-              <img src="/app/app-113-record.webp" width="900" height="1957" loading="lazy"
-                   alt="Recording in progress: a gold dial at 0:28 of 0:42 with 28 ticks lit, a live waveform marked Listening, a header reading recording, on-device, 0 B out, and buttons to discard, stop and keep, or pause.">
-            </figure>
-            <figure class="scr" data-i="2">
-              <img src="/app/app-113-entry.webp" width="900" height="1957" loading="lazy"
-                   alt="A journal entry about hosting a dinner party, with Sarah, James and Emma underlined in gold, and a panel below titled What your Twin filed: mood Grateful +1.0, mentioned Sarah, James, Emma, Lisa and Thai.">
-            </figure>
-            <figure class="scr" data-i="3">
-              <img src="/app/app-113-sky.webp" width="900" height="1957" loading="lazy"
-                   alt="Your sky, the Twin screen: a constellation of 35 stars, one per entry, with Sarah, Mike, Emma and James joined to a bright centre, and the line Who you are: warm, steady, expansive.">
-            </figure>
-          </div>
-        </div>
-        <div class="device-floor" aria-hidden="true"></div>
-      </div>
-        <!-- Stickers, not crops. The App Store frames project a CLAIM beside a
-             whole phone screen — a rotated card with a bold line and a
-             handwritten one under it. No zoom window, no arrow. The crop
-             callouts tried to magnify a control instead, which explained less
-             and cluttered more. -->
-        <div class="sticker" data-i="0" style="--rot:-4deg">
-          <b>42 seconds</b><i>that's the whole ritual</i>
-          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 22 C 44 16, 84 36, 114 64"/><path d="M114 64 l -18 -3 M114 64 l -4 -18"/></svg>
-        </div>
-        <div class="sticker" data-i="1" style="--rot:3.5deg">
-          <b>your voice</b><i>transcribed on this phone</i>
-          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 22 C 44 16, 84 36, 114 64"/><path d="M114 64 l -18 -3 M114 64 l -4 -18"/></svg>
-        </div>
-        <div class="sticker" data-i="2" style="--rot:-3deg">
-          <b>it caught the names</b><i>Sarah &middot; James &middot; Emma</i>
-          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 64 C 44 70, 84 50, 114 22"/><path d="M114 22 l -18 4 M114 22 l -3 18"/></svg>
-        </div>
-        <div class="sticker" data-i="3" style="--rot:4deg">
-          <b>35 stars</b><i>one for every night you kept</i>
-          <svg class="st-arrow" viewBox="0 0 122 86" aria-hidden="true"><path d="M6 64 C 44 70, 84 50, 114 22"/><path d="M114 22 l -18 4 M114 22 l -3 18"/></svg>
-        </div>
-      </div>
-
-      <div class="hero-right">
-        <div class="pin-head">
-        <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
-        <h1 class="hero" id="hero-h">Your voice builds a Digital
+<section class="hero-bento" id="heroBento" aria-labelledby="hero-h">
+  <div class="wrap hb-wrap">
+    <div class="hb-head">
+      <p class="eyebrow">Your voice. Your mirror. Yours alone.</p>
+      <h1 class="hero" id="hero-h">Your voice builds a Digital
           <span class="uline">Twin<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 Q40 2 60 6 T118 5"/></svg></span>
           that <span class="accent">knows you.</span></h1>
-      </div>
-        <div class="caps">
-        <div class="beats" aria-hidden="true"><i data-i="0"></i><i data-i="1"></i><i data-i="2"></i><i data-i="3"></i></div>
-        <div class="cap on" data-i="0">
-          <h2>You start talking.</h2>
-          <p>The mic is the whole interface — no prompt, no blank page, nothing to fill in.</p>
-        </div>
-        <div class="cap" data-i="1">
-          <h2>Words appear as you speak.</h2>
-          <p>Transcribed by the phone that heard them. Nothing is uploaded, then or later.</p>
-        </div>
-        <div class="cap" data-i="2">
-          <h2>Names, places and moods get mapped.</h2>
-          <p>Your Twin files what it just learned against every entry before it.</p>
-        </div>
-        <div class="cap" data-i="3">
-          <h2>It knows a little more than it did.</h2>
-          <p>Forty-two seconds. Tomorrow it knows more again.</p>
-        </div>
-      </div>
-        <div class="hero-cta">
+      <div class="hero-cta hb-cta">
         <a href="https://apps.apple.com/app/id6760454642" class="pill">Download free on iOS →</a>
         <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="pill">Get it on Google Play →</a>
         <a class="hero-ph" href="https://www.producthunt.com/products/dailyvox?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-dailyvox" target="_blank" rel="noopener noreferrer">
@@ -1707,9 +1566,40 @@ use.dvs-lit{opacity:.3}
                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1179869&amp;theme=light&amp;t=1782294881277">
         </a>
       </div>
-      </div>
-
     </div>
+    <!-- One entry, four moments, each on its own flat tile in the colours of the
+         App Store frames. All four captions are visible at once: nothing rotates
+         out of reach, and nothing needs script to be read. -->
+    <ol class="hb-grid">
+      <li class="hb-tile hb-t1" style="--i:0">
+        <span class="hb-step" aria-hidden="true">1/4</span>
+        <h2>You start talking.</h2>
+        <p>The mic is the whole interface — no prompt, no blank page, nothing to fill in.</p>
+        <div class="hb-sticker" style="--rot:-4deg"><b>42 seconds</b><i>that's the whole ritual</i></div>
+        <div class="hb-phone"><img src="/app/app-113-today.webp" width="900" height="1957" fetchpriority="high" alt="The DailyVox Today screen: a 33-day streak, this morning’s entry about Sarah calling on the drive home, a mood card reading Feeling calm, a card recalling that you mentioned Sarah a week ago, and the daily question “How are things with Sarah?” above the microphone button."></div>
+      </li>
+      <li class="hb-tile hb-t2" style="--i:1">
+        <span class="hb-step" aria-hidden="true">2/4</span>
+        <h2>Words appear as you speak.</h2>
+        <p>Transcribed by the phone that heard them. Nothing is uploaded, then or later.</p>
+        <div class="hb-sticker" style="--rot:3deg"><b>your voice</b><i>transcribed on this phone</i></div>
+        <div class="hb-phone"><img src="/app/app-113-record.webp" width="900" height="1957" alt="Recording in progress: a gold dial at 0:28 of 0:42 with 28 ticks lit, a live waveform marked Listening, a header reading recording, on-device, 0 B out, and buttons to discard, stop and keep, or pause."></div>
+      </li>
+      <li class="hb-tile hb-t3" style="--i:2">
+        <span class="hb-step" aria-hidden="true">3/4</span>
+        <h2>Names, places and moods get mapped.</h2>
+        <p>Your Twin files what it just learned against every entry before it.</p>
+        <div class="hb-sticker" style="--rot:-3deg"><b>it caught the names</b><i>Sarah &middot; James &middot; Emma</i></div>
+        <div class="hb-phone"><img src="/app/app-113-entry.webp" width="900" height="1957" alt="A journal entry about hosting a dinner party, with Sarah, James and Emma underlined in gold, and a panel below titled What your Twin filed: mood Grateful +1.0, mentioned Sarah, James, Emma, Lisa and Thai."></div>
+      </li>
+      <li class="hb-tile hb-t4" style="--i:3">
+        <span class="hb-step" aria-hidden="true">4/4</span>
+        <h2>It knows a little more than it did.</h2>
+        <p>Forty-two seconds. Tomorrow it knows more again.</p>
+        <div class="hb-sticker" style="--rot:4deg"><b>35 stars</b><i>one for every night you kept</i></div>
+        <div class="hb-phone"><img src="/app/app-113-sky.webp" width="900" height="1957" alt="Your sky, the Twin screen: a constellation of 35 stars, one per entry, with Sarah, Mike, Emma and James joined to a bright centre, and the line Who you are: warm, steady, expansive."></div>
+      </li>
+    </ol>
   </div>
 </section>
 
