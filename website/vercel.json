@@ -168,6 +168,11 @@
       "source": "/blog/is-there-a-journaling-app-that-works-completely-offline-with",
       "destination": "/blog/best-offline-journal-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/what-is-a-digital-twin",
+      "destination": "/blog/how-digital-twin-learns-personality",
+      "statusCode": 301
     }
   ],
   "headers": [
