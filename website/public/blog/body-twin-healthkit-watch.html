@@ -74,7 +74,7 @@
         "name": "Does Apple Health integration break DailyVox's 'Data Not Collected' privacy label?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. The 'Data Not Collected' label means DailyVox does not collect data about you onto our servers — and we still do not have servers. HealthKit reads happen entirely on-device. The small per-entry snapshot we keep (about 10 numbers per entry) lives in Core Data on your iPhone, optionally syncing to your personal iCloud with Apple's end-to-end encryption. We never see it. The same privacy story that has applied since v1.0 still applies."
+          "text": "No. The 'Data Not Collected' label means DailyVox does not collect data about you onto our servers — and we still do not have servers. HealthKit reads happen entirely on-device. The small per-entry snapshot we keep (about 10 numbers per entry) lives in Core Data on your iPhone, optionally syncing to your own private iCloud, which Apple encrypts (end-to-end if you have turned on Advanced Data Protection). We never see it. The same privacy story that has applied since v1.0 still applies."
         }
       },
       {
@@ -369,7 +369,7 @@
       </nav>
     </div>
     <div class="dv-f-base">
-      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span>&copy; 2026 DailyVox &middot; iOS 1.13 &middot; Android 1.1 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
     <p class="dv-f-agent"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p>

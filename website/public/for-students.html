@@ -60,7 +60,7 @@
       "name": "DailyVox",
       "applicationCategory": "HealthApplication",
       "operatingSystem": "iOS 17.0+, Android 13+",
-      "softwareVersion": "1.11.0",
+      "softwareVersion": "1.13.0",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "downloadUrl": ["https://apps.apple.com/app/id6760454642", "https://play.google.com/store/apps/details?id=com.dailyvox.app"]
     }
@@ -100,7 +100,7 @@
         "name": "Can my parents see my DailyVox entries through Family Sharing?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Family Sharing on Apple's side does not expose individual app data — it manages App Store purchases, screen time reports, and location sharing if enabled. Family organizers can see what apps a child account has installed and can restrict installation, but cannot read inside individual apps. DailyVox specifically stores nothing in iCloud unless you explicitly enable iCloud sync in Settings (off by default). When iCloud sync is enabled, the entries live in your personal iCloud container with Apple's end-to-end encryption — not in any shared family container. The simplest answer: keep iCloud sync disabled (default) and your entries are entirely local to your phone."
+          "text": "Family Sharing on Apple's side does not expose individual app data — it manages App Store purchases, screen time reports, and location sharing if enabled. Family organizers can see what apps a child account has installed and can restrict installation, but cannot read inside individual apps. DailyVox specifically stores nothing in iCloud unless you explicitly enable iCloud sync in Settings (off by default). When iCloud sync is enabled, the entries live in your own private iCloud container, not in any shared family container. Apple encrypts it; it is end-to-end encrypted only if Advanced Data Protection is on. The simplest answer: keep iCloud sync disabled (default) and your entries are entirely local to your phone."
         }
       },
       {
@@ -514,7 +514,7 @@
         <p>Family Sharing does not expose individual app data — it manages App Store purchases, screen time reports, and location sharing if enabled. Family organizers can see installed apps and restrict installation, but cannot read inside them. DailyVox specifically stores nothing in iCloud unless you explicitly enable iCloud sync (off by default). With sync off, your entries are entirely local.</p>
 
         <h3>What happens if I lose my phone or it breaks?</h3>
-        <p>If iCloud sync is off (the default), entries are gone with the phone — which is a privacy feature, not a bug. If iCloud sync is on, your entries are in your personal iCloud (end-to-end encrypted by Apple) and restore to a new device. Third option: <strong>Settings → Export Data</strong> lets you save your entries as an AES-256-GCM password-protected backup. Many privacy-conscious students do quarterly encrypted exports to a USB drive — best of both worlds.</p>
+        <p>If iCloud sync is off (the default), entries are gone with the phone — which is a privacy feature, not a bug. If iCloud sync is on, your entries are in your own private iCloud (encrypted by Apple, and end-to-end encrypted if you have turned on Advanced Data Protection) and restore to a new device. Third option: <strong>Settings → Export Data</strong> lets you save your entries as an AES-256-GCM password-protected backup. Many privacy-conscious students do quarterly encrypted exports to a USB drive — best of both worlds.</p>
 
         <h3>Is it really impossible for you to read my entries?</h3>
         <p>Yes, in the strongest sense. There is no DailyVox server, no API endpoint, no database of users. The architectural design is that we <em>could not</em> read your entries even under court order, because they were never on any system we control. Verify it two ways: read the source on GitHub for any networking code (none for entry data), or run a network sniffer like <a href="https://www.charlesproxy.com/">Charles Proxy</a> and confirm zero outbound traffic.</p>
@@ -596,7 +596,7 @@
       </nav>
     </div>
     <div class="dv-f-base">
-      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span>&copy; 2026 DailyVox &middot; iOS 1.13 &middot; Android 1.1 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
   </div>
