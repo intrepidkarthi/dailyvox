@@ -188,6 +188,11 @@
       "source": "/blog/voice-journaling-for-therapy",
       "destination": "/blog/voice-journaling-vs-therapy",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/voice-journal-for-morning-routine",
+      "destination": "/blog/five-minute-voice-morning-journal",
+      "statusCode": 301
     }
   ],
   "headers": [
