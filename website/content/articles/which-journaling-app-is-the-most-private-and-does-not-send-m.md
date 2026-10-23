@@ -47,6 +47,8 @@ Daylio tracks your mood without requiring you to write long paragraphs. It is pr
 
 If you want a cloud-free, zero-account experience on your iPhone, DailyVox is the answer.
 
+Related reading: [The Complete Guide to Private Journaling (2026)](/blog/complete-guide-to-private-journaling).
+
 ## Frequently Asked Questions
 
 ### Can I use DailyVox without an internet connection?
