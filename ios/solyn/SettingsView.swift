@@ -28,6 +28,7 @@ struct SettingsView: View {
 
     @State private var showPermissionDeniedAlert = false
     @State private var showShareReceipt = false
+    @State private var speakingLanguageLabel = SettingsView.currentSpeakingLanguageLabel()
     /// Which preset row shows as selected.
     ///
     /// This was plain `@State` seeded to "evening" and never read from the
@@ -101,6 +102,7 @@ struct SettingsView: View {
             // user with a "Your name" field as the first thing in Settings.
             appearanceSection
             journalingGoalSection
+            speakingLanguageSection
             vocabularySection
             liveActivitiesSection
             securitySection
@@ -362,6 +364,36 @@ struct SettingsView: View {
         } footer: {
             Text("Set a weekly journaling target to build a consistent habit.")
         }
+    }
+
+    /// B-6: the language DailyVox listens in, separate from the app's language.
+    private var speakingLanguageSection: some View {
+        Section {
+            NavigationLink {
+                SpeakingLanguageView()
+                    .onDisappear { speakingLanguageLabel = Self.currentSpeakingLanguageLabel() }
+            } label: {
+                HStack {
+                    Text("Language you speak",
+                         comment: "Settings row: opens the picker for the language DailyVox listens in.")
+                    Spacer()
+                    Text(speakingLanguageLabel)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+            }
+        } footer: {
+            Text(SpeakingLanguage.explainerCopy)
+        }
+    }
+
+    /// "Automatic" or the chosen language's name.
+    static func currentSpeakingLanguageLabel() -> String {
+        guard let chosen = SpeakingLanguage.chosenIdentifier else {
+            return String(localized: "Automatic",
+                          comment: "Language you speak: follow the iPhone's own language.")
+        }
+        return SpeakingLanguage.displayName(of: Locale(identifier: chosen))
     }
 
     private var vocabularySection: some View {
@@ -1397,8 +1429,7 @@ struct SettingsView: View {
     }
 
     private func monthName(_ month: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
+        let formatter = LocaleFormat.formatter(template: LocaleFormat.month)
         var components = DateComponents()
         components.month = month
         if let date = Calendar.current.date(from: components) {

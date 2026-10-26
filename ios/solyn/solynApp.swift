@@ -45,6 +45,10 @@ struct DailyVoxApp: App {
         DigitalTwinEngine.configureEntityGraphStore(LocalFileTwinStateStore(subfolder: "EntityGraph"))
 
         ScreenshotDataSeeder.seedIfNeeded(context: persistenceController.container.viewContext)
+
+        // 1.14 (B-1): every entry with words but no recorded language gets one
+        // read from its text, once. Background queue; touches only nil rows.
+        TranscriptLocale.backfillInBackground(persistenceController.container)
     }
 
     var body: some Scene {

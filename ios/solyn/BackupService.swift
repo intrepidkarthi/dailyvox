@@ -37,6 +37,10 @@ struct ExportableEntry: Codable, Identifiable {
     /// the mood is a suggestion and not the user's. Optional: older backups
     /// decode unchanged, and their moods were all chosen by hand.
     let suggestedMood: String?
+    /// The language the words are in (BCP-47; "und"/"mul" allowed), as the
+    /// recogniser or the backfill recorded it. Optional: older backups
+    /// decode unchanged and the launch backfill reads their language.
+    let transcriptLocale: String?
 
     init(from entry: DiaryEntry) {
         self.id = entry.id ?? UUID()
@@ -53,6 +57,7 @@ struct ExportableEntry: Codable, Identifiable {
         let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
         self.selfLabelIntensity = intensity > 0 ? Int(intensity) : nil
         self.suggestedMood = entry.suggestedMood
+        self.transcriptLocale = entry.transcriptLocale
     }
 }
 
@@ -229,6 +234,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
                 newEntry.suggestedMood = exportedEntry.suggestedMood
+                newEntry.transcriptLocale = exportedEntry.transcriptLocale
 
                 importedCount += 1
             }
@@ -339,16 +345,15 @@ final class BackupService {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
         
+        // The reader's own month heading ("October 2026", "Oktober 2026"),
+        // parsed back by the same formatter to order the months.
+        let monthFormatter = LocaleFormat.formatter(template: LocaleFormat.monthYear)
         let groupedByMonth = Dictionary(grouping: sortedEntries) { entry -> String in
-            let date = entry.date ?? Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMMM yyyy"
-            return formatter.string(from: date)
+            monthFormatter.string(from: entry.date ?? Date())
         }
-        
+
         let sortedMonths = groupedByMonth.keys.sorted { month1, month2 in
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMMM yyyy"
+            let formatter = monthFormatter
             let date1 = formatter.date(from: month1) ?? Date()
             let date2 = formatter.date(from: month2) ?? Date()
             return date1 > date2
@@ -364,10 +369,8 @@ final class BackupService {
                     let mood = moodLabel(of: entry)
                     let starred = entry.isStarred ? " \u{2726}" : ""
                     
-                    let dayFormatter = DateFormatter()
-                    dayFormatter.dateFormat = "EEEE, MMMM d"
-                    
-                    mdContent += "### \(dayFormatter.string(from: date))\(starred)\n\n"
+                    let day = LocaleFormat.date(date, template: LocaleFormat.weekdayMonthDay)
+                    mdContent += "### \(day)\(starred)\n\n"
                     
                     if !mood.isEmpty {
                         mdContent += "**Mood:** \(mood)\n\n"
@@ -394,10 +397,10 @@ final class BackupService {
         var csvContent = "Date,Time,Mood,Starred,Word Count,Text\n"
         
         let sortedEntries = entries.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
+        // Machine-readable columns: fixed, whatever the reader's locale or
+        // calendar, so a spreadsheet always parses them.
+        let dateFormatter = LocaleFormat.posix("yyyy-MM-dd")
+        let timeFormatter = LocaleFormat.posix("HH:mm")
         
         for entry in sortedEntries {
             let date = entry.date ?? Date()
@@ -441,8 +444,8 @@ final class BackupService {
         let metaFont = UIFont.systemFont(ofSize: 12, weight: .regular)
         let bodyFont = UIFont.systemFont(ofSize: 13, weight: .regular)
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy · h:mm a"
+        let dateFormatter = LocaleFormat.formatter(template: LocaleFormat.weekdayMonthDayYear)
+        let timeFormatter = LocaleFormat.formatter(template: LocaleFormat.time)
 
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
         let fileName = "dailyvox_diary_\(formattedDate()).pdf"
@@ -466,7 +469,7 @@ final class BackupService {
                 let date = entry.date ?? Date()
                 let mood = moodLabel(of: entry)
                 let starred = entry.isStarred ? "  ★" : ""
-                let header = dateFormatter.string(from: date) + starred
+                let header = dateFormatter.string(from: date) + " · " + timeFormatter.string(from: date) + starred
                 let body = entry.text ?? "(No text)"
 
                 // Measure the body so we can page-break cleanly
@@ -575,6 +578,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
                 newEntry.suggestedMood = exportedEntry.suggestedMood
+                newEntry.transcriptLocale = exportedEntry.transcriptLocale
 
                 importedCount += 1
             }
@@ -599,9 +603,8 @@ final class BackupService {
     // MARK: - Helpers
 
     private func formattedDate() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: Date())
+        // A file name: fixed digits in any locale or calendar.
+        LocaleFormat.posix("yyyy-MM-dd").string(from: Date())
     }
     
     private func formattedFullDate(_ date: Date) -> String {

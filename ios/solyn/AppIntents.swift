@@ -48,6 +48,8 @@ struct AddDiaryEntryIntent: AppIntent {
             } else {
                 entry.text = existingText + "\n\n" + (text ?? "")
             }
+            entry.noteLanguage(ofAppended: text ?? "", recognizerLocale: nil,
+                               entryHadText: !existingText.isEmpty)
             entry.updatedAt = Date()
         } else {
             // Create new entry
@@ -58,6 +60,7 @@ struct AddDiaryEntryIntent: AppIntent {
             entry.updatedAt = Date()
             entry.text = text ?? ""
             entry.isStarred = false
+            entry.noteLanguage(ofAppended: text ?? "", recognizerLocale: nil, entryHadText: false)
         }
 
         try context.save()
