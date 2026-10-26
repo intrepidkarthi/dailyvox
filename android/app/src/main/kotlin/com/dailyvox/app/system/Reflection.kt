@@ -129,9 +129,14 @@ object Reflection {
     /**
      * The name as a whole word, case as written. Letters and digits on either
      * side mean it is part of a longer word; "Sarah's" still counts.
+     *
+     * Combining marks count as part of the word too (\p{M}). Without them a
+     * name followed by a Devanagari vowel sign or a decomposed accent ("Ana"
+     * + U+0301) matched inside a longer word: "प्रिय" was found in "प्रिया",
+     * because the vowel sign after it is a mark, not a letter.
      */
     internal fun nameIn(name: String, text: String): Boolean =
-        Regex("(?<![\\p{L}\\p{N}])" + Regex.escape(name) + "(?![\\p{L}\\p{N}])")
+        Regex("(?<![\\p{L}\\p{M}\\p{N}])" + Regex.escape(name) + "(?![\\p{L}\\p{M}\\p{N}])")
             .containsMatchIn(text)
 
     /**
