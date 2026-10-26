@@ -322,6 +322,9 @@ private fun CasingNote(
             "No names have come through yet. Either you haven't spoken about " +
                 "anyone, or this phone's speech recogniser isn't capitalising " +
                 "names — which is what the Twin reads them by."
+        // Caseless (a journal mostly in Devanagari, Tamil...): no note. Casing
+        // is not evidence about names in a script without capitals, and the
+        // NotCasing copy above would blame the phone for the script.
         else -> null
     } ?: return
 

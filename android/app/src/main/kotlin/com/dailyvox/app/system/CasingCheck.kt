@@ -50,6 +50,13 @@ object CasingCheck {
         data object NotCasing : Verdict
         /** Names arrive cased sometimes and lowercase others; these are lost. */
         data class Inconsistent(val contested: List<String>) : Verdict
+        /**
+         * The journal is mostly in a script with no capitals (Devanagari,
+         * Tamil, Arabic, CJK...). Casing says nothing about names there, so
+         * there is no verdict and nothing is shown -- "this phone isn't
+         * capitalising names" would blame the phone for the script.
+         */
+        data object Caseless : Verdict
     }
 
     /**
@@ -80,6 +87,7 @@ object CasingCheck {
     )
 
     fun of(texts: List<String>): Verdict {
+        if (caselessDominant(texts)) return Verdict.Caseless
         if (texts.sumOf { wordCount(it) } < MIN_WORDS) return Verdict.NotEnoughYet
 
         val (midSentence, seenLower) = NameDetector.vocabulary(texts)
@@ -98,6 +106,23 @@ object CasingCheck {
         } else {
             Verdict.Casing
         }
+    }
+
+    /**
+     * More letters with no case at all (Unicode category Lo: Devanagari, Tamil,
+     * Arabic, Hebrew, CJK, Thai...) than letters with one. Cased scripts --
+     * Latin, Cyrillic, Greek, Armenian -- keep the check.
+     */
+    internal fun caselessDominant(texts: List<String>): Boolean {
+        var cased = 0
+        var caseless = 0
+        texts.forEach { t ->
+            for (ch in t) when (Character.getType(ch).toByte()) {
+                Character.UPPERCASE_LETTER, Character.LOWERCASE_LETTER, Character.TITLECASE_LETTER -> cased++
+                Character.OTHER_LETTER -> caseless++
+            }
+        }
+        return caseless > cased
     }
 
     private fun wordCount(t: String): Int =
