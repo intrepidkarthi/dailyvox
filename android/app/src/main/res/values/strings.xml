@@ -232,4 +232,36 @@
     <string name="twin_still_listening">Still listening. A few more nights and there will be something to say.</string>
     <string name="twin_still_listening_early">Still listening. Early signals are below; a fuller picture comes in a few more nights.</string>
     <string name="patterns_label">Patterns your Twin noticed</string>
+
+    <!-- The 9:16 Story card ("share your sky, never your words"). Nothing here
+         may ever carry entry text, a name or a mood: it is counts and stars. -->
+    <string name="sky_story_title">Story</string>
+    <string name="sky_story_caption">Sized for Instagram Stories and WhatsApp Status. Your stars and how many nights — none of your words.</string>
+    <string name="sky_story_eyebrow">MY SKY</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d night kept.</item>
+        <item quantity="other">%d nights kept.</item>
+    </plurals>
+    <string name="sky_story_line">One star for every night I spoke. The words stayed on my phone.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Your sky after %d night. Stars and a count only, no words from your journal.</item>
+        <item quantity="other">Your sky after %d nights. Stars and a count only, no words from your journal.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">My sky after %1$d night of DailyVox — %2$s</item>
+        <item quantity="other">My sky after %1$d nights of DailyVox — %2$s</item>
+    </plurals>
+
+    <!-- The one-time offer after nights 7, 21 and 42. Each is shown once, ever. -->
+    <string name="share_offer_7">Seven nights. Your sky is taking shape — share it?</string>
+    <string name="share_offer_21">Twenty-one nights. Your sky is filling in — share it?</string>
+    <string name="share_offer_42">Forty-two nights. Your sky has a shape of its own — share it?</string>
+    <string name="share_offer_note">Only your stars and the count go on the card. None of your words.</string>
+    <string name="share_offer_share">Share</string>
+    <string name="share_offer_not_now">Not now</string>
+    <string name="share_offer_not_now_description">Not now. This will not be offered again.</string>
+    <string name="settings_share_offer">Offer to share milestones</string>
+    <string name="settings_share_offer_note">After nights 7, 21 and 42, once each, a card offers your sky to share. It shows stars and a count, never your words. Nothing is sent unless you pick an app to send it.</string>
+    <string name="sky_story_preview_label">Share your sky</string>
 </resources>

@@ -263,6 +263,29 @@ fun SettingsScreen(
             )
         }
 
+        // ── SHARING ────────────────────────────────────────────────────────
+        // The one-time Story offer after nights 7, 21 and 42. On by default,
+        // and like the goal below it reads and writes its own preference.
+        SettingsCard {
+            var offerOn by remember { mutableStateOf(com.dailyvox.app.system.ShareOffer.isEnabled(context)) }
+            val offerLabel = androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_share_offer)
+            LedgerRow(offerLabel) {
+                Switch(
+                    modifier = Modifier.semantics { contentDescription = offerLabel },
+                    checked = offerOn,
+                    onCheckedChange = {
+                        offerOn = it
+                        com.dailyvox.app.system.ShareOffer.setEnabled(context, it)
+                    },
+                    colors = dvSwitchColors(),
+                )
+            }
+            Text(
+                androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_share_offer_note),
+                fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+            )
+        }
+
         // ── WEEKLY GOAL ────────────────────────────────────────────────────
         // iOS has had this since v1.0; Android did not. Reads and writes its own
         // preferences the way the vocabulary list above does, rather than being
@@ -552,8 +575,11 @@ private fun LedgerRow(label: String, trailing: @Composable () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Weighted so a long label at a large font size wraps instead of
+        // pushing the switch off the card.
         Text(label, fontSize = 15.sp, fontWeight = FontWeight.Medium,
-             color = MaterialTheme.colorScheme.onSurface)
+             color = MaterialTheme.colorScheme.onSurface,
+             modifier = Modifier.weight(1f, fill = false).padding(end = 12.dp))
         trailing()
     }
 }
