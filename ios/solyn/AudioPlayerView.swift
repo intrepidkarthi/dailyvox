@@ -225,7 +225,7 @@ struct AudioPlayerView: View {
     private func speedLabel(_ speed: Float) -> String {
         if speed == 1.0 { return "1x" }
         if speed == floor(speed) { return "\(Int(speed))x" }
-        return String(format: "%.1fx", speed).replacingOccurrences(of: ".0x", with: "x")
+        return LocaleFormat.decimal(Double(speed), fractionDigits: 1) + "x"
     }
 }
 

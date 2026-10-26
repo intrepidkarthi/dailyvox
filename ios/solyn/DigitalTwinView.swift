@@ -584,7 +584,7 @@ struct DigitalTwinView: View {
             return (Double(mood.moodValue) - 3.0) / 2.0
         }
         guard !scored.isEmpty else { return "\u{2014}" }
-        return String(format: "%+.2f", scored.reduce(0, +) / Double(scored.count))
+        return LocaleFormat.decimal(scored.reduce(0, +) / Double(scored.count), fractionDigits: 2, signed: true)
     }
 
     private var graphNodeCount: Int {
@@ -708,7 +708,7 @@ struct DigitalTwinView: View {
 
                 Spacer()
 
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
             }
@@ -976,7 +976,7 @@ struct DigitalTwinView: View {
                         .opacity(0.6)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.dv(.footnote, weight: .semibold))
                     .opacity(0.4)
             }
@@ -1242,7 +1242,7 @@ struct DigitalTwinView: View {
                     // same screen, and the MIND column between the two.
                     statItem(value: formatNumber(twin.behavioralPatterns.totalWords), label: "Words")
                     statItem(value: "\(Int(twin.communicationStyle.averageSentenceLength))", label: "Avg Sentence")
-                    statItem(value: String(format: "%.0f%%", twin.communicationStyle.vocabularyRichness * 100), label: "Vocab Richness")
+                    statItem(value: LocaleFormat.percent(twin.communicationStyle.vocabularyRichness), label: "Vocab Richness")
                 }
             }
             .padding()
@@ -1343,7 +1343,7 @@ struct DigitalTwinView: View {
                     .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
-                Text(String(format: "%.0f%%", value * 100))
+                Text(LocaleFormat.percent(value))
                     .font(.dv(size: isIPad ? 14 : 11, weight: .bold))
                     .foregroundColor(themeManager.textColor)
             }
@@ -1522,7 +1522,7 @@ struct DigitalTwinView: View {
 
     private func formatNumber(_ n: Int) -> String {
         if n >= 1000 {
-            return String(format: "%.1fk", Double(n) / 1000)
+            return LocaleFormat.decimal(Double(n) / 1000, fractionDigits: 1) + "k"
         }
         return "\(n)"
     }

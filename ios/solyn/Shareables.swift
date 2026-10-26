@@ -232,7 +232,7 @@ enum Shareables {
         }
         guard let best = counts.filter({ $0.value >= 3 }).max(by: { $0.value < $1.value })
         else { return nil }
-        return "\u{201C}\(best.key)\u{201D}"
+        return LocaleFormat.quoted(best.key)
     }
 
     static func milestoneHeadline(_ night: Int) -> String {
@@ -387,8 +387,10 @@ enum Shareables {
 
         text(c, "DAILYVOX", at: CGPoint(x: s.width / 2, y: 104),
              font: mono(30), colour: ink, align: .center)
-        let df = DateFormatter(); df.dateFormat = "MMMM d, yyyy"; df.locale = Locale(identifier: "en_US_POSIX")
-        text(c, "PRIVACY RECEIPT · \(df.string(from: Date()).uppercased())",
+        // The reader's own date, not en_US_POSIX: a receipt dated in someone
+        // else's convention is a small lie on a card about honesty.
+        let receiptDate = LocaleFormat.date(Date(), template: LocaleFormat.monthDayYear)
+        text(c, "PRIVACY RECEIPT · \(receiptDate.uppercased(with: .current))",
              at: CGPoint(x: s.width / 2, y: 156), font: mono(20),
              colour: UIColor(DS.Palette.inkSoft), align: .center)
         dotted(c, s, y: 214)
@@ -614,8 +616,8 @@ enum Shareables {
             if let r = restedMood, let sh = shortMood {
                 // Labelled with the scale, because "+0.4" alone is a number
                 // nobody outside this app can read.
-                rows.append(("After seven hours", String(format: "%+.1f mood", r), gap ?? 0 > 0))
-                rows.append(("After less", String(format: "%+.1f mood", sh), gap ?? 0 < 0))
+                rows.append(("After seven hours", LocaleFormat.decimal(r, fractionDigits: 1, signed: true) + " mood", gap ?? 0 > 0))
+                rows.append(("After less", LocaleFormat.decimal(sh, fractionDigits: 1, signed: true) + " mood", gap ?? 0 < 0))
             }
         } else {
             rows.append(("Sleep", "not included", false))

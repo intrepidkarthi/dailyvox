@@ -61,7 +61,7 @@ struct BodyTwinCard: View {
                         DSTag(text: "\(queue.count) waiting", tint: DS.Palette.gold)
                     }
                     if !isQuietOffState {
-                        Image(systemName: "chevron.right")
+                        Image(systemName: "chevron.forward")
                             .font(.dv(.footnote, weight: .semibold))
                             .foregroundColor(.secondary.opacity(0.5))
                     }

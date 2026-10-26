@@ -165,7 +165,7 @@ struct BodyTwinReviewView: View {
         var rows: [(icon: String, color: Color, text: String)] = []
         if let sleep = snapshot.sleepHours {
             rows.append(("moon.zzz.fill", DS.Palette.sage,
-                         String(format: "%.1f h sleep", sleep)))
+                         "\(LocaleFormat.decimal(sleep, fractionDigits: 1)) h sleep"))
         }
         if let hrv = snapshot.morningHRVMs {
             rows.append(("waveform.path.ecg", DS.Palette.terracotta,

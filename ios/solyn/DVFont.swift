@@ -20,6 +20,10 @@ import CoreText
 /// platforms are not merely using the same typeface names, they are rasterising
 /// the same outlines.
 ///
+/// That rule covers Latin text. Scripts the three faces have no glyphs for
+/// (Devanagari for Hindi, and later others) fall back to the system face for
+/// that script, at the requested weight; see `cascade(weight:)`.
+///
 /// ## Variable fonts
 ///
 /// Nunito and Inter are variable, and their DEFAULT instances are not what the
@@ -85,8 +89,51 @@ enum DVFont {
         if !axes.isEmpty {
             attrs[kCTFontVariationAttribute as UIFontDescriptor.AttributeName] = axes
         }
+        attrs[.cascadeList] = cascade(weight: axes[wghtAxis] ?? 400)
         let descriptor = UIFontDescriptor(fontAttributes: attrs)
         return UIFont(descriptor: descriptor, size: size)
+    }
+
+    // MARK: - Non-Latin scripts (plan B-16, decision D9)
+
+    /// Where glyphs the three bundled faces do not have come from.
+    ///
+    /// The "never fall back to SF" rule above is about LATIN text, and it
+    /// stands: every Latin glyph still comes from Nunito, Inter or DM Mono.
+    /// But none of the three has a single Devanagari (or Tamil, CJK, Arabic…)
+    /// glyph, and bundling Noto for each script would multiply the app's size.
+    /// So for scripts the bundled faces do not cover, the rule is relaxed on
+    /// purpose (D9): those glyphs fall back to the system's own face for the
+    /// script, which for Hindi is Kohinoor Devanagari.
+    ///
+    /// Listed explicitly, with the requested weight, rather than left to the
+    /// default cascade: that is what makes a bold Nunito heading in Hindi come
+    /// out bold, not the fallback's regular. Anything not listed still falls
+    /// through to the system's default cascade.
+    static func cascade(weight: CGFloat) -> [UIFontDescriptor] {
+        let traits: [UIFontDescriptor.TraitKey: Any] = [.weight: uiWeight(axis: weight)]
+        return nonLatinFamilies.map {
+            UIFontDescriptor(fontAttributes: [.family: $0, .traits: traits])
+        }
+    }
+
+    /// System faces for scripts the bundled fonts lack, in cascade order.
+    /// Devanagari is the one Tier 1 needs (Hindi); later scripts add a row.
+    static let nonLatinFamilies = ["Kohinoor Devanagari"]
+
+    /// The `wght` axis value as a `UIFont.Weight` trait, for the cascade.
+    static func uiWeight(axis: CGFloat) -> UIFont.Weight {
+        switch axis {
+        case ..<225: return .ultraLight
+        case ..<275: return .thin
+        case ..<350: return .light
+        case ..<450: return .regular
+        case ..<550: return .medium
+        case ..<650: return .semibold
+        case ..<750: return .bold
+        case ..<850: return .heavy
+        default:     return .black
+        }
     }
 
     /// SwiftUI `Font.Weight` has no numeric value, so the axis mapping is
