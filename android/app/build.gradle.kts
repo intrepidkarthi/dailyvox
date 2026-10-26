@@ -109,6 +109,9 @@ android {
     kotlin { jvmToolchain(21) }
     buildFeatures { compose = true; buildConfig = true }
     ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+    // Robolectric tests read real string resources (the Story card's copy
+    // is all plurals, and its privacy test checks the real words).
+    testOptions { unitTests.isIncludeAndroidResources = true }
 }
 
 dependencies {

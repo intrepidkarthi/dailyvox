@@ -62,6 +62,17 @@ fun ShareSheet(
     var card by remember { mutableStateOf(if (initial in cards) initial else cards.first()) }
     var includeNames by remember { mutableStateOf(false) }
 
+    // The Story card's words: its one line for the share sheet and what
+    // TalkBack reads for the preview. Counts only, from string resources.
+    val storyCopy = remember(entries) {
+        com.dailyvox.app.system.SkyStory.copy(
+            context.resources, com.dailyvox.app.system.SkyStory.shape(entries).nights)
+    }
+    val storyTitle = androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.sky_story_title)
+    val storyCaption = androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.sky_story_caption)
+    fun titleOf(c: Shareables.Card) =
+        if (c == Shareables.Card.STORY) storyTitle else Shareables.title(c)
+
     // Re-rendered only when something that changes the pixels changes. The
     // bitmap is decoded from the same file the chooser will receive, so the
     // preview cannot drift from what gets shared.
@@ -98,7 +109,7 @@ fun ShareSheet(
                 cards.forEach { c ->
                     val on = c == card
                     Text(
-                        Shareables.title(c), fontSize = 12.sp,
+                        titleOf(c), fontSize = 12.sp,
                         fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
                         color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
                         modifier = Modifier
@@ -118,7 +129,9 @@ fun ShareSheet(
             Spacer(Modifier.height(14.dp))
             if (bitmap != null) {
                 Image(
-                    bitmap.asImageBitmap(), contentDescription = Shareables.title(card),
+                    bitmap.asImageBitmap(),
+                    contentDescription = if (card == Shareables.Card.STORY) storyCopy.description
+                                         else Shareables.title(card),
                     contentScale = ContentScale.Fit,
                     // The portrait card is sized by HEIGHT and lets width
                     // follow. Constraining width first and then applying a 9:16
@@ -126,7 +139,7 @@ fun ShareSheet(
                     // the height of the sheet drawn over its own buttons —
                     // heightIn cannot clamp a size the ratio has already fixed.
                     modifier = (
-                        if (card == Shareables.Card.WALLPAPER)
+                        if (Shareables.portrait(card))
                             Modifier.height(380.dp).aspectRatio(9f / 16f)
                         else Modifier.fillMaxWidth().aspectRatio(1f)
                     )
@@ -146,7 +159,8 @@ fun ShareSheet(
             }
 
             Spacer(Modifier.height(10.dp))
-            Text(Shareables.caption(card), fontSize = 12.5.sp, lineHeight = 19.sp,
+            Text(if (card == Shareables.Card.STORY) storyCaption else Shareables.caption(card),
+                 fontSize = 12.5.sp, lineHeight = 19.sp,
                  color = scheme.onSurfaceVariant)
 
             // Only Year One can carry a name; My Sky has no words on it by
@@ -217,7 +231,10 @@ fun ShareSheet(
                             if (file == null) scheme.primary.copy(alpha = 0.4f) else scheme.primary)
                     )
                     .clickable(enabled = file != null) {
-                        file?.let { Shareables.share(context, it) }
+                        file?.let {
+                            Shareables.share(context, it,
+                                if (card == Shareables.Card.STORY) storyCopy.shareText else null)
+                        }
                     }
                     .padding(vertical = 15.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally),
