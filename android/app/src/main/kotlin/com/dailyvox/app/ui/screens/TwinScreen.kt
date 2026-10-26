@@ -337,7 +337,12 @@ private fun CasingNote(
 /** The one sentence, or null while there are too few entries to say it. */
 private fun summary(entries: List<Entry>): String? {
     if (entries.size < 5) return null
-    val v = entries.map { it.valence }.average()
+    // Only entries the lexicon read. A journal it could not read (another
+    // language) has no tone to name, and "measured" from a pile of unread
+    // zeros would be a guess said as a finding.
+    val read = entries.mapNotNull { it.valence }
+    if (read.size < 5) return null
+    val v = read.average()
     val tone = when {
         v > 0.25 -> "warm, steady"
         v > 0.05 -> "even-handed"

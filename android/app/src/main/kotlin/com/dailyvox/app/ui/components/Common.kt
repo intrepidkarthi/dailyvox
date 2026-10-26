@@ -67,7 +67,7 @@ fun Chip(text: String, tint: Color = MaterialTheme.colorScheme.secondary) {
  *  the same four thresholds the iOS constellation uses, so a star and its entry
  *  can never disagree about mood. */
 @Composable
-fun ValenceDot(valence: Float, size: Int = 8) {
+fun ValenceDot(valence: Float?, size: Int = 8) {
     Box(
         Modifier
             .size(size.dp)
@@ -76,7 +76,9 @@ fun ValenceDot(valence: Float, size: Int = 8) {
     )
 }
 
-fun valenceColor(v: Float): Color = when {
+fun valenceColor(v: Float?): Color = when {
+    // Unread (another language, or no scored word): a quiet grey, never a mood.
+    v == null -> Color(0xFFA8A29A)
     v > 0.3f -> StarGold
     v > 0f -> Color(0xFF6B9E7B)
     v > -0.3f -> Color(0xFF7BA4C7)

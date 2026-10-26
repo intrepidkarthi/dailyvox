@@ -593,7 +593,7 @@ fun SpeakScreen(
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontWeight = FontWeight.SemiBold,
                             )
-                        ) { append("%+.1f".format(e.valence)) }
+                        ) { e.valence?.let { append("%+.1f".format(it)) } }
                     },
                     fontSize = 12.sp, lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),

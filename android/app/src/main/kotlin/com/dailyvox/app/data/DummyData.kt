@@ -93,7 +93,7 @@ object DummyData {
                     // and showed "Day 7" for a 21-day seed.
                     createdAt = now - offsets[i] * day - ((i % 5) * 1_800_000L),
                     durationSec = dur,
-                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table),
                     entities = com.dailyvox.twin.NameDetector.extract(text, mid, lower).joinToString(","),
                     // Cycled, not indexed. This was a fixed 12-element list read
                     // at [i] while the loop grew to 38 entries — an

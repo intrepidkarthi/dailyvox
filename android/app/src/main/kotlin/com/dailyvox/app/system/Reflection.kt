@@ -76,18 +76,23 @@ object Reflection {
         val words = entry.wordCount
         val earlier = others.filter { it.id != entry.id && it.createdAt < entry.createdAt }
 
-        val tone = if (words < MIN_WORDS_FOR_TONE) null else when {
-            entry.valence >= NEUTRAL -> Tone.LIGHT
-            entry.valence <= -NEUTRAL -> Tone.HEAVY
+        // A null valence is "the lexicon read nothing here" -- another language,
+        // or no scored word. That is not EVEN, and the card says nothing about
+        // tone rather than calling an unread entry balanced.
+        val v = entry.valence
+        val tone = if (words < MIN_WORDS_FOR_TONE || v == null) null else when {
+            v >= NEUTRAL -> Tone.LIGHT
+            v <= -NEUTRAL -> Tone.HEAVY
             else -> Tone.EVEN
         }
 
+        // Unread entries are left out of the baseline, not averaged in as 0.
         val recent = earlier
-            .filter { it.text.isNotBlank() && entry.createdAt - it.createdAt <= 14 * DAY }
+            .filter { it.text.isNotBlank() && it.valence != null && entry.createdAt - it.createdAt <= 14 * DAY }
             .sortedByDescending { it.createdAt }
             .take(RECENT_TAKE)
-        val drift = if (tone == null || recent.size < MIN_RECENT) null else {
-            val delta = entry.valence - recent.map { it.valence }.average().toFloat()
+        val drift = if (tone == null || v == null || recent.size < MIN_RECENT) null else {
+            val delta = v - recent.mapNotNull { it.valence }.average().toFloat()
             when {
                 delta > DRIFT -> Drift.LIGHTER
                 delta < -DRIFT -> Drift.HEAVIER

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.Flow
  * portability promise is older than the Android port and outranks convenience.
  *
  * `valence` is -1..1 and drives the mood dot in Journal and the star colour in
- * the constellation. `entities` is the comma-joined output of the name detector,
+ * the constellation. NULL means unread, not neutral: the lexicon matched no
+ * word, or the entry is not in a language it can read ([com.dailyvox.app.system.Valence]).
+ * Every surface leaves a null out rather than drawing it as 0. `entities` is the comma-joined output of the name detector,
  * kept denormalised because every read wants all of them and no query filters on
  * one alone.
  */
@@ -19,7 +21,7 @@ data class Entry(
     val text: String,
     val createdAt: Long,
     val durationSec: Int,
-    val valence: Float,
+    val valence: Float?,
     val entities: String = "",
     val sleepHours: Float? = null,
     val audioPath: String? = null,
@@ -156,6 +158,10 @@ interface EntryDao {
 }
 
 /**
+ * Version 5 makes valence nullable (MIGRATION_4_5 rebuilds the table, which is
+ * the only way SQLite drops a NOT NULL). Existing rows keep their number; the
+ * ones the lexicon never actually read are cleared once at launch.
+ *
  * Version 4 adds suggestedMood. Nullable, so every existing entry keeps no
  * suggestion -- old entries are not re-scored behind the user's back.
  *
@@ -170,7 +176,7 @@ interface EntryDao {
  * existing install crashed on launch. Bumping the number is only half the fix —
  * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
  */
-@Database(entities = [Entry::class], version = 4, exportSchema = true)
+@Database(entities = [Entry::class], version = 5, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }
@@ -184,7 +190,10 @@ internal fun Entry.toChatEntry() = com.dailyvox.twin.ChatEntry(
     id = id,
     createdAt = createdAt,
     text = text,
-    valence = valence,
+    // The engine's ChatEntry has no "unread" valence yet, so an unread entry
+    // reaches it as 0. App surfaces leave nulls out; the engine-side gate for
+    // Insights / TwinFacts is the multilingual plan's B-5.
+    valence = valence ?: 0f,
     entities = entityList,
     sleepHours = sleepHours,
     hourOfDay = hourOfDay,

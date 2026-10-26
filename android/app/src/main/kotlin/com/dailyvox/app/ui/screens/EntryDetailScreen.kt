@@ -224,7 +224,8 @@ fun EntryDetailScreen(
         MonoLabel("What your Twin filed ✦")
         Spacer(Modifier.height(8.dp))
         DvCard {
-            FiledRow("Mood", valenceLabel(entry.valence), valenceColor(entry.valence))
+            // No row for an entry the lexicon could not read: "flat" would be a guess.
+            entry.valence?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
             if (entry.entityList.isNotEmpty()) {
                 Spacer(Modifier.height(10.dp))
                 FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)

@@ -190,7 +190,7 @@ object DailyQuestion {
     /** An entry it would be unkind to bring a name back from. */
     internal fun isHard(e: Entry): Boolean {
         val mood = SelfLabels.canonical(e.selfLabel) ?: e.selfLabel ?: e.suggestedMood
-        return mood in HARD_MOODS || e.valence <= NEGATIVE || SENSITIVE.containsMatchIn(e.text)
+        return mood in HARD_MOODS || (e.valence ?: 0f) <= NEGATIVE || SENSITIVE.containsMatchIn(e.text)
     }
 
     /** The capitalised words of the names a hard entry's detector filed. */

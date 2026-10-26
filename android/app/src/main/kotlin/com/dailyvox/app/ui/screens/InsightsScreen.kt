@@ -164,7 +164,7 @@ fun InsightsScreen(
                                 when (e) {
                                     null -> Gold.copy(alpha = 0.18f)
                                     else -> valenceColor(e.valence)
-                                        .copy(alpha = 0.5f + (e.valence + 1f) / 2f * 0.5f)
+                                        .copy(alpha = 0.5f + ((e.valence ?: 0f) + 1f) / 2f * 0.5f)
                                 }
                             )
                     )
@@ -260,12 +260,13 @@ fun InsightsScreen(
                 // fortnight before, so it answers "compared to what" without the
                 // reader having to guess.
                 val cutoff = System.currentTimeMillis() - 14L * 86_400_000
-                val recent = entries.filter { it.createdAt >= cutoff }
+                // Unread entries (null valence) are left out, not averaged in as 0.
+                val recent = entries.filter { it.createdAt >= cutoff && it.valence != null }
                 val prior = entries.filter {
-                    it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
+                    it.valence != null && it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
                 }
                 if (recent.size >= 3 && prior.size >= 3) {
-                    val d = recent.map { it.valence }.average() - prior.map { it.valence }.average()
+                    val d = recent.mapNotNull { it.valence }.average() - prior.mapNotNull { it.valence }.average()
                     Text(
                         "%s %+.1f".format(if (d >= 0) "\u25B2" else "\u25BC", d),
                         fontSize = 11.sp, fontWeight = FontWeight.Bold,
@@ -278,7 +279,7 @@ fun InsightsScreen(
         }
 
         Spacer(Modifier.height(24.dp))
-        val patterns = Insights.find(entries.map { it.toChatEntry() })
+        val patterns = Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() })
         // Week one. Below the patterns threshold, early signals take the
         // place of "not enough yet"; from it on they give way to the real
         // patterns (EarlySignals.kt).
@@ -370,7 +371,7 @@ private fun NightStrip(entries: List<Entry>) {
                     .background(
                         when {
                             e == null -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.16f)
-                            else -> valenceColor(e.valence).copy(alpha = 0.45f + (e.valence + 1f) / 2f * 0.55f)
+                            else -> valenceColor(e.valence).copy(alpha = 0.45f + ((e.valence ?: 0f) + 1f) / 2f * 0.55f)
                         }
                     )
             )
@@ -385,7 +386,7 @@ private fun MoodCurve(entries: List<Entry>) {
     val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
     val byDay = entries.groupBy { com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) }
     val points = (13 downTo 0).map { back ->
-        byDay[today.minusDays(back.toLong())]?.map { it.valence }?.average()?.toFloat()
+        byDay[today.minusDays(back.toLong())]?.mapNotNull { it.valence }?.takeIf { it.isNotEmpty() }?.average()?.toFloat()
     }
     val known = points.filterNotNull()
     if (known.size < 2) {
