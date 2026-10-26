@@ -40,6 +40,7 @@ struct SpeechLocaleProbeReport: Equatable {
     var date = Date()
     var systemVersion = ""
     var currentLocale = ""
+    var speakerLocale = ""
     var appCandidates: [String] = []
     var appResolved: String?
     var legacySupportedCount = 0
@@ -65,6 +66,7 @@ struct SpeechLocaleProbeReport: Equatable {
         lines.append("date: \(ISO8601DateFormatter().string(from: date))")
         lines.append("iOS: \(systemVersion)")
         lines.append("current locale: \(currentLocale)")
+        lines.append("speaker locale: \(speakerLocale)")
         lines.append("app tries (SFSpeech): \(appCandidates.joined(separator: ", "))")
         lines.append("app resolves to: \(appResolved ?? "none (shows the no-on-device-model message)")")
         lines.append("")
@@ -99,7 +101,8 @@ enum SpeechLocaleProbe {
         var report = SpeechLocaleProbeReport()
         report.systemVersion = ProcessInfo.processInfo.operatingSystemVersionString
         report.currentLocale = Locale.current.identifier
-        report.appCandidates = SpeechTranscriber.candidateLocales(for: .current).map(\.identifier)
+        report.speakerLocale = SpeechTranscriber.speakerLocale.identifier
+        report.appCandidates = SpeechTranscriber.candidateLocales(for: SpeechTranscriber.speakerLocale).map(\.identifier)
         report.appResolved = SpeechTranscriber.onDeviceRecognizer()?.locale.identifier
         report.legacySupportedCount = SFSpeechRecognizer.supportedLocales().count
         report.legacy = SpeechLocaleProbeReport.candidates.map { id in

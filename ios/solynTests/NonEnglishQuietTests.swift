@@ -88,6 +88,35 @@ final class NonEnglishQuietTests: XCTestCase {
         XCTAssertEqual(ids, ["es_MX", "es", "es-US"])
     }
 
+    // The app is localised only in en/de/es/fr/it, so on a Hindi phone
+    // Locale.current is en_IN. The speaker's language must come from
+    // Locale.preferredLanguages, which carries hyphenated ids like "hi-IN".
+    func testSpeakerLocaleComesFromPreferredLanguagesNotAppLocalisation() {
+        let appSees = Locale(identifier: "en_IN")
+        for id in ["hi-IN", "pt-BR", "ja-JP", "ta-IN"] {
+            let speaker = SpeechTranscriber.speakerLocale(preferredLanguages: [id, "en-IN"], current: appSees)
+            XCTAssertEqual(speaker.identifier, id)
+            let candidates = SpeechTranscriber.candidateLocales(for: speaker)
+            XCTAssertFalse(candidates.contains { $0.language.languageCode?.identifier == "en" },
+                           "\(id) phone must never be handed an English recogniser")
+            XCTAssertFalse(SpeechTranscriber.allowsEnglishFallback(for: speaker))
+            XCTAssertEqual(SpeechTranscriber.noRecognizerError(for: speaker), .onDeviceUnavailable)
+        }
+    }
+
+    func testSpeakerLocaleKeepsLocaleCurrentForEnglishAndLocalisedLanguages() {
+        for (pref, current) in [("en-IN", "en_IN"), ("en-US", "en_IN"), ("en-GB", "en_GB"),
+                                ("es-MX", "es_MX"), ("de-DE", "de_DE")] {
+            let speaker = SpeechTranscriber.speakerLocale(preferredLanguages: [pref],
+                                                          current: Locale(identifier: current))
+            XCTAssertEqual(speaker.identifier, current, "same language keeps the old recogniser order")
+        }
+        let english = SpeechTranscriber.speakerLocale(preferredLanguages: ["en-US"], current: Locale(identifier: "en_IN"))
+        XCTAssertEqual(SpeechTranscriber.candidateLocales(for: english).map(\.identifier), ["en_IN", "en", "en-US"])
+        XCTAssertEqual(SpeechTranscriber.speakerLocale(preferredLanguages: [], current: Locale(identifier: "en_US")).identifier,
+                       "en_US", "no preference falls back to Locale.current")
+    }
+
     // MARK: - A0-6 EntryReflection
 
     func testNonEnglishEntriesGetNoReflection() {

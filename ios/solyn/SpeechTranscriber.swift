@@ -91,7 +91,7 @@ final class SpeechTranscriber {
         // error, the SFSpeech path tries their language, and if that has no
         // on-device model either they see the honest "no on-device model"
         // message instead of a wrong transcript.
-        let preferred = Locale.current
+        let preferred = Self.speakerLocale
         var resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: preferred)
         if resolved == nil, Self.allowsEnglishFallback(for: preferred) {
             resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: Locale(identifier: "en-US"))
@@ -155,13 +155,41 @@ final class SpeechTranscriber {
     /// missing must not be handed an English recogniser: it does not fail,
     /// it produces a fluent, wrong English transcript of their words.
     static func onDeviceRecognizer() -> SFSpeechRecognizer? {
-        for locale in candidateLocales(for: Locale.current) {
+        for locale in candidateLocales(for: speakerLocale) {
             guard let candidate = SFSpeechRecognizer(locale: locale),
                   candidate.supportsOnDeviceRecognition,
                   candidate.isAvailable else { continue }
             return candidate
         }
         return nil
+    }
+
+    /// The language the person actually SPEAKS, for choosing a recogniser.
+    ///
+    /// Not `Locale.current`. That is the app's resolved localisation, and
+    /// the app is only localised in en/de/es/fr/it — so on an iPhone set to
+    /// Hindi, Tamil, Japanese or Portuguese, `Locale.current` comes back as
+    /// English (en_IN for a Hindi phone in India). Choosing from it handed
+    /// those speakers an English recogniser, which is exactly what A0-1 is
+    /// meant to stop. `Locale.preferredLanguages.first` is the person's real
+    /// first language, regardless of what the app is translated into.
+    ///
+    /// When that preference is the same language as `Locale.current` (every
+    /// English user, and de/es/fr/it), `Locale.current` is kept as-is, so
+    /// those users see exactly the recogniser order they had before.
+    static var speakerLocale: Locale {
+        speakerLocale(preferredLanguages: Locale.preferredLanguages, current: .current)
+    }
+
+    /// Pure form of `speakerLocale`, for tests.
+    static func speakerLocale(preferredLanguages: [String], current: Locale) -> Locale {
+        guard let first = preferredLanguages.first, !first.isEmpty else { return current }
+        let preferred = Locale(identifier: first)
+        let preferredLang = preferred.language.languageCode?.identifier
+        if preferredLang == nil || preferredLang == current.language.languageCode?.identifier {
+            return current
+        }
+        return preferred
     }
 
     /// The locales `onDeviceRecognizer()` tries, in order. Pure, for tests.
@@ -212,7 +240,7 @@ final class SpeechTranscriber {
                 }
 
                 guard let recognizer = Self.onDeviceRecognizer() else {
-                    completion(.failure(Self.noRecognizerError(for: Locale.current)))
+                    completion(.failure(Self.noRecognizerError(for: Self.speakerLocale)))
                     return
                 }
 
