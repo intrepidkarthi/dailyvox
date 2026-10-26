@@ -79,15 +79,24 @@ final class SpeechTranscriber {
 
     @available(iOS 26.0, *)
     private func transcribeWithSpeechAnalyzer(from audioURL: URL) async throws -> String {
-        // Resolve a supported locale (fall back to en-US) for the transcriber.
-        // Fully qualified — this app's own class is also named SpeechTranscriber.
-        // Sequenced explicitly: `??` can't wrap an `await` in its autoclosure.
+        // Resolve a supported locale for the transcriber. Fully qualified —
+        // this app's own class is also named SpeechTranscriber. Sequenced
+        // explicitly: `??` can't wrap an `await` in its autoclosure.
+        //
+        // SAME LANGUAGE ONLY. This used to fall back to en-US whenever the
+        // device language had no SpeechTranscriber model, which turned a
+        // Hindi or Tamil entry into confident English gibberish. Now the
+        // en-US fallback is only for people whose device language IS English
+        // (en-IN, en-AU... with only the base model). Anyone else gets an
+        // error, the SFSpeech path tries their language, and if that has no
+        // on-device model either they see the honest "no on-device model"
+        // message instead of a wrong transcript.
         let preferred = Locale.current
         var resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: preferred)
-        if resolved == nil {
+        if resolved == nil, Self.allowsEnglishFallback(for: preferred) {
             resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: Locale(identifier: "en-US"))
         }
-        let locale = resolved ?? preferred
+        guard let locale = resolved else { throw TranscriptionError.onDeviceUnavailable }
 
         let transcriber = Speech.SpeechTranscriber(locale: locale, preset: .transcription)
 
@@ -137,11 +146,28 @@ final class SpeechTranscriber {
     /// transcription simply stopped working: the recording saved, the entry
     /// stayed blank, and the alert told them to go and install something.
     ///
-    /// So: try the current locale, then plain-language variants, then en-US.
-    /// Every candidate must support on-device recognition to be returned, which
-    /// keeps the promise intact — this widens where it can be KEPT, it does not
-    /// weaken it.
+    /// So: try the current locale, then plain-language variants, then — only
+    /// when the device language is English — en-US. Every candidate must
+    /// support on-device recognition to be returned, which keeps the promise
+    /// intact — this widens where it can be KEPT, it does not weaken it.
+    ///
+    /// Never another language. A Spanish or Hindi speaker whose own model is
+    /// missing must not be handed an English recogniser: it does not fail,
+    /// it produces a fluent, wrong English transcript of their words.
     static func onDeviceRecognizer() -> SFSpeechRecognizer? {
+        for locale in candidateLocales(for: Locale.current) {
+            guard let candidate = SFSpeechRecognizer(locale: locale),
+                  candidate.supportsOnDeviceRecognition,
+                  candidate.isAvailable else { continue }
+            return candidate
+        }
+        return nil
+    }
+
+    /// The locales `onDeviceRecognizer()` tries, in order. Pure, for tests.
+    /// Every candidate is in the speaker's own language; en-US is added only
+    /// when that language is English.
+    static func candidateLocales(for current: Locale) -> [Locale] {
         var seen = Set<String>()
         var candidates: [Locale] = []
 
@@ -150,21 +176,29 @@ final class SpeechTranscriber {
             candidates.append(locale)
         }
 
-        add(Locale.current)
+        add(current)
         // "en" from "en_IN" — the base model, which most devices do have.
-        if let lang = Locale.current.language.languageCode?.identifier {
+        if let lang = current.language.languageCode?.identifier {
             add(Locale(identifier: lang))
             add(Locale(identifier: "\(lang)-US"))
         }
-        add(Locale(identifier: "en-US"))
-
-        for locale in candidates {
-            guard let candidate = SFSpeechRecognizer(locale: locale),
-                  candidate.supportsOnDeviceRecognition,
-                  candidate.isAvailable else { continue }
-            return candidate
+        if allowsEnglishFallback(for: current) {
+            add(Locale(identifier: "en-US"))
         }
-        return nil
+        return candidates
+    }
+
+    /// Whether an English model may stand in when the speaker's exact
+    /// locale has none: only when the speaker's language is English.
+    static func allowsEnglishFallback(for locale: Locale) -> Bool {
+        locale.language.languageCode?.identifier == "en"
+    }
+
+    /// The error to show when no on-device recogniser exists for the
+    /// speaker. English keeps its old wording; any other language gets the
+    /// honest "no on-device model" message, which says what to install.
+    static func noRecognizerError(for locale: Locale) -> TranscriptionError {
+        allowsEnglishFallback(for: locale) ? .recognizerUnavailable : .onDeviceUnavailable
     }
 
     // MARK: - SFSpeechRecognizer path (iOS < 26, and the fallback)
@@ -178,7 +212,7 @@ final class SpeechTranscriber {
                 }
 
                 guard let recognizer = Self.onDeviceRecognizer() else {
-                    completion(.failure(TranscriptionError.recognizerUnavailable))
+                    completion(.failure(Self.noRecognizerError(for: Locale.current)))
                     return
                 }
 
