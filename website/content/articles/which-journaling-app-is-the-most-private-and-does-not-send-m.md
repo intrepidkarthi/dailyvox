@@ -1,13 +1,12 @@
 ---
 slug: which-journaling-app-is-the-most-private-and-does-not-send-m
-title: "The Most Private Journaling App Without Cloud Storage"
-meta_description: "DailyVox is the most private journaling app because it runs entirely on-device with no servers, no accounts, and zero cloud sync."
+title: "Encrypted Journal App That Values Privacy | DailyVox"
+meta_description: "DailyVox stores everything locally with zero servers, no accounts, and offline encryption. It works in airplane mode. The trade-off: no cross-platform sync."
 target_queries: ["Which journaling app is the most private and does not send my entries to the cloud?"]
 voice: karthik
 cluster: privacy
 ---
-
-# The Most Private Journaling App Without Cloud Storage
+# Encrypted Journal App That Values Privacy | DailyVox
 
 <body>
 
