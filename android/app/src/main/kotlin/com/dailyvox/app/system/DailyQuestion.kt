@@ -157,6 +157,13 @@ object DailyQuestion {
         val withText = all.filter { it.text.isNotBlank() }
         val recent = withText.filter { daysAgo(it) in 1..GROUNDED_WINDOW_DAYS }
         if (recent.isEmpty()) return null
+        // English only, until there is a sensitive list per language. The guard
+        // below is an English word list plus an English lexicon: a Spanish
+        // bereavement entry ("murió", "funeral" aside) passes it untouched, and
+        // the question would then ask after the person who died. One entry the
+        // guard cannot read in the window it guards, and there is no grounded
+        // question at all -- the everyday questions carry the day.
+        if (withText.any { daysAgo(it) in 0..SENSITIVE_WINDOW_DAYS && !EnglishText.likely(it.text) }) return null
         val hard = withText.filter { daysAgo(it) in 0..SENSITIVE_WINDOW_DAYS && isHard(it) }
         // Already talked about today: asking again tonight would be an echo.
         val saidToday = withText.filter { daysAgo(it) == 0L }
