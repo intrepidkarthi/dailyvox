@@ -220,9 +220,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
     }
 
     /**
-     * Once, after MIGRATION_4_5: entries saved as 0 because the lexicon read
-     * nothing (another language, or no scored word) become NULL, so they stop
-     * being averaged in as neutral days. Recorded only after it ran with a
+     * Once, after MIGRATION_4_5: entries whose stored valence the lexicon
+     * cannot actually read (another language, or no scored word) become NULL,
+     * whether 1.2 saved them as 0 or as a false-friend score, so they stop
+     * being averaged in as moods. Non-English mood suggestions go with them. Recorded only after it ran with a
      * loaded lexicon -- with an empty table every row would look unread.
      */
     private suspend fun clearUnreadValence(context: Context) = withContext(Dispatchers.IO) {
@@ -329,7 +330,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
          * every row copied by column NAME -- an install that came up through
          * the ADD COLUMN migrations has its columns in a different order from
          * a fresh one. Values are copied unchanged; [clearUnreadValence] then
-         * clears the zeros the lexicon never actually read, at launch, because
+         * clears the values the lexicon never actually read, at launch, because
          * telling those apart needs the lexicon and a migration has no access
          * to it.
          */
@@ -354,15 +355,41 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             }
         }
 
-        private const val VALENCE_CLEARED = "valence_unread_cleared_v5"
+        /**
+         * "v5b": the first pass ("valence_unread_cleared_v5") cleared only
+         * stored zeros. A new key so the wider pass below also runs on a phone
+         * that already ran that one.
+         */
+        private const val VALENCE_CLEARED = "valence_unread_cleared_v5b"
 
         /**
-         * The rows to clear: stored as exactly 0 and, re-read now, unreadable.
-         * A real 0 (two words that cancel) re-reads as 0 and stays.
+         * The rows to rewrite, already rewritten.
+         *
+         * Valence: any stored value whose fresh [com.dailyvox.app.system.Valence.of]
+         * is null, not only zeros. 1.2 scored non-English entries through the
+         * lexicon's false friends ("die", "sin", "war"), so a German entry can
+         * be sitting at -0.91 and a French one at +0.88, each still colouring a
+         * mood dot, the 14-day line, the Twin and Year One. English text with a
+         * scored word re-reads as exactly the engine score, so it is never
+         * selected; a real 0 (two words that cancel) re-reads as 0 and stays.
+         *
+         * Suggested mood: 1.2's MoodSuggestion also wrote "Reads like Joy" on
+         * non-English entries. Cleared when the text does not read as English
+         * and the user did not pick a label themselves; a self-label is theirs
+         * and is never touched.
          */
         internal fun unreadValence(all: List<Entry>, table: Map<String, Float>): List<Entry> =
-            all.filter { it.valence == 0f && com.dailyvox.app.system.Valence.of(it.text, table) == null }
-                .map { it.copy(valence = null) }
+            all.mapNotNull { e ->
+                val clearValence = e.valence != null &&
+                    com.dailyvox.app.system.Valence.of(e.text, table) == null
+                val clearSuggestion = e.selfLabel == null && e.suggestedMood != null &&
+                    !com.dailyvox.app.system.EnglishText.likely(e.text)
+                if (!clearValence && !clearSuggestion) null
+                else e.copy(
+                    valence = if (clearValence) null else e.valence,
+                    suggestedMood = if (clearSuggestion) null else e.suggestedMood,
+                )
+            }
 
         /** Body context. Nullable, so pre-Health-Connect entries stay honest
          *  about having none rather than reporting zero steps and no pulse. */

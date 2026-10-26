@@ -89,7 +89,7 @@ fun AskScreen(
 
     // The aggregate is derived from the whole journal, so it is recomputed only
     // when the journal changes rather than on every keystroke.
-    val facts = remember(entries) { TwinFacts.from(entries.map { it.toChatEntry() }) }
+    val facts = remember(entries) { askFacts(entries) }
     val bank = remember(facts) { TwinQuestion.available(facts) }
 
     var messages by remember { mutableStateOf(listOf<Msg>()) }
@@ -394,3 +394,22 @@ private fun CiteChip(text: String, solid: Boolean = false, onClick: (() -> Unit)
             .padding(horizontal = 9.dp, vertical = 5.dp),
     )
 }
+
+/**
+ * The Twin's aggregate, from the entries the lexicon actually read.
+ *
+ * The engine's ChatEntry has no "unread" valence yet, so an unread entry would
+ * reach TwinFacts as 0 and a Hindi journal would be called "remarkably
+ * balanced", its most frequent mood "Even". Nearly every canned answer leans on
+ * valence (mood, happiest when, triggers, people's tone, personality's
+ * "dominant mood", best time), so the facts are built from read entries only,
+ * as Insights and the Journal's "noticed" line already are. A journal the
+ * lexicon cannot read then has too few data points and the Twin says it needs
+ * more rather than inventing a mood. Free-text retrieval still searches every
+ * entry. English entries with a scored word reach the engine exactly as before.
+ *
+ * Engine follow-up (multilingual plan B-5): ChatEntry.valence: Float?, so
+ * people/topic/style facts can count every entry while mood facts skip nulls.
+ */
+internal fun askFacts(entries: List<Entry>): TwinFacts =
+    TwinFacts.from(entries.filter { it.valence != null }.map { it.toChatEntry() })
