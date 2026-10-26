@@ -25,13 +25,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
      * missed "nervous" for a query of "anxious about Sarah" while matching any
      * entry containing the letters in sequence.
      */
-    fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all ->
-        val terms = contentWords(q)
-        if (terms.isEmpty()) return@map all
-        rank(q, all).map { it.first }
-    }
-
-    private fun contentWords(t: String): Set<String> = rankWords(t)
+    fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all -> searchResults(q, all) }
     fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
 
@@ -267,6 +261,22 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         }
 
         fun rankWords(t: String): Set<String> = com.dailyvox.twin.Retrieval.words(t)
+
+        /**
+         * What the Journal shows for a typed query (a blank box never gets here;
+         * the view model shows the whole journal for that).
+         *
+         * A query with no content words used to return EVERY entry. The engine's
+         * tokenizer keeps only [a-z0-9'], so a Devanagari or Tamil query -- or
+         * "mamá" cut to "mam" -- tokenised to nothing and the "results" were the
+         * whole journal, which reads as "everything matched". An empty term set
+         * is now no results, which is the truth until the tokenizer reads the
+         * script (plan B-9).
+         */
+        internal fun searchResults(q: String, all: List<Entry>): List<Entry> {
+            if (rankWords(q).isEmpty()) return emptyList()
+            return rank(q, all).map { it.first }
+        }
 
 
         /**
