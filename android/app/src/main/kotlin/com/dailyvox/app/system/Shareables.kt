@@ -241,7 +241,8 @@ object Shareables {
         val sub = mono(20f, "#6B7A72").apply { textAlign = Paint.Align.CENTER }
         c.drawText(
             "PRIVACY RECEIPT · " +
-                SimpleDateFormat("MMMM d, yyyy", Locale.US).format(Date()).uppercase(),
+                // The reader's language (B-13); 1.2 forced Locale.US on every phone.
+                LocaleFormat.receiptDate(java.time.LocalDate.now()),
             S / 2f, 176f, sub,
         )
         dotted(c, 216f)
@@ -544,9 +545,8 @@ object Shareables {
 
     private fun warmestMonth(entries: List<Entry>): String {
         val best = warmestMonthIndex(entries) ?: return "—"
-        return SimpleDateFormat("MMMM", Locale.US).format(
-            Calendar.getInstance().apply { set(Calendar.MONTH, best) }.time
-        )
+        // Standalone, in the reader's language (B-13). Was Locale.US.
+        return LocaleFormat.monthName(best)
     }
 
     /**

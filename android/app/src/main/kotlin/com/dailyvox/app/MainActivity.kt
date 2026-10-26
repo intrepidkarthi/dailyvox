@@ -467,6 +467,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                                     com.dailyvox.app.system.DailyQuestion.isPilot(context))))
                         }
                     },
+                    onTranscribed = { text, language ->
+                        // Transcribed later from the saved audio: the words AND
+                        // the language the recogniser heard them in (B-2).
+                        vm.editText(detail.id, text, language)
+                        openEntry = detail.copy(text = text, language = language)
+                    },
                     onAsk = { question ->
                         // Close the entry and land on Ask with the question
                         // already sent — B4's action is a destination, not a

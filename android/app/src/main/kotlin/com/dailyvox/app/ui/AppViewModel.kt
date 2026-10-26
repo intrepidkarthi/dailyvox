@@ -67,7 +67,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             runCatching { body.read() }.getOrNull()
         } else null
 
-        val saved = repo.add(text, durationSec, audioPath, snapshot)
+        // The tag the recogniser was asked for in the session that produced
+        // these words (B-2). Typed text is classified inside Repo instead.
+        val spoken = com.dailyvox.app.audio.SpeechCapture.lastSessionLanguage(getApplication())
+        val saved = repo.add(text, durationSec, audioPath, snapshot, spokenLanguage = spoken)
         // Off the saved row and the rest of the table, nothing else. Wrapped so
         // a reflection that cannot be built never looks like a failed save.
         _reflection.value = runCatching {
@@ -89,8 +92,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
      * Twin was working from the wrong words, and leaving the derived fields
      * alone would fix what the user reads and not what the Twin knows.
      */
-    fun editText(id: String, text: String) = viewModelScope.launch {
-        repo.updateText(id, text)
+    fun editText(id: String, text: String, language: String? = null) = viewModelScope.launch {
+        repo.updateText(id, text, language)
     }
 
     fun setSelfLabel(id: String, label: String?) = viewModelScope.launch {
@@ -188,6 +191,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         all.forEachIndexed { i, e ->
             append("    {\"date\": ${e.createdAt}, \"seconds\": ${e.durationSec}, ")
             append("\"valence\": ${e.valence}, \"entities\": \"${e.entities}\", ")
+            // Only when known. A reader that does not know the key ignores it;
+            // this app's own import keeps it rather than re-guessing (B-2).
+            e.language?.let { append("\"language\": ${org.json.JSONObject.quote(it)}, ") }
             append("\"text\": ${org.json.JSONObject.quote(e.text)}}")
             if (i < all.size - 1) append(",")
             append("\n")

@@ -327,7 +327,7 @@ fun SpeakScreen(
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault())
+                    com.dailyvox.app.system.LocaleFormat.dateFormat("EEEE, MMMM d", "EEEEMMMMd")
                         .format(java.util.Date()),
                     fontSize = 12.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -527,7 +527,7 @@ fun SpeakScreen(
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                    MonoLabel("today ✦ · ${java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date(e.createdAt))}")
+                    MonoLabel("today ✦ · ${com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(java.util.Date(e.createdAt))}")
                     // It looked like a play button and was a label: no
                     // clickable, no player, nothing behind the triangle.
                     //

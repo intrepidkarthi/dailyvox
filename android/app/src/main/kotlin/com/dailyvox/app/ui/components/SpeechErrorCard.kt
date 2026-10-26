@@ -73,7 +73,7 @@ fun SpeechErrorCard(
     }
 }
 
-private fun packLine(p: PackDownload): String? = when (p) {
+internal fun packLine(p: PackDownload): String? = when (p) {
     PackDownload.Idle -> null
     PackDownload.Requested -> "Asking your phone's speech service for the pack…"
     is PackDownload.Progress -> "Downloading the speech pack · ${p.percent}%"

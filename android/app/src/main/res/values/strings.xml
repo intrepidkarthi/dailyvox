@@ -232,4 +232,19 @@
     <string name="twin_still_listening">Still listening. A few more nights and there will be something to say.</string>
     <string name="twin_still_listening_early">Still listening. Early signals are below; a fuller picture comes in a few more nights.</string>
     <string name="patterns_label">Patterns your Twin noticed</string>
+    <!-- Settings: the language the recogniser listens for (plan B-8). Separate from the app's language. -->
+    <string name="speak_lang_title">LANGUAGE YOU SPEAK</string>
+    <string name="speak_lang_explain">DailyVox listens in one language at a time. Pick the one you\'ll speak tonight. This can differ from the app\'s language.</string>
+    <string name="speak_lang_same_as_phone">Same as phone · %1$s</string>
+    <string name="speak_lang_change">Change</string>
+    <string name="speak_lang_state_on_phone">On this phone</string>
+    <string name="speak_lang_state_download">Needs a one-time download</string>
+    <string name="speak_lang_state_unavailable">No on-device model on this phone</string>
+    <string name="speak_lang_needs_download">%1$s needs a one-time download from %2$s. After that, everything you say stays on this phone.</string>
+    <string name="speak_lang_provider_fallback">your phone\'s speech service</string>
+    <string name="speak_lang_download">Download</string>
+    <string name="speak_lang_unavailable">Your phone can\'t transcribe %1$s on-device yet. Pick another language, or type tonight\'s entry. DailyVox never sends your voice anywhere to make up for it.</string>
+    <string name="speak_lang_checking">Asking this phone what it can hear…</string>
+    <string name="speak_lang_dialog_title">Language you speak</string>
+    <string name="speak_lang_cancel">Cancel</string>
 </resources>

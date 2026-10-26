@@ -31,9 +31,11 @@ import kotlinx.coroutines.flow.StateFlow
  * network branch wearing a preference flag.
  *
  * The language asked for is the one the recogniser SAYS it has an offline pack
- * for, discovered once by [probeLanguages] and cached — not the phone's locale,
- * which is what this used to send and which fails on any device whose locale and
- * installed pack differ by region.
+ * for, matched against the language the user SPEAKS ([speakingLanguage], set in
+ * Settings, else the phone's locale). The packs are discovered by
+ * [probeLanguages] and cached per phone locale and speaking choice, so changing
+ * either re-asks -- the 1.2 cache was forever, and a phone switched from English
+ * to Hindi kept asking for the English pack it had probed on day one.
  *
  * Known gap, and it is the largest untested assumption in the port: the name
  * detector depends entirely on transcripts CAPITALISING names. Apple's recognizer
@@ -110,17 +112,22 @@ class SpeechCapture(private val context: Context) {
      *
      * API 33 has only the fire-and-forget form; 34 adds a listener.
      */
-    fun downloadPack() {
+    fun downloadPack(tag: String? = null) {
         if (!onDeviceAvailable) { _pack.value = PackDownload.Failed; return }
+        // The language the user speaks, spelled the way the recogniser spells
+        // it when it lists it as supported (cmn-Hans-CN, not zh-CN). Asking for
+        // the phone's locale here used to fetch the wrong pack for anyone who
+        // speaks a language other than the one their phone is set to.
+        val request = tag ?: downloadTag(context)
         val rec = runCatching { SpeechRecognizer.createOnDeviceSpeechRecognizer(context) }
             .getOrNull() ?: run { _pack.value = PackDownload.Failed; return }
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, request)
         }
         // The next session must re-ask what is installed, or it keeps
         // requesting the stale (absent) language it cached before the download.
-        prefs.edit().remove(LANG_KEY).remove(PROBED_KEY).apply()
+        forgetProbe(context)
         _pack.value = PackDownload.Requested
         if (Build.VERSION.SDK_INT >= 34) {
             val ok = runCatching {
@@ -220,18 +227,23 @@ class SpeechCapture(private val context: Context) {
      * already had. Asking the recogniser what it has, and then asking it for
      * that, is the difference between working and not on a lot of hardware.
      *
-     * Cached because the answer only changes when the user installs a pack, and
-     * re-probing on every tap costs a recognizer construction.
+     * Cached because the answer only changes when the user installs a pack or
+     * changes language, and re-probing on every tap costs a recognizer
+     * construction. Both of those clear it ([forgetProbe], [needsProbe]).
      */
     private var language: String?
         get() = prefs.getString(LANG_KEY, null)
         set(v) { prefs.edit().putString(LANG_KEY, v).apply() }
 
-    /** Every on-device pack the recogniser reports, for the error message. */
+    /** Every on-device pack the recogniser reports as installed. */
     private var installed: List<String>
-        get() = prefs.getString(INSTALLED_KEY, null)
-            ?.split(",")?.filter { it.isNotBlank() }.orEmpty()
+        get() = installedPacks(context)
         set(v) { prefs.edit().putString(INSTALLED_KEY, v.joinToString(",")).apply() }
+
+    /** Packs it could download (supported or pending), for the picker and the error copy. */
+    private var supported: List<String>
+        get() = supportedPacks(context)
+        set(v) { prefs.edit().putString(SUPPORTED_KEY, v.joinToString(",")).apply() }
 
     /**
      * A recogniser that answers NOTHING is the failure this class did not model.
@@ -270,15 +282,27 @@ class SpeechCapture(private val context: Context) {
         if (_state.value != State.IDLE) return
         kept.setLength(0)
         abandoned = false
-        // Probe once per install, before the first session rather than after a
-        // failure: the answer picks the language AND writes the error message,
-        // and recovering from an error mid-recording means throwing away the
-        // words that were already spoken.
-        if (language == null && !prefs.getBoolean(PROBED_KEY, false)) {
-            probeLanguages { beginSession() }
+        // A session that never reaches the recogniser must not inherit the
+        // previous one's language label.
+        prefs.edit().remove(SESSION_LANG_KEY).apply()
+        // Probe before the first session rather than after a failure: the
+        // answer picks the language AND writes the error message, and
+        // recovering from an error mid-recording means throwing away the words
+        // that were already spoken. Once per phone locale and speaking choice,
+        // not once per install (B-8): the 1.2 PROBED flag never cleared.
+        if (needsProbe(context)) {
+            probeLanguages { beginSession(mayReprobe = false) }
             return
         }
-        beginSession()
+        beginSession(mayReprobe = true)
+    }
+
+    /**
+     * Re-ask the recogniser what it has, then hand back what it said. For the
+     * Settings picker; [then] always runs, on the main thread.
+     */
+    fun refreshLanguages(then: (installed: List<String>, supported: List<String>) -> Unit) {
+        probeLanguages { then(installed, supported) }
     }
 
     /**
@@ -286,7 +310,9 @@ class SpeechCapture(private val context: Context) {
      *
      * `checkRecognitionSupport` is API 33 and reports installed, pending and
      * merely-supported languages separately — only the first kind works with no
-     * network, so only the first kind is recorded here.
+     * network, so only the first kind is ever asked to transcribe. The other two
+     * are recorded as what [downloadPack] can fetch and what the speaking-
+     * language picker can offer.
      *
      * Always calls [then], including on failure. A phone that will not answer
      * the question should still get a recording attempt: the attempt produces a
@@ -297,11 +323,12 @@ class SpeechCapture(private val context: Context) {
         val probe = runCatching { SpeechRecognizer.createOnDeviceSpeechRecognizer(context) }
             .getOrNull() ?: run { then(); return }
         var settled = false
-        fun done(langs: List<String>) {
+        fun done(langs: List<String>, downloadable: List<String> = emptyList()) {
             if (settled) return
             settled = true
-            prefs.edit().putBoolean(PROBED_KEY, true).apply()
+            prefs.edit().putString(PROBED_FOR_KEY, probeKey(context)).remove(PROBED_KEY_V1).apply()
             installed = langs
+            supported = downloadable
             language = pick(langs)
             runCatching { probe.destroy() }
             then()
@@ -322,7 +349,10 @@ class SpeechCapture(private val context: Context) {
                 context.mainExecutor,
                 object : RecognitionSupportCallback {
                     override fun onSupportResult(support: RecognitionSupport) {
-                        done(support.installedOnDeviceLanguages)
+                        done(
+                            support.installedOnDeviceLanguages,
+                            support.supportedOnDeviceLanguages + support.pendingOnDeviceLanguages,
+                        )
                     }
                     override fun onError(error: Int) = done(emptyList())
                 },
@@ -330,18 +360,18 @@ class SpeechCapture(private val context: Context) {
         }.onFailure { done(emptyList()) }
     }
 
-    /** See [pickRecognizerLanguage]: same language or nothing. */
-    private fun pick(langs: List<String>): String? = pickRecognizerLanguage(langs, Locale.getDefault())
+    /** See [pickRecognizerLanguage]: the language the user speaks, or nothing. */
+    private fun pick(langs: List<String>): String? = pickRecognizerLanguage(langs, wanted(context))
 
     /** Pick up where a pause left off. The kept transcript survives. */
     fun resume() {
         if (_state.value != State.PAUSED) return
         // If the recogniser has gone away mid-entry, save what was already said
         // rather than dropping the user back to idle with their words in limbo.
-        if (!beginSession()) finish("")
+        if (!beginSession(mayReprobe = false)) finish("")
     }
 
-    private fun beginSession(): Boolean {
+    private fun beginSession(mayReprobe: Boolean): Boolean {
         _partial.value = ""
         pausing = false
         // On-device or not at all. The generic recognizer used to stand in here
@@ -366,8 +396,19 @@ class SpeechCapture(private val context: Context) {
         // itself would raise: ERROR_LANGUAGE_UNAVAILABLE, which offers the pack
         // download for the phone's own language.
         val packs = installed
-        if (packs.isNotEmpty()) {
+        if (packs.isEmpty()) {
+            // Nothing known. Ask for the language the user chose, if they chose
+            // one, and otherwise leave it to the platform default as 1.2 did:
+            // the recogniser answers a missing pack with a real error code.
+            language = null
+        } else {
             val chosen = pick(packs)
+            if (chosen == null && mayReprobe && kept.isEmpty()) {
+                // The cache may predate a pack installed from Android Settings.
+                // One fresh look before telling the user they have not got it.
+                probeLanguages { beginSession(mayReprobe = false) }
+                return true
+            }
             if (chosen == null) {
                 language = null
                 _error.value = describe(SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE)
@@ -442,7 +483,12 @@ class SpeechCapture(private val context: Context) {
             // The pack the recogniser told us it has. Unset means the probe
             // found nothing or never ran, and the platform default is then the
             // best remaining guess.
-            language?.let { putExtra(RecognizerIntent.EXTRA_LANGUAGE, it) }
+            val asked = language ?: speakingLanguage(context)
+            asked?.let { putExtra(RecognizerIntent.EXTRA_LANGUAGE, it) }
+            // What this entry was spoken in, for Entry.language (B-2). Null
+            // when nothing was asked for: the platform chose, and guessing its
+            // choice would be a label on the entry that might be false.
+            prefs.edit().putString(SESSION_LANG_KEY, asked).apply()
             // Custom vocabulary. Biasing strings landed in API 33 alongside the
             // on-device recognizer, and asking for the extra on older platforms
             // is harmless -- an unknown extra is ignored, never rejected.
@@ -577,11 +623,70 @@ class SpeechCapture(private val context: Context) {
 
     fun release() { disarm(); recognizer?.destroy(); recognizer = null }
 
-    private companion object {
-        const val TAG = "DailyVoxSpeech"
-        const val LANG_KEY = "recogniser_language"
-        const val INSTALLED_KEY = "recogniser_installed"
-        const val PROBED_KEY = "recogniser_probed"
+    companion object {
+        private const val TAG = "DailyVoxSpeech"
+        private const val LANG_KEY = "recogniser_language"
+        private const val INSTALLED_KEY = "recogniser_installed"
+        private const val SUPPORTED_KEY = "recogniser_supported"
+        /** 1.2's forever flag. Removed on the next probe; never read. */
+        private const val PROBED_KEY_V1 = "recogniser_probed"
+        /** The [probeKey] the cached packs were probed under. */
+        private const val PROBED_FOR_KEY = "recogniser_probed_for"
+        /** The user's "Language you speak", a BCP-47 tag. Absent = the phone's language. */
+        private const val SPEAK_KEY = "speaking_language"
+        /** The tag the last session asked the recogniser for. */
+        private const val SESSION_LANG_KEY = "recogniser_session_language"
+
+        private fun prefs(context: Context) =
+            context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+
+        private fun list(context: Context, key: String): List<String> =
+            prefs(context).getString(key, null)?.split(",")?.filter { it.isNotBlank() }.orEmpty()
+
+        fun installedPacks(context: Context): List<String> = list(context, INSTALLED_KEY)
+        fun supportedPacks(context: Context): List<String> = list(context, SUPPORTED_KEY)
+
+        /** The language the user chose to speak, or null to follow the phone. */
+        fun speakingLanguage(context: Context): String? = prefs(context).getString(SPEAK_KEY, null)
+
+        /**
+         * Choose the speaking language (null = follow the phone). Clears the
+         * cached pack and probe, so the next session matches against it.
+         */
+        fun setSpeakingLanguage(context: Context, tag: String?) {
+            prefs(context).edit().apply { if (tag == null) remove(SPEAK_KEY) else putString(SPEAK_KEY, tag) }.apply()
+            forgetProbe(context)
+        }
+
+        /** The language to listen for: the user's choice, else the phone's. */
+        fun wanted(context: Context): Locale =
+            speakingLanguage(context)?.let { LanguageTags.toLocale(it) } ?: Locale.getDefault()
+
+        /** The tag the most recent session asked for, or null if it asked for none. */
+        fun lastSessionLanguage(context: Context): String? = prefs(context).getString(SESSION_LANG_KEY, null)
+
+        /** What [downloadPack] asks for when not told: the wanted language, in the recogniser's spelling. */
+        fun downloadTag(context: Context): String =
+            pickRecognizerLanguage(supportedPacks(context), wanted(context)) ?: wanted(context).toLanguageTag()
+
+        /** See [fileTranscriptionTag]. */
+        fun fileTag(context: Context, entryLanguage: String?): String? =
+            fileTranscriptionTag(entryLanguage, installedPacks(context), wanted(context))
+
+        /**
+         * Probe again when the phone's language or the speaking choice changed
+         * since the last one (B-8: replaces 1.2's forever flag).
+         */
+        internal fun probeKey(context: Context): String =
+            Locale.getDefault().toLanguageTag() + "|" + (speakingLanguage(context) ?: "")
+
+        fun needsProbe(context: Context): Boolean =
+            prefs(context).getString(PROBED_FOR_KEY, null) != probeKey(context)
+
+        fun forgetProbe(context: Context) {
+            prefs(context).edit().remove(LANG_KEY).remove(PROBED_FOR_KEY).remove(PROBED_KEY_V1).apply()
+        }
+
         const val PROBE_TIMEOUT_MS = 2_000L
         /** onReadyForSpeech normally lands in well under a second. */
         const val START_TIMEOUT_MS = 6_000L
@@ -658,6 +763,11 @@ class SpeechCapture(private val context: Context) {
             "Recognition & Synthesis is installed and enabled in Settings \u203a Apps.",
     )
 
+    /** "Google" when the configured on-device service is Google's, for the download copy. */
+    private fun recogniserProvider(): String? = runCatching {
+        android.provider.Settings.Secure.getString(context.contentResolver, "voice_recognition_service")
+    }.getOrNull()?.takeIf { it.contains("google", ignoreCase = true) }?.let { "Google" }
+
     private fun describe(code: Int): CaptureError = when (code) {
         // Says which packs the recogniser DOES have, when it has any. The flat
         // "no pack for your language" was wrong often enough to be misleading:
@@ -666,14 +776,11 @@ class SpeechCapture(private val context: Context) {
         // Naming what is installed is also the only way a user can tell the two
         // situations apart from inside the app.
         SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
-        SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> CaptureError(
-            message = installed.takeIf { it.isNotEmpty() }?.let {
-                "This phone's speech packs (${it.joinToString(", ")}) could not " +
-                    "handle ${Locale.getDefault().toLanguageTag()}."
-            } ?: "This phone has no offline speech pack installed yet.",
-            fix = "Your phone's speech service can download the pack now. DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.",
-            openLanguageSettings = true,
-            offerDownload = true,
+        SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> languageUnavailable(
+            want = wanted(context).toLanguageTag(),
+            installed = installed,
+            supported = supported,
+            provider = recogniserProvider(),
         )
         SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> CaptureError(
             message = "The microphone permission was turned off.",
@@ -708,20 +815,40 @@ class SpeechCapture(private val context: Context) {
 }
 
 /**
- * Which installed pack to speak to, given the phone's locale.
+ * The card for "no on-device model for the language you speak" (plan section 3 copy).
  *
- * Exact tag first, then any pack in the same LANGUAGE -- en-US is the right
- * answer for a phone set to en-IN. Then nothing. There used to be a third step,
- * `langs.first()`, "because a recogniser with one language is better used than
- * not" -- and that is how a phone set to Hindi with only an English pack
- * transcribed Hindi speech as English words. Null means the caller raises
- * ERROR_LANGUAGE_UNAVAILABLE and offers the download for the right language.
+ * Two different situations, and the user can only fix one of them:
+ *  - the recogniser lists the language as downloadable (or has not said what
+ *    it supports, as before 1.3): a one-time download, offered.
+ *  - it lists what it supports and this language is not there: no download
+ *    would help, so none is offered. Never an English fallback.
+ *
+ * Packs that ARE installed are named in the fix, because the commonest case is
+ * still "English is installed, you asked for something else", and naming them
+ * is the only way to tell that apart from inside the app.
  */
-internal fun pickRecognizerLanguage(langs: List<String>, want: Locale): String? {
-    if (langs.isEmpty()) return null
-    val tag = want.toLanguageTag()
-    langs.firstOrNull { it.replace('_', '-').equals(tag, true) }?.let { return it }
-    return langs.firstOrNull {
-        it.replace('_', '-').substringBefore('-').equals(want.language, true)
-    }
+internal fun languageUnavailable(
+    want: String,
+    installed: List<String>,
+    supported: List<String>,
+    provider: String?,
+    uiLocale: Locale = Locale.getDefault(),
+): CaptureError {
+    val name = LanguageTags.languageName(want, uiLocale)
+    val has = installed.takeIf { it.isNotEmpty() }
+        ?.let { " This phone has: " + it.joinToString(", ") + "." }.orEmpty()
+    val downloadable = supported.isEmpty() || supported.any { LanguageTags.sameLanguage(it, want) }
+    return if (downloadable) CaptureError(
+        message = "$name needs a one-time download from ${provider ?: "your phone's speech service"}. " +
+            "After that, everything you say stays on this phone.",
+        fix = "DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.$has",
+        openLanguageSettings = true,
+        offerDownload = true,
+    ) else CaptureError(
+        message = "Your phone can't transcribe $name on-device yet.",
+        fix = "DailyVox will not send it anywhere to make up for that. Pick another language under " +
+            "Settings \u203a Language you speak, or type tonight's entry.$has",
+        openLanguageSettings = true,
+        offerDownload = false,
+    )
 }
