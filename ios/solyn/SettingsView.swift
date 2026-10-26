@@ -53,6 +53,8 @@ struct SettingsView: View {
     @AppStorage("authorDescription") private var authorDescription: String = ""
     @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled: Bool = true
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled: Bool = false
+    /// `SkyShareOffer.enabledKey`. On by default.
+    @AppStorage("offerMilestoneShares") private var offerMilestoneShares: Bool = true
     // Read once per Settings visit; generated on first read and fixed after.
     @State private var participantCode: String = ResearchParticipant.code()
     @State private var participantCodeCopied = false
@@ -105,6 +107,7 @@ struct SettingsView: View {
             liveActivitiesSection
             securitySection
             dailyReminderSection
+            sharingSection
             storageSection
             iCloudSection
             healthSection
@@ -649,6 +652,24 @@ struct SettingsView: View {
             Text("Daily Reminder")
         } footer: {
             Text("DailyVox sends one gentle notification each day at your chosen time.")
+        }
+    }
+
+    private var sharingSection: some View {
+        Section {
+            Toggle(isOn: $offerMilestoneShares) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Offer to share milestones")
+                    Text("At nights 7, 21 and 42, once each, Today offers a picture of your sky.")
+                        .font(.dv(.caption))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        } header: {
+            Text("Sharing")
+        } footer: {
+            Text("The picture never includes your words, names or moods. It is made on this iPhone and only goes where you send it from the share sheet.")
         }
     }
 

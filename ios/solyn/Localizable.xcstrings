@@ -10812,6 +10812,57 @@
           }
         }
       }
+    },
+    "A picture of your sky — no words from your entries. Made on this phone; nothing is sent unless you pick somewhere to send it." : {
+      "comment" : "Today screen: explains the one-time offer to share a picture of the user's constellation."
+    },
+    "Not now" : {
+
+    },
+    "Opens the share sheet with a picture of your sky." : {
+      "comment" : "VoiceOver hint for the Share button on the sky share offer."
+    },
+    "Offer to share milestones" : {
+      "comment" : "Settings toggle: whether Today offers, once each at nights 7, 21 and 42, to share a picture of the sky."
+    },
+    "At nights 7, 21 and 42, once each, Today offers a picture of your sky." : {
+      "comment" : "Settings: explanation under the Offer to share milestones toggle."
+    },
+    "Sharing" : {
+      "comment" : "Settings section header."
+    },
+    "The picture never includes your words, names or moods. It is made on this iPhone and only goes where you send it from the share sheet." : {
+      "comment" : "Settings footer for the Sharing section."
+    },
+    "Seven nights. Your sky is taking shape — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 7 nights of entries."
+    },
+    "Twenty-one nights. Your sky is filling in — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 21 nights of entries."
+    },
+    "Forty-two nights. Your sky is its own now — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 42 nights of entries."
+    },
+    "%lld nights. Your sky is taking shape — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation. The number is nights with at least one entry."
+    },
+    "1 night kept" : {
+      "comment" : "Story share card: one night with an entry."
+    },
+    "%lld nights kept" : {
+      "comment" : "Story share card: number of nights with at least one entry."
+    },
+    "MY SKY" : {
+      "comment" : "Story share card: small label above the constellation."
+    },
+    "A constellation of 1 star." : {
+      "comment" : "VoiceOver description of the Story share card's sky."
+    },
+    "A constellation of %lld stars." : {
+      "comment" : "VoiceOver description of the Story share card's sky."
+    },
+    "My sky after %lld nights of DailyVox — getdailyvox.com/sky" : {
+      "comment" : "Text shared alongside the Story sky card. The number is nights with at least one entry."
     }
   },
   "version" : "1.1"
