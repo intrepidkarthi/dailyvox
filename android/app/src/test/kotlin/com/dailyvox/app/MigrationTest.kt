@@ -77,6 +77,45 @@ class MigrationTest {
     @Test fun runningTwiceIsHarmless() =
         open("v1-twice.db", base).let { migrateAll(it); migrateAll(it); assertMigrated(it) }
 
+    private fun valenceNotNull(db: SupportSQLiteDatabase): Boolean =
+        db.query("PRAGMA table_info(entries)").use { c ->
+            while (c.moveToNext()) {
+                if (c.getString(c.getColumnIndexOrThrow("name")) == "valence")
+                    return c.getInt(c.getColumnIndexOrThrow("notnull")) == 1
+            }
+            error("no valence column")
+        }
+
+    /**
+     * 4 -> 5 drops NOT NULL from valence by rebuilding the table. Run against
+     * the shape a real upgraded install has (columns in ADD COLUMN order, not
+     * the entity's), every value must survive and NULL must then be storable.
+     */
+    @Test fun versionFiveMakesValenceNullableAndKeepsEveryRow() =
+        open("v4-from-v1.db", base).let { db ->
+            migrateAll(db)
+            db.execSQL("UPDATE entries SET selfLabel = 'joy', suggestedMood = 'joy', hrvMs = 41.5 WHERE id = 'a'")
+            assertTrue(valenceNotNull(db))
+            Repo.MIGRATION_4_5.migrate(db)
+            assertTrue(!valenceNotNull(db))
+            assertMigrated(db.also {
+                // assertMigrated expects no label; check the copied values first.
+                it.query("SELECT valence, selfLabel, suggestedMood, hrvMs, durationSec, entities FROM entries WHERE id = 'a'").use { c ->
+                    assertTrue(c.moveToFirst())
+                    assertEquals(0.4, c.getDouble(0), 1e-6)
+                    assertEquals("joy", c.getString(1)); assertEquals("joy", c.getString(2))
+                    assertEquals(41.5, c.getDouble(3), 1e-6); assertEquals(42, c.getInt(4))
+                    assertEquals("[]", c.getString(5))
+                }
+                it.execSQL("UPDATE entries SET selfLabel = NULL, suggestedMood = NULL WHERE id = 'a'")
+            })
+            db.execSQL("INSERT INTO entries (id, text, createdAt, durationSec, valence, entities) " +
+                "VALUES ('b', 'आज', 2, 10, NULL, '')")
+            db.query("SELECT valence FROM entries WHERE id = 'b'").use { c ->
+                assertTrue(c.moveToFirst()); assertTrue(c.isNull(0))
+            }
+        }
+
     /** A version-3 database, the shape before this column, keeps its label. */
     @Test fun versionThreeKeepsItsSelfLabel() {
         val v3 = base + prosody + ", `hrvMs` REAL, `restingHrBpm` REAL, `stepsToday` INTEGER"

@@ -92,6 +92,10 @@ object MoodSuggestion {
         if (studyLabelling) null else from(text, table)
 
     fun from(text: String, table: Map<String, Float>): String? {
+        // The lexicon and every word list here are English. On another language
+        // they do not fail, they misread: VADER's false friends gave "joy" on
+        // sad Spanish and Italian entries. No suggestion beats a wrong one.
+        if (!EnglishText.likely(text)) return null
         val sign = lean(Sentiment.valence(text, table), words(text))
         if (sign == 0) return null
 

@@ -318,4 +318,32 @@ class DailyQuestionTest {
         assertEquals(1 + DailyQuestion.EVERYDAY_COUNT, seqd.size)
         assertEquals(Question.Everyday(DailyQuestion.everydayIndex(tuesday)), seqd[1])
     }
+
+    // ── A0-10: grounded only where the sensitive guard can read ─────────────
+
+    @Test
+    fun `a Spanish bereavement entry never yields a grounded question`() {
+        // "Priya's grandmother died today. The whole family was there, very calm."
+        // The English guard reads nothing in it, and VADER scores it 0.
+        val es = entry("La abuela de Priya murió hoy. Toda la familia estaba allí, muy tranquila.",
+            tuesday.minusDays(2), "Priya", valence = 0f)
+        assertNull(DailyQuestion.grounded(listOf(es), at(tuesday), la))
+        assertEquals(Question.Everyday(DailyQuestion.everydayIndex(tuesday)), lead(listOf(old, es), tuesday))
+    }
+
+    @Test
+    fun `an unreadable entry anywhere in the guarded month turns grounding off`() {
+        val english = entry(priya, tuesday.minusDays(3), "Priya")
+        val hindi = entry("आज प्रिया की दादी का देहांत हो गया", tuesday.minusDays(20))
+        assertNull(DailyQuestion.grounded(listOf(english, hindi), at(tuesday), la))
+        // Older than the guarded month: no longer in the way.
+        val longAgo = entry("आज अच्छा दिन था", tuesday.minusDays(DailyQuestion.SENSITIVE_WINDOW_DAYS + 5))
+        assertEquals(Question.Grounded("Priya", 3), DailyQuestion.grounded(listOf(english, longAgo), at(tuesday), la))
+    }
+
+    @Test
+    fun `English grounding is unchanged`() {
+        val e = entry(priya, tuesday.minusDays(3), "Priya")
+        assertEquals(Question.Grounded("Priya", 3), DailyQuestion.grounded(listOf(old, e), at(tuesday), la))
+    }
 }

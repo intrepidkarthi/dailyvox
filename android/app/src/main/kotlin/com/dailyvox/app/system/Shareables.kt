@@ -543,16 +543,29 @@ object Shareables {
                   java.time.ZoneId.systemDefault()).current
 
     private fun warmestMonth(entries: List<Entry>): String {
-        if (entries.isEmpty()) return "—"
+        val best = warmestMonthIndex(entries) ?: return "—"
+        return SimpleDateFormat("MMMM", Locale.US).format(
+            Calendar.getInstance().apply { set(Calendar.MONTH, best) }.time
+        )
+    }
+
+    /**
+     * The Calendar.MONTH with the highest mean valence, or null for "—".
+     *
+     * Only entries the lexicon actually read count, and only when their valence
+     * VARIES. A journal the lexicon could not read (another language) used to
+     * be all zeros, and the max of equal averages is whichever month came
+     * first -- a "Warmest month" printed on a card about nothing.
+     */
+    internal fun warmestMonthIndex(entries: List<Entry>): Int? {
+        val read = entries.filter { it.valence != null }
+        if (read.mapNotNull { it.valence }.distinct().size < 2) return null
         val cal = Calendar.getInstance()
-        val best = entries.groupBy { e ->
+        return read.groupBy { e ->
             cal.timeInMillis = e.createdAt; cal.get(Calendar.MONTH)
         }.filter { it.value.size >= 3 }
-            .maxByOrNull { it.value.map { e -> e.valence }.average() }
-            ?: return "—"
-        return SimpleDateFormat("MMMM", Locale.US).format(
-            Calendar.getInstance().apply { set(Calendar.MONTH, best.key) }.time
-        )
+            .maxByOrNull { it.value.mapNotNull { e -> e.valence }.average() }
+            ?.key
     }
 
     /**

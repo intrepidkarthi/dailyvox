@@ -514,6 +514,9 @@ fun SettingsScreen(
             )
         }
 
+        // Debug builds only: src/release compiles this to nothing (plan B-17).
+        com.dailyvox.app.debug.RecognizerProbe.Card()
+
         Spacer(Modifier.height(10.dp))
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp),

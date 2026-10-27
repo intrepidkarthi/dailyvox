@@ -3,6 +3,7 @@ package com.dailyvox.app
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.system.Reflection
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -144,5 +145,24 @@ class ReflectionTest {
         val card = Reflection.of(entry("typed this at my desk", 0f, seconds = 0, audio = null), emptyList())
         assertTrue(card.typed)
         assertEquals(5, card.words)
+    }
+
+    /** A0-7. A combining mark after the name means the word goes on. */
+    @Test
+    fun `a name followed by a combining mark is inside a longer word`() {
+        // "प्रिय" then the vowel sign "ा" (U+093E, a mark) is "प्रिया", another word.
+        assertFalse(Reflection.nameIn("प्रिय", "आज प्रिया से मिला"))
+        assertTrue(Reflection.nameIn("प्रिया", "आज प्रिया से मिला"))
+        // Decomposed accent: "Ana" + U+0301 is "Aná", not "Ana".
+        assertFalse(Reflection.nameIn("Ana", "Vi a Aná hoy"))
+        assertTrue(Reflection.nameIn("Ana", "Vi a Ana hoy"))
+    }
+
+    @Test
+    fun `English whole-word matching is unchanged`() {
+        assertTrue(Reflection.nameIn("Sarah", "Lunch with Sarah's sister."))
+        assertTrue(Reflection.nameIn("Sarah", "Sarah, then home."))
+        assertFalse(Reflection.nameIn("Sam", "My new Samsung arrived."))
+        assertFalse(Reflection.nameIn("Ann", "Annual review"))
     }
 }

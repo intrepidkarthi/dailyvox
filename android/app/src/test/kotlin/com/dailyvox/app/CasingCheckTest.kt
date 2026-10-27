@@ -101,4 +101,34 @@ class CasingCheckTest {
         val v = CasingCheck.of(padding(8))
         assertEquals(Verdict.NotCasing, v)
     }
+
+    /**
+     * A0-5. Devanagari and Tamil have no capitals, so "this phone isn't
+     * capitalising names" would blame the phone for the script. Quiet instead.
+     */
+    @Test
+    fun `a journal in a caseless script gets no casing verdict`() {
+        val hindi = List(40) { "आज मैं प्रिया के साथ बाज़ार गया और फिर घर लौटकर बहुत देर तक सोचता रहा" }
+        assertEquals(Verdict.Caseless, CasingCheck.of(hindi))
+        val tamil = List(40) { "இன்று நான் பிரியாவுடன் சந்தைக்குச் சென்றேன் பிறகு வீட்டுக்கு வந்தேன்" }
+        assertEquals(Verdict.Caseless, CasingCheck.of(tamil))
+        // Short, too: no verdict of any kind about a caseless script.
+        assertEquals(Verdict.Caseless, CasingCheck.of(listOf("आज प्रिया से मिला")))
+    }
+
+    @Test
+    fun `a mostly English journal with some Hindi keeps the English verdicts`() {
+        val texts = padding(6) + listOf(
+            "walked with sarah by the reservoir and she talked about mumbai.",
+            "told sarah about the job. james rang later and i let it go.",
+            "आज अच्छा दिन था",
+        )
+        assertEquals(Verdict.NotCasing, CasingCheck.of(texts))
+    }
+
+    @Test
+    fun `cased non-Latin scripts keep the check`() {
+        // Cyrillic has capitals; the check still means something there.
+        assertEquals(false, CasingCheck.caselessDominant(listOf("Сегодня я гулял с Машей")))
+    }
 }
