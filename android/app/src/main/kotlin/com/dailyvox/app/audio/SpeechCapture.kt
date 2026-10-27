@@ -1,5 +1,6 @@
 package com.dailyvox.app.audio
 
+import com.dailyvox.app.R
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -714,11 +715,11 @@ class SpeechCapture(private val context: Context) {
      */
     private fun noOnDeviceRecogniser(): CaptureError =
         if (Build.VERSION.SDK_INT < 33) CaptureError(
-            message = "This version of Android has no on-device speech recogniser.",
-            fix = "DailyVox needs Android 13 or newer -- that is the version where offline recognition arrived. It will not transcribe over a network on any version.",
+            message = context.getString(R.string.speech_error_old_android),
+            fix = context.getString(R.string.speech_error_old_android_fix),
         ) else CaptureError(
-            message = "No offline speech pack is installed for your language yet.",
-            fix = "Your phone's speech service can download it now. DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.",
+            message = context.getString(R.string.speech_error_no_pack),
+            fix = context.getString(R.string.speech_error_no_pack_fix),
             openLanguageSettings = true,
             offerDownload = true,
         )
@@ -730,11 +731,8 @@ class SpeechCapture(private val context: Context) {
      * failure message on this screen does.
      */
     private fun recogniserSilent() = CaptureError(
-        message = "This phone's speech recogniser accepted the recording and never responded.",
-        fix = "Tap to try again. If it keeps happening, check that Android's speech " +
-            "service (Settings \u203a Apps \u203a Default apps \u203a Digital assistant app, " +
-            "or Speech Recognition & Synthesis in the app list) is enabled and not " +
-            "battery-restricted -- some OEM builds ship it disabled.",
+        message = context.getString(R.string.speech_error_silent),
+        fix = context.getString(R.string.speech_error_silent_fix),
     )
 
     /**
@@ -747,20 +745,15 @@ class SpeechCapture(private val context: Context) {
      * quiet.
      */
     private fun nothingCameBack() = CaptureError(
-        message = "The recogniser finished without returning any words.",
-        fix = "Tap to try again. If it keeps happening, this phone's speech " +
-            "service is not transcribing \u2014 check that Speech Recognition & " +
-            "Synthesis is enabled and not battery-restricted in Android " +
-            "Settings \u203a Apps, and that an offline language is installed under " +
-            "System \u203a Languages \u203a Speech.",
+        message = context.getString(R.string.speech_error_empty),
+        fix = context.getString(R.string.speech_error_empty_fix),
         openLanguageSettings = true,
     )
 
     /** Construction failed outright: the configured component does not resolve. */
     private fun recogniserUnreachable() = CaptureError(
-        message = "This phone's on-device speech recogniser could not be started.",
-        fix = "It is listed as available but will not open. Check that Speech " +
-            "Recognition & Synthesis is installed and enabled in Settings \u203a Apps.",
+        message = context.getString(R.string.speech_error_unreachable),
+        fix = context.getString(R.string.speech_error_unreachable_fix),
     )
 
     /** "Google" when the configured on-device service is Google's, for the download copy. */
@@ -777,23 +770,24 @@ class SpeechCapture(private val context: Context) {
         // situations apart from inside the app.
         SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE,
         SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> languageUnavailable(
+            context = context,
             want = wanted(context).toLanguageTag(),
             installed = installed,
             supported = supported,
             provider = recogniserProvider(),
         )
         SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> CaptureError(
-            message = "The microphone permission was turned off.",
-            fix = "Android Settings › Apps › DailyVox › Permissions.",
+            message = context.getString(R.string.speech_error_permission),
+            fix = context.getString(R.string.speech_error_permission_fix),
         )
         SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> CaptureError(
-            message = "Something else is using the microphone.",
-            fix = "Close any other recording or call, then try again.",
+            message = context.getString(R.string.speech_error_busy),
+            fix = context.getString(R.string.speech_error_busy_fix),
         )
         SpeechRecognizer.ERROR_NO_MATCH,
         SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> CaptureError(
-            message = "Nothing was heard.",
-            fix = "Tap again and speak a little closer to the phone.",
+            message = context.getString(R.string.speech_error_nothing_heard),
+            fix = context.getString(R.string.speech_error_nothing_heard_fix),
         )
         // Deliberately explicit: a NETWORK error means the platform recognizer
         // tried to go online, which is the one thing this app promises never
@@ -802,14 +796,14 @@ class SpeechCapture(private val context: Context) {
         SpeechRecognizer.ERROR_NETWORK_TIMEOUT,
         SpeechRecognizer.ERROR_SERVER,
         SpeechRecognizer.ERROR_SERVER_DISCONNECTED -> CaptureError(
-            message = "This phone's recogniser wanted to use the internet, so nothing was recorded.",
-            fix = "Download the offline pack for your language and it will work with no network at all. DailyVox will not transcribe over a network.",
+            message = context.getString(R.string.speech_error_network),
+            fix = context.getString(R.string.speech_error_network_fix),
             openLanguageSettings = true,
             offerDownload = true,
         )
         else -> CaptureError(
-            message = "The recogniser stopped unexpectedly.",
-            fix = "Tap to try again.",
+            message = context.getString(R.string.speech_error_other),
+            fix = context.getString(R.string.speech_error_other_fix),
         )
     }
 }
@@ -828,6 +822,7 @@ class SpeechCapture(private val context: Context) {
  * is the only way to tell that apart from inside the app.
  */
 internal fun languageUnavailable(
+    context: Context,
     want: String,
     installed: List<String>,
     supported: List<String>,
@@ -836,18 +831,19 @@ internal fun languageUnavailable(
 ): CaptureError {
     val name = LanguageTags.languageName(want, uiLocale)
     val has = installed.takeIf { it.isNotEmpty() }
-        ?.let { " This phone has: " + it.joinToString(", ") + "." }.orEmpty()
+        ?.let { context.getString(R.string.speech_installed_packs, it.joinToString(", ")) }.orEmpty()
     val downloadable = supported.isEmpty() || supported.any { LanguageTags.sameLanguage(it, want) }
     return if (downloadable) CaptureError(
-        message = "$name needs a one-time download from ${provider ?: "your phone's speech service"}. " +
-            "After that, everything you say stays on this phone.",
-        fix = "DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.$has",
+        message = context.getString(
+            R.string.speak_lang_needs_download, name,
+            provider ?: context.getString(R.string.speak_lang_provider_fallback),
+        ),
+        fix = context.getString(R.string.speech_download_fix, has),
         openLanguageSettings = true,
         offerDownload = true,
     ) else CaptureError(
-        message = "Your phone can't transcribe $name on-device yet.",
-        fix = "DailyVox will not send it anywhere to make up for that. Pick another language under " +
-            "Settings \u203a Language you speak, or type tonight's entry.$has",
+        message = context.getString(R.string.speech_unavailable, name),
+        fix = context.getString(R.string.speech_unavailable_fix, has),
         openLanguageSettings = true,
         offerDownload = false,
     )

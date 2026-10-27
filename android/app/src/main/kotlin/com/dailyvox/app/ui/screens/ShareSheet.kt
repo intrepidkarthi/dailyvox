@@ -98,7 +98,7 @@ fun ShareSheet(
                 cards.forEach { c ->
                     val on = c == card
                     Text(
-                        Shareables.title(c), fontSize = 12.sp,
+                        androidx.compose.ui.res.stringResource(Shareables.titleRes(c)), fontSize = 12.sp,
                         fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
                         color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
                         modifier = Modifier
@@ -118,7 +118,7 @@ fun ShareSheet(
             Spacer(Modifier.height(14.dp))
             if (bitmap != null) {
                 Image(
-                    bitmap.asImageBitmap(), contentDescription = Shareables.title(card),
+                    bitmap.asImageBitmap(), contentDescription = androidx.compose.ui.res.stringResource(Shareables.titleRes(card)),
                     contentScale = ContentScale.Fit,
                     // The portrait card is sized by HEIGHT and lets width
                     // follow. Constraining width first and then applying a 9:16
@@ -146,7 +146,7 @@ fun ShareSheet(
             }
 
             Spacer(Modifier.height(10.dp))
-            Text(Shareables.caption(card), fontSize = 12.5.sp, lineHeight = 19.sp,
+            Text(androidx.compose.ui.res.stringResource(Shareables.captionRes(card)), fontSize = 12.5.sp, lineHeight = 19.sp,
                  color = scheme.onSurfaceVariant)
 
             // Only Year One can carry a name; My Sky has no words on it by

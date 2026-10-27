@@ -7,6 +7,9 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.lang.reflect.Method
 
 /**
@@ -19,7 +22,13 @@ import java.lang.reflect.Method
  * internal: the redaction rule is worth testing, but it is not worth changing
  * the shape of the class to test it.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], qualifiers = "en-rUS")
 class ShareablesTest {
+
+    // The card's words come from strings.xml since B-15; English must not move.
+    private val res get() = androidx.test.core.app.ApplicationProvider
+        .getApplicationContext<android.content.Context>().resources
 
     private val day = 86_400_000L
     private val base = 1_700_000_000_000L
@@ -43,7 +52,8 @@ class ShareablesTest {
         val m = call("mostSaidWord", List::class.java)
 
         val word = m.invoke(Shareables, entries) as String?
-        assertEquals("\"reservoir\"", word)
+        // Bare: the card adds the quotation marks (share_year_word_quoted).
+        assertEquals("reservoir", word)
     }
 
     @Test
@@ -191,14 +201,16 @@ class ShareablesTest {
         // headline reading "Forty-two nights." The headline must be derived
         // from the figure, so adding a milestone can never ship a card that
         // contradicts itself.
-        val m = call("milestoneHeadline", Int::class.javaPrimitiveType!!)
+        val m = call("milestoneHeadline", android.content.res.Resources::class.java, Int::class.javaPrimitiveType!!)
         Shareables.MILESTONES.forEach { n ->
-            val headline = m.invoke(Shareables, n) as String
+            val headline = m.invoke(Shareables, res, n) as String
             val spelled = mapOf(42 to "Forty-two", 100 to "One hundred", 365 to "A year")
             assertTrue("night $n headline was: $headline",
                        headline.startsWith(spelled.getValue(n)))
         }
-        assertEquals("7 nights.", m.invoke(Shareables, 7))
+        assertEquals("7 nights.", m.invoke(Shareables, res, 7))
+        assertEquals("One night.", m.invoke(Shareables, res, 1))
+        assertEquals("Forty-two nights.", m.invoke(Shareables, res, 42))
     }
 
     @Test
@@ -206,8 +218,8 @@ class ShareablesTest {
         // The sheet renders these unconditionally; a missing branch would be a
         // crash in the one flow that is meant to be shown off.
         Shareables.Card.entries.forEach { c ->
-            assertTrue(Shareables.title(c).isNotBlank())
-            assertTrue(Shareables.caption(c).isNotBlank())
+            assertTrue(res.getString(Shareables.titleRes(c)).isNotBlank())
+            assertTrue(res.getString(Shareables.captionRes(c)).isNotBlank())
         }
         assertEquals(6, Shareables.Card.entries.size)
     }

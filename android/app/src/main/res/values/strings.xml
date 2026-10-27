@@ -247,4 +247,485 @@
     <string name="speak_lang_checking">Asking this phone what it can hear…</string>
     <string name="speak_lang_dialog_title">Language you speak</string>
     <string name="speak_lang_cancel">Cancel</string>
+
+    <!-- ===================================================================
+         Onboarding (OnboardingScreen.kt). Four beats: the permission ledger,
+         the invite, the first spoken entry, the claim. Full-screen, one column
+         at most about 460dp wide; titles are large display type.
+         =================================================================== -->
+    <!-- Step counters, shown in CAPITALS in a small mono label above each beat's title. "01 / 04" stays as digits. About 30 characters. -->
+    <string name="onboarding_step_permission">01 / 04 · permission</string>
+    <string name="onboarding_step_voice">02 / 04 · your voice</string>
+    <string name="onboarding_step_first_star">03 / 04 · your first star</string>
+    <string name="onboarding_step_yours">04 / 04 · yours</string>
+    <!-- Beat 1 title, display type. The app's core promise. About 40 characters. -->
+    <string name="onboarding_ledger_title">Nothing you say leaves this phone.</string>
+    <!-- Beat 1 body under the title. "airplane mode" is the system setting's name in your language. About 140 characters. -->
+    <string name="onboarding_ledger_body">Transcription runs on your device. No account, no server, no analytics SDK. Prove it: switch on airplane mode and record your first entry.</string>
+    <!-- Beat 1 permission ledger: four rows, a name on the left and its state in small CAPITALS on the right. Names about 22 characters, states about 16. -->
+    <string name="onboarding_ledger_mic">Microphone</string>
+    <string name="onboarding_ledger_mic_state">required</string>
+    <string name="onboarding_ledger_speech">Speech recognition</string>
+    <string name="onboarding_ledger_speech_state">on device</string>
+    <!-- The permission this app does NOT request. The row is the claim a user can check in Android Settings. -->
+    <string name="onboarding_ledger_internet">Internet</string>
+    <string name="onboarding_ledger_internet_state">not requested</string>
+    <string name="onboarding_ledger_sent">Sent to DailyVox</string>
+    <string name="onboarding_ledger_sent_state">nothing, ever</string>
+    <!-- Beat 1 proof card, bold heading. About 30 characters. -->
+    <string name="onboarding_airplane_title">Try it in airplane mode</string>
+    <!-- Beat 1 proof card body. "offline speech pack" is the phone's downloadable recogniser for a language. About 180 characters. -->
+    <string name="onboarding_airplane_body">Turn the radios off and speak. The transcript, the mood, the star — all of it still happens, on the phone. If your phone needs its offline speech pack first, DailyVox will offer it.</string>
+    <!-- Full-width button. About 20 characters. -->
+    <string name="onboarding_continue">Continue</string>
+    <!-- Beat 2 title, centred display type, two lines (keep the line break). About 16 characters a line. -->
+    <string name="onboarding_invite_title">Your sky starts\nwith your voice</string>
+    <!-- Beat 2 body, centred. About 120 characters. -->
+    <string name="onboarding_invite_body">No forms, no sign-up. Just talk about your day, and watch your voice become the first star in a sky only you can see.</string>
+    <!-- Beat 2 button; tapping it asks for the microphone. About 20 characters. -->
+    <string name="onboarding_ready">I\'m ready</string>
+    <!-- Beat 3 title while waiting to record, centred display type, two lines (keep the line break). The same question as the first daily question. -->
+    <string name="onboarding_speak_title">How was your day,\nreally?</string>
+    <!-- Beat 3 title while the speech is turned into text. About 24 characters. -->
+    <string name="onboarding_speak_title_processing">Finding your words.</string>
+    <!-- Beat 3 title once the first entry is saved. About 24 characters. -->
+    <string name="onboarding_speak_title_born">A star is born.</string>
+    <!-- Beat 3 line under the title, before recording. Keep "Forty-two seconds" as the soft target it is ("is plenty"), never a limit. About 90 characters. -->
+    <string name="onboarding_speak_body_idle">Speak, don\'t type. Forty-two seconds is plenty — and it stays on this phone.</string>
+    <!-- Beat 3 line while recording. About 45 characters. -->
+    <string name="onboarding_speak_body_recording">Listening. Take as long as you like.</string>
+    <!-- Beat 3 line while transcribing. About 45 characters. -->
+    <string name="onboarding_speak_body_processing">On-device. Nothing left your phone.</string>
+    <!-- Beat 3 line once saved. About 45 characters. -->
+    <string name="onboarding_speak_body_born">Your voice, now a light in your sky.</string>
+    <!-- Beat 3, typing instead: grey hint text inside the empty text box. About 30 characters. -->
+    <string name="onboarding_typed_placeholder">How was your day, really?</string>
+    <!-- Beat 3, typing: small CAPITALS label under the text box. About 30 characters. -->
+    <string name="onboarding_typed_stored">stored only on this phone</string>
+    <!-- Beat 3, typing: full-width button that saves the typed entry. About 26 characters. -->
+    <string name="onboarding_typed_save">Save my first star</string>
+    <!-- Beat 3, typing: quiet text button back to recording. About 26 characters. -->
+    <string name="onboarding_typed_back">Back to speaking</string>
+    <!-- Beat 3 button when the microphone was refused once (asks again). About 32 characters. -->
+    <string name="onboarding_mic_allow">Allow the microphone</string>
+    <!-- Beat 3 button when the microphone was refused for good; it opens the app's page in Android Settings. About 32 characters. -->
+    <string name="onboarding_mic_settings">Allow the microphone in Settings</string>
+    <!-- Beat 3 quiet text button: type the first entry instead. About 28 characters. -->
+    <string name="onboarding_cant_talk">I can\'t talk right now</string>
+    <!-- Beat 3 quiet text button: skip the first entry (not the welcome). About 20 characters. -->
+    <string name="onboarding_skip">Skip for now</string>
+    <!-- Beat 3 full-width button that starts recording. About 20 characters. -->
+    <string name="onboarding_start_speaking">Start speaking</string>
+    <!-- Beat 3 button while recording: the elapsed time and the action. %1$d = minutes, %2$02d = seconds (two digits). Keep the two spaces each side of the dot. About 18 characters. -->
+    <string name="onboarding_done_timer">"%1$d:%2$02d  ·  Done"</string>
+    <!-- Beat 3, on a speech-recognition error card: secondary button that moves on without the first entry. About 22 characters. -->
+    <string name="onboarding_continue_anyway">Continue anyway</string>
+    <!-- Beat 4 title when no entry was made (skipped). Display type. About 24 characters. -->
+    <string name="onboarding_claim_title_empty">Your sky is ready.</string>
+    <!-- Beat 4 title after the first entry. Display type. About 24 characters. -->
+    <string name="onboarding_claim_title">That star is yours.</string>
+    <!-- Beat 4: the user's first entry quoted back, italic, up to five lines. %1$s = the transcript, word for word. Use your language's quotation marks. -->
+    <string name="onboarding_claim_quote">“%1$s”</string>
+    <!-- Beat 4 line when no entry was made. About 70 characters. -->
+    <string name="onboarding_claim_body_empty">Speak whenever you are ready. Nothing is required of you tonight.</string>
+    <!-- Beat 4 line after the first entry, two lines (keep the line break). About 40 characters a line. -->
+    <string name="onboarding_claim_body">It lives on your phone, nowhere else.\nSpeak again tomorrow, and your sky grows.</string>
+    <!-- Beat 4 reminder checkbox row, bold label. About 30 characters. -->
+    <string name="onboarding_remind_title">Remind me each evening</string>
+    <!-- Beat 4 reminder row, smaller line under the label. "9 pm" is the default reminder time. About 55 characters. -->
+    <string name="onboarding_remind_body">One nudge at 9 pm. Change it any time in Settings.</string>
+    <!-- Beat 4 full-width button that ends onboarding. About 20 characters. -->
+    <string name="onboarding_enter">Enter my sky</string>
+
+    <!-- ===================================================================
+         Settings (SettingsScreen.kt). A scrolling list of cards. Section
+         labels are small mono CAPITALS, written in capitals here (they are not
+         upper-cased in code). Phone width: about 300dp of text per card.
+         =================================================================== -->
+    <!-- Screen title, large bold, next to the back arrow. About 18 characters. -->
+    <string name="settings_title">Settings</string>
+    <!-- Data Shield card: the privacy ledger. Section label in CAPITALS. About 24 characters. -->
+    <string name="settings_shield_label">DATA SHIELD</string>
+    <!-- Data Shield row label; its value is settings_shield_network_value. About 26 characters. -->
+    <string name="settings_shield_network">Network calls made</string>
+    <!-- Data Shield value on the right, mono CAPITALS: zero network calls, ever. Keep the 0 as a digit. About 12 characters. -->
+    <string name="settings_shield_network_value">0 · EVER</string>
+    <!-- Data Shield row label; the value is "AES-256", not translated. About 26 characters. -->
+    <string name="settings_shield_encryption">Encryption at rest</string>
+    <!-- Data Shield row label with an on/off switch (fingerprint or face unlock). About 26 characters. -->
+    <string name="settings_shield_lock">Biometric lock</string>
+    <!-- Data Shield small print. "Android Settings › Apps › DailyVox" is the path in the system Settings app; use your language's names for Settings and Apps. About 170 characters. -->
+    <string name="settings_shield_permissions">The complete permission list: microphone, notifications, vibration, biometrics. No network permission of any kind — check it in Android Settings › Apps › DailyVox.</string>
+    <!-- Data Shield small gold button; makes the privacy receipt image. About 28 characters. -->
+    <string name="settings_shield_share">Share this as a receipt</string>
+    <!-- Theme card section label, CAPITALS. About 20 characters. -->
+    <string name="settings_theme_label">THEME</string>
+    <!-- Theme card: three equal-width chips in a row. About 10 characters each. "Sunset" follows the real sun: day colours by day, night colours after dark. -->
+    <string name="settings_theme_day">Day</string>
+    <string name="settings_theme_night">Night</string>
+    <string name="settings_theme_sunset">Sunset</string>
+    <!-- Reminder card section label, CAPITALS, beside a switch. "LOCAL ONLY": scheduled on the phone, no server. About 30 characters. -->
+    <string name="settings_reminder_label">DAILY REMINDER · LOCAL ONLY</string>
+    <!-- Reminder card: a preview of the notification's title, in quotation marks. Should match reminder_title. About 32 characters. -->
+    <string name="settings_reminder_preview">“Tonight’s star is waiting”</string>
+    <!-- Reminder card: the hour chip, English only. Other languages show the phone's own hour format instead, so these need no translation. %1$d = the hour, 1 to 11. -->
+    <string name="settings_hour_noon" translatable="false">noon</string>
+    <string name="settings_hour_pm" translatable="false">%1$dpm</string>
+    <string name="settings_hour_am" translatable="false">%1$dam</string>
+    <!-- Reminder card small print. About 70 characters. -->
+    <string name="settings_reminder_note">Skips once you’ve spoken · scheduled on-device, no push servers.</string>
+    <!-- Weekly goal card section label, CAPITALS, beside a switch. About 30 characters. -->
+    <string name="settings_goal_label">WEEKLY GOAL · OFF BY DEFAULT</string>
+    <!-- Weekly goal: label above a row of number chips (nights per week). About 40 characters. -->
+    <string name="settings_goal_prompt">Nights a week you want to show up</string>
+    <!-- Weekly goal row label with a switch: notify when the goal is met. About 30 characters. -->
+    <string name="settings_goal_notify">Tell me when I reach it</string>
+    <!-- Weekly goal small print. Never guilt about a missed night. About 100 characters. -->
+    <string name="settings_goal_note">Counts nights, not entries · once a week at most · never a reminder that you missed one.</string>
+    <!-- Backup card section label, CAPITALS. About 24 characters. -->
+    <string name="settings_backup_label">BACKUP &amp; EXPORT</string>
+    <!-- Backup card rows: an action, then a grey hint starting with "· " on the same line. Action about 20 characters, hint about 26; together they must fit one line. -->
+    <string name="settings_export_pdf">Export as PDF</string>
+    <string name="settings_export_pdf_hint">· printable, shareable</string>
+    <string name="settings_export_json">Export as JSON</string>
+    <string name="settings_export_json_hint">· readable, portable</string>
+    <string name="settings_export_markdown">Export as Markdown</string>
+    <!-- Obsidian and Bear are note-taking apps; keep the names. -->
+    <string name="settings_export_markdown_hint">· Obsidian, Bear, anything</string>
+    <string name="settings_export_csv">Export as CSV</string>
+    <string name="settings_export_csv_hint">· spreadsheets</string>
+    <string name="settings_export_encrypted">Encrypted backup</string>
+    <string name="settings_export_encrypted_hint">· opens on any phone</string>
+    <string name="settings_import">Import backup</string>
+    <string name="settings_import_hint">· adds, never replaces</string>
+    <!-- Research card section label, CAPITALS. About 20 characters. -->
+    <string name="settings_research_label">RESEARCH</string>
+    <!-- Research card row label; the value is the study participant's code. Also the label of the copied clipboard item. About 24 characters. -->
+    <string name="settings_participant_code">Participant code</string>
+    <!-- The participant code after it was copied, with a tick. %1$s = the code (letters and digits). Keep the two spaces before the tick. -->
+    <string name="settings_participant_code_copied">"%1$s  ✓"</string>
+    <!-- Research card row, same layout as the export rows. -->
+    <string name="settings_export_research">Export research data</string>
+    <string name="settings_export_research_hint">· labelled entries</string>
+    <!-- Research card small print. About 70 characters. -->
+    <string name="settings_research_note">Nothing leaves this phone unless you share the file yourself.</string>
+    <!-- Custom vocabulary card section label, CAPITALS: names the speech recogniser mishears. About 32 characters. -->
+    <string name="settings_words_label">WORDS WE KEEP GETTING WRONG</string>
+    <!-- Custom vocabulary: hint text in the empty text field. About 20 characters. -->
+    <string name="settings_words_placeholder">Add a name</string>
+    <!-- Custom vocabulary: small button beside the field. About 8 characters. -->
+    <string name="settings_words_add">Add</string>
+    <!-- Custom vocabulary: a saved word as a removable chip. %1$s = the word, as the user typed it. Keep the two spaces before the ×. -->
+    <string name="settings_words_chip">"%1$s  ×"</string>
+    <!-- Custom vocabulary small print. About 90 characters. -->
+    <string name="settings_words_note">These make the recogniser more likely to hear the word. A nudge, not a guarantee.</string>
+    <!-- Review row: title, then a smaller line. About 24 and 44 characters. -->
+    <string name="settings_review_title">Enjoying DailyVox?</string>
+    <string name="settings_review_body">A review helps more than you’d think.</string>
+    <!-- Review row: small gold button that opens the Play Store page. Keep the ✦. About 10 characters. -->
+    <string name="settings_review_rate">Rate ✦</string>
+    <!-- Footer, bottom left in small grey text. About 32 characters. -->
+    <string name="settings_footer_status">In development · open source</string>
+    <!-- Footer, bottom right: how many entries the journal holds. %1$d = the count.
+         English "one" deliberately keeps 1.2's text ("1 entries") for this round, where English must not change; fix in the English copy pass. -->
+    <plurals name="settings_footer_entries">
+        <item quantity="one">%1$d entries</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+
+    <!-- ===================================================================
+         Entry page (EntryDetailScreen.kt): one journal entry, its audio, the
+         transcript, and what the app derived from it. Phone width.
+         =================================================================== -->
+    <!-- The question the "Ask about this" button puts into Ask Twin. Shown in the question field and answered by the Twin. %1$s = a person's name from the entry, word for word; %2$s = the entry's date (month and day, already in the reader's language). Never assume the name is a person's gender. -->
+    <string name="entry_ask_seed_person">What do my entries say about %1$s, around %2$s?</string>
+    <!-- As entry_ask_seed_person, for an entry with no names. %1$s = the entry's date (month and day). -->
+    <string name="entry_ask_seed">What was going on for me around %1$s?</string>
+    <!-- Header line under the date, in small mono CAPITALS. %1$s = the time ("9:41 PM"); %2$s = the recording length ("1:42") or entry_header_typed; %3$s = the word count (entry_header_words) or entry_header_untranscribed. About 40 characters in all. -->
+    <string name="entry_header_meta">%1$s · %2$s · %3$s</string>
+    <!-- In the header, instead of a length: the entry was typed, not spoken. About 10 characters. -->
+    <string name="entry_header_typed">typed</string>
+    <!-- In the header, instead of a word count: no transcript yet, only audio. About 18 characters. -->
+    <string name="entry_header_untranscribed">not transcribed</string>
+    <!-- In the header: how many words the transcript has. %1$d = the count.
+         English "one" keeps 1.2's text ("1 words") for this round, where English must not change. -->
+    <plurals name="entry_header_words">
+        <item quantity="one">%1$d words</item>
+        <item quantity="other">%1$d words</item>
+    </plurals>
+    <!-- Overflow menu items (the three-dot button by the date). About 20 characters each. -->
+    <string name="entry_menu_read_aloud">Read aloud</string>
+    <string name="entry_menu_stop_reading">Stop reading</string>
+    <string name="entry_menu_delete">Delete</string>
+    <!-- TalkBack label of the three-dot button. -->
+    <string name="entry_menu_description">More actions</string>
+    <!-- Toast, when read-aloud has no voice for the entry's language. %1$s = the language's name ("Hindi"). "Android Settings › Text-to-speech" is the system path; use your language's names. About 120 characters. -->
+    <string name="entry_no_voice">This phone has no voice for %1$s yet. It can be added in Android Settings › Text-to-speech.</string>
+    <!-- Delete confirmation dialog: title, body, confirm and cancel buttons. Buttons about 14 characters. -->
+    <string name="entry_delete_title">Delete this entry?</string>
+    <string name="entry_delete_body">The words and the recording are removed from this phone. This cannot be undone.</string>
+    <string name="entry_delete_confirm">Delete</string>
+    <string name="entry_delete_keep">Keep it</string>
+    <!-- TalkBack description of a photo attached to the entry. -->
+    <string name="entry_photo_description">Photo attached to this entry</string>
+    <!-- Small mono CAPITALS label above the mood chips the user can pick. About 32 characters. -->
+    <string name="entry_feel_label">How did this actually feel?</string>
+    <!-- Small mono CAPITALS label above what the app derived from the entry. Keep the ✦. About 28 characters. -->
+    <string name="entry_filed_label">What your Twin filed ✦</string>
+    <!-- "What your Twin filed" rows: a label in mono CAPITALS on the left (about 14 characters), a value on the right (about 26). -->
+    <string name="entry_filed_mood">Mood</string>
+    <!-- Mood value. %1$s = the score with its sign ("+0.42"); %2$s = one of the entry_valence_* words. -->
+    <string name="entry_valence_value">%1$s · %2$s</string>
+    <string name="entry_valence_positive">positive</string>
+    <string name="entry_valence_calm_positive">calm-positive</string>
+    <string name="entry_valence_flat">flat</string>
+    <string name="entry_valence_negative">negative</string>
+    <string name="entry_filed_people">People</string>
+    <!-- Between names in the People row ("Priya, Sam"). Keep the trailing space if your language uses one. -->
+    <string name="entry_filed_people_separator">", "</string>
+    <string name="entry_filed_slept">Slept</string>
+    <!-- %1$.1f = hours of sleep, one decimal ("7.5"). -->
+    <string name="entry_filed_slept_value">%1$.1f hours</string>
+    <!-- Heart-rate variability; "HRV" is the usual abbreviation. -->
+    <string name="entry_filed_hrv">HRV</string>
+    <!-- %1$.0f = milliseconds, whole number. -->
+    <string name="entry_filed_hrv_value">%1$.0f ms this morning</string>
+    <string name="entry_filed_pulse">Resting pulse</string>
+    <!-- %1$.0f = beats per minute, whole number. -->
+    <string name="entry_filed_pulse_value">%1$.0f bpm</string>
+    <string name="entry_filed_steps">Steps</string>
+    <!-- %1$,d = today's step count, with thousands separators ("8,412"). -->
+    <string name="entry_filed_steps_value">%1$,d today</string>
+    <!-- Speaking pace. -->
+    <string name="entry_filed_pace">Pace</string>
+    <!-- %1$d = words per minute. -->
+    <string name="entry_filed_pace_value">%1$d wpm</string>
+    <string name="entry_filed_voice">Voice</string>
+    <!-- %1$.1f = words per second, one decimal. -->
+    <string name="entry_filed_voice_value">%1$.1f words/sec spoken</string>
+    <!-- Pitch of the voice. -->
+    <string name="entry_filed_tone">Tone</string>
+    <!-- %1$.0f = average pitch in hertz. -->
+    <string name="entry_filed_tone_value">%1$.0f Hz</string>
+    <!-- %1$.0f = average pitch in hertz; %2$.0f = how far the pitch ranged, in hertz. -->
+    <string name="entry_filed_tone_value_range">%1$.0f Hz · %2$.0f Hz range</string>
+    <string name="entry_filed_pauses">Pauses</string>
+    <!-- %1$.0f = percent of the recording that was silence ("%%" prints one percent sign). -->
+    <string name="entry_filed_pauses_value">%1$.0f%% quiet</string>
+    <!-- As entry_filed_pauses_value; %2$d = how many long pauses. -->
+    <string name="entry_filed_pauses_value_long">%1$.0f%% quiet · %2$d long</string>
+    <!-- Time of day the entry was made; the value is one of the entry_filed_when_* words. -->
+    <string name="entry_filed_when">When</string>
+    <string name="entry_filed_when_small_hours">the small hours</string>
+    <string name="entry_filed_when_morning">morning</string>
+    <string name="entry_filed_when_afternoon">afternoon</string>
+    <string name="entry_filed_when_evening">evening</string>
+    <string name="entry_filed_when_late_night">late night</string>
+    <!-- Action row: two equal buttons (about 12 and 18 characters; one line each), then a round share button. Keep the ✦ and the two spaces after it. -->
+    <string name="entry_action_edit">Edit</string>
+    <string name="entry_action_ask">"✦  Ask about this"</string>
+    <!-- TalkBack label of the round share button. -->
+    <string name="entry_action_share_description">Share this entry</string>
+    <!-- Transcript editor dialog: title and buttons. -->
+    <string name="entry_edit_title">Edit transcript</string>
+    <string name="entry_edit_save">Save</string>
+    <string name="entry_edit_cancel">Cancel</string>
+    <!-- TalkBack labels of the audio player's play/pause button. -->
+    <string name="entry_audio_play">Play</string>
+    <string name="entry_audio_pause">Pause</string>
+    <!-- Card shown when a recording has no transcript yet. Title first: the recording is safe. About 30 characters. -->
+    <string name="entry_untranscribed_title">Your recording is saved</string>
+    <!-- Untranscribed card body. Blames the phone's speech service, never the speaker. About 160 characters. -->
+    <string name="entry_untranscribed_body">This phone\'s speech service didn\'t turn it into words. The audio is here and can be played, and you can try again or write it out yourself.</string>
+    <!-- Untranscribed card body while transcribing the saved audio. About 60 characters. -->
+    <string name="entry_untranscribed_running">Reading the recording… this can take a moment.</string>
+    <!-- Beside a spinner while transcribing. About 20 characters. -->
+    <string name="entry_untranscribed_transcribing">Transcribing</string>
+    <!-- Untranscribed card button. About 28 characters. -->
+    <string name="entry_untranscribed_retry">Try transcribing again</string>
+    <!-- Untranscribed card body when the phone's recogniser cannot read files and listened to the microphone instead. About 170 characters. -->
+    <string name="entry_untranscribed_ignored_file">This phone\'s recogniser can\'t read a saved recording — it tried to listen live instead, so nothing was used. Writing it out is the way to keep these words.</string>
+    <!-- Untranscribed card body when no on-device model exists for the entry's language. %1$s = the language's name ("Hindi"). About 150 characters. -->
+    <string name="entry_no_model">Your phone can\'t transcribe %1$s on-device yet. Your recording is saved, and you can transcribe it later if a model becomes available.</string>
+
+    <!-- ===================================================================
+         Speech-recognition error card (SpeechCapture.kt, shown by
+         SpeechErrorCard on Speak and onboarding). Each error has a message
+         (one bold sentence, about 80 characters) and a fix (smaller text under
+         it, up to about 260 characters). The message never blames the
+         speaker; the fix points at where it can be fixed. DailyVox never
+         transcribes over a network, and no fix may suggest it.
+         "Settings › Apps" and similar are paths in the phone's own Settings
+         app: use the names Android shows in your language.
+         =================================================================== -->
+    <!-- Android 12 or older: no on-device recogniser exists. -->
+    <string name="speech_error_old_android">This version of Android has no on-device speech recogniser.</string>
+    <string name="speech_error_old_android_fix">DailyVox needs Android 13 or newer -- that is the version where offline recognition arrived. It will not transcribe over a network on any version.</string>
+    <!-- No offline speech pack for the language; a download button follows. -->
+    <string name="speech_error_no_pack">No offline speech pack is installed for your language yet.</string>
+    <string name="speech_error_no_pack_fix">Your phone\'s speech service can download it now. DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.</string>
+    <!-- The recogniser took the recording and never answered. -->
+    <string name="speech_error_silent">This phone\'s speech recogniser accepted the recording and never responded.</string>
+    <!-- "Speech Recognition & Synthesis" is the name of Google's speech app in the app list; keep it as the phone shows it. OEM = phone maker. -->
+    <string name="speech_error_silent_fix">Tap to try again. If it keeps happening, check that Android\'s speech service (Settings › Apps › Default apps › Digital assistant app, or Speech Recognition &amp; Synthesis in the app list) is enabled and not battery-restricted -- some OEM builds ship it disabled.</string>
+    <!-- The recogniser heard audio and returned no words. -->
+    <string name="speech_error_empty">The recogniser finished without returning any words.</string>
+    <string name="speech_error_empty_fix">Tap to try again. If it keeps happening, this phone\'s speech service is not transcribing — check that Speech Recognition &amp; Synthesis is enabled and not battery-restricted in Android Settings › Apps, and that an offline language is installed under System › Languages › Speech.</string>
+    <!-- The recogniser could not be opened at all. -->
+    <string name="speech_error_unreachable">This phone\'s on-device speech recogniser could not be started.</string>
+    <string name="speech_error_unreachable_fix">It is listed as available but will not open. Check that Speech Recognition &amp; Synthesis is installed and enabled in Settings › Apps.</string>
+    <!-- The microphone permission was revoked. The fix is a Settings path. -->
+    <string name="speech_error_permission">The microphone permission was turned off.</string>
+    <string name="speech_error_permission_fix">Android Settings › Apps › DailyVox › Permissions.</string>
+    <!-- Another app holds the microphone. -->
+    <string name="speech_error_busy">Something else is using the microphone.</string>
+    <string name="speech_error_busy_fix">Close any other recording or call, then try again.</string>
+    <!-- Silence: no speech was detected. -->
+    <string name="speech_error_nothing_heard">Nothing was heard.</string>
+    <string name="speech_error_nothing_heard_fix">Tap again and speak a little closer to the phone.</string>
+    <!-- The recogniser tried to go online, which this app never allows. Never suggest checking the connection. -->
+    <string name="speech_error_network">This phone\'s recogniser wanted to use the internet, so nothing was recorded.</string>
+    <string name="speech_error_network_fix">Download the offline pack for your language and it will work with no network at all. DailyVox will not transcribe over a network.</string>
+    <!-- Any other recogniser error. -->
+    <string name="speech_error_other">The recogniser stopped unexpectedly.</string>
+    <string name="speech_error_other_fix">Tap to try again.</string>
+    <!-- Appended to a fix: which speech packs the phone does have. Starts with a space, as a new sentence after the fix. %1$s = language tags, comma-separated ("en-US, hi-IN"). -->
+    <string name="speech_installed_packs">" This phone has: %1$s."</string>
+    <!-- Fix under speak_lang_needs_download. %1$s = speech_installed_packs, or nothing; it follows directly with no space. -->
+    <string name="speech_download_fix">DailyVox still has no internet permission and sends nothing -- the pack comes to your phone, your voice never leaves it.%1$s</string>
+    <!-- No on-device model exists for the language the user speaks. %1$s = the language's name ("Tamil"). About 60 characters. -->
+    <string name="speech_unavailable">Your phone can\'t transcribe %1$s on-device yet.</string>
+    <!-- Fix under speech_unavailable. "Settings › Language you speak" is DailyVox's own Settings card (speak_lang_dialog_title). %1$s = speech_installed_packs, or nothing; it follows directly with no space. -->
+    <string name="speech_unavailable_fix">DailyVox will not send it anywhere to make up for that. Pick another language under Settings › Language you speak, or type tonight\'s entry.%1$s</string>
+
+    <!-- ===================================================================
+         Share cards (Shareables.kt): square 1080px images drawn on the phone
+         and posted by the user, plus the share sheet's chips and captions.
+         Text on a card is drawn on one line and does NOT wrap: keep each
+         line within its budget or it runs off the card. Lines in CAPITALS
+         are written in capitals here and drawn as they are.
+         =================================================================== -->
+    <!-- Share sheet chips: the six card names. About 14 characters. -->
+    <string name="share_title_my_sky">My Sky</string>
+    <string name="share_title_receipt">Receipt</string>
+    <string name="share_title_year_one">Year One</string>
+    <string name="share_title_milestone">Milestone</string>
+    <string name="share_title_wallpaper">Wallpaper</string>
+    <string name="share_title_gift">Gift a star</string>
+    <!-- Share sheet: the line under each card's preview, saying why someone would post it. About 130 characters. -->
+    <string name="share_caption_my_sky">Stars, no words. The sky is the only journal artifact that is beautiful and private at the same time.</string>
+    <string name="share_caption_receipt">Everything costs zero, itemised. It argues better than a feature list.</string>
+    <string name="share_caption_year_one">Your year, computed by this phone alone.</string>
+    <!-- The milestone card exists only at nights 42, 100 and 365; keep the numbers. -->
+    <string name="share_caption_milestone">Minted once, at nights 42, 100 and 365. You cannot buy it or rush it — you can only have spoken that many times.</string>
+    <string name="share_caption_wallpaper">Your constellation, sized for a lock screen. The one surface you look at forty times a day, and nobody else can read it.</string>
+    <string name="share_caption_gift">A referral card with no tracking link, because there is nothing here that could carry one.</string>
+    <!-- Title of the system "open with" chooser when setting the wallpaper card. -->
+    <string name="share_set_wallpaper">Set as wallpaper</string>
+
+    <!-- My Sky card, top left, mono CAPITALS. %1$d = nights with an entry. About 26 characters. -->
+    <string name="share_sky_label">MY SKY · NIGHT %1$d</string>
+    <!-- My Sky card, top right, only when the phone really is in airplane mode. About 18 characters. -->
+    <string name="share_sky_airplane">ON AIRPLANE MODE</string>
+    <!-- My Sky card headline, large type, first line. %1$d = the number of entries (stars). About 18 characters.
+         English "one" keeps 1.2's text for this round, where English must not change. -->
+    <plurals name="share_sky_stars">
+        <item quantity="one">%1$d stars.</item>
+        <item quantity="other">%1$d stars.</item>
+    </plurals>
+    <!-- My Sky card headline, second line. About 18 characters. -->
+    <string name="share_sky_zero_uploads">Zero uploads.</string>
+    <!-- My Sky card, under the headline, written as the poster ("my"). About 46 characters. -->
+    <string name="share_sky_body">Every one made from my voice, on my phone.</string>
+    <!-- My Sky footer, bottom right, small mono CAPITALS. Keep GETDAILYVOX.COM. About 40 characters. -->
+    <string name="share_sky_footer">A SKY MADE OF YOU · GETDAILYVOX.COM</string>
+
+    <!-- Privacy receipt card, under the DAILYVOX header, centred mono CAPITALS. %1$s = today's date, already in the reader's language and in capitals. About 40 characters. -->
+    <string name="share_receipt_subtitle">PRIVACY RECEIPT · %1$s</string>
+    <!-- Privacy receipt rows: a label in mono CAPITALS on the left, a number on the right. Labels about 18 characters. -->
+    <string name="share_receipt_entries">ENTRIES SPOKEN</string>
+    <string name="share_receipt_words">WORDS KEPT</string>
+    <string name="share_receipt_streak">NIGHTS IN A ROW</string>
+    <string name="share_receipt_network">NETWORK CALLS</string>
+    <string name="share_receipt_bytes">BYTES UPLOADED</string>
+    <string name="share_receipt_ads">ADS SHOWN</string>
+    <string name="share_receipt_accounts">ACCOUNTS CREATED</string>
+    <string name="share_receipt_subscription">SUBSCRIPTION</string>
+    <!-- The value of the SUBSCRIPTION row: costs nothing. About 8 characters. -->
+    <string name="share_receipt_free">FREE</string>
+    <!-- Privacy receipt, gold line beside a star. About 24 characters. -->
+    <string name="share_receipt_stayed_home">YOUR DATA STAYED HOME</string>
+    <!-- Privacy receipt, centred thank-you line. About 36 characters. -->
+    <string name="share_receipt_thanks">THANK YOU FOR TALKING TO YOURSELF</string>
+    <!-- Privacy receipt, last centred line. Keep GETDAILYVOX.COM. About 32 characters. -->
+    <string name="share_receipt_footer">GETDAILYVOX.COM · OPEN SOURCE</string>
+
+    <!-- Year One card, top left, mono CAPITALS. About 24 characters. -->
+    <string name="share_year_label">YOUR SKY · YEAR ONE</string>
+    <!-- Year One headline, large type. %1$d = nights with an entry. About 16 characters. -->
+    <plurals name="share_year_nights">
+        <item quantity="one">%1$d nights.</item>
+        <item quantity="other">%1$d nights.</item>
+    </plurals>
+    <!-- Year One headline, second line. About 16 characters. -->
+    <string name="share_year_one_sky">One sky.</string>
+    <!-- Year One rows: a label on the left (about 16 characters), a value on the right (about 24). -->
+    <string name="share_year_brightest">Brightest star</string>
+    <!-- Brightest star value when nobody is named yet. -->
+    <string name="share_year_brightest_none">not yet</string>
+    <!-- Brightest star value with the name hidden (the default). %1$d = nights that person was mentioned. -->
+    <plurals name="share_year_brightest_redacted">
+        <item quantity="one">someone · %1$d nights</item>
+        <item quantity="other">someone · %1$d nights</item>
+    </plurals>
+    <!-- Brightest star value with the name shown. %1$s = the name, word for word; %2$d = nights mentioned. -->
+    <plurals name="share_year_brightest_named">
+        <item quantity="one">%1$s · %2$d nights</item>
+        <item quantity="other">%1$s · %2$d nights</item>
+    </plurals>
+    <!-- Value is a month's name. -->
+    <string name="share_year_warmest">Warmest month</string>
+    <!-- Value is a word the user says often, quoted by share_year_word_quoted. -->
+    <string name="share_year_word">Most-said word</string>
+    <!-- %1$s = the word, as said. Use your language's quotation marks. -->
+    <string name="share_year_word_quoted">"\"%1$s\""</string>
+    <string name="share_year_computed">Computed by</string>
+    <string name="share_year_computed_value">this phone only</string>
+    <!-- Year One footer, small mono CAPITALS. Keep the 0. About 30 characters. -->
+    <string name="share_year_footer">YEAR ONE · 0 NETWORK CALLS</string>
+
+    <!-- Milestone card, under the big number on the seal, mono CAPITALS. The number is drawn separately above. About 16 characters. -->
+    <plurals name="share_milestone_spoken">
+        <item quantity="one">NIGHT SPOKEN</item>
+        <item quantity="other">NIGHTS SPOKEN</item>
+    </plurals>
+    <!-- Milestone headlines, large centred type, one per milestone. Spelled out, never digits. About 26 characters. -->
+    <string name="share_milestone_365">A year of showing up.</string>
+    <string name="share_milestone_100">One hundred nights.</string>
+    <string name="share_milestone_42">Forty-two nights.</string>
+    <string name="share_milestone_1">One night.</string>
+    <!-- Milestone headline for any other night count. %1$d = the count. -->
+    <plurals name="share_milestone_nights">
+        <item quantity="one">%1$d nights.</item>
+        <item quantity="other">%1$d nights.</item>
+    </plurals>
+    <!-- Milestone card line under the headline, written as the poster. About 44 characters. -->
+    <string name="share_milestone_body">Nobody sold me this. I just kept talking.</string>
+    <!-- Milestone footer, small mono CAPITALS. Keep GETDAILYVOX.COM. About 40 characters. -->
+    <string name="share_milestone_footer">MINTED ON THIS PHONE · GETDAILYVOX.COM</string>
+
+    <!-- Gift card headline, large centred type, written as the poster. %1$d = entries kept. About 22 characters. -->
+    <plurals name="share_gift_kept">
+        <item quantity="one">I kept %1$d stars.</item>
+        <item quantity="other">I kept %1$d stars.</item>
+    </plurals>
+    <!-- Gift card headline, second line, addressed to the reader. About 18 characters. -->
+    <string name="share_gift_start">Start yours.</string>
+    <!-- Gift card body, two centred lines. Keep "Forty-two seconds" spelled out. About 46 characters each. -->
+    <string name="share_gift_body_1">Forty-two seconds a night, spoken not typed.</string>
+    <string name="share_gift_body_2">Free, open source, and it never goes online.</string>
+    <!-- Gift card, small centred mono CAPITALS. About 40 characters. -->
+    <string name="share_gift_note">NO TRACKING LINK · NOTHING TO ATTRIBUTE</string>
+    <!-- Gift card footer, small mono CAPITALS. About 24 characters. -->
+    <string name="share_gift_footer">A SKY MADE OF YOU</string>
 </resources>

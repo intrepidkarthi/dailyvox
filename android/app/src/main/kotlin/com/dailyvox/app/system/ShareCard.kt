@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import com.dailyvox.app.data.Entry
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -74,7 +73,8 @@ object ShareCard {
         }
 
         c.drawText(
-            SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(Date(entry.createdAt)),
+            // The reader's date order (B-13); English is 1.2's "d MMMM yyyy".
+            LocaleFormat.dateFormat("d MMMM yyyy", "dMMMMyyyy").format(Date(entry.createdAt)),
             W / 2f, H - 150f, meta,
         )
         meta.color = Color.parseColor("#E0B15C")

@@ -12,13 +12,21 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * B-8: the speaking-language picker and the tag matching under it. The rule is
  * the plan's: the language the user speaks, or nothing -- never a pack in
  * another language, and never a pack in another SCRIPT.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], qualifiers = "en-rUS")
 class SpeakingLanguageTest {
+
+    // The error copy now comes from strings.xml (B-15); the English must not move.
+    private val ctx get() = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
 
     private val zhCN = Locale.forLanguageTag("zh-CN")
 
@@ -101,7 +109,7 @@ class SpeakingLanguageTest {
 
     @Test
     fun `downloadable language gets the download copy`() {
-        val e = languageUnavailable("hi-IN", listOf("en-US"), listOf("hi-IN", "en-US"), "Google", Locale.US)
+        val e = languageUnavailable(ctx, "hi-IN", listOf("en-US"), listOf("hi-IN", "en-US"), "Google", Locale.US)
         assertEquals("Hindi needs a one-time download from Google. After that, everything you say stays on this phone.", e.message)
         assertTrue(e.offerDownload)
         assertTrue(e.fix.contains("en-US"))
@@ -109,14 +117,14 @@ class SpeakingLanguageTest {
 
     @Test
     fun `undownloadable language says so and offers no download`() {
-        val e = languageUnavailable("ta-IN", listOf("en-US"), listOf("en-US", "hi-IN"), null, Locale.US)
+        val e = languageUnavailable(ctx, "ta-IN", listOf("en-US"), listOf("en-US", "hi-IN"), null, Locale.US)
         assertEquals("Your phone can't transcribe Tamil on-device yet.", e.message)
         assertFalse(e.offerDownload)
     }
 
     @Test
     fun `unknown support list keeps 1_2's offer to download`() {
-        val e = languageUnavailable("en-US", emptyList(), emptyList(), null, Locale.US)
+        val e = languageUnavailable(ctx, "en-US", emptyList(), emptyList(), null, Locale.US)
         assertTrue(e.offerDownload)
         assertTrue(e.message.startsWith("English needs a one-time download from your phone's speech service."))
     }

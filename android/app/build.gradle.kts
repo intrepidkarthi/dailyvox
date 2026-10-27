@@ -108,6 +108,14 @@ android {
     }
     kotlin { jvmToolchain(21) }
     buildFeatures { compose = true; buildConfig = true }
+    // Per-app language (plan B-15): AGP writes the locale_config Android 13+
+    // reads for Settings › Apps › DailyVox › Language, from the values-*
+    // folders that exist. res/resources.properties names the language of the
+    // unqualified values/ folder (en-US). Adding a translation is then just a
+    // new values-xx folder; the list cannot drift from what actually ships.
+    androidResources { generateLocaleConfig = true }
+    // Robolectric tests read strings.xml (B-15 pins the English copy).
+    testOptions { unitTests.isIncludeAndroidResources = true }
     ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 }
 
