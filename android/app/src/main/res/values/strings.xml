@@ -1,111 +1,161 @@
 <resources>
+    <!-- The app's name, under the launcher icon and on the Quick Settings tile. A brand name: keep it in Latin letters unless the reviewer objects. -->
     <string name="app_name">DailyVox</string>
+    <!-- The widget picker's description of the home-screen widget. About 80 characters. -->
     <string name="widget_description">Tonight&#8217;s star, and the last seven nights. Never shows what you wrote.</string>
+    <!-- Launcher long-press shortcut: starts a recording. Short label about 10 characters, long label about 25. -->
     <string name="shortcut_speak_short">Speak</string>
     <string name="shortcut_speak_long">Record tonight\'s entry</string>
+    <!-- Launcher shortcut: opens the Journal. Short label about 10 characters, long label about 25. -->
     <string name="shortcut_journal_short">Journal</string>
     <string name="shortcut_journal_long">Open my journal</string>
+    <!-- Launcher shortcut: opens Ask. "Twin" is the app's name for the on-device model of the user. Short label about 10 characters, long label about 25. -->
     <string name="shortcut_ask_short">Ask Twin</string>
     <string name="shortcut_ask_long">Ask your Twin about your journal</string>
 
     <!-- The daily reminder. No streak guilt, and the welcome-back never says
          how long it has been. -->
+    <!-- Evening reminder notification title. About 30 characters. -->
     <string name="reminder_title">Tonight\'s star is waiting</string>
+    <!-- Evening reminder notification text. "Forty-two seconds" is the soft target, spelled out, never a limit. About 50 characters. -->
     <string name="reminder_text">Whenever you\'re ready. Forty-two seconds.</string>
+    <!-- Reminder title after the user has been away. About 30 characters. -->
     <string name="reminder_welcome_back_title">Your sky kept your place</string>
+    <!-- Reminder text after the user has been away. Never says how long. About 70 characters. -->
     <string name="reminder_welcome_back_text">No catching up to do. One sentence is plenty, whenever you\'re ready.</string>
 
     <!-- The reflection card on Speak, after an entry is saved. Every line is
          built from the entry itself; a line with nothing under it is not shown. -->
+    <!-- Reflection card heading, gold, after a star glyph. About 24 characters. -->
     <string name="reflection_label">Filed to your sky</string>
+    <!-- Reflection card meta line, mono CAPITALS (upper-cased in code). %d = words in the entry. -->
     <plurals name="reflection_words">
         <item quantity="one">%d word</item>
         <item quantity="other">%d words</item>
     </plurals>
+    <!-- Reflection card meta line, in place of the recording length, for a typed entry. About 10 characters. -->
     <string name="reflection_typed">typed</string>
+    <!-- Reflection card line for a recording with no transcript yet. About 50 characters. -->
     <string name="reflection_wordless">Your voice is saved. The words can come later.</string>
+    <!-- Reflection card: how the entry's words read overall, from its mood score. About 50 characters each. -->
     <string name="reflection_tone_light">Your words lean light.</string>
     <string name="reflection_tone_even">Your words sit fairly even.</string>
     <string name="reflection_tone_heavy">Your words carry some weight. That is allowed here.</string>
+    <!-- Reflection card: the entry against the few before it. About 45 characters each. -->
     <string name="reflection_drift_lighter">Lighter than your last few entries.</string>
     <string name="reflection_drift_heavier">Heavier than your last few entries.</string>
     <string name="reflection_drift_similar">Close to how your last few entries read.</string>
+    <!-- Reflection card: a name from the entry. %1$s = the name, word for word. Pronoun-free. About 30 characters. -->
     <string name="reflection_person">%1$s is in this one.</string>
+    <!-- Reflection card: a name, and how many other recent entries name it. %1$s = the name; %2$d = other entries in the last 30 days (1 or more). About 80 characters. -->
     <plurals name="reflection_person_earlier">
         <item quantity="one">%1$s is in this one, and in %2$d other entry in the last 30 days.</item>
         <item quantity="other">%1$s is in this one, and in %2$d other entries in the last 30 days.</item>
     </plurals>
+    <!-- Reflection card label above a sentence about tomorrow, quoted from the entry. About 30 characters. -->
     <string name="reflection_tomorrow_label">For tomorrow, in your words</string>
+    <!-- That sentence, in quotation marks. %1$s = the user's own words. Use your language's quotation marks. -->
     <string name="reflection_tomorrow_quote">“%1$s”</string>
+    <!-- Reflection card close button. About 10 characters. -->
     <string name="reflection_done">Done</string>
+    <!-- TalkBack: what the close button does. About 30 characters. -->
     <string name="reflection_done_description">Close the reflection</string>
+    <!-- Reflection card small print at the bottom. About 70 characters. -->
     <string name="reflection_how_read">Read on this phone from your words. Nothing was sent anywhere.</string>
 
     <!-- The suggested mood. Always called a suggestion until the user taps it:
          the app read the words, it did not ask how they felt. -->
+    <!-- Reflection card mood section heading: before the user has picked (heading_suggested) or after (heading_mine). About 20 characters each. -->
     <string name="reflection_mood_heading_suggested">Suggested mood</string>
     <string name="reflection_mood_heading_mine">Your mood</string>
+    <!-- Mood section line for a suggestion. %1$s = the mood word (mood_joy etc.), capitalised, opening the sentence. About 80 characters. -->
     <string name="reflection_mood_suggested_body">%1$s, going by how your words read. Tap it to keep it, or pick another.</string>
+    <!-- TalkBack, read with the card: the suggested mood. %1$s = the mood word. About 70 characters. -->
     <string name="reflection_mood_suggested_line">Suggested mood: %1$s. Only a suggestion, from your words.</string>
+    <!-- Mood section line for the user's own choice. %1$s = the mood word. About 30 characters. -->
     <string name="reflection_mood_chosen_body">%1$s. Your choice.</string>
+    <!-- Mood section line with no mood. About 30 characters. -->
     <string name="reflection_mood_none">None. Pick one if you like.</string>
+    <!-- Small text button that removes the mood. About 10 characters. -->
     <string name="reflection_mood_clear">Clear</string>
+    <!-- TalkBack: what the Clear button does, for a suggested mood and for a chosen one. About 30 characters each. -->
     <string name="reflection_mood_clear_suggested_description">Clear the suggested mood</string>
     <string name="reflection_mood_clear_description">Clear your mood</string>
 
     <!-- The mood picker's chips, on the entry page and the reflection card. -->
+    <!-- A mood chip the app suggested (italic, outlined). %1$s = the mood word. About 22 characters. -->
     <string name="mood_chip_suggested">%1$s · suggested</string>
     <!-- TalkBack: state is read after the word, the action after "Double-tap to". -->
+    <!-- TalkBack state read after a mood chip's word: suggested, or the user's own. About 40 characters each. -->
     <string name="mood_chip_state_suggested">Suggested from your words, not chosen</string>
     <string name="mood_chip_state_chosen">Your mood</string>
+    <!-- TalkBack action, read after "Double-tap to": lower case, an action phrase. About 18 characters each. -->
     <string name="mood_chip_action_choose">choose</string>
     <string name="mood_chip_action_keep">keep this mood</string>
     <string name="mood_chip_action_clear">clear</string>
 
     <!-- Onboarding, under the first entry. The entry is saved a moment later
          with this same suggestion, and the card that follows lets it change. -->
+    <!-- Onboarding, under the first entry. %1$s = the mood word. About 80 characters. -->
     <string name="onboarding_suggested_mood">Reads like %1$s. Only a suggestion: you can change it in a moment.</string>
     <!-- Your past, brought back. Every quote is the entry's own words, cut
          only at a sentence or word; nothing here is paraphrased. -->
+    <!-- Card label above a quote from a week ago, gold. About 30 characters. -->
     <string name="past_week_ago">A week ago you said</string>
+    <!-- Card label above a quote from some days ago. %1$d = days. About 30 characters. -->
     <plurals name="past_days_ago">
         <item quantity="one">A day ago you said</item>
         <item quantity="other">%1$d days ago you said</item>
     </plurals>
+    <!-- Card label above a quote from this date some months ago. %1$d = months. About 34 characters. -->
     <plurals name="past_months_ago">
         <item quantity="one">On this day, a month ago</item>
         <item quantity="other">On this day, %1$d months ago</item>
     </plurals>
+    <!-- Card label above a quote from this date some years ago. %1$d = years. About 34 characters. -->
     <plurals name="past_years_ago">
         <item quantity="one">On this day, a year ago</item>
         <item quantity="other">On this day, %1$d years ago</item>
     </plurals>
+    <!-- The quote from the past entry. %1$s = the user's own words, cut only at a sentence or word. Use your language's quotation marks. -->
     <string name="past_quote">“%1$s”</string>
     <!-- TalkBack: the label, the quote, then what a tap does. -->
+    <!-- TalkBack for a past-quote card. %1$s = the card's label; %2$s = the quote. -->
     <string name="past_card_description">%1$s: %2$s. Opens the entry.</string>
 
+    <!-- Weekly recap card heading, gold, after a star glyph. About 20 characters. -->
     <string name="recap_label">Your week</string>
+    <!-- Weekly recap date range, mono. %1$s = first day; %2$s = last day, both medium-length dates in the phone's format. -->
     <string name="recap_range">%1$s – %2$s</string>
+    <!-- Weekly recap counts line, joined with recap_days by a space ("5 entries on 3 days"). %1$d = entries that week. -->
     <plurals name="recap_entries">
         <item quantity="one">%1$d entry</item>
         <item quantity="other">%1$d entries</item>
     </plurals>
+    <!-- Second half of the counts line. %1$d = days spoken that week. -->
     <plurals name="recap_days">
         <item quantity="one">on %1$d day</item>
         <item quantity="other">on %1$d days</item>
     </plurals>
+    <!-- Weekly recap: the most-named person. %1$s = the name, word for word; %2$d = entries naming them. Pronoun-free. -->
     <plurals name="recap_name">
         <item quantity="one">%1$s came up in %2$d entry.</item>
         <item quantity="other">%1$s came up in %2$d entries.</item>
     </plurals>
+    <!-- Weekly recap label above one line quoted from the week. About 30 characters. -->
     <string name="recap_line_label">One line from the week</string>
+    <!-- TalkBack for that line. %1$s = the quoted line. -->
     <string name="recap_line_description">One line from the week: %1$s. Opens the entry.</string>
+    <!-- Weekly recap small print. About 50 characters. -->
     <string name="recap_how_counted">Counted from your entries on this phone.</string>
 
     <!-- The reminder, when the user has opted in to a quote. Off by default:
          a notification can be read on a locked phone. -->
+    <!-- Reminder text when the user opted in to a quote. %1$s = what they said a week ago, cut at a word. Use your language's quotation marks. About 90 characters with the quote. -->
     <string name="reminder_past_text">A week ago you said: “%1$s”</string>
+    <!-- Settings, reminder card: switch label. About 50 characters. -->
     <string name="settings_reminder_quote">Include a line from your past in reminders</string>
+    <!-- Settings, small print under that switch. About 150 characters. -->
     <string name="settings_reminder_quote_note">Off by default. When on, tonight\'s reminder can quote what you said a week ago, and anyone who can see your lock screen can read it.</string>
 
     <!-- The question of the day, above the record button. One a day, picked
@@ -151,99 +201,145 @@
     <!-- A name the user said, given back. The name is theirs, word for word;
          nothing here knows whether it is a person or a place, so no he, she or
          they, and the follow-up fits either. -->
+    <!-- Question of the day built from a name the user said. %1$s = the name, word for word. Pronoun-free: it may be a person or a place. About 60 characters each. -->
     <string name="daily_question_grounded_yesterday">Yesterday you mentioned %1$s. How are things?</string>
     <string name="daily_question_grounded_days">A few days ago you mentioned %1$s. How are things?</string>
     <string name="daily_question_grounded_week">Last week you mentioned %1$s. How are things?</string>
+    <!-- Small button under the question: shows a different question. About 20 characters. -->
     <string name="daily_question_another">Another question</string>
     <!-- TalkBack: read after the question, as what a double-tap does. -->
+    <!-- TalkBack action, read after "Double-tap to". Lower case. About 24 characters. -->
     <string name="daily_question_another_action">ask another question</string>
+    <!-- Settings, research card: switch label. About 24 characters. -->
     <string name="settings_pilot">Research pilot</string>
+    <!-- Settings, small print under the pilot switch. About 130 characters. -->
     <string name="settings_pilot_note">For study participants. Every third day, the question is a plain one: just log your day. Nothing is sent anywhere.</string>
     <!-- The streak (Streak.kt). Counts days spoken, never days missed. A
          returning user is welcomed back with what they kept, never reset to
          the new-user state, and never told how long they were away. -->
+    <!-- Speak screen top right, and the Insights streak card, before any entry. Lower case. About 18 characters. -->
     <string name="streak_none_yet">no streak yet</string>
+    <!-- Speak screen top right, bold. %1$d = days in a row. About 18 characters. -->
     <plurals name="streak_header">
         <item quantity="one">%1$d-day streak</item>
         <item quantity="other">%1$d-day streak</item>
     </plurals>
+    <!-- Speak screen top right after time away, in place of the streak. About 18 characters. -->
     <string name="streak_header_welcome_back">Welcome back</string>
+    <!-- Insights streak card headline after time away. About 40 characters. -->
     <string name="streak_welcome_back">Welcome back. Your sky kept your place.</string>
+    <!-- Insights streak card, beside the big number (the number is drawn separately). About 24 characters. -->
     <plurals name="streak_days_in_a_row">
         <item quantity="one">day in a row</item>
         <item quantity="other">days in a row</item>
     </plurals>
+    <!-- The same, when this run is the longest yet. About 34 characters. -->
     <plurals name="streak_days_in_a_row_longest">
         <item quantity="one">day in a row — your longest</item>
         <item quantity="other">days in a row — your longest</item>
     </plurals>
+    <!-- Insights streak card: four small mono labels in CAPITALS (upper-cased in code). %1$d = the count. About 16 characters each. -->
     <string name="streak_longest">longest %1$d</string>
     <string name="streak_days_spoken">days spoken %1$d</string>
     <string name="streak_this_month">this month %1$d</string>
     <string name="streak_total">total %1$d</string>
+    <!-- Insights streak card small print: how the streak forgives a quiet day. About 80 characters. -->
     <string name="streak_grace_rule">One quiet day won\'t break a run. Once a week, it\'s kept for you.</string>
     <!-- TalkBack, the whole streak card in one reading. -->
+    <!-- TalkBack: the whole streak card. %1$d = days in a row; %2$d = longest run; %3$d = days spoken in all. -->
     <plurals name="streak_description_active">
         <item quantity="one">%1$d day in a row. Longest run %2$d. %3$d days spoken in all.</item>
         <item quantity="other">%1$d days in a row. Longest run %2$d. %3$d days spoken in all.</item>
     </plurals>
+    <!-- TalkBack: the streak card after time away. %1$d = longest run; %2$d = days spoken in all. -->
     <string name="streak_description_returning">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</string>
+    <!-- TalkBack: the streak card before any entry. -->
     <string name="streak_description_new">No streak yet. Your first entry starts one.</string>
     <!-- The wide widget's day line. -->
+    <!-- Wide widget's main line. %1$d = the streak day. About 30 characters each. -->
     <string name="widget_day_spoken">Day %1$d · spoken</string>
     <string name="widget_day_next">Day %1$d · speak tonight</string>
+    <!-- Wide widget's main line for a new user (also its first draw). About 30 characters. -->
     <string name="widget_speak_tonight">Speak tonight</string>
+    <!-- Wide widget's main line after time away. About 30 characters. -->
     <string name="widget_welcome_back">Welcome back · speak tonight</string>
 
     <!-- Early signals (EarlySignals.kt), from the third entry until patterns
          take over. Counts only: nothing here is a claim about the person. -->
+    <!-- Early signals card heading. %1$d = entries it is counted from (3 or more). About 34 characters. -->
     <plurals name="early_heading">
         <item quantity="one">Early signals · from %1$d entry</item>
         <item quantity="other">Early signals · from %1$d entries</item>
     </plurals>
+    <!-- Early signals card line under the heading. About 50 characters. -->
     <string name="early_firm_up">These will firm up as you keep going.</string>
+    <!-- Parts of the day, slotted into early_time_of_day as %1$s. Lower case, mid-sentence. About 20 characters each. -->
     <string name="early_part_small_hours">in the small hours</string>
     <string name="early_part_morning">in the morning</string>
     <string name="early_part_afternoon">in the afternoon</string>
     <string name="early_part_evening">in the evening</string>
     <string name="early_part_late_night">late at night</string>
+    <!-- %1$s = a part of the day (early_part_*); %2$d = entries made then; %3$d = entries in all. About 60 characters. -->
     <string name="early_time_of_day">You usually speak %1$s: %2$d of %3$d entries.</string>
+    <!-- %1$d = average words per entry. About 50 characters. -->
     <plurals name="early_length_average">
         <item quantity="one">About %1$d word an entry, on average.</item>
         <item quantity="other">About %1$d words an entry, on average.</item>
     </plurals>
+    <!-- First entry against the latest. %1$d = words in the latest; %2$d = words in the first. About 80 characters each. -->
     <string name="early_length_longer_one">Your latest entry ran longer than your first: %1$d words against %2$d.</string>
     <string name="early_length_shorter_one">Your latest entry ran shorter than your first: %1$d words against %2$d.</string>
+    <!-- The first few entries against the latest few. %1$d = average words, latest; %2$d = average words, first; %3$d = how many entries each side. About 90 characters each. -->
     <string name="early_length_longer_many">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</string>
     <string name="early_length_shorter_many">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</string>
+    <!-- About 50 characters. -->
     <string name="early_length_steady">About the same length as when you started.</string>
+    <!-- A word the user keeps saying. %1$s = the word, as said; %2$d = entries it is in. Use your language's quotation marks. -->
     <plurals name="early_recurring">
         <item quantity="one">“%1$s” is in %2$d of your entries.</item>
         <item quantity="other">“%1$s” is in %2$d of your entries.</item>
     </plurals>
+    <!-- One mood and its count, in a comma-separated list. %1$s = the mood word; %2$d = entries. -->
     <string name="early_mood_count">%1$s (%2$d)</string>
+    <!-- %1$s = the list of early_mood_count items. About 70 characters with the list. -->
     <string name="early_moods_chosen">Moods you picked: %1$s.</string>
+    <!-- %1$s = the list of early_mood_count items. About 90 characters with the list. -->
     <string name="early_moods_suggested">Suggested from your words, not picked by you: %1$s.</string>
+    <!-- About 50 characters. -->
     <string name="early_nothing_yet">Nothing countable stands out yet. Keep going.</string>
+    <!-- Early signals small print. About 50 characters. -->
     <string name="early_counted_here">Counted from your entries on this phone.</string>
     <!-- Where the "not enough yet" states point. -->
+    <!-- Insights, in place of the patterns, before there is enough data. About 110 characters each. -->
     <string name="patterns_not_enough">Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.</string>
     <string name="patterns_not_enough_early">Not enough yet. Early signals start at your third entry; patterns once there is enough to be sure one is real rather than a coincidence.</string>
+    <!-- Twin screen summary card before there are enough entries. About 90 characters each. -->
     <string name="twin_still_listening">Still listening. A few more nights and there will be something to say.</string>
     <string name="twin_still_listening_early">Still listening. Early signals are below; a fuller picture comes in a few more nights.</string>
+    <!-- Insights section label, mono CAPITALS (upper-cased in code). About 30 characters. -->
     <string name="patterns_label">Patterns your Twin noticed</string>
     <!-- Settings: the language the recogniser listens for (plan B-8). Separate from the app's language. -->
+    <!-- Settings card label, CAPITALS. About 24 characters. -->
     <string name="speak_lang_title">LANGUAGE YOU SPEAK</string>
+    <!-- Settings language card body. About 130 characters. -->
     <string name="speak_lang_explain">DailyVox listens in one language at a time. Pick the one you\'ll speak tonight. This can differ from the app\'s language.</string>
+    <!-- The picker's first row. %1$s = the phone's language, in its own name (e.g. "English (United States)"). About 40 characters. -->
     <string name="speak_lang_same_as_phone">Same as phone · %1$s</string>
+    <!-- Small button that opens the picker. About 10 characters. -->
     <string name="speak_lang_change">Change</string>
+    <!-- Small grey state under a language in the picker. About 34 characters each. -->
     <string name="speak_lang_state_on_phone">On this phone</string>
     <string name="speak_lang_state_download">Needs a one-time download</string>
     <string name="speak_lang_state_unavailable">No on-device model on this phone</string>
+    <!-- %1$s = the language's name; %2$s = who supplies the pack ("Google", or speak_lang_provider_fallback). About 120 characters. -->
     <string name="speak_lang_needs_download">%1$s needs a one-time download from %2$s. After that, everything you say stays on this phone.</string>
+    <!-- Used as %2$s in speak_lang_needs_download when the service is not Google's. Lower case, mid-sentence. -->
     <string name="speak_lang_provider_fallback">your phone\'s speech service</string>
+    <!-- Button that asks the phone to fetch the language pack. About 12 characters. -->
     <string name="speak_lang_download">Download</string>
+    <!-- %1$s = the language's name. About 170 characters. -->
     <string name="speak_lang_unavailable">Your phone can\'t transcribe %1$s on-device yet. Pick another language, or type tonight\'s entry. DailyVox never sends your voice anywhere to make up for it.</string>
+    <!-- Grey line while the phone is asked which languages it can hear. About 40 characters. -->
     <string name="speak_lang_checking">Asking this phone what it can hear…</string>
     <string name="speak_lang_dialog_title">Language you speak</string>
     <string name="speak_lang_cancel">Cancel</string>
