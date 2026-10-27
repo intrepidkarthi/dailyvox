@@ -159,4 +159,77 @@
     <string name="daily_question_another_action">ask another question</string>
     <string name="settings_pilot">Research pilot</string>
     <string name="settings_pilot_note">For study participants. Every third day, the question is a plain one: just log your day. Nothing is sent anywhere.</string>
+    <!-- The streak (Streak.kt). Counts days spoken, never days missed. A
+         returning user is welcomed back with what they kept, never reset to
+         the new-user state, and never told how long they were away. -->
+    <string name="streak_none_yet">no streak yet</string>
+    <plurals name="streak_header">
+        <item quantity="one">%1$d-day streak</item>
+        <item quantity="other">%1$d-day streak</item>
+    </plurals>
+    <string name="streak_header_welcome_back">Welcome back</string>
+    <string name="streak_welcome_back">Welcome back. Your sky kept your place.</string>
+    <plurals name="streak_days_in_a_row">
+        <item quantity="one">day in a row</item>
+        <item quantity="other">days in a row</item>
+    </plurals>
+    <plurals name="streak_days_in_a_row_longest">
+        <item quantity="one">day in a row — your longest</item>
+        <item quantity="other">days in a row — your longest</item>
+    </plurals>
+    <string name="streak_longest">longest %1$d</string>
+    <string name="streak_days_spoken">days spoken %1$d</string>
+    <string name="streak_this_month">this month %1$d</string>
+    <string name="streak_total">total %1$d</string>
+    <string name="streak_grace_rule">One quiet day won\'t break a run. Once a week, it\'s kept for you.</string>
+    <!-- TalkBack, the whole streak card in one reading. -->
+    <plurals name="streak_description_active">
+        <item quantity="one">%1$d day in a row. Longest run %2$d. %3$d days spoken in all.</item>
+        <item quantity="other">%1$d days in a row. Longest run %2$d. %3$d days spoken in all.</item>
+    </plurals>
+    <string name="streak_description_returning">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</string>
+    <string name="streak_description_new">No streak yet. Your first entry starts one.</string>
+    <!-- The wide widget's day line. -->
+    <string name="widget_day_spoken">Day %1$d · spoken</string>
+    <string name="widget_day_next">Day %1$d · speak tonight</string>
+    <string name="widget_speak_tonight">Speak tonight</string>
+    <string name="widget_welcome_back">Welcome back · speak tonight</string>
+
+    <!-- Early signals (EarlySignals.kt), from the third entry until patterns
+         take over. Counts only: nothing here is a claim about the person. -->
+    <plurals name="early_heading">
+        <item quantity="one">Early signals · from %1$d entry</item>
+        <item quantity="other">Early signals · from %1$d entries</item>
+    </plurals>
+    <string name="early_firm_up">These will firm up as you keep going.</string>
+    <string name="early_part_small_hours">in the small hours</string>
+    <string name="early_part_morning">in the morning</string>
+    <string name="early_part_afternoon">in the afternoon</string>
+    <string name="early_part_evening">in the evening</string>
+    <string name="early_part_late_night">late at night</string>
+    <string name="early_time_of_day">You usually speak %1$s: %2$d of %3$d entries.</string>
+    <plurals name="early_length_average">
+        <item quantity="one">About %1$d word an entry, on average.</item>
+        <item quantity="other">About %1$d words an entry, on average.</item>
+    </plurals>
+    <string name="early_length_longer_one">Your latest entry ran longer than your first: %1$d words against %2$d.</string>
+    <string name="early_length_shorter_one">Your latest entry ran shorter than your first: %1$d words against %2$d.</string>
+    <string name="early_length_longer_many">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</string>
+    <string name="early_length_shorter_many">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</string>
+    <string name="early_length_steady">About the same length as when you started.</string>
+    <plurals name="early_recurring">
+        <item quantity="one">“%1$s” is in %2$d of your entries.</item>
+        <item quantity="other">“%1$s” is in %2$d of your entries.</item>
+    </plurals>
+    <string name="early_mood_count">%1$s (%2$d)</string>
+    <string name="early_moods_chosen">Moods you picked: %1$s.</string>
+    <string name="early_moods_suggested">Suggested from your words, not picked by you: %1$s.</string>
+    <string name="early_nothing_yet">Nothing countable stands out yet. Keep going.</string>
+    <string name="early_counted_here">Counted from your entries on this phone.</string>
+    <!-- Where the "not enough yet" states point. -->
+    <string name="patterns_not_enough">Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.</string>
+    <string name="patterns_not_enough_early">Not enough yet. Early signals start at your third entry; patterns once there is enough to be sure one is real rather than a coincidence.</string>
+    <string name="twin_still_listening">Still listening. A few more nights and there will be something to say.</string>
+    <string name="twin_still_listening_early">Still listening. Early signals are below; a fuller picture comes in a few more nights.</string>
+    <string name="patterns_label">Patterns your Twin noticed</string>
 </resources>

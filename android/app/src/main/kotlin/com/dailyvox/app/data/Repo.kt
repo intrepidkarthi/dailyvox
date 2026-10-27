@@ -161,17 +161,6 @@ class Repo private constructor(private val db: DailyVoxDb) {
         entry
     }
 
-    /** Streak in days, counting back from today while an entry exists each day. */
-    suspend fun streakDays(): Int = withContext(Dispatchers.IO) {
-        val days = db.entries().allOnce().map { it.createdAt / 86_400_000L }.toSet()
-        if (days.isEmpty()) return@withContext 0
-        val today = System.currentTimeMillis() / 86_400_000L
-        var n = 0
-        var d = if (days.contains(today)) today else today - 1
-        while (days.contains(d)) { n++; d-- }
-        n
-    }
-
     /**
      * Twin resolution: how much of you the Twin can actually see. Deliberately
      * NOT a random number for the mock -- it is entry count against a 200-entry
