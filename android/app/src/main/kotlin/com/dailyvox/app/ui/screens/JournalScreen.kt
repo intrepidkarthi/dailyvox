@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.data.Entry
-import com.dailyvox.app.data.toChatEntry
 import com.dailyvox.twin.Insights
 import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.foundation.layout.FlowRow
@@ -43,7 +42,7 @@ fun JournalScreen(
     // The strongest finding the Twin has, computed from the same code Insights
     // uses rather than a second copy of the thresholds. Null until the data
     // carries one, which is the point of the gates in Patterns.
-    val noticed = remember(entries) { Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() }).firstOrNull() }
+    val noticed = remember(entries) { noticedPatterns(entries).firstOrNull() }
     val queue = remember { com.dailyvox.app.audio.AudioQueue() }
     var playingToday by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { queue.stop() } }
@@ -76,8 +75,13 @@ fun JournalScreen(
 
     val shown = remember(entries, filter) {
         when (filter) {
-            "People" -> entries.filter { it.entityList.isNotEmpty() }
-            "Mood" -> entries.filter { v -> v.valence?.let { kotlin.math.abs(it) > 0.25f } == true }
+            // Only entries whose names the gate can read (B-5): a German row
+            // saved before 1.3 can still carry capitalised nouns as people.
+            "People" -> entries.filter {
+                it.entityList.isNotEmpty() &&
+                    com.dailyvox.twin.NameDetector.canRead(it.text, com.dailyvox.app.system.ReadingLanguage.of(it))
+            }
+            "Mood" -> entries.filter { v -> com.dailyvox.app.system.ReadingLanguage.valence(v)?.let { kotlin.math.abs(it) > 0.25f } == true }
             "Body" -> entries.filter { it.sleepHours != null }
             else -> entries
         }

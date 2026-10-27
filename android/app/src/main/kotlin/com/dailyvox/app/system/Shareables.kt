@@ -304,8 +304,7 @@ object Shareables {
         c.drawText("$nights nights.", 84f, 256f, big)
         c.drawText("One sky.", 84f, 330f, big)
 
-        val brightest = entries.flatMap { it.entityList }.groupingBy { it }.eachCount()
-            .maxByOrNull { it.value }
+        val brightest = brightestStar(entries)
         val rows = listOf(
             "Brightest star" to when {
                 brightest == null -> "not yet"
@@ -543,6 +542,16 @@ object Shareables {
         Streak.of(entries.map { it.createdAt }, System.currentTimeMillis(),
                   java.time.ZoneId.systemDefault()).current
 
+    /**
+     * The person named on the most entries, from entries whose names the gate
+     * can read (B-5). A German entry saved before the gate filed "Arbeit" as a
+     * person; on a card titled "Brightest star" that is a claim about a life.
+     */
+    internal fun brightestStar(entries: List<Entry>): Map.Entry<String, Int>? =
+        entries.filter { com.dailyvox.twin.NameDetector.canRead(it.text, ReadingLanguage.of(it)) }
+            .flatMap { it.entityList }.groupingBy { it }.eachCount()
+            .maxByOrNull { it.value }
+
     private fun warmestMonth(entries: List<Entry>): String {
         val best = warmestMonthIndex(entries) ?: return "—"
         // Standalone, in the reader's language (B-13). Was Locale.US.
@@ -556,21 +565,28 @@ object Shareables {
      * VARIES. A journal the lexicon could not read (another language) used to
      * be all zeros, and the max of equal averages is whichever month came
      * first -- a "Warmest month" printed on a card about nothing.
+     *
+     * "Read" is the engine gate's word (B-5): a valence counts only where
+     * SENTIMENT reads the entry's language ([ReadingLanguage.valence]).
      */
     internal fun warmestMonthIndex(entries: List<Entry>): Int? {
-        val read = entries.filter { it.valence != null }
-        if (read.mapNotNull { it.valence }.distinct().size < 2) return null
+        val read = entries.mapNotNull { e -> ReadingLanguage.valence(e)?.let { e to it } }
+        if (read.map { it.second }.distinct().size < 2) return null
         val cal = Calendar.getInstance()
-        return read.groupBy { e ->
+        return read.groupBy { (e, _) ->
             cal.timeInMillis = e.createdAt; cal.get(Calendar.MONTH)
         }.filter { it.value.size >= 3 }
-            .maxByOrNull { it.value.mapNotNull { e -> e.valence }.average() }
+            .maxByOrNull { it.value.map { (_, v) -> v }.average() }
             ?.key
     }
 
     /**
      * The word this person reaches for. Stop words removed, and gated at three
      * uses so a single memorable entry cannot define someone's year.
+     *
+     * The tokens and the stop list are English, so only entries the gate reads
+     * as English (TRAITS) are counted (B-5). Spanish "mamá" split on [^a-z']
+     * was "mam", and Spanish "para" is glue, not a word of the year.
      */
     private fun mostSaidWord(entries: List<Entry>): String? {
         val stop = setOf(
@@ -589,7 +605,7 @@ object Shareables {
             "nothing", "something", "anything", "everything", "thing", "things",
             "much", "many", "little", "lot", "bit", "kind", "sort", "stuff",
         )
-        return entries.flatMap {
+        return entries.filter { ReadingLanguage.reads(com.dailyvox.twin.LanguageFeature.TRAITS, it) }.flatMap {
             it.text.lowercase().split(Regex("[^a-z']+")).filter { w -> w.length >= 4 }
         }.filter { it !in stop }
             .groupingBy { it }.eachCount()

@@ -44,8 +44,10 @@ class LanguageQuietUpgradeTest {
     @Test fun `a false-friend score saved by 1_2 is cleared, and so is its mood suggestion`() {
         assertNull(Valence.of(german, shipped))
         assertNull(Valence.of(french, shipped))
-        // Before the pass, 1.2's stored score still gives the German entry a tone.
-        assertEquals(Reflection.Tone.HEAVY, Reflection.of(entry(german, -0.91f), emptyList()).tone)
+        // Even before the pass, 1.3's gate ignores 1.2's stored score: the
+        // entry has no stored language and does not read as English, so
+        // SENTIMENT cannot read it and the German entry gets no tone.
+        assertNull(Reflection.of(entry(german, -0.91f), emptyList()).tone)
 
         val rows = listOf(
             entry(german, -0.91f, id = "de"),
@@ -91,9 +93,20 @@ class LanguageQuietUpgradeTest {
         List(n) { entry(text, v(it), now - (n - it) * day, "j$it") }
 
     @Test fun `Ask gives no mood verdict for a journal the lexicon could not read`() {
+        // 1.3: every entry counts toward "enough entries" (the engine gates
+        // each fact itself), so the Twin offers what it can read -- when you
+        // speak -- and nothing about mood, style, topics or personality.
         val facts = askFacts(journal(hindi) { null })
-        assertFalse(facts.hasEnoughData)
-        assertTrue(TwinQuestion.available(facts).isEmpty())
+        assertTrue(facts.hasEnoughData)
+        assertFalse(facts.hasEnoughMoodData)
+        assertEquals(0, facts.readableTextEntries)
+        val offered = TwinQuestion.available(facts)
+        listOf(
+            TwinQuestion.POSITIVE_OR_NEGATIVE, TwinQuestion.MOOD_PATTERN,
+            TwinQuestion.MOOD_OVER_TIME, TwinQuestion.HAPPIEST_WHEN,
+            TwinQuestion.STRESS_TRIGGERS, TwinQuestion.PERSONALITY,
+            TwinQuestion.COMMUNICATION_STYLE, TwinQuestion.DOMINANT_TOPICS,
+        ).forEach { assertFalse("$it offered", it in offered) }
         listOf(
             TwinQuestion.POSITIVE_OR_NEGATIVE, TwinQuestion.MOOD_PATTERN,
             TwinQuestion.MOOD_OVER_TIME, TwinQuestion.HAPPIEST_WHEN,
@@ -110,7 +123,8 @@ class LanguageQuietUpgradeTest {
         val warm = journal(english, 6) { 0.6f }
         val hi = List(6) { entry(hindi, null, now - it * day, "h$it") }
         val facts = askFacts(warm + hi)
-        assertEquals(6, facts.totalEntries)
+        // Every entry is in the journal; only the English six carry a mood.
+        assertEquals(12, facts.totalEntries)
         assertEquals(0.6, facts.baselineValence, 1e-6)
     }
 

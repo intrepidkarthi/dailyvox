@@ -40,6 +40,18 @@ import java.util.*
 import kotlin.math.abs
 
 /**
+ * "Your Twin noticed": the engine's findings over every entry, each read in
+ * its own language (B-5). The engine leaves out every valence the gate cannot
+ * read (SENTIMENT: English on Android), and [toChatEntry] drops people from
+ * entries whose names cannot be read (German, caseless scripts), so neither a
+ * valence finding nor "X lifts you" can be built from a misreading. An English
+ * journal gets exactly the findings it got in 1.2.1, which filtered to read
+ * valences here; the engine now does that filtering itself.
+ */
+internal fun noticedPatterns(entries: List<Entry>): List<Insights.Finding> =
+    Insights.find(entries.map { it.toChatEntry() })
+
+/**
  * Insights. Everything here is computed from the user's own entries — there is
  * no model in the loop and nothing is inferred that the numbers do not support.
  *
@@ -260,13 +272,15 @@ fun InsightsScreen(
                 // fortnight before, so it answers "compared to what" without the
                 // reader having to guess.
                 val cutoff = System.currentTimeMillis() - 14L * 86_400_000
-                // Unread entries (null valence) are left out, not averaged in as 0.
-                val recent = entries.filter { it.createdAt >= cutoff && it.valence != null }
+                // Unread entries (null valence, or a language the gate does not
+                // read for SENTIMENT) are left out, not averaged in as 0.
+                val recent = entries.filter { it.createdAt >= cutoff }
+                    .mapNotNull { com.dailyvox.app.system.ReadingLanguage.valence(it) }
                 val prior = entries.filter {
-                    it.valence != null && it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
-                }
+                    it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
+                }.mapNotNull { com.dailyvox.app.system.ReadingLanguage.valence(it) }
                 if (recent.size >= 3 && prior.size >= 3) {
-                    val d = recent.mapNotNull { it.valence }.average() - prior.mapNotNull { it.valence }.average()
+                    val d = recent.average() - prior.average()
                     Text(
                         "%s %+.1f".format(if (d >= 0) "\u25B2" else "\u25BC", d),
                         fontSize = 11.sp, fontWeight = FontWeight.Bold,
@@ -279,7 +293,7 @@ fun InsightsScreen(
         }
 
         Spacer(Modifier.height(24.dp))
-        val patterns = Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() })
+        val patterns = noticedPatterns(entries)
         // Week one. Below the patterns threshold, early signals take the
         // place of "not enough yet"; from it on they give way to the real
         // patterns (EarlySignals.kt).
@@ -386,7 +400,7 @@ private fun MoodCurve(entries: List<Entry>) {
     val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
     val byDay = entries.groupBy { com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) }
     val points = (13 downTo 0).map { back ->
-        byDay[today.minusDays(back.toLong())]?.mapNotNull { it.valence }?.takeIf { it.isNotEmpty() }?.average()?.toFloat()
+        byDay[today.minusDays(back.toLong())]?.mapNotNull { com.dailyvox.app.system.ReadingLanguage.valence(it) }?.takeIf { it.isNotEmpty() }?.average()?.toFloat()
     }
     val known = points.filterNotNull()
     if (known.size < 2) {

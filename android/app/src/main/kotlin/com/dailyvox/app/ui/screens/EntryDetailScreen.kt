@@ -248,7 +248,9 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(8.dp))
         DvCard {
             // No row for an entry the lexicon could not read: "flat" would be a guess.
-            entry.valence?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
+            // Read in the entry's language (B-5): a stored number the gate
+            // cannot vouch for is not shown either.
+            com.dailyvox.app.system.ReadingLanguage.valence(entry)?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
             if (entry.entityList.isNotEmpty()) {
                 Spacer(Modifier.height(10.dp))
                 FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)

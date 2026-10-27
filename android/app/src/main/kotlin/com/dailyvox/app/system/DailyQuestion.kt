@@ -162,8 +162,13 @@ object DailyQuestion {
         // bereavement entry ("murió", "funeral" aside) passes it untouched, and
         // the question would then ask after the person who died. One entry the
         // guard cannot read in the window it guards, and there is no grounded
-        // question at all -- the everyday questions carry the day.
-        if (withText.any { daysAgo(it) in 0..SENSITIVE_WINDOW_DAYS && !EnglishText.likely(it.text) }) return null
+        // question at all -- the everyday questions carry the day. "Can read"
+        // is the engine gate's MOOD row (English), asked of the entry's stored
+        // language, so a Spanish-tagged entry is caught even when it is short.
+        if (withText.any {
+                daysAgo(it) in 0..SENSITIVE_WINDOW_DAYS &&
+                    !ReadingLanguage.reads(com.dailyvox.twin.LanguageFeature.MOOD, it)
+            }) return null
         val hard = withText.filter { daysAgo(it) in 0..SENSITIVE_WINDOW_DAYS && isHard(it) }
         // Already talked about today: asking again tonight would be an echo.
         val saidToday = withText.filter { daysAgo(it) == 0L }

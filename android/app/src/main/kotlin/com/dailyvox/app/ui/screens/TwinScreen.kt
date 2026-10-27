@@ -343,7 +343,7 @@ private fun summary(entries: List<Entry>): String? {
     // Only entries the lexicon read. A journal it could not read (another
     // language) has no tone to name, and "measured" from a pile of unread
     // zeros would be a guess said as a finding.
-    val read = entries.mapNotNull { it.valence }
+    val read = entries.mapNotNull { com.dailyvox.app.system.ReadingLanguage.valence(it) }
     if (read.size < 5) return null
     val v = read.average()
     val tone = when {

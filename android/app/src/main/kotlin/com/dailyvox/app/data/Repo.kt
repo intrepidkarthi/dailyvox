@@ -13,8 +13,31 @@ import java.util.UUID
 
 class Repo private constructor(private val db: DailyVoxDb, private val appContext: Context) {
 
-    private fun suggest(text: String): String? = MoodSuggestion.offered(
-        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext))
+    private fun suggest(text: String, language: String?, detect: () -> String?): String? = MoodSuggestion.offered(
+        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext), language, detect)
+
+    /**
+     * Everything the app derives from an entry's words, read in the language
+     * the engine's gate is told the words are in (B-5). [language] is what
+     * the column will hold; when it is null, the on-device TextClassifier is
+     * the fallback ([ReadingLanguage]) -- asked at most once, only for text
+     * that does not already read as English, and never written to the column.
+     */
+    private class Derived(val valence: Float?, val entities: List<String>, val suggestion: String?)
+
+    private fun derive(text: String, language: String?, corpus: List<String>): Derived {
+        var asked = false
+        var answer: String? = null
+        val detect = { if (!asked) { asked = true; answer = detectLanguage(text) }; answer }
+        val reading = com.dailyvox.app.system.ReadingLanguage.of(language, text, detect)
+        return Derived(
+            valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table, reading),
+            // German capitalises every noun and a caseless script has no
+            // capitals: the engine's detector is quiet for both.
+            entities = com.dailyvox.twin.NameDetector.detect(text, corpus = corpus, language = reading),
+            suggestion = suggest(text, reading) { null },
+        )
+    }
 
     fun observeAll(): Flow<List<Entry>> = db.entries().observeAll()
     /**
@@ -39,17 +62,16 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
      */
     suspend fun updateText(id: String, text: String, language: String? = null) = withContext(Dispatchers.IO) {
         db.entries().byId(id)?.let {
-            val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
+            val lang = language
+                ?: if (isTyped(it.audioPath, it.durationSec)) detectLanguage(text) else it.language
+            val derived = derive(text, lang, corpus = listOf(text))
             db.entries().upsert(
                 it.copy(
                     text = text,
-                    valence = valence,
-                    language = language
-                        ?: if (isTyped(it.audioPath, it.durationSec)) detectLanguage(text) else it.language,
-                    entities = com.dailyvox.twin.NameDetector
-                        .detect(text, corpus = listOf(text))
-                        .joinToString(","),
-                    suggestedMood = resuggest(it, suggest(text)),
+                    valence = derived.valence,
+                    language = lang,
+                    entities = derived.entities.joinToString(","),
+                    suggestedMood = resuggest(it, derived.suggestion),
                 )
             )
         }
@@ -87,6 +109,9 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             val language = com.dailyvox.app.system.TextLanguage.validTag(o.optString("language", ""))
             val at = o.optLong("date", 0L)
             if (text.isBlank() || at == 0L || (at to text) in existing) continue
+            // The file's own tag when it has one (this app's export, or iOS's
+            // once it writes one); otherwise classify the text.
+            val lang = language ?: detectLanguage(text)
             db.entries().upsert(
                 Entry(
                     id = UUID.randomUUID().toString(),
@@ -96,11 +121,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
                     // Recompute rather than trust the file: a valence written by
                     // iOS came from a different lexicon, and mixing two scales in
                     // one mood curve would make the chart quietly meaningless.
-                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table),
+                    // Read in the entry's language, like a new entry (B-5).
+                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table, lang),
                     entities = o.optString("entities", ""),
-                    // The file's own tag when it has one (this app's export, or
-                    // iOS's once it writes one); otherwise classify the text.
-                    language = language ?: detectLanguage(text),
+                    language = lang,
                 )
             )
             added++
@@ -117,9 +141,8 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         /** The tag the recogniser was asked for, for a spoken entry. Ignored for typed text. */
         spokenLanguage: String? = null,
     ) = withContext(Dispatchers.IO) {
-        val entities = com.dailyvox.twin.NameDetector.detect(
-            text, corpus = db.entries().allOnce().map { it.text },
-        )
+        val language = entryLanguage(audioPath, durationSec, spokenLanguage) { detectLanguage(text) }
+        val derived = derive(text, language, corpus = db.entries().allOnce().map { it.text })
         val now = System.currentTimeMillis()
         val cal = java.util.Calendar.getInstance().apply { timeInMillis = now }
 
@@ -139,14 +162,13 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             }
             ?.takeIf { it.available }
 
-        val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
         val entry = Entry(
             id = UUID.randomUUID().toString(),
             text = text,
             createdAt = now,
             durationSec = durationSec,
-            valence = valence,
-            entities = entities.joinToString(","),
+            valence = derived.valence,
+            entities = derived.entities.joinToString(","),
             audioPath = audioPath,
             speakingRate = prosody?.speakingRate?.toFloat(),
             pitchMean = prosody?.pitchMean?.toFloat(),
@@ -163,12 +185,11 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             hrvMs = body?.morningHrvMs?.toFloat(),
             restingHrBpm = body?.restingHrBpm?.toFloat(),
             stepsToday = body?.stepsToday,
-            language = entryLanguage(audioPath, durationSec, spokenLanguage) { detectLanguage(text) },
-        ).let {
+            language = language,
             // A suggestion only, in its own column. selfLabel stays null until
             // the user picks one; nothing at save time can choose for them.
-            it.copy(suggestedMood = suggest(text))
-        }
+            suggestedMood = derived.suggestion,
+        )
         db.entries().upsert(entry)
         // Returned so the Speak screen can reflect on exactly what was saved.
         entry
@@ -274,10 +295,16 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
          *
          * The scoring itself lives in the engine so the two surfaces cannot
          * drift into ranking the same journal differently.
+         *
+         * B-9: the engine's tokenizer is Unicode-aware (letters plus combining
+         * marks, NFC, locale-aware lower-casing), so "mamá" stays "mamá" and a
+         * Devanagari query matches Devanagari entries. Each entry is tokenised
+         * in its own stored language ([toSearchEntry]); the query in English
+         * rules, which only decide the stopwords.
          */
         fun rank(q: String, all: List<Entry>): List<Pair<Entry, Float>> {
             val byId = all.associateBy { it.id }
-            return com.dailyvox.twin.Retrieval.rank(q, all.map { it.toChatEntry() })
+            return com.dailyvox.twin.Retrieval.rank(q, all.map { it.toSearchEntry() })
                 .mapNotNull { hit -> byId[hit.entryId]?.let { it to hit.score } }
         }
 
@@ -287,12 +314,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
          * What the Journal shows for a typed query (a blank box never gets here;
          * the view model shows the whole journal for that).
          *
-         * A query with no content words used to return EVERY entry. The engine's
-         * tokenizer keeps only [a-z0-9'], so a Devanagari or Tamil query -- or
-         * "mamá" cut to "mam" -- tokenised to nothing and the "results" were the
-         * whole journal, which reads as "everything matched". An empty term set
-         * is now no results, which is the truth until the tokenizer reads the
-         * script (plan B-9).
+         * A query with no content words used to return EVERY entry: the old
+         * [a-z0-9'] tokenizer cut a Devanagari query to nothing. The engine's
+         * tokenizer now reads the script (B-9), and a query that still has no
+         * content words ("the", "à") is no results, never the whole journal.
          */
         internal fun searchResults(q: String, all: List<Entry>): List<Entry> {
             if (rankWords(q).isEmpty()) return emptyList()
@@ -401,9 +426,9 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         internal fun unreadValence(all: List<Entry>, table: Map<String, Float>): List<Entry> =
             all.mapNotNull { e ->
                 val clearValence = e.valence != null &&
-                    com.dailyvox.app.system.Valence.of(e.text, table) == null
+                    com.dailyvox.app.system.Valence.of(e.text, table, e.language) == null
                 val clearSuggestion = e.selfLabel == null && e.suggestedMood != null &&
-                    !com.dailyvox.app.system.EnglishText.likely(e.text)
+                    !com.dailyvox.app.system.ReadingLanguage.reads(com.dailyvox.twin.LanguageFeature.MOOD, e)
                 if (!clearValence && !clearSuggestion) null
                 else e.copy(
                     valence = if (clearValence) null else e.valence,
