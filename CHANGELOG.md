@@ -59,11 +59,10 @@ guessing. Nothing changes for entries spoken in English.
   shows half-sentences as words in scripts written without spaces, and entry
   length is counted in words there, not in space-separated chunks.
 
-## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
+## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — October 2026
 
 Live on the App Store since 17 October 2026 (build 46). Android 1.2
-(versionCode 6) carries the same features and is in review; Android 1.1 is the
-current Play release until it is approved.
+(versionCode 6) carries the same features and is live on Google Play.
 
 A release about the first week: the app now gives something back every time you
 speak, instead of only after weeks of entries.

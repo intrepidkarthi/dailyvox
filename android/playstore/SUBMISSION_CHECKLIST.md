@@ -1,10 +1,44 @@
-# Play Store release plan — DailyVox for Android v1.0
+# Play Store release checklist — DailyVox for Android
 
-**Status (2026-09-29): release candidate built, versionCode 4. Not submitted.**
-Branch `android/release-1.0`. Engineering blockers are closed; what is left is a
-signing check, one physical-phone test, and Google's own review clocks.
+**Status: live on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
+since 2026-10-02.** v1.0 was the first release. Every release since is an update
+with its own `versionCode`, and its Play release notes and release-specific checks
+are in `RELEASE_NOTES_<version>.md` in this folder (from 1.2 on).
 
 ---
+
+## Every update, in order
+
+1. **Version.** Bump `versionCode` and `versionName` in `app/build.gradle.kts`,
+   and add the release to the repository's `CHANGELOG.md`.
+2. **Release notes.** `RELEASE_NOTES_<version>.md`, within Play's 500-character
+   limit for the "Release notes" field.
+3. **Tests, against the real engine.** `./gradlew :app:testDebugUnitTest` with the
+   engine checked out at `DailyVoxTwin/` in the repository root. A stub build
+   compiles but proves nothing about behaviour.
+4. **`python3 playstore/verify.py`.** Needs `aapt2` on the path and a release APK
+   (`./gradlew :app:assembleRelease`). It checks the APK's permissions against
+   `DATA_SAFETY.md`, the listing against Play's limits, and the listing's claims
+   against the source. Paste the numbers it prints; do not recall them.
+5. **Permissions.** If the release adds one, update `DATA_SAFETY.md`,
+   `PERMISSIONS.md`, and the onboarding and Settings ledgers in the app, in the
+   same change. If it adds none, Data safety is unchanged.
+6. **Device pass** on a real phone: every new screen at the largest font size and
+   with TalkBack, and recording **while online** — airplane mode cannot catch a
+   network fallback, because with no network there is nothing to leak to.
+7. **Build and upload.** `./gradlew :app:bundleRelease` (signing comes from the
+   gitignored `keystore.properties`), then the **internal testing** track first,
+   as in `SUBMISSION_RUNBOOK.md` §5.
+8. **Production, staged**, halting on Android vitals.
+9. **After it is live**: see the last section of this file.
+
+---
+
+## The v1.0 launch, kept for the record
+
+Everything below was written for the first release. The device tiers are the
+catalog as it was set for v1.0; check Play Console › Device catalog for what is
+current rather than this table.
 
 ## Supported devices
 
@@ -65,7 +99,7 @@ time as they pass. Exclusions are reversible and need no new upload.
 
 ---
 
-## Remaining steps, in order
+## v1.0 launch steps (done)
 
 1. **Signing — confirm, do not generate.** The 31 Aug bundle is signed with
    `CN=DailyVox, Bengaluru`, and `versionCode 2` was already uploaded, so an
@@ -124,8 +158,6 @@ time as they pass. Exclusions are reversible and need no new upload.
 
 ## Do not do
 
-- **Do not** describe Android as available anywhere until it is. The website,
-  llms.txt and every doc currently say "in development", deliberately.
 - **Do not** add a permission to the manifest without updating both the
   onboarding ledger and the Settings ledger. Those screens claim to be complete
   lists, and a listing that omits one is worth less than no listing.
@@ -153,7 +185,7 @@ it — `emulator -avd <name> -wipe-data -no-snapshot` — rather than restarting
 Update the versions the website shows (top-bar badge, footer on every page, schema, "latest" lines), once the store actually serves the new build:
 
 ```bash
-python3 website/set_version.py --ios 1.12 --android 1.1   # the numbers now live
+python3 website/set_version.py --ios <version> --android <version>   # the numbers now live
 ```
 
 Then add the release to website/public/changelog.html and the roadmap table by hand.

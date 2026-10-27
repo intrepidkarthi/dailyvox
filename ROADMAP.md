@@ -85,6 +85,19 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - No internet permission; Auto Backup disabled
 - Not in v1.0: on-device LLM chat, health data, photo attachments, translations — see [Platforms](#platforms)
 
+### v1.12.0 and Android v1.1 — Type an entry any time *(October 2026)*
+- "I can't talk right now" on the main record screen on both platforms, not only in onboarding; typed entries are saved like spoken ones (mood, people, streak, the Twin) and never show a player
+- Requested by a user who journals around coworkers and family, where speaking aloud is not an option
+
+### v1.13.0 and Android v1.2 — Something back from the first week *(iOS: shipped 17 October 2026, build 46 · Android: versionCode 6, live on Google Play October 2026)*
+- **Reflection after each entry**: a short reflection under every saved entry, and one line carried into tomorrow when the entry names a person or place — left out, not guessed, when it names no one
+- **Suggested mood**: each entry gets a mood suggested from its words, marked as a suggestion, one tap to change; it never replaces a mood the user chose and holds back on short, mixed or negated entries. Kept in its own field, apart from the mood the user sets, so a suggestion the user never touched is not counted as their own answer
+- **Your past, brought back**: "A week ago you said…" quoted word for word, "On this day" from earlier months and years, and a weekly recap counted from the entries themselves
+- **A daily question** that changes each day, with another one a tap away; now and then it asks about someone mentioned recently, by name, and never after a hard entry about them. Research-pilot days still lead with the neutral "log your day" prompt
+- **Early signals from the third entry**: when you usually speak, how long entries run, words that recur, the moods you chose — each a count, labelled early
+- **Streak grace day**: one missed day in seven no longer breaks a run, and coming back after a gap says "Welcome back" instead of zero
+- **Reminder fixes**: turning reminders off on iOS now also clears already-scheduled and delivered ones; after a week away both platforms send one note on day 10 and stop (iOS used to go silent, Android repeated forever); Android's "already spoke today" check uses the local day, its reminder time holds across daylight-saving changes, and the reminder follows a time-zone change. Quoting a line from the past in a reminder is opt-in and off by default, because reminders show on the lock screen
+
 ## Planned
 
 > **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7** (v2.0+ unchanged). *Since then: v1.8 became Research Pilot & retrieval-fix, v1.9 became Voice & Access, and Multi-Language moved again to v1.10.* The stage labels are the Twin's growth stages; App Store build numbers increment independently.
@@ -119,21 +132,29 @@ milestones; this table says which platform has reached them.
 | Encrypted export / `.twin` | ✅ | ✅ **byte-compatible both directions** |
 | Multi-language interface | ✅ 5 languages | English only — **no translations exist** |
 | Journaling goals and weekly targets | ✅ | ✅ *(2026-08-25)* |
-| Photo attachments | ✅ | not in v1.0 |
+| Photo attachments | existing ones shown; adding new ones off since v1.11 | no |
 | PDF / JSON / Markdown / CSV export | ✅ | ✅ |
 | Voice search | ✅ | ✅ *(on-device, fixed 2026-08-25)* |
 | Findings engine ("Your Twin noticed") | ✅ *(in-app copy — see note)* | ✅ **engine-side** `Insights.kt` |
-| Body Twin (health signals) | ✅ HealthKit | not in v1.0 — no health permission requested |
+| Body Twin (health signals) | ✅ HealthKit | no — no health permission requested |
 | Prosody / voice biomarkers | ✅ | ✅ |
+| Typed entries ("I can't talk right now") | ✅ *(v1.12)* | ✅ *(v1.1)* |
+| Reflection and suggested mood after each entry | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Week ago, On this day, weekly recap | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Daily question | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Early signals before the full patterns | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Streak with one grace day a week | ✅ *(v1.13)* | ✅ *(v1.2)* |
+| Reminder quoting a line from a week ago (opt-in) | ✅ *(v1.13)* | ✅ *(v1.2)* |
 | Cross-device sync | ✅ iCloud | **no equivalent** — local-only + export |
 | Widgets | ✅ WidgetKit | ✅ *(RemoteViews)* |
 | Live Activities / Dynamic Island | ✅ | ongoing notification; no Island analogue |
 | Quick Settings tile | n/a | ✅ |
 | On-device LLM chat | ✅ Apple Intelligence | **not planned** — structured Ask instead |
 
-**Shipped 2026-10-02.** Every ✅ in the Android column is in v1.0 on Google
-Play. Two rows that development builds had — photo attachments and Health
-Connect — were left out of v1.0 rather than shipped half-reachable. One known
+**Android v1.0 shipped 2026-10-02.** Every ✅ in the Android column is in the
+current Play release; a version in brackets is the release that added it. Two
+rows that development builds had — photo attachments and Health Connect — were
+left out of v1.0 rather than shipped half-reachable, and are still out. One known
 limitation remains: the entity graph takes names from the phone's speech
 recogniser, so the names in the Twin depend on that recogniser capitalising
 them.
@@ -181,7 +202,7 @@ answers structured questions from real statistics and cites the entries used —
 which works on every device rather than only the newest.
 
 **Sync is the honest gap.** iCloud gives iOS cross-device sync with no server on
-our side. Android has no equivalent that preserves "we run no server", so v1.0 is
+our side. Android has no equivalent that preserves "we run no server", so Android is
 local-only with export. That is a real regression against iOS, and naming it here
 is better than discovering it in a review.
 
