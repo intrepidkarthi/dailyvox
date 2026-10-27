@@ -967,7 +967,8 @@ struct EntryDetailView: View {
                             mood: entry.userMood,
                             date: entry.date ?? Date(),
                             duration: entry.duration,
-                            entryId: entry.id?.uuidString
+                            entryId: entry.id?.uuidString,
+                            language: entry.transcriptLocale
                         )
                     } else {
                         DigitalTwinEngine.shared.processEntry(
@@ -975,12 +976,14 @@ struct EntryDetailView: View {
                             mood: entry.userMood,
                             date: entry.date ?? Date(),
                             duration: entry.duration,
-                            entryId: entry.id?.uuidString
+                            entryId: entry.id?.uuidString,
+                            language: entry.transcriptLocale
                         )
                     }
                     // v1.6: keep the semantic memory index in step with edits.
                     if let id = entry.id {
-                        SemanticSearchManager.shared.indexEntry(id: id, text: trimmed, date: entry.date ?? Date())
+                        SemanticSearchManager.shared.indexEntry(id: id, text: trimmed, date: entry.date ?? Date(),
+                                                                language: entry.transcriptLocale)
                     }
                     // v1.6 voice biomarkers: extract prosody from the audio ONCE
                     // (fresh process, not an edit) and fold it as the entry's

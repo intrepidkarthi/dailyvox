@@ -8,6 +8,7 @@
 
 import CoreData
 import Foundation
+import DailyVoxTwinEngine
 
 /// A past entry reduced to what resurfacing reads: which entry, when, and
 /// what it says. A value, not the managed object, so every decision below is
@@ -16,6 +17,9 @@ struct PastEntry: Equatable {
     let id: UUID
     let date: Date
     let text: String
+    /// The entry's stored `transcriptLocale`, nil when unknown (then the
+    /// language is read from the text). Only the recap's mention reads it.
+    var language: String? = nil
 }
 
 extension PastEntry {
@@ -29,7 +33,7 @@ extension PastEntry {
                   let id = entry.id, let date = entry.date,
                   let text = entry.text, !text.isEmpty
             else { return nil }
-            return PastEntry(id: id, date: date, text: text)
+            return PastEntry(id: id, date: date, text: text, language: entry.transcriptLocale)
         }
     }
 }
@@ -326,10 +330,23 @@ enum Resurfacing {
             }
         }
         for entry in entries {
+            // Each kind of proposal only from an entry whose language can be
+            // read for it (LanguageGate). Names come from the OS tagger, which
+            // reads en, es, fr, de and it; topics are the engine's English
+            // keyword topics, read with its reflection. Elsewhere the tagger
+            // still answers — every capitalised German noun a "person", an
+            // English topic word found by chance — so the entry proposes
+            // nothing, and the recap falls back to a quoted line.
+            let language = FeatureLanguage.reading(entry.text, stored: entry.language)
+            let readsNames = LanguageGate.supports(.names, languageCode: language)
+            let readsTopics = LanguageGate.supports(.reflection, languageCode: language)
+            guard readsNames || readsTopics else { continue }
             let c = candidates(entry.text)
-            propose(c.people, .person)
-            propose(c.places, .place)
-            propose(c.topics, .topic)
+            if readsNames {
+                propose(c.people, .person)
+                propose(c.places, .place)
+            }
+            if readsTopics { propose(c.topics, .topic) }
         }
 
         var best: WeeklyRecap.Mention?

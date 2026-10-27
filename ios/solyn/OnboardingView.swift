@@ -76,7 +76,8 @@ struct OnboardingView: View {
                     SpeakScreen(demo: demo) { entry in
                         firstEntry = entry
                         transcript = entry.transcript
-                        firstMood = SuggestedMood.suggest(for: entry.transcript) ?? .none
+                        firstMood = SuggestedMood.suggest(for: entry.transcript,
+                                                            language: entry.transcriptLocale.map(TranscriptLocale.tag(for:))) ?? .none
                         firstMoodChosen = false
                         withAnimation(.easeInOut(duration: 0.8)) { starBorn = true }
                         advance()
@@ -136,7 +137,8 @@ struct OnboardingView: View {
             // A suggestion is not a report, so the Twin hears only a mood the
             // user picked.
             DigitalTwinEngine.shared.processEntry(text: text, mood: firstMoodChosen ? firstMood.rawValue : nil,
-                                                  date: now, duration: entry.duration, entryId: e.id?.uuidString)
+                                                  date: now, duration: entry.duration, entryId: e.id?.uuidString,
+                                                  language: e.transcriptLocale)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
             // Non-fatal: onboarding still completes; worst case the star isn't pre-seeded.

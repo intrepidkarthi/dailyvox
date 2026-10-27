@@ -56,6 +56,9 @@ struct QuestionSource: Equatable {
     /// The suggestion, kept separately: a suggested sad still counts against
     /// grounding after the user has cleared the mood.
     var suggestedMood: Mood = .none
+    /// The entry's stored `transcriptLocale`: the language it was spoken in,
+    /// or nil when unknown (then it is read from the text).
+    var language: String? = nil
 }
 
 extension QuestionSource {
@@ -70,7 +73,8 @@ extension QuestionSource {
             else { return nil }
             return QuestionSource(id: id, date: date, text: text,
                                   mood: Mood(rawValue: entry.mood ?? "") ?? .none,
-                                  suggestedMood: Mood(rawValue: entry.suggestedMood ?? "") ?? .none)
+                                  suggestedMood: Mood(rawValue: entry.suggestedMood ?? "") ?? .none,
+                                  language: entry.transcriptLocale)
         }
     }
 }
@@ -321,8 +325,9 @@ enum DailyQuestions {
         for entry in recent {
             // `sensitiveWords` is English. An entry it cannot read cannot be
             // shown to be gentle, so it is never asked about — a Spanish
-            // entry about a funeral would otherwise pass every check.
-            guard EntryLanguage.isEnglish(entry.text) else { continue }
+            // entry about a funeral would otherwise pass every check. The
+            // entry's own language decides (LanguageGate: mood and names).
+            guard FeatureLanguage.readsGroundedQuestion(entry.text, stored: entry.language) else { continue }
             let reading = read(entry.text)
             guard isGentle(entry, reading: reading) else { continue }
             // The engine's names come out of a Set, in an order that changes

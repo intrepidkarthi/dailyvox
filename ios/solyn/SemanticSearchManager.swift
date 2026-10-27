@@ -45,7 +45,14 @@ final class SemanticSearchManager: ObservableObject {
     // hybrid sentence-level format on next indexAll — legacy whole-entry
     // vectors would otherwise stay on the pure-cosine path and keep
     // abstaining under the new threshold. Re-indexing is ~5 ms/entry.
-    private let indexedIdsKey = "semanticIndexedEntryIds.v2"
+    //
+    // ".v3" (1.14, plan B-10): every entry re-indexes once with its own
+    // language. Before, a Spanish entry was embedded with the ENGLISH model
+    // and ranked in English space; now it is indexed by its words with
+    // Spanish function words removed, and an entry in a language the engine
+    // cannot search is left out. English entries re-index to exactly the
+    // record they had.
+    private let indexedIdsKey = "semanticIndexedEntryIds.v3"
 
     @Published var isReady = false
 
@@ -64,7 +71,8 @@ final class SemanticSearchManager: ObservableObject {
                   let text = entry.value(forKey: "text") as? String, !text.isEmpty
             else { continue }
             let date = (entry.value(forKey: "date") as? Date) ?? Date(timeIntervalSince1970: 0)
-            if index.index(entryId: id, text: text, date: date) {
+            let language = FeatureLanguage.indexLanguage(stored: entry.value(forKey: "transcriptLocale") as? String)
+            if index.index(entryId: id, text: text, date: date, language: language) {
                 indexedIds.insert(id)
             }
         }
@@ -72,10 +80,12 @@ final class SemanticSearchManager: ObservableObject {
         isReady = true
     }
 
-    /// Index (or re-index) a single entry as it's saved/edited.
-    func indexEntry(id: UUID, text: String, date: Date) {
+    /// Index (or re-index) a single entry as it's saved/edited. `language`
+    /// is the entry's stored `transcriptLocale`.
+    func indexEntry(id: UUID, text: String, date: Date, language: String? = nil) {
         guard !text.isEmpty else { return }
-        if index.index(entryId: id.uuidString, text: text, date: date) {
+        if index.index(entryId: id.uuidString, text: text, date: date,
+                       language: FeatureLanguage.indexLanguage(stored: language)) {
             indexedIds.insert(id.uuidString)
             UserDefaults.standard.set(Array(indexedIds), forKey: indexedIdsKey)
         }
@@ -96,10 +106,17 @@ final class SemanticSearchManager: ObservableObject {
     /// abstention threshold (the honest "I don't have anything on that").
     /// `dateRange` (v1.7) narrows candidates before ranking — the Twin
     /// Brain's recallEntries "monthsBack" window.
-    func search(_ query: String, topK: Int = 12, in dateRange: ClosedRange<Date>? = nil) -> [Hit] {
+    ///
+    /// The query is read in its own language when the recogniser is sure of
+    /// it, else in the language the person speaks (B-10): the engine embeds it
+    /// only against entries in that same language and matches every other
+    /// entry by words alone, with that language's function words removed.
+    func search(_ query: String, topK: Int = 12, in dateRange: ClosedRange<Date>? = nil,
+                speaking: Locale = SpeechTranscriber.speakerLocale) -> [Hit] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 3 else { return [] }
-        let results = index.search(trimmed, topK: topK, in: dateRange)
+        let language = FeatureLanguage.queryLanguage(trimmed, speaking: speaking)
+        let results = index.search(trimmed, topK: topK, in: dateRange, language: language)
         guard let best = results.first, best.score >= Self.abstentionThreshold else { return [] }
         return results.map { Hit(id: $0.entryId, score: $0.score) }
     }

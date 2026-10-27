@@ -48,7 +48,7 @@ final class AudioRecorder: NSObject, ObservableObject {
     /// without reaching across actors on every timer tick.
     private var lastPhrase = ""
     private var lastCaught: String?
-    private var lastValence: Double = 0
+    private var lastValence: Double? = 0
 
     /// True when the SYSTEM paused us — a call, an alarm, Siri — rather than the
     /// user. Kept apart because only a system pause should auto-resume.

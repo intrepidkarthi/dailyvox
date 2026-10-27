@@ -207,6 +207,16 @@ struct TwinChatView: View {
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
+
+            // Said up front, once, to someone who speaks a language Ask cannot
+            // read yet, so the calm line under a question is not a surprise.
+            if !AskLanguage.understands(speaking: SpeechTranscriber.speakerLocale) {
+                Text(AskLanguage.unsupportedMessage)
+                    .font(.dv(.footnote))
+                    .foregroundColor(themeManager.secondaryTextColor)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
         }
         .padding(.vertical, 24)
     }
@@ -556,13 +566,28 @@ struct TwinChatView: View {
         guard !isThinking else { return }
         messages.append(TwinChatMessage(text: text, isUser: true))
         latestFollowUps = []
+
+        // A question in a language the Twin cannot read gets a calm line, not
+        // an answer composed from words it could not read (plan D7, B-11).
+        let language = AskLanguage.language(of: text, speaking: SpeechTranscriber.speakerLocale)
+        guard LanguageGate.supports(.askTwin, languageCode: language) else {
+            withAnimation(.easeIn(duration: 0.2)) {
+                messages.append(TwinChatMessage(text: AskLanguage.unsupportedMessage, isUser: false))
+            }
+            return
+        }
         isThinking = true
 
         Task {
             var turn: TwinChatTurn?
 
             #if canImport(FoundationModels)
-            if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat {
+            // The brain only where the system model also speaks the question's
+            // language; otherwise the retrieval path below answers, exactly as
+            // on a device with no model. English skips the check: it is the
+            // language the brain has always been asked in.
+            if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat,
+               language == "en" || FoundationTwinChat.supportsLanguage(of: Locale(identifier: language)) {
                 turn = await brainPipeline.ask(text)
             }
             #endif
