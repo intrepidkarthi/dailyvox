@@ -24,6 +24,18 @@ enum LifeArea: String, CaseIterable {
     case family = "Family"
     case creativity = "Creativity"
 
+    /// What a chip or the entry detail calls it. The raw value is only an identity.
+    var title: String {
+        switch self {
+        case .work: return String(localized: "Work", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .health: return String(localized: "Health", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .relationships: return String(localized: "Relationships", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 13 characters.")
+        case .growth: return String(localized: "Growth", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.")
+        case .family: return String(localized: "Family", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .creativity: return String(localized: "Creativity", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        }
+    }
+
     /// Warm-palette hues (same blue→sage, green→forest, pink→dusty rose,
     /// purple→plum, orange→terracotta, yellow→gold mapping as Insights).
     var color: Color {
@@ -95,6 +107,16 @@ enum JournalFilter: String, CaseIterable, Identifiable {
     case body = "Body"
 
     var id: String { rawValue }
+
+    /// What the chip says. The raw value is only an identity.
+    var title: String {
+        switch self {
+        case .all: return String(localized: "All", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows every entry.")
+        case .people: return String(localized: "People", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries that mention people.")
+        case .mood: return String(localized: "Mood", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries that have a mood.")
+        case .body: return String(localized: "Body", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries with a Health snapshot (Body Twin).")
+        }
+    }
 }
 
 struct TimelineView: View {
@@ -145,8 +167,8 @@ struct TimelineView: View {
     private var playTodayPill: some View {
         if let total = todayDuration {
             let label = todayQueue.isPlaying
-                ? "\(todayQueue.index + 1) of \(todayQueue.count)"
-                : "Play today \u{00B7} \(Self.clock(total))"
+                ? String(localized: "\(todayQueue.index + 1) of \(todayQueue.count)", comment: "Journal tab: pill in the header while today's recordings play one after another. First placeholder: which recording is playing. Second: how many there are today. About 8 characters.")
+                : String(localized: "Play today \u{00B7} \(Self.clock(total))", comment: "Journal tab: pill in the header that plays all of today's recordings in a row. The placeholder is their total length, as in '2:05'. About 18 characters.")
             Button {
                 todayQueue.toggle(in: viewContext)
                 HapticManager.shared.buttonTap()
@@ -225,7 +247,7 @@ struct TimelineView: View {
                 // §F reaches the Journal as well. Three surfaces now offer a
                 // card — an entry, the sky, and the timeline — instead of one
                 // corner of one tab.
-                headerAction("square.and.arrow.up", "Share a card") {
+                headerAction("square.and.arrow.up", String(localized: "Share a card", comment: "Journal tab: VoiceOver label for the share icon in the header; it opens the share-card picker.")) {
                     showShareSheet = true
                 }
                 // Kept always visible. Hiding it unless a filter was already
@@ -539,7 +561,7 @@ struct TimelineView: View {
                         }
                         HapticManager.shared.selectionChanged()
                     } label: {
-                        Text(filter.rawValue)
+                        Text(filter.title)
                             .font(.dv(size: 11.5, weight: on ? .heavy : .bold, design: .rounded))
                             // Green tint, per §1: these select, they do not
                             // reward, so gold would be the wrong colour.
@@ -650,7 +672,7 @@ struct TimelineView: View {
                         } label: {
                             HStack(spacing: 4) {
                                 Image(systemName: mood.icon)
-                                Text(mood.rawValue)
+                                Text(mood.displayName.lowercased())
                             }
                             .font(.dv(.caption))
                             .padding(.horizontal, 12)
@@ -670,8 +692,8 @@ struct TimelineView: View {
             
             // Date range
             HStack(spacing: 12) {
-                DateRangeButton(title: "From", date: $startDate)
-                DateRangeButton(title: "To", date: $endDate)
+                DateRangeButton(title: String(localized: "From", comment: "Journal tab > filters: label on the button that picks the start of a date range. One short word."), date: $startDate)
+                DateRangeButton(title: String(localized: "To", comment: "Journal tab > filters: label on the button that picks the end of a date range. One short word."), date: $endDate)
                 
                 Spacer()
                 
@@ -699,25 +721,25 @@ struct TimelineView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 if showStarredOnly {
-                    FilterChip(label: "Starred", icon: "star.fill", color: DS.Palette.gold) {
+                    FilterChip(label: String(localized: "Starred", comment: "Journal tab: active-filter chip (tap to remove) when only starred entries are shown. About 10 characters."), icon: "star.fill", color: DS.Palette.gold) {
                         showStarredOnly = false
                     }
                 }
                 
                 if let mood = selectedMoodFilter {
-                    FilterChip(label: mood.rawValue, icon: mood.icon, color: mood.color) {
+                    FilterChip(label: mood.displayName.lowercased(), icon: mood.icon, color: mood.color) {
                         selectedMoodFilter = nil
                     }
                 }
                 
                 if let start = startDate {
-                    FilterChip(label: "From \(formatShortDate(start))", icon: "calendar", color: DS.Palette.terracotta) {
+                    FilterChip(label: String(localized: "From \(formatShortDate(start))", comment: "Journal tab: active-filter chip (tap to remove) for the start of a date range. The placeholder is a short date, already formatted for the locale. About 16 characters."), icon: "calendar", color: DS.Palette.terracotta) {
                         startDate = nil
                     }
                 }
                 
                 if let end = endDate {
-                    FilterChip(label: "To \(formatShortDate(end))", icon: "calendar", color: DS.Palette.terracotta) {
+                    FilterChip(label: String(localized: "To \(formatShortDate(end))", comment: "Journal tab: active-filter chip (tap to remove) for the end of a date range. The placeholder is a short date, already formatted for the locale. About 16 characters."), icon: "calendar", color: DS.Palette.terracotta) {
                         endDate = nil
                     }
                 }
@@ -943,7 +965,7 @@ struct TimelineView: View {
             // "December 2025"; standalone month where the language has one.
             return LocaleFormat.date(date, template: LocaleFormat.monthYear)
         }
-        return "Unknown"
+        return String(localized: "Unknown", comment: "Journal tab: month section header when an entry's month cannot be worked out. One word.")
     }
 
     private func sectionSummary(for entries: [DiaryEntry]) -> String {
@@ -955,7 +977,9 @@ struct TimelineView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         let wordsFormatted = formatter.string(from: NSNumber(value: totalWords)) ?? "\(totalWords)"
-        return "\(entryCount) \(entryCount == 1 ? "entry" : "entries") · \(wordsFormatted) words"
+        return entryCount == 1
+            ? String(localized: "1 entry · \(wordsFormatted) words", comment: "Journal tab: summary under a month header when the month has one entry. The placeholder is that entry's word count, already formatted with the locale's grouping.")
+            : String(localized: "\(entryCount) entries · \(wordsFormatted) words", comment: "Journal tab: summary under a month header. First placeholder: entries that month (0 or 2 or more). Second: total words, already formatted with the locale's grouping.")
     }
 
     private func entryDateString(_ entry: DiaryEntry) -> String {
@@ -1114,7 +1138,7 @@ struct EntryRowView: View {
                                     Circle()
                                         .fill(area.color)
                                         .frame(width: 6, height: 6)
-                                    Text(area.rawValue)
+                                    Text(area.title)
                                         .font(.dsCaption2)
                                         .foregroundColor(area.color)
                                 }

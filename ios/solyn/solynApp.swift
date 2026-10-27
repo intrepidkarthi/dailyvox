@@ -42,7 +42,7 @@ struct DailyVoxApp: App {
         // device-local, rebuildable-from-entries store the semantic index uses.
         // Injected BEFORE the seeder below, or seeded entries fold into the
         // throwaway in-memory default and the index starts empty.
-        DigitalTwinEngine.configureEntityGraphStore(LocalFileTwinStateStore(subfolder: "EntityGraph"))
+        DigitalTwinEngine.configureEntityGraphStore(LocalFileTwinStateStore(subfolder: "EntityGraph"))  // i18n-ignore: folder name on disk
 
         ScreenshotDataSeeder.seedIfNeeded(context: persistenceController.container.viewContext)
 

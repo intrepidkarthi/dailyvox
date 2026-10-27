@@ -19,10 +19,10 @@ struct EncryptionService {
 
         var errorDescription: String? {
             switch self {
-            case .invalidData: return "Data is invalid or corrupted."
-            case .invalidPassword: return "Incorrect password."
-            case .decryptionFailed: return "Failed to decrypt. Check your password."
-            case .invalidFileFormat: return "This file is not a valid DailyVox encrypted backup."
+            case .invalidData: return String(localized: "Data is invalid or corrupted.", comment: "Import Backup screen: error message in the import alert when opening an encrypted (.dvx) backup. The file is damaged. About 30 characters.")
+            case .invalidPassword: return String(localized: "Incorrect password.", comment: "Import Backup screen: error message in the import alert when opening an encrypted (.dvx) backup. The password does not match. About 20 characters.")
+            case .decryptionFailed: return String(localized: "Failed to decrypt. Check your password.", comment: "Import Backup screen: error message in the import alert when opening an encrypted (.dvx) backup. About 40 characters.")
+            case .invalidFileFormat: return String(localized: "This file is not a valid DailyVox encrypted backup.", comment: "Import Backup screen: error message in the import alert when opening an encrypted (.dvx) backup. The chosen file is not a DailyVox backup. About 50 characters.")
             }
         }
     }

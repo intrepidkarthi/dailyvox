@@ -877,7 +877,7 @@ struct SettingsView: View {
                     Label("Wipe All Health Snapshots", systemImage: "trash")
                 }
             } header: {
-                Text("Health")
+                Text("Health", comment: "Settings > section header for Apple Health signals. Use Apple's name for Health in the target language. About 12 characters.")
             } footer: {
                 // Honest promise: DECISIONS #1's single sanctioned exit path
                 // (user-initiated encrypted export, user-held key) is named,
@@ -1160,16 +1160,16 @@ struct SettingsView: View {
                     ProgressView()
                 }
             } else {
-                StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
+                StorageRow(label: String(localized: "Audio Recordings", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters."), bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
                 // Shown only when there is something to report. Photo
                 // attachment is withheld (FeatureFlags.photoAttachments), but
                 // anyone who attached photos before still needs to see what
                 // they are using — hiding a storage figure is not the same as
                 // hiding a button.
                 if photoStorageBytes > 0 || FeatureFlags.photoAttachments {
-                    StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
+                    StorageRow(label: String(localized: "Photos", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters. Photos attached to entries."), bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
                 }
-                StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
+                StorageRow(label: String(localized: "Database", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters. The entries themselves (text and metadata)."), bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
 
                 HStack {
                     Text("Total")
@@ -1239,13 +1239,13 @@ struct SettingsView: View {
     // MARK: - Storage Deletion
 
     private func deleteAllAudio() {
-        Self.clearDirectory(name: "Recordings")
+        Self.clearDirectory(name: "Recordings")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         calculateStorage()
     }
 
     private func deleteAllPhotos() {
-        Self.clearDirectory(name: "Photos")
+        Self.clearDirectory(name: "Photos")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         calculateStorage()
     }
@@ -1267,8 +1267,8 @@ struct SettingsView: View {
             // still put its words on the lock screen.
             ReminderManager.shared.refresh(in: viewContext)
         }
-        Self.clearDirectory(name: "Recordings")
-        Self.clearDirectory(name: "Photos")
+        Self.clearDirectory(name: "Recordings")  // i18n-ignore: folder name on disk
+        Self.clearDirectory(name: "Photos")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         WidgetCenter.shared.reloadAllTimelines()
         calculateStorage()
@@ -1285,8 +1285,8 @@ struct SettingsView: View {
     private func calculateStorage() {
         isCalculatingStorage = true
         DispatchQueue.global(qos: .userInitiated).async {
-            let audioBytes = Self.directorySize(name: "Recordings")
-            let photoBytes = Self.directorySize(name: "Photos")
+            let audioBytes = Self.directorySize(name: "Recordings")  // i18n-ignore: folder name on disk
+            let photoBytes = Self.directorySize(name: "Photos")  // i18n-ignore: folder name on disk
             let dbBytes = Self.databaseSize()
 
             DispatchQueue.main.async {

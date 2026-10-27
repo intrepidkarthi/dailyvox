@@ -53,9 +53,9 @@ struct TwinResolutionCard: View {
 
     private var subtitle: String {
         if let r = manager.resolution {
-            return "Your Twin matches your self-report \(pct(r)). Tap to refine."
+            return String(localized: "Your Twin matches your self-report \(pct(r)). Tap to refine.", comment: "Twin tab: line under the 'How well does your Twin know you?' card after the quiz. The placeholder is a percentage such as '72%'. About 55 characters.")
         }
-        return "How well does your Twin know you? Answer \(manager.totalCount) quick questions to find out."
+        return String(localized: "How well does your Twin know you? Answer \(manager.totalCount) quick questions to find out.", comment: "Twin tab: line on the quiz card before the user has taken it. The placeholder is the number of questions (7 today). About 80 characters.")
     }
 
     private var meter: some View {
@@ -238,12 +238,14 @@ struct TwinResolutionSheet: View {
 
     private func verdict(_ r: Double) -> String {
         switch r {
-        case 0.85...: return "Your Twin already reads you like a book."
-        case 0.7..<0.85: return "Your Twin knows you well — and it's still early."
-        case 0.5..<0.7: return "Your Twin is getting to know you. Keep journaling."
-        default: return "Early days. The more you speak, the sharper your Twin gets."
+        case 0.85...: return String(localized: "Your Twin already reads you like a book.", comment: "Twin tab > 'How well does your Twin know you?' quiz, result: the verdict sentence under the match percentage. About 55 characters. Match of 85% or more.")
+        case 0.7..<0.85: return String(localized: "Your Twin knows you well — and it's still early.", comment: "Twin tab > 'How well does your Twin know you?' quiz, result: the verdict sentence under the match percentage. About 55 characters. Match from 70% to 85%.")
+        case 0.5..<0.7: return String(localized: "Your Twin is getting to know you. Keep journaling.", comment: "Twin tab > 'How well does your Twin know you?' quiz, result: the verdict sentence under the match percentage. About 55 characters. Match from 50% to 70%.")
+        default: return String(localized: "Early days. The more you speak, the sharper your Twin gets.", comment: "Twin tab > 'How well does your Twin know you?' quiz, result: the verdict sentence under the match percentage. About 55 characters. Match under 50%. Encouraging, never a failure.")
         }
     }
 }
 
-private func pct(_ v: Double) -> String { "\(Int((v * 100).rounded()))%" }
+private func pct(_ v: Double) -> String {
+    String(localized: "\(Int((v * 100).rounded()))%", comment: "A whole-number percentage, as in '72%'. Use the locale's percent style (space, sign position).")
+}

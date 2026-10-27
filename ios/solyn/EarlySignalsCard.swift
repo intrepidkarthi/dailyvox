@@ -163,7 +163,7 @@ struct EarlySignalsCard: View {
     }
 
     static func moodList(_ moods: [EarlySignals.MoodCount]) -> String {
-        moods.map { "\((Mood(rawValue: $0.raw) ?? .none).displayName) \u{00D7}\($0.count)" }
+        moods.map { String(localized: "\((Mood(rawValue: $0.raw) ?? .none).displayName) \u{00D7}\($0.count)", comment: "Early signals: one mood and how many entries had it, as in 'Calm ×3'. Several are joined with a middle dot. First placeholder: a mood name. Second: the count (1 or more).") }
             .joined(separator: " \u{00B7} ")
     }
 }

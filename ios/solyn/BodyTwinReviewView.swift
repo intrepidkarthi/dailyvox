@@ -152,10 +152,10 @@ struct BodyTwinReviewView: View {
     private func contextTag(_ context: ActivityContext) -> some View {
         let (label, tint): (String, Color) = {
             switch context {
-            case .atRest:      return ("At rest", DS.Palette.sage)
-            case .active:      return ("In motion", DS.Palette.terracotta)
-            case .postWorkout: return ("Just after a workout", DS.Palette.gold)
-            case .unknown:     return ("Context unknown", DS.Palette.inkMute)
+            case .atRest:      return (String(localized: "At rest", comment: "Body Twin review sheet ('Your body had a say'): small tag on a Health snapshot saying what the body was doing, so the numbers read in context. About 20 characters. "), DS.Palette.sage)
+            case .active:      return (String(localized: "In motion", comment: "Body Twin review sheet ('Your body had a say'): small tag on a Health snapshot saying what the body was doing, so the numbers read in context. About 20 characters. "), DS.Palette.terracotta)
+            case .postWorkout: return (String(localized: "Just after a workout", comment: "Body Twin review sheet ('Your body had a say'): small tag on a Health snapshot saying what the body was doing, so the numbers read in context. About 20 characters. "), DS.Palette.gold)
+            case .unknown:     return (String(localized: "Context unknown", comment: "Body Twin review sheet ('Your body had a say'): small tag on a Health snapshot saying what the body was doing, so the numbers read in context. About 20 characters. The app could not tell whether the person was resting or moving."), DS.Palette.inkMute)
             }
         }()
         return DSTag(text: label, tint: tint)
@@ -165,23 +165,23 @@ struct BodyTwinReviewView: View {
         var rows: [(icon: String, color: Color, text: String)] = []
         if let sleep = snapshot.sleepHours {
             rows.append(("moon.zzz.fill", DS.Palette.sage,
-                         "\(LocaleFormat.decimal(sleep, fractionDigits: 1)) h sleep"))
+                         String(localized: "\(LocaleFormat.decimal(sleep, fractionDigits: 1)) h sleep", comment: "Body Twin review sheet ('Your body had a say'): one row of a Health snapshot, next to an icon. About 24 characters. The placeholder is hours of sleep with one decimal, already formatted for the locale ('6.5'). 'h' is the local abbreviation for hours.")))
         }
         if let hrv = snapshot.morningHRVMs {
             rows.append(("waveform.path.ecg", DS.Palette.terracotta,
-                         "\(Int(hrv.rounded())) ms morning HRV"))
+                         String(localized: "\(Int(hrv.rounded())) ms morning HRV", comment: "Body Twin review sheet ('Your body had a say'): one row of a Health snapshot, next to an icon. About 24 characters. The placeholder is heart rate variability in milliseconds. 'ms' and 'HRV' are the abbreviations Apple Health uses in the target language.")))
         }
         if let restingHR = snapshot.restingHRBpm {
             rows.append(("heart.fill", DS.Palette.coral,
-                         "\(Int(restingHR.rounded())) bpm resting heart"))
+                         String(localized: "\(Int(restingHR.rounded())) bpm resting heart", comment: "Body Twin review sheet ('Your body had a say'): one row of a Health snapshot, next to an icon. About 24 characters. The placeholder is resting heart rate in beats per minute. 'bpm' is the abbreviation Apple Health uses in the target language.")))
         }
         if let steps = snapshot.stepsToday {
             rows.append(("figure.walk", DS.Palette.gold,
-                         "\(steps.formatted()) steps"))
+                         String(localized: "\(steps.formatted()) steps", comment: "Body Twin review sheet ('Your body had a say'): one row of a Health snapshot, next to an icon. About 24 characters. The placeholder is today's step count, already formatted with the locale's grouping.")))
         }
         if let mindful = snapshot.mindfulMinutesToday {
             rows.append(("leaf.fill", DS.Palette.forest,
-                         "\(mindful) mindful min"))
+                         String(localized: "\(mindful) mindful min", comment: "Body Twin review sheet ('Your body had a say'): one row of a Health snapshot, next to an icon. About 24 characters. The placeholder is today's mindful minutes (Apple Health). 'min' abbreviates minutes.")))
         }
         return rows
     }

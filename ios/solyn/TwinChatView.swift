@@ -525,7 +525,7 @@ struct TwinChatView: View {
             // only answer from THIS journal, so the reply demonstrates the
             // claim ("answers with receipts") instead of sounding like any
             // chatbot. "My mornings" produced a shrug; this produces citations.
-            send(text: "What do I keep avoiding saying out loud?")
+            send(text: "What do I keep avoiding saying out loud?")  // i18n-ignore: App Store screenshot run only
             return
         }
         guard let seedQuestion, messages.isEmpty else { return }

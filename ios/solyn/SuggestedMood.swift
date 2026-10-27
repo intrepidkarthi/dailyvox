@@ -186,8 +186,8 @@ enum SuggestedMood {
 
     static let negators: Set<String> = ["not", "no", "never", "without", "cannot", "nor"]
     static let gratitudeWords = ["grateful", "thankful", "appreciate", "appreciated", "blessed"]
-    static let calmWords = ["calm", "peaceful", "relaxed", "at peace", "content", "unhurried", "rested"]
-    static let tiredWords = ["tired", "exhausted", "drained", "worn out", "sleepy", "fatigued", "knackered", "wiped out"]
+    static let calmWords = ["calm", "peaceful", "relaxed", "at peace", "content", "unhurried", "rested"]  // i18n-ignore: English words matched in transcripts
+    static let tiredWords = ["tired", "exhausted", "drained", "worn out", "sleepy", "fatigued", "knackered", "wiped out"]  // i18n-ignore: English words matched in transcripts
 }
 
 // MARK: - Suggested vs chosen

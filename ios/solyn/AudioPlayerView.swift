@@ -204,7 +204,7 @@ struct AudioPlayerView: View {
             do {
                 try controller.load(url: audioURL)
             } catch {
-                loadError = "Unable to load audio."
+                loadError = String(localized: "Unable to load audio.", comment: "Entry detail: shown in place of the audio player when the recording file cannot be opened. About 25 characters.")
             }
         }
         .overlay {
@@ -223,9 +223,10 @@ struct AudioPlayerView: View {
     }
 
     private func speedLabel(_ speed: Float) -> String {
-        if speed == 1.0 { return "1x" }
-        if speed == floor(speed) { return "\(Int(speed))x" }
-        return LocaleFormat.decimal(Double(speed), fractionDigits: 1) + "x"
+        if speed == floor(speed) {
+            return String(localized: "\(Int(speed))x", comment: "Audio player: playback speed on the speed button, as in '1x' or '2x'. Keep it very short.")
+        }
+        return String(localized: "\(LocaleFormat.decimal(Double(speed), fractionDigits: 1))x", comment: "Audio player: playback speed on the speed button, as in '1.5x'; the number is already formatted for the locale. Keep it very short.")
     }
 }
 

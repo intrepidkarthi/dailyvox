@@ -107,15 +107,15 @@ struct RecordingDialView: View {
     /// is not — on a device without on-device streaming recognition this line
     /// never fills, and "Listening…" is true either way.
     private var listeningLine: String {
-        if paused { return "Paused. Tap resume and keep going." }
-        if live.phrase.isEmpty { return "Listening\u{2026}" }
+        if paused { return String(localized: "Paused. Tap resume and keep going.", comment: "Recording dial (full screen while speaking): line under the waveform while paused. 'resume' refers to the Resume button. About 35 characters.") }
+        if live.phrase.isEmpty { return String(localized: "Listening\u{2026}", comment: "Recording dial (full screen while speaking): line under the waveform before any words are recognised. Ends with an ellipsis character. About 12 characters.") }
         return LocaleFormat.quoted(live.phrase)
     }
 
     private var statusText: String {
         paused
-            ? "\u{2759}\u{2759} PAUSED \u{00B7} ON-DEVICE \u{00B7} 0 B OUT"
-            : "\u{25CF} RECORDING \u{00B7} ON-DEVICE \u{00B7} 0 B OUT"
+            ? String(localized: "\u{2759}\u{2759} PAUSED \u{00B7} ON-DEVICE \u{00B7} 0 B OUT", comment: "Recording dial (full screen while speaking): status line at the top while paused. Upper case, monospaced, one line, about 30 characters. Keep the leading pause glyph. '0 B OUT' means zero bytes sent off the phone: a privacy claim that must stay exact.")
+            : String(localized: "\u{25CF} RECORDING \u{00B7} ON-DEVICE \u{00B7} 0 B OUT", comment: "Recording dial (full screen while speaking): status line at the top while recording. Upper case, monospaced, one line, about 30 characters. Keep the leading dot. '0 B OUT' means zero bytes sent off the phone: a privacy claim that must stay exact.")
     }
 
     // Spelled out, because this app has its own `TimelineView` — the Journal
@@ -180,7 +180,9 @@ struct RecordingDialView: View {
     /// the screen says to you.
     private var ticksLine: String {
         let lit = min(elapsed, Self.ritual)
-        return "OF 0:42 \u{00B7} \(lit) TICK\(lit == 1 ? "" : "S") LIT"
+        return lit == 1
+            ? String(localized: "OF 0:42 \u{00B7} 1 TICK LIT", comment: "Recording dial (full screen while speaking): counter under the dial after the first second: one of the 42 ticks around the dial is lit. Upper case, monospaced, about 22 characters. Keep 0:42 as it is: the 42-second ritual is a soft target, not a limit.")
+            : String(localized: "OF 0:42 \u{00B7} \(lit) TICKS LIT", comment: "Recording dial (full screen while speaking): counter under the dial: how many of the 42 ticks around the dial are lit (0, or 2 to 42), one per second spoken. Upper case, monospaced, about 22 characters. Keep 0:42 as it is: the 42-second ritual is a soft target, not a limit.")
     }
 
     private func draw(_ ctx: GraphicsContext, _ size: CGSize, _ t: TimeInterval) {
@@ -270,7 +272,7 @@ struct RecordingDialView: View {
 
     private var controls: some View {
         HStack(alignment: .top, spacing: 20) {
-            dialAction(label: "Discard", action: onDiscard) {
+            dialAction(label: String(localized: "Discard", comment: "Recording dial (full screen while speaking): label under the small button that throws the recording away. One word, about 10 characters."), action: onDiscard) {
                 Text("\u{2715}")
                     .font(.dv(size: 15))
                     .foregroundColor(DS.Palette.navyText.opacity(0.7))
@@ -296,7 +298,9 @@ struct RecordingDialView: View {
                     .foregroundColor(DS.Palette.navyText)
             }
 
-            dialAction(label: paused ? "Resume" : "Pause",
+            dialAction(label: paused
+                           ? String(localized: "Resume", comment: "Recording dial (full screen while speaking): label under the small button that continues a paused recording. One word, about 10 characters.")
+                           : String(localized: "Pause", comment: "Recording dial (full screen while speaking): label under the small button that pauses the recording. One word, about 10 characters."),
                        action: paused ? onResume : onPause) {
                 if paused {
                     // Drawn, not typed: ▶ in a text run sits off-centre in its

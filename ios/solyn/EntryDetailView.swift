@@ -265,7 +265,7 @@ struct EntryDetailView: View {
         let seconds = Int(entry.duration.rounded())
         if seconds > 0 { parts.append(String(format: "%d:%02d", seconds / 60, seconds % 60)) }
         let words = text.split { $0.isWhitespace || $0.isNewline }.count
-        if words > 0 { parts.append("\(words) WORDS") }
+        if words > 0 { parts.append(String(localized: "\(String(words)) WORDS", comment: "Entry detail: meta line under the date, after the time and length ('5:28 PM · 0:04 · 17 WORDS'). Upper case, monospaced. The placeholder is the entry's word count. It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")) }
         return parts.joined(separator: " \u{00B7} ")
     }
 
@@ -337,9 +337,9 @@ struct EntryDetailView: View {
     private var seedQuestion: String {
         let when = formattedShortDate
         if let subject = filedEntities.first?.label {
-            return "What do my entries say about \(subject), around \(when)?"
+            return String(localized: "What do my entries say about \(subject), around \(when)?", comment: "Entry detail > Ask about this: the question sent to Ask Your Twin, in the user's own voice, and shown as their message in the chat. First placeholder: a person or place named in the entry. Second: the entry's date, already short-formatted for the locale.")
         }
-        return "What was going on for me around \(when)?"
+        return String(localized: "What was going on for me around \(when)?", comment: "Entry detail > Ask about this: the question sent to Ask Your Twin, in the user's own voice, and shown as their message in the chat. The placeholder is the entry's date, already short-formatted for the locale.")
     }
 
     // MARK: - Entity underlining
@@ -405,7 +405,7 @@ struct EntryDetailView: View {
             guard seconds > 5, words > 0 else { return nil }
             let wpm = Double(words) / (Double(seconds) / 60)
             guard wpm.isFinite, wpm > 20, wpm < 400 else { return nil }
-            return "\(Int(wpm.rounded())) words a minute"
+            return String(localized: "\(Int(wpm.rounded())) words a minute", comment: "Entry detail, 'What your Twin filed' card: value of the PACE row; the placeholder is the speaking pace (21 to 399).")
         }()
 
         // Shown only when the Twin actually filed something. With nothing
@@ -432,23 +432,23 @@ struct EntryDetailView: View {
                 // item whichever detector produced it, and the dedupe is
                 // case-insensitive because the two detectors do not agree on
                 // capitalisation either.
-                filedRow("Mood", moodLine)
+                filedRow(String(localized: "Mood", comment: "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). The entry's mood."), moodLine)
                 var seen = Set<String>()
                 let named = (people + places).map(\.label)
                     .filter { seen.insert($0.lowercased()).inserted }
                 if !named.isEmpty {
-                    filedRow("Mentioned", named.joined(separator: " \u{00B7} "))
+                    filedRow(String(localized: "Mentioned", comment: "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). People and places named in the entry."), named.joined(separator: " \u{00B7} "))
                 }
                 if let body = bodyLine {
-                    filedRow("Body", body)
+                    filedRow(String(localized: "Body", comment: "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). The Health snapshot saved with the entry (sleep, steps…)."), body)
                 }
                 if let pace {
-                    filedRow("Pace", pace)
+                    filedRow(String(localized: "Pace", comment: "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). How fast the entry was spoken."), pace)
                 }
                 // Topics, where the floating "Work" chip went.
                 let areas = detectLifeAreas(from: text)
                 if !areas.isEmpty {
-                    filedRow("Topics", areas.map(\.rawValue).joined(separator: " \u{00B7} "))
+                    filedRow(String(localized: "Topics", comment: "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). Life areas the entry touches (Work, Health…)."), areas.map(\.title).joined(separator: " \u{00B7} "))
                 }
 
             }
@@ -463,10 +463,12 @@ struct EntryDetailView: View {
 
     /// Mood the way the canvas writes it: the word and the number together.
     private var moodLine: String {
-        guard selectedMood != .none else { return "not set" }
+        guard selectedMood != .none else { return String(localized: "not set", comment: "Entry detail, 'What your Twin filed' card: value of the MOOD row when the entry has no mood. Lower case.") }
         let v = (Double(selectedMood.moodValue) - 3.0) / 2.0
         let line = "\(selectedMood.displayName) \(LocaleFormat.decimal(v, fractionDigits: 1, signed: true))"
-        return entry.isMoodSuggested ? line + " \u{00B7} suggested" : line
+        return entry.isMoodSuggested
+            ? line + " \u{00B7} " + String(localized: "suggested", comment: "Entry detail, 'What your Twin filed' card: added after the mood ('Calm +0.5 · suggested') when the app suggested the mood and the user did not pick it. Lower case.")
+            : line
     }
 
     private var moodAccessibilityLabel: Text {

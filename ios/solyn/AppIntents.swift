@@ -171,7 +171,9 @@ struct AskYourTwinIntent: AppIntent {
         let count = turn.citations.count
         let receipt = count == 0
             ? ""
-            : (count == 1 ? " From one of your entries." : " From \(count) of your entries.")
+            : " " + (count == 1
+                ? String(localized: "From one of your entries.", comment: "Siri / Shortcuts, Ask Your Twin: spoken after the Twin's answer when it drew on one journal entry. A sentence of its own, read aloud. About 30 characters.")
+                : String(localized: "From \(count) of your entries.", comment: "Siri / Shortcuts, Ask Your Twin: spoken after the Twin's answer; the placeholder is how many journal entries the answer drew on (2 or more). A sentence of its own, read aloud. About 30 characters."))
         return .result(dialog: IntentDialog(stringLiteral: answer + receipt))
     }
 }

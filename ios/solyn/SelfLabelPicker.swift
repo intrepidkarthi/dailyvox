@@ -36,13 +36,13 @@ enum SelfLabelEmotion: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .joy: return "Joy"
-        case .sadness: return "Sadness"
-        case .anger: return "Anger"
-        case .fear: return "Fear"
-        case .surprise: return "Surprise"
-        case .disgust: return "Disgust"
-        case .neutral: return "Neutral"
+        case .joy: return String(localized: "Joy", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .sadness: return String(localized: "Sadness", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .anger: return String(localized: "Anger", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .fear: return String(localized: "Fear", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .surprise: return String(localized: "Surprise", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .disgust: return String(localized: "Disgust", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
+        case .neutral: return String(localized: "Neutral", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters. The absence of a particular emotion.")
         }
     }
 

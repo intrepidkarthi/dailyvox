@@ -38,8 +38,8 @@ enum AppTheme: String, CaseIterable, Identifiable {
 
     static func decode(_ raw: String) -> AppTheme {
         switch raw {
-        case "Day", "Ivory", "Light": return .day
-        case "Night", "Dark": return .night
+        case "Day", "Ivory", "Light": return .day  // i18n-ignore: stored theme identifiers
+        case "Night", "Dark": return .night  // i18n-ignore: stored theme identifiers
         default: return .sunset
         }
     }
