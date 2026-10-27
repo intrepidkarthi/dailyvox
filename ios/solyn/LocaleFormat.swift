@@ -67,6 +67,43 @@ enum LocaleFormat {
     static let time = "jmm"
     /// "M" for Monday: the narrow weekday.
     static let narrowWeekday = "EEEEE"
+    /// "Mon" / "Mo.": the abbreviated weekday.
+    static let shortWeekday = "EEE"
+    /// "Q4 2026": the quarter and year.
+    static let quarterYear = "QQQy"
+
+    /// A wall-clock time with no date: "7:00 AM" / "07:00", in the locale's
+    /// own hour cycle.
+    ///
+    /// CLDR puts a narrow no-break space (U+202F) before AM/PM. The Settings
+    /// reminder presets were hand-written "7:00 AM" with an ordinary space, so
+    /// the narrow one is folded back to keep American English byte-for-byte
+    /// what it was; it renders the same.
+    static func clockTime(hour: Int, minute: Int, locale: Locale = .current,
+                          calendar: Calendar = .current) -> String {
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        guard let date = calendar.date(from: components) else {
+            return String(format: "%d:%02d", hour, minute)
+        }
+        return formatter(template: time, locale: locale, timeZone: calendar.timeZone)
+            .string(from: date)
+            .replacingOccurrences(of: "\u{202F}", with: " ")
+    }
+
+    // MARK: - Durations
+
+    /// Hours and minutes of sleep, "7h05", the way the app has always written
+    /// it in English. The layout is a catalog key with positional placeholders
+    /// (`%1$lld` hours, `%2$@` two-digit minutes), so a language that writes
+    /// "7 h 05" or puts the minutes first can say so in its translation.
+    static func sleepHours(_ hours: Double) -> String {
+        let h = Int(hours)
+        let m = String(format: "%02d", Int((hours - Double(h)) * 60))
+        return String(localized: "\(h)h\(m)",
+                      comment: "Hours and minutes of sleep, as in '7h05'. First placeholder: whole hours. Second: minutes, always two digits. 'h' is the local abbreviation for hours. Keep it compact, about 6 characters.")
+    }
 
     /// A fixed, locale-independent formatter for machine-readable output:
     /// CSV columns, file names. en_US_POSIX and the Gregorian calendar, so a

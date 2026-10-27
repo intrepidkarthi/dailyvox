@@ -212,7 +212,9 @@ struct TimelineView: View {
                 // EditButton is the one casualty — swipe-to-delete still works
                 // via .onDelete, so nothing became unreachable.
                 headerAction(showSearch ? "magnifyingglass.circle.fill" : "magnifyingglass",
-                             showSearch ? "Close search" : "Search entries") {
+                             showSearch
+                                 ? String(localized: "Close search", comment: "Journal header: VoiceOver label of the search button while search is open.")
+                                 : String(localized: "Search entries", comment: "Journal header: VoiceOver label of the search button.")) {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
                         showSearch.toggle()
                     }
@@ -234,7 +236,8 @@ struct TimelineView: View {
                 // change, not a deletion.
                 headerAction(hasActiveFilters
                              ? "line.3.horizontal.decrease.circle.fill"
-                             : "line.3.horizontal.decrease.circle", "Filters") {
+                             : "line.3.horizontal.decrease.circle",
+                             String(localized: "Filters", comment: "Journal header: VoiceOver label of the button that shows mood and date filters.")) {
                     withAnimation(.easeInOut(duration: 0.2)) { showFilters.toggle() }
                     HapticManager.shared.buttonTap()
                 }
@@ -1011,11 +1014,16 @@ struct EntryRowView: View {
         var parts: [String] = [relativeDay]
         if entry.duration > 0 {
             let total = Int(entry.duration.rounded())
+            let seconds = String(format: "%02d", total % 60)
             parts.append(total >= 60
-                         ? String(format: "%dM %02d", total / 60, total % 60)
-                         : "0:\(String(format: "%02d", total))")
+                         ? String(localized: "\(total / 60)M \(seconds)",
+                                  comment: "Journal row meta line, upper case: a spoken entry's length of a minute or more, as in 'TODAY · 2M 05 · 58 WORDS'. First placeholder: whole minutes. Second: seconds, always two digits. 'M' abbreviates minutes; keep it short and upper case.")
+                         : "0:\(seconds)")
         }
-        if wordCount > 0 { parts.append("\(wordCount) WORDS") }
+        if wordCount > 0 {
+            parts.append(String(localized: "\(String(wordCount)) WORDS",
+                                comment: "Journal row meta line, upper case: the entry's word count, as in 'TODAY · 2M 05 · 58 WORDS'. The placeholder is the count (1 or more). About 10 characters."))
+        }
         return parts.joined(separator: " \u{00B7} ")
     }
 
@@ -1026,13 +1034,16 @@ struct EntryRowView: View {
         // "TONIGHT · 1M 20 · 58 WORDS". Today is today whatever the hour; the
         // word "tonight" belongs to the Tonight share card, which really is
         // drawn at the end of a day.
-        if cal.isDateInToday(date) { return "TODAY" }
-        if cal.isDateInYesterday(date) { return "YESTERDAY" }
+        if cal.isDateInToday(date) {
+            return String(localized: "TODAY", comment: "Journal row meta line, upper case: the entry was made today. About 10 characters.")
+        }
+        if cal.isDateInYesterday(date) {
+            return String(localized: "YESTERDAY", comment: "Journal row meta line, upper case: the entry was made yesterday. About 10 characters.")
+        }
         // Within the last week, the weekday alone locates it.
         if let days = cal.dateComponents([.day], from: cal.startOfDay(for: date),
                                          to: cal.startOfDay(for: Date())).day, days < 7 {
-            let f = DateFormatter(); f.dateFormat = "EEE"
-            return f.string(from: date).uppercased()
+            return LocaleFormat.date(date, template: LocaleFormat.shortWeekday).uppercased()
         }
         return dateString.uppercased()
     }
