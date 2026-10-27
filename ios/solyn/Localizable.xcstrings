@@ -296,6 +296,17 @@
     "It showed up in %@." : {
       "comment" : "Stats > Your Week, Decoded: insight card line under the headline (also drawn into a shared image). The placeholder is 'every single entry' or 'N of M entries'. About 35 characters."
     },
+    "journal.row.starred.a11y" : {
+      "comment" : "Journal tab: one entry's row, spoken by VoiceOver for the gold star mark. Says this one entry is starred. One word.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Starred"
+          }
+        }
+      }
+    },
     "Joy" : {
       "comment" : "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters."
     },
@@ -313,6 +324,52 @@
     },
     "Learning your rhythms — %@ moments kept." : {
       "comment" : "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is learning; the placeholder is how many Health signals the user kept. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."
+    },
+    "lifeArea.growth" : {
+      "comment" : "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Growth"
+          }
+        }
+      }
+    },
+    "lifeArea.health" : {
+      "comment" : "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Health"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Health"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Salud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Santé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Salute"
+          }
+        }
+      }
     },
     "%@ lifts you." : {
       "comment" : "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries that mention this person read brighter. The placeholder is a person's name from the user's journal."
@@ -456,9 +513,6 @@
     },
     "%lld quiet minutes today — carry that calm in." : {
       "comment" : "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after 2 or more mindful minutes (Apple Health) today. The placeholder is the number of minutes."
-    },
-    "%lld total mentions before" : {
-      "comment" : "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. The placeholder is how many times the topic came up in earlier weeks (5 or more)."
     },
     "%lld vs %lld words" : {
       "comment" : "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. Average words per entry in the two moods: the longest, then the shortest.",
@@ -608,6 +662,41 @@
     "Photos" : {
       "comment" : "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters. Photos attached to entries."
     },
+    "pilot.emotion.neutral" : {
+      "comment" : "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters. The absence of a particular emotion.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neutral"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neutral"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neutro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neutre"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Neutro"
+          }
+        }
+      }
+    },
     "Plain Text" : {
       "comment" : "Export Data screen: name of an export format (.txt file). About 16 characters."
     },
@@ -617,6 +706,83 @@
     "Private by design. Health and motion signals stay on this iPhone — never uploaded, never synced. iOS will also ask about motion, so moving days are read in context." : {
       "comment" : "Body Twin invite sheet: second promise. Every privacy claim must stay exact (never uploaded, never synced). About 160 characters."
     },
+    "quiz.abstraction.high" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'Your thinking leans…'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Abstract"
+          }
+        }
+      }
+    },
+    "quiz.abstraction.low" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Your thinking leans…'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Concrete"
+          }
+        }
+      }
+    },
+    "quiz.directness.high" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Direct"
+          }
+        }
+      }
+    },
+    "quiz.directness.low" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Nuanced"
+          }
+        }
+      }
+    },
+    "quiz.emotionalRange.low" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Across a week, your emotions are…'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Steady"
+          }
+        }
+      }
+    },
+    "quiz.expression.high" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Expressive"
+          }
+        }
+      }
+    },
+    "quiz.expression.low" : {
+      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Reserved"
+          }
+        }
+      }
+    },
     "Ready — it knows your body's rhythms from %@ kept moments." : {
       "comment" : "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin has learned enough; the placeholder is how many Health signals the user kept. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."
     },
@@ -625,6 +791,28 @@
     },
     "Relationships" : {
       "comment" : "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 13 characters."
+    },
+    "reminder.preset.evening" : {
+      "comment" : "Settings > Daily Reminder: preset name, 20:00. One word, about 10 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Evening"
+          }
+        }
+      }
+    },
+    "reminder.preset.morning" : {
+      "comment" : "Settings > Daily Reminder: preset name, 7:00. One word, about 10 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Morning"
+          }
+        }
+      }
     },
     "REQUIRED" : {
       "comment" : "Onboarding, privacy ledger screen: right side of a ledger row, its status. Upper case, monospaced, about 14 characters. The microphone is needed to record."
@@ -640,6 +828,17 @@
     },
     "Review before your Twin learns. Every signal waits for you — Keep what feels true, let go of the rest." : {
       "comment" : "Body Twin invite sheet: first promise. 'Keep' is the name of the button on each signal; keep it the same word as that button. About 100 characters."
+    },
+    "shareCard.body.name" : {
+      "comment" : "Share sheet, the card picker: name of the sleep-and-mood card. About 14 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Body"
+          }
+        }
+      }
     },
     "%@s run high." : {
       "comment" : "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries on this weekday read higher than usual. The placeholder is a weekday name from the calendar ('Monday'); the English adds 's' to make it plural, so rephrase freely ('On Mondays…')."
@@ -763,6 +962,9 @@
     "Total Entries: %@" : {
       "comment" : "Export file (plain text export): line under the heading; the placeholder is the number of entries in the file. It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."
     },
+    "%@ total mentions before" : {
+      "comment" : "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. The placeholder is how many times the topic came up in earlier weeks (5 or more). It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."
+    },
     "Total Words" : {
       "comment" : "Stats tab, Writing Stats card: label under a number in a grid of four. About 16 characters. "
     },
@@ -777,6 +979,72 @@
     },
     "Tuesdays" : {
       "comment" : "Stats > Your Week, Decoded: weekday in the plural, used in 'Most <mood> on <weekday>.' (on Tuesdays = every Tuesday). One word."
+    },
+    "twin.confidence.low" : {
+      "comment" : "Twin tab > Personality: confidence word inside 'A learned estimate — low confidence.' Lower case.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "low"
+          }
+        }
+      }
+    },
+    "twin.myWorld.mentions.count" : {
+      "comment" : "Twin tab > My World: how many times a person or place was mentioned, as in '12x'. The placeholder is the count. About 5 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%lldx"
+          }
+        }
+      }
+    },
+    "twin.selfAwareness.high" : {
+      "comment" : "Twin tab: the high (right) end of the 'Self-Awareness' bar. One word, about 12 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Deep"
+          }
+        }
+      }
+    },
+    "twin.selfAwareness.low" : {
+      "comment" : "Twin tab: the low (left) end of the 'Self-Awareness' bar. One word, about 12 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Developing"
+          }
+        }
+      }
+    },
+    "twin.skyDepth.deep" : {
+      "comment" : "Twin tab: how deep the sky is, 200 or more entries. Shown upper case after the star count. One word, about 12 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Deep"
+          }
+        }
+      }
+    },
+    "twin.skyDepth.established" : {
+      "comment" : "Twin tab: how deep the sky is, 100-199 entries. Shown upper case after the star count. One word, about 12 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Established"
+          }
+        }
+      }
     },
     "Unable to access the selected file." : {
       "comment" : "Import Backup screen: import failed alert message when iOS will not let the app read the file the user picked. About 40 characters."
@@ -821,6 +1089,28 @@
     },
     "Wednesdays" : {
       "comment" : "Stats > Your Week, Decoded: weekday in the plural, used in 'Most <mood> on <weekday>.' (on Wednesdays = every Wednesday). One word."
+    },
+    "weekDecoded.moodFallback.low" : {
+      "comment" : "Stats > Your Week, Decoded: stands in for a mood name in 'Most <mood> on <weekday>.' when the weekday's low mood has no name. Lower case, one word.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "low"
+          }
+        }
+      }
+    },
+    "weekDecoded.personMentions.count" : {
+      "comment" : "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. How many times a person was mentioned this week, as a multiplier ('8x'). Keep it very short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%lldx"
+          }
+        }
+      }
     },
     "%@ weighs on you." : {
       "comment" : "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries that mention this person read heavier. The placeholder is a person's name from the user's journal. Gentle, not a judgement of the person."
@@ -1265,7 +1555,7 @@
       "shouldTranslate" : false
     },
     "%lldx" : {
-      "comment" : "Audio player: playback speed on the speed button, as in '1x' or '2x'. Keep it very short.\nStats > Your Week, Decoded: a whole-number multiplier ('3x'), used inside 'You write <multiplier> more when you're <mood>.' Keep it very short.\nStats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. How many times a person was mentioned this week, as a multiplier ('8x'). Keep it very short.\nTwin tab > My World: how many times a person or place was mentioned, as in '12x'. The placeholder is the count. About 5 characters.",
+      "comment" : "Audio player: playback speed on the speed button, as in '1x' or '2x'. Keep it very short.\nStats > Your Week, Decoded: a whole-number multiplier ('3x'), used inside 'You write <multiplier> more when you're <mood>.' Keep it very short.",
       "shouldTranslate" : false
     },
     "0 BYTES" : {
@@ -1547,7 +1837,7 @@
       "comment" : "Early signals: entry length has not changed much."
     },
     "Abstract" : {
-      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'Your thinking leans…'. About 14 characters.\nTwin tab: the high (right) end of the 'Abstraction' bar. One word, about 12 characters."
+      "comment" : "Twin tab: the high (right) end of the 'Abstraction' bar. One word, about 12 characters."
     },
     "Abstraction" : {
       "comment" : "Twin tab: label above a bar in the Thinking Style card. About 16 characters."
@@ -2411,7 +2701,7 @@
       "comment" : "Personality card (Twin tab and the shared image): the communication-style badge. Describes the user: keep it gender-neutral. About 22 characters."
     },
     "Body" : {
-      "comment" : "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). The Health snapshot saved with the entry (sleep, steps…).\nJournal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries with a Health snapshot (Body Twin).\nShare sheet, the card picker: name of the sleep-and-mood card. About 14 characters."
+      "comment" : "Entry detail, 'What your Twin filed' card: row label, shown in upper case in a narrow monospaced column (62pt, about 9 characters). The Health snapshot saved with the entry (sleep, steps…).\nJournal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries with a Health snapshot (Body Twin)."
     },
     "Body & Mood" : {
       "comment" : "Stats tab: title of the card linking Health signals to mood. About 14 characters.",
@@ -2969,7 +3259,7 @@
       "comment" : "Personality card (Twin tab and the shared image): the thinking-style badge. Describes the user: keep it gender-neutral. About 22 characters."
     },
     "Concrete" : {
-      "comment" : "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Your thinking leans…'. About 14 characters.\nTwin tab: the low (left) end of the 'Abstraction' bar. One word, about 12 characters."
+      "comment" : "Twin tab: the low (left) end of the 'Abstraction' bar. One word, about 12 characters."
     },
     "Confirm Password" : {
       "comment" : "Export Data screen, Encrypted Backup: second password field placeholder. About 20 characters.",
@@ -3372,7 +3662,7 @@
       }
     },
     "Deep" : {
-      "comment" : "Twin maturity level, 100 or more entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.\nTwin tab: how deep the sky is, 200 or more entries. Shown upper case after the star count. One word, about 12 characters.\nTwin tab: the high (right) end of the 'Self-Awareness' bar. One word, about 12 characters."
+      "comment" : "Twin maturity level, 100 or more entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters."
     },
     "Delete all audio recordings? Your text entries are kept." : {
       "localizations" : {
@@ -3639,13 +3929,13 @@
       "comment" : "Twin tab: the high (right) end of the 'Entry Length' bar. One word, about 12 characters."
     },
     "Developing" : {
-      "comment" : "Twin maturity level, 20-49 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.\nTwin tab: the low (left) end of the 'Self-Awareness' bar. One word, about 12 characters."
+      "comment" : "Twin maturity level, 20-49 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters."
     },
     "Different question" : {
       "comment" : "Button under the question of the day that shows another question."
     },
     "Direct" : {
-      "comment" : "Personality card (Twin tab and the shared image): the high (right) end of the 'Directness' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Directness', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters.\nTwin tab: the high (right) end of the 'Directness' bar. One word, about 12 characters."
+      "comment" : "Personality card (Twin tab and the shared image): the high (right) end of the 'Directness' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Directness', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the high (right) end of the 'Directness' bar. One word, about 12 characters."
     },
     "Directness" : {
       "comment" : "Personality card (Twin tab and the shared image): trait name at the left of a bar. One word, about 12 characters.\nTwin tab: label above a bar in the Communication Style card. About 16 characters."
@@ -4152,10 +4442,10 @@
       }
     },
     "Established" : {
-      "comment" : "Twin maturity level, 50-99 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.\nTwin tab: how deep the sky is, 100-199 entries. Shown upper case after the star count. One word, about 12 characters."
+      "comment" : "Twin maturity level, 50-99 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters."
     },
     "Evening" : {
-      "comment" : "Settings > Daily Reminder: preset name, 20:00. One word, about 10 characters.\nTwin tab > Mood Rhythms: one of four columns. One word, about 9 characters."
+      "comment" : "Twin tab > Mood Rhythms: one of four columns. One word, about 9 characters."
     },
     "Every entry you speak lands here,\nnewest first." : {
       "comment" : "Journal tab: empty-state text on two lines; keep the line break. About 35 characters per line."
@@ -4556,7 +4846,7 @@
       "comment" : "Personality card (Twin tab and the shared image): trait name at the left of a bar. One word, about 12 characters."
     },
     "Expressive" : {
-      "comment" : "Personality card (Twin tab and the shared image): the high (right) end of the 'Expression' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Expression', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters.\nTwin tab: the high (right) end of the 'Expressiveness' bar. One word, about 12 characters."
+      "comment" : "Personality card (Twin tab and the shared image): the high (right) end of the 'Expression' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Expression', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the high (right) end of the 'Expressiveness' bar. One word, about 12 characters."
     },
     "Expressiveness" : {
       "comment" : "Twin tab: label above a bar in the Communication Style card. About 16 characters."
@@ -4926,7 +5216,7 @@
       "comment" : "Personality card (Twin tab and the shared image): the thinking-style badge. Describes the user: keep it gender-neutral. About 22 characters."
     },
     "Growth" : {
-      "comment" : "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): the high (right) end of the 'Mindset' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Mindset', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the high (right) end of the 'Growth Mindset' bar. One word, about 12 characters."
+      "comment" : "Personality card (Twin tab and the shared image): the high (right) end of the 'Mindset' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Mindset', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the high (right) end of the 'Growth Mindset' bar. One word, about 12 characters."
     },
     "Growth Indicators" : {
       "comment" : "Twin tab > Personality: card header. About 24 characters."
@@ -4938,7 +5228,7 @@
       "comment" : "Twin tab, stat row: the Heart column (average mood). Upper case, monospaced, about 8 characters."
     },
     "Health" : {
-      "comment" : "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.\nSettings > section header for Apple Health signals. Use Apple's name for Health in the target language. About 12 characters.",
+      "comment" : "Settings > section header for Apple Health signals. Use Apple's name for Health in the target language. About 12 characters.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5408,9 +5698,6 @@
     },
     "improving" : {
       "comment" : "Twin tab > Emotions: the word inside 'Emotional trajectory is improving'. Lower case."
-    },
-    "low" : {
-      "comment" : "Stats > Your Week, Decoded: stands in for a mood name in 'Most <mood> on <weekday>.' when the weekday's low mood has no name. Lower case, one word.\nTwin tab > Personality: confidence word inside 'A learned estimate — low confidence.' Lower case."
     },
     "If you spoke to yourself like a friend, what would you say?" : {
       "comment" : "Question of the day on the Today screen."
@@ -6386,7 +6673,7 @@
       "comment" : "Early signals: heading for the mood counts."
     },
     "Morning" : {
-      "comment" : "Settings > Daily Reminder: preset name, 7:00. One word, about 10 characters.\nTwin tab > Mood Rhythms: one of four columns. One word, about 9 characters."
+      "comment" : "Twin tab > Mood Rhythms: one of four columns. One word, about 9 characters."
     },
     "Morning HRV and resting heart rate" : {
       "comment" : "Settings > Health: line under 'Heart'. HRV is heart rate variability; use the abbreviation Apple Health uses in the target language. About 36 characters."
@@ -6584,7 +6871,7 @@
       }
     },
     "Neutral" : {
-      "comment" : "Personality card (Twin tab and the shared image): the dominant mood when no mood has been recorded. One word, about 10 characters.\nResearch pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters. The absence of a particular emotion.\nTwin tab > Mood Rhythms: mood reading for a time of day, the middle band. One word, about 8 characters.",
+      "comment" : "Personality card (Twin tab and the shared image): the dominant mood when no mood has been recorded. One word, about 10 characters.\nTwin tab > Mood Rhythms: mood reading for a time of day, the middle band. One word, about 8 characters.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7108,7 +7395,7 @@
       "comment" : "Settings > Journaling Goal: toggle. About 28 characters."
     },
     "Nuanced" : {
-      "comment" : "Personality card (Twin tab and the shared image): the low (left) end of the 'Directness' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Directness', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters.\nTwin tab: the low (left) end of the 'Directness' bar. One word, about 12 characters."
+      "comment" : "Personality card (Twin tab and the shared image): the low (left) end of the 'Directness' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Directness', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the low (left) end of the 'Directness' bar. One word, about 12 characters."
     },
     "OFF" : {
       "comment" : "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt value for iCloud sync when it is off. Upper case, monospaced, about 12 characters."
@@ -8619,7 +8906,7 @@
       "comment" : "Settings > Research pilot: alert message under 'Export error'. The placeholder is iOS's own error description, already in the user's language."
     },
     "Reserved" : {
-      "comment" : "Personality card (Twin tab and the shared image): the low (left) end of the 'Expression' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Expression', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters.\nTwin tab: the low (left) end of the 'Expressiveness' bar. One word, about 12 characters."
+      "comment" : "Personality card (Twin tab and the shared image): the low (left) end of the 'Expression' bar. One word, about 12 characters.\nPersonality card (Twin tab and the shared image): which way the user leans on 'Expression', at the right of the bar. Describes the user: keep it gender-neutral. About 14 characters.\nTwin tab: the low (left) end of the 'Expressiveness' bar. One word, about 12 characters."
     },
     "Reset and reflect" : {
       "comment" : "Settings > Daily Reminder: line under the Midday preset. About 30 characters."
@@ -9589,7 +9876,7 @@
       "comment" : "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Headline, line 2 of 2: an invitation to the friend reading it. About 18 characters."
     },
     "Steady" : {
-      "comment" : "Personality card (Twin tab and the shared image): how much the user's moods vary, the value above 'Emotional Range'. One word, about 10 characters.\nTwin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Across a week, your emotions are…'. About 14 characters."
+      "comment" : "Personality card (Twin tab and the shared image): how much the user's moods vary, the value above 'Emotional Range'. One word, about 10 characters."
     },
     "Steps" : {
       "comment" : "Body Twin invite sheet: name of a Health signal the Twin can read (step count). One word, about 16 characters.\nSettings > Health: name of a signal Body Twin can read. One word, about 16 characters."

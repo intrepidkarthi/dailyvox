@@ -28,9 +28,9 @@ enum LifeArea: String, CaseIterable {
     var title: String {
         switch self {
         case .work: return String(localized: "Work", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
-        case .health: return String(localized: "Health", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .health: return String(localized: "lifeArea.health", defaultValue: "Health", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
         case .relationships: return String(localized: "Relationships", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 13 characters.")
-        case .growth: return String(localized: "Growth", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.")
+        case .growth: return String(localized: "lifeArea.growth", defaultValue: "Growth", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.")
         case .family: return String(localized: "Family", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
         case .creativity: return String(localized: "Creativity", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
         }
@@ -1158,7 +1158,7 @@ struct EntryRowView: View {
                 Text("\u{2726}")
                     .font(.dv(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(DS.Palette.gold)
-                    .accessibilityLabel("Starred")
+                    .accessibilityLabel(String(localized: "journal.row.starred.a11y", defaultValue: "Starred", comment: "Journal tab: one entry's row, spoken by VoiceOver for the gold star mark. Says this one entry is starred. One word."))
             }
         }
         .padding(.vertical, DS.Space.xs)

@@ -42,7 +42,7 @@ enum SelfLabelEmotion: String, CaseIterable, Identifiable {
         case .fear: return String(localized: "Fear", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
         case .surprise: return String(localized: "Surprise", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
         case .disgust: return String(localized: "Disgust", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters.")
-        case .neutral: return String(localized: "Neutral", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters. The absence of a particular emotion.")
+        case .neutral: return String(localized: "pilot.emotion.neutral", defaultValue: "Neutral", comment: "Research pilot: 'How did that feel?' picker after a recording (only for people in the study). Name of an emotion on a chip. One word, about 10 characters. The absence of a particular emotion.")
         }
     }
 

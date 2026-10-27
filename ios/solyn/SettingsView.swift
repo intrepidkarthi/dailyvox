@@ -621,7 +621,7 @@ struct SettingsView: View {
             if reminderManager.isEnabled {
                 ReminderPresetRow(
                     icon: "sunrise",
-                    title: String(localized: "Morning", comment: "Settings > Daily Reminder: preset name, 7:00. One word, about 10 characters."),
+                    title: String(localized: "reminder.preset.morning", defaultValue: "Morning", comment: "Settings > Daily Reminder: preset name, 7:00. One word, about 10 characters."),
                     time: LocaleFormat.clockTime(hour: 7, minute: 0),
                     intent: String(localized: "Start your day with clarity", comment: "Settings > Daily Reminder: line under the Morning preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "morning"
@@ -643,7 +643,7 @@ struct SettingsView: View {
 
                 ReminderPresetRow(
                     icon: "moon.stars",
-                    title: String(localized: "Evening", comment: "Settings > Daily Reminder: preset name, 20:00. One word, about 10 characters."),
+                    title: String(localized: "reminder.preset.evening", defaultValue: "Evening", comment: "Settings > Daily Reminder: preset name, 20:00. One word, about 10 characters."),
                     time: LocaleFormat.clockTime(hour: 20, minute: 0),
                     intent: String(localized: "Unwind and look back", comment: "Settings > Daily Reminder: line under the Evening preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "evening"
