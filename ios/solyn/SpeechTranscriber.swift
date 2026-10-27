@@ -37,13 +37,17 @@ final class SpeechTranscriber {
         var errorDescription: String? {
             switch self {
             case .notAuthorized:
-                return "Speech recognition is not authorized."
+                return String(localized: "Speech recognition is not authorized.",
+                              comment: "Alert message on the Speak tab when transcription fails because the user denied speech recognition. Under the title 'Recording Error'.")
             case .recognizerUnavailable:
-                return "Speech recognizer is not available."
+                return String(localized: "Speech recognizer is not available.",
+                              comment: "Alert message on the Speak tab when iOS has no speech recognizer for the chosen language right now. Under the title 'Recording Error'.")
             case .noFinalResult:
-                return "No final transcription result."
+                return String(localized: "No final transcription result.",
+                              comment: "Alert message on the Speak tab when the recognizer finished without any words. Under the title 'Recording Error'.")
             case .onDeviceUnavailable:
-                return "No on-device speech model is installed yet, so this one is saved as audio. Turn on Settings > General > Keyboard > Dictation and iOS will fetch the model once; every entry after that transcribes here. Tap Edit to write this one yourself. DailyVox will not transcribe over a network."
+                return String(localized: "No on-device speech model is installed yet, so this one is saved as audio. Turn on Settings > General > Keyboard > Dictation and iOS will fetch the model once; every entry after that transcribes here. Tap Edit to write this one yourself. DailyVox will not transcribe over a network.",
+                              comment: "Alert message on the Speak tab, under the title 'Recording Saved': the recording was kept but could not be transcribed on this iPhone. 'Settings > General > Keyboard > Dictation' must match the iOS Settings path in the target language exactly. 'Edit' is the button on the entry. Must keep the promise that DailyVox never transcribes over a network.")
             }
         }
     }

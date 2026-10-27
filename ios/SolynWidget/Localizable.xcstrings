@@ -1,0 +1,259 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ · %lld stars" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld stars"
+          }
+        }
+      },
+      "comment" : "Lock Screen constellation widget, inline (one line above the clock). First placeholder: a day label such as 'Day 12' or 'Welcome back'. Second: the number of recent entries shown as stars. About 24 characters."
+    },
+    "%lld" : {
+      "comment" : "A bare number (a streak or a star count) in a widget or Live Activity. No translation needed unless the language writes numbers differently."
+    },
+    "%lld IN YOUR SKY" : {
+      "comment" : "Medium Home Screen widget: total entries, upper case, monospaced, under the seven-night strip. The placeholder is the count. About 16 characters."
+    },
+    "%lld stars" : {
+      "comment" : "Lock Screen constellation widget, rectangular: number of recent entries drawn as stars. About 12 characters."
+    },
+    "%lld stars in your inner sky" : {
+      "comment" : "Streak Live Activity, Dynamic Island expanded: total entries. The placeholder is the count. About 30 characters."
+    },
+    "%llds to your daily 42" : {
+      "comment" : "Recording Live Activity: seconds left before the soft 42-second target. The placeholder is a whole number of seconds (0-42); 's' is the local unit for seconds. Keep 42 literal. About 25 characters."
+    },
+    "%lld→%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld→%2$lld"
+          }
+        }
+      },
+      "comment" : "Star-birth Live Activity, Dynamic Island expanded: the star count ticking up by one, as in 140→141. Both placeholders are counts; keep the arrow."
+    },
+    "+1" : {
+      "comment" : "Star-birth Live Activity, Dynamic Island compact: one new star. Keep it as is unless the language writes it differently."
+    },
+    "0 BYTES OUT" : {
+      "comment" : "Recording Live Activity, Dynamic Island expanded, top right: nothing leaves the phone. Upper case, monospaced, about 12 characters."
+    },
+    "A new star appeared in your sky" : {
+      "comment" : "Star-birth Live Activity, Lock Screen: shown right after an entry is saved. 'Star' is the app's word for an entry. About 35 characters."
+    },
+    "Angry" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Anxious" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Calm" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Constellation" : {
+      "comment" : "Widget gallery: name of the Lock Screen constellation widget. About 20 characters."
+    },
+    "DailyVox" : {
+      "comment" : "The app's name in the small Home Screen widget. Do not translate."
+    },
+    "Day %@ · speak tonight" : {
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). No entry yet tonight; the number is the day the streak reaches if the user speaks tonight (2 or more). An invitation, never guilt."
+    },
+    "Day %@ · spoken" : {
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). Tonight's entry is in; the number is the streak day (1 or more)."
+    },
+    "Day %@ — your constellation is growing." : {
+      "comment" : "Star-birth Live Activity on the Lock Screen after an entry. The placeholder is the streak day (2 or more). About 50 characters."
+    },
+    "Day %lld" : {
+      "comment" : "Widgets and Live Activities: the current streak day. The placeholder is the day number. About 10 characters."
+    },
+    "Diary Entry" : {
+      "comment" : "Widget gallery: name of the main Home Screen widget. About 20 characters."
+    },
+    "Discard" : {
+      "comment" : "Recording Live Activity: button that throws the recording away. One word, about 10 characters."
+    },
+    "Discard recording" : {
+      "comment" : "Live Activity / Control Center action title: throw the current recording away without saving it. About 20 characters."
+    },
+    "Done today" : {
+      "comment" : "Small streak widget: today's entry is recorded. About 12 characters."
+    },
+    "Entry recorded" : {
+      "comment" : "Small Home Screen widget: today's entry is in. About 16 characters."
+    },
+    "Excited" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Finish recording" : {
+      "comment" : "Live Activity / Control Center action title: stop recording and keep the entry. About 20 characters."
+    },
+    "Finish ✦" : {
+      "comment" : "Recording Live Activity: button that stops and keeps the entry. Keep the ✦ star after the word. About 10 characters."
+    },
+    "First star tonight. Your inner sky is forming." : {
+      "comment" : "Star-birth Live Activity on the Lock Screen after the first entry of a run. 'Star' and 'sky' are the app's metaphor for entries, not astrology. About 50 characters."
+    },
+    "Grateful" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Happy" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Listening…" : {
+      "comment" : "Recording Live Activity: shown while recording before any words are transcribed. About 14 characters."
+    },
+    "Mood Tracker" : {
+      "comment" : "Widget gallery: name of the mood widget. About 20 characters."
+    },
+    "Mood so far" : {
+      "comment" : "Recording Live Activity: VoiceOver label of the live mood dot. About 16 characters."
+    },
+    "No mood" : {
+      "comment" : "Mood widget: the entry has no mood. About 12 characters."
+    },
+    "No mood set" : {
+      "comment" : "Mood widget: today's entry has no mood. About 14 characters."
+    },
+    "No moods recorded" : {
+      "comment" : "Mood widget, large: no moods this week yet. About 20 characters."
+    },
+    "Not set" : {
+      "comment" : "Mood widget: a day with no mood. About 10 characters."
+    },
+    "Open DailyVox" : {
+      "comment" : "Widget link label: opens the app. Keep 'DailyVox'. About 16 characters."
+    },
+    "Open DailyVox and start recording an entry." : {
+      "comment" : "Control Center / Shortcuts description of the Speak action. Keep 'DailyVox'. About 50 characters."
+    },
+    "Past your daily 42 — keep going as long as you like." : {
+      "comment" : "Recording Live Activity, Lock Screen subtitle once 42 seconds have passed. 42 is a soft target, never a limit: keep the number 42 and never say 'at least' or 'maximum'. About 55 characters."
+    },
+    "Paused" : {
+      "comment" : "Recording Live Activity: the recording is paused. One word, about 10 characters."
+    },
+    "Quick Record" : {
+      "comment" : "Widget gallery: name of the one-tap record widget. About 20 characters."
+    },
+    "Record today" : {
+      "comment" : "Small streak widget: nothing recorded yet today, an invitation. About 12 characters."
+    },
+    "Recording your entry" : {
+      "comment" : "Recording Live Activity, Lock Screen: title while recording. About 24 characters."
+    },
+    "Recording, %lld seconds" : {
+      "comment" : "Recording Live Activity: VoiceOver label for the timer. The placeholder is the elapsed whole seconds."
+    },
+    "Sad" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "See your mood at a glance." : {
+      "comment" : "Widget gallery: description of the mood widget. About 40 characters."
+    },
+    "Speak" : {
+      "comment" : "Control Center control and action title: start a spoken entry. One short word, about 8 characters."
+    },
+    "Speak an entry" : {
+      "comment" : "Small Home Screen widget: invitation under the mic. About 16 characters."
+    },
+    "Speak tonight" : {
+      "comment" : "Widgets: invitation to record tonight when nothing has been spoken. About 24 characters."
+    },
+    "Spoken tonight" : {
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters. Tonight's entry is in and there is no streak running."
+    },
+    "Star %lld kept" : {
+      "comment" : "Star-birth Live Activity, Dynamic Island expanded: the entry just saved became star number N. 'Kept' is the app's verb for saving. About 18 characters."
+    },
+    "Start a DailyVox entry. Nothing leaves your device." : {
+      "comment" : "Control Center control description. Keep 'DailyVox'. About 50 characters."
+    },
+    "Stop recording and keep the entry." : {
+      "comment" : "Live Activity / Control Center action description for Finish recording. About 40 characters."
+    },
+    "Streak Counter" : {
+      "comment" : "Widget gallery: name of the streak widget. About 20 characters."
+    },
+    "Tap to Record" : {
+      "comment" : "Quick Record widget: the button label. About 14 characters."
+    },
+    "Tap to open DailyVox and start recording." : {
+      "comment" : "Widget gallery: description of the Quick Record widget. Keep 'DailyVox'. About 45 characters."
+    },
+    "Tap to record" : {
+      "comment" : "Small Home Screen widget: invitation when nothing is recorded today. About 14 characters."
+    },
+    "This Week" : {
+      "comment" : "Mood widget, large: header over the week's moods. About 14 characters."
+    },
+    "Throw this recording away without saving it." : {
+      "comment" : "Live Activity / Control Center action description for Discard recording. About 45 characters."
+    },
+    "Tired" : {
+      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+    },
+    "Today" : {
+      "comment" : "Mood widget: label for today's mood. One word, about 10 characters."
+    },
+    "Today done" : {
+      "comment" : "Streak Live Activity: today's entry is in. About 12 characters."
+    },
+    "Today is open whenever you are." : {
+      "comment" : "Streak Live Activity, Lock Screen: no entry yet today. An invitation, never guilt. About 35 characters."
+    },
+    "Today open" : {
+      "comment" : "Streak Live Activity: no entry yet today. About 12 characters."
+    },
+    "Today's Mood" : {
+      "comment" : "Mood widget, small: header. About 14 characters."
+    },
+    "Today's entry is in. %lld stars total." : {
+      "comment" : "Streak Live Activity, Lock Screen: today's entry is saved. The placeholder is the total number of entries (stars). About 40 characters."
+    },
+    "View today's diary entry and quick access to record." : {
+      "comment" : "Widget gallery: description of the Diary Entry widget. About 55 characters."
+    },
+    "Welcome back" : {
+      "comment" : "Widgets: shown after a break in the streak, instead of a zero. Warm, never guilt. About 14 characters."
+    },
+    "You're past 42s. Tap the app to stop when ready." : {
+      "comment" : "Recording Live Activity, Dynamic Island expanded, once 42 seconds have passed. 42 is a soft target, never a limit: keep 42 literal and the local unit for seconds. About 50 characters."
+    },
+    "Your first star is one entry away." : {
+      "comment" : "Small Home Screen widget before the first entry. 'Star' is the app's word for an entry. About 36 characters."
+    },
+    "Your inner sky on the Lock Screen — one star per recent entry." : {
+      "comment" : "Widget gallery: description of the constellation widget. About 60 characters."
+    },
+    "Your run of spoken days. One missed day a week won't break it." : {
+      "comment" : "Widget gallery: description of the streak widget. About 60 characters."
+    },
+    "Your sky kept your place." : {
+      "comment" : "Small widget after a break in the streak: the sky is still there. Warm, never guilt. About 30 characters."
+    },
+    "day streak" : {
+      "comment" : "Streak widget: caption under the streak number (the same for every count). About 12 characters."
+    },
+    "even" : {
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot, neither positive nor heavy. One word."
+    },
+    "heavy" : {
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as low. Gentle. One word."
+    },
+    "positive" : {
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as positive. One word."
+    },
+    "stars" : {
+      "comment" : "Streak Live Activity, Lock Screen: caption under the total star count. One word, about 8 characters."
+    }
+  },
+  "version" : "1.1"
+}

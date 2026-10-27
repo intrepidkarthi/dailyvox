@@ -15,13 +15,13 @@
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>DailyVox never writes or changes anything in Apple Health. The app only reads sleep, heart, steps and mindfulness data on this iPhone; no update access is requested or used.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>DailyVox needs microphone access to record your voice diary entries.</string>
+	<string>DailyVox uses the microphone to record your diary entries.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>DailyVox uses motion activity to tell whether you were moving when a journal entry was made, so body signals are read in the right context. Activity context stays on this iPhone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DailyVox lets you attach photos to your diary entries, and — only if you turn on Photo context — reads the day's photos on this iPhone to derive a one-line scene note (like "mostly trail photos") for your Twin. You review every note before it is kept. Photos are analyzed on-device and never leave your iPhone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>DailyVox uses speech recognition to transcribe your voice recordings into text.</string>
+	<string>DailyVox uses speech recognition to convert your recorded diary into text.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>

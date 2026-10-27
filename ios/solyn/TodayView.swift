@@ -238,17 +238,24 @@ struct TodayView: View {
         }
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
-                               title: "Today",
+                               title: String(localized: "Today",
+                                             comment: "Title of the typed-entry sheet opened from the Speak tab. One word, about 12 characters."),
                                prompt: todaysQuestion.text,
-                               footnote: "Typed, not recorded. Nothing is sent to DailyVox.",
+                               footnote: String(localized: "Typed, not recorded. Nothing is sent to DailyVox.",
+                                                comment: "Typed-entry sheet from the Speak tab: footnote under the text field. About 55 characters."),
                                style: .themed,
                                onSave: saveTypedEntry,
                                onCancel: { typing = false })
         }
         // "Saved" fallbacks (offline / failed transcription) aren't errors —
         // don't greet a successfully kept recording with "Recording Error".
-        // A typed entry has no recording, so it brings its own title.
-        .alert(errorTitle ?? (errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error"), isPresented: Binding(
+        // Those sites set `errorTitle` to "Recording Saved" themselves: the
+        // title used to be chosen by searching the message for "saved", which
+        // only works while the message is in English. A typed entry has no
+        // recording, so it brings its own title.
+        .alert(errorTitle ?? String(localized: "Recording Error",
+                                    comment: "Speak tab: alert title when a recording could not be made or transcribed. About 20 characters."),
+               isPresented: Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil; errorTitle = nil } }
         )) {
@@ -1338,17 +1345,20 @@ struct TodayView: View {
                         self.recordingState = .recording
                         HapticManager.shared.recordingStarted()
                     } catch {
-                        self.errorMessage = "Unable to start recording. Please try again."
+                        self.errorMessage = String(localized: "Unable to start recording. Please try again.",
+                                                   comment: "Speak tab: alert message under 'Recording Error' when the microphone could not start.")
                         HapticManager.shared.error()
                     }
                 } else {
-                    self.errorMessage = "DailyVox needs microphone access to record your diary."
+                    self.errorMessage = String(localized: "DailyVox needs microphone access to record your diary.",
+                                               comment: "Speak tab: alert message under 'Recording Error' when microphone permission is denied.")
                     HapticManager.shared.warning()
                 }
             }
         }
         #else
-        errorMessage = "Recording is only available on iOS."
+        errorMessage = String(localized: "Recording is only available on iOS.",
+                              comment: "Speak tab: alert message on a platform without a microphone path (never on iPhone).")
         #endif
     }
 
@@ -1408,8 +1418,10 @@ struct TodayView: View {
             // After the sheet is gone: an alert raised while it is still
             // dismissing is silently dropped.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                errorTitle = "Entry Not Saved"
-                errorMessage = "Couldn\u{2019}t save your entry. What you typed is kept \u{2014} tap \u{201C}I can\u{2019}t talk right now\u{201D} to try again."
+                errorTitle = String(localized: "Entry Not Saved",
+                                    comment: "Speak tab: alert title when a typed entry could not be saved. About 20 characters.")
+                errorMessage = String(localized: "Couldn\u{2019}t save your entry. What you typed is kept \u{2014} tap \u{201C}I can\u{2019}t talk right now\u{201D} to try again.",
+                                      comment: "Speak tab: alert message under 'Entry Not Saved'. The quoted phrase is the label of the typing button on the Speak tab and must match its translation exactly; use the target language's quotation marks.")
             }
             return
         }
@@ -1570,10 +1582,15 @@ struct TodayView: View {
                     awaitingReflection = false
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
+                    let saved = String(localized: "Recording Saved",
+                                       comment: "Speak tab: alert title when the recording was kept but has no transcript yet. Not an error. About 20 characters.")
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
                         self.errorMessage = transcriptionError.errorDescription
+                        if transcriptionError == .onDeviceUnavailable { self.errorTitle = saved }
                     } else {
-                        self.errorMessage = "Transcription failed. Your recording is saved — tap the entry to add text manually."
+                        self.errorMessage = String(localized: "Transcription failed. Your recording is saved — tap the entry to add text manually.",
+                                                   comment: "Speak tab: alert message under 'Recording Saved' when transcription failed but the audio was kept.")
+                        self.errorTitle = saved
                     }
                 }
                 recordingState = .idle

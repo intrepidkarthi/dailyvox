@@ -410,8 +410,10 @@ private struct SpeakScreen: View {
             // Shared with the Today screen (TypedEntryComposer.swift), so the
             // typed path is the same product on day one and day one hundred.
             TypedEntryComposer(text: $typedText,
-                               title: "Your first star",
-                               footnote: "Stored only on your phone.",
+                               title: String(localized: "Your first star",
+                                             comment: "Onboarding: title of the typed first-entry sheet. 'Star' is the app's word for an entry. About 20 characters."),
+                               footnote: String(localized: "Stored only on your phone.",
+                                                comment: "Onboarding typed first-entry sheet: footnote under the text field. About 30 characters."),
                                style: .onboarding,
                                onSave: finishTyped,
                                onCancel: { typing = false })
