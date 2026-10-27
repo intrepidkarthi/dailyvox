@@ -23,6 +23,16 @@ enum AppTheme: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// The theme's name in Settings. The raw value is stored in UserDefaults
+    /// and must never be localized.
+    var displayName: String {
+        switch self {
+        case .day: return String(localized: "Day", comment: "Settings > Appearance: name of the light theme, under its swatch. One word, about 8 characters.")
+        case .night: return String(localized: "Night", comment: "Settings > Appearance: name of the dark theme, under its swatch. One word, about 8 characters.")
+        case .sunset: return String(localized: "Sunset", comment: "Settings > Appearance: name of the warm theme, under its swatch. One word, about 8 characters.")
+        }
+    }
+
     /// Only the three current cases are offered in Settings.
     static var allCases: [AppTheme] { [.day, .night, .sunset] }
 

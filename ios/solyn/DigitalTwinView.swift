@@ -50,6 +50,17 @@ struct DigitalTwinView: View {
         case emotions = "Emotions"
         case world = "My World"
         case patterns = "Patterns"
+
+        /// What the chip says. The raw value is only an identity.
+        var title: String {
+            switch self {
+            case .overview: return String(localized: "Overview", comment: "Twin tab, the row of section chips under 'How it knows'. One or two words, about 12 characters.")
+            case .personality: return String(localized: "Personality", comment: "Twin tab, the row of section chips under 'How it knows'. One or two words, about 12 characters.")
+            case .emotions: return String(localized: "Emotions", comment: "Twin tab, the row of section chips under 'How it knows'. One or two words, about 12 characters.")
+            case .world: return String(localized: "My World", comment: "Twin tab, the row of section chips under 'How it knows'. One or two words, about 12 characters.")
+            case .patterns: return String(localized: "Patterns", comment: "Twin tab, the row of section chips under 'How it knows'. One or two words, about 12 characters.")
+            }
+        }
     }
 
     var body: some View {
@@ -88,10 +99,10 @@ struct DigitalTwinView: View {
                     // one there. They sit under the summary now, at full width,
                     // with their names on them.
                     HStack(spacing: 10) {
-                        twinAction("Insights", "chart.line.uptrend.xyaxis") {
+                        twinAction(String(localized: "Insights", comment: "Twin tab: button under the sky that opens Insights. Shares a row with 'Share your sky'; about 14 characters, shrinks to 85%."), "chart.line.uptrend.xyaxis") {
                             showInsights = true
                         }
-                        twinAction("Share your sky", "square.and.arrow.up") {
+                        twinAction(String(localized: "Share your sky", comment: "Twin tab: button under the sky that opens the share sheet. 'Sky' is the app's picture of all entries. About 14 characters, shrinks to 85%."), "square.and.arrow.up") {
                             showShare = true
                         }
                     }
@@ -262,32 +273,32 @@ struct DigitalTwinView: View {
                 twinIntroStep(
                     number: "1",
                     icon: "mic.circle.fill",
-                    title: "You speak",
-                    description: "Speak an entry on the Speak tab. 42 seconds is the sweet spot — take as long as you need.",
+                    title: String(localized: "You speak", comment: "Twin tab, first run (no entries yet): step 1 of the four-step 'how it works' list, title. About 20 characters."),
+                    description: String(localized: "Speak an entry on the Speak tab. 42 seconds is the sweet spot — take as long as you need.", comment: "Twin tab, first run (no entries yet): step 1 of the four-step 'how it works' list. 'Speak' is the tab name. 42 seconds is a soft target, never a limit: keep 42 literal, never 'at least' or 'maximum'."),
                     color: DS.Palette.sage,
                     isLast: false
                 )
                 twinIntroStep(
                     number: "2",
                     icon: "sparkle",
-                    title: "Stars appear",
-                    description: "Each entry becomes a star in your constellation, colored by mood.",
+                    title: String(localized: "Stars appear", comment: "Twin tab, first run (no entries yet): step 2 of the four-step 'how it works' list, title. 'Stars' are entries, not astrology. About 20 characters."),
+                    description: String(localized: "Each entry becomes a star in your constellation, colored by mood.", comment: "Twin tab, first run (no entries yet): step 2 of the four-step 'how it works' list."),
                     color: DS.Palette.gold,
                     isLast: false
                 )
                 twinIntroStep(
                     number: "3",
                     icon: "brain.head.profile",
-                    title: "Your Twin learns",
-                    description: "Four models — Mind, Heart, Voice, Graph — build your personality profile.",
+                    title: String(localized: "Your Twin learns", comment: "Twin tab, first run (no entries yet): step 3 of the four-step 'how it works' list, title. 'Twin' is the feature's name. About 20 characters."),
+                    description: String(localized: "Four models — Mind, Heart, Voice, Graph — build your personality profile.", comment: "Twin tab, first run (no entries yet): step 3 of the four-step 'how it works' list. Mind, Heart, Voice and Graph are the names of the Twin's four parts; translate them as the stat-row labels are translated."),
                     color: DS.Palette.coral,
                     isLast: false
                 )
                 twinIntroStep(
                     number: "4",
                     icon: "lock.shield.fill",
-                    title: "Always private",
-                    description: "Everything stays on your device. No servers. No cloud AI. No accounts.",
+                    title: String(localized: "Always private", comment: "Twin tab, first run (no entries yet): step 4 of the four-step 'how it works' list, title. About 20 characters."),
+                    description: String(localized: "Everything stays on your device. No servers. No cloud AI. No accounts.", comment: "Twin tab, first run (no entries yet): step 4 of the four-step 'how it works' list. A privacy promise: keep every claim exact."),
                     color: DS.Palette.forest,
                     isLast: true
                 )
@@ -514,14 +525,16 @@ struct DigitalTwinView: View {
         let v = scored.reduce(0, +) / Double(scored.count)
         let tone: String
         switch v {
-        case 0.25...:      tone = "warm, steady"
-        case 0.05..<0.25:  tone = "even-handed"
-        case -0.15..<0.05: tone = "measured"
-        default:           tone = "candid, unsparing"
+        case 0.25...:      tone = String(localized: "warm, steady", comment: "Twin tab summary: the tone part of 'Who you are: warm, steady, expansive.' Describes the user: keep it gender-neutral, lower case.")
+        case 0.05..<0.25:  tone = String(localized: "even-handed", comment: "Twin tab summary: the tone part of 'Who you are: even-handed, economical.' Describes the user: keep it gender-neutral, lower case.")
+        case -0.15..<0.05: tone = String(localized: "measured", comment: "Twin tab summary: the tone part of 'Who you are: measured, economical.' Describes the user: keep it gender-neutral, lower case.")
+        default:           tone = String(localized: "candid, unsparing", comment: "Twin tab summary: the tone part of 'Who you are: candid, unsparing, expansive.' Describes the user: keep it gender-neutral, lower case.")
         }
         let words = entries.reduce(0) { $0 + ($1.text ?? "").split(whereSeparator: \.isWhitespace).count }
         let average = entries.isEmpty ? 0 : words / entries.count
-        let length = average > 40 ? "expansive" : "economical"
+        let length = average > 40
+            ? String(localized: "expansive", comment: "Twin tab summary: the user writes long entries, as in 'Who you are: warm, steady, expansive.' Keep it gender-neutral, lower case.")
+            : String(localized: "economical", comment: "Twin tab summary: the user writes short entries, as in 'Who you are: measured, economical.' Keep it gender-neutral, lower case.")
         // No count in this sentence at all.
         //
         // It used to end "— from 45 entries" while a badge two inches above
@@ -530,7 +543,8 @@ struct DigitalTwinView: View {
         // four times on one screen: the badge, this sentence, the MIND column,
         // and Writing Stats. A sentence about who someone is does not need to
         // cite its sample size; the badge already states it, once, in gold.
-        return "Who you are: \(tone), \(length)."
+        return String(localized: "Who you are: \(tone), \(length).",
+                      comment: "Twin tab: the one-sentence summary beside the gold star. First placeholder: a tone such as 'warm, steady'. Second: 'expansive' or 'economical'. Both describe the user; keep the sentence gender-neutral. About 45 characters.")
     }
 
     // MARK: - C2: dimension stats
@@ -544,15 +558,15 @@ struct DigitalTwinView: View {
     /// also where the review queue lives.
     private var dimensionStats: some View {
         HStack(spacing: 10) {
-            dimensionStat(label: "MIND",
+            dimensionStat(label: String(localized: "MIND", comment: "Twin tab, stat row: the Mind column (entries). Upper case, monospaced, about 8 characters."),
                           value: "\(twin.behavioralPatterns.totalEntries)",
-                          caption: "entries kept")
-            dimensionStat(label: "HEART",
+                          caption: String(localized: "entries kept", comment: "Twin tab, stat row: caption under the number of entries. About 16 characters, shrinks to 80%."))
+            dimensionStat(label: String(localized: "HEART", comment: "Twin tab, stat row: the Heart column (average mood). Upper case, monospaced, about 8 characters."),
                           value: heartValue,
-                          caption: "average tone")
-            dimensionStat(label: "GRAPH",
+                          caption: String(localized: "average tone", comment: "Twin tab, stat row: caption under the average mood score, such as +0.40. About 16 characters, shrinks to 80%."))
+            dimensionStat(label: String(localized: "GRAPH", comment: "Twin tab, stat row: the Graph column (people and topics). Upper case, monospaced, about 8 characters."),
                           value: "\(graphNodeCount)",
-                          caption: "people & topics")
+                          caption: String(localized: "people & topics", comment: "Twin tab, stat row: caption under the count of people and topics the Twin knows. About 16 characters, shrinks to 80%."))
         }
     }
 
@@ -603,11 +617,11 @@ struct DigitalTwinView: View {
 
     private var skyDepth: String {
         switch starCount {
-        case 200...: return "Deep"
-        case 100..<200: return "Established"
-        case 40..<100: return "Forming"
-        case 10..<40: return "Early"
-        default: return "Seed"
+        case 200...: return String(localized: "Deep", comment: "Twin tab: how deep the sky is, 200 or more entries. Shown upper case after the star count. One word, about 12 characters.")
+        case 100..<200: return String(localized: "Established", comment: "Twin tab: how deep the sky is, 100-199 entries. Shown upper case after the star count. One word, about 12 characters.")
+        case 40..<100: return String(localized: "Forming", comment: "Twin tab: how deep the sky is, 40-99 entries. Shown upper case after the star count. One word, about 12 characters.")
+        case 10..<40: return String(localized: "Early", comment: "Twin tab: how deep the sky is, 10-39 entries. Shown upper case after the star count. One word, about 12 characters.")
+        default: return String(localized: "Seed", comment: "Twin tab: how deep the sky is, under 10 entries. Shown upper case after the star count. One word, about 12 characters.")
         }
     }
 
@@ -665,11 +679,11 @@ struct DigitalTwinView: View {
     /// it twice in two type sizes made the header look like a data problem.
     private var constellationSubtitle: String {
         let count = starCount
-        if count == 0 { return "Speak to plant your first star" }
-        if count < 5 { return "Your constellation is forming" }
-        if count < 15 { return "Patterns emerging" }
-        if count < 30 { return "Your inner sky deepens" }
-        return "A sky made of you"
+        if count == 0 { return String(localized: "Speak to plant your first star", comment: "Twin tab: line under the sky with no entries yet. About 35 characters.") }
+        if count < 5 { return String(localized: "Your constellation is forming", comment: "Twin tab: line under the sky, 1-4 entries. About 35 characters.") }
+        if count < 15 { return String(localized: "Patterns emerging", comment: "Twin tab: line under the sky, 5-14 entries. About 35 characters.") }
+        if count < 30 { return String(localized: "Your inner sky deepens", comment: "Twin tab: line under the sky, 15-29 entries. About 35 characters.") }
+        return String(localized: "A sky made of you", comment: "Twin tab: line under the sky, 30 or more entries. About 35 characters.")
     }
 
     // MARK: - Ask Your Twin Button
@@ -757,7 +771,7 @@ struct DigitalTwinView: View {
                     .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
                 Spacer()
-                Text(twin.summary.maturityLevel.rawValue.capitalized)
+                Text(twin.summary.maturityLevel.displayName)
                     .font(.dv(.caption, weight: .bold))
                     .foregroundColor(themeManager.accentColor)
             }
@@ -781,7 +795,7 @@ struct DigitalTwinView: View {
                                 selectedSection = section
                             }
                         } label: {
-                            Text(section.rawValue)
+                            Text(section.title)
                                 .font(.dv(.subheadline, weight: selectedSection == section ? .bold : .regular))
                                 .foregroundColor(selectedSection == section ? .white : themeManager.textColor)
                                 .padding(.horizontal, 16)
@@ -797,7 +811,7 @@ struct DigitalTwinView: View {
                         .id(section)
                         // VoiceOver otherwise reads these as six identical unlabelled buttons
                         // with no indication of which section is active.
-                        .accessibilityLabel(section.rawValue)
+                        .accessibilityLabel(section.title)
                         .accessibilityAddTraits(selectedSection == section ? [.isSelected] : [])
                     }
                 }
@@ -824,19 +838,19 @@ struct DigitalTwinView: View {
             TwinProfileCardSection()
 
             if !twin.summary.personalitySnapshot.isEmpty {
-                twinCard(title: "Who You Are", icon: "person.fill", content: twin.summary.personalitySnapshot)
+                twinCard(title: String(localized: "Who You Are", comment: "Twin tab > Overview: card title above the personality snapshot. About 24 characters."), icon: "person.fill", content: twin.summary.personalitySnapshot)
             }
             if !twin.summary.communicationSnapshot.isEmpty {
-                twinCard(title: "How You Express", icon: "text.bubble.fill", content: twin.summary.communicationSnapshot)
+                twinCard(title: String(localized: "How You Express", comment: "Twin tab > Overview: card title above the communication snapshot. About 24 characters."), icon: "text.bubble.fill", content: twin.summary.communicationSnapshot)
             }
             if !twin.summary.emotionalSnapshot.isEmpty {
-                twinCard(title: "How You Feel", icon: "heart.fill", content: twin.summary.emotionalSnapshot)
+                twinCard(title: String(localized: "How You Feel", comment: "Twin tab > Overview: card title above the emotional snapshot. About 24 characters."), icon: "heart.fill", content: twin.summary.emotionalSnapshot)
             }
             if !twin.summary.lifeSnapshot.isEmpty {
-                twinCard(title: "Your World", icon: "globe", content: twin.summary.lifeSnapshot)
+                twinCard(title: String(localized: "Your World", comment: "Twin tab > Overview: card title above the people-and-places snapshot. About 24 characters."), icon: "globe", content: twin.summary.lifeSnapshot)
             }
             if !twin.summary.growthSnapshot.isEmpty {
-                twinCard(title: "Your Growth", icon: "arrow.up.right", content: twin.summary.growthSnapshot)
+                twinCard(title: String(localized: "Your Growth", comment: "Twin tab > Overview: card title above the growth snapshot. About 24 characters."), icon: "arrow.up.right", content: twin.summary.growthSnapshot)
             }
 
             if twin.summary.dataPointsCollected < 5 {
@@ -855,9 +869,9 @@ struct DigitalTwinView: View {
 
     private func confidenceWord(_ confidence: Double) -> String {
         switch confidence {
-        case ..<0.2:  return "low"
-        case ..<0.4:  return "growing"
-        default:      return "moderate"
+        case ..<0.2:  return String(localized: "low", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — low confidence.' Lower case.")
+        case ..<0.4:  return String(localized: "growing", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — growing confidence.' Lower case.")
+        default:      return String(localized: "moderate", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — moderate confidence.' Lower case.")
         }
     }
 
@@ -865,11 +879,11 @@ struct DigitalTwinView: View {
         VStack(spacing: 16) {
             // Communication Style
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Communication Style", icon: "text.quote")
+                sectionHeader(String(localized: "Communication Style", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "text.quote")
 
-                traitBar(label: "Expressiveness", value: twin.communicationStyle.expressiveness, lowLabel: "Reserved", highLabel: "Expressive")
-                traitBar(label: "Directness", value: twin.communicationStyle.directness, lowLabel: "Nuanced", highLabel: "Direct")
-                traitBar(label: "Formality", value: twin.communicationStyle.formalityLevel, lowLabel: "Casual", highLabel: "Formal")
+                traitBar(label: String(localized: "Expressiveness", comment: "Twin tab: label above a bar in the Communication Style card. About 16 characters."), value: twin.communicationStyle.expressiveness, lowLabel: String(localized: "Reserved", comment: "Twin tab: the low (left) end of the 'Expressiveness' bar. One word, about 12 characters."), highLabel: String(localized: "Expressive", comment: "Twin tab: the high (right) end of the 'Expressiveness' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Directness", comment: "Twin tab: label above a bar in the Communication Style card. About 16 characters."), value: twin.communicationStyle.directness, lowLabel: String(localized: "Nuanced", comment: "Twin tab: the low (left) end of the 'Directness' bar. One word, about 12 characters."), highLabel: String(localized: "Direct", comment: "Twin tab: the high (right) end of the 'Directness' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Formality", comment: "Twin tab: label above a bar in the Communication Style card. About 16 characters."), value: twin.communicationStyle.formalityLevel, lowLabel: String(localized: "Casual", comment: "Twin tab: the low (left) end of the 'Formality' bar. One word, about 12 characters."), highLabel: String(localized: "Formal", comment: "Twin tab: the high (right) end of the 'Formality' bar. One word, about 12 characters."))
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
@@ -880,8 +894,8 @@ struct DigitalTwinView: View {
             // Shown only once your diary is deep enough for it to speak.
             if let openness = learnedOpenness, openness.basis == .learnedHead {
                 VStack(alignment: .leading, spacing: 12) {
-                    sectionHeader("Learned Trait", icon: "sparkles")
-                    traitBar(label: "Openness", value: openness.value, lowLabel: "Grounded", highLabel: "Open")
+                    sectionHeader(String(localized: "Learned Trait", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "sparkles")
+                    traitBar(label: String(localized: "Openness", comment: "Twin tab: label above a bar in the Learned Trait card. About 16 characters."), value: openness.value, lowLabel: String(localized: "Grounded", comment: "Twin tab: the low (left) end of the 'Openness' bar. One word, about 12 characters."), highLabel: String(localized: "Open", comment: "Twin tab: the high (right) end of the 'Openness' bar. One word, about 12 characters."))
                     Text("A learned estimate — \(confidenceWord(openness.confidence)) confidence. It grows more sure as you write.")
                         .font(.dv(.caption))
                         .foregroundColor(.secondary)
@@ -894,12 +908,12 @@ struct DigitalTwinView: View {
 
             // Thinking Style
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Thinking Style", icon: "brain")
+                sectionHeader(String(localized: "Thinking Style", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "brain")
 
-                traitBar(label: "Processing", value: twin.thoughtPatterns.analyticalScore, lowLabel: "Intuitive", highLabel: "Analytical")
-                traitBar(label: "Abstraction", value: twin.thoughtPatterns.abstractScore, lowLabel: "Concrete", highLabel: "Abstract")
-                traitBar(label: "Time Focus", value: twin.thoughtPatterns.futureOriented, lowLabel: "Past", highLabel: "Future")
-                traitBar(label: "Perspective", value: twin.thoughtPatterns.selfFocused, lowLabel: "Others", highLabel: "Self")
+                traitBar(label: String(localized: "Processing", comment: "Twin tab: label above a bar in the Thinking Style card. About 16 characters."), value: twin.thoughtPatterns.analyticalScore, lowLabel: String(localized: "Intuitive", comment: "Twin tab: the low (left) end of the 'Processing' bar. One word, about 12 characters."), highLabel: String(localized: "Analytical", comment: "Twin tab: the high (right) end of the 'Processing' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Abstraction", comment: "Twin tab: label above a bar in the Thinking Style card. About 16 characters."), value: twin.thoughtPatterns.abstractScore, lowLabel: String(localized: "Concrete", comment: "Twin tab: the low (left) end of the 'Abstraction' bar. One word, about 12 characters."), highLabel: String(localized: "Abstract", comment: "Twin tab: the high (right) end of the 'Abstraction' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Time Focus", comment: "Twin tab: label above a bar in the Thinking Style card. About 16 characters."), value: twin.thoughtPatterns.futureOriented, lowLabel: String(localized: "Past", comment: "Twin tab: the low (left) end of the 'Time Focus' bar. One word, about 12 characters."), highLabel: String(localized: "Future", comment: "Twin tab: the high (right) end of the 'Time Focus' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Perspective", comment: "Twin tab: label above a bar in the Thinking Style card. About 16 characters."), value: twin.thoughtPatterns.selfFocused, lowLabel: String(localized: "Others", comment: "Twin tab: the low (left) end of the 'Perspective' bar. One word, about 12 characters."), highLabel: String(localized: "Self", comment: "Twin tab: the high (right) end of the 'Perspective' bar. One word, about 12 characters."))
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
@@ -907,11 +921,11 @@ struct DigitalTwinView: View {
 
             // Growth Indicators
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Growth Indicators", icon: "arrow.up.heart.fill")
+                sectionHeader(String(localized: "Growth Indicators", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "arrow.up.heart.fill")
 
-                traitBar(label: "Growth Mindset", value: twin.thoughtPatterns.growthMindsetScore, lowLabel: "Fixed", highLabel: "Growth")
-                traitBar(label: "Self-Awareness", value: twin.thoughtPatterns.selfAwarenessLevel, lowLabel: "Developing", highLabel: "Deep")
-                traitBar(label: "Gratitude", value: twin.thoughtPatterns.gratitudeTendency, lowLabel: "Occasional", highLabel: "Frequent")
+                traitBar(label: String(localized: "Growth Mindset", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.growthMindsetScore, lowLabel: String(localized: "Fixed", comment: "Twin tab: the low (left) end of the 'Growth Mindset' bar. One word, about 12 characters."), highLabel: String(localized: "Growth", comment: "Twin tab: the high (right) end of the 'Growth Mindset' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Self-Awareness", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.selfAwarenessLevel, lowLabel: String(localized: "Developing", comment: "Twin tab: the low (left) end of the 'Self-Awareness' bar. One word, about 12 characters."), highLabel: String(localized: "Deep", comment: "Twin tab: the high (right) end of the 'Self-Awareness' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Gratitude", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.gratitudeTendency, lowLabel: String(localized: "Occasional", comment: "Twin tab: the low (left) end of the 'Gratitude' bar. One word, about 12 characters."), highLabel: String(localized: "Frequent", comment: "Twin tab: the high (right) end of the 'Gratitude' bar. One word, about 12 characters."))
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
@@ -920,7 +934,7 @@ struct DigitalTwinView: View {
             // Signature Words
             if !twin.communicationStyle.signatureWords.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    sectionHeader("Your Vocabulary", icon: "textformat")
+                    sectionHeader(String(localized: "Your Vocabulary", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "textformat")
 
                     let topWords = twin.communicationStyle.signatureWords
                         .sorted { $0.value > $1.value }
@@ -1015,19 +1029,19 @@ struct DigitalTwinView: View {
         VStack(spacing: 16) {
             // Emotional Baseline
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Emotional Baseline", icon: "heart.circle.fill")
+                sectionHeader(String(localized: "Emotional Baseline", comment: "Twin tab > Emotions: card header. About 24 characters."), icon: "heart.circle.fill")
 
                 HStack(spacing: 20) {
-                    emotionMeter(label: "Valence", value: (twin.emotionalSignature.baselineValence + 1) / 2, color: twin.emotionalSignature.baselineValence > 0 ? DS.Palette.forest : DS.Palette.gold)
-                    emotionMeter(label: "Arousal", value: twin.emotionalSignature.baselineArousal, color: DS.Palette.sage)
-                    emotionMeter(label: "Range", value: twin.emotionalSignature.emotionalRange, color: DS.Palette.sage)
+                    emotionMeter(label: String(localized: "Valence", comment: "Twin tab > Emotions: label under a ring meter, how positive entries are. One word, about 10 characters."), value: (twin.emotionalSignature.baselineValence + 1) / 2, color: twin.emotionalSignature.baselineValence > 0 ? DS.Palette.forest : DS.Palette.gold)
+                    emotionMeter(label: String(localized: "Arousal", comment: "Twin tab > Emotions: label under a ring meter, how energetic entries are (psychology sense). One word, about 10 characters."), value: twin.emotionalSignature.baselineArousal, color: DS.Palette.sage)
+                    emotionMeter(label: String(localized: "Range", comment: "Twin tab > Emotions: label under a ring meter, how widely moods vary. One word, about 10 characters."), value: twin.emotionalSignature.emotionalRange, color: DS.Palette.sage)
                 }
 
                 if twin.emotionalSignature.sentimentTrend != 0 {
                     HStack {
                         Image(systemName: twin.emotionalSignature.sentimentTrend > 0 ? "arrow.up.right" : "arrow.down.right")
                             .foregroundColor(twin.emotionalSignature.sentimentTrend > 0 ? DS.Palette.forest : DS.Palette.gold)
-                        Text("Emotional trajectory is \(twin.emotionalSignature.sentimentTrend > 0 ? "improving" : "declining")")
+                        Text("Emotional trajectory is \(twin.emotionalSignature.sentimentTrend > 0 ? String(localized: "improving", comment: "Twin tab > Emotions: the word inside 'Emotional trajectory is improving'. Lower case.") : String(localized: "declining", comment: "Twin tab > Emotions: the word inside 'Emotional trajectory is declining'. Lower case."))")
                             .font(.dv(.caption))
                             .foregroundColor(themeManager.secondaryTextColor)
                     }
@@ -1039,13 +1053,13 @@ struct DigitalTwinView: View {
 
             // Time-Based Mood
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Mood Rhythms", icon: "clock.fill")
+                sectionHeader(String(localized: "Mood Rhythms", comment: "Twin tab > Emotions: card header. About 24 characters."), icon: "clock.fill")
 
                 HStack(spacing: 0) {
-                    moodTimeBlock(label: "Morning", sentiment: twin.emotionalSignature.morningMood, icon: "sunrise.fill")
-                    moodTimeBlock(label: "Evening", sentiment: twin.emotionalSignature.eveningMood, icon: "sunset.fill")
-                    moodTimeBlock(label: "Weekday", sentiment: twin.emotionalSignature.weekdayMood, icon: "briefcase.fill")
-                    moodTimeBlock(label: "Weekend", sentiment: twin.emotionalSignature.weekendMood, icon: "figure.walk")
+                    moodTimeBlock(label: String(localized: "Morning", comment: "Twin tab > Mood Rhythms: one of four columns. One word, about 9 characters."), sentiment: twin.emotionalSignature.morningMood, icon: "sunrise.fill")
+                    moodTimeBlock(label: String(localized: "Evening", comment: "Twin tab > Mood Rhythms: one of four columns. One word, about 9 characters."), sentiment: twin.emotionalSignature.eveningMood, icon: "sunset.fill")
+                    moodTimeBlock(label: String(localized: "Weekday", comment: "Twin tab > Mood Rhythms: one of four columns, Monday to Friday. One word, about 9 characters."), sentiment: twin.emotionalSignature.weekdayMood, icon: "briefcase.fill")
+                    moodTimeBlock(label: String(localized: "Weekend", comment: "Twin tab > Mood Rhythms: one of four columns. One word, about 9 characters."), sentiment: twin.emotionalSignature.weekendMood, icon: "figure.walk")
                 }
             }
             .padding()
@@ -1055,7 +1069,7 @@ struct DigitalTwinView: View {
             // Mood Frequency
             if !twin.emotionalSignature.emotionFrequency.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    sectionHeader("Emotion Frequency", icon: "chart.bar.fill")
+                    sectionHeader(String(localized: "Emotion Frequency", comment: "Twin tab > Emotions: card header. About 24 characters."), icon: "chart.bar.fill")
 
                     let sorted = twin.emotionalSignature.emotionFrequency.sorted { $0.value > $1.value }
                     let maxVal = sorted.first?.value ?? 1
@@ -1064,7 +1078,7 @@ struct DigitalTwinView: View {
                         HStack {
                             Image(systemName: moodEmoji(mood))
                                 .font(.dv(.caption))
-                            Text(mood.capitalized)
+                            Text(Mood(rawValue: mood.lowercased())?.displayName ?? mood.capitalized)
                                 .font(.dv(.caption))
                                 .frame(width: 60, alignment: .leading)
                             GeometryReader { geo in
@@ -1087,7 +1101,7 @@ struct DigitalTwinView: View {
             // Positive & Negative Triggers
             if !twin.emotionalSignature.positiveTriggersTopics.isEmpty || !twin.emotionalSignature.negativeTriggersTopics.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    sectionHeader("Emotional Triggers", icon: "bolt.heart.fill")
+                    sectionHeader(String(localized: "Emotional Triggers", comment: "Twin tab > Emotions: card header. About 24 characters."), icon: "bolt.heart.fill")
 
                     if !twin.emotionalSignature.positiveTriggersTopics.isEmpty {
                         Text("Lifts your mood")
@@ -1136,19 +1150,19 @@ struct DigitalTwinView: View {
     private var worldSection: some View {
         VStack(spacing: 16) {
             // People
-            knowledgeSection(title: "People In Your Life", icon: "person.2.fill", type: .person)
+            knowledgeSection(title: String(localized: "People In Your Life", comment: "Twin tab > My World: card header over the people the user mentions. About 24 characters."), icon: "person.2.fill", type: .person)
 
             // Places
-            knowledgeSection(title: "Places That Matter", icon: "mappin.circle.fill", type: .place)
+            knowledgeSection(title: String(localized: "Places That Matter", comment: "Twin tab > My World: card header over places the user mentions. About 24 characters."), icon: "mappin.circle.fill", type: .place)
 
             // Topics
-            knowledgeSection(title: "Themes & Topics", icon: "tag.fill", type: .topic)
+            knowledgeSection(title: String(localized: "Themes & Topics", comment: "Twin tab > My World: card header over recurring topics. About 24 characters."), icon: "tag.fill", type: .topic)
 
             // Goals
-            knowledgeSection(title: "Your Goals", icon: "star.fill", type: .goal)
+            knowledgeSection(title: String(localized: "Your Goals", comment: "Twin tab > My World: card header over goals the user mentions. About 24 characters."), icon: "star.fill", type: .goal)
 
             // Fears
-            knowledgeSection(title: "What Concerns You", icon: "exclamationmark.triangle.fill", type: .fear)
+            knowledgeSection(title: String(localized: "What Concerns You", comment: "Twin tab > My World: card header over worries the user mentions. Gentle, never clinical. About 24 characters."), icon: "exclamationmark.triangle.fill", type: .fear)
 
             if twin.knowledgeGraph.nodes.isEmpty {
                 VStack(spacing: 12) {
@@ -1173,7 +1187,7 @@ struct DigitalTwinView: View {
         VStack(spacing: 16) {
             // Activity Heatmap
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("When You Write", icon: "clock.fill")
+                sectionHeader(String(localized: "When You Write", comment: "Twin tab > Patterns: card header. About 24 characters."), icon: "clock.fill")
 
                 // Hourly distribution
                 let maxHourly = Double(twin.behavioralPatterns.hourlyActivity.values.max() ?? 1)
@@ -1208,9 +1222,10 @@ struct DigitalTwinView: View {
 
             // Day of Week
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Your Week", icon: "calendar")
+                sectionHeader(String(localized: "Your Week", comment: "Twin tab > Patterns: card header. About 24 characters."), icon: "calendar")
 
-                let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+                // Sunday first, as `dayOfWeekActivity` is keyed (1 = Sunday).
+                let days = Calendar.current.shortWeekdaySymbols
                 let maxDaily = Double(twin.behavioralPatterns.dayOfWeekActivity.values.max() ?? 1)
 
                 HStack(spacing: 8) {
@@ -1235,14 +1250,14 @@ struct DigitalTwinView: View {
 
             // Writing Stats
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Writing Stats", icon: "doc.text.fill")
+                sectionHeader(String(localized: "Writing Stats", comment: "Twin tab > Patterns: card header. About 24 characters."), icon: "doc.text.fill")
 
                 HStack(spacing: 20) {
                     // "Entries" is not here: it is the badge at the top of this
                     // same screen, and the MIND column between the two.
-                    statItem(value: formatNumber(twin.behavioralPatterns.totalWords), label: "Words")
-                    statItem(value: "\(Int(twin.communicationStyle.averageSentenceLength))", label: "Avg Sentence")
-                    statItem(value: LocaleFormat.percent(twin.communicationStyle.vocabularyRichness), label: "Vocab Richness")
+                    statItem(value: formatNumber(twin.behavioralPatterns.totalWords), label: String(localized: "Words", comment: "Twin tab > Writing Stats: label under the total word count. About 12 characters."))
+                    statItem(value: "\(Int(twin.communicationStyle.averageSentenceLength))", label: String(localized: "Avg Sentence", comment: "Twin tab > Writing Stats: label under the average sentence length in words. About 12 characters."))
+                    statItem(value: LocaleFormat.percent(twin.communicationStyle.vocabularyRichness), label: String(localized: "Vocab Richness", comment: "Twin tab > Writing Stats: label under the share of distinct words, a percentage. About 14 characters."))
                 }
             }
             .padding()
@@ -1251,10 +1266,10 @@ struct DigitalTwinView: View {
 
             // Preferences
             VStack(alignment: .leading, spacing: 12) {
-                sectionHeader("Your Preferences", icon: "slider.horizontal.3")
+                sectionHeader(String(localized: "Your Preferences", comment: "Twin tab > Patterns: card header. About 24 characters."), icon: "slider.horizontal.3")
 
-                traitBar(label: "Input Mode", value: twin.behavioralPatterns.prefersVoice, lowLabel: "Text", highLabel: "Voice")
-                traitBar(label: "Entry Length", value: 1 - twin.behavioralPatterns.prefersShortEntries, lowLabel: "Brief", highLabel: "Detailed")
+                traitBar(label: String(localized: "Input Mode", comment: "Twin tab: label above a bar in the Your Preferences card. About 16 characters."), value: twin.behavioralPatterns.prefersVoice, lowLabel: String(localized: "Text", comment: "Twin tab: the low (left) end of the 'Input Mode' bar. One word, about 12 characters."), highLabel: String(localized: "Voice", comment: "Twin tab: the high (right) end of the 'Input Mode' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Entry Length", comment: "Twin tab: label above a bar in the Your Preferences card. About 16 characters."), value: 1 - twin.behavioralPatterns.prefersShortEntries, lowLabel: String(localized: "Brief", comment: "Twin tab: the low (left) end of the 'Entry Length' bar. One word, about 12 characters."), highLabel: String(localized: "Detailed", comment: "Twin tab: the high (right) end of the 'Entry Length' bar. One word, about 12 characters."))
             }
             .padding()
             .background(themeManager.cardBackgroundColor)
@@ -1478,11 +1493,11 @@ struct DigitalTwinView: View {
     }
 
     private func sentimentLabel(_ sentiment: Double) -> String {
-        if sentiment > 0.3 { return "Great" }
-        if sentiment > 0.1 { return "Good" }
-        if sentiment > -0.1 { return "Neutral" }
-        if sentiment > -0.3 { return "Low" }
-        return "Tough"
+        if sentiment > 0.3 { return String(localized: "Great", comment: "Twin tab > Mood Rhythms: mood reading for a time of day, the best band. One word, about 8 characters.") }
+        if sentiment > 0.1 { return String(localized: "Good", comment: "Twin tab > Mood Rhythms: mood reading for a time of day. One word, about 8 characters.") }
+        if sentiment > -0.1 { return String(localized: "Neutral", comment: "Twin tab > Mood Rhythms: mood reading for a time of day, the middle band. One word, about 8 characters.") }
+        if sentiment > -0.3 { return String(localized: "Low", comment: "Twin tab > Mood Rhythms: mood reading for a time of day. One word, about 8 characters.") }
+        return String(localized: "Tough", comment: "Twin tab > Mood Rhythms: mood reading for a time of day, the lowest band. Gentle. One word, about 8 characters.")
     }
 
     private func moodEmoji(_ mood: String) -> String {
@@ -1514,15 +1529,16 @@ struct DigitalTwinView: View {
     }
 
     private func formatHour(_ hour: Int) -> String {
-        if hour == 0 { return "12am" }
-        if hour < 12 { return "\(hour)am" }
-        if hour == 12 { return "12pm" }
-        return "\(hour - 12)pm"
+        if hour == 0 { return String(localized: "12am", comment: "Twin tab > When You Write: midnight, inside 'Peak writing time: 12am'. Use the locale's own clock (a 24-hour language may say 0 Uhr). About 6 characters.") }
+        if hour < 12 { return String(localized: "\(hour)am", comment: "Twin tab > When You Write: a morning hour, inside 'Peak writing time: 9am'. The placeholder is the hour 1-11. A 24-hour language writes it as is (9 Uhr). About 6 characters.") }
+        if hour == 12 { return String(localized: "12pm", comment: "Twin tab > When You Write: noon, inside 'Peak writing time: 12pm'. Use the locale's own clock. About 6 characters.") }
+        return String(localized: "\(hour - 12)pm", comment: "Twin tab > When You Write: an afternoon or evening hour, inside 'Peak writing time: 9pm'. The placeholder is the hour on a 12-hour clock, 1-11. About 6 characters.")
     }
 
     private func formatNumber(_ n: Int) -> String {
         if n >= 1000 {
-            return LocaleFormat.decimal(Double(n) / 1000, fractionDigits: 1) + "k"
+            return String(localized: "\(LocaleFormat.decimal(Double(n) / 1000, fractionDigits: 1))k",
+                          comment: "Twin tab > Writing Stats: a word count in thousands, as in '12.4k'. The placeholder is the number already formatted for the locale. 'k' is the local abbreviation for thousand. About 6 characters.")
         }
         return "\(n)"
     }
@@ -1646,5 +1662,19 @@ struct TwinPredictionsSection: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
         .cornerRadius(14)
+    }
+}
+
+extension TwinSummary.TwinMaturity {
+    /// The level as the reader sees it. It was `rawValue.capitalized`: the
+    /// same English, and no other language.
+    var displayName: String {
+        switch self {
+        case .nascent: return String(localized: "Nascent", comment: "Twin maturity level, under 5 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.")
+        case .emerging: return String(localized: "Emerging", comment: "Twin maturity level, 5-19 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.")
+        case .developing: return String(localized: "Developing", comment: "Twin maturity level, 20-49 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.")
+        case .established: return String(localized: "Established", comment: "Twin maturity level, 50-99 entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.")
+        case .deep: return String(localized: "Deep", comment: "Twin maturity level, 100 or more entries. Shown beside the data-points count on the Twin tab and on the personality card. One word, about 12 characters.")
+        }
     }
 }

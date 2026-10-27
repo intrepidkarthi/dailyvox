@@ -53,38 +53,35 @@ enum Shareables {
 
         var title: String {
             switch self {
-            case .tonight: return "Tonight"
-            case .tonight:
-                return "The one you made today, in the sky it landed in. A new " +
-                       "place every night — no words on it, ever."
-            case .mySky: return "My Sky"
-            case .receipt: return "Receipt"
-            case .yearOne: return "Year One"
-            case .milestone: return "Milestone"
-            case .wallpaper: return "Wallpaper"
-            case .gift: return "Gift a star"
-            case .body: return "Body"
+            case .tonight: return String(localized: "Tonight", comment: "Share sheet, the card picker: name of the daily (tonight's star) card. About 14 characters.")
+            case .mySky: return String(localized: "My Sky", comment: "Share sheet, the card picker: name of the whole-sky card. About 14 characters.")
+            case .receipt: return String(localized: "Receipt", comment: "Share sheet, the card picker: name of the privacy receipt card. About 14 characters.")
+            case .yearOne: return String(localized: "Year One", comment: "Share sheet, the card picker: name of the year-in-review card. About 14 characters.")
+            case .milestone: return String(localized: "Milestone", comment: "Share sheet, the card picker: name of the 42/100/365-night milestone card. About 14 characters.")
+            case .wallpaper: return String(localized: "Wallpaper", comment: "Share sheet, the card picker: name of the lock-screen wallpaper card. About 14 characters.")
+            case .gift: return String(localized: "Gift a star", comment: "Share sheet, the card picker: name of the invite-a-friend card. About 14 characters.")
+            case .body: return String(localized: "Body", comment: "Share sheet, the card picker: name of the sleep-and-mood card. About 14 characters.")
             }
         }
 
         var caption: String {
             switch self {
             case .tonight:
-                return "The one you made today, in the sky it landed in. A new place every night — no words on it, ever."
+                return String(localized: "The one you made today, in the sky it landed in. A new place every night — no words on it, ever.", comment: "Share sheet, the card picker: one-line description under the Tonight card's name. Up to two lines.")
             case .mySky:
-                return "Stars, no words. The sky is the only journal artifact that is beautiful and private at the same time."
+                return String(localized: "Stars, no words. The sky is the only journal artifact that is beautiful and private at the same time.", comment: "Share sheet, the card picker: one-line description under the My Sky card's name. Up to two lines.")
             case .receipt:
-                return "Everything costs zero, itemised. It argues better than a feature list."
+                return String(localized: "Everything costs zero, itemised. It argues better than a feature list.", comment: "Share sheet, the card picker: one-line description under the Receipt card's name. Up to two lines.")
             case .yearOne:
-                return "Your year, computed by this phone alone."
+                return String(localized: "Your year, computed by this phone alone.", comment: "Share sheet, the card picker: one-line description under the Year One card's name. Up to two lines.")
             case .milestone:
-                return "Minted once, at nights 42, 100 and 365. You cannot buy it or rush it — you can only have spoken that many times."
+                return String(localized: "Minted once, at nights 42, 100 and 365. You cannot buy it or rush it — you can only have spoken that many times.", comment: "Share sheet, the card picker: one-line description under the Milestone card's name. Up to two lines. Keep the numbers 42, 100 and 365.")
             case .wallpaper:
-                return "Your constellation, sized for a lock screen. The one surface you look at forty times a day, and nobody else can read it."
+                return String(localized: "Your constellation, sized for a lock screen. The one surface you look at forty times a day, and nobody else can read it.", comment: "Share sheet, the card picker: one-line description under the Wallpaper card's name. Up to two lines.")
             case .gift:
-                return "A referral card with no tracking link, because there is nothing here that could carry one."
+                return String(localized: "A referral card with no tracking link, because there is nothing here that could carry one.", comment: "Share sheet, the card picker: one-line description under the Gift a star card's name. Up to two lines.")
             case .body:
-                return "How you slept against how you wrote. Off unless you turn it on, and it never leaves out that this is a noticing, not a prescription."
+                return String(localized: "How you slept against how you wrote. Off unless you turn it on, and it never leaves out that this is a noticing, not a prescription.", comment: "Share sheet, the card picker: one-line description under the Body card's name. Up to two lines. 'A noticing, not a prescription' is a fixed phrase in the app; translate it the same way everywhere.")
             }
         }
 
@@ -201,7 +198,9 @@ enum Shareables {
             means[month] = total / Double(items.count)
         }
         guard let best = means.max(by: { $0.value < $1.value })?.key else { return "—" }
-        return DateFormatter().monthSymbols[best - 1]
+        // Standalone: the month named on its own, which in some languages is
+        // a different form from the one inside a date.
+        return DateFormatter().standaloneMonthSymbols[best - 1]
     }
 
     /// The word this person reaches for. Gated at three uses so a single
@@ -237,11 +236,11 @@ enum Shareables {
 
     static func milestoneHeadline(_ night: Int) -> String {
         switch night {
-        case 365: return "A year of showing up."
-        case 100: return "One hundred nights."
-        case 42:  return "Forty-two nights."
-        case 1:   return "One night."
-        default:  return "\(night) nights."
+        case 365: return String(localized: "A year of showing up.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Headline under the seal at 365 nights. Display face, about 24 characters.")
+        case 100: return String(localized: "One hundred nights.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Headline under the seal at 100 nights; the number spelled out. About 24 characters.")
+        case 42:  return String(localized: "Forty-two nights.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Headline under the seal at 42 nights; the number spelled out. About 24 characters.")
+        case 1:   return String(localized: "One night.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Headline under the seal at the first night. About 24 characters.")
+        default:  return String(localized: "\(String(night)) nights.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Headline under the seal; the placeholder is the number of nights spoken (2 or more). About 24 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         }
     }
 
@@ -326,7 +325,7 @@ enum Shareables {
         }
         star(c, at: tonight, r: 30, colour: UIColor(DS.Palette.gold))
 
-        text(c, "TONIGHT", at: CGPoint(x: s.width / 2, y: 128),
+        text(c, String(localized: "TONIGHT", comment: "Share card image (Tonight), drawn on a 1080px square and posted publicly. Label at the top. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."), at: CGPoint(x: s.width / 2, y: 128),
              font: mono(26), colour: UIColor(DS.Palette.goldNight), align: .center)
 
         // `text(at:)` positions the TOP of the line, not its baseline. The
@@ -338,12 +337,16 @@ enum Shareables {
         let countTop = s.height - 330
         text(c, "\(nightCount)", at: CGPoint(x: s.width / 2, y: countTop),
              font: countFont, colour: UIColor(DS.Palette.navyText), align: .center)
-        text(c, nightCount == 1 ? "NIGHT KEPT" : "NIGHTS KEPT",
+        text(c, nightCount == 1
+                ? String(localized: "NIGHT KEPT", comment: "Share card image (Tonight), drawn on a 1080px square and posted publicly. Caption under the count when it is 1. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card.")
+                : String(localized: "NIGHTS KEPT", comment: "Share card image (Tonight), drawn on a 1080px square and posted publicly. Caption under the count of nights (any count but 1; add plural variations if your language needs them). Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."),
              at: CGPoint(x: s.width / 2, y: countTop + countFont.lineHeight + 14),
              font: mono(24), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.55),
              align: .center)
 
-        footer(c, s, airplane ? "IN AIRPLANE MODE \u{00B7} 0 BYTES OUT" : "A SKY MADE OF YOU")
+        footer(c, s, airplane
+               ? String(localized: "IN AIRPLANE MODE \u{00B7} 0 BYTES OUT", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. Shown when the user stamps the card as made in airplane mode.")
+               : String(localized: "A SKY MADE OF YOU", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. The app's tagline; translate it the same way on every card."))
     }
 
     // MARK: - F1 · My Sky
@@ -360,23 +363,23 @@ enum Shareables {
         orbits(c, centre: centre, radii: [s.width * 0.17, s.width * 0.28])
         constellation(c, centre: centre, s: s, count: min(4, max(f.count, 1)), spread: 0.23)
 
-        text(c, "MY SKY · NIGHT \(nights(f))", at: CGPoint(x: 84, y: 96),
+        text(c, String(localized: "MY SKY · NIGHT \(String(nights(f)))", comment: "Share card image (My Sky), drawn on a 1080px square and posted publicly. Label at the top left; the placeholder is how many nights the user has spoken. Upper case, monospaced, about 22 characters."), at: CGPoint(x: 84, y: 96),
              font: mono(20), colour: UIColor(DS.Palette.goldNight))
 
         if airplane {
-            text(c, "ON AIRPLANE MODE", at: CGPoint(x: s.width - 84, y: 96),
+            text(c, String(localized: "ON AIRPLANE MODE", comment: "Share card image (My Sky), drawn on a 1080px square and posted publicly. Label at the top right when the user stamps the card as made in airplane mode. Upper case, monospaced, about 18 characters."), at: CGPoint(x: s.width - 84, y: 96),
                  font: mono(20), colour: UIColor(DS.Palette.goldNight), align: .right)
         }
 
-        text(c, "\(f.count) stars.", at: CGPoint(x: 84, y: s.height - 300),
+        text(c, String(localized: "\(String(f.count)) stars.", comment: "Share card image (My Sky), drawn on a 1080px square and posted publicly. First of two headline lines; the placeholder is the number of entries (stars). Display face, about 16 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."), at: CGPoint(x: 84, y: s.height - 300),
              font: display(58), colour: UIColor(DS.Palette.navyText))
-        text(c, "Zero uploads.", at: CGPoint(x: 84, y: s.height - 228),
+        text(c, String(localized: "Zero uploads.", comment: "Share card image (My Sky), drawn on a 1080px square and posted publicly. Second headline line. Display face, about 16 characters."), at: CGPoint(x: 84, y: s.height - 228),
              font: display(58), colour: UIColor(DS.Palette.navyText))
-        text(c, "Every one made from my voice, on my phone.",
+        text(c, String(localized: "Every one made from my voice, on my phone.", comment: "Share card image (My Sky), drawn on a 1080px square and posted publicly. Line under the headline, first person: the user is posting it. About 45 characters."),
              at: CGPoint(x: 84, y: s.height - 156),
              font: body(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6))
 
-        footer(c, s, "A SKY MADE OF YOU · GETDAILYVOX.COM")
+        footer(c, s, String(localized: "A SKY MADE OF YOU · GETDAILYVOX.COM", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. The address stays as it is."))
     }
 
     // MARK: - F2 · Privacy receipt
@@ -390,7 +393,7 @@ enum Shareables {
         // The reader's own date, not en_US_POSIX: a receipt dated in someone
         // else's convention is a small lie on a card about honesty.
         let receiptDate = LocaleFormat.date(Date(), template: LocaleFormat.monthDayYear)
-        text(c, "PRIVACY RECEIPT · \(receiptDate.uppercased(with: .current))",
+        text(c, String(localized: "PRIVACY RECEIPT · \(receiptDate.uppercased(with: .current))", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Line under the DAILYVOX heading; the placeholder is today's date in the reader's format, upper-cased. Monospaced, about 34 characters."),
              at: CGPoint(x: s.width / 2, y: 156), font: mono(20),
              colour: UIColor(DS.Palette.inkSoft), align: .center)
         dotted(c, s, y: 214)
@@ -407,14 +410,16 @@ enum Shareables {
         // DailyVox" is zero forever because there is nowhere to send it; iCloud
         // is a row now instead of an omission.
         let rows: [(String, String)] = [
-            ("ENTRIES SPOKEN", "\(f.count)"),
-            ("WORDS KEPT", "\(words)"),
-            ("NIGHTS IN A ROW", "\(streak(f))"),
-            ("SENT TO DAILYVOX", "0 BYTES"),
-            ("ICLOUD SYNC", syncing ? "YOUR ACCOUNT" : "OFF"),
-            ("ADS SHOWN", "0"),
-            ("ACCOUNTS CREATED", "0"),
-            ("SUBSCRIPTION", "FREE"),
+            (String(localized: "ENTRIES SPOKEN", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced; with its value it must fit one line, about 20 characters."), "\(f.count)"),
+            (String(localized: "WORDS KEPT", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced, about 20 characters."), "\(words)"),
+            (String(localized: "NIGHTS IN A ROW", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column: the current streak. Upper case, monospaced, about 20 characters."), "\(streak(f))"),
+            (String(localized: "SENT TO DAILYVOX", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced, about 20 characters."), String(localized: "0 BYTES", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt value, right column: nothing was sent. Upper case, monospaced, about 10 characters.")),
+            (String(localized: "ICLOUD SYNC", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. 'iCloud' is Apple's name. Upper case, monospaced, about 20 characters."), syncing
+                ? String(localized: "YOUR ACCOUNT", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt value for iCloud sync when it is on: it syncs to the user's own iCloud account. Upper case, monospaced, about 12 characters.")
+                : String(localized: "OFF", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt value for iCloud sync when it is off. Upper case, monospaced, about 12 characters.")),
+            (String(localized: "ADS SHOWN", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced, about 20 characters."), "0"),
+            (String(localized: "ACCOUNTS CREATED", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced, about 20 characters."), "0"),
+            (String(localized: "SUBSCRIPTION", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt line label, left column. Upper case, monospaced, about 20 characters."), String(localized: "FREE", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Receipt value: the app costs nothing. Upper case, monospaced, about 10 characters.")),
         ]
         var y: CGFloat = 276
         for (k, v) in rows {
@@ -425,15 +430,17 @@ enum Shareables {
 
         dotted(c, s, y: y + 8)
         y += 62
-        text(c, syncing ? "YOUR DATA STAYED YOURS" : "YOUR DATA STAYED HOME",
+        text(c, syncing
+                ? String(localized: "YOUR DATA STAYED YOURS", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Total line when iCloud sync is on (data went only to the user's own account). Upper case, monospaced, about 24 characters.")
+                : String(localized: "YOUR DATA STAYED HOME", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Total line when iCloud sync is off (data never left the phone). Upper case, monospaced, about 24 characters."),
              at: CGPoint(x: 96, y: y),
              font: mono(28), colour: UIColor(DS.Palette.goldDay))
         star(c, at: CGPoint(x: s.width - 118, y: y + 14), r: 20, colour: UIColor(DS.Palette.gold))
         dotted(c, s, y: y + 58)
 
-        text(c, "THANK YOU FOR TALKING TO YOURSELF", at: CGPoint(x: s.width / 2, y: y + 108),
+        text(c, String(localized: "THANK YOU FOR TALKING TO YOURSELF", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Sign-off at the foot, like a shop receipt. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."), at: CGPoint(x: s.width / 2, y: y + 108),
              font: mono(22), colour: UIColor(DS.Palette.inkSoft), align: .center)
-        text(c, "GETDAILYVOX.COM · OPEN SOURCE", at: CGPoint(x: s.width / 2, y: y + 150),
+        text(c, String(localized: "GETDAILYVOX.COM · OPEN SOURCE", comment: "Share card image (Receipt), drawn on a 1080px square and posted publicly. Last line. The address stays as it is. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."), at: CGPoint(x: s.width / 2, y: y + 150),
              font: mono(22), colour: UIColor(DS.Palette.inkSoft), align: .center)
     }
 
@@ -444,28 +451,29 @@ enum Shareables {
         var rng = Seeded(seed: UInt64(f.count) &* 7919)
         scatter(c, s, count: 70, rng: &rng, topInset: 0, bottomInset: 0)
 
-        text(c, "YOUR SKY · YEAR ONE", at: CGPoint(x: 84, y: 108),
+        text(c, String(localized: "YOUR SKY · YEAR ONE", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Label at the top left. Upper case, monospaced, about 22 characters."), at: CGPoint(x: 84, y: 108),
              font: mono(22), colour: UIColor(DS.Palette.goldNight))
-        text(c, "\(nights(f)) nights.", at: CGPoint(x: 84, y: 200),
+        text(c, String(localized: "\(String(nights(f))) nights.", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. First headline line; the placeholder is the number of nights spoken. Display face, about 16 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."), at: CGPoint(x: 84, y: 200),
              font: display(66), colour: UIColor(DS.Palette.navyText))
-        text(c, "One sky.", at: CGPoint(x: 84, y: 276),
+        text(c, String(localized: "One sky.", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Second headline line. Display face, about 16 characters."), at: CGPoint(x: 84, y: 276),
              font: display(66), colour: UIColor(DS.Palette.navyText))
 
         let counts = f.flatMap(\.people).reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
         let brightest = counts.max { $0.value < $1.value }
         let brightestValue: String = {
-            guard let b = brightest else { return "not yet" }
+            guard let b = brightest else { return String(localized: "not yet", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Value for 'Brightest star' when no person has been named. Lower case, about 12 characters.") }
             // Redacted by default. The count still communicates the shape of
             // the year without naming a real person to a public feed.
-            return includeNames ? "\(b.key) · \(b.value) nights"
-                                : "someone · \(b.value) nights"
+            return includeNames
+                ? String(localized: "\(b.key) · \(String(b.value)) nights", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Value for 'Brightest star': the person the user mentioned most, then on how many nights. First placeholder: a name from the journal. Second: the count. About 22 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
+                : String(localized: "someone · \(String(b.value)) nights", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Value for 'Brightest star' with names hidden: 'someone' stands in for the person; the placeholder is on how many nights. Gender-neutral. About 22 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         }()
 
         let rows: [(String, String)] = [
-            ("Brightest star", brightestValue),
-            ("Warmest month", warmestMonth(f)),
-            ("Most-said word", mostSaidWord(f) ?? "—"),
-            ("Computed by", "this phone only"),
+            (String(localized: "Brightest star", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Row label, left column: the person mentioned most. About 16 characters."), brightestValue),
+            (String(localized: "Warmest month", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Row label, left column: the month with the best moods; the value is a month name. About 16 characters."), warmestMonth(f)),
+            (String(localized: "Most-said word", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Row label, left column: the user's most frequent word, shown quoted. About 16 characters."), mostSaidWord(f) ?? "—"),
+            (String(localized: "Computed by", comment: "Share card image (Year One), drawn on a 1080px square and posted publicly. Row label, left column; the value is 'this phone only'. About 16 characters."), String(localized: "this phone only", comment: "Share card image: row value meaning nothing left the phone, after 'Computed by' or 'Read by'. Lower case, about 18 characters.")),
         ]
         var y: CGFloat = 430
         for (k, v) in rows {
@@ -482,7 +490,7 @@ enum Shareables {
         // Not "0 NETWORK CALLS": the figures on this card ARE computed here and
         // nowhere else, which is the honest version of the same boast and does
         // not depend on whether the user turned iCloud sync on.
-        footer(c, s, "YEAR ONE · COMPUTED ON THIS PHONE")
+        footer(c, s, String(localized: "YEAR ONE · COMPUTED ON THIS PHONE", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters."))
     }
 
     // MARK: - F · milestone stamp
@@ -504,7 +512,9 @@ enum Shareables {
 
         text(c, "\(night)", at: CGPoint(x: centre.x, y: centre.y - 74),
              font: display(150), colour: UIColor(DS.Palette.gold), align: .center)
-        text(c, night == 1 ? "NIGHT SPOKEN" : "NIGHTS SPOKEN",
+        text(c, night == 1
+                ? String(localized: "NIGHT SPOKEN", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Caption under the number on the seal when it is 1. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card.")
+                : String(localized: "NIGHTS SPOKEN", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Caption under the number of nights on the seal (any count but 1; add plural variations if your language needs them). Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."),
              at: CGPoint(x: centre.x, y: centre.y + 110),
              font: mono(24), colour: UIColor(DS.Palette.goldNight), align: .center)
 
@@ -512,12 +522,12 @@ enum Shareables {
         // Android probe rendered a seal reading 1 under "Forty-two nights."
         text(c, milestoneHeadline(night), at: CGPoint(x: s.width / 2, y: s.height - 268),
              font: display(52), colour: UIColor(DS.Palette.navyText), align: .center)
-        text(c, "Nobody sold me this. I just kept talking.",
+        text(c, String(localized: "Nobody sold me this. I just kept talking.", comment: "Share card image (Milestone), drawn on a 1080px square and posted publicly. Line under the headline, first person: the user is posting it. About 45 characters."),
              at: CGPoint(x: s.width / 2, y: s.height - 196),
              font: body(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6),
              align: .center)
 
-        footer(c, s, "MINTED ON THIS PHONE · GETDAILYVOX.COM")
+        footer(c, s, String(localized: "MINTED ON THIS PHONE · GETDAILYVOX.COM", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. The address stays as it is."))
     }
 
     // MARK: - F · wallpaper
@@ -541,7 +551,8 @@ enum Shareables {
         constellation(c, centre: centre, s: s,
                       count: min(9, max(f.count, 3)), spread: 0.58)
 
-        let caption = "\(nights(f)) NIGHTS \u{00B7} A SKY MADE OF YOU"
+        let caption = String(localized: "\(String(nights(f))) NIGHTS \u{00B7} A SKY MADE OF YOU",
+                             comment: "Lock-screen wallpaper image: caption near the bottom. The placeholder is the number of nights spoken; the rest is the app's tagline. Upper case, monospaced, about 34 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         text(c, caption, at: CGPoint(x: s.width / 2, y: s.height - 150),
              font: mono(30), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.5),
              align: .center)
@@ -575,7 +586,7 @@ enum Shareables {
         let rested = measured.filter { ($0.sleepHours ?? 0) >= 7 }
         let short = measured.filter { ($0.sleepHours ?? 0) < 7 }
 
-        text(c, "HOW YOU SLEPT \u{00B7} HOW YOU WROTE", at: CGPoint(x: 84, y: 130),
+        text(c, String(localized: "HOW YOU SLEPT \u{00B7} HOW YOU WROTE", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Label at the top left. Upper case, monospaced, about 34 characters."), at: CGPoint(x: 84, y: 130),
              font: mono(22), colour: UIColor(DS.Palette.goldNight))
 
         // Both sides need a real sample before a comparison means anything, and
@@ -588,14 +599,19 @@ enum Shareables {
 
         let headline: [String]
         if !include {
-            headline = ["Your body", "stays here."]
+            headline = [String(localized: "Your body", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 1 of 2, when health data is off: 'Your body / stays here.' Display face, about 18 characters per line."),
+                        String(localized: "stays here.", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 2 of 2, when health data is off: 'Your body / stays here.' Display face, about 18 characters per line.")]
         } else if let g = gap {
-            headline = g > 0 ? ["You write warmer", "after a long night."]
-                             : ["You write warmer", "after a short one."]
+            let warmer = String(localized: "You write warmer", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 1 of 2: 'You write warmer / after a long night.' (or '/ after a short one.'). Warmer means more positive. Display face, about 18 characters per line.")
+            headline = g > 0
+                ? [warmer, String(localized: "after a long night.", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 2 of 2, after 'You write warmer': on days after seven hours of sleep or more. About 18 characters.")]
+                : [warmer, String(localized: "after a short one.", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 2 of 2, after 'You write warmer': on days after less than seven hours of sleep ('one' is a night). About 18 characters.")]
         } else if restedMood != nil && shortMood != nil {
-            headline = ["Sleep barely moved", "how you wrote."]
+            headline = [String(localized: "Sleep barely moved", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 1 of 2: 'Sleep barely moved / how you wrote.' About 18 characters per line."),
+                        String(localized: "how you wrote.", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 2 of 2: 'Sleep barely moved / how you wrote.' About 18 characters per line.")]
         } else {
-            headline = ["\(measured.count) nights", "your body kept."]
+            headline = [String(localized: "\(String(measured.count)) nights", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 1 of 2: '12 nights / your body kept.' The placeholder is the number of nights with sleep data. About 18 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."),
+                        String(localized: "your body kept.", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Headline, line 2 of 2: '12 nights / your body kept.' About 18 characters.")]
         }
         text(c, headline[0], at: CGPoint(x: 84, y: 250), font: display(66),
              colour: UIColor(DS.Palette.navyText))
@@ -607,22 +623,24 @@ enum Shareables {
         // instead of leaving a third of the frame empty navy.
         var rows: [(String, String, Bool)] = []
         if include {
-            rows.append(("Nights measured", "\(measured.count)", false))
+            rows.append((String(localized: "Nights measured", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column: nights with sleep data. About 18 characters."), "\(measured.count)", false))
             if let avg = average(measured.compactMap(\.sleepHours)) {
-                let h = Int(avg)
-                let m = Int((avg - Double(h)) * 60)
-                rows.append(("Slept, on average", String(format: "%dh%02d", h, m), false))
+                rows.append((String(localized: "Slept, on average", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column; the value is hours and minutes such as 7h05. About 18 characters."), LocaleFormat.sleepHours(avg), false))
             }
             if let r = restedMood, let sh = shortMood {
                 // Labelled with the scale, because "+0.4" alone is a number
                 // nobody outside this app can read.
-                rows.append(("After seven hours", LocaleFormat.decimal(r, fractionDigits: 1, signed: true) + " mood", gap ?? 0 > 0))
-                rows.append(("After less", LocaleFormat.decimal(sh, fractionDigits: 1, signed: true) + " mood", gap ?? 0 < 0))
+                let moodValue = { (v: Double) in
+                    String(localized: "\(LocaleFormat.decimal(v, fractionDigits: 1, signed: true)) mood",
+                           comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row value: the average mood score on those days, such as '+0.4 mood'. The placeholder is the signed score, already formatted. About 10 characters.")
+                }
+                rows.append((String(localized: "After seven hours", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column: days after seven hours of sleep or more. About 18 characters."), moodValue(r), gap ?? 0 > 0))
+                rows.append((String(localized: "After less", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column, under 'After seven hours': days after less sleep than that. About 18 characters."), moodValue(sh), gap ?? 0 < 0))
             }
         } else {
-            rows.append(("Sleep", "not included", false))
+            rows.append((String(localized: "Sleep", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column, when health data is off. About 18 characters."), String(localized: "not included", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row value when health data is off: no sleep data is on the card. Lower case, about 14 characters."), false))
         }
-        rows.append(("Read by", "this phone only", true))
+        rows.append((String(localized: "Read by", comment: "Share card image (Body), drawn on a 1080px square and posted publicly. Row label, left column; the value is 'this phone only'. About 18 characters."), String(localized: "this phone only", comment: "Share card image: row value meaning nothing left the phone, after 'Computed by' or 'Read by'. Lower case, about 18 characters."), true))
 
         let rowHeight: CGFloat = 78
         var y = s.height - 230 - rowHeight * CGFloat(rows.count - 1)
@@ -636,7 +654,9 @@ enum Shareables {
             y += rowHeight
         }
 
-        footer(c, s, include ? "A NOTICING, NOT A PRESCRIPTION" : "NOTHING OF YOUR BODY IS ON THIS CARD")
+        footer(c, s, include
+               ? String(localized: "A NOTICING, NOT A PRESCRIPTION", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. A fixed phrase in the app: never medical advice. Translate it the same way everywhere.")
+               : String(localized: "NOTHING OF YOUR BODY IS ON THIS CARD", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. Shown when health data is off."))
     }
 
     private static func average(_ xs: [Double]) -> Double? {
@@ -651,27 +671,27 @@ enum Shareables {
         let cx = s.width / 2
         star(c, at: CGPoint(x: cx, y: 300), r: 74, colour: UIColor(DS.Palette.gold))
 
-        text(c, "I kept \(f.count) stars.", at: CGPoint(x: cx, y: 450),
+        text(c, String(localized: "I kept \(String(f.count)) stars.", comment: "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Headline, line 1 of 2, first person: the user is inviting a friend. The placeholder is the number of entries (stars). Display face, about 18 characters. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."), at: CGPoint(x: cx, y: 450),
              font: display(60), colour: UIColor(DS.Palette.navyText), align: .center)
-        text(c, "Start yours.", at: CGPoint(x: cx, y: 526),
+        text(c, String(localized: "Start yours.", comment: "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Headline, line 2 of 2: an invitation to the friend reading it. About 18 characters."), at: CGPoint(x: cx, y: 526),
              font: display(60), colour: UIColor(DS.Palette.navyText), align: .center)
 
         let soft = UIColor(DS.Palette.navyText).withAlphaComponent(0.6)
-        text(c, "Forty-two seconds a night, spoken not typed.",
+        text(c, String(localized: "Forty-two seconds a night, spoken not typed.", comment: "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Line under the headline. Forty-two is a soft target, never a limit: never 'at least' or 'maximum'. About 45 characters."),
              at: CGPoint(x: cx, y: 626), font: body(27), colour: soft, align: .center)
-        text(c, "Free, open source, and it never goes online.",
+        text(c, String(localized: "Free, open source, and it never goes online.", comment: "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Second line under the headline. About 45 characters."),
              at: CGPoint(x: cx, y: 672), font: body(27), colour: soft, align: .center)
 
         // Said out loud because it is unusual and checkable: there is no
         // referral code on this card, and no way to add one — the app cannot
         // phone home to attribute anything.
-        text(c, "NO TRACKING LINK · NOTHING TO ATTRIBUTE",
+        text(c, String(localized: "NO TRACKING LINK · NOTHING TO ATTRIBUTE", comment: "Share card image (Gift a star), drawn on a 1080px square and posted publicly. Line above the address: the card has no referral code. Upper case, monospaced, centred; keep it under about 34 characters or it runs off the card."),
              at: CGPoint(x: cx, y: s.height - 320), font: mono(21),
              colour: UIColor(DS.Palette.goldNight), align: .center)
         text(c, "getdailyvox.com", at: CGPoint(x: cx, y: s.height - 246),
              font: display(34), colour: UIColor(DS.Palette.navyText), align: .center)
 
-        footer(c, s, "A SKY MADE OF YOU")
+        footer(c, s, String(localized: "A SKY MADE OF YOU", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. The app's tagline; translate it the same way on every card."))
     }
 
     // MARK: - Drawing helpers
