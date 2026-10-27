@@ -1463,14 +1463,18 @@ struct TodayView: View {
             mood: entry.userMood,
             date: entry.date ?? Date(),
             duration: twinDuration,
-            entryId: entry.id?.uuidString
+            entryId: entry.id?.uuidString,
+            // The recogniser that heard this segment; typed words are read
+            // from their text by the engine.
+            language: recognizerLocale.map(TranscriptLocale.tag(for:))
         )
 
         // Something back for what was just said. The whole day's text, as the
         // detail screen reads it, so a second recording refreshes the
         // reflection rather than answering only its last sentence.
         withAnimation(.spring(response: 0.4)) {
-            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
+            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id,
+                                              language: entry.transcriptLocale)
             awaitingReflection = false
             // A mood read from the whole day's words, only where there is none
             // or the one there was our own suggestion. The words are already

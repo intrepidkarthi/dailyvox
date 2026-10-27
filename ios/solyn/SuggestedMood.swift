@@ -37,22 +37,31 @@ enum SuggestedMood {
     /// Runs the same on-device analysis the reflection uses — `learn: false`,
     /// because this looks at the whole day's text after every recording and
     /// must not count it into the profile again each time.
-    static func suggest(for text: String) -> Mood? {
+    ///
+    /// `language` is the entry's stored `transcriptLocale`, when it has one.
+    static func suggest(for text: String, language: String? = nil) -> Mood? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         // Sentiment, feeling words, negators and the lexicons below are all
         // English. Outside English they produce a mood from noise, and a
-        // wrong mood is worse than none.
-        guard EntryLanguage.isEnglish(trimmed) else { return nil }
+        // wrong mood is worse than none. The engine's LanguageGate lists
+        // `.mood` for English only.
+        //
+        // The language is settled once, for the whole entry, and handed to the
+        // engine: the second read below is of a fragment ("doing fine today"),
+        // too short to detect on its own, and must be read as what it is part of.
+        let reading = FeatureLanguage.reading(trimmed, stored: language)
+        guard LanguageGate.supports(.mood, languageCode: reading) else { return nil }
         let engine = LocalAIEngine.shared
-        let analysis = engine.analyze(text: trimmed, learn: false)
+        let analysis = engine.analyze(text: trimmed, learn: false, language: reading)
         // The engine counts feeling words with no idea of "not": "I am not
         // sad" scores as sadness. So the feelings are read again from only
         // the words that were not denied. Sentiment stays the whole text's.
         var emotions = analysis.emotions
         let kept = affirmed(in: trimmed).filter { $0 != denied }
         if kept.count < tokens(in: trimmed).count {
-            emotions = kept.isEmpty ? [:] : engine.analyze(text: kept.joined(separator: " "), learn: false).emotions
+            emotions = kept.isEmpty ? [:] : engine.analyze(text: kept.joined(separator: " "), learn: false,
+                                                          language: reading).emotions
         }
         return suggest(sentiment: analysis.sentiment, emotions: emotions, text: trimmed)
     }
@@ -245,7 +254,7 @@ extension DiaryEntry {
         let update = SuggestedMoodUpdate.decide(
             currentMood: mood,
             lastSuggested: suggestedMood,
-            suggestion: SuggestedMood.suggest(for: text ?? ""))
+            suggestion: SuggestedMood.suggest(for: text ?? "", language: transcriptLocale))
         switch update {
         case .leave:
             return false

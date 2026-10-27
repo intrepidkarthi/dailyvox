@@ -7,6 +7,7 @@
 
 import Foundation
 import NaturalLanguage
+import DailyVoxTwinEngine
 
 /// Patterns need eight entries and the Twin's summary needs five. With one
 /// entry a day, a new user cannot see either inside their first week — the
@@ -45,6 +46,9 @@ enum EarlySignals {
         /// The mood the app suggested from the words and the user left as it
         /// was. Shown only as a suggestion.
         let suggestedMood: String?
+        /// The entry's stored `transcriptLocale`, nil when unknown (then the
+        /// language is read from the text).
+        var language: String? = nil
     }
 
     enum PartOfDay: CaseIterable, Equatable {
@@ -176,6 +180,11 @@ enum EarlySignals {
         var forms: [String: [String: Int]] = [:]
 
         for entry in entries {
+            // Function words are per language: "que" and "der" say nothing in
+            // Spanish and German, and an English list keeps them. A language
+            // with no list (LanguageGate's lexical set) contributes no
+            // repeats at all, rather than a list of its articles.
+            guard let stop = stopWords(forEntryIn: entry) else { continue }
             var seen = Set<String>()
             for token in words(in: entry.text) {
                 // Scripts written without spaces (Chinese, Japanese, Thai…)
@@ -184,7 +193,7 @@ enum EarlySignals {
                 // keep saying <half a sentence>" is not a signal.
                 guard !containsUnspacedScript(token) else { continue }
                 let key = token.lowercased()
-                guard isCandidate(token, key: key) else { continue }
+                guard isCandidate(token, key: key, stopWords: stop) else { continue }
                 uses[key, default: 0] += 1
                 forms[key, default: [:]][token, default: 0] += 1
                 if seen.insert(key).inserted { entriesWith[key, default: 0] += 1 }
@@ -275,8 +284,21 @@ enum EarlySignals {
         0x20000...0x323AF, // CJK Extensions B–H
     ]
 
-    private static func isCandidate(_ token: String, key: String) -> Bool {
+    private static func isCandidate(_ token: String, key: String, stopWords: Set<String>) -> Bool {
         key.count >= 3 && !stopWords.contains(key)
+    }
+
+    /// The words to leave out of an entry's repeats, or nil when its language
+    /// is one the app has no function-word list for (then it is skipped).
+    ///
+    /// English keeps this file's own list, unchanged. Spanish, French, German,
+    /// Italian, Portuguese and Hindi use the engine's lists (`Stopwords`), the
+    /// same ones its search uses.
+    static func stopWords(forEntryIn entry: Entry) -> Set<String>? {
+        let language = FeatureLanguage.reading(entry.text, stored: entry.language)
+        guard LanguageGate.supports(.searchLexical, languageCode: language) else { return nil }
+        if language == "en" { return stopWords }
+        return Stopwords.list(for: language)
     }
 
     private static func shownForm(key: String, forms: [String: Int]) -> String {

@@ -36,8 +36,10 @@ struct RecordingActivityAttributes: ActivityAttributes {
         /// A name just caught by the graph. §E state ②. Nil most of the time;
         /// it is a moment, not a field.
         public var caughtName: String?
-        /// -1…1 running valence. §E state ③'s gradient bar.
-        public var valence: Double = 0
+        /// -1…1 running valence. §E state ③'s gradient bar. Nil when the
+        /// language being spoken is one the sentiment model cannot read: the
+        /// bar is then not drawn, rather than drawn at "even".
+        public var valence: Double? = 0
         /// True while paused, so the Island stops claiming to listen.
         public var paused: Bool = false
     }

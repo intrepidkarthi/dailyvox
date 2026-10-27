@@ -132,8 +132,10 @@ struct RecordingLiveActivityWidget: Widget {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
 
-                        ValenceBar(valence: context.state.valence)
-                            .frame(height: 4)
+                        if let valence = context.state.valence {
+                            ValenceBar(valence: valence)
+                                .frame(height: 4)
+                        }
 
                         if #available(iOS 17.0, *) {
                             HStack(spacing: 10) {

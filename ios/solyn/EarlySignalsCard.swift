@@ -15,7 +15,8 @@ extension EarlySignals.Entry {
         self.init(date: date,
                   text: entry.text ?? "",
                   chosenMood: chosen,
-                  suggestedMood: entry.isMoodSuggested ? entry.mood : nil)
+                  suggestedMood: entry.isMoodSuggested ? entry.mood : nil,
+                  language: entry.transcriptLocale)
     }
 }
 

@@ -60,6 +60,24 @@ struct ShareableInsight: Identifiable {
 
 struct ShareableInsightGenerator {
 
+    // MARK: - Language
+
+    /// Whether the generator can read a week, given each entry's text and
+    /// stored `transcriptLocale`.
+    ///
+    /// Every card here is an English read of the person: "should" against
+    /// "want", I/me focus, question marks against statements, vocabulary,
+    /// concern words, and `NLTagger` sentiment pinned to names. On a Spanish
+    /// or Hindi week those do not fail, they answer, and a share card is a
+    /// claim about the user made to whoever sees it. So the generator reads a
+    /// week only when LanguageGate says every entry in it can be read for
+    /// traits and mood (English, today). A week with any entry it cannot read
+    /// gives no cards at all: dropping those entries would make every
+    /// percentage and count on the cards wrong.
+    static func canRead(_ week: [(text: String, language: String?)]) -> Bool {
+        week.allSatisfy { FeatureLanguage.readsShareableInsights($0.text, stored: $0.language) }
+    }
+
     // MARK: - Main Entry Point
 
     /// Generates up to 3 shareable insights from the past 7 days of entries
@@ -72,6 +90,7 @@ struct ShareableInsightGenerator {
         }
 
         guard weekEntries.count >= 3 else { return [] }
+        guard canRead(weekEntries.map { ($0.text ?? "", $0.transcriptLocale) }) else { return [] }
 
         let twin = DigitalTwinEngine.shared
         let profile = LocalAIEngine.shared.userProfile

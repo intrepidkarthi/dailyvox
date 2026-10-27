@@ -28,9 +28,10 @@ import NaturalLanguage
 /// `und` and `mul` are the standard BCP-47 codes for "undetermined" and
 /// "multiple languages", so nothing downstream needs a private vocabulary.
 ///
-/// Nothing reads this yet to change behaviour; the English-only readers still
-/// use `EntryLanguage`. It is recorded now so the per-language gate (B-3/B-4)
-/// and per-language search (B-10) have a fact to read instead of a guess.
+/// The readers use it through `FeatureLanguage` (B-4): the stored language
+/// decides what the engine's `LanguageGate` lets each feature read, and which
+/// language an entry is searched in (B-10). Detection from the text is only
+/// the fallback, for `und` and entries not yet backfilled.
 enum TranscriptLocale {
 
     static let undetermined = "und"

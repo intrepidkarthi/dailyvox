@@ -28,15 +28,20 @@ struct EntryReflection: Equatable {
 
     /// Builds the reflection for an entry's full text — the same input the
     /// detail screen analyses.
-    static func make(entryText: String, entryID: UUID?) -> EntryReflection? {
+    ///
+    /// `language` is the entry's stored `transcriptLocale`, when it has one.
+    static func make(entryText: String, entryID: UUID?, language: String? = nil) -> EntryReflection? {
         let text = entryText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
         // The engine's reflection is chosen from English feeling words. On a
         // Spanish or Hindi entry it does not stay silent, it falls through to
         // its gentlest default ("a calm mind…"), and a grief entry got told
-        // it sounded calm. Say nothing instead.
-        guard EntryLanguage.isEnglish(text) else { return nil }
-        let analysis = LocalAIEngine.shared.analyze(text: text, learn: false)
+        // it sounded calm. Say nothing instead. LanguageGate lists
+        // `.reflection` for English only, and the engine is told the language
+        // too, so it agrees (a quiet analysis has no reflection line).
+        let reading = FeatureLanguage.reading(text, stored: language)
+        guard LanguageGate.supports(.reflection, languageCode: reading) else { return nil }
+        let analysis = LocalAIEngine.shared.analyze(text: text, learn: false, language: reading)
         let reflection = analysis.suggestedResponse.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !reflection.isEmpty else { return nil }
         return EntryReflection(

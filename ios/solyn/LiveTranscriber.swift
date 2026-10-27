@@ -72,7 +72,12 @@ final class LiveTranscriber: ObservableObject {
     /// A name the graph recognises, most recently heard. Drives §E state ②.
     @Published private(set) var caughtName: String?
     /// -1…1 running valence of what has been said. Drives §E state ③'s bar.
-    @Published private(set) var valence: Double = 0
+    ///
+    /// Nil when the recogniser's language is one the sentiment model cannot
+    /// read (LanguageGate `.sentiment`: en, es, fr, de, it). Then the bar is
+    /// not drawn at all: a marker parked at the middle would say "even" about
+    /// words nobody read.
+    @Published private(set) var valence: Double? = 0
     /// True when a session is actually running, so callers can tell "silent" from
     /// "unavailable".
     @Published private(set) var isRunning = false
@@ -102,6 +107,10 @@ final class LiveTranscriber: ObservableObject {
     /// the recorder, and the "Language you speak" picker can change between
     /// two recordings.
     private var recognizer: SFSpeechRecognizer?
+
+    /// The language the live line is read in: the recogniser's, as a BCP-47
+    /// tag, so the gate never has to guess from a half-finished sentence.
+    private var language: String?
 
     /// Analysis is debounced: partials arrive several times a second and
     /// `NLTagger` is not free. Names and mood do not change that fast.
@@ -148,6 +157,9 @@ final class LiveTranscriber: ObservableObject {
 
         guard SFSpeechRecognizer.authorizationStatus() == .authorized,
               let recognizer, recognizer.isAvailable else { return }
+
+        language = TranscriptLocale.tag(for: recognizer.locale)
+        valence = Self.valence(of: "", language: language)
 
         knownNames = DigitalTwinEngine.shared.knowledgeGraph
             .topNodes(ofType: .person, limit: 40)
@@ -256,6 +268,7 @@ final class LiveTranscriber: ObservableObject {
         phrase = ""
         caughtName = nil
         valence = 0
+        language = nil
         lastAnalysis = .distantPast
         announced.removeAll()
         blinkTask?.cancel()
@@ -276,11 +289,11 @@ final class LiveTranscriber: ObservableObject {
         guard now.timeIntervalSince(lastAnalysis) >= Self.analysisInterval else { return }
         lastAnalysis = now
 
-        if let name = Self.detectName(in: full, known: knownNames),
+        if let name = Self.detectName(in: full, known: knownNames, language: language),
            !announced.contains(name.lowercased()) {
             announce(name)
         }
-        valence = Self.valence(of: full)
+        valence = Self.valence(of: full, language: language)
     }
 
     /// Show a caught name, then put it away.
@@ -322,14 +335,35 @@ final class LiveTranscriber: ObservableObject {
     /// Graph-first is the point: "Sarah ✦ filed to your sky" is only true if
     /// Sarah is actually a node. `NLTagger` catches new names the graph has not
     /// met yet, which is the case where the moment is most worth showing.
-    nonisolated static func detectName(in text: String, known: [String]) -> String? {
-        let lowered = text.lowercased()
-        if let hit = known.last(where: { lowered.contains($0.lowercased()) }) {
-            return hit
+    ///
+    /// A known name counts only as a whole word (`EntityMatch`): "Sam" is not
+    /// in "samosa", and "Ana" is not in "banana". Of the known names heard,
+    /// the one said LAST wins, because the Island shows what was just caught.
+    ///
+    /// `language` is the recogniser's tag. Where LanguageGate says the name
+    /// tagger cannot read it (`.names`: en, es, fr, de, it), nothing blinks:
+    /// in German every noun is capitalised, and a caseless script gives the
+    /// tagger nothing to go on. Nil reads the language from the text.
+    nonisolated static func detectName(in text: String, known: [String],
+                                       language: String? = nil) -> String? {
+        let reading = FeatureLanguage.reading(text, stored: language)
+        guard LanguageGate.supports(.names, languageCode: reading) else { return nil }
+
+        let heard = known.compactMap { name -> (name: String, end: String.Index)? in
+            guard let last = EntityMatch.ranges(of: name, in: text).last else { return nil }
+            return (name, last.upperBound)
+        }
+        if let hit = heard.max(by: { $0.end != $1.end ? $0.end < $1.end : $0.name.count < $1.name.count }) {
+            return hit.name
         }
 
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
+        // English is left to the tagger, exactly as before; another language
+        // is named, so a short partial is not tagged under an English guess.
+        if reading != "en" {
+            tagger.setLanguage(LanguageGate.nlLanguage(reading), range: text.startIndex..<text.endIndex)
+        }
         var found: String?
         let options: NLTagger.Options = [.omitWhitespace, .omitPunctuation, .joinNames]
         tagger.enumerateTags(in: text.startIndex..<text.endIndex,
@@ -344,8 +378,13 @@ final class LiveTranscriber: ObservableObject {
         return found
     }
 
-    /// -1…1, from Apple's on-device sentiment score.
-    nonisolated static func valence(of text: String) -> Double {
+    /// -1…1, from Apple's on-device sentiment score. Nil where LanguageGate
+    /// says that score cannot read the language (`.sentiment`): the bar is
+    /// then left out, never parked at "even". `language` is the recogniser's
+    /// tag; nil reads it from the text.
+    nonisolated static func valence(of text: String, language: String? = nil) -> Double? {
+        let reading = FeatureLanguage.reading(text, stored: language)
+        guard LanguageGate.supports(.sentiment, languageCode: reading) else { return nil }
         guard text.count > 12 else { return 0 }
         let tagger = NLTagger(tagSchemes: [.sentimentScore])
         tagger.string = text
