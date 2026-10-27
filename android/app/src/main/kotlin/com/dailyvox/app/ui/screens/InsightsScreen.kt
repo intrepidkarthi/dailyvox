@@ -82,7 +82,7 @@ fun InsightsScreen(
     }
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
         Spacer(Modifier.height(12.dp))
-        ScreenTitle("Insights", onBack = onBack)
+        ScreenTitle(stringResource(R.string.insights_title), onBack = onBack)
 
         // The weekly recap lives here every day of the week, and on Today
         // only on recap day.
@@ -223,12 +223,12 @@ fun InsightsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom,
                 ) {
-                    Text("$nights of $target", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 20.sp,
+                    Text(stringResource(R.string.goal_progress, nights, target), fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 20.sp,
                          fontWeight = FontWeight.ExtraBold, color = goldText)
                     MonoLabel(
                         // Never "you are behind". The only number the app will
                         // put next to a miss is how much week is left.
-                        if (met) "this week" else "$left ${if (left == 1) "day" else "days"} left"
+                        if (met) stringResource(R.string.goal_this_week) else pluralStringResource(R.plurals.goal_days_left, left, left)
                     )
                 }
                 Spacer(Modifier.height(9.dp))
@@ -247,8 +247,7 @@ fun InsightsScreen(
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (met) "That is your week. Anything else is extra."
-                    else "Nights, not entries — one evening counts once.",
+                    stringResource(if (met) R.string.goal_met_note else R.string.goal_counting_note),
                     fontSize = 12.sp, lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -256,9 +255,9 @@ fun InsightsScreen(
         }
 
         Spacer(Modifier.height(20.dp))
-        MonoLabel("Last 30 nights")
+        MonoLabel(stringResource(R.string.insights_last_30))
         Spacer(Modifier.height(4.dp))
-        Text("Brighter stars were better days. Tonight is waiting.",
+        Text(stringResource(R.string.insights_last_30_note),
              fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.height(10.dp))
         NightStrip(entries)
@@ -267,7 +266,7 @@ fun InsightsScreen(
         DvCard {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
-                MonoLabel("Mood · last 14 days")
+                MonoLabel(stringResource(R.string.insights_mood_14))
                 // The design puts a delta beside this label. Stated against the
                 // fortnight before, so it answers "compared to what" without the
                 // reader having to guess.
@@ -404,7 +403,7 @@ private fun MoodCurve(entries: List<Entry>) {
     }
     val known = points.filterNotNull()
     if (known.size < 2) {
-        Text("A curve needs a few more days.", fontSize = 13.sp,
+        Text(stringResource(R.string.insights_curve_not_enough), fontSize = 13.sp,
              color = MaterialTheme.colorScheme.onSurfaceVariant)
         return
     }

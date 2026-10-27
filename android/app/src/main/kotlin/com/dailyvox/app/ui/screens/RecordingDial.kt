@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -107,7 +109,7 @@ fun RecordingDial(
     ) {
         Spacer(Modifier.height(20.dp))
         Text(
-            if (paused) "❙❙ PAUSED · ON-DEVICE · 0 B OUT" else "● RECORDING · ON-DEVICE · 0 B OUT",
+            stringResource(if (paused) R.string.dial_status_paused else R.string.dial_status_recording),
             fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
             letterSpacing = 1.6.sp,
             fontWeight = FontWeight.SemiBold,
@@ -193,7 +195,7 @@ fun RecordingDial(
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
-                    "OF 0:42 · ${elapsed.coerceAtMost(42)} TICKS LIT",
+                    stringResource(R.string.dial_ticks_lit, elapsed.coerceAtMost(42)),
                     fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                     letterSpacing = 1.4.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -208,9 +210,9 @@ fun RecordingDial(
         Spacer(Modifier.height(18.dp))
         Text(
             when {
-                paused -> "Paused. Tap resume and keep going."
-                partial.isBlank() -> "Listening…"
-                else -> "“…$partial”"
+                paused -> stringResource(R.string.dial_paused)
+                partial.isBlank() -> stringResource(R.string.dial_listening)
+                else -> stringResource(R.string.dial_partial, partial)
             },
             fontSize = 12.5.sp, lineHeight = 19.sp,
             color = NightText.copy(alpha = 0.75f),
@@ -222,7 +224,7 @@ fun RecordingDial(
         if (lastEntity != null) {
             Spacer(Modifier.height(14.dp))
             Text(
-                "${com.dailyvox.app.system.LocaleFormat.upper(lastEntity)} ✦ FILED TO YOUR SKY",
+                stringResource(R.string.dial_filed, com.dailyvox.app.system.LocaleFormat.upper(lastEntity)),
                 fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 0.8.sp,
@@ -245,7 +247,7 @@ fun RecordingDial(
             verticalAlignment = Alignment.Top,
         ) {
             Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
-                DialAction("Discard", onDiscard) {
+                DialAction(stringResource(R.string.dial_discard), onDiscard) {
                     Text("✕", fontSize = 15.sp, color = NightText.copy(alpha = 0.7f))
                 }
             }
@@ -272,7 +274,7 @@ fun RecordingDial(
                     )
                 }
                 Spacer(Modifier.height(6.dp))
-                Text("Stop & keep ✦", fontSize = 10.sp,
+                Text(stringResource(R.string.dial_stop_keep), fontSize = 10.sp,
                      fontWeight = FontWeight.ExtraBold, color = NightText)
             }
             Spacer(Modifier.width(20.dp))
@@ -280,7 +282,7 @@ fun RecordingDial(
                 // This was wired to `onStop` — the same handler as Stop & keep,
                 // so the pause glyph ended the recording.
                 DialAction(
-                    if (paused) "Resume" else "Pause",
+                    stringResource(if (paused) R.string.dial_resume else R.string.dial_pause),
                     if (paused) onResume else onPause,
                 ) {
                     if (paused) {

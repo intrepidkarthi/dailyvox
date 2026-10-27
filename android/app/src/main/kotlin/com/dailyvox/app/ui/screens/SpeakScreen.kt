@@ -320,12 +320,12 @@ fun SpeakScreen(
             Column {
                 val cal = java.util.Calendar.getInstance()
                 Text(
-                    when (cal.get(java.util.Calendar.HOUR_OF_DAY)) {
-                        in 0..4 -> "Still up"
-                        in 5..11 -> "Good morning"
-                        in 12..16 -> "Good afternoon"
-                        else -> "Good evening"
-                    },
+                    stringResource(when (cal.get(java.util.Calendar.HOUR_OF_DAY)) {
+                        in 0..4 -> R.string.speak_greeting_night
+                        in 5..11 -> R.string.speak_greeting_morning
+                        in 12..16 -> R.string.speak_greeting_afternoon
+                        else -> R.string.speak_greeting_evening
+                    }),
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -356,7 +356,7 @@ fun SpeakScreen(
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "\u2726 $yearCount this year", fontSize = 11.sp,
+                        androidx.compose.ui.res.pluralStringResource(R.plurals.speak_year_count, yearCount, yearCount), fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold, color = goldText,
                     )
                 }
@@ -382,8 +382,8 @@ fun SpeakScreen(
         val anotherLabel = stringResource(R.string.daily_question_another_action)
         Text(
             when (state) {
-                SpeechCapture.State.RECORDING -> "Listening."
-                SpeechCapture.State.PROCESSING -> "Filing it."
+                SpeechCapture.State.RECORDING -> stringResource(R.string.speak_state_listening)
+                SpeechCapture.State.PROCESSING -> stringResource(R.string.speak_state_filing)
                 // The signature question keeps the break it has always had.
                 else -> if (question == DailyQuestion.Question.Everyday(0))
                     asked.replaceFirst(", ", ",\n") else asked
@@ -468,13 +468,13 @@ fun SpeakScreen(
             Spacer(Modifier.height(22.dp))
             Text(
                 if (state == SpeechCapture.State.RECORDING) "%d:%02d".format(elapsed / 60, elapsed % 60)
-                else if (!granted) "Allow the microphone to begin" else "Tap to record \u00B7 42 seconds",
+                else stringResource(if (!granted) R.string.speak_allow_mic else R.string.speak_tap_to_record),
                 fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                if (partial.isNotBlank()) partial else "Also on your home screen and Quick Settings",
+                if (partial.isNotBlank()) partial else stringResource(R.string.speak_also_on_home),
                 fontSize = 13.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.widthIn(max = 420.dp),
@@ -485,9 +485,10 @@ fun SpeakScreen(
             // has the strongest reason to want it. Not during PROCESSING, when
             // the entry being filed is still the screen's business.
             if (state == SpeechCapture.State.IDLE) {
+                val typeInsteadDescription = stringResource(R.string.speak_cant_talk_description)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "I can't talk right now",
+                    stringResource(R.string.speak_cant_talk),
                     fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
@@ -495,7 +496,7 @@ fun SpeakScreen(
                         .clickable { onDismissReflection(); capture.clearError(); typing = true }
                         .semantics {
                             role = Role.Button
-                            contentDescription = "Type an entry instead"
+                            contentDescription = typeInsteadDescription
                         }
                         .defaultMinSize(minHeight = 48.dp)
                         .padding(horizontal = 14.dp)
@@ -508,7 +509,7 @@ fun SpeakScreen(
         // returning to "Tap to start" taught people the button was broken.
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
-            SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
+            SpeechErrorCard(err, capture, stringResource(R.string.speak_error_dismiss), onSecondary = { capture.clearError() })
         }
 
         // Something back for what was just given. Only at rest: while the next
@@ -531,7 +532,7 @@ fun SpeakScreen(
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                    MonoLabel("today ✦ · ${com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(java.util.Date(e.createdAt))}")
+                    MonoLabel(stringResource(R.string.speak_today_label, com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(java.util.Date(e.createdAt))))
                     // It looked like a play button and was a label: no
                     // clickable, no player, nothing behind the triangle.
                     //
@@ -542,6 +543,8 @@ fun SpeakScreen(
                     //
                     // Only when there is audio: a typed entry showed "▶ 0:00",
                     // a play button with nothing behind it.
+                    val playDescription = stringResource(
+                        if (playingToday) R.string.speak_today_stop_description else R.string.speak_today_play_description)
                     if (!e.audioPath.isNullOrBlank()) Box(
                         Modifier
                             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
@@ -553,7 +556,7 @@ fun SpeakScreen(
                                     if (path.isNullOrBlank()) {
                                         android.widget.Toast.makeText(
                                             context,
-                                            "This entry has no audio saved.",
+                                            context.getString(R.string.speak_today_no_audio),
                                             android.widget.Toast.LENGTH_SHORT,
                                         ).show()
                                     } else {
@@ -563,9 +566,7 @@ fun SpeakScreen(
                                 }
                             }
                             .semantics {
-                                contentDescription =
-                                    if (playingToday) "Stop playing today's entry"
-                                    else "Play today's entry"
+                                contentDescription = playDescription
                             },
                         contentAlignment = Alignment.Center,
                     ) {
@@ -638,10 +639,10 @@ fun SpeakScreen(
             Box(Modifier.size(7.dp).clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.tertiary))
             Spacer(Modifier.width(10.dp))
-            Text("Works in airplane mode. Nothing leaves this phone.",
+            Text(stringResource(R.string.speak_privacy_line),
                  fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface,
                  modifier = Modifier.weight(1f))
-            MonoLabel("0 calls")
+            MonoLabel(stringResource(R.string.speak_privacy_calls))
         }
         Spacer(Modifier.height(if (tall) 132.dp else 112.dp))   // clears the floating nav pill
     }
@@ -708,8 +709,10 @@ private fun ReflectionCard(
     val moodLine = firstSuggestion?.let {
         stringResource(R.string.reflection_mood_suggested_line, moodWord(it))
     }
-    val spoken = (listOf("$label. $meta.") + lines +
-        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" }, moodLine)).joinToString(" ")
+    val spokenHeader = stringResource(R.string.reflection_spoken_header, label, meta)
+    val spokenTomorrow = tomorrowQuote?.let { stringResource(R.string.reflection_spoken_tomorrow, tomorrowLabel, it) }
+    val spoken = (listOf(spokenHeader) + lines +
+        listOfNotNull(spokenTomorrow, moodLine)).joinToString(" ")
     val doneDescription = stringResource(R.string.reflection_done_description)
     // Shown once there was a mood to show, and kept after a clear so the user
     // can still pick one; a section that vanished on "Clear" would take the
@@ -876,10 +879,10 @@ private fun TypedComposer(
             modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp).focusRequester(focus),
         )
         Spacer(Modifier.height(8.dp))
-        MonoLabel("typed, not recorded \u00B7 stays on this phone")
+        MonoLabel(stringResource(R.string.speak_typed_stored))
         Spacer(Modifier.height(16.dp))
         Text(
-            "Save to today",
+            stringResource(R.string.speak_typed_save),
             fontSize = 16.sp, fontWeight = FontWeight.Bold,
             color = if (canSave) scheme.onPrimary else scheme.onPrimary.copy(alpha = 0.6f),
             modifier = Modifier
@@ -894,7 +897,7 @@ private fun TypedComposer(
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "Back to speaking",
+            stringResource(R.string.speak_typed_back),
             fontSize = 14.sp,
             color = scheme.onSurfaceVariant,
             modifier = Modifier
@@ -918,11 +921,11 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val label = when (state) {
-        SpeechCapture.State.RECORDING -> "Stop recording"
-        SpeechCapture.State.PROCESSING -> "Processing"
-        else -> "Start recording"
-    }
+    val label = stringResource(when (state) {
+        SpeechCapture.State.RECORDING -> R.string.speak_button_stop
+        SpeechCapture.State.PROCESSING -> R.string.speak_button_processing
+        else -> R.string.speak_button_start
+    })
 
     // FINAL-SPEC §2.2, read off the design's own markup rather than eyeballed:
     //   ring   r=70 in a 150 box, stroke 4.5, dasharray "0.1 10.37" -> 42 dots

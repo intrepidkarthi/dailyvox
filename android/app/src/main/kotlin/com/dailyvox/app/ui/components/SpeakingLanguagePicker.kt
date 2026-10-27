@@ -119,7 +119,7 @@ fun SpeakingLanguagePicker() {
                 stringResource(R.string.speak_lang_needs_download, currentName, provider),
                 fontSize = 11.5.sp, lineHeight = 17.sp, color = scheme.onSurface,
             )
-            val line = packLine(pack)
+            val line = packLine(context.resources, pack)
             if (line != null) {
                 Spacer(Modifier.height(4.dp))
                 Text(line, fontSize = 11.sp, lineHeight = 16.sp, color = scheme.onSurfaceVariant)

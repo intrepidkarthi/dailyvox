@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -81,12 +83,11 @@ fun ShareSheet(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
         ) {
-            Text("Share", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
+            Text(stringResource(R.string.share_sheet_title), fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
             Spacer(Modifier.height(4.dp))
             Text(
-                "Rendered on this phone and handed to whatever you pick. " +
-                    "DailyVox has no way to send it itself.",
+                stringResource(R.string.share_sheet_intro),
                 fontSize = 12.5.sp, lineHeight = 18.sp, color = scheme.onSurfaceVariant,
             )
 
@@ -140,7 +141,7 @@ fun ShareSheet(
                         .background(scheme.surface),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("Could not render the card.", fontSize = 13.sp,
+                    Text(stringResource(R.string.share_sheet_render_failed), fontSize = 13.sp,
                          color = scheme.onSurfaceVariant)
                 }
             }
@@ -163,11 +164,10 @@ fun ShareSheet(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text("Include names", fontSize = 13.sp, fontWeight = FontWeight.Medium,
+                        Text(stringResource(R.string.share_sheet_names), fontSize = 13.sp, fontWeight = FontWeight.Medium,
                              color = scheme.onSurface)
                         Text(
-                            if (includeNames) "The card will name a real person."
-                            else "Off — the card says “someone”.",
+                            stringResource(if (includeNames) R.string.share_sheet_names_on else R.string.share_sheet_names_off),
                             fontSize = 11.sp, lineHeight = 16.sp,
                             color = if (includeNames) goldText else scheme.onSurfaceVariant,
                         )
@@ -179,8 +179,7 @@ fun ShareSheet(
             if (card == Shareables.Card.MY_SKY && !Shareables.airplaneMode(context)) {
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Turn on airplane mode before sharing and the card stamps " +
-                        "ON AIRPLANE MODE — because then it is true.",
+                    stringResource(R.string.share_sheet_airplane_hint),
                     fontSize = 11.5.sp, lineHeight = 17.sp, color = goldText,
                 )
             }
@@ -188,7 +187,7 @@ fun ShareSheet(
             Spacer(Modifier.height(16.dp))
             if (card == Shareables.Card.WALLPAPER) {
                 Text(
-                    "Set as wallpaper", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                    stringResource(R.string.share_sheet_wallpaper), fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                     color = scheme.onPrimary,
                     modifier = Modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(20.dp))
@@ -203,7 +202,7 @@ fun ShareSheet(
                 Spacer(Modifier.height(8.dp))
             }
             Text(
-                if (card == Shareables.Card.WALLPAPER) "Share the image instead" else "Share",
+                stringResource(if (card == Shareables.Card.WALLPAPER) R.string.share_sheet_share_instead else R.string.share_sheet_share),
                 fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                 color = if (card == Shareables.Card.WALLPAPER) scheme.primary
                         else scheme.onPrimary,

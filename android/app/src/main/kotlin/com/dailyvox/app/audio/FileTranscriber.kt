@@ -1,5 +1,7 @@
 package com.dailyvox.app.audio
 
+import com.dailyvox.app.R
+
 import android.content.Context
 import android.media.AudioFormat
 import android.os.Bundle
@@ -68,16 +70,16 @@ object FileTranscriber {
      */
     suspend fun transcribe(context: Context, audio: File, language: String): Result =
         withContext(Dispatchers.IO) {
-            if (!audio.exists()) return@withContext Result.Failed("The recording is missing.")
+            if (!audio.exists()) return@withContext Result.Failed(context.getString(R.string.transcribe_missing))
             if (!SpeechRecognizer.isOnDeviceRecognitionAvailable(context)) {
-                return@withContext Result.Failed("This phone has no on-device recogniser.")
+                return@withContext Result.Failed(context.getString(R.string.transcribe_no_recogniser))
             }
             val (pcm, sampleRate) = AudioDecoder.toPcm(audio)
-                ?: return@withContext Result.Failed("The recording could not be decoded.")
-            if (pcm.isEmpty()) return@withContext Result.Failed("The recording is empty.")
+                ?: return@withContext Result.Failed(context.getString(R.string.transcribe_undecodable))
+            if (pcm.isEmpty()) return@withContext Result.Failed(context.getString(R.string.transcribe_empty))
 
             withTimeoutOrNull(TIMEOUT_MS) { run(context, pcm, sampleRate, language) }
-                ?: Result.Failed("The recogniser did not finish in time.")
+                ?: Result.Failed(context.getString(R.string.transcribe_timeout))
         }
 
     private suspend fun run(
@@ -161,7 +163,7 @@ object FileTranscriber {
         val consumed = written.get() > PIPE_BUFFER_BYTES
         return when {
             !consumed -> Result.IgnoredTheFile
-            text.isNullOrBlank() -> Result.Failed("The recogniser returned no words for this recording.")
+            text.isNullOrBlank() -> Result.Failed(context.getString(R.string.transcribe_no_words))
             else -> Result.Text(text)
         }
     }

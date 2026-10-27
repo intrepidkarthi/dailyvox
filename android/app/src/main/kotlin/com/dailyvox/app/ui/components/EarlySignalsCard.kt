@@ -127,7 +127,7 @@ private fun earlyLines(s: EarlySignals.Signals): List<String> = buildList {
     s.moods?.let { m ->
         val res = androidx.compose.ui.platform.LocalContext.current.resources
         fun list(counts: List<Pair<String, Int>>) =
-            counts.joinToString(", ") { (k, n) -> res.getString(R.string.early_mood_count, moodWord(k), n) }
+            counts.joinToString(", ") { (k, n) -> res.getString(R.string.early_mood_count, moodWord(res, k), n) }
         if (m.chosen.isNotEmpty()) {
             add(stringResource(R.string.early_moods_chosen,
                 list(m.chosen)))

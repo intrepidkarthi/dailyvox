@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +13,7 @@
         android:id="@+id/widget_star"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:contentDescription="Tonight's star"
+        android:contentDescription="@string/widget_star_description"
         android:src="@drawable/ic_star_hollow" />
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_marginTop="8dp"
         android:textSize="12sp"
         android:textColor="#F1EDE2"
-        android:text="Tonight is waiting" />
+        android:text="@string/widget_tonight_waiting" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,6 +39,7 @@
         <ImageView android:id="@+id/d6" android:layout_width="7dp" android:layout_height="7dp" android:src="@drawable/dot_empty" android:contentDescription="@null" />
     </LinearLayout>
 
+    <!-- A bare number, no words: StarWidget writes the entry count over it. -->
     <TextView
         android:id="@+id/widget_count"
         android:layout_width="wrap_content"
@@ -45,5 +47,6 @@
         android:layout_marginTop="6dp"
         android:textSize="10sp"
         android:textColor="#99F1EDE2"
-        android:text="0" />
+        android:text="0"
+        tools:ignore="HardcodedText" />
 </LinearLayout>
