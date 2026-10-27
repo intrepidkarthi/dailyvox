@@ -702,7 +702,7 @@ struct SettingsView: View {
                         Image(systemName: "lock.fill")
                             .foregroundColor(DS.Palette.forest)
                             .font(.dv(.caption))
-                        Text("End-to-end encrypted with your Apple ID")
+                        Text("Encrypted by Apple; end-to-end only with Advanced Data Protection")
                             .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }

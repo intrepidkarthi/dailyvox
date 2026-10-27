@@ -2,6 +2,52 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
+
+Live on the App Store since 17 October 2026 (build 46). Android 1.2
+(versionCode 6) carries the same features and is in review; Android 1.1 is the
+current Play release until it is approved.
+
+A release about the first week: the app now gives something back every time you
+speak, instead of only after weeks of entries.
+
+### Added
+- **Something back after every entry.** Once an entry is saved, a short
+  reflection appears under it. When the entry names a person or place, one line
+  carries it into tomorrow. Nothing is guessed: if the entry names no one, the
+  line is left out.
+- **A suggested mood.** Each entry gets a mood suggested from what you said,
+  marked as a suggestion and changeable with one tap. It never replaces a mood you
+  chose, and it holds back on short, mixed or negated entries rather than guess.
+  Mood trends in Insights fill in from day one.
+- **Your past, brought back.** "A week ago you said…" quotes that entry word for
+  word; "On this day" brings back the same date in earlier months and years; a
+  weekly recap counts your entries and days from the entries themselves.
+  Reminders can quote a line from your past only if you turn that on (off by
+  default, because reminders show on the lock screen).
+- **A question that changes each day**, from a set of 26–28, with "Different
+  question" one tap away. Now and then it asks about someone you mentioned
+  recently, by name and never by pronoun, and never after a hard entry about them.
+  Research-pilot days still lead with the neutral "log your day" prompt.
+- **Early signals from the third entry**: when you usually speak, how long your
+  entries run, words that recur, and the moods you chose. Each is a count, labelled
+  early, and it hands over to the full patterns at eight entries.
+- **A streak that welcomes you back.** One missed day a week no longer breaks a
+  run, and coming back after a gap says "Welcome back" instead of showing zero.
+
+### Fixed
+- iOS: turning reminders off left up to a week of already-scheduled reminders in
+  place. Delivered reminders are now cleared too.
+- iOS and Android: reminders went silent after a week away (iOS) or repeated
+  forever (Android). Both now send one gentle note on day 10, then stop.
+- Android: the "already spoke today" check used UTC days, so a morning entry in
+  the Americas did not stop that evening's reminder; reminder times drifted an hour
+  at daylight-saving changes; turning reminders off left a delivered one on screen.
+- Android: share cards counted nights by UTC day, and Insights labelled the
+  current streak as "longest".
+- The streak on widgets, the Lock Screen, Live Activities and share cards now
+  follows one rule everywhere.
+
 ## [1.12.0] (iOS) and [Android 1.1] — 2026-10-06
 
 ### Added
