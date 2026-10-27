@@ -7,10 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import com.dailyvox.app.BuildConfig
+import com.dailyvox.app.system.MoodSuggestion
 import java.util.UUID
 
 
-class Repo private constructor(private val db: DailyVoxDb) {
+class Repo private constructor(private val db: DailyVoxDb, private val appContext: Context) {
+
+    private fun suggest(text: String): String? = MoodSuggestion.offered(
+        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext))
 
     fun observeAll(): Flow<List<Entry>> = db.entries().observeAll()
     /**
@@ -21,33 +25,34 @@ class Repo private constructor(private val db: DailyVoxDb) {
      * missed "nervous" for a query of "anxious about Sarah" while matching any
      * entry containing the letters in sequence.
      */
-    fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all ->
-        val terms = contentWords(q)
-        if (terms.isEmpty()) return@map all
-        rank(q, all).map { it.first }
-    }
-
-    private fun contentWords(t: String): Set<String> = rankWords(t)
+    fun search(q: String): Flow<List<Entry>> = db.entries().observeAll().map { all -> searchResults(q, all) }
     fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
 
     /** Re-analyses the corrected text so the Twin learns from the fix, not the flub. */
     suspend fun updateText(id: String, text: String) {
         db.entries().byId(id)?.let {
+            val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
             db.entries().upsert(
                 it.copy(
                     text = text,
-                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    valence = valence,
                     entities = com.dailyvox.twin.NameDetector
                         .detect(text, corpus = listOf(text))
                         .joinToString(","),
+                    suggestedMood = resuggest(it, suggest(text)),
                 )
             )
         }
     }
 
+    /**
+     * The user's own label, or null to clear the mood. Clearing also drops the
+     * app's suggestion: "no mood" is an answer, and a guess reappearing in its
+     * place would overrule it.
+     */
     suspend fun setSelfLabel(id: String, label: String?) {
-        db.entries().byId(id)?.let { db.entries().upsert(it.copy(selfLabel = label)) }
+        db.entries().byId(id)?.let { db.entries().upsert(withLabel(it, label)) }
     }
 
     suspend fun attachPhoto(id: String, path: String?) {
@@ -81,7 +86,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     // Recompute rather than trust the file: a valence written by
                     // iOS came from a different lexicon, and mixing two scales in
                     // one mood curve would make the chart quietly meaningless.
-                    valence = com.dailyvox.twin.Sentiment.valence(text),
+                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table),
                     entities = o.optString("entities", ""),
                 )
             )
@@ -119,43 +124,38 @@ class Repo private constructor(private val db: DailyVoxDb) {
             }
             ?.takeIf { it.available }
 
-        db.entries().upsert(
-            Entry(
-                id = UUID.randomUUID().toString(),
-                text = text,
-                createdAt = now,
-                durationSec = durationSec,
-                valence = com.dailyvox.twin.Sentiment.valence(text),
-                entities = entities.joinToString(","),
-                audioPath = audioPath,
-                speakingRate = prosody?.speakingRate?.toFloat(),
-                pitchMean = prosody?.pitchMean?.toFloat(),
-                pitchVariability = prosody?.pitchVariability?.toFloat(),
-                energyMean = prosody?.energyMean?.toFloat(),
-                pauseRatio = prosody?.pauseRatio?.toFloat(),
-                longPauseCount = prosody?.longPauseCount,
-                hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
-                dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
-                // Captured at write time, so the entry keeps the body context it
-                // was actually spoken in. Reading it later would attach today's
-                // sleep to last week's entry.
-                sleepHours = body?.sleepHours?.toFloat(),
-                hrvMs = body?.morningHrvMs?.toFloat(),
-                restingHrBpm = body?.restingHrBpm?.toFloat(),
-                stepsToday = body?.stepsToday,
-            )
-        )
-    }
-
-    /** Streak in days, counting back from today while an entry exists each day. */
-    suspend fun streakDays(): Int = withContext(Dispatchers.IO) {
-        val days = db.entries().allOnce().map { it.createdAt / 86_400_000L }.toSet()
-        if (days.isEmpty()) return@withContext 0
-        val today = System.currentTimeMillis() / 86_400_000L
-        var n = 0
-        var d = if (days.contains(today)) today else today - 1
-        while (days.contains(d)) { n++; d-- }
-        n
+        val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
+        val entry = Entry(
+            id = UUID.randomUUID().toString(),
+            text = text,
+            createdAt = now,
+            durationSec = durationSec,
+            valence = valence,
+            entities = entities.joinToString(","),
+            audioPath = audioPath,
+            speakingRate = prosody?.speakingRate?.toFloat(),
+            pitchMean = prosody?.pitchMean?.toFloat(),
+            pitchVariability = prosody?.pitchVariability?.toFloat(),
+            energyMean = prosody?.energyMean?.toFloat(),
+            pauseRatio = prosody?.pauseRatio?.toFloat(),
+            longPauseCount = prosody?.longPauseCount,
+            hourOfDay = cal.get(java.util.Calendar.HOUR_OF_DAY),
+            dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK),
+            // Captured at write time, so the entry keeps the body context it
+            // was actually spoken in. Reading it later would attach today's
+            // sleep to last week's entry.
+            sleepHours = body?.sleepHours?.toFloat(),
+            hrvMs = body?.morningHrvMs?.toFloat(),
+            restingHrBpm = body?.restingHrBpm?.toFloat(),
+            stepsToday = body?.stepsToday,
+        ).let {
+            // A suggestion only, in its own column. selfLabel stays null until
+            // the user picks one; nothing at save time can choose for them.
+            it.copy(suggestedMood = suggest(text))
+        }
+        db.entries().upsert(entry)
+        // Returned so the Speak screen can reflect on exactly what was saved.
+        entry
     }
 
     /**
@@ -191,6 +191,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
     suspend fun seedIfEmpty(context: Context) {
         Lexicon.ensureLoaded(context)
         purgeDemoData(context)
+        clearUnreadValence(context)
         if (!BuildConfig.DEBUG || !BuildConfig.SEED_DEMO_DATA) return
         if (db.entries().count() > 0) return
         DummyData.entries().forEach { db.entries().upsert(it) }
@@ -216,6 +217,22 @@ class Repo private constructor(private val db: DailyVoxDb) {
         if (removed > 0) {
             android.util.Log.i("DailyVox", "Removed $removed seeded demo entries")
         }
+    }
+
+    /**
+     * Once, after MIGRATION_4_5: entries whose stored valence the lexicon
+     * cannot actually read (another language, or no scored word) become NULL,
+     * whether 1.2 saved them as 0 or as a false-friend score, so they stop
+     * being averaged in as moods. Non-English mood suggestions go with them. Recorded only after it ran with a
+     * loaded lexicon -- with an empty table every row would look unread.
+     */
+    private suspend fun clearUnreadValence(context: Context) = withContext(Dispatchers.IO) {
+        val table = Lexicon.table
+        if (table.isEmpty()) return@withContext
+        val prefs = context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+        if (prefs.getBoolean(VALENCE_CLEARED, false)) return@withContext
+        unreadValence(db.entries().allOnce(), table).forEach { db.entries().upsert(it) }
+        prefs.edit().putBoolean(VALENCE_CLEARED, true).apply()
     }
 
     companion object {
@@ -246,6 +263,22 @@ class Repo private constructor(private val db: DailyVoxDb) {
 
         fun rankWords(t: String): Set<String> = com.dailyvox.twin.Retrieval.words(t)
 
+        /**
+         * What the Journal shows for a typed query (a blank box never gets here;
+         * the view model shows the whole journal for that).
+         *
+         * A query with no content words used to return EVERY entry. The engine's
+         * tokenizer keeps only [a-z0-9'], so a Devanagari or Tamil query -- or
+         * "mamá" cut to "mam" -- tokenised to nothing and the "results" were the
+         * whole journal, which reads as "everything matched". An empty term set
+         * is now no results, which is the truth until the tokenizer reads the
+         * script (plan B-9).
+         */
+        internal fun searchResults(q: String, all: List<Entry>): List<Entry> {
+            if (rankWords(q).isEmpty()) return emptyList()
+            return rank(q, all).map { it.first }
+        }
+
 
         /**
          * Adds the prosody and ambient columns. All nullable, so existing rows
@@ -261,6 +294,102 @@ class Repo private constructor(private val db: DailyVoxDb) {
                 ).forEach { addColumnIfMissing(db, it) }
             }
         }
+
+        /**
+         * The app's suggested mood. Nullable and never backfilled: entries
+         * written before this existed were not suggested anything, and saying
+         * so is more honest than scoring them now.
+         */
+        val MIGRATION_3_4 = object : androidx.room.migration.Migration(3, 4) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                addColumnIfMissing(db, "suggestedMood TEXT")
+            }
+        }
+
+        /**
+         * After a transcript edit the suggestion follows the corrected words,
+         * but only while it is still a live suggestion. Once the user has
+         * picked a label, the old suggestion is the record of what they were
+         * shown; once they have cleared the mood, there is nothing to revive.
+         */
+        internal fun resuggest(before: Entry, fresh: String?): String? =
+            if (before.selfLabel == null && before.suggestedMood != null) fresh
+            else before.suggestedMood
+
+        /** Picking keeps the suggestion beside the choice; clearing drops both. */
+        internal fun withLabel(entry: Entry, label: String?): Entry = entry.copy(
+            selfLabel = label,
+            suggestedMood = if (label == null) null else entry.suggestedMood,
+        )
+
+        /**
+         * Valence becomes nullable: NULL is "the lexicon read nothing here",
+         * which used to be stored as 0 and drawn as a neutral day.
+         *
+         * SQLite cannot drop NOT NULL in place, so the table is rebuilt and
+         * every row copied by column NAME -- an install that came up through
+         * the ADD COLUMN migrations has its columns in a different order from
+         * a fresh one. Values are copied unchanged; [clearUnreadValence] then
+         * clears the values the lexicon never actually read, at launch, because
+         * telling those apart needs the lexicon and a migration has no access
+         * to it.
+         */
+        val MIGRATION_4_5 = object : androidx.room.migration.Migration(4, 5) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                val cols = "`id`, `text`, `createdAt`, `durationSec`, `valence`, `entities`, " +
+                    "`sleepHours`, `audioPath`, `photoPath`, `selfLabel`, `suggestedMood`, " +
+                    "`speakingRate`, `pitchMean`, `pitchVariability`, `energyMean`, `pauseRatio`, " +
+                    "`longPauseCount`, `hourOfDay`, `dayOfWeek`, `hrvMs`, `restingHrBpm`, `stepsToday`"
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `entries_new` (`id` TEXT NOT NULL, `text` TEXT NOT NULL, " +
+                        "`createdAt` INTEGER NOT NULL, `durationSec` INTEGER NOT NULL, `valence` REAL, " +
+                        "`entities` TEXT NOT NULL, `sleepHours` REAL, `audioPath` TEXT, `photoPath` TEXT, " +
+                        "`selfLabel` TEXT, `suggestedMood` TEXT, `speakingRate` REAL, `pitchMean` REAL, " +
+                        "`pitchVariability` REAL, `energyMean` REAL, `pauseRatio` REAL, " +
+                        "`longPauseCount` INTEGER, `hourOfDay` INTEGER, `dayOfWeek` INTEGER, `hrvMs` REAL, " +
+                        "`restingHrBpm` REAL, `stepsToday` INTEGER, PRIMARY KEY(`id`))"
+                )
+                db.execSQL("INSERT INTO `entries_new` ($cols) SELECT $cols FROM `entries`")
+                db.execSQL("DROP TABLE `entries`")
+                db.execSQL("ALTER TABLE `entries_new` RENAME TO `entries`")
+            }
+        }
+
+        /**
+         * "v5b": the first pass ("valence_unread_cleared_v5") cleared only
+         * stored zeros. A new key so the wider pass below also runs on a phone
+         * that already ran that one.
+         */
+        private const val VALENCE_CLEARED = "valence_unread_cleared_v5b"
+
+        /**
+         * The rows to rewrite, already rewritten.
+         *
+         * Valence: any stored value whose fresh [com.dailyvox.app.system.Valence.of]
+         * is null, not only zeros. 1.2 scored non-English entries through the
+         * lexicon's false friends ("die", "sin", "war"), so a German entry can
+         * be sitting at -0.91 and a French one at +0.88, each still colouring a
+         * mood dot, the 14-day line, the Twin and Year One. English text with a
+         * scored word re-reads as exactly the engine score, so it is never
+         * selected; a real 0 (two words that cancel) re-reads as 0 and stays.
+         *
+         * Suggested mood: 1.2's MoodSuggestion also wrote "Reads like Joy" on
+         * non-English entries. Cleared when the text does not read as English
+         * and the user did not pick a label themselves; a self-label is theirs
+         * and is never touched.
+         */
+        internal fun unreadValence(all: List<Entry>, table: Map<String, Float>): List<Entry> =
+            all.mapNotNull { e ->
+                val clearValence = e.valence != null &&
+                    com.dailyvox.app.system.Valence.of(e.text, table) == null
+                val clearSuggestion = e.selfLabel == null && e.suggestedMood != null &&
+                    !com.dailyvox.app.system.EnglishText.likely(e.text)
+                if (!clearValence && !clearSuggestion) null
+                else e.copy(
+                    valence = if (clearValence) null else e.valence,
+                    suggestedMood = if (clearSuggestion) null else e.suggestedMood,
+                )
+            }
 
         /** Body context. Nullable, so pre-Health-Connect entries stay honest
          *  about having none rather than reporting zero steps and no pulse. */
@@ -295,12 +424,13 @@ class Repo private constructor(private val db: DailyVoxDb) {
             Lexicon.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                     // NO fallbackToDestructiveMigration. On a journal app that
                     // reads as "if the schema confuses us, delete their diary".
                     // Every future schema change needs a real migration here;
                     // failing loudly in development is the correct pressure.
-                    .build()
+                    .build(),
+                context.applicationContext,
             ).also { INSTANCE = it }
         }
     }

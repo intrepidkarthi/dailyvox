@@ -30,6 +30,12 @@ import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.ui.text.font.FontWeight
 import com.dailyvox.app.ui.components.*
 import com.dailyvox.app.ui.theme.StarGold
+import com.dailyvox.app.R
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import java.util.*
 import kotlin.math.abs
 
@@ -43,13 +49,16 @@ import kotlin.math.abs
  * and it is worse here than anywhere else in the app because it is phrased as
  * something the Twin noticed about the user.
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun InsightsScreen(
     entries: List<Entry>,
-    streak: Int,
+    streak: com.dailyvox.app.system.Streak.State,
     onBack: () -> Unit = {},
     onShareMilestone: () -> Unit = {},
+    /** Last full week, counted from its entries. Null when it had none. */
+    recap: com.dailyvox.app.system.Resurface.Recap? = null,
+    onOpenEntry: (Entry) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -63,6 +72,18 @@ fun InsightsScreen(
         Spacer(Modifier.height(12.dp))
         ScreenTitle("Insights", onBack = onBack)
 
+        // The weekly recap lives here every day of the week, and on Today
+        // only on recap day.
+        recap?.let {
+            val n = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+            com.dailyvox.app.ui.components.RecapCard(
+                it,
+                if (n) com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText,
+                onOpenEntry,
+            )
+            Spacer(Modifier.height(12.dp))
+        }
+
         val week = entries.filter { it.createdAt > System.currentTimeMillis() - 7L * 86_400_000 }
         val prior = entries.filter {
             it.createdAt in (System.currentTimeMillis() - 14L * 86_400_000)..(System.currentTimeMillis() - 7L * 86_400_000)
@@ -74,31 +95,61 @@ fun InsightsScreen(
         val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
         val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
                        else com.dailyvox.app.ui.theme.DayGoldText
+        val zone = remember { java.time.ZoneId.systemDefault() }
+        val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
+        val byDay = remember(entries, zone) {
+            entries.groupBy { com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) }
+        }
+        val streakDescription = when (streak.kind) {
+            com.dailyvox.app.system.Streak.Kind.ACTIVE -> pluralStringResource(
+                R.plurals.streak_description_active, streak.current,
+                streak.current, streak.longest, streak.daysSpoken)
+            com.dailyvox.app.system.Streak.Kind.RETURNING -> stringResource(
+                R.string.streak_description_returning, streak.longest, streak.daysSpoken)
+            com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_description_new)
+        }
         DvCard(
             // §F: the streak card is the milestone, so long-pressing it opens
             // the stamp. Nothing is minted here -- the card only exists once
             // the nights do.
-            Modifier.combinedClickable(onClick = {}, onLongClick = onShareMilestone)
+            Modifier
+                .combinedClickable(onClick = {}, onLongClick = onShareMilestone)
+                .semantics(mergeDescendants = true) { contentDescription = streakDescription }
         ) {
-            Row(verticalAlignment = Alignment.Bottom) {
-                Text("$streak", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold,
-                     color = goldText)
-                Spacer(Modifier.width(8.dp))
+            if (streak.kind == com.dailyvox.app.system.Streak.Kind.RETURNING) {
+                // Welcome back, never a zero. What they kept is right below it.
                 Text(
-                    if (streak > 0) "days in a row — your longest" else "no streak yet",
-                    fontSize = 13.sp, fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 3.dp),
+                    stringResource(R.string.streak_welcome_back),
+                    fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 20.sp, lineHeight = 26.sp,
+                    fontWeight = FontWeight.ExtraBold, color = goldText,
                 )
+            } else {
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text("${streak.current}", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold,
+                         color = goldText)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        when {
+                            streak.kind == com.dailyvox.app.system.Streak.Kind.NEW ->
+                                stringResource(R.string.streak_none_yet)
+                            // Only called the longest when it is.
+                            streak.current >= streak.longest -> pluralStringResource(
+                                R.plurals.streak_days_in_a_row_longest, streak.current)
+                            else -> pluralStringResource(R.plurals.streak_days_in_a_row, streak.current)
+                        },
+                        fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 3.dp),
+                    )
+                }
             }
             Spacer(Modifier.height(12.dp))
             // Seven bars, one per night. Intensity carries whether that night
             // was spoken and how it read — a night with nothing stays palest.
-            val today = System.currentTimeMillis() / 86_400_000L
-            val byDay = entries.groupBy { it.createdAt / 86_400_000L }
+            // Local days, the same ones the streak counts.
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 (6 downTo 0).forEach { back ->
-                    val e = byDay[today - back]?.firstOrNull()
+                    val e = byDay[today.minusDays(back.toLong())]?.firstOrNull()
                     Box(
                         Modifier
                             .weight(1f)
@@ -113,19 +164,35 @@ fun InsightsScreen(
                                 when (e) {
                                     null -> Gold.copy(alpha = 0.18f)
                                     else -> valenceColor(e.valence)
-                                        .copy(alpha = 0.5f + (e.valence + 1f) / 2f * 0.5f)
+                                        .copy(alpha = 0.5f + ((e.valence ?: 0f) + 1f) / 2f * 0.5f)
                                 }
                             )
                     )
                 }
             }
             Spacer(Modifier.height(11.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                MonoLabel("longest $streak")
-                MonoLabel("this month ${entries.count {
+            // A flow rather than a fixed row, so the labels wrap instead of
+            // colliding at the largest font sizes.
+            FlowRow(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                MonoLabel(stringResource(R.string.streak_longest, streak.longest))
+                MonoLabel(stringResource(R.string.streak_days_spoken, streak.daysSpoken))
+                MonoLabel(stringResource(R.string.streak_this_month, entries.count {
                     it.createdAt > System.currentTimeMillis() - 30L * 86_400_000
-                }}")
-                MonoLabel("total ${entries.size}")
+                }))
+                MonoLabel(stringResource(R.string.streak_total, entries.size))
+            }
+            if (streak.kind != com.dailyvox.app.system.Streak.Kind.NEW) {
+                Spacer(Modifier.height(8.dp))
+                // The grace rule, stated once, where the number is.
+                Text(
+                    stringResource(R.string.streak_grace_rule),
+                    fontSize = 12.sp, lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
@@ -193,12 +260,13 @@ fun InsightsScreen(
                 // fortnight before, so it answers "compared to what" without the
                 // reader having to guess.
                 val cutoff = System.currentTimeMillis() - 14L * 86_400_000
-                val recent = entries.filter { it.createdAt >= cutoff }
+                // Unread entries (null valence) are left out, not averaged in as 0.
+                val recent = entries.filter { it.createdAt >= cutoff && it.valence != null }
                 val prior = entries.filter {
-                    it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
+                    it.valence != null && it.createdAt < cutoff && it.createdAt >= cutoff - 14L * 86_400_000
                 }
                 if (recent.size >= 3 && prior.size >= 3) {
-                    val d = recent.map { it.valence }.average() - prior.map { it.valence }.average()
+                    val d = recent.mapNotNull { it.valence }.average() - prior.mapNotNull { it.valence }.average()
                     Text(
                         "%s %+.1f".format(if (d >= 0) "\u25B2" else "\u25BC", d),
                         fontSize = 11.sp, fontWeight = FontWeight.Bold,
@@ -211,18 +279,30 @@ fun InsightsScreen(
         }
 
         Spacer(Modifier.height(24.dp))
-        MonoLabel("Patterns your Twin noticed")
-        Spacer(Modifier.height(10.dp))
-        val patterns = Insights.find(entries.map { it.toChatEntry() })
-        if (patterns.isEmpty()) {
+        val patterns = Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() })
+        // Week one. Below the patterns threshold, early signals take the
+        // place of "not enough yet"; from it on they give way to the real
+        // patterns (EarlySignals.kt).
+        val early = remember(entries, zone) { com.dailyvox.app.system.EarlySignals.of(entries, zone) }
+        if (early != null) {
+            EarlySignalsCard(early, EarlySignalsColors.day(goldText))
+        } else if (patterns.isEmpty()) {
+            MonoLabel(stringResource(R.string.patterns_label))
+            Spacer(Modifier.height(10.dp))
             DvCard {
                 Text(
-                    "Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.",
+                    stringResource(
+                        if (entries.size < com.dailyvox.app.system.EarlySignals.MIN_ENTRIES)
+                            R.string.patterns_not_enough_early
+                        else R.string.patterns_not_enough
+                    ),
                     fontSize = 14.sp, lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         } else {
+            MonoLabel(stringResource(R.string.patterns_label))
+            Spacer(Modifier.height(10.dp))
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 patterns.forEach { p ->
                     DvCard {
@@ -273,16 +353,16 @@ private fun Stat(label: String, value: String, sub: String, modifier: Modifier =
  *  absence is shown, never scolded. */
 @Composable
 private fun NightStrip(entries: List<Entry>) {
-    val today = System.currentTimeMillis() / 86_400_000L
-    val byDay = entries.groupBy { it.createdAt / 86_400_000L }
+    val zone = java.time.ZoneId.systemDefault()
+    val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
+    val byDay = entries.groupBy { com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) }
     Row(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(3.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         (29 downTo 0).forEach { back ->
-            val day = today - back
-            val e = byDay[day]?.firstOrNull()
+            val e = byDay[today.minusDays(back.toLong())]?.firstOrNull()
             Box(
                 Modifier
                     .weight(1f)
@@ -291,7 +371,7 @@ private fun NightStrip(entries: List<Entry>) {
                     .background(
                         when {
                             e == null -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.16f)
-                            else -> valenceColor(e.valence).copy(alpha = 0.45f + (e.valence + 1f) / 2f * 0.55f)
+                            else -> valenceColor(e.valence).copy(alpha = 0.45f + ((e.valence ?: 0f) + 1f) / 2f * 0.55f)
                         }
                     )
             )
@@ -302,10 +382,11 @@ private fun NightStrip(entries: List<Entry>) {
 /** 14-day valence line. Drawn rather than charted — one path, no dependency. */
 @Composable
 private fun MoodCurve(entries: List<Entry>) {
-    val today = System.currentTimeMillis() / 86_400_000L
-    val byDay = entries.groupBy { it.createdAt / 86_400_000L }
+    val zone = java.time.ZoneId.systemDefault()
+    val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
+    val byDay = entries.groupBy { com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) }
     val points = (13 downTo 0).map { back ->
-        byDay[today - back]?.map { it.valence }?.average()?.toFloat()
+        byDay[today.minusDays(back.toLong())]?.mapNotNull { it.valence }?.takeIf { it.isNotEmpty() }?.average()?.toFloat()
     }
     val known = points.filterNotNull()
     if (known.size < 2) {

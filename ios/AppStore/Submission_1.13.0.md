@@ -52,15 +52,9 @@ Speak for a minute, get something back: a reflection, a mood, a line from a week
 
 ## 4. App Review Information → Notes
 
-Keep the 1.11.0 notes (`ReviewNotes_1.11.0.md`) and add:
-
-- **Reminder quoting is off by default.** Settings → "Include a line from your
-  past in reminders". When on, the evening reminder may quote an entry from
-  exactly seven days earlier. Entry text never appears in a notification
-  otherwise.
-- **Suggested moods** are produced on the device from the entry text and are
-  labelled as suggestions everywhere they appear, including exports
-  ("Calm (suggested)").
+Replace the existing notes with the full contents of
+`ios/AppStore/ReviewNotes_1.13.0.txt` (3,119 of 4,000 characters). It stands on
+its own: appending to the 1.11.0 notes (3,687) would exceed the limit.
 
 **Demo account:** none required. No accounts exist.
 
@@ -70,9 +64,18 @@ Keep the 1.11.0 notes (`ReviewNotes_1.11.0.md`) and add:
 
 | Field | Why it stays |
 |---|---|
-| App Name, Subtitle, Keywords, Description | Unchanged |
+| App Name, Subtitle, Keywords | Unchanged |
 | Category, Age Rating, Price | Unchanged |
 | **App Privacy ("Data Not Collected")** | Still correct: every new feature runs on the device; nothing is sent anywhere |
+
+---
+
+## 5a. Description — PASTE INTO "Description"
+
+Updated for this release: a new "IT TALKS BACK (NEW)" section, "Can't talk right
+now?" is no longer marked new, the streak line mentions the rest day, and the
+iCloud line no longer implies how sync is encrypted. The full text is
+`localization.en-US.description` in `metadata.json` (3983 of 4,000 characters).
 
 ---
 

@@ -31,6 +31,11 @@ struct EntryReflection: Equatable {
     static func make(entryText: String, entryID: UUID?) -> EntryReflection? {
         let text = entryText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
+        // The engine's reflection is chosen from English feeling words. On a
+        // Spanish or Hindi entry it does not stay silent, it falls through to
+        // its gentlest default ("a calm mind…"), and a grief entry got told
+        // it sounded calm. Say nothing instead.
+        guard EntryLanguage.isEnglish(text) else { return nil }
         let analysis = LocalAIEngine.shared.analyze(text: text, learn: false)
         let reflection = analysis.suggestedResponse.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !reflection.isEmpty else { return nil }

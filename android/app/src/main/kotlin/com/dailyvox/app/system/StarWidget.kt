@@ -131,9 +131,11 @@ class StarWidget : AppWidgetProvider() {
             // nothing anywhere. A throw here skips the update and leaves the
             // last good content on screen, which is the honest failure.
             val entries = Repo.get(context).allBlocking()
-            val today = System.currentTimeMillis() / 86_400_000L
-            val days = entries.map { it.createdAt / 86_400_000L }.toSet()
-            val spokenTonight = today in days
+            val zone = java.time.ZoneId.systemDefault()
+            val today = Streak.localDay(System.currentTimeMillis(), zone)
+            val days = entries.map { Streak.localDay(it.createdAt, zone) }.toSet()
+            val streak = Streak.of(days, today)
+            val spokenTonight = streak.spokenToday
 
             if (!wide) {
                 views.setImageViewResource(
@@ -143,15 +145,15 @@ class StarWidget : AppWidgetProvider() {
             }
 
             // No guilt copy. An empty night is stated, never scolded — the same
-            // rule the in-app empty states follow.
-            val streak = generateSequence(if (spokenTonight) today else today - 1) { it - 1 }
-                .takeWhile { it in days }
-                .count()
-            val label = when {
-                spokenTonight && streak > 0 -> "Day $streak · spoken"
-                spokenTonight -> "Spoken tonight"
-                streak > 0 -> "Day ${streak + 1} · speak tonight"
-                else -> "Speak tonight"
+            // rule the in-app empty states follow. The run is Streak's, so the
+            // widget and the app cannot disagree, and someone coming back is
+            // welcomed back rather than shown the new-user line.
+            val label = when (streak.kind) {
+                Streak.Kind.ACTIVE ->
+                    if (spokenTonight) context.getString(R.string.widget_day_spoken, streak.current)
+                    else context.getString(R.string.widget_day_next, streak.ifSpokenToday)
+                Streak.Kind.RETURNING -> context.getString(R.string.widget_welcome_back)
+                Streak.Kind.NEW -> context.getString(R.string.widget_speak_tonight)
             }
             views.setTextViewText(
                 R.id.widget_label,
@@ -170,7 +172,7 @@ class StarWidget : AppWidgetProvider() {
             (0..6).forEach { i ->
                 views.setImageViewResource(
                     dots[i],
-                    if ((today - (6 - i)) in days) R.drawable.dot_full else R.drawable.dot_empty,
+                    if (today.minusDays((6 - i).toLong()) in days) R.drawable.dot_full else R.drawable.dot_empty,
                 )
             }
 

@@ -55,6 +55,18 @@ class MainActivity : FragmentActivity() {
     }
 
     /**
+     * Every return to the app counts as "opened" for the reminder's seven-evening
+     * horizon, and re-arms the alarm a reboot may have cleared. Composition only
+     * runs its bootstrap on a cold start, so a resume from the background would
+     * otherwise leave a lapsed-looking stamp on someone using the app daily.
+     * No dialog is raised here; the permission ask stays in the bootstrap.
+     */
+    override fun onResume() {
+        super.onResume()
+        com.dailyvox.app.system.Reminders.rescheduleIfEnabled(this)
+    }
+
+    /**
      * The splash is drawn by the system before any of this code runs, so it
      * cannot follow the Sunset theme on its own: after dark it flashed cream and
      * then cut to navy. The platform remembers a splash theme for the NEXT
@@ -210,8 +222,45 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     ) { uri -> if (uri != null) vm.writeResearchExport(context, uri) }
 
     val query by vm.query.collectAsStateWithLifecycle()
-    val streak by vm.streak.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
+    val reflection by vm.reflection.collectAsStateWithLifecycle()
+
+    // The past, brought back. Read from the whole table, keyed on the local
+    // date so the cards move on at midnight rather than at the next write.
+    val all by vm.all.collectAsStateWithLifecycle()
+    val zone = java.time.ZoneId.systemDefault()
+    val today = java.time.LocalDate.now(zone)
+    val firstDay = com.dailyvox.app.system.Resurface.firstDayOfWeek(
+        context.resources.configuration.locales[0])
+    val weekAgo = remember(all, today) {
+        com.dailyvox.app.system.Resurface.weekAgo(all, System.currentTimeMillis(), zone)
+    }
+    val onThisDay = remember(all, today) {
+        com.dailyvox.app.system.Resurface.onThisDay(all, System.currentTimeMillis(), zone)
+    }
+    // The streak, from the live table and the local date, so it is right after
+    // an import or a delete and moves on at midnight without a write. Every
+    // screen below reads this one value (Streak.kt).
+    val streak = remember(all, today) {
+        com.dailyvox.app.system.Streak.of(all.map { it.createdAt }, System.currentTimeMillis(), zone)
+    }
+    val recap = remember(all, today, firstDay) {
+        com.dailyvox.app.system.Resurface.recap(
+            all, com.dailyvox.app.system.Resurface.lastWeekStart(today, firstDay), zone)
+    }
+
+    // The question above the record button. A function of the date and the
+    // live table, so it holds all day, survives a relaunch, and forgets a
+    // name the moment its entry is deleted. The pilot switch lives in
+    // Settings, so it is re-read whenever an overlay closes.
+    val pilot = remember(overlay) { com.dailyvox.app.system.DailyQuestion.isPilot(context) }
+    var questionTurn by remember(today) {
+        mutableIntStateOf(com.dailyvox.app.system.DailyQuestion.turn(context, today))
+    }
+    val question = remember(all, today, pilot, questionTurn) {
+        com.dailyvox.app.system.DailyQuestion.forDay(
+            all, System.currentTimeMillis(), zone, pilot, questionTurn)
+    }
 
     val dark = when (theme) {
         ThemeChoice.LIGHT -> false
@@ -341,7 +390,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             mutableStateOf<com.dailyvox.app.system.Shareables.Card?>(null)
         }
         shareCard?.let { c ->
-            ShareSheet(entries = entries, initial = c, onDismiss = { shareCard = null })
+            ShareSheet(entries = all, initial = c, onDismiss = { shareCard = null })
         }
 
         val chromeVisible = openEntry == null && overlay == Overlay.NONE && !isRecording
@@ -401,7 +450,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     onDelete = { vm.delete(detail.id); openEntry = null },
                     onSelfLabel = { label ->
                         vm.setSelfLabel(detail.id, label)
-                        openEntry = detail.copy(selfLabel = label)
+                        openEntry = com.dailyvox.app.data.Repo.withLabel(detail, label)
                     },
                     onPhoto = { path ->
                         vm.attachPhoto(detail.id, path)
@@ -409,7 +458,14 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     },
                     onEdit = { edited ->
                         vm.editText(detail.id, edited)
-                        openEntry = detail.copy(text = edited)
+                        // The suggestion follows the corrected words, by the
+                        // same rule the row is saved with.
+                        openEntry = detail.copy(text = edited).let {
+                            it.copy(suggestedMood = com.dailyvox.app.data.Repo.resuggest(
+                                detail, com.dailyvox.app.system.MoodSuggestion.offered(
+                                    edited, com.dailyvox.app.data.Lexicon.table,
+                                    com.dailyvox.app.system.DailyQuestion.isPilot(context))))
+                        }
                     },
                     onAsk = { question ->
                         // Close the entry and land on Ask with the question
@@ -424,8 +480,10 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
                 overlay == Overlay.INSIGHTS ->
                     InsightsScreen(
-                        entries = entries, streak = streak,
+                        entries = all, streak = streak,
                         onShareMilestone = { shareCard = com.dailyvox.app.system.Shareables.Card.MILESTONE },
+                        recap = recap,
+                        onOpenEntry = { openEntry = it },
                         onBack = { overlay = Overlay.NONE },
                         modifier = inner.then(peek),
                     )
@@ -485,15 +543,29 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                             c.get(java.util.Calendar.YEAR) == thisYear
                         },
                         firstEver = entries.isEmpty(),
-                        todayEntry = entries.firstOrNull {
-                            it.createdAt / 86_400_000L == System.currentTimeMillis() / 86_400_000L
+                        todayEntry = all.firstOrNull {
+                            com.dailyvox.app.system.Streak.localDay(it.createdAt, zone) == today
                         },
                         autoStart = autoRecord,
                         onAutoStarted = { autoRecord = false },
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
+                        reflection = reflection,
+                        onDismissReflection = vm::dismissReflection,
+                        onReflectionMood = vm::setReflectionMood,
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         onSettings = { overlay = Overlay.SETTINGS },
+                        weekAgo = weekAgo,
+                        onThisDay = onThisDay,
+                        recap = recap?.takeIf {
+                            com.dailyvox.app.system.Resurface.isRecapDay(today, firstDay)
+                        },
+                        onOpenEntry = { openEntry = it },
+                        question = question,
+                        onAnotherQuestion = {
+                            questionTurn += 1
+                            com.dailyvox.app.system.DailyQuestion.setTurn(context, today, questionTurn)
+                        },
                         modifier = inner,
                     )
                     Destination.JOURNAL -> JournalScreen(
@@ -505,7 +577,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                     )
                     Destination.TWIN -> TwinScreen(
                         onShare = { shareCard = com.dailyvox.app.system.Shareables.Card.MY_SKY },
-                        entries = entries, resolution = resolution,
+                        entries = all, resolution = resolution,
                         onAsk = { current = Destination.ASK },
                         onInsights = { overlay = Overlay.INSIGHTS },
                         modifier = inner,

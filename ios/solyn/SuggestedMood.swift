@@ -40,6 +40,10 @@ enum SuggestedMood {
     static func suggest(for text: String) -> Mood? {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
+        // Sentiment, feeling words, negators and the lexicons below are all
+        // English. Outside English they produce a mood from noise, and a
+        // wrong mood is worse than none.
+        guard EntryLanguage.isEnglish(trimmed) else { return nil }
         let engine = LocalAIEngine.shared
         let analysis = engine.analyze(text: trimmed, learn: false)
         // The engine counts feeling words with no idea of "not": "I am not

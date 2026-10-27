@@ -148,6 +148,51 @@
       "source": "/blog/best-men-s-journal-app-for-men",
       "destination": "/blog/best-journal-app-for-men",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/journal-apps-for-iphone",
+      "destination": "/blog/best-diary-app-iphone",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/what-is-the-best-voice-to-text-journaling-app",
+      "destination": "/blog/best-voice-journal-app",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/trip-journal-app",
+      "destination": "/blog/best-offline-journal-app",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/is-there-a-journaling-app-that-works-completely-offline-with",
+      "destination": "/blog/best-offline-journal-app",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/what-is-a-digital-twin",
+      "destination": "/blog/how-digital-twin-learns-personality",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/journaling-for-mental-fitness",
+      "destination": "/blog/how-to-journal-for-mental-health",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/talk-to-your-past-self-digital-twin",
+      "destination": "/blog/how-digital-twin-learns-personality",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/voice-journaling-for-therapy",
+      "destination": "/blog/voice-journaling-vs-therapy",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/voice-journal-for-morning-routine",
+      "destination": "/blog/five-minute-voice-morning-journal",
+      "statusCode": 301
     }
   ],
   "headers": [

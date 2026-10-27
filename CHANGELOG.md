@@ -2,7 +2,68 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.13.0] (iOS) and [Android 1.2] — unreleased
+## [Android 1.2.1] — unreleased
+
+A patch that ships before the languages release (Android 1.3 / iOS 1.14). In a
+language a feature cannot read, the feature now stays quiet; English is unchanged.
+
+### Fixed
+- The recogniser is never asked to hear one language with another's pack. With
+  no pack for the phone's language, recording stops with "language unavailable"
+  and offers that pack's download, instead of transcribing in English.
+- Valence is absent, not 0, when the lexicon reads nothing (another language, or
+  no scored word). Tone, drift, Insights, the mood line and Year One's "Warmest
+  month" leave those entries out. Database version 5; existing entries keep their
+  values, and stored zeros that were never read are cleared once.
+- No suggested mood for non-English entries (the lexicon is English).
+- Search with no readable words returns nothing, not the whole journal.
+- No "isn't capitalising names" note for a journal in a script without capitals.
+- Name matching treats combining marks as part of a word.
+- Share cards wrap at the language's line breaks (Chinese, Japanese, Thai).
+- The grounded daily question only appears when every entry in the last month is
+  English, since its sensitive-topic guard reads English only.
+
+### Added
+- Debug builds only: a Settings card that lists the on-device speech languages the
+  phone reports (installed, pending, supported), for the language device probe.
+
+## [1.13.1] (iOS) — fixes for people who don't speak English to DailyVox
+
+Build 47. A patch for everyone whose phone is set to a language other than
+English, or who speaks to DailyVox in one. It ships before the languages
+release (iOS 1.14 / Android 1.3) and adds no new language. Where a feature only
+understands English, it now stays quiet on other languages instead of
+guessing. Nothing changes for entries spoken in English.
+
+### Fixed
+- **No more English transcripts of non-English speech.** If your phone is set to
+  Spanish, Hindi or any language other than English and its speech model is not
+  installed, DailyVox used to fall back to the English model and write down a
+  confident, wrong English version of what you said. It now transcribes only in
+  your own language. When there is no on-device model for it, the entry is
+  saved as audio and the app tells you how to install the model, as it already
+  did for English.
+- **No suggested mood on entries that aren't in English.** The mood suggestion
+  reads English feeling words, so on other languages it could pick a mood from
+  noise. Those entries now get no suggestion; any mood you pick yourself works
+  as before.
+- **No wrong reflection after saving a non-English entry.** An entry about a
+  loss, said in Spanish, could be told it sounded calm. Entries that aren't in
+  English now get no reflection rather than a wrong one.
+- **The daily question no longer asks about names from non-English entries.**
+  The check that keeps it from asking about someone after a hard entry only
+  reads English, so it could not protect those entries. They are now left out.
+- **Names in Hindi, Tamil and other scripts with vowel signs** are no longer
+  matched inside longer names (राम inside रामू).
+- **Early signals in Chinese, Japanese and Thai.** "Words that recur" no longer
+  shows half-sentences as words in scripts written without spaces, and entry
+  length is counted in words there, not in space-separated chunks.
+
+## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
+
+Live on the App Store since 17 October 2026 (build 46). Android 1.2
+(versionCode 6) carries the same features and is in review; Android 1.1 is the
+current Play release until it is approved.
 
 A release about the first week: the app now gives something back every time you
 speak, instead of only after weeks of entries.

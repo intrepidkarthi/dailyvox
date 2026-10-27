@@ -5,8 +5,11 @@ inside your Play Console account, which is why none of it is automated and none
 of it has been done for you. The assets and the build are ready; this is the
 part a person does.
 
-Read `SUBMISSION_CHECKLIST.md` first. It lists one **hard blocker** that no
-amount of paperwork clears, and it is still open.
+> **The app is live (1.0 shipped 2026-10-02).** This runbook is the first-launch
+> record. For an update such as 1.2, only three steps apply: build the signed
+> bundle (§1, with the same upload key), upload it to a track in Play Console,
+> and paste the release notes from `RELEASE_NOTES_<version>.md`. If the listing
+> copy changed, paste the full description from `STORE_LISTING.md` too.
 
 ---
 

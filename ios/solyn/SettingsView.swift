@@ -702,7 +702,7 @@ struct SettingsView: View {
                         Image(systemName: "lock.fill")
                             .foregroundColor(DS.Palette.forest)
                             .font(.dv(.caption))
-                        Text("End-to-end encrypted with your Apple ID")
+                        Text("Encrypted by Apple; end-to-end only with Advanced Data Protection")
                             .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
@@ -1345,6 +1345,22 @@ struct SettingsView: View {
                         Text("Memory probe")
                             .font(.dv(.subheadline, weight: .semibold))
                         Text("Measure what a workload costs this process")
+                            .font(.dv(.caption))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            NavigationLink {
+                SpeechLocaleProbeView()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "waveform.badge.magnifyingglass")
+                        .font(.dv(.subheadline))
+                        .foregroundColor(DS.Palette.gold)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Speech locale probe")
+                            .font(.dv(.subheadline, weight: .semibold))
+                        Text("Which languages this phone transcribes on-device")
                             .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }

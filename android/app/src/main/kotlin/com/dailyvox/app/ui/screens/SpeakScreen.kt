@@ -25,19 +25,27 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dailyvox.app.R
 import com.dailyvox.app.audio.AudioRecorder
+import com.dailyvox.app.system.DailyQuestion
+import com.dailyvox.app.system.Reflection
 import com.dailyvox.app.audio.SpeechCapture
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import com.dailyvox.app.ui.components.MonoLabel
+import com.dailyvox.app.ui.components.MoodPicker
+import com.dailyvox.app.ui.components.moodWord
 import com.dailyvox.app.ui.components.PrivateKeyboard
 import com.dailyvox.app.ui.theme.Gold
 import com.dailyvox.app.ui.theme.StarGold
@@ -59,7 +67,7 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun SpeakScreen(
-    streak: Int,
+    streak: com.dailyvox.app.system.Streak.State,
     resolution: Int,
     /** Stars filed since 1 January — the right-hand chip in spec §2.2. */
     yearCount: Int = 0,
@@ -68,9 +76,25 @@ fun SpeakScreen(
     autoStart: Boolean = false,
     onAutoStarted: () -> Unit = {},
     onSaved: (String, Int, String?) -> Unit,
+    /** What the app read back from the entry just saved; null hides the card. */
+    reflection: com.dailyvox.app.system.Reflection.Card? = null,
+    onDismissReflection: () -> Unit = {},
+    /** A mood picked on the reflection card, or null when it was cleared. */
+    onReflectionMood: (String?) -> Unit = {},
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
+    /** The entry from about a week ago, quoted; null hides the card. */
+    weekAgo: com.dailyvox.app.system.Resurface.Memory? = null,
+    /** Same date, earlier months and years. Empty hides them. */
+    onThisDay: List<com.dailyvox.app.system.Resurface.Memory> = emptyList(),
+    /** Last week, counted. Only passed on recap day. */
+    recap: com.dailyvox.app.system.Resurface.Recap? = null,
+    onOpenEntry: (com.dailyvox.app.data.Entry) -> Unit = {},
+    /** Today's question ([DailyQuestion]). The default is the original line. */
+    question: DailyQuestion.Question = DailyQuestion.Question.Everyday(0),
+    /** "Another question". Only ever changes the words above the button. */
+    onAnotherQuestion: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -150,12 +174,16 @@ fun SpeakScreen(
     // Saving is driven by the capture's own terminal state rather than by the
     // tap handler, so a recognizer that ends on silence saves the same way a
     // deliberate stop does.
+    // Read through rememberUpdatedState: this collector is launched once, and
+    // a plain capture would judge every later save against the streak as it
+    // stood when the screen first opened.
+    val liveStreak by rememberUpdatedState(streak)
     LaunchedEffect(Unit) {
         capture.finished.collect { text ->
             val path = recorder.stop()?.absolutePath
             if (text.isNotBlank()) {
                 onSaved(text, elapsed.coerceAtLeast(1), path)
-                if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                if (streakMilestone(liveStreak)) haptics.streakMilestone()
                 else haptics.entrySaved()
             }
         }
@@ -309,8 +337,16 @@ fun SpeakScreen(
                        modifier = Modifier.clip(RoundedCornerShape(12.dp))
                            .clickable(onClick = onInsights)
                            .padding(horizontal = 8.dp, vertical = 6.dp)) {
+                    // Someone coming back is welcomed, not shown the line a
+                    // brand-new user sees. Insights carries what they kept.
                     Text(
-                        if (streak > 0) "$streak-day streak" else "no streak yet",
+                        when (streak.kind) {
+                            com.dailyvox.app.system.Streak.Kind.ACTIVE -> androidx.compose.ui.res.pluralStringResource(
+                                R.plurals.streak_header, streak.current, streak.current)
+                            com.dailyvox.app.system.Streak.Kind.RETURNING ->
+                                stringResource(R.string.streak_header_welcome_back)
+                            com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_none_yet)
+                        },
                         fontSize = 12.5.sp, fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
@@ -333,20 +369,58 @@ fun SpeakScreen(
         }
 
         Spacer(Modifier.height(if (tall) 56.dp else 28.dp))
+        // The question of the day. An invitation, never a gate: the record
+        // button below works the same whatever it says, and most nights it is
+        // not read at all. At rest, a tap on it (or on "Another question")
+        // asks something else; while recording it gives way to the state.
+        val asked = dailyQuestionText(question)
+        val atRest = state == SpeechCapture.State.IDLE
+        val anotherLabel = stringResource(R.string.daily_question_another_action)
         Text(
             when (state) {
                 SpeechCapture.State.RECORDING -> "Listening."
                 SpeechCapture.State.PROCESSING -> "Filing it."
-                else -> "How was your day,\nreally?"
+                // The signature question keeps the break it has always had.
+                else -> if (question == DailyQuestion.Question.Everyday(0))
+                    asked.replaceFirst(", ", ",\n") else asked
             },
-            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
+            // A longer question steps down a size rather than filling the
+            // screen; sp throughout, so the user's font scale still applies.
+            fontSize = if (!atRest || asked.length <= 34) 32.sp else 26.sp,
+            lineHeight = if (!atRest || asked.length <= 34) 38.sp else 32.sp,
+            fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .widthIn(max = 460.dp)
+                .then(
+                    if (atRest && !typing) Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable(onClickLabel = anotherLabel, onClick = onAnotherQuestion)
+                        .semantics { liveRegion = LiveRegionMode.Polite }
+                    else Modifier
+                ),
         )
+        if (atRest && !typing) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                stringResource(R.string.daily_question_another),
+                fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(onClick = onAnotherQuestion)
+                    .semantics { role = Role.Button }
+                    .defaultMinSize(minHeight = 44.dp)
+                    .padding(horizontal = 12.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
 
         if (typing) {
             Spacer(Modifier.height(if (tall) 28.dp else 16.dp))
             TypedComposer(
+                hint = asked,
                 text = typed,
                 onText = { typed = it },
                 onSave = {
@@ -356,7 +430,7 @@ fun SpeakScreen(
                         // no audio: Journal and Entry detail already read that
                         // pair as "typed", and the Today card shows no play chip.
                         onSaved(t, 0, null)
-                        if (streak > 0 && (streak + 1) % 7 == 0) haptics.streakMilestone()
+                        if (streakMilestone(streak)) haptics.streakMilestone()
                         else haptics.entrySaved()
                         typed = ""
                         typing = false
@@ -383,7 +457,7 @@ fun SpeakScreen(
                     // Only from IDLE. A tap during PROCESSING used to reach here:
                     // capture.start() returned early, recorder.start() did not, and
                     // a second MediaRecorder opened over the entry being filed.
-                    else if (state == SpeechCapture.State.IDLE) { capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
                 },
             )
 
@@ -414,7 +488,7 @@ fun SpeakScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .clickable { capture.clearError(); typing = true }
+                        .clickable { onDismissReflection(); capture.clearError(); typing = true }
                         .semantics {
                             role = Role.Button
                             contentDescription = "Type an entry instead"
@@ -431,6 +505,14 @@ fun SpeakScreen(
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
             SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
+        }
+
+        // Something back for what was just given. Only at rest: while the next
+        // entry is being filed, that entry is the screen's business.
+        if (reflection != null && state == SpeechCapture.State.IDLE && !typing) {
+            Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+            ReflectionCard(reflection, onDismiss = onDismissReflection,
+                           onMood = onReflectionMood, goldText = goldText)
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -511,11 +593,29 @@ fun SpeakScreen(
                                 color = MaterialTheme.colorScheme.tertiary,
                                 fontWeight = FontWeight.SemiBold,
                             )
-                        ) { append("%+.1f".format(e.valence)) }
+                        ) { e.valence?.let { append("%+.1f".format(it)) } }
                     },
                     fontSize = 12.sp, lineHeight = 18.sp,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
                 )
+            }
+        }
+
+        // The user's own past, quoted (the diary's payoff). At rest only, and
+        // each card only when there is a real entry under it, so a new user
+        // sees nothing here rather than an empty promise.
+        if (state == SpeechCapture.State.IDLE && !typing) {
+            recap?.let {
+                Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+                com.dailyvox.app.ui.components.RecapCard(it, goldText, onOpenEntry)
+            }
+            weekAgo?.let {
+                Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
+                com.dailyvox.app.ui.components.PastCard(it, goldText, onOpenEntry)
+            }
+            onThisDay.forEach {
+                Spacer(Modifier.height(12.dp))
+                com.dailyvox.app.ui.components.PastCard(it, goldText, onOpenEntry)
             }
         }
 
@@ -544,6 +644,205 @@ fun SpeakScreen(
 }
 
 /**
+ * The payoff for an entry: a few calm lines read off what was just saved.
+ *
+ * Every line comes from [Reflection], which only reads the entry's own valence,
+ * names, length and words, so nothing on this card is a guess. Lines with
+ * nothing under them are not drawn at all, and the "for tomorrow" line is the
+ * user's own sentence, quoted, or absent.
+ *
+ * TalkBack reads the card as one unit and announces it when it appears, since
+ * a saved entry otherwise gives a screen-reader user nothing but a haptic.
+ *
+ * The mood row is the one part that is a guess, so it is marked as one in the
+ * words, in the chip's outline and in what TalkBack says. It sits outside the
+ * merged unit so each chip can be reached and tapped on its own.
+ */
+@Composable
+private fun ReflectionCard(
+    card: Reflection.Card,
+    onDismiss: () -> Unit,
+    onMood: (String?) -> Unit,
+    goldText: Color,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val res = LocalContext.current.resources
+    val lines = buildList {
+        if (card.wordless) add(res.getString(R.string.reflection_wordless))
+        when (card.tone) {
+            Reflection.Tone.LIGHT -> add(res.getString(R.string.reflection_tone_light))
+            Reflection.Tone.EVEN -> add(res.getString(R.string.reflection_tone_even))
+            Reflection.Tone.HEAVY -> add(res.getString(R.string.reflection_tone_heavy))
+            null -> Unit
+        }
+        when (card.drift) {
+            Reflection.Drift.LIGHTER -> add(res.getString(R.string.reflection_drift_lighter))
+            Reflection.Drift.HEAVIER -> add(res.getString(R.string.reflection_drift_heavier))
+            Reflection.Drift.SIMILAR -> add(res.getString(R.string.reflection_drift_similar))
+            null -> Unit
+        }
+        card.person?.let { name ->
+            add(
+                if (card.personEarlier > 0) res.getQuantityString(
+                    R.plurals.reflection_person_earlier, card.personEarlier, name, card.personEarlier)
+                else res.getString(R.string.reflection_person, name)
+            )
+        }
+    }
+    val meta = buildList {
+        if (!card.wordless) add(res.getQuantityString(R.plurals.reflection_words, card.words, card.words))
+        if (card.typed) add(res.getString(R.string.reflection_typed))
+        else add("%d:%02d".format(card.seconds / 60, card.seconds % 60))
+    }.joinToString(" · ")
+    val label = stringResource(R.string.reflection_label)
+    val tomorrowLabel = stringResource(R.string.reflection_tomorrow_label)
+    val tomorrowQuote = card.tomorrow?.let { stringResource(R.string.reflection_tomorrow_quote, it) }
+    // Announced with the card as it first appeared, and frozen there: if the
+    // live region's text changed on every chip tap, TalkBack would read the
+    // whole card again each time. The chips announce their own state.
+    val firstSuggestion = remember(card.entryId) { card.suggestedMood?.takeIf { card.moodIsSuggested } }
+    val moodLine = firstSuggestion?.let {
+        stringResource(R.string.reflection_mood_suggested_line, moodWord(it))
+    }
+    val spoken = (listOf("$label. $meta.") + lines +
+        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" }, moodLine)).joinToString(" ")
+    val doneDescription = stringResource(R.string.reflection_done_description)
+    // Shown once there was a mood to show, and kept after a clear so the user
+    // can still pick one; a section that vanished on "Clear" would take the
+    // picker with it.
+    val showMood = remember(card.entryId) { card.mood != null }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .widthIn(max = 460.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(scheme.surface)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
+                contentDescription = spoken
+                liveRegion = LiveRegionMode.Polite
+            },
+        ) {
+            Text(
+                "✦ $label",
+                fontSize = 13.sp, fontWeight = FontWeight.Bold, color = goldText,
+            )
+            Spacer(Modifier.height(4.dp))
+            MonoLabel(meta)
+            lines.forEach { line ->
+                Spacer(Modifier.height(10.dp))
+                Text(line, fontSize = 15.sp, lineHeight = 21.sp, color = scheme.onSurface)
+            }
+            tomorrowQuote?.let { quote ->
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    tomorrowLabel,
+                    fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
+                    color = scheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    quote, fontSize = 15.sp, lineHeight = 21.sp,
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    color = scheme.onSurface,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.reflection_how_read),
+                fontSize = 12.sp, lineHeight = 17.sp,
+                color = scheme.onSurfaceVariant,
+            )
+        }
+        if (showMood) {
+            Spacer(Modifier.height(16.dp))
+            ReflectionMood(card, onMood)
+        }
+        Spacer(Modifier.height(6.dp))
+        // Same quiet text-button shape as "I can't talk right now", with the
+        // touch target the size Play's pre-launch report measures.
+        Text(
+            stringResource(R.string.reflection_done),
+            fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+            color = scheme.primary,
+            modifier = Modifier
+                .align(Alignment.End)
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onDismiss)
+                .semantics {
+                    role = Role.Button
+                    contentDescription = doneDescription
+                }
+                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                .padding(horizontal = 14.dp)
+                .wrapContentHeight(Alignment.CenterVertically),
+        )
+    }
+}
+
+/**
+ * The mood on the reflection card: the app's suggestion, plainly called one,
+ * or the user's own pick once they have made it. The picker is the entry
+ * page's, so a mood chosen here is the same label in the same column.
+ *
+ * Tapping the outlined chip keeps the suggestion as the user's own; tapping
+ * any other picks that instead; Clear leaves the entry with no mood at all.
+ */
+@Composable
+private fun ReflectionMood(card: Reflection.Card, onMood: (String?) -> Unit) {
+    val scheme = MaterialTheme.colorScheme
+    val mood = card.mood
+    val (heading, body) = when {
+        mood == null -> stringResource(R.string.reflection_mood_heading_mine) to
+            stringResource(R.string.reflection_mood_none)
+        card.moodIsSuggested -> stringResource(R.string.reflection_mood_heading_suggested) to
+            stringResource(R.string.reflection_mood_suggested_body, moodWord(mood))
+        else -> stringResource(R.string.reflection_mood_heading_mine) to
+            stringResource(R.string.reflection_mood_chosen_body, moodWord(mood))
+    }
+    val clearDescription = stringResource(
+        if (card.moodIsSuggested) R.string.reflection_mood_clear_suggested_description
+        else R.string.reflection_mood_clear_description
+    )
+
+    Column(Modifier.fillMaxWidth()) {
+        Column(Modifier.semantics(mergeDescendants = true) {}) {
+            Text(heading, fontSize = 12.5.sp, fontWeight = FontWeight.SemiBold,
+                 color = scheme.onSurfaceVariant)
+            Spacer(Modifier.height(3.dp))
+            Text(body, fontSize = 15.sp, lineHeight = 21.sp, color = scheme.onSurface)
+        }
+        Spacer(Modifier.height(10.dp))
+        // No one-tap suggestion for a study participant: the tap would write the
+        // app's guess into the research label (MoodSuggestion.offered).
+        val studyLabelling = com.dailyvox.app.system.DailyQuestion.isPilot(LocalContext.current)
+        MoodPicker(current = card.chosenMood,
+                   suggested = card.suggestedMood.takeUnless { studyLabelling }, onPick = onMood)
+        if (mood != null) {
+            Text(
+                stringResource(R.string.reflection_mood_clear),
+                fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
+                color = scheme.primary,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable { onMood(null) }
+                    .semantics {
+                        role = Role.Button
+                        contentDescription = clearDescription
+                    }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 14.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
+    }
+}
+
+/**
  * The typed composer. Onboarding's typed beat, lifted out for the Speak screen:
  * the same outlined field, the same mic-less keyboard, the same pair of
  * actions. It takes the record button's place rather than opening a sheet, so
@@ -551,6 +850,7 @@ fun SpeakScreen(
  */
 @Composable
 private fun TypedComposer(
+    hint: String,
     text: String,
     onText: (String) -> Unit,
     onSave: () -> Unit,
@@ -566,7 +866,7 @@ private fun TypedComposer(
             value = text,
             onValueChange = onText,
             keyboardOptions = PrivateKeyboard,
-            placeholder = { Text("How was your day, really?") },
+            placeholder = { Text(hint) },
             minLines = 4,
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp).focusRequester(focus),
@@ -757,3 +1057,36 @@ private fun RecordButton(
 
 /** Shortest wordless recording worth keeping as an audio-only entry. */
 private const val MIN_KEPT_SECONDS = 2
+
+/**
+ * Every seventh day of a run, felt once: on the entry that makes it, not on a
+ * second entry the same day. Read off [Streak.State.ifSpokenToday], so a grace
+ * day is never counted towards the seven.
+ */
+private fun streakMilestone(s: com.dailyvox.app.system.Streak.State): Boolean =
+    !s.spokenToday && s.ifSpokenToday % 7 == 0
+
+/**
+ * The words for a [DailyQuestion.Question]. Picking is pure and lives in
+ * DailyQuestion; the words live in strings.xml so they translate. An index
+ * past the end of a list (a translation that ships fewer questions) falls back
+ * to the original line rather than crashing the home screen.
+ */
+@Composable
+internal fun dailyQuestionText(q: DailyQuestion.Question): String {
+    val everyday = androidx.compose.ui.res.stringArrayResource(R.array.daily_questions)
+    val plain = androidx.compose.ui.res.stringArrayResource(R.array.daily_questions_plain)
+    val fallback = everyday.firstOrNull() ?: "How was your day, really?"
+    return when (q) {
+        is DailyQuestion.Question.Everyday -> everyday.getOrNull(q.index) ?: fallback
+        is DailyQuestion.Question.Plain -> plain.getOrNull(q.index) ?: fallback
+        is DailyQuestion.Question.Grounded -> stringResource(
+            when {
+                q.daysAgo <= 1 -> R.string.daily_question_grounded_yesterday
+                q.daysAgo < 7 -> R.string.daily_question_grounded_days
+                else -> R.string.daily_question_grounded_week
+            },
+            q.name,
+        )
+    }
+}

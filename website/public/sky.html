@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R544S4KDBQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R544S4KDBQ');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Sky Made of the Nights You Kept — DailyVox</title>
+  <meta name="description" content="Someone shared their DailyVox sky. Every night you speak to the free voice journal adds a star. The My Sky card shows your habit, never your words, and nothing leaves your phone.">
+  <meta name="theme-color" content="#FAF8F5">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://getdailyvox.com/sky">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getdailyvox.com/sky">
+  <meta property="og:site_name" content="DailyVox">
+  <meta property="og:title" content="A sky made of the nights you kept">
+  <meta property="og:description" content="Every night you speak to DailyVox adds a star. The My Sky card shows the shape of the habit, never your words. Free on iPhone and Android.">
+  <meta property="og:image" content="https://getdailyvox.com/og-image.png?v=1111">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The DailyVox sky on an iPhone: a constellation of journal nights on a dark background.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@getDailyVox">
+  <meta name="twitter:title" content="A sky made of the nights you kept">
+  <meta name="twitter:description" content="Every night you speak to DailyVox adds a star. The My Sky card shows the habit, never your words.">
+  <meta name="twitter:image" content="https://getdailyvox.com/og-image.png?v=1111">
+  <meta name="twitter:image:alt" content="The DailyVox sky on an iPhone: a constellation of journal nights on a dark background.">
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- FAQPage mirrors the four visible questions below, word for word. -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Is my journal shared when I share my sky?","acceptedAnswer":{"@type":"Answer","text":"No. The card is drawn on your phone and handed to your phone's own share sheet. DailyVox sends nothing anywhere, because it has no server to send to. Your recordings and entries stay on the device."}},
+    {"@type":"Question","name":"What does the sky card show?","acceptedAnswer":{"@type":"Answer","text":"The shape of your habit: one star for each night you spoke, and roughly when. The My Sky card carries no entry text, no names and no moods."}},
+    {"@type":"Question","name":"Is DailyVox free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every feature, with no paywall, no subscription, no ads and no account. The app is open source under the MIT licence."}},
+    {"@type":"Question","name":"Does DailyVox work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes. Recording, transcription and the sky all work without a connection. The Android app does not even hold the internet permission; you can confirm that in your phone's app settings or on the Google Play listing. On iPhone, try it in airplane mode."}}
+  ]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://getdailyvox.com/"},
+    {"@type":"ListItem","position":2,"name":"Your sky","item":"https://getdailyvox.com/sky"}
+  ]}
+  </script>
+
+  <style>
+:root{
+  --paper:#FAF8F5; --paper-2:#F2EDE8; --paper-3:#E8E0D8; --card:#ffffff;
+  --ink:#1A1A2E; --ink-dim:rgba(26,26,46,.66); --ink-mute:rgba(26,26,46,.72);
+  --rule:rgba(26,26,46,.08); --rule-2:rgba(26,26,46,.16);
+  --uv:#5B7C6B; --uv-text:#3F5A4D;
+  --bio:#D4A547; --bio-text:#7A5C18;
+  --display:'Nunito',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --ui:'Nunito','Inter',system-ui,sans-serif;
+  --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --r:16px; --r-lg:24px; --r-pill:999px; --r-sm:10px; --r-xs:6px;
+  --sh-1:0 1px 2px rgba(26,26,46,.04),0 2px 6px rgba(91,124,107,.05);
+  --sh-3:0 8px 24px rgba(26,26,46,.06),0 40px 80px rgba(91,124,107,.10);
+  --focus:0 0 0 3px var(--paper),0 0 0 5px var(--uv);
+  --maxw:1120px; --section-y:clamp(56px,8vw,104px); --pad-x:clamp(16px,5vw,40px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{overflow-x:hidden; overflow-x:clip; max-width:100%}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.7;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+body.no-scroll{overflow:hidden}
+h1,h2,h3{font-family:var(--display); margin:0; color:var(--ink); font-weight:800}
+p{margin:0}
+a{color:inherit; text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--pad-x)}
+section{position:relative; padding-block:var(--section-y)}
+.skip{position:absolute; left:-9999px; top:0; z-index:200; background:var(--uv); color:#fff; padding:12px 20px;
+  border-radius:0 0 var(--r-sm) 0; font-family:var(--ui); font-weight:700}
+.skip:focus{left:0}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:none; box-shadow:var(--focus); border-radius:var(--r-xs)}
+
+/* nav — the landing page's, unchanged */
+.nav{position:sticky; top:0; z-index:100; background:rgba(250,248,245,.85);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--rule)}
+.nav-in{display:flex; align-items:center; justify-content:space-between; padding-block:15px; gap:16px}
+.wordmark{display:inline-flex; align-items:center; gap:9px; font-family:var(--display); font-weight:800; font-size:23px; letter-spacing:-.01em}
+.wordmark .ver{font-family:var(--mono); font-weight:500; font-size:10px; letter-spacing:.04em; color:var(--ink-mute);
+  border:1px solid var(--rule-2); border-radius:var(--r-pill); padding:2px 7px}
+.logo-mark{width:30px; height:30px; border-radius:8px; display:block; box-shadow:0 1px 3px rgba(45,37,32,.18)}
+.nav-links{display:flex; align-items:center; gap:30px}
+.nav-links a{font-size:15px; color:var(--ink-dim); transition:color .2s}
+.nav-links a:hover{color:var(--uv-text)}
+.nav-right{display:flex; align-items:center; gap:14px; flex-shrink:0}
+.menu-btn{display:none; align-items:center; justify-content:center; width:44px; height:44px;
+  border:1px solid var(--rule-2); border-radius:var(--r-sm); background:var(--card); cursor:pointer; color:var(--ink)}
+.menu-btn svg{display:block}
+.pill{display:inline-flex; align-items:center; justify-content:center; gap:10px; background:var(--uv); color:#fff; font-family:var(--ui);
+  font-weight:700; font-size:16px; padding:14px 26px; border-radius:var(--r-pill); border:none; cursor:pointer; white-space:nowrap;
+  transition:background-color .2s}
+.pill:hover{background:var(--uv-text)}
+.pill.sm{padding:10px 20px; font-size:15px}
+.pill svg{flex:none}
+.pill.ink{background:var(--ink)}
+.pill.ink:hover{background:#2C2C44}
+.drawer{display:none}
+@media(max-width:820px){
+  .nav-links{display:none}
+  .menu-btn{display:inline-flex}
+  .drawer{display:block; position:fixed; inset:0; z-index:150; visibility:hidden}
+  .drawer[data-open="true"]{visibility:visible}
+  .drawer-scrim{position:absolute; inset:0; background:rgba(26,26,46,.32); opacity:0; transition:opacity .25s}
+  .drawer[data-open="true"] .drawer-scrim{opacity:1}
+  .drawer-panel{position:absolute; top:0; right:0; height:100%; width:min(80%,320px); background:var(--paper);
+    padding:24px; display:flex; flex-direction:column; gap:6px; transform:translateX(100%);
+    transition:transform .28s cubic-bezier(.22,.61,.36,1)}
+  .drawer[data-open="true"] .drawer-panel{transform:translateX(0)}
+  .drawer-panel .close{align-self:flex-end; width:44px; height:44px; border:none; background:none; cursor:pointer; color:var(--ink); font-size:26px; line-height:1}
+  .drawer-panel a{padding:14px 6px; font-family:var(--ui); font-weight:600; font-size:18px; color:var(--ink); border-bottom:1px solid var(--rule)}
+  .drawer-panel .pill{margin-top:18px; color:#fff; border-bottom:none}
+}
+@media(max-width:480px){
+  .wordmark .ver{display:none}
+  .nav-in{gap:10px}
+  .pill.sm{padding:10px 16px}
+}
+
+/* type */
+.eyebrow{display:inline-flex; align-items:center; gap:9px; font-family:var(--ui); font-weight:700; font-size:12px;
+  text-transform:uppercase; letter-spacing:.16em; color:var(--bio-text); margin:0 0 20px}
+.eyebrow::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--bio); flex:none}
+.eyebrow.green{color:var(--uv-text)} .eyebrow.green::before{background:var(--uv)}
+h1{font-size:clamp(34px,5.4vw,64px); line-height:1.06; letter-spacing:-.02em; overflow-wrap:break-word}
+h2{font-size:clamp(28px,3.6vw,42px); line-height:1.1; letter-spacing:-.015em}
+h3{font-size:20px; line-height:1.25; font-weight:700}
+.lit{font-weight:300; font-style:italic; color:var(--uv-text)}
+.body-p{font-size:clamp(17px,1.2vw,19px); line-height:1.7; color:var(--ink-dim); max-width:56ch}
+.body-p strong{color:var(--ink); font-weight:600}
+.micro{font-family:var(--mono); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.14em; color:var(--ink-mute)}
+
+/* hero */
+.hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:clamp(32px,6vw,80px); align-items:center}
+.hero-grid > *{min-width:0}
+.hero-copy h1{margin-bottom:26px}
+.hero-copy .body-p + .body-p{margin-top:16px}
+.stores{display:flex; flex-wrap:wrap; gap:12px; margin-top:34px}
+.stores-note{margin-top:14px}
+.stores .pill{padding:14px 22px; font-size:15.5px}
+.sky-fig{margin:0}
+.sky-fig svg{display:block; width:100%; height:auto; border-radius:var(--r-lg); background:var(--paper-2); border:1px solid var(--rule)}
+.sky-fig figcaption{margin-top:12px; text-align:center}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  .sky-fig{max-width:460px; width:100%; margin-inline:auto}
+}
+@media(max-width:520px){
+  .stores .pill{width:100%}
+}
+
+/* steps */
+.band{background:var(--paper-2); border-block:1px solid var(--rule)}
+.section-head{max-width:720px; margin-bottom:clamp(32px,5vw,52px)}
+.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,2.4vw,28px); counter-reset:step}
+.steps li{background:var(--card); border:1px solid var(--rule); border-radius:var(--r); padding:28px 26px; counter-increment:step}
+.steps li::before{content:counter(step); display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
+  border-radius:50%; background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:14px; font-weight:500; margin-bottom:18px}
+.steps h3{margin-bottom:8px}
+.steps p{font-size:16px; color:var(--ink-dim); line-height:1.65}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+
+/* faq — the landing page's */
+.faq{max-width:780px}
+.faq details{border-bottom:1px solid var(--rule); padding:6px 0}
+.faq details:first-of-type{border-top:1px solid var(--rule)}
+.faq summary{list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px;
+  padding:22px 0; font-family:var(--display); font-weight:700; font-size:clamp(18px,1.8vw,21px); line-height:1.35}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+"; color:var(--uv); font-size:26px; font-weight:400; transition:transform .2s; flex:none; font-family:var(--ui)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{font-size:16.5px; color:var(--ink-dim); line-height:1.7; padding:0 0 24px; max-width:62ch}
+.faq details p a{color:var(--uv-text); text-decoration:underline; text-underline-offset:2px}
+
+/* closing */
+.close-cta{text-align:center}
+.close-cta .body-p{margin:16px auto 0}
+.close-cta .stores{justify-content:center}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important; scroll-behavior:auto !important}}
+
+/* ── Shared site footer (same block every page carries) ── */
+.dv-footer{background:var(--paper-2,#F2EDE8);border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  margin-top:0;padding:clamp(38px,6vh,62px) 0 clamp(22px,3vh,32px);
+  font-family:var(--sans,'Inter',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-wrap{width:min(1180px,calc(100% - 2*clamp(18px,4vw,48px)));margin-inline:auto}
+.dv-f-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:clamp(20px,3vw,40px)}
+.dv-f-brand p{margin:12px 0 0;font-size:14px;line-height:1.55;max-width:30ch;color:var(--ink-mute,#5C6A64)}
+.dv-f-mark{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  font:800 19px/1 var(--display,'Nunito',system-ui,sans-serif);color:var(--ink,#1A1A2E)}
+.dv-f-mark img{border-radius:7px;display:block}
+.dv-f-col{display:flex;flex-direction:column;gap:9px}
+.dv-f-col h4{margin:0 0 4px;font:600 10.5px/1 var(--mono,'DM Mono',ui-monospace,monospace);
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mute,#5C6A64)}
+.dv-f-col a{font-size:14px;line-height:1.45;text-decoration:none;color:var(--ink-dim,rgba(26,26,46,.72))}
+.dv-f-col a:hover{color:var(--uv-text,#3F5A4D);text-decoration:underline}
+.dv-f-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-top:clamp(26px,4vh,44px);padding-top:18px;border-top:1px solid var(--rule,rgba(26,26,46,.09));
+  font:500 12.5px/1.5 var(--mono,'DM Mono',ui-monospace,monospace);color:var(--ink-mute,#5C6A64)}
+.dv-f-base a{color:inherit}
+@media (max-width:900px){.dv-f-grid{grid-template-columns:1fr 1fr;gap:26px}.dv-f-brand{grid-column:1 / -1}}
+@media (max-width:520px){.dv-f-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- Store links carry campaign tags so installs from shared cards can be counted in each
+     store's own console. Nothing on this page or in the app reports anything back.
+     TODO(provider-token): add the App Store Connect provider token as `pt=` to every
+     apps.apple.com link below once it is known (App Store Connect > Analytics > Campaigns).
+     Without it, `ct=sky-card` is kept by the link but is not attributed in App Analytics. -->
+<header id="siteHeader">
+<nav class="nav" aria-label="Primary">
+  <div class="wrap nav-in">
+    <a href="/" class="wordmark"><img class="logo-mark" src="/apple-touch-icon.png" alt="" width="30" height="30"><span class="logo-text">DailyVox</span><span class="ver">iOS 1.13 &middot; Android 1.2</span></a>
+    <div class="nav-links">
+      <a href="/technology">Technology</a>
+      <a href="/roadmap">Roadmap</a>
+      <a href="/research">Research</a>
+      <a href="/about">About</a>
+      <a href="/blog">Journal</a>
+      <a href="/faq">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <a href="#get" class="pill sm">Download →</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="drawer-scrim" data-close></div>
+  <div class="drawer-panel" id="drawerPanel">
+    <button class="close" id="drawerClose" aria-label="Close menu">×</button>
+    <a href="/technology">Technology</a>
+    <a href="/roadmap">Roadmap</a>
+    <a href="/research">Research</a>
+    <a href="/about">About</a>
+    <a href="/blog">Journal</a>
+    <a href="/faq">FAQ</a>
+    <a href="#get" class="pill" id="drawerLast">Download →</a>
+  </div>
+</div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<section aria-labelledby="sky-h">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Someone shared their sky</p>
+      <h1 id="sky-h">A sky made of the <span class="lit">nights you kept</span></h1>
+      <p class="body-p">DailyVox is a voice journal. Each night you speak to it, a star is added to your sky. About 42 seconds is enough, and you can talk for longer if you like.</p>
+      <p class="body-p">The My Sky card shows the shape of that habit: how many nights, and roughly when. <strong>It never shows the words.</strong> It carries no entry text, no names and no moods.</p>
+      <p class="body-p">Nothing leaves the phone unless its owner shares the card themselves. The Android app does not even hold the internet permission, and you can check that in your phone’s Settings.</p>
+      <div class="stores" id="get">
+        <a class="pill ink" href="https://apps.apple.com/app/id6760454642?ct=sky-card&amp;mt=8">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.59-.75 2.99-.75 1.39 0 1.79.75 3.01.72 1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.45-3.71zM14.08 5.84c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.1 1.77-.97 2.82 1.03.08 2.07-.52 2.71-1.28z"/></svg>
+          Download on the App Store
+        </a>
+        <a class="pill" href="https://play.google.com/store/apps/details?id=com.dailyvox.app&amp;referrer=utm_source%3Dsky-card%26utm_medium%3Dshare%26utm_campaign%3Dsky">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.2 2.4c-.25.26-.4.67-.4 1.2v16.8c0 .53.15.94.4 1.2l.06.06 9.4-9.4v-.22l-9.4-9.4-.06.06zm12.6 12.5-3.14-3.14v-.22l3.14-3.14.07.04 3.72 2.11c1.06.6 1.06 1.59 0 2.2l-3.72 2.11-.07.04zm-.07.04-3.2-3.2-9.33 9.34c.35.37.92.41 1.57.05l10.96-6.19m0-6.38L5.77 2.36c-.65-.36-1.22-.32-1.57.05l9.33 9.33 3.2-3.2z"/></svg>
+          Get it on Google Play
+        </a>
+      </div>
+      <p class="micro stores-note">Free · No account · iPhone and Android</p>
+    </div>
+
+    <figure class="sky-fig">
+      <!-- Illustration only: an invented sky, not anyone's card. Flat ink and gold on cream. -->
+      <svg viewBox="0 0 480 480" role="img" aria-labelledby="fig-t fig-d">
+        <title id="fig-t">An illustrated sky of journal nights</title>
+        <desc id="fig-d">Gold four-point stars, one per night, joined by thin ink lines into a loose constellation, with fainter ink dots for the nights not yet spoken.</desc>
+        <g fill="#1A1A2E" opacity=".22">
+          <circle cx="44" cy="62" r="1.6"/><circle cx="118" cy="34" r="1.2"/><circle cx="212" cy="58" r="1.4"/><circle cx="318" cy="30" r="1.2"/>
+          <circle cx="436" cy="70" r="1.6"/><circle cx="452" cy="176" r="1.2"/><circle cx="30" cy="208" r="1.3"/><circle cx="74" cy="322" r="1.5"/>
+          <circle cx="40" cy="432" r="1.2"/><circle cx="160" cy="452" r="1.6"/><circle cx="286" cy="440" r="1.2"/><circle cx="410" cy="452" r="1.4"/>
+          <circle cx="458" cy="340" r="1.2"/><circle cx="246" cy="246" r="1.1"/><circle cx="182" cy="140" r="1.2"/><circle cx="362" cy="214" r="1.1"/>
+          <circle cx="120" cy="250" r="1"/><circle cx="330" cy="392" r="1.1"/><circle cx="96" cy="160" r="1.1"/><circle cx="400" cy="124" r="1"/>
+        </g>
+        <g fill="none" stroke="#1A1A2E" stroke-width="1.2" stroke-linecap="round" opacity=".55">
+          <path d="M96 118 L162 176 L232 150 L300 104 L380 92"/>
+          <path d="M162 176 L148 266 L214 330 L300 318 L352 252 L300 104"/>
+          <path d="M214 330 L190 404"/>
+          <path d="M352 252 L414 288"/>
+        </g>
+        <g fill="#D4A547">
+          <path d="M96 106 Q97 117 108 118 Q97 119 96 130 Q95 119 84 118 Q95 117 96 106Z"/>
+          <path d="M162 162 Q163.5 174.5 176 176 Q163.5 177.5 162 190 Q160.5 177.5 148 176 Q160.5 174.5 162 162Z"/>
+          <path d="M232 140 Q233 149 242 150 Q233 151 232 160 Q231 151 222 150 Q231 149 232 140Z"/>
+          <path d="M300 88 Q302 102 316 104 Q302 106 300 120 Q298 106 284 104 Q298 102 300 88Z"/>
+          <path d="M380 82 Q381 91 390 92 Q381 93 380 102 Q379 93 370 92 Q379 91 380 82Z"/>
+          <path d="M148 254 Q149.2 264.8 160 266 Q149.2 267.2 148 278 Q146.8 267.2 136 266 Q146.8 264.8 148 254Z"/>
+          <path d="M214 316 Q215.5 328.5 228 330 Q215.5 331.5 214 344 Q212.5 331.5 200 330 Q212.5 328.5 214 316Z"/>
+          <path d="M300 308 Q301 317 310 318 Q301 319 300 328 Q299 319 290 318 Q299 317 300 308Z"/>
+          <path d="M352 236 Q353.8 250.2 368 252 Q353.8 253.8 352 268 Q350.2 253.8 336 252 Q350.2 250.2 352 236Z"/>
+          <path d="M190 396 Q190.8 403.2 198 404 Q190.8 404.8 190 412 Q189.2 404.8 182 404 Q189.2 403.2 190 396Z"/>
+          <path d="M414 280 Q414.8 287.2 422 288 Q414.8 288.8 414 296 Q413.2 288.8 406 288 Q413.2 287.2 414 280Z"/>
+        </g>
+        <g fill="#1A1A2E" opacity=".5">
+          <circle cx="256" cy="212" r="2.4"/><circle cx="84" cy="386" r="2.2"/><circle cx="420" cy="384" r="2.2"/>
+        </g>
+      </svg>
+      <figcaption class="micro">An illustration. Your sky takes its own shape.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow green">How to get your sky</p>
+      <h2 id="how-h">Three steps, and the first one is tonight</h2>
+    </div>
+    <ol class="steps">
+      <li>
+        <h3>Install DailyVox</h3>
+        <p>Free on iPhone and Android. There is no account to make and no email to give.</p>
+      </li>
+      <li>
+        <h3>Speak for 42 seconds</h3>
+        <p>Say how the day went. It is transcribed on your phone, and the night becomes a star. Miss a night and nothing breaks; the sky simply waits.</p>
+      </li>
+      <li>
+        <h3>Share the card, if you want to</h3>
+        <p>Your phone draws the card and opens its own share sheet. The My Sky card shows the shape of your nights, not what you said.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow green">Questions</p>
+      <h2 id="faq-h">Before you install</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Is my journal shared when I share my sky?</summary>
+        <p>No. The card is drawn on your phone and handed to your phone’s own share sheet. DailyVox sends nothing anywhere, because it has no server to send to. Your recordings and entries stay on the device. The <a href="/privacy">privacy page</a> has the details.</p>
+      </details>
+      <details>
+        <summary>What does the sky card show?</summary>
+        <p>The shape of your habit: one star for each night you spoke, and roughly when. The My Sky card carries no entry text, no names and no moods.</p>
+      </details>
+      <details>
+        <summary>Is DailyVox free?</summary>
+        <p>Yes. Every feature, with no paywall, no subscription, no ads and no account. The app is open source under the MIT licence.</p>
+      </details>
+      <details>
+        <summary>Does DailyVox work offline?</summary>
+        <p>Yes. Recording, transcription and the sky all work without a connection. The Android app does not even hold the internet permission; you can confirm that in your phone’s app settings or on the Google Play listing. On iPhone, try it in airplane mode.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="band close-cta" aria-labelledby="start-h">
+  <div class="wrap">
+    <h2 id="start-h">Start your own sky tonight</h2>
+    <p class="body-p">One star a night. It stays on your phone.</p>
+    <div class="stores">
+      <a class="pill ink" href="https://apps.apple.com/app/id6760454642?ct=sky-card&amp;mt=8">Download on the App Store</a>
+      <a class="pill" href="https://play.google.com/store/apps/details?id=com.dailyvox.app&amp;referrer=utm_source%3Dsky-card%26utm_medium%3Dshare%26utm_campaign%3Dsky">Get it on Google Play</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="dv-footer">
+  <div class="dv-f-wrap">
+    <div class="dv-f-grid">
+      <div class="dv-f-brand">
+        <a href="/" class="dv-f-mark"><img src="/apple-touch-icon.png" alt="" width="28" height="28"><span>DailyVox</span></a>
+        <p>A personal AI that lives on your phone. Free, open source, private by construction.</p>
+      </div>
+      <nav class="dv-f-col" aria-label="Product">
+        <h4>Product</h4>
+        <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app">Google Play</a>
+        <a href="/technology">Technology</a>
+        <a href="/ai-journaling-app">AI Journaling App</a>
+        <a href="/personal-digital-twin">Digital Twin</a>
+        <a href="/compare">Compare</a>
+        <a href="/demo">Interactive demo</a>
+        <a href="/faq">FAQ</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Project">
+        <h4>Project</h4>
+        <a href="/roadmap">Roadmap</a>
+        <a href="/research">Research</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/about">About</a>
+        <a href="/blog">Journal</a>
+        <a href="/press">Press Kit</a>
+        <a href="/support">Support</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="More">
+        <h4>More</h4>
+        <a href="/privacy">Privacy</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/voice-journaling-statistics">Statistics</a>
+        <a href="/for-students">For students</a>
+        <a href="https://github.com/intrepidkarthi/dailyvox">GitHub</a>
+        <a href="mailto:hello@getdailyvox.com">Contact</a>
+      </nav>
+      <nav class="dv-f-col" aria-label="Social">
+        <h4>Social</h4>
+        <a href="https://x.com/getDailyVox" rel="me">X &middot; @getDailyVox</a>
+        <a href="https://www.instagram.com/getdailyvox/" rel="me">Instagram</a>
+        <a href="https://www.reddit.com/user/getDailyVox/" rel="me">Reddit</a>
+        <a href="https://www.producthunt.com/products/dailyvox">Product Hunt</a>
+      </nav>
+    </div>
+    <div class="dv-f-base">
+      <span>&copy; 2026 DailyVox &middot; iOS 1.13 &middot; Android 1.2 &middot; built on-device, by hand</span>
+      <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* mobile drawer, as on the landing page: focus trap and inert background */
+  var btn=document.getElementById('menuBtn'), drawer=document.getElementById('drawer'),
+      closeBtn=document.getElementById('drawerClose'), lastEl=document.getElementById('drawerLast'),
+      main=document.getElementById('main'), footer=document.querySelector('footer'),
+      navbar=document.querySelector('.nav'), lastFocus=null;
+  if(!btn||!drawer) return;
+  function setBgInert(on){
+    [main,footer,navbar].forEach(function(el){
+      if(!el) return;
+      if(on){ el.setAttribute('inert',''); el.setAttribute('aria-hidden','true'); }
+      else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
+    });
+  }
+  function openD(){ lastFocus=document.activeElement; drawer.setAttribute('data-open','true');
+    btn.setAttribute('aria-expanded','true'); document.body.classList.add('no-scroll'); setBgInert(true); closeBtn.focus(); }
+  function closeD(){ drawer.removeAttribute('data-open'); btn.setAttribute('aria-expanded','false');
+    document.body.classList.remove('no-scroll'); setBgInert(false); if(lastFocus) lastFocus.focus(); }
+  btn.addEventListener('click',openD);
+  closeBtn.addEventListener('click',closeD);
+  drawer.querySelectorAll('[data-close],.drawer-panel a').forEach(function(el){ el.addEventListener('click',closeD); });
+  document.addEventListener('keydown',function(e){
+    if(!drawer.getAttribute('data-open')) return;
+    if(e.key==='Escape'){ closeD(); return; }
+    if(e.key==='Tab'){
+      if(e.shiftKey && document.activeElement===closeBtn){ e.preventDefault(); lastEl.focus(); }
+      else if(!e.shiftKey && document.activeElement===lastEl){ e.preventDefault(); closeBtn.focus(); }
+    }
+  });
+})();
+</script>
+</body>
+</html>

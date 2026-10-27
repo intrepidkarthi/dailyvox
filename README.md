@@ -172,7 +172,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New — v1.13.0 (iPhone, 17 October 2026) · Android 1.2 in review
+## What's New — v1.13.0 (iPhone, 17 October 2026) · Android 1.2 (October 2026)
 
 A release about the first week: the app now gives something back every time you speak, instead of only after weeks of entries. Everything here is on iPhone and Android, and all of it runs on the phone.
 
@@ -208,7 +208,7 @@ A release about the first week: the app now gives something back every time you 
 
 > **Platforms.** DailyVox is live on the [App Store](https://apps.apple.com/app/id6760454642)
 > for iPhone and iPad, and on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
-> for Android 13 or newer (Android has its own version line). Android has no
+> for Android 13 or newer (Android v1.2, its own version line). Android has no
 > on-device LLM chat, no health data and no translations yet. One known
 > limitation: on Android, the names in the Twin depend on the phone's speech
 > recogniser capitalising them. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
@@ -225,7 +225,7 @@ A release about the first week: the app now gives something back every time you 
 | v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | Shipped Aug 2026 |
 | Android v1.0 | Android, first release | Shipped 2026-10-02 |
 | v1.12.0 · Android v1.1 | Type an entry any time ("I can't talk right now" on the main screen) | Shipped Oct 2026 |
-| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **17 Oct 2026** (iOS) · Android in review |
+| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **Shipped Oct 2026** (iOS 17 Oct · Android 1.2) |
 | Next | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
