@@ -100,7 +100,7 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(8.dp))
         var menu by remember { mutableStateOf(false) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = com.dailyvox.app.ui.components.Directional.GlyphStyle,
+            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(com.dailyvox.app.ui.components.Directional.GlyphStyle),
                  color = MaterialTheme.colorScheme.onBackground,
                  modifier = Modifier
                      .clip(CircleShape)
@@ -287,7 +287,7 @@ fun EntryDetailScreen(
             }
             entry.stepsToday?.takeIf { it > 0 }?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow(stringResource(R.string.entry_filed_steps), stringResource(R.string.entry_filed_steps_value, it), MaterialTheme.colorScheme.tertiary)
+                FiledRow(stringResource(R.string.entry_filed_steps), pluralStringResource(R.plurals.entry_filed_steps_value, it, it), MaterialTheme.colorScheme.tertiary)
             }
             // Pace is a property of speech; a typed entry has none.
             if (entry.durationSec > 0) {
@@ -319,7 +319,7 @@ fun EntryDetailScreen(
                 FiledRow(
                     stringResource(R.string.entry_filed_pauses),
                     entry.longPauseCount?.takeIf { it > 0 }
-                        ?.let { stringResource(R.string.entry_filed_pauses_value_long, p * 100, it) }
+                        ?.let { pluralStringResource(R.plurals.entry_filed_pauses_value_long, it, p * 100, it) }
                         ?: stringResource(R.string.entry_filed_pauses_value, p * 100),
                     MaterialTheme.colorScheme.onSurfaceVariant,
                 )

@@ -111,13 +111,30 @@ class StringResourcesTest {
                      s(R.string.entry_no_voice, "Hindi"))
         assertEquals("7.5 hours", s(R.string.entry_filed_slept_value, 7.5))
         assertEquals("48 ms this morning", s(R.string.entry_filed_hrv_value, 48.2))
-        assertEquals("8,412 today", s(R.string.entry_filed_steps_value, 8412))
+        assertEquals("8,412 today", p(R.plurals.entry_filed_steps_value, 8412, 8412))
+        assertEquals("1 today", p(R.plurals.entry_filed_steps_value, 1, 1))
         assertEquals("142 wpm", s(R.string.entry_filed_pace_value, 142))
         assertEquals("2.4 words/sec spoken", s(R.string.entry_filed_voice_value, 2.4f))
         assertEquals("180 Hz", s(R.string.entry_filed_tone_value, 180f))
         assertEquals("180 Hz · 40 Hz range", s(R.string.entry_filed_tone_value_range, 180f, 40f))
         assertEquals("12% quiet", s(R.string.entry_filed_pauses_value, 12f))
-        assertEquals("12% quiet · 3 long", s(R.string.entry_filed_pauses_value_long, 12f, 3))
+        assertEquals("12% quiet · 3 long", p(R.plurals.entry_filed_pauses_value_long, 3, 12f, 3))
+        assertEquals("12% quiet · 1 long", p(R.plurals.entry_filed_pauses_value_long, 1, 12f, 1))
+        // Plurals added for translators (PluralsCandidate); English text is 1.2's, for every count.
+        assertEquals("Welcome back. Your sky kept your place. Longest run 4. 1 days spoken in all.",
+                     p(R.plurals.streak_description_returning, 1, 4, 1))
+        assertEquals("Welcome back. Your sky kept your place. Longest run 4. 9 days spoken in all.",
+                     p(R.plurals.streak_description_returning, 9, 4, 9))
+        assertEquals("You usually speak in the evening: 3 of 5 entries.",
+                     p(R.plurals.early_time_of_day, 5, s(R.string.early_part_evening), 3, 5))
+        assertEquals("Your latest entry ran longer than your first: 120 words against 40.",
+                     p(R.plurals.early_length_longer_one, 120, 120, 40))
+        assertEquals("Your latest entry ran shorter than your first: 1 words against 40.",
+                     p(R.plurals.early_length_shorter_one, 1, 1, 40))
+        assertEquals("Your latest 3 entries ran longer than your first 3: 120 words against 40.",
+                     p(R.plurals.early_length_longer_many, 120, 120, 40, 3))
+        assertEquals("Your latest 3 entries ran shorter than your first 3: 40 words against 120.",
+                     p(R.plurals.early_length_shorter_many, 40, 40, 120, 3))
         assertEquals("+0.42 · positive", s(R.string.entry_valence_value, "+0.42", s(R.string.entry_valence_positive)))
         assertEquals(", ", s(R.string.entry_filed_people_separator))
         assertEquals("✦  Ask about this", s(R.string.entry_action_ask))

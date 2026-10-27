@@ -116,8 +116,8 @@ fun InsightsScreen(
             com.dailyvox.app.system.Streak.Kind.ACTIVE -> pluralStringResource(
                 R.plurals.streak_description_active, streak.current,
                 streak.current, streak.longest, streak.daysSpoken)
-            com.dailyvox.app.system.Streak.Kind.RETURNING -> stringResource(
-                R.string.streak_description_returning, streak.longest, streak.daysSpoken)
+            com.dailyvox.app.system.Streak.Kind.RETURNING -> pluralStringResource(
+                R.plurals.streak_description_returning, streak.daysSpoken, streak.longest, streak.daysSpoken)
             com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_description_new)
         }
         DvCard(

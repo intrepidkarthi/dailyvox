@@ -251,8 +251,12 @@
         <item quantity="one">%1$d day in a row. Longest run %2$d. %3$d days spoken in all.</item>
         <item quantity="other">%1$d days in a row. Longest run %2$d. %3$d days spoken in all.</item>
     </plurals>
-    <!-- TalkBack: the streak card after time away. %1$d = longest run; %2$d = days spoken in all. -->
-    <string name="streak_description_returning">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</string>
+    <!-- TalkBack: the streak card after time away. %1$d = longest run; %2$d = days spoken in all (the plural follows %2$d).
+         English "one" keeps 1.2's text for this round, where English must not change. -->
+    <plurals name="streak_description_returning">
+        <item quantity="one">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</item>
+        <item quantity="other">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</item>
+    </plurals>
     <!-- TalkBack: the streak card before any entry. -->
     <string name="streak_description_new">No streak yet. Your first entry starts one.</string>
     <!-- The wide widget's day line. -->
@@ -279,19 +283,37 @@
     <string name="early_part_afternoon">in the afternoon</string>
     <string name="early_part_evening">in the evening</string>
     <string name="early_part_late_night">late at night</string>
-    <!-- %1$s = a part of the day (early_part_*); %2$d = entries made then; %3$d = entries in all. About 60 characters. -->
-    <string name="early_time_of_day">You usually speak %1$s: %2$d of %3$d entries.</string>
+    <!-- %1$s = a part of the day (early_part_*); %2$d = entries made then; %3$d = entries in all (3 or more; the plural follows %3$d). About 60 characters.
+         English "one" keeps 1.2's text for this round, where English must not change. -->
+    <plurals name="early_time_of_day">
+        <item quantity="one">You usually speak %1$s: %2$d of %3$d entries.</item>
+        <item quantity="other">You usually speak %1$s: %2$d of %3$d entries.</item>
+    </plurals>
     <!-- %1$d = average words per entry. About 50 characters. -->
     <plurals name="early_length_average">
         <item quantity="one">About %1$d word an entry, on average.</item>
         <item quantity="other">About %1$d words an entry, on average.</item>
     </plurals>
-    <!-- First entry against the latest. %1$d = words in the latest; %2$d = words in the first. About 80 characters each. -->
-    <string name="early_length_longer_one">Your latest entry ran longer than your first: %1$d words against %2$d.</string>
-    <string name="early_length_shorter_one">Your latest entry ran shorter than your first: %1$d words against %2$d.</string>
-    <!-- The first few entries against the latest few. %1$d = average words, latest; %2$d = average words, first; %3$d = how many entries each side. About 90 characters each. -->
-    <string name="early_length_longer_many">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</string>
-    <string name="early_length_shorter_many">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</string>
+    <!-- First entry against the latest. %1$d = words in the latest; %2$d = words in the first. The plural follows %1$d. About 80 characters each.
+         English "one" keeps 1.2's text for this round, where English must not change. -->
+    <plurals name="early_length_longer_one">
+        <item quantity="one">Your latest entry ran longer than your first: %1$d words against %2$d.</item>
+        <item quantity="other">Your latest entry ran longer than your first: %1$d words against %2$d.</item>
+    </plurals>
+    <plurals name="early_length_shorter_one">
+        <item quantity="one">Your latest entry ran shorter than your first: %1$d words against %2$d.</item>
+        <item quantity="other">Your latest entry ran shorter than your first: %1$d words against %2$d.</item>
+    </plurals>
+    <!-- The first few entries against the latest few. %1$d = average words, latest; %2$d = average words, first; %3$d = how many entries each side (always 2 or more). The plural follows %1$d, the words; "entries" stays plural in every form. About 90 characters each.
+         English "one" keeps 1.2's text for this round, where English must not change. -->
+    <plurals name="early_length_longer_many">
+        <item quantity="one">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</item>
+        <item quantity="other">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</item>
+    </plurals>
+    <plurals name="early_length_shorter_many">
+        <item quantity="one">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</item>
+        <item quantity="other">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</item>
+    </plurals>
     <!-- About 50 characters. -->
     <string name="early_length_steady">About the same length as when you started.</string>
     <!-- A word the user keeps saying. %1$s = the word, as said; %2$d = entries it is in. Use your language's quotation marks. -->
@@ -590,8 +612,11 @@
     <!-- %1$.0f = beats per minute, whole number. -->
     <string name="entry_filed_pulse_value">%1$.0f bpm</string>
     <string name="entry_filed_steps">Steps</string>
-    <!-- %1$,d = today's step count, with thousands separators ("8,412"). -->
-    <string name="entry_filed_steps_value">%1$,d today</string>
+    <!-- Value beside "Steps". %1$,d = today's step count, with thousands separators ("8,412"); the plural follows it, in case your language needs a counted word. -->
+    <plurals name="entry_filed_steps_value">
+        <item quantity="one">%1$,d today</item>
+        <item quantity="other">%1$,d today</item>
+    </plurals>
     <!-- Speaking pace. -->
     <string name="entry_filed_pace">Pace</string>
     <!-- %1$d = words per minute. -->
@@ -608,8 +633,11 @@
     <string name="entry_filed_pauses">Pauses</string>
     <!-- %1$.0f = percent of the recording that was silence ("%%" prints one percent sign). -->
     <string name="entry_filed_pauses_value">%1$.0f%% quiet</string>
-    <!-- As entry_filed_pauses_value; %2$d = how many long pauses. -->
-    <string name="entry_filed_pauses_value_long">%1$.0f%% quiet · %2$d long</string>
+    <!-- As entry_filed_pauses_value; %2$d = how many long pauses (1 or more; the plural follows it). -->
+    <plurals name="entry_filed_pauses_value_long">
+        <item quantity="one">%1$.0f%% quiet · %2$d long</item>
+        <item quantity="other">%1$.0f%% quiet · %2$d long</item>
+    </plurals>
     <!-- Time of day the entry was made; the value is one of the entry_filed_when_* words. -->
     <string name="entry_filed_when">When</string>
     <string name="entry_filed_when_small_hours">the small hours</string>

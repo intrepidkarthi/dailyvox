@@ -434,7 +434,7 @@ private fun TwinNoticedCard(p: Insights.Finding, onAsk: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f),
         )
         Text(com.dailyvox.app.ui.components.forwardGlyph(), fontSize = 18.sp, color = goldText,
-             style = com.dailyvox.app.ui.components.Directional.GlyphStyle)
+             style = androidx.compose.material3.LocalTextStyle.current.merge(com.dailyvox.app.ui.components.Directional.GlyphStyle))
     }
 }
 

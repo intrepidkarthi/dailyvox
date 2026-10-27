@@ -118,7 +118,7 @@ fun ScreenTitle(
             // real one is worse than no chrome at all.
             if (onBack != null) {
                 Text(
-                    backGlyph(), fontSize = 30.sp, style = Directional.GlyphStyle,
+                    backGlyph(), fontSize = 30.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(Directional.GlyphStyle),
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .clip(CircleShape)

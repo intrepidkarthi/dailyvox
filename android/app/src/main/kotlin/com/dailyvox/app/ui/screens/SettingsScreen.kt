@@ -80,7 +80,7 @@ fun SettingsScreen(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = com.dailyvox.app.ui.components.Directional.GlyphStyle,
+            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(com.dailyvox.app.ui.components.Directional.GlyphStyle),
                  color = scheme.onBackground,
                  modifier = Modifier.clip(RoundedCornerShape(24.dp)).clickable(onClick = onBack)
                      .defaultMinSize(48.dp, 48.dp).wrapContentSize())
@@ -593,7 +593,7 @@ private fun ChevronRow(label: String, hint: String, onClick: () -> Unit) {
             Spacer(Modifier.width(5.dp))
             Text(hint, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text(com.dailyvox.app.ui.components.forwardGlyph(), fontSize = 16.sp, style = com.dailyvox.app.ui.components.Directional.GlyphStyle,
+        Text(com.dailyvox.app.ui.components.forwardGlyph(), fontSize = 16.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(com.dailyvox.app.ui.components.Directional.GlyphStyle),
              color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
