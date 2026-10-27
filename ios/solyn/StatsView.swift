@@ -56,6 +56,14 @@ struct StatsView: View {
                         WeeklyRecapCard(recap: recap, title: recapTitle(recap), entries: entries)
                     }
 
+                    // First week: counts, not claims, until the patterns
+                    // below have enough to go on. Top of the screen, because
+                    // the first week is when someone opens this to see whether
+                    // the app is doing anything with what they said.
+                    if let early = EarlySignals.report(for: entries) {
+                        EarlySignalsCard(report: early)
+                    }
+
                     // Shareable Weekly Insights
                     WeeklyInsightsSection(entries: Array(entries))
 
@@ -184,6 +192,11 @@ struct StatsView: View {
     // MARK: - Streak Card
 
     private var streakCard: some View {
+        streakCard(streakStatus)
+    }
+
+    /// Takes the status once, so one render walks the journal once.
+    private func streakCard(_ streakStatus: Streak.Status) -> some View {
         VStack(spacing: 16) {
             HStack {
                 Image(systemName: "flame.fill")
@@ -194,16 +207,46 @@ struct StatsView: View {
                 Spacer()
             }
 
-            HStack(alignment: .bottom, spacing: 4) {
-                Text("\(currentStreak)")
-                    .font(.dv(size: 48, weight: .bold, design: .rounded))
-                    .foregroundColor(DS.Palette.terracotta)
-                Text(currentStreak == 1 ? "day" : "days")
-                    .font(.dv(.title3))
-                    .foregroundColor(.secondary)
-                    .padding(.bottom, 8)
-                Spacer()
+            if streakStatus.kind == .returning {
+                // Not a flame reading "0 days". Someone who came back has a
+                // longest run and days spoken, and both stay on this card.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: "Welcome back. Your sky kept your place.",
+                                comment: "Insights streak card, for someone with entries whose run has ended. Warm, no guilt."))
+                        .font(.dv(.title3, design: .rounded, weight: .bold))
+                        .foregroundColor(DS.Palette.terracotta)
+                    Text(String(localized: "\(streakStatus.daysSpoken) days spoken so far. A new run starts whenever you speak.",
+                                comment: "Insights streak card, under the welcome-back line. The number is distinct days with an entry."))
+                        .font(.dv(.subheadline))
+                        .foregroundColor(.secondary)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+            } else {
+                HStack(alignment: .bottom, spacing: 4) {
+                    Text("\(streakStatus.current)")
+                        .font(.dv(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(DS.Palette.terracotta)
+                    Text(streakStatus.current == 1 ? "day" : "days")
+                        .font(.dv(.title3))
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 8)
+                    Spacer()
+                }
+                .accessibilityElement(children: .combine)
             }
+
+            // The grace rule, in one line, where the number it changes is.
+            Text(streakStatus.restingYesterday
+                 ? String(localized: "Yesterday was a rest day, and your run is held. One missed day is forgiven once a week.",
+                          comment: "Insights streak card: yesterday had no entry and the grace day is keeping the run.")
+                 : String(localized: "One missed day won't break a run \u{2014} once a week.",
+                          comment: "Insights streak card: explains the grace day rule in one line."))
+                .font(.dv(.caption))
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             // The milestone, where it belongs: one gold line on the card that
             // is already about the streak. Gold rewards.
@@ -231,7 +274,7 @@ struct StatsView: View {
                     Text("Longest")
                         .font(.dv(.caption))
                         .foregroundColor(.secondary)
-                    Text("\(longestStreak) days")
+                    Text("\(streakStatus.longest) days")
                         .font(.dv(.subheadline, weight: .medium))
                 }
 
@@ -314,7 +357,7 @@ struct StatsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if patterns.isEmpty {
-                Text("Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.")
+                Text(notEnoughYetCopy)
                     .font(.dv(.subheadline))
                     .foregroundColor(ThemeManager.shared.secondaryTextColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -350,6 +393,22 @@ struct StatsView: View {
                 }
             }
         }
+    }
+
+    /// The "not enough yet" line, pointing at the early signals while they
+    /// are what there is.
+    private var notEnoughYetCopy: String {
+        let base = String(localized: "Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.",
+                          comment: "Insights: shown under 'Your Twin noticed' when no pattern has passed its gates.")
+        if EarlySignals.report(for: entries) != nil {
+            return base + " " + String(localized: "Until then, Early signals at the top shows what can already be counted.",
+                                       comment: "Insights: appended to the 'not enough yet' line while the early signals card is showing.")
+        }
+        if entries.lazy.filter({ $0.date != nil }).count < EarlySignals.minimumEntries {
+            return base + " " + String(localized: "Early signals appear from your third entry.",
+                                       comment: "Insights: appended to the 'not enough yet' line before the third entry.")
+        }
+        return base
     }
 
     // MARK: - Mood Trends Card
@@ -710,13 +769,14 @@ struct StatsView: View {
     // Both streaks go through `Streak` now. Insights was the one screen that
     // had the rule RIGHT, and it still had its own copy of it — which is how
     // the Record tab's wrong copy survived unnoticed.
-    private var currentStreak: Int {
-        Streak.current(days: entryDays)
+    private var streakStatus: Streak.Status {
+        Streak.status(days: entryDays)
     }
 
-    private var longestStreak: Int {
-        Streak.longest(days: entryDays)
+    private var currentStreak: Int {
+        streakStatus.current
     }
+
 
     private var entryDays: Set<Date> {
         Set(entries.compactMap { $0.date }.map { Calendar.current.startOfDay(for: $0) })
