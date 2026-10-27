@@ -110,7 +110,7 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.13.0 *(shipped 2026-10-17)* | v1.1 *(October 2026, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)); v1.2 in review* |
+| **Current** | v1.13.0 *(shipped 2026-10-17)* | v1.2 *(October 2026, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
 | Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ *(unconditional; minSdk 33)* |
 | Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ *(screen only)* |
 | Digital Twin personality models | ✅ | ✅ |
