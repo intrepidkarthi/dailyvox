@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import java.util.Calendar
+import java.time.ZoneId
 
 /**
  * The daily reminder. Not a nicety on this product: retention is the measured
@@ -28,57 +28,71 @@ import java.util.Calendar
  * explanation — even though INTERNET is genuinely absent and no call is ever
  * made. Paying four permissions for one nightly notification is a bad trade.
  *
- * setInexactRepeating needs no permission at all. It is also honest about what
- * it delivers: a window, not a minute. USE_EXACT_ALARM is a restricted
- * permission a journal does not qualify for, so the copy everywhere says
- * "around 9pm" rather than "at 9:00".
+ * An inexact one-shot alarm needs no permission at all, and it is honest
+ * about what it delivers: a window, not a minute. USE_EXACT_ALARM is a
+ * restricted permission a journal does not qualify for, so the copy everywhere
+ * says "around 9pm" rather than "at 9:00".
+ *
+ * ONE ALARM AT A TIME, RE-ARMED FROM THE RECEIVER. This used to be
+ * setInexactRepeating, which fired every night for as long as the phone stayed
+ * up, whether or not the user had opened the app in a month, and slid an hour
+ * across every DST change because a repeat is an interval in milliseconds, not
+ * a wall-clock time. [ReminderPlan] now decides each next slot from the local
+ * calendar and from when the app was last opened.
  *
  * Reboot clears alarms and RECEIVE_BOOT_COMPLETED is deliberately not declared,
- * so `rescheduleIfEnabled` runs on every app start instead. The cost is at most
- * one missed reminder between a reboot and the next launch, which is the right
- * side of the trade for a permission the ledger would have to explain.
+ * so the chain is re-armed on every app resume instead. The cost is that a
+ * reboot pauses reminders until the next launch, which is the right side of the
+ * trade for a permission the ledger would have to explain. A time-zone or clock
+ * change needs no permission to hear about, so that one re-arms immediately.
  */
 object Reminders {
 
     private const val CHANNEL = "dailyvox.reminder"
     private const val REQUEST = 4242
+    private const val EXTRA_KIND = "kind"
+    /** Every notification id this file can post. Cancel walks all of them. */
+    private const val ID_DAILY = 42
+    // Not 43: the recording chip (and, separately, Goals) already post there,
+    // and cancel() must never take down a recording in progress.
+    private const val ID_WELCOME_BACK = 44
     const val PREF_ENABLED = "reminder"
     const val PREF_HOUR = "reminderHour"
+    /** When the app was last opened; the horizon is counted from here. */
+    const val PREF_LAST_OPENED = "reminderLastOpened"
 
+    /** Called from the app's own UI, so it is also an "opened" moment. */
     fun schedule(context: Context, hourOfDay: Int) {
-        ensureChannel(context)
-        val app = context.applicationContext
-        val alarms = app.getSystemService(AlarmManager::class.java) ?: return
-
-        val now = Calendar.getInstance()
-        val next = (now.clone() as Calendar).apply {
-            set(Calendar.HOUR_OF_DAY, hourOfDay)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            if (before(now)) add(Calendar.DAY_OF_YEAR, 1)
-        }
-
-        alarms.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            next.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pending(app),
-        )
+        val prefs = prefs(context)
+        prefs.edit().putLong(PREF_LAST_OPENED, System.currentTimeMillis()).apply()
+        arm(context, hourOfDay)
     }
 
+    /**
+     * Turning reminders off takes EVERYTHING with it: the pending alarm, and any
+     * reminder already sitting in the shade. A switch that says off while last
+     * night's "Tonight's star is waiting" is still on the lock screen is a switch
+     * the user stops believing.
+     */
     fun cancel(context: Context) {
         val app = context.applicationContext
-        app.getSystemService(AlarmManager::class.java)?.cancel(pending(app))
+        app.getSystemService(AlarmManager::class.java)?.cancel(pending(app, null))
+        val nm = NotificationManagerCompat.from(app)
+        nm.cancel(ID_DAILY)
+        nm.cancel(ID_WELCOME_BACK)
     }
 
-    /** Called on every app start: alarms do not survive a reboot and we do not
-     *  ask for the permission that would let them. */
+    /**
+     * Called on every app resume: alarms do not survive a reboot and we do not
+     * ask for the permission that would let them. Stamps the open first, so the
+     * seven-evening horizon always runs from the most recent visit.
+     */
     fun rescheduleIfEnabled(context: Context) {
-        val prefs = context.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+        val prefs = prefs(context)
+        prefs.edit().putLong(PREF_LAST_OPENED, System.currentTimeMillis()).apply()
         if (!prefs.getBoolean(PREF_ENABLED, false)) return
         if (!canPostNotifications(context)) return
-        schedule(context, prefs.getInt(PREF_HOUR, 21))
+        arm(context, prefs.getInt(PREF_HOUR, 21))
     }
 
     /** On API 33+ a scheduled reminder with no permission is a switch that lies. */
@@ -88,10 +102,44 @@ object Reminders {
                 context, android.Manifest.permission.POST_NOTIFICATIONS
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED
 
-    private fun pending(context: Context): PendingIntent =
+    /**
+     * Sets the ONE pending alarm to whatever [ReminderPlan] says comes next, or
+     * clears it when the plan has run out. Does not stamp an open: the receiver
+     * calls this too, and a reminder firing is not the user coming back.
+     *
+     * Same PendingIntent identity as the old repeating alarm, so on an upgrade
+     * the first arm replaces it rather than leaving it running alongside.
+     */
+    internal fun arm(context: Context, hourOfDay: Int, nowMillis: Long = System.currentTimeMillis()) {
+        ensureChannel(context)
+        val app = context.applicationContext
+        val alarms = app.getSystemService(AlarmManager::class.java) ?: return
+        val prefs = prefs(app)
+        val opened = prefs.getLong(PREF_LAST_OPENED, 0L).takeIf { it > 0L } ?: nowMillis.also {
+            // An install upgraded from the repeating alarm has no stamp yet.
+            // Count from now rather than from 1970, which would read as lapsed.
+            prefs.edit().putLong(PREF_LAST_OPENED, it).apply()
+        }
+
+        val fire = ReminderPlan.next(nowMillis, opened, hourOfDay, ZoneId.systemDefault())
+        if (fire == null) {
+            alarms.cancel(pending(app, null))
+            return
+        }
+        // AllowWhileIdle so Doze defers it by minutes rather than until morning.
+        // Still inexact, still no permission.
+        alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, fire.atMillis, pending(app, fire.kind))
+    }
+
+    private fun prefs(context: Context) =
+        context.applicationContext.getSharedPreferences("dailyvox", Context.MODE_PRIVATE)
+
+    /** Extras are not part of PendingIntent identity, so a null kind cancels any. */
+    private fun pending(context: Context, kind: ReminderPlan.Kind?): PendingIntent =
         PendingIntent.getBroadcast(
             context, REQUEST,
-            Intent(context, ReminderReceiver::class.java),
+            Intent(context, ReminderReceiver::class.java)
+                .apply { if (kind != null) putExtra(EXTRA_KIND, kind.name) },
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
@@ -107,6 +155,26 @@ object Reminders {
 
     class ReminderReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            val prefs = prefs(context)
+            val enabled = prefs.getBoolean(PREF_ENABLED, false)
+            val hour = prefs.getInt(PREF_HOUR, 21)
+
+            // The clock or the zone moved under a pending alarm. Re-arm for the
+            // new local evening; nothing is posted.
+            if (intent.action == Intent.ACTION_TIMEZONE_CHANGED ||
+                intent.action == Intent.ACTION_TIME_CHANGED) {
+                if (enabled && canPostNotifications(context)) arm(context, hour)
+                return
+            }
+
+            // Reminders were switched off after this alarm was set. cancel()
+            // already cleared it; this is the belt to that braces.
+            if (!enabled) return
+
+            val kind = intent.getStringExtra(EXTRA_KIND)
+                ?.let { runCatching { ReminderPlan.Kind.valueOf(it) }.getOrNull() }
+                ?: ReminderPlan.Kind.DAILY
+
             // SKIP IF ALREADY SPOKEN — FINAL-SPEC C4, "Skips once you've spoken".
             //
             // This is the difference between a reminder and a nag. Firing at
@@ -119,19 +187,24 @@ object Reminders {
             val pending = goAsync()
             io.execute {
                 try {
+                    val now = System.currentTimeMillis()
+                    val zone = ZoneId.systemDefault()
                     val spokenToday = runCatching {
-                        val today = System.currentTimeMillis() / 86_400_000L
                         com.dailyvox.app.data.Repo.get(context).allBlocking()
-                            .any { it.createdAt / 86_400_000L == today }
+                            .any { ReminderPlan.sameLocalDay(it.createdAt, now, zone) }
                     }.getOrDefault(false)
-                    if (!spokenToday) notify(context)
+                    if (!spokenToday) notify(context, kind)
+                    // The chain: one alarm at a time, so the next one is set
+                    // here. A minute ahead, so an alarm delivered a hair early
+                    // cannot pick tonight's slot a second time.
+                    arm(context, hour, now + 60_000L)
                 } finally {
                     pending.finish()
                 }
             }
         }
 
-        private fun notify(context: Context) {
+        private fun notify(context: Context, kind: ReminderPlan.Kind) {
             // Checked here rather than only at schedule time. The alarm is set
             // while the permission is held and fires days later -- long enough
             // for the user to have revoked notifications, or for Android to have
@@ -145,17 +218,26 @@ object Reminders {
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
+            // No streak guilt. The empty states make a point of this and a
+            // notification is the easiest place in the product to break it.
+            // The welcome-back especially: it never says how long it has been.
+            val (title, text, id) = when (kind) {
+                ReminderPlan.Kind.DAILY -> Triple(
+                    com.dailyvox.app.R.string.reminder_title,
+                    com.dailyvox.app.R.string.reminder_text, ID_DAILY)
+                ReminderPlan.Kind.WELCOME_BACK -> Triple(
+                    com.dailyvox.app.R.string.reminder_welcome_back_title,
+                    com.dailyvox.app.R.string.reminder_welcome_back_text, ID_WELCOME_BACK)
+            }
             val n = NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(com.dailyvox.app.R.drawable.ic_nav_speak)
-                .setContentTitle("Tonight's star is waiting")
-                // No streak guilt. The empty states make a point of this and a
-                // notification is the easiest place in the product to break it.
-                .setContentText("Whenever you're ready. Forty-two seconds.")
+                .setContentTitle(context.getString(title))
+                .setContentText(context.getString(text))
                 .setContentIntent(open)
                 .setAutoCancel(true)
                 .build()
             @Suppress("MissingPermission")  // checked at the top of this method
-            runCatching { NotificationManagerCompat.from(context).notify(42, n) }
+            runCatching { NotificationManagerCompat.from(context).notify(id, n) }
         }
 
         companion object {

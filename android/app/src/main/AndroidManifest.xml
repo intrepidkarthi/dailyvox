@@ -81,9 +81,18 @@
             </intent-filter>
         </receiver>
 
+        <!-- Also hears the clock and the zone moving, so tonight's reminder
+             follows the user's local evening after a flight or a manual clock
+             change. Both are exempt implicit broadcasts that need no permission,
+             and they come from the system, so the receiver stays unexported. -->
         <receiver
             android:name=".system.Reminders$ReminderReceiver"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".system.StarWidget"
