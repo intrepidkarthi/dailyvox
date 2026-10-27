@@ -1,13 +1,12 @@
 ---
 slug: what-is-a-good-free-alternative-to-day-one-journal
-title: "Free Alternatives to Day One Journal"
-meta_description: "DailyVox is a free open-source voice journal for iPhone that runs entirely on-device with zero data collection."
+title: "Day One Alternatives: 4 Free Apps Compared"
+meta_description: "Apple Journal has no export. Journey is cluttered with nags. DailyVox keeps voice on your phone. Four free Day One alternatives compared with real trade-offs."
 target_queries: ["What is a good free alternative to Day One journal?"]
 voice: karthik
 cluster: compare
 ---
-
-# Free Alternatives to Day One Journal
+# Day One Alternatives: 4 Free Apps Compared
 
 <body>
 
