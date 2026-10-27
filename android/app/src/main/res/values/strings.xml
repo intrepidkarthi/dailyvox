@@ -363,7 +363,9 @@
     <string name="speak_lang_unavailable">Your phone can\'t transcribe %1$s on-device yet. Pick another language, or type tonight\'s entry. DailyVox never sends your voice anywhere to make up for it.</string>
     <!-- Grey line while the phone is asked which languages it can hear. About 40 characters. -->
     <string name="speak_lang_checking">Asking this phone what it can hear…</string>
+    <!-- Title of the picker dialog that lists the languages. About 24 characters. -->
     <string name="speak_lang_dialog_title">Language you speak</string>
+    <!-- The picker dialog's cancel button. About 12 characters. -->
     <string name="speak_lang_cancel">Cancel</string>
 
     <!-- ===================================================================
@@ -388,6 +390,7 @@
     <!-- The permission this app does NOT request. The row is the claim a user can check in Android Settings. -->
     <string name="onboarding_ledger_internet">Internet</string>
     <string name="onboarding_ledger_internet_state">not requested</string>
+    <!-- The ledger's last row: what reaches DailyVox. Name about 22 characters, state about 16. -->
     <string name="onboarding_ledger_sent">Sent to DailyVox</string>
     <string name="onboarding_ledger_sent_state">nothing, ever</string>
     <!-- Beat 1 proof card, bold heading. About 30 characters. -->
@@ -514,6 +517,7 @@
     <string name="settings_export_csv_hint">· spreadsheets</string>
     <string name="settings_export_encrypted">Encrypted backup</string>
     <string name="settings_export_encrypted_hint">· opens on any phone</string>
+    <!-- Backup card, last row: reads a backup file back in, adding its entries to the ones already here. Same layout as the export rows: action about 20 characters, hint about 26, one line together. -->
     <string name="settings_import">Import backup</string>
     <string name="settings_import_hint">· adds, never replaces</string>
     <!-- Research card section label, CAPITALS. About 20 characters. -->
@@ -742,7 +746,9 @@
     <string name="share_caption_year_one">Your year, computed by this phone alone.</string>
     <!-- The milestone card exists only at nights 42, 100 and 365; keep the numbers. -->
     <string name="share_caption_milestone">Minted once, at nights 42, 100 and 365. You cannot buy it or rush it — you can only have spoken that many times.</string>
+    <!-- Share sheet: the line under the wallpaper card's preview. About 130 characters. -->
     <string name="share_caption_wallpaper">Your constellation, sized for a lock screen. The one surface you look at forty times a day, and nobody else can read it.</string>
+    <!-- Share sheet: the line under the gift card's preview. About 130 characters. -->
     <string name="share_caption_gift">A referral card with no tracking link, because there is nothing here that could carry one.</string>
     <!-- Title of the system "open with" chooser when setting the wallpaper card. -->
     <string name="share_set_wallpaper">Set as wallpaper</string>
@@ -813,6 +819,7 @@
     <string name="share_year_word">Most-said word</string>
     <!-- %1$s = the word, as said. Use your language's quotation marks. -->
     <string name="share_year_word_quoted">"\"%1$s\""</string>
+    <!-- Year One row: the year was worked out on this phone, nothing sent. Label on the left (about 16 characters), value on the right (about 24). -->
     <string name="share_year_computed">Computed by</string>
     <string name="share_year_computed_value">this phone only</string>
     <!-- Year One footer, small mono CAPITALS. Keep the 0. About 30 characters. -->
@@ -1229,6 +1236,7 @@
     <string name="speech_pack_progress">Downloading the speech pack · %1$d%%</string>
     <!-- About 130 characters. -->
     <string name="speech_pack_scheduled">Your phone will download the pack shortly, usually on Wi-Fi. Record whenever you like — entries keep their audio until it arrives.</string>
+    <!-- Status line once the pack is installed. About 50 characters. -->
     <string name="speech_pack_done">Speech pack installed. Your voice stays on this phone.</string>
     <!-- "Android Settings › System › Languages › Speech" is the path in the system Settings app; use the names your language's Android shows. About 140 characters. -->
     <string name="speech_pack_failed">Your phone\'s speech service would not download it from here. It can be installed in Android Settings › System › Languages › Speech.</string>
