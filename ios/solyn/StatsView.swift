@@ -22,6 +22,14 @@ struct StatsView: View {
 
     @State private var showMilestone: Int? = nil
 
+    /// The latest weekly recap — the one Today shows on recap evening, kept
+    /// here all week. Counted from the entries in a task, not in `body`.
+    @State private var recap: WeeklyRecap?
+
+    /// Moves when the app comes forward, so the recap week rolls over even
+    /// while Insights stays open.
+    @State private var recapClock = Date()
+
     /// Embodied insights, computed off the render path in onAppear — the
     /// correlation math must never run inside body (Twin-perf lesson).
     @State private var bodyInsights: [BodyInsight] = []
@@ -44,6 +52,10 @@ struct StatsView: View {
                 if entries.isEmpty {
                     emptyStateCard
                 } else {
+                    if let recap {
+                        WeeklyRecapCard(recap: recap, title: recapTitle(recap), entries: entries)
+                    }
+
                     // Shareable Weekly Insights
                     WeeklyInsightsSection(entries: Array(entries))
 
@@ -92,6 +104,10 @@ struct StatsView: View {
         }
         .background { WarmBackground() }
         .navigationTitle("Insights")
+        .task(id: recapKey) { refreshRecap() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            recapClock = Date()
+        }
         .onAppear {
             refreshBodyInsights()
             // Reached milestones now surface as a gold line INSIDE the streak
@@ -109,6 +125,32 @@ struct StatsView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Weekly Recap
+
+    /// Changes when anything the recap reads does: the week it covers, and
+    /// any entry added, deleted or edited — an edit must never leave the
+    /// recap quoting words the entry no longer has.
+    private var recapKey: String {
+        let week = Resurfacing.latestRecapWeek(now: recapClock)?.start.timeIntervalSince1970 ?? 0
+        let edited = entries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
+        return "\(week)|\(entries.count)|\(edited)"
+    }
+
+    private func refreshRecap() {
+        let now = Date()
+        guard let week = Resurfacing.latestRecapWeek(now: now) else { recap = nil; return }
+        // Only the week's entries are snapshotted and read.
+        let inWeek = entries.filter { ($0.date).map { $0 >= week.start && $0 < week.end } ?? false }
+        recap = Resurfacing.recap(of: PastEntry.snapshots(of: inWeek), week: week,
+                                  candidates: Resurfacing.engineCandidates)
+    }
+
+    private func recapTitle(_ recap: WeeklyRecap) -> String {
+        recap.interval.contains(Date())
+            ? String(localized: "This week", comment: "Title of the weekly recap in Insights once the current week's recap is due.")
+            : String(localized: "Last week", comment: "Title of the weekly recap in Insights for the previous full week.")
     }
 
     // MARK: - Empty State

@@ -631,6 +631,19 @@ struct SettingsView: View {
                         displayedComponents: .hourAndMinute
                     )
                 }
+
+                // Off by default: a notification is shown on the lock screen,
+                // and a journal says nothing there unless asked to. The
+                // explanation is part of the toggle so it is read with it.
+                Toggle(isOn: $reminderManager.includesPastLine) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Include a line from your past in reminders")
+                        Text("Quotes a few words you said a week ago. Reminders show on your lock screen, so anyone who sees your phone can read them.")
+                            .font(.dv(.caption))
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
             }
         } header: {
             Text("Daily Reminder")
@@ -1208,6 +1221,9 @@ struct SettingsView: View {
                 SemanticSearchManager.shared.removeEntry(id: id)
                 DigitalTwinEngine.shared.forgetEntry(id.uuidString)
             }
+            // Nor the reminders: one armed to quote an entry would otherwise
+            // still put its words on the lock screen.
+            ReminderManager.shared.refresh(in: viewContext)
         }
         Self.clearDirectory(name: "Recordings")
         Self.clearDirectory(name: "Photos")

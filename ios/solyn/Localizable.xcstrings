@@ -4,6 +4,54 @@
     "" : {
       "shouldTranslate" : false
     },
+    "%lld days ago you said" : {
+      "comment" : "Header of the Today card quoting the user's entry from 6 or 8 days ago."
+    },
+    "%lld years ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date n years ago."
+    },
+    "^[%lld entry](inflect: true) · ^[%lld day](inflect: true) spoken" : {
+      "comment" : "Weekly recap: number of entries and of distinct days with an entry, counted from the entries."
+    },
+    "A month ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date last month."
+    },
+    "A week ago you said" : {
+      "comment" : "Header of the Today card quoting the user's entry from 7 days ago."
+    },
+    "A week ago you said: “%@”" : {
+      "comment" : "Opt-in evening reminder body quoting the user's own entry from a week ago. %@ is a verbatim excerpt; keep it in quotation marks."
+    },
+    "A year ago today" : {
+      "comment" : "Header of the On-this-day card for an entry from the same date last year."
+    },
+    "From your week" : {
+      "comment" : "Label above the one verbatim line quoted in the weekly recap."
+    },
+    "Include a line from your past in reminders" : {
+      "comment" : "Settings > Daily Reminder toggle. Off by default."
+    },
+    "Last week" : {
+      "comment" : "Title of the weekly recap in Insights for the previous full week."
+    },
+    "On this day" : {
+      "comment" : "Today screen: small header above entries from the same date in earlier months or years."
+    },
+    "Opens the entry." : {
+      "comment" : "VoiceOver hint on a resurfaced past entry or recap line."
+    },
+    "Quotes a few words you said a week ago. Reminders show on your lock screen, so anyone who sees your phone can read them." : {
+      "comment" : "Settings > Daily Reminder: explanation under the past-line toggle."
+    },
+    "This week" : {
+      "comment" : "Title of the weekly recap in Insights once the current week's recap is due."
+    },
+    "You mentioned %@ ^[%lld time](inflect: true)." : {
+      "comment" : "Weekly recap: %@ is a person, place or topic as the user wrote it; shown only when it appears at least twice that week."
+    },
+    "Your week" : {
+      "comment" : "Title of the weekly recap card on the Today screen."
+    },
     "%@ was suggested from your words. Pick a mood to make it yours, or choose No mood." : {
       "comment" : "Footer in the mood picker when the current mood was suggested, not chosen. %@ is the mood name."
     },
