@@ -197,7 +197,7 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 > **Platforms.** DailyVox is live on the [App Store](https://apps.apple.com/app/id6760454642)
 > for iPhone and iPad, and on [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app)
-> for Android 13 or newer (Android v1.1, its own version line). Android has no
+> for Android 13 or newer (Android v1.2, its own version line). Android has no
 > on-device LLM chat, no health data and no translations yet. One known
 > limitation: on Android, the names in the Twin depend on the phone's speech
 > recogniser capitalising them. See [`ROADMAP.md`](ROADMAP.md) for the parity matrix.
