@@ -140,24 +140,24 @@ final class BodyWhisperProvider: ObservableObject {
             let slept = formatHours(sleep)
             if sleep < 6 {
                 return BodyWhisper(icon: "moon.zzz.fill", tint: DS.Palette.gold,
-                                   text: "You slept \(slept). Take a breath before you speak.")
+                                   text: String(localized: "You slept \(slept). Take a breath before you speak.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after under 6 hours of sleep. The placeholder is the sleep length, such as '5h 40m' or '5h'."))
             }
             if sleep < 7 {
                 return BodyWhisper(icon: "moon.zzz.fill", tint: DS.Palette.sage,
-                                   text: "Slept \(slept) — ease into today gently.")
+                                   text: String(localized: "Slept \(slept) — ease into today gently.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after 6 to 7 hours of sleep. The placeholder is the sleep length, such as '6h 20m' or '6h'."))
             }
             return BodyWhisper(icon: "moon.zzz.fill", tint: DS.Palette.sage,
-                               text: "Slept \(slept) — your sky is clear.")
+                               text: String(localized: "Slept \(slept) — your sky is clear.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after 7 hours of sleep or more. The placeholder is the sleep length, such as '7h 45m' or '8h'. 'Sky' is the app's metaphor for the journal."))
         }
         if let steps = snapshot.stepsToday, steps >= 6000 {
             return BodyWhisper(icon: "figure.walk", tint: DS.Palette.gold,
-                               text: "\(steps.formatted()) steps already — your day is in motion.")
+                               text: String(localized: "\(steps.formatted()) steps already — your day is in motion.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after 6,000 steps or more. The placeholder is the step count, already formatted with the locale's grouping."))
         }
         if let mindful = snapshot.mindfulMinutesToday, mindful > 0 {
             return BodyWhisper(icon: "leaf.fill", tint: DS.Palette.forest,
                                text: mindful == 1
-                                   ? "1 quiet minute today — carry that calm in."
-                                   : "\(mindful) quiet minutes today — carry that calm in.")
+                                   ? String(localized: "1 quiet minute today — carry that calm in.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after exactly one mindful minute (Apple Health) today.")
+                                   : String(localized: "\(mindful) quiet minutes today — carry that calm in.", comment: "Today tab: Body Twin whisper, one calm line with an icon above the day's question. Never clinical. About 50 characters. Shown after 2 or more mindful minutes (Apple Health) today. The placeholder is the number of minutes."))
         }
         return nil
     }
@@ -166,7 +166,9 @@ final class BodyWhisperProvider: ObservableObject {
         let totalMinutes = Int((hours * 60).rounded())
         let h = totalMinutes / 60
         let m = totalMinutes % 60
-        return m == 0 ? "\(h)h" : "\(h)h \(m)m"
+        return m == 0
+            ? String(localized: "\(h)h", comment: "Today tab, Body Twin whisper: a sleep length in whole hours, as in '7h', inside 'Slept 7h — …'. 'h' is the local abbreviation for hours. Keep it compact.")
+            : String(localized: "\(h)h \(m)m", comment: "Today tab, Body Twin whisper: a sleep length, as in '6h 20m', inside 'Slept 6h 20m — …'. First placeholder: hours. Second: minutes (1 to 59, no leading zero). 'h' and 'm' are the local abbreviations for hours and minutes. Keep it compact.")
     }
 }
 
@@ -342,15 +344,20 @@ struct BodyTwinInviteSheet: View {
     private var signalsList: some View {
         VStack(alignment: .leading, spacing: 14) {
             signalRow(icon: "moon.zzz.fill", color: DS.Palette.sage,
-                      name: "Sleep", detail: "Hours of rest the night before")
+                      name: String(localized: "Sleep", comment: "Body Twin invite sheet: name of a Health signal the Twin can read. One or two words, about 16 characters."),
+                      detail: String(localized: "Hours of rest the night before", comment: "Body Twin invite sheet: line under 'Sleep'. About 36 characters."))
             signalRow(icon: "waveform.path.ecg", color: DS.Palette.terracotta,
-                      name: "Morning HRV", detail: "How your heart greeted the day")
+                      name: String(localized: "Morning HRV", comment: "Body Twin invite sheet: name of a Health signal the Twin can read. HRV is heart rate variability; use the abbreviation Apple Health uses in the target language. About 16 characters."),
+                      detail: String(localized: "How your heart greeted the day", comment: "Body Twin invite sheet: line under 'Morning HRV'. Warm, not clinical. About 36 characters."))
             signalRow(icon: "heart.fill", color: DS.Palette.coral,
-                      name: "Resting heart", detail: "Your calm baseline, not your peaks")
+                      name: String(localized: "Resting heart", comment: "Body Twin invite sheet: name of a Health signal the Twin can read (resting heart rate). About 16 characters."),
+                      detail: String(localized: "Your calm baseline, not your peaks", comment: "Body Twin invite sheet: line under 'Resting heart'. About 36 characters."))
             signalRow(icon: "figure.walk", color: DS.Palette.gold,
-                      name: "Steps", detail: "How far the day carried you")
+                      name: String(localized: "Steps", comment: "Body Twin invite sheet: name of a Health signal the Twin can read (step count). One word, about 16 characters."),
+                      detail: String(localized: "How far the day carried you", comment: "Body Twin invite sheet: line under 'Steps'. About 36 characters."))
             signalRow(icon: "leaf.fill", color: DS.Palette.forest,
-                      name: "Mindful minutes", detail: "Quiet minutes you set aside")
+                      name: String(localized: "Mindful minutes", comment: "Body Twin invite sheet: name of a Health signal the Twin can read; use Apple Health's term for mindful minutes in the target language. About 16 characters."),
+                      detail: String(localized: "Quiet minutes you set aside", comment: "Body Twin invite sheet: line under 'Mindful minutes'. About 36 characters."))
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -378,9 +385,9 @@ struct BodyTwinInviteSheet: View {
     private var promises: some View {
         VStack(alignment: .leading, spacing: 14) {
             promiseRow(icon: "sparkles", color: DS.Palette.gold,
-                       text: "Review before your Twin learns. Every signal waits for you — Keep what feels true, let go of the rest.")
+                       text: String(localized: "Review before your Twin learns. Every signal waits for you — Keep what feels true, let go of the rest.", comment: "Body Twin invite sheet: first promise. 'Keep' is the name of the button on each signal; keep it the same word as that button. About 100 characters."))
             promiseRow(icon: "lock.shield.fill", color: DS.Palette.sage,
-                       text: "Private by design. Health and motion signals stay on this iPhone — never uploaded, never synced. iOS will also ask about motion, so moving days are read in context.")
+                       text: String(localized: "Private by design. Health and motion signals stay on this iPhone — never uploaded, never synced. iOS will also ask about motion, so moving days are read in context.", comment: "Body Twin invite sheet: second promise. Every privacy claim must stay exact (never uploaded, never synced). About 160 characters."))
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

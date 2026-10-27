@@ -775,7 +775,7 @@ enum Shareables {
     }
 
     private static func footer(_ c: CGContext, _ s: CGSize, _ claim: String) {
-        text(c, "DailyVox", at: CGPoint(x: 84, y: s.height - 78),
+        text(c, "DailyVox", at: CGPoint(x: 84, y: s.height - 78),  // i18n-ignore: app name
              font: display(30), colour: UIColor(DS.Palette.navyText))
         star(c, at: CGPoint(x: 232, y: s.height - 62), r: 13, colour: UIColor(DS.Palette.gold))
         text(c, claim, at: CGPoint(x: s.width - 84, y: s.height - 72), font: mono(19),

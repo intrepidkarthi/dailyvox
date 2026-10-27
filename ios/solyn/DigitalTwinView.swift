@@ -1406,7 +1406,7 @@ struct DigitalTwinView: View {
 
                             Spacer()
 
-                            Text("\(node.mentions)x")
+                            Text("\(node.mentions)x", comment: "Twin tab > My World: how many times a person or place was mentioned, as in '12x'. The placeholder is the count. About 5 characters.")
                                 .font(.dv(.caption))
                                 .foregroundColor(themeManager.secondaryTextColor)
 

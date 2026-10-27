@@ -43,9 +43,9 @@ enum DVFont {
     /// PostScript names, which are what `UIFontDescriptor` matches on. They are
     /// the DEFAULT instance's names, not the family's — see the note above.
     enum Face {
-        static let nunito = "Nunito-ExtraLight"
-        static let inter  = "Inter-Regular"
-        static let mono   = "DMMono-Medium"
+        static let nunito = "Nunito-ExtraLight"  // i18n-ignore: font name
+        static let inter  = "Inter-Regular"  // i18n-ignore: font name
+        static let mono   = "DMMono-Medium"  // i18n-ignore: font name
     }
 
     /// Registered lazily as well as via `UIAppFonts`.
@@ -57,7 +57,7 @@ enum DVFont {
     /// `registerIfNeeded` makes that impossible to do quietly.
     private static let registered: Bool = {
         var ok = true
-        for file in ["Nunito-Variable", "Inter-Variable", "DMMono-Medium"] {
+        for file in ["Nunito-Variable", "Inter-Variable", "DMMono-Medium"] {  // i18n-ignore: font name
             guard let url = Bundle.main.url(forResource: file, withExtension: "ttf") else { continue }
             var error: Unmanaged<CFError>?
             if !CTFontManagerRegisterFontsForURL(url as CFURL, .process, &error) {
@@ -119,7 +119,7 @@ enum DVFont {
 
     /// System faces for scripts the bundled fonts lack, in cascade order.
     /// Devanagari is the one Tier 1 needs (Hindi); later scripts add a row.
-    static let nonLatinFamilies = ["Kohinoor Devanagari"]
+    static let nonLatinFamilies = ["Kohinoor Devanagari"]  // i18n-ignore: font name
 
     /// The `wght` axis value as a `UIFont.Weight` trait, for the cascade.
     static func uiWeight(axis: CGFloat) -> UIFont.Weight {

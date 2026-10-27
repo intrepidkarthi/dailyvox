@@ -31,7 +31,9 @@ enum PDFPaperSize: String, CaseIterable, Identifiable {
 }
 
 struct PDFExportService {
-    private static let footerText = "Created with DailyVox"
+    private static var footerText: String {
+        String(localized: "Created with DailyVox", comment: "PDF journal export: small footer on every page. DailyVox is the app name. About 22 characters.")
+    }
     private static let margin: CGFloat = 40
     private static let footerHeight: CGFloat = 30
 
@@ -251,7 +253,7 @@ struct PDFExportService {
         var yPosition: CGFloat = pageRect.height * 0.3
 
         // App name / Title
-        let titleText = "DailyVox"
+        let titleText = "DailyVox"  // i18n-ignore: app name
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 36, weight: .light),
             .foregroundColor: UIColor.darkGray
@@ -319,14 +321,16 @@ struct PDFExportService {
             .foregroundColor: UIColor.gray
         ]
 
-        let countText = "\(entryCount) entr\(entryCount == 1 ? "y" : "ies")"
+        let countText = entryCount == 1
+            ? String(localized: "1 entry", comment: "PDF journal export (from Settings), cover page: small centred line near the bottom when the PDF holds one entry.")
+            : String(localized: "\(String(entryCount)) entries", comment: "PDF journal export (from Settings), cover page: small centred line near the bottom; the placeholder is how many entries the PDF holds (0 or 2 or more). It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         let countSize = (countText as NSString).size(withAttributes: infoAttrs)
         (countText as NSString).draw(
             at: CGPoint(x: centerX - countSize.width / 2, y: bottomY),
             withAttributes: infoAttrs
         )
 
-        let dateText = "Exported on \(exportDate)"
+        let dateText = String(localized: "Exported on \(exportDate)", comment: "PDF journal export (from Settings), cover page: small centred line under the entry count; the placeholder is the export date, already formatted for the locale.")
         let dateSize = (dateText as NSString).size(withAttributes: infoAttrs)
         (dateText as NSString).draw(
             at: CGPoint(x: centerX - dateSize.width / 2, y: bottomY + 16),

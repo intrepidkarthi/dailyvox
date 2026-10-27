@@ -39,7 +39,7 @@ final class SemanticSearchManager: ObservableObject {
     /// whole-entry cosine and abstained on essentially every real question).
     static let abstentionThreshold: Double = SemanticMemoryIndex.recommendedAbstentionThreshold
 
-    private let index = SemanticMemoryIndex(store: LocalFileTwinStateStore(subfolder: "SemanticMemory"))
+    private let index = SemanticMemoryIndex(store: LocalFileTwinStateStore(subfolder: "SemanticMemory"))  // i18n-ignore: folder name on disk
     private var indexedIds = Set<String>()
     // ".v2" busts the indexed-set cache so every entry re-embeds into the
     // hybrid sentence-level format on next indexAll — legacy whole-entry

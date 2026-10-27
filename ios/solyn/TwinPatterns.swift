@@ -67,8 +67,10 @@ enum TwinPatterns {
             guard abs(delta) > 0.22 else { continue }
             let name = calendar.weekdaySymbols[weekday - 1]
             weekdayFindings.append(TwinPattern(
-                lead: delta < 0 ? "\(name)s run low." : "\(name)s run high.",
-                detail: "\(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) average, across \(values.count) entries.",
+                lead: delta < 0
+                    ? String(localized: "\(name)s run low.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries on this weekday read lower than usual. The placeholder is a weekday name from the calendar ('Monday'); the English adds 's' to make it plural, so rephrase freely ('On Mondays…').")
+                    : String(localized: "\(name)s run high.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries on this weekday read higher than usual. The placeholder is a weekday name from the calendar ('Monday'); the English adds 's' to make it plural, so rephrase freely ('On Mondays…')."),
+                detail: String(localized: "\(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) average, across \(values.count) entries.", comment: "Twin tab, Patterns: smaller line under the finding, giving the numbers behind it. Mood scores run from -1 to +1 and arrive already formatted for the locale with a sign ('+0.21'). About 90 characters. First placeholder: the weekday's average. Second: the user's overall average. Third: how many entries fell on that weekday (3 or more)."),
                 effect: abs(delta)
             ))
         }
@@ -86,8 +88,10 @@ enum TwinPatterns {
             let delta = mean - overall
             guard abs(delta) > 0.2 else { continue }
             out.append(TwinPattern(
-                lead: delta > 0 ? "\(name) lifts you." : "\(name) weighs on you.",
-                detail: "Entries mentioning them average \(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) overall, across \(mentions.count) of them.",
+                lead: delta > 0
+                    ? String(localized: "\(name) lifts you.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries that mention this person read brighter. The placeholder is a person's name from the user's journal.")
+                    : String(localized: "\(name) weighs on you.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries that mention this person read heavier. The placeholder is a person's name from the user's journal. Gentle, not a judgement of the person."),
+                detail: String(localized: "Entries mentioning them average \(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) overall, across \(String(mentions.count)) of them.", comment: "Twin tab, Patterns: smaller line under the finding, giving the numbers behind it. Mood scores run from -1 to +1 and arrive already formatted for the locale with a sign ('+0.21'). About 90 characters. 'them' is the person named above; keep it gender-neutral. First placeholder: the average in entries that mention them. Second: the user's overall average. Third (a string placeholder): how many entries mention them. Counts marked as string placeholders arrive as digits, exactly as the English has always printed them (never grouped), so the catalog cannot vary them by count: phrase it so one form reads right for every count."),
                 effect: abs(delta)
             ))
         }
@@ -102,8 +106,10 @@ enum TwinPatterns {
             let e = evening.map(\.valence).reduce(0, +) / Double(evening.count)
             if abs(m - e) > 0.2 {
                 out.append(TwinPattern(
-                    lead: m > e ? "Mornings read brighter." : "Evenings read brighter.",
-                    detail: "Before noon you write \(LocaleFormat.decimal(m, fractionDigits: 2, signed: true)); after six, \(LocaleFormat.decimal(e, fractionDigits: 2, signed: true)). \(morning.count) entries and \(evening.count).",
+                    lead: m > e
+                        ? String(localized: "Mornings read brighter.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries spoken before noon read brighter than those after 18:00.")
+                        : String(localized: "Evenings read brighter.", comment: "Twin tab, Patterns: bold first line of a finding about the user's mood. Short, about 30 characters. Entries spoken after 18:00 read brighter than those before noon."),
+                    detail: String(localized: "Before noon you write \(LocaleFormat.decimal(m, fractionDigits: 2, signed: true)); after six, \(LocaleFormat.decimal(e, fractionDigits: 2, signed: true)). \(String(morning.count)) entries and \(String(evening.count)).", comment: "Twin tab, Patterns: smaller line under the finding, giving the numbers behind it. Mood scores run from -1 to +1 and arrive already formatted for the locale with a sign ('+0.21'). About 90 characters. 'after six' means after 18:00. First placeholder: the morning average. Second: the evening average. Third and fourth (string placeholders): how many morning and evening entries. Counts marked as string placeholders arrive as digits, exactly as the English has always printed them (never grouped), so the catalog cannot vary them by count: phrase it so one form reads right for every count."),
                     effect: abs(m - e)
                 ))
             }

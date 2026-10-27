@@ -54,11 +54,11 @@ final class AppLockManager: ObservableObject {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         switch context.biometryType {
-        case .faceID: return "Face ID"
-        case .touchID: return "Touch ID"
-        case .opticID: return "Optic ID"
-        case .none: return "Passcode"
-        @unknown default: return "Passcode"
+        case .faceID: return "Face ID"  // i18n-ignore: Apple product name
+        case .touchID: return "Touch ID"  // i18n-ignore: Apple product name
+        case .opticID: return "Optic ID"  // i18n-ignore: Apple product name
+        case .none: return String(localized: "Passcode", comment: "Settings > App Lock and the lock screen: name of the unlock method when the iPhone has no Face ID or Touch ID. Use Apple's term for the device passcode in the target language. One word.")
+        @unknown default: return String(localized: "Passcode", comment: "Settings > App Lock and the lock screen: name of the unlock method when the iPhone has no Face ID or Touch ID. Use Apple's term for the device passcode in the target language. One word.")
         }
     }
 
@@ -81,7 +81,7 @@ final class AppLockManager: ObservableObject {
 
     func authenticate(completion: @escaping (Outcome) -> Void) {
         let context = LAContext()
-        let reason = "Unlock DailyVox to access your diary."
+        let reason = String(localized: "Unlock DailyVox to access your diary.", comment: "App Lock: the reason iOS shows in its Face ID / Touch ID prompt when the app opens. About 40 characters.")
 
         // Check if biometrics are available
         var error: NSError?
@@ -119,7 +119,7 @@ final class AppLockManager: ObservableObject {
 
     private func authenticateWithPasscode(completion: @escaping (Outcome) -> Void) {
         let context = LAContext()
-        let reason = "Enter your passcode to unlock DailyVox."
+        let reason = String(localized: "Enter your passcode to unlock DailyVox.", comment: "App Lock: the reason iOS shows in its device-passcode prompt when biometrics are unavailable. Use Apple's term for the passcode. About 40 characters.")
 
         context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authError in
             DispatchQueue.main.async {

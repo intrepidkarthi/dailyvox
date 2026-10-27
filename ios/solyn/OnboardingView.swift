@@ -198,10 +198,13 @@ private struct LedgerScreen: View {
             Spacer().frame(height: 26)
 
             VStack(spacing: 8) {
-                LedgerRow(label: "Microphone", state: "REQUIRED", dot: OB.gold)
-                LedgerRow(label: "Speech recognition", state: "ON DEVICE", dot: OB.sage)
-                LedgerRow(label: "Apple Health", state: "OPTIONAL", dot: OB.inkMute)
-                LedgerRow(label: "Sent to DailyVox", state: "NOTHING, EVER", dot: OB.sage)
+                LedgerRow(label: String(localized: "Microphone", comment: "Onboarding, privacy ledger screen: left side of a ledger row, the thing being accounted for. About 20 characters. The microphone permission."),
+                          state: String(localized: "REQUIRED", comment: "Onboarding, privacy ledger screen: right side of a ledger row, its status. Upper case, monospaced, about 14 characters. The microphone is needed to record."), dot: OB.gold)
+                LedgerRow(label: String(localized: "Speech recognition", comment: "Onboarding, privacy ledger screen: left side of a ledger row, the thing being accounted for. About 20 characters. The speech-recognition permission; use Apple's term."),
+                          state: String(localized: "ON DEVICE", comment: "Onboarding, privacy ledger screen: right side of a ledger row, its status. Upper case, monospaced, about 14 characters. Speech is recognised on the iPhone itself. A privacy claim that must stay exact."), dot: OB.sage)
+                LedgerRow(label: "Apple Health", state: String(localized: "OPTIONAL", comment: "Onboarding, privacy ledger screen: right side of a ledger row, its status. Upper case, monospaced, about 14 characters. Apple Health access can be skipped."), dot: OB.inkMute)  // i18n-ignore: Apple product name
+                LedgerRow(label: String(localized: "Sent to DailyVox", comment: "Onboarding, privacy ledger screen: left side of a ledger row, the thing being accounted for. About 20 characters. What the app's makers receive. DailyVox is the app name."),
+                          state: String(localized: "NOTHING, EVER", comment: "Onboarding, privacy ledger screen: right side of a ledger row, its status. Upper case, monospaced, about 14 characters. Nothing is ever sent to DailyVox. A privacy claim that must stay exact."), dot: OB.sage)
             }
 
             Spacer().frame(height: 20)
@@ -234,7 +237,7 @@ private struct LedgerScreen: View {
             Spacer(minLength: 28)
 
             // One green CTA. B1 has exactly one thing to do.
-            PrimaryButton(title: "Speak your first star", filled: true, action: onNext)
+            PrimaryButton(title: String(localized: "Speak your first star", comment: "Onboarding: the main green button. About 22 characters. On the privacy ledger screen; leads to recording the first entry. Each entry becomes a star."), filled: true, action: onNext)
 
             Spacer().frame(height: 22)
         }
@@ -314,7 +317,7 @@ private struct InviteScreen: View {
             Spacer()
             Spacer()
 
-            PrimaryButton(title: "I'm ready", filled: true) {
+            PrimaryButton(title: String(localized: "I'm ready", comment: "Onboarding: the main green button. About 22 characters. Moves on to the first recording."), filled: true) {
                 // Pre-frame the mic + speech prompts here, on the calm invite screen,
                 // so they don't interrupt the recording moment itself.
                 #if os(iOS)
@@ -422,17 +425,17 @@ private struct SpeakScreen: View {
 
     private var headline: String {
         switch phase {
-        case .born: return "A star is born."
-        case .processing: return "Finding your words…"
-        default: return "How was your day,\nreally?"
+        case .born: return String(localized: "A star is born.", comment: "Onboarding, first-entry screen: large headline. About 24 characters. After the first entry is saved; the entry is now a star.")
+        case .processing: return String(localized: "Finding your words…", comment: "Onboarding, first-entry screen: large headline. About 24 characters. While the first recording is transcribed. Ends with an ellipsis character.")
+        default: return String(localized: "How was your day,\nreally?", comment: "Onboarding, first-entry screen: large headline. About 24 characters. The first question, on two lines; keep the line break. Same question as the Today tab's 'How was your day, really?'.")
         }
     }
     private var subhead: String {
         switch phase {
-        case .idle: return "Speak, don't type. DailyVox turns it into your private journal — kept on your phone."
-        case .recording: return "Listening… speak as long as you like."
-        case .processing: return "On-device. Nothing left your phone."
-        case .born: return "Your voice, now a light in your sky."
+        case .idle: return String(localized: "Speak, don't type. DailyVox turns it into your private journal — kept on your phone.", comment: "Onboarding, first-entry screen: line under the headline. About 80 characters. Before recording.")
+        case .recording: return String(localized: "Listening… speak as long as you like.", comment: "Onboarding, first-entry screen: line under the headline. About 80 characters. While recording. There is no time limit: never imply a minimum or a maximum.")
+        case .processing: return String(localized: "On-device. Nothing left your phone.", comment: "Onboarding, first-entry screen: line under the headline. About 80 characters. While transcribing. A privacy claim that must stay exact.")
+        case .born: return String(localized: "Your voice, now a light in your sky.", comment: "Onboarding, first-entry screen: line under the headline. About 80 characters. After the first entry is saved.")
         }
     }
 
@@ -490,7 +493,7 @@ private struct SpeakScreen: View {
     private func finish() {
         guard phase == .recording else { return }
         if demo {
-            transcript = "Today felt lighter than yesterday. I paused for a minute and just breathed."
+            transcript = "Today felt lighter than yesterday. I paused for a minute and just breathed."  // i18n-ignore: -OnboardingDemo launch argument only
             born(); return
         }
         withAnimation(.easeInOut(duration: 0.3)) { phase = .processing }
@@ -639,14 +642,14 @@ private struct ClaimScreen: View {
 
     private var words: String {
         let t = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
-        return t.isEmpty ? "your first words" : t
+        return t.isEmpty ? String(localized: "your first words", comment: "Onboarding, last screen: shown in quotation marks in place of the first entry's words when it has no text. Lower case.") : t
     }
 
     private var reminderTimeText: String {
         var c = DateComponents()
         c.hour = ReminderManager.shared.reminderHour
         c.minute = ReminderManager.shared.reminderMinute
-        guard let date = Calendar.current.date(from: c) else { return "in the evening" }
+        guard let date = Calendar.current.date(from: c) else { return String(localized: "in the evening", comment: "Onboarding, last screen: stands in for the daily reminder's time when it cannot be read. Lower case, used inside 'One nudge at <time>. Change it any time in Settings.'") }
         let f = DateFormatter()
         f.timeStyle = .short
         return f.string(from: date)
@@ -740,7 +743,7 @@ private struct ClaimScreen: View {
             .padding(.bottom, 14)
             .opacity(appear ? 1 : 0)
 
-            PrimaryButton(title: "Enter my sky", filled: true) {
+            PrimaryButton(title: String(localized: "Enter my sky", comment: "Onboarding: the main green button. About 22 characters. The last onboarding step; opens the app. 'Sky' is the app's metaphor for the journal."), filled: true) {
                 applyReminderChoice()
                 onEnter()
             }

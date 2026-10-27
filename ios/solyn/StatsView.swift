@@ -627,35 +627,35 @@ struct StatsView: View {
         switch insight.kind {
         case .sleepAndMood:
             return insight.movesTogether
-                ? "Rest and brightness rise together"
-                : "Your sleep writes its own pattern"
+                ? String(localized: "Rest and brightness rise together", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. More sleep went with brighter days.")
+                : String(localized: "Your sleep writes its own pattern", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. Sleep and mood did not move together.")
         case .stepsAndMood:
             return insight.movesTogether
-                ? "Moving days glow a little brighter"
-                : "Your stiller days glow brighter"
+                ? String(localized: "Moving days glow a little brighter", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. More steps went with brighter days.")
+                : String(localized: "Your stiller days glow brighter", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. Fewer steps went with brighter days.")
         case .hrvAndMood:
             return insight.movesTogether
-                ? "Your calm shows in your morning rhythm"
-                : "Your morning rhythm runs its own way"
+                ? String(localized: "Your calm shows in your morning rhythm", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. Morning heart rate variability (HRV) moved with mood.")
+                : String(localized: "Your morning rhythm runs its own way", comment: "Stats tab, Body & Mood card: bold title of a finding that links a Health signal to the user's mood. Brighter days = days whose entries read more positive. About 40 characters. Morning heart rate variability (HRV) did not move with mood.")
         }
     }
 
     /// The two group means tell the pattern honestly in either direction.
     private func bodyInsightDescription(_ insight: BodyInsight) -> String {
-        let days = "across \(insight.sampleDays) days"
+        let days = String(localized: "across \(String(insight.sampleDays)) days", comment: "Stats tab, Body & Mood card: ends the line under a finding ('… — across 42 days.'). The placeholder is how many days the finding rests on. It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         switch insight.kind {
         case .sleepAndMood:
             let bright = LocaleFormat.decimal(insight.signalMeanOnBrighterDays, fractionDigits: 1)
             let dim = LocaleFormat.decimal(insight.signalMeanOnDimmerDays, fractionDigits: 1)
-            return "Your brighter days followed about \(bright)h of sleep; dimmer ones about \(dim)h — \(days)."
+            return String(localized: "Your brighter days followed about \(bright)h of sleep; dimmer ones about \(dim)h — \(days).", comment: "Stats tab, Body & Mood card: line under the finding's title, giving the numbers. 'Brighter' and 'dimmer' days are days whose entries read more or less positive. About 100 characters. The last placeholder is the phrase 'across N days'. First and second placeholders: average hours of sleep with one decimal, already formatted for the locale. 'h' abbreviates hours.")
         case .stepsAndMood:
             let bright = Int(insight.signalMeanOnBrighterDays).formatted()
             let dim = Int(insight.signalMeanOnDimmerDays).formatted()
-            return "Brighter days carried around \(bright) steps; dimmer ones around \(dim) — \(days)."
+            return String(localized: "Brighter days carried around \(bright) steps; dimmer ones around \(dim) — \(days).", comment: "Stats tab, Body & Mood card: line under the finding's title, giving the numbers. 'Brighter' and 'dimmer' days are days whose entries read more or less positive. About 100 characters. The last placeholder is the phrase 'across N days'. First and second placeholders: average step counts, already formatted with the locale's grouping.")
         case .hrvAndMood:
             let bright = Int(insight.signalMeanOnBrighterDays.rounded())
             let dim = Int(insight.signalMeanOnDimmerDays.rounded())
-            return "Morning rhythm (HRV) averaged \(bright) ms on brighter days and \(dim) ms on dimmer ones — \(days)."
+            return String(localized: "Morning rhythm (HRV) averaged \(bright) ms on brighter days and \(dim) ms on dimmer ones — \(days).", comment: "Stats tab, Body & Mood card: line under the finding's title, giving the numbers. 'Brighter' and 'dimmer' days are days whose entries read more or less positive. About 100 characters. The last placeholder is the phrase 'across N days'. First and second placeholders: average morning heart rate variability in milliseconds. HRV and ms are the abbreviations Apple Health uses.")
         }
     }
 
@@ -667,10 +667,10 @@ struct StatsView: View {
                 .font(.dv(.headline, design: .rounded))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: isIPad ? 4 : 2), spacing: 16) {
-                StatItem(title: "Total Words", value: "\(totalWords)", icon: "text.word.spacing", color: DS.Palette.sage)
-                StatItem(title: "Avg Words/Entry", value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: DS.Palette.forest)
-                StatItem(title: "Starred", value: "\(starredCount)", icon: "star.fill", color: DS.Palette.gold)
-                StatItem(title: "With Audio", value: "\(audioCount)", icon: "waveform", color: DS.Palette.terracotta)
+                StatItem(title: String(localized: "Total Words", comment: "Stats tab, Writing Stats card: label under a number in a grid of four. About 16 characters. "), value: "\(totalWords)", icon: "text.word.spacing", color: DS.Palette.sage)
+                StatItem(title: String(localized: "Avg Words/Entry", comment: "Stats tab, Writing Stats card: label under a number in a grid of four. About 16 characters. Average words per entry; abbreviate as needed."), value: "\(avgWordsPerEntry)", icon: "chart.bar.fill", color: DS.Palette.forest)
+                StatItem(title: String(localized: "Starred", comment: "Stats tab, Writing Stats card: label under a number in a grid of four. About 16 characters. How many entries are starred."), value: "\(starredCount)", icon: "star.fill", color: DS.Palette.gold)
+                StatItem(title: String(localized: "With Audio", comment: "Stats tab, Writing Stats card: label under a number in a grid of four. About 16 characters. How many entries keep their audio recording."), value: "\(audioCount)", icon: "waveform", color: DS.Palette.terracotta)
             }
         }
         .dsCard()

@@ -793,9 +793,9 @@ struct TodayView: View {
 
     private var micCaption: String {
         switch recordingState {
-        case .idle: return "TAP TO RECORD \u{00B7} 42 SECONDS"
-        case .recording: return "TAP TO STOP"
-        case .processing: return "FINDING YOUR WORDS\u{2026}"
+        case .idle: return String(localized: "TAP TO RECORD \u{00B7} 42 SECONDS", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. Before recording. Keep the number 42: it is the app's ritual length and a soft target, not a limit. Use the local word for seconds.")
+        case .recording: return String(localized: "TAP TO STOP", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. While recording.")
+        case .processing: return String(localized: "FINDING YOUR WORDS\u{2026}", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. While the recording is transcribed. Ends with an ellipsis character.")
         }
     }
 
@@ -803,8 +803,8 @@ struct TodayView: View {
     /// the fact, by night it dares you to check it.
     private var privacyLine: String {
         theme.isNight
-            ? "Airplane mode on? Works exactly the same."
-            : "Transcribed on this phone \u{00B7} 0 network calls, ever"
+            ? String(localized: "Airplane mode on? Works exactly the same.", comment: "Today tab: privacy line on a small card, night theme. A playful dare: the app works offline. 'Airplane mode' is Apple's name for the setting. About 45 characters.")
+            : String(localized: "Transcribed on this phone \u{00B7} 0 network calls, ever", comment: "Today tab: privacy line on a small card, day theme. The privacy claim must stay exact. About 50 characters.")
     }
 
     /// Kept, and deliberately not composed on the idle screen.
@@ -837,15 +837,15 @@ struct TodayView: View {
         let hour = Calendar.current.component(.hour, from: Date())
         let timeGreeting: String
         switch hour {
-        case 5..<12: timeGreeting = "Good morning"
-        case 12..<17: timeGreeting = "Good afternoon"
-        case 17..<21: timeGreeting = "Good evening"
-        default: timeGreeting = "Good night"
+        case 5..<12: timeGreeting = String(localized: "Good morning", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 5:00 to 11:59.")
+        case 12..<17: timeGreeting = String(localized: "Good afternoon", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 12:00 to 16:59.")
+        case 17..<21: timeGreeting = String(localized: "Good evening", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 17:00 to 20:59.")
+        default: timeGreeting = String(localized: "Good night", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 21:00 to 4:59. A greeting, not a farewell.")
         }
 
         // First-time warmth
         if allEntries.isEmpty {
-            return "Welcome to your sky"
+            return String(localized: "Welcome to your sky", comment: "Today tab: greeting at the top left before the first entry. 'Sky' is the app's metaphor: each entry is a star. About 20 characters.")
         }
         return timeGreeting
     }
@@ -1011,10 +1011,10 @@ struct TodayView: View {
 
     private var processingPhaseMessage: String {
         switch processingPhase {
-        case 0: return "Listening to your words..."
-        case 1: return "Understanding your thoughts..."
-        case 2: return "A new star is forming..."
-        default: return "Listening to your words..."
+        case 0: return String(localized: "Listening to your words...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. First of three.")
+        case 1: return String(localized: "Understanding your thoughts...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. Second of three.")
+        case 2: return String(localized: "A new star is forming...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. Third of three; each entry becomes a star.")
+        default: return String(localized: "Listening to your words...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. First of three.")
         }
     }
 
@@ -1145,7 +1145,7 @@ struct TodayView: View {
     /// "TODAY ✦ · 8:43 AM" — the canvas's own meta line for this card.
     private func todayMetaLine(for entry: DiaryEntry) -> String {
         let when = entry.updatedAt ?? entry.date ?? Date()
-        return "TODAY \u{2726} \u{00B7} " + formattedTime(when).uppercased()
+        return String(localized: "TODAY \u{2726} \u{00B7} \(formattedTime(when).uppercased())", comment: "Today tab: meta line on today's entry card, as in 'TODAY ✦ · 8:43 AM'. Upper case, monospaced, about 20 characters. The placeholder is the time, already formatted for the locale.")
     }
 
     private var recordButtonSize: CGFloat { isIPad ? 88 : 72 }
@@ -1247,9 +1247,9 @@ struct TodayView: View {
 
     private var statusText: String {
         switch recordingState {
-        case .idle: return "Tap to record"
-        case .recording: return "Tap to stop"
-        case .processing: return "Almost done..."
+        case .idle: return String(localized: "Tap to record", comment: "Today tab: status under the record button (older layout). About 16 characters. Before recording.")
+        case .recording: return String(localized: "Tap to stop", comment: "Today tab: status under the record button (older layout). About 16 characters. While recording.")
+        case .processing: return String(localized: "Almost done...", comment: "Today tab: status under the record button (older layout). About 16 characters. While transcribing. Ends with three dots.")
         }
     }
 

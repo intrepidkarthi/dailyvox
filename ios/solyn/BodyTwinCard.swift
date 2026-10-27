@@ -58,7 +58,7 @@ struct BodyTwinCard: View {
                     }
                     Spacer()
                     if queue.count > 0 {
-                        DSTag(text: "\(queue.count) waiting", tint: DS.Palette.gold)
+                        DSTag(text: String(localized: "\(queue.count) waiting", comment: "Twin tab, Body Twin card: small tag on the right; the placeholder is how many Health signals are waiting for the user to Keep or Let go (1 or more). About 10 characters."), tint: DS.Palette.gold)
                     }
                     if !isQuietOffState {
                         Image(systemName: "chevron.forward")
@@ -81,31 +81,33 @@ struct BodyTwinCard: View {
 
     private var subtitle: String {
         if isRequestingAccess {
-            return "Asking Health for permission…"
+            return String(localized: "Asking Health for permission…", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Shown while the Apple Health permission prompt is open. 'Health' is Apple's Health app.")
         }
         guard twin.bodyTwin.isActive else {
             if queue.count > 0 {
                 // Off, but signals still await a decision — the tap opens
                 // the review sheet (Keep stays explicit, Let go always works).
-                return "Body Twin is off — tap to review or let go of what's still waiting."
+                return String(localized: "Body Twin is off — tap to review or let go of what's still waiting.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is switched off but Health signals still wait for a decision. 'Let go' matches the button name in the review sheet.")
             }
             if twin.bodyTwin.isAuthorized {
                 // Explicitly switched off — respect it. Point to Settings
                 // instead of re-enabling on a stray tap.
-                return "Body Twin is off. You can turn it back on in Settings → Health."
+                return String(localized: "Body Twin is off. You can turn it back on in Settings → Health.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin was switched off. 'Settings → Health' is the path inside this app's Settings tab; use the same names as those screens.")
             }
-            return "Your Twin can learn what your body felt. Tap to begin."
+            return String(localized: "Your Twin can learn what your body felt. Tap to begin.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin has never been set up.")
         }
         let kept = twin.bodyTwin.entriesWithSnapshot
         switch twin.bodyTwin.maturity {
         case .warmingUp:
             return kept == 0
-                ? "Warming up — it learns only the moments you keep."
-                : "Warming up — \(kept) \(kept == 1 ? "moment" : "moments") kept so far."
+                ? String(localized: "Warming up — it learns only the moments you keep.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is on and no Health signal has been kept yet.")
+                : kept == 1
+                    ? String(localized: "Warming up — 1 moment kept so far.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is on and exactly one Health signal has been kept.")
+                    : String(localized: "Warming up — \(String(kept)) moments kept so far.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is still warming up; the placeholder is how many Health signals the user kept (2 or more). The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         case .learning:
-            return "Learning your rhythms — \(kept) moments kept."
+            return String(localized: "Learning your rhythms — \(String(kept)) moments kept.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin is learning; the placeholder is how many Health signals the user kept. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         case .ready:
-            return "Ready — it knows your body's rhythms from \(kept) kept moments."
+            return String(localized: "Ready — it knows your body's rhythms from \(String(kept)) kept moments.", comment: "Twin tab, Body Twin card: status line under the card title. About 60 characters. Body Twin has learned enough; the placeholder is how many Health signals the user kept. The number arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         }
     }
 
