@@ -231,7 +231,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val zone = java.time.ZoneId.systemDefault()
     val today = java.time.LocalDate.now(zone)
     val firstDay = com.dailyvox.app.system.Resurface.firstDayOfWeek(
-        context.resources.configuration.locales[0])
+        // LocalConfiguration, not context.resources: it recomposes when the
+        // app's language changes (lint LocalContextConfigurationRead).
+        androidx.compose.ui.platform.LocalConfiguration.current.locales[0])
     val weekAgo = remember(all, today) {
         com.dailyvox.app.system.Resurface.weekAgo(all, System.currentTimeMillis(), zone)
     }

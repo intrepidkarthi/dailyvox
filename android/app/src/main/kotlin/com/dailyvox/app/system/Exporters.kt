@@ -53,13 +53,16 @@ object Exporters {
             canvas = page.canvas; y = MARGIN
         }
 
-        val fmt = SimpleDateFormat("EEEE d MMMM yyyy · h:mm a", Locale.getDefault())
+        // The reader's date order and clock (B-13); English prints exactly what
+        // 1.2's single "EEEE d MMMM yyyy · h:mm a" pattern printed.
+        val fmtDay = LocaleFormat.dateFormat("EEEE d MMMM yyyy", "EEEEdMMMMyyyy")
+        val fmtTime = LocaleFormat.dateFormat("h:mm a", "jmm")
         entries.forEach { e ->
             val lines = wrap(e.text, body, W - MARGIN * 2)
             // Page break measured against actual wrapped height, since an entry
             // can be one line or thirty.
             if (y + 34f + lines.size * 15f > H - MARGIN) newPage()
-            canvas.drawText(fmt.format(Date(e.createdAt)), MARGIN, y, date); y += 15f
+            canvas.drawText(fmtDay.format(Date(e.createdAt)) + " · " + fmtTime.format(Date(e.createdAt)), MARGIN, y, date); y += 15f
             val meta = buildString {
                 append("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
                 e.valence?.let { append("  ·  mood %+.2f".format(it)) }
@@ -106,8 +109,8 @@ object Exporters {
      * without a converter, which is the whole reason it is here.
      */
     fun markdown(entries: List<Entry>): String {
-        val day = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
-        val time = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val day = LocaleFormat.dateFormat("EEEE, d MMMM yyyy", "EEEEdMMMMyyyy")
+        val time = LocaleFormat.dateFormat("HH:mm", "Hmm")
         val sb = StringBuilder("# DailyVox journal\n\n")
         sb.append("_${entries.size} entries, exported ${day.format(Date())}._\n\n")
         entries.sortedBy { it.createdAt }.forEach { e ->

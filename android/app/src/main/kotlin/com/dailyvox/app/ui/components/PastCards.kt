@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -173,7 +172,7 @@ private fun Quote(excerpt: String) {
 
 @Composable
 private fun entryDate(entry: Entry): String {
-    val locale = LocalContext.current.resources.configuration.locales[0]
+    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
     return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM, locale)
         .format(java.util.Date(entry.createdAt))
 }

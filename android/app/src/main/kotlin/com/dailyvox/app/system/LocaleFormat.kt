@@ -76,6 +76,25 @@ object LocaleFormat {
     ): String = if (isEnglish(locale)) englishPattern
                 else runCatching { best(locale, skeleton) }.getOrDefault(englishPattern)
 
+    /**
+     * An hour on its own, as on the reminder chips. [english] is the label the
+     * English UI has always shown ("9pm", "noon") and is returned unchanged in
+     * English; elsewhere the platform's hour skeleton decides ("21 Uhr",
+     * "रात 9 बजे"), so no clock is assembled from English parts.
+     */
+    fun hourLabel(
+        hour: Int,
+        english: String,
+        locale: Locale = Locale.getDefault(),
+        best: (Locale, String) -> String = { l, s -> android.text.format.DateFormat.getBestDateTimePattern(l, s) },
+    ): String {
+        if (isEnglish(locale)) return english
+        val p = runCatching { best(locale, "j") }.getOrNull() ?: return english
+        return runCatching {
+            java.time.LocalTime.of(hour, 0).format(DateTimeFormatter.ofPattern(p, locale))
+        }.getOrDefault(english)
+    }
+
     /** A ready formatter for [pattern]. */
     fun dateFormat(englishPattern: String, skeleton: String, locale: Locale = Locale.getDefault()) =
         java.text.SimpleDateFormat(pattern(englishPattern, skeleton, locale), locale)
