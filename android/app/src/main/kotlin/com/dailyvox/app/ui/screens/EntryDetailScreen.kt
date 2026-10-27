@@ -65,7 +65,7 @@ fun EntryDetailScreen(
     // everything around it.
     val askSeed = remember(entry.id) {
         val on = com.dailyvox.app.system.LocaleFormat.dateFormat("MMMM d", "MMMMd").format(Date(entry.createdAt))
-        val who = entry.entityList.firstOrNull()
+        val who = com.dailyvox.app.system.ReadingLanguage.people(entry).firstOrNull()
         if (who != null) "What do my entries say about $who, around $on?"
         else "What was going on for me around $on?"
     }
@@ -203,7 +203,7 @@ fun EntryDetailScreen(
         val marked = remember(entry.text, entry.entities) {
             buildAnnotatedString {
                 var rest = entry.text
-                val names = entry.entityList.sortedByDescending { it.length }
+                val names = com.dailyvox.app.system.ReadingLanguage.people(entry).sortedByDescending { it.length }
                 if (names.isEmpty()) { append(rest); return@buildAnnotatedString }
                 var idx = 0
                 while (idx < rest.length) {
@@ -248,10 +248,16 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(8.dp))
         DvCard {
             // No row for an entry the lexicon could not read: "flat" would be a guess.
-            entry.valence?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
-            if (entry.entityList.isNotEmpty()) {
+            // Read in the entry's language (B-5): a stored number the gate
+            // cannot vouch for is not shown either.
+            com.dailyvox.app.system.ReadingLanguage.valence(entry)?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
+            // People only where names can be read (B-5), the same rule as the
+            // Journal's People filter: a German row from before 1.3 can still
+            // carry capitalised nouns in its entities column.
+            val people = com.dailyvox.app.system.ReadingLanguage.people(entry)
+            if (people.isNotEmpty()) {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)
+                FiledRow("People", people.joinToString(", "), MaterialTheme.colorScheme.secondary)
             }
             // Each body field is independently optional, so each gets its own
             // row. Collapsing them would mean a phone with a pedometer and no

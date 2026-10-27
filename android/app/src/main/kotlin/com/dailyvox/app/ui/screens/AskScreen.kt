@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.data.toChatEntry
+import com.dailyvox.app.data.toSearchEntry
 import com.dailyvox.app.data.Repo
 import com.dailyvox.app.ui.components.DvCard
 import com.dailyvox.app.ui.components.MonoLabel
@@ -132,7 +133,9 @@ fun AskScreen(
         // fitted threshold it returns nothing and the composer says the Twin
         // does not know, rather than answering "should I buy a house in Tokyo"
         // out of an entry that happens to contain the word "house".
-        val hits = Retrieval.retrieve(question, entries.map { it.toChatEntry() })
+        // Searched as the Journal searches (B-9): each entry in its stored
+        // language, Unicode tokens, quiet on languages word search cannot read.
+        val hits = Retrieval.retrieve(question, entries.map { it.toSearchEntry() })
             .mapNotNull { hit ->
                 entries.firstOrNull { it.id == hit.entryId }?.let { e ->
                     TwinChatEvidence(e.id, e.createdAt, e.text, hit.score)
@@ -396,20 +399,17 @@ private fun CiteChip(text: String, solid: Boolean = false, onClick: (() -> Unit)
 }
 
 /**
- * The Twin's aggregate, from the entries the lexicon actually read.
+ * The Twin's aggregate, over every entry, each read in its own language (B-5).
  *
- * The engine's ChatEntry has no "unread" valence yet, so an unread entry would
- * reach TwinFacts as 0 and a Hindi journal would be called "remarkably
- * balanced", its most frequent mood "Even". Nearly every canned answer leans on
- * valence (mood, happiest when, triggers, people's tone, personality's
- * "dominant mood", best time), so the facts are built from read entries only,
- * as Insights and the Journal's "noticed" line already are. A journal the
- * lexicon cannot read then has too few data points and the Twin says it needs
- * more rather than inventing a mood. Free-text retrieval still searches every
- * entry. English entries with a scored word reach the engine exactly as before.
- *
- * Engine follow-up (multilingual plan B-5): ChatEntry.valence: Float?, so
- * people/topic/style facts can count every entry while mood facts skip nulls.
+ * 1.2.1 built this from read entries only, because the engine had no "unread"
+ * valence and an unread entry reached it as 0: a Hindi journal was "remarkably
+ * balanced". The engine now carries ChatEntry.valence as nullable and gates
+ * every fact itself: mood facts skip unread valences, style and personality
+ * read only languages the gate lists for TRAITS (English), and people come
+ * only from entries whose names can be read ([toChatEntry]). So every entry
+ * counts toward "enough entries", and a mood or style question the journal
+ * cannot back is answered with the engine's "I can only read ... in English
+ * for now", never with a reading made from zeros.
  */
 internal fun askFacts(entries: List<Entry>): TwinFacts =
-    TwinFacts.from(entries.filter { it.valence != null }.map { it.toChatEntry() })
+    TwinFacts.from(entries.map { it.toChatEntry() })

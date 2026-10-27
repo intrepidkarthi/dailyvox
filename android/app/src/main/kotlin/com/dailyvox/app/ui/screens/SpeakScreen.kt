@@ -134,8 +134,12 @@ fun SpeakScreen(
     // reflects what is actually on screen.
     val caughtEntity = remember(partial) {
         if (partial.isBlank()) null
+        // Read in the language being spoken (B-5): quiet for German, where
+        // every noun is capitalised, and for a caseless script.
         else com.dailyvox.twin.NameDetector
-            .detect(partial, corpus = listOf(partial))
+            .detect(partial, corpus = listOf(partial),
+                    language = com.dailyvox.app.system.ReadingLanguage.of(
+                        SpeechCapture.lastSessionLanguage(context), partial))
             .lastOrNull()
     }
 

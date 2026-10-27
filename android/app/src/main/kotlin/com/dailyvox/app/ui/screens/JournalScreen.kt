@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.data.Entry
-import com.dailyvox.app.data.toChatEntry
 import com.dailyvox.twin.Insights
 import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.foundation.layout.FlowRow
@@ -43,7 +42,7 @@ fun JournalScreen(
     // The strongest finding the Twin has, computed from the same code Insights
     // uses rather than a second copy of the thresholds. Null until the data
     // carries one, which is the point of the gates in Patterns.
-    val noticed = remember(entries) { Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() }).firstOrNull() }
+    val noticed = remember(entries) { noticedPatterns(entries).firstOrNull() }
     val queue = remember { com.dailyvox.app.audio.AudioQueue() }
     var playingToday by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { queue.stop() } }
@@ -76,8 +75,10 @@ fun JournalScreen(
 
     val shown = remember(entries, filter) {
         when (filter) {
-            "People" -> entries.filter { it.entityList.isNotEmpty() }
-            "Mood" -> entries.filter { v -> v.valence?.let { kotlin.math.abs(it) > 0.25f } == true }
+            // Only entries whose names the gate can read (B-5): a German row
+            // saved before 1.3 can still carry capitalised nouns as people.
+            "People" -> entries.filter { com.dailyvox.app.system.ReadingLanguage.people(it).isNotEmpty() }
+            "Mood" -> entries.filter { v -> com.dailyvox.app.system.ReadingLanguage.valence(v)?.let { kotlin.math.abs(it) > 0.25f } == true }
             "Body" -> entries.filter { it.sleepHours != null }
             else -> entries
         }
@@ -314,14 +315,15 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                if (e.entityList.isNotEmpty() || e.sleepHours != null) {
+                val people = com.dailyvox.app.system.ReadingLanguage.people(e)
+                if (people.isNotEmpty() || e.sleepHours != null) {
                     Spacer(Modifier.height(10.dp))
                     // Entity chips are GREEN-tinted; body chips are GOLD-tinted. The
                     // split is the grammar again: a name is something the Twin found in
                     // what you said, a body reading is something it was given.
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        e.entityList.take(3).forEach { SpecChip(com.dailyvox.app.system.LocaleFormat.upper(it), gold = false) }
+                        people.take(3).forEach { SpecChip(com.dailyvox.app.system.LocaleFormat.upper(it), gold = false) }
                         e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
                     }
                 }
