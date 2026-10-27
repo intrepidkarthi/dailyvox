@@ -816,7 +816,11 @@ private fun ReflectionMood(card: Reflection.Card, onMood: (String?) -> Unit) {
             Text(body, fontSize = 15.sp, lineHeight = 21.sp, color = scheme.onSurface)
         }
         Spacer(Modifier.height(10.dp))
-        MoodPicker(current = card.chosenMood, suggested = card.suggestedMood, onPick = onMood)
+        // No one-tap suggestion for a study participant: the tap would write the
+        // app's guess into the research label (MoodSuggestion.offered).
+        val studyLabelling = com.dailyvox.app.system.DailyQuestion.isPilot(LocalContext.current)
+        MoodPicker(current = card.chosenMood,
+                   suggested = card.suggestedMood.takeUnless { studyLabelling }, onPick = onMood)
         if (mood != null) {
             Text(
                 stringResource(R.string.reflection_mood_clear),

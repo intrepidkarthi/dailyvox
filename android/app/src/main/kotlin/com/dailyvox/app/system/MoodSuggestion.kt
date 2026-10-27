@@ -79,6 +79,18 @@ object MoodSuggestion {
     /** Same tokens and negation window as [Sentiment.valence], so the two agree. */
     private val negators = setOf("not", "no", "never", "cannot", "cant", "can't", "didnt", "didn't", "wasnt", "wasn't", "dont", "don't")
 
+    /**
+     * The suggestion to offer, or none for a research participant.
+     *
+     * On Android the user's mood and the research label are one column
+     * (`selfLabel`), and accepting a suggestion is one tap. For someone labelling
+     * entries for the study that tap would export the text model's own guess as
+     * the participant's label, and the study measures the text model against
+     * those labels. So while study labelling is on, the app suggests nothing.
+     */
+    fun offered(text: String, table: Map<String, Float>, studyLabelling: Boolean): String? =
+        if (studyLabelling) null else from(text, table)
+
     fun from(text: String, table: Map<String, Float>): String? {
         val sign = lean(Sentiment.valence(text, table), words(text))
         if (sign == 0) return null

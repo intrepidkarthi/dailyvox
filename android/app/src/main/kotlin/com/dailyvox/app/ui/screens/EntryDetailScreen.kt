@@ -215,7 +215,10 @@ fun EntryDetailScreen(
         // study needs and the one the affect work found disagrees with inferred
         // valence. The app's suggestion is shown beside it, outlined and marked,
         // and only becomes the label when the user taps it.
-        MoodPicker(current = entry.selfLabel, suggested = entry.suggestedMood, onPick = onSelfLabel)
+        // For a study participant, not even beside it (MoodSuggestion.offered).
+        val studyLabelling = com.dailyvox.app.system.DailyQuestion.isPilot(LocalContext.current)
+        MoodPicker(current = entry.selfLabel,
+                   suggested = entry.suggestedMood.takeUnless { studyLabelling }, onPick = onSelfLabel)
 
         Spacer(Modifier.height(22.dp))
         MonoLabel("What your Twin filed ✦")

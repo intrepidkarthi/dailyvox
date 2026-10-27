@@ -11,7 +11,10 @@ import com.dailyvox.app.system.MoodSuggestion
 import java.util.UUID
 
 
-class Repo private constructor(private val db: DailyVoxDb) {
+class Repo private constructor(private val db: DailyVoxDb, private val appContext: Context) {
+
+    private fun suggest(text: String): String? = MoodSuggestion.offered(
+        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext))
 
     fun observeAll(): Flow<List<Entry>> = db.entries().observeAll()
     /**
@@ -43,7 +46,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     entities = com.dailyvox.twin.NameDetector
                         .detect(text, corpus = listOf(text))
                         .joinToString(","),
-                    suggestedMood = resuggest(it, MoodSuggestion.from(text, Lexicon.table)),
+                    suggestedMood = resuggest(it, suggest(text)),
                 )
             )
         }
@@ -154,7 +157,7 @@ class Repo private constructor(private val db: DailyVoxDb) {
         ).let {
             // A suggestion only, in its own column. selfLabel stays null until
             // the user picks one; nothing at save time can choose for them.
-            it.copy(suggestedMood = MoodSuggestion.from(text, Lexicon.table))
+            it.copy(suggestedMood = suggest(text))
         }
         db.entries().upsert(entry)
         // Returned so the Speak screen can reflect on exactly what was saved.
@@ -330,7 +333,8 @@ class Repo private constructor(private val db: DailyVoxDb) {
                     // reads as "if the schema confuses us, delete their diary".
                     // Every future schema change needs a real migration here;
                     // failing loudly in development is the correct pressure.
-                    .build()
+                    .build(),
+                context.applicationContext,
             ).also { INSTANCE = it }
         }
     }

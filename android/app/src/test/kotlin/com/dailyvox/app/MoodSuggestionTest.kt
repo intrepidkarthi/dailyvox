@@ -62,6 +62,12 @@ class MoodSuggestionTest {
         assertTrue("joy" in canon && "sadness" in canon)
     }
 
+    @Test fun `a study participant is never offered a suggestion`() {
+        val clear = "So happy today, we laughed all evening and I feel grateful."
+        assertEquals("joy", MoodSuggestion.offered(clear, shipped, studyLabelling = false))
+        assertNull(MoodSuggestion.offered(clear, shipped, studyLabelling = true))
+    }
+
     @Test fun `mixed, sarcastic, grieving, angry and frightened entries get nothing`() {
         listOf(
             // Plain logistics: nothing to go on.
