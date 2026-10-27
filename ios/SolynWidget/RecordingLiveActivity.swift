@@ -238,10 +238,12 @@ private struct RecordingLockScreenView: View {
 
     private var subtitle: String {
         if context.state.passedSoftTarget {
-            return "Past your daily 42 — keep going as long as you like."
+            return String(localized: "Past your daily 42 — keep going as long as you like.",
+                          comment: "Recording Live Activity, Lock Screen subtitle once 42 seconds have passed. 42 is a soft target, never a limit: keep the number 42 and never say 'at least' or 'maximum'. About 55 characters.")
         }
         let remaining = max(0, Int(context.attributes.softTargetSeconds - context.state.elapsed))
-        return "\(remaining)s to your daily 42"
+        return String(localized: "\(remaining)s to your daily 42",
+                      comment: "Recording Live Activity: seconds left before the soft 42-second target. The placeholder is a whole number of seconds (0-42); 's' is the local unit for seconds. Keep 42 literal. About 25 characters.")
     }
 }
 
@@ -258,10 +260,12 @@ private func elapsedString(_ elapsed: TimeInterval) -> String {
 @available(iOS 16.2, *)
 private func progressLine(state: RecordingActivityAttributes.ContentState, attributes: RecordingActivityAttributes) -> String {
     if state.passedSoftTarget {
-        return "You're past 42s. Tap the app to stop when ready."
+        return String(localized: "You're past 42s. Tap the app to stop when ready.",
+                      comment: "Recording Live Activity, Dynamic Island expanded, once 42 seconds have passed. 42 is a soft target, never a limit: keep 42 literal and the local unit for seconds. About 50 characters.")
     }
     let remaining = max(0, Int(attributes.softTargetSeconds - state.elapsed))
-    return "\(remaining)s to your daily 42"
+    return String(localized: "\(remaining)s to your daily 42",
+                  comment: "Recording Live Activity: seconds left before the soft 42-second target. The placeholder is a whole number of seconds (0-42); 's' is the local unit for seconds. Keep 42 literal. About 25 characters.")
 }
 
 /// Lightweight sparkline of equal-width bars whose central bars are scaled by `level`.

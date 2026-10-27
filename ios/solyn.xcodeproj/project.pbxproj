@@ -18,6 +18,7 @@
 		C57AB08B73E27F7100545751 /* DailyVoxWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B754D710BB041651B9191CAD /* DailyVoxWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C636FC9C3F1928B91DA5C868 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */; };
 		CF62F84D2FDDE10400A0E332 /* DailyVoxTwinEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CF62F84C2FDDE10400A0E331 /* DailyVoxTwinEngine */; };
+		9A11B2C3D4E5F60718293A61 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9A11B2C3D4E5F60718293A60 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		CFF97C042EDE056900ED7317 /* solynTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFF97C0E2EDE056900ED7317 /* solynUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = solynUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D581203D30BE45E688F567 /* StarBirthLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StarBirthLiveActivity.swift; sourceTree = "<group>"; };
+		9A11B2C3D4E5F60718293A60 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -180,6 +182,7 @@
 				6AD8F9AFB436609F3E7FE19F /* StreakLiveActivity.swift */,
 				9D0C2E566FE144BEB8A9635B /* ConstellationLockScreenWidget.swift */,
 				8D96159BAC6C02CA6293BF92 /* LiveActivityAttributes.swift */,
+				9A11B2C3D4E5F60718293A60 /* Localizable.xcstrings */,
 			);
 			path = SolynWidget;
 			sourceTree = "<group>";
@@ -327,6 +330,8 @@
 				es,
 				fr,
 				it,
+				"pt-BR",
+				hi,
 			);
 			mainGroup = CFF97BE52EDE056600ED7317;
 			minimizedProjectReferenceProxies = 1;
@@ -351,6 +356,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A11B2C3D4E5F60718293A61 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,8 +645,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = solyn/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DailyVox;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "DailyVox uses the microphone to record your diary entries.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "DailyVox uses speech recognition to convert your recorded diary into text.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -683,8 +687,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = solyn/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DailyVox;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "DailyVox uses the microphone to record your diary entries.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "DailyVox uses speech recognition to convert your recorded diary into text.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

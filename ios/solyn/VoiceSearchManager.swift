@@ -54,11 +54,14 @@ final class VoiceSearchManager: ObservableObject {
                 case .authorized:
                     self?.beginRecording()
                 case .denied, .restricted:
-                    self?.errorMessage = "Speech recognition not authorized"
+                    self?.errorMessage = String(localized: "Speech recognition not authorized",
+                                                comment: "Journal voice search: error published for the search bar when the user denied speech recognition. About 40 characters.")
                 case .notDetermined:
-                    self?.errorMessage = "Speech recognition not available"
+                    self?.errorMessage = String(localized: "Speech recognition not available",
+                                                comment: "Journal voice search: error published for the search bar when speech recognition permission has not been decided. About 40 characters.")
                 @unknown default:
-                    self?.errorMessage = "Unknown authorization status"
+                    self?.errorMessage = String(localized: "Unknown authorization status",
+                                                comment: "Journal voice search: error published for the search bar when iOS reports a speech permission state the app does not know. About 40 characters.")
                 }
             }
         }
@@ -92,7 +95,8 @@ final class VoiceSearchManager: ObservableObject {
         // query; it leaks the same things the entries do.
         speechRecognizer = SpeechTranscriber.onDeviceRecognizer()
         guard speechRecognizer?.supportsOnDeviceRecognition == true else {
-            errorMessage = "Voice search needs an on-device speech model. Add your language under Settings > General > Keyboard > Dictation Languages — DailyVox will not send your voice to a server."
+            errorMessage = String(localized: "Voice search needs an on-device speech model. Add your language under Settings > General > Keyboard > Dictation Languages — DailyVox will not send your voice to a server.",
+                                  comment: "Journal voice search: error published for the search bar when this iPhone has no on-device model for the language. 'Settings > General > Keyboard > Dictation Languages' must match the iOS Settings path in the target language exactly. Keep the promise that DailyVox never sends the voice to a server.")
             return
         }
 
@@ -102,21 +106,24 @@ final class VoiceSearchManager: ObservableObject {
             try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         } catch {
-            errorMessage = "Failed to configure audio session"
+            errorMessage = String(localized: "Failed to configure audio session",
+                                  comment: "Journal voice search: error published for the search bar when the microphone could not be set up. About 40 characters.")
             return
         }
         
         // Create audio engine
         audioEngine = AVAudioEngine()
         guard let audioEngine = audioEngine else {
-            errorMessage = "Failed to create audio engine"
+            errorMessage = String(localized: "Failed to create audio engine",
+                                  comment: "Journal voice search: error published for the search bar when the microphone could not be set up. About 40 characters.")
             return
         }
         
         // Create recognition request
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest = recognitionRequest else {
-            errorMessage = "Failed to create recognition request"
+            errorMessage = String(localized: "Failed to create recognition request",
+                                  comment: "Journal voice search: error published for the search bar when the speech request could not be created. About 40 characters.")
             return
         }
         
@@ -127,7 +134,8 @@ final class VoiceSearchManager: ObservableObject {
         
         // Start recognition task
         guard let speechRecognizer = speechRecognizer else {
-            errorMessage = "Speech recognizer not available"
+            errorMessage = String(localized: "Speech recognizer not available",
+                                  comment: "Journal voice search: error published for the search bar when no recognizer exists for the language. About 40 characters.")
             return
         }
         
@@ -146,7 +154,8 @@ final class VoiceSearchManager: ObservableObject {
                     // Ignore cancellation errors
                     let nsError = error as NSError
                     if nsError.domain != "kAFAssistantErrorDomain" || nsError.code != 216 {
-                        self?.errorMessage = "Recognition error: \(error.localizedDescription)"
+                        self?.errorMessage = String(localized: "Recognition error: \(error.localizedDescription)",
+                                                    comment: "Journal voice search: error published for the search bar when recognition failed. The placeholder is iOS's own error description, already in the user's language.")
                     }
                     self?.stopListening()
                 }
@@ -175,7 +184,8 @@ final class VoiceSearchManager: ObservableObject {
                 }
             }
         } catch {
-            errorMessage = "Failed to start audio engine"
+            errorMessage = String(localized: "Failed to start audio engine",
+                                  comment: "Journal voice search: error published for the search bar when the microphone could not start. About 40 characters.")
             stopListening()
         }
     }

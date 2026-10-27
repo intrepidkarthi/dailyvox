@@ -47,7 +47,10 @@ struct PersonalityCardRenderer {
     }
 
     /// Share text to include alongside the image
-    static let shareText = "My Digital Twin personality from DailyVox \u{2014} free AI voice journal. getdailyvox.com"
+    static var shareText: String {
+        String(localized: "My Digital Twin personality from DailyVox \u{2014} free AI voice journal. getdailyvox.com",
+               comment: "Text that goes with the personality card image into the share sheet (Messages, social posts). 'DailyVox' and the address stay as they are. About 90 characters.")
+    }
 }
 
 // MARK: - Story Format Export (1080x1920 at 3x)

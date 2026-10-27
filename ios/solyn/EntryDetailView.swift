@@ -488,9 +488,8 @@ struct EntryDetailView: View {
             Calendar.current.startOfDay(for: $0.snapshot.capturedAt) == day
         }
         guard let hours = kept?.snapshot.sleepHours else { return nil }
-        let h = Int(hours)
-        let m = Int((hours - Double(h)) * 60)
-        return String(format: "%dh%02d sleep the night before", h, m)
+        return String(localized: "\(LocaleFormat.sleepHours(hours)) sleep the night before",
+                      comment: "Entry detail, under the body-signal line: how long the user slept the night before this entry. The placeholder is hours and minutes such as '7h05'. About 35 characters.")
     }
 
     /// B4's two actions, as a row at the foot of the entry.
