@@ -211,7 +211,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     val saveMd = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/markdown")
-    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.markdown(vm.allEntries())) } }
+    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.markdown(context.resources, vm.allEntries())) } }
     val saveCsv = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
     ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.csv(vm.allEntries())) } }
@@ -364,9 +364,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         // protects is decoration.
         pendingBackup?.let { uri ->
             PassphraseDialog(
-                title = "Choose a passphrase",
-                body = "This backup can be restored on any phone, including an iPhone, by anyone who knows this passphrase. There is no way to recover it — write it down somewhere safe.",
-                confirmLabel = "Back up",
+                title = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_title),
+                body = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_body),
+                confirmLabel = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_confirm),
                 requireLength = 8,
                 onConfirm = { pass -> vm.writeExport(context, uri, pass); pendingBackup = null },
                 onDismiss = { pendingBackup = null },
@@ -375,9 +375,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
         pendingRestore?.let { uri ->
             PassphraseDialog(
-                title = "Passphrase",
-                body = "Enter the passphrase this backup was made with.",
-                confirmLabel = "Restore",
+                title = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_title),
+                body = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_body),
+                confirmLabel = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_confirm),
                 requireLength = 1,
                 onConfirm = { pass ->
                     vm.importFrom(context, uri, passphrase = pass)
@@ -626,7 +626,7 @@ private fun PassphraseDialog(
                     value = value,
                     onValueChange = { value = it },
                     singleLine = true,
-                    label = { androidx.compose.material3.Text("Passphrase") },
+                    label = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.passphrase_field)) },
                     visualTransformation = if (visible)
                         androidx.compose.ui.text.input.VisualTransformation.None
                     else
@@ -635,7 +635,7 @@ private fun PassphraseDialog(
                         // Typing a long passphrase blind, twice, is how people end
                         // up choosing a short one.
                         androidx.compose.material3.TextButton(onClick = { visible = !visible }) {
-                            androidx.compose.material3.Text(if (visible) "Hide" else "Show")
+                            androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(if (visible) R.string.passphrase_hide else R.string.passphrase_show))
                         }
                     },
                 )
@@ -649,7 +649,7 @@ private fun PassphraseDialog(
         },
         dismissButton = {
             androidx.compose.material3.TextButton(onClick = onDismiss) {
-                androidx.compose.material3.Text("Cancel")
+                androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.passphrase_cancel))
             }
         },
     )
@@ -661,13 +661,13 @@ private fun LockScreen(onUnlock: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
         Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
             androidx.compose.material3.Text(
-                "DailyVox is locked",
+                androidx.compose.ui.res.stringResource(R.string.lock_title),
                 style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
                 color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(16.dp))
             androidx.compose.material3.Text(
-                "Unlock",
+                androidx.compose.ui.res.stringResource(R.string.lock_unlock),
                 modifier = Modifier
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
                     .background(androidx.compose.material3.MaterialTheme.colorScheme.primary)

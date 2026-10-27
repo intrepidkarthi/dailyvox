@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.platform.LocalContext
 import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,6 +72,7 @@ fun JournalScreen(
     LaunchedEffect(Unit) { search.finished.collect { if (it.isNotBlank()) onQuery(it) } }
     // No "Body" in v1.0: it filtered on sleep from Health Connect, which the
     // release does not read, so it could only ever show an empty list.
+    // Keys, not labels: the label is looked up in strings.xml (filterLabel).
     val filters = listOf("All", "People", "Mood")
     var filter by rememberSaveable { mutableStateOf("All") }
     // Same construction as SpeakScreen: one instance per screen, remembered.
@@ -91,7 +96,7 @@ fun JournalScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Journal", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
+            Text(stringResource(R.string.journal_title), fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = MaterialTheme.colorScheme.onBackground)
             // Queues today's recordings back to back. Green, because playing is
             // an action — the pill is the one green thing on this screen.
@@ -117,7 +122,7 @@ fun JournalScreen(
                                 if (paths.isEmpty()) {
                                     android.widget.Toast.makeText(
                                         context,
-                                        "Today's entries have no audio saved.",
+                                        context.getString(R.string.journal_play_today_no_audio),
                                         android.widget.Toast.LENGTH_SHORT,
                                     ).show()
                                 } else {
@@ -133,8 +138,10 @@ fun JournalScreen(
                     Text(if (playingToday) "■" else "▶", fontSize = 10.sp,
                          color = MaterialTheme.colorScheme.onPrimary)
                     Text(
-                        if (playingToday) "Playing · %d:%02d".format(total / 60, total % 60)
-                        else "Play today · %d:%02d".format(total / 60, total % 60),
+                        stringResource(
+                            if (playingToday) R.string.journal_playing else R.string.journal_play_today,
+                            total / 60, total % 60,
+                        ),
                         fontSize = 10.5.sp, fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
@@ -153,7 +160,7 @@ fun JournalScreen(
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             if (query.isEmpty()) {
-                Text("Search your journal", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                Text(stringResource(R.string.journal_search_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 BasicTextField(
@@ -169,7 +176,7 @@ fun JournalScreen(
                 // is the same mistake the hand-drawn nav icons were.
                 androidx.compose.material3.Icon(
                     painter = androidx.compose.ui.res.painterResource(com.dailyvox.app.R.drawable.ic_nav_speak),
-                    contentDescription = "Search by voice",
+                    contentDescription = stringResource(R.string.journal_search_voice),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
@@ -178,7 +185,7 @@ fun JournalScreen(
                                 if (listening) search.stop() else search.start()
                             }.onFailure {
                                 android.widget.Toast.makeText(
-                                    context, "No voice input on this device.",
+                                    context, context.getString(R.string.journal_search_voice_unavailable),
                                     android.widget.Toast.LENGTH_SHORT,
                                 ).show()
                             }
@@ -191,7 +198,7 @@ fun JournalScreen(
 
         searchError?.let { err ->
             Spacer(Modifier.height(10.dp))
-            SpeechErrorCard(err, search, "Dismiss", onSecondary = { search.clearError() }, compact = true)
+            SpeechErrorCard(err, search, stringResource(R.string.journal_search_error_dismiss), onSecondary = { search.clearError() }, compact = true)
         }
 
         Spacer(Modifier.height(12.dp))
@@ -199,7 +206,7 @@ fun JournalScreen(
             filters.forEach { f ->
                 val on = f == filter
                 Text(
-                    f, fontSize = 13.sp,
+                    filterLabel(f), fontSize = 13.sp,
                     color = if (on) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .clip(RoundedCornerShape(13.dp))
@@ -224,25 +231,25 @@ fun JournalScreen(
             // situations and one shared message would be wrong for two of them.
             when {
                 query.isNotEmpty() -> EmptyState(
-                    headline = "Nothing matches that",
-                    body = "Search looks at the words in your entries and the people your Twin has filed. Try a name, or fewer words.",
-                    action = "Clear the search",
+                    headline = stringResource(R.string.journal_empty_search_title),
+                    body = stringResource(R.string.journal_empty_search_body),
+                    action = stringResource(R.string.journal_empty_search_action),
                     onAction = { onQuery("") },
                 )
                 entries.isNotEmpty() -> EmptyState(
-                    headline = "No entries in this filter",
-                    body = when (filter) {
-                        "People" -> "None of your entries mention a name your Twin recognised yet."
-                        "Mood" -> "Nothing here reads strongly either way — that is its own kind of week."
-                        else -> "No entry has body context attached yet."
-                    },
-                    action = "Show everything",
+                    headline = stringResource(R.string.journal_empty_filter_title),
+                    body = stringResource(when (filter) {
+                        "People" -> R.string.journal_empty_filter_people
+                        "Mood" -> R.string.journal_empty_filter_mood
+                        else -> R.string.journal_empty_filter_body
+                    }),
+                    action = stringResource(R.string.journal_empty_filter_action),
                     onAction = { filter = "All" },
                 )
                 else -> EmptyState(
-                    headline = "Your first star is one tap away",
-                    body = "Speak for forty-two seconds. It stays on this phone, and the Twin starts from there.",
-                    action = "Speak tonight",
+                    headline = stringResource(R.string.journal_empty_title),
+                    body = stringResource(R.string.journal_empty_body),
+                    action = stringResource(R.string.journal_empty_action),
                     onAction = onSpeak,
                 )
             }
@@ -303,12 +310,20 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                 // B3: DM Mono meta line. The gold ✦ that used to sit on the right
                 // of every card is gone: the spec reserves it for starred entries,
                 // Entry has no starred field, and on every row it meant nothing.
+                val res = LocalContext.current.resources
                 MonoLabel(
-                    "${com.dailyvox.app.system.LocaleFormat.upper(dateLabel(e.createdAt))} · ${if (e.audioPath.isNullOrBlank() && e.durationSec == 0) "TYPED" else durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
+                    stringResource(
+                        R.string.journal_card_meta,
+                        com.dailyvox.app.system.LocaleFormat.upper(dateLabel(res, e.createdAt)),
+                        if (e.audioPath.isNullOrBlank() && e.durationSec == 0) stringResource(R.string.journal_card_typed)
+                        else durationLabel(e.durationSec),
+                        if (e.isUntranscribed) stringResource(R.string.journal_card_not_transcribed)
+                        else pluralStringResource(R.plurals.journal_card_words, e.wordCount, e.wordCount),
+                    )
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (e.isUntranscribed) "Recorded, but this phone did not transcribe it. The audio is saved \u2014 tap to play."
+                    if (e.isUntranscribed) stringResource(R.string.journal_card_untranscribed)
                     else e.text,
                     fontSize = 15.5.sp, lineHeight = 23.sp,
                     maxLines = 2,
@@ -324,7 +339,7 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         people.take(3).forEach { SpecChip(com.dailyvox.app.system.LocaleFormat.upper(it), gold = false) }
-                        e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
+                        e.sleepHours?.let { SpecChip(stringResource(R.string.journal_card_sleep, it), gold = true) }
                     }
                 }
             }
@@ -362,7 +377,7 @@ private fun SpecChip(text: String, gold: Boolean) {
     )
 }
 
-private fun dateLabel(ts: Long): String {
+private fun dateLabel(res: android.content.res.Resources, ts: Long): String {
     val day = 86_400_000L
     val today = System.currentTimeMillis() / day
     val time = com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(Date(ts))
@@ -370,12 +385,26 @@ private fun dateLabel(ts: Long): String {
         today -> {
             val hour = Calendar.getInstance().apply { timeInMillis = ts }
                 .get(Calendar.HOUR_OF_DAY)
-            if (hour >= 17 || hour < 4) "Tonight · $time" else "Today · $time"
+            res.getString(if (hour >= 17 || hour < 4) R.string.journal_when_tonight else R.string.journal_when_today, time)
         }
-        today - 1 -> "Yesterday · $time"
-        else -> com.dailyvox.app.system.LocaleFormat.dateFormat("EEE d", "EEEd").format(Date(ts)) + " · " + time
+        today - 1 -> res.getString(R.string.journal_when_yesterday, time)
+        else -> res.getString(
+            R.string.journal_when_day,
+            com.dailyvox.app.system.LocaleFormat.dateFormat("EEE d", "EEEd").format(Date(ts)), time,
+        )
     }
 }
+
+/** The label of a filter chip; [key] is the filter's fixed English key. */
+@Composable
+private fun filterLabel(key: String): String = stringResource(
+    when (key) {
+        "People" -> R.string.journal_filter_people
+        "Mood" -> R.string.journal_filter_mood
+        "Body" -> R.string.journal_filter_body
+        else -> R.string.journal_filter_all
+    }
+)
 
 private fun durationLabel(s: Int): String = "%d:%02d".format(s / 60, s % 60)
 
@@ -400,11 +429,12 @@ private fun TwinNoticedCard(p: Insights.Finding, onAsk: () -> Unit) {
         Text("\u2726", fontSize = 14.sp, color = goldText)
         Spacer(Modifier.width(11.dp))
         Text(
-            "Twin noticed: ${leadInSentence(p.lead)}. Ask about it.",
+            stringResource(R.string.journal_twin_noticed, leadInSentence(p.lead)),
             fontSize = 13.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.weight(1f),
         )
-        Text("\u203A", fontSize = 18.sp, color = goldText)
+        Text(com.dailyvox.app.ui.components.forwardGlyph(), fontSize = 18.sp, color = goldText,
+             style = com.dailyvox.app.ui.components.Directional.GlyphStyle)
     }
 }
 

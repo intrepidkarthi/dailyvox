@@ -189,6 +189,141 @@ class StringResourcesTest {
         assertEquals("I kept 7 stars.", p(R.plurals.share_gift_kept, 7, 7))
     }
 
+    // ── B-15 part B: the rest of the app ───────────────────────────────────
+
+    @Test
+    fun `app shell, nav and toasts read exactly as before`() {
+        assertEquals("Choose a passphrase", s(R.string.backup_passphrase_title))
+        assertEquals(
+            "This backup can be restored on any phone, including an iPhone, by anyone who knows " +
+                "this passphrase. There is no way to recover it — write it down somewhere safe.",
+            s(R.string.backup_passphrase_body),
+        )
+        assertEquals("Back up", s(R.string.backup_passphrase_confirm))
+        assertEquals("Enter the passphrase this backup was made with.", s(R.string.restore_passphrase_body))
+        assertEquals("DailyVox is locked", s(R.string.lock_title))
+        assertEquals("Unlock DailyVox", s(R.string.applock_prompt_title))
+        assertEquals("Your journal is locked on this device", s(R.string.applock_prompt_subtitle))
+        assertEquals(
+            listOf("Speak", "Journal", "Twin", "Ask"),
+            com.dailyvox.app.ui.nav.Destination.entries.map { s(it.label) },
+        )
+        assertEquals("Nothing new — those entries are already here.", s(R.string.toast_import_nothing_new))
+        // 1.2 said "Added 1 entries."; this round does not change English.
+        assertEquals("Added 1 entries.", p(R.plurals.toast_import_added, 1, 1))
+        assertEquals("Added 5 entries.", p(R.plurals.toast_import_added, 5, 5))
+        assertEquals("Backup written. You will need that passphrase to restore it.", s(R.string.toast_backup_written))
+    }
+
+    @Test
+    fun `speak, journal, ask and the dial read exactly as before`() {
+        assertEquals("Still up", s(R.string.speak_greeting_night))
+        assertEquals("✦ 12 this year", p(R.plurals.speak_year_count, 12, 12))
+        assertEquals("Tap to record · 42 seconds", s(R.string.speak_tap_to_record))
+        assertEquals("I can't talk right now", s(R.string.speak_cant_talk))
+        assertEquals("today ✦ · 9:41 PM", s(R.string.speak_today_label, "9:41 PM"))
+        assertEquals("Stop playing today's entry", s(R.string.speak_today_stop_description))
+        assertEquals("typed, not recorded · stays on this phone", s(R.string.speak_typed_stored))
+        assertEquals("Filed to your sky. 12 words · 0:42.",
+                     s(R.string.reflection_spoken_header, s(R.string.reflection_label), "12 words · 0:42"))
+        assertEquals("For tomorrow, in your words: “Call Mum.”",
+                     s(R.string.reflection_spoken_tomorrow, s(R.string.reflection_tomorrow_label), "“Call Mum.”"))
+
+        assertEquals("Play today · 1:05", s(R.string.journal_play_today, 1, 5))
+        assertEquals("Playing · 0:42", s(R.string.journal_playing, 0, 42))
+        assertEquals("Today's entries have no audio saved.", s(R.string.journal_play_today_no_audio))
+        assertEquals(
+            "TONIGHT · 9:41 PM · 0:42 · 87 WORDS",
+            s(R.string.journal_card_meta, "TONIGHT · 9:41 PM", "0:42", p(R.plurals.journal_card_words, 87, 87)),
+        )
+        // 1.2 printed "1 WORDS"; this round does not change English.
+        assertEquals("1 WORDS", p(R.plurals.journal_card_words, 1, 1))
+        assertEquals("7.5H SLEEP", s(R.string.journal_card_sleep, 7.5f))
+        assertEquals("Yesterday · 9:41 PM", s(R.string.journal_when_yesterday, "9:41 PM"))
+        assertEquals("Mon 26 · 9:41 PM", s(R.string.journal_when_day, "Mon 26", "9:41 PM"))
+        assertEquals(
+            "Recorded, but this phone did not transcribe it. The audio is saved — tap to play.",
+            s(R.string.journal_card_untranscribed),
+        )
+        assertEquals("Nothing here reads strongly either way — that is its own kind of week.",
+                     s(R.string.journal_empty_filter_mood))
+        assertEquals("Twin noticed: sleep shows up. Ask about it.", s(R.string.journal_twin_noticed, "sleep shows up"))
+
+        assertEquals("answers with receipts · 0 network calls", s(R.string.ask_subtitle))
+        assertEquals(
+            "Ask something, or pick one below. Every answer comes from your own entries and names " +
+                "the ones it used. Anything else, it finds rather than answers: the closest entries, " +
+                "quoted as you said them.",
+            s(R.string.ask_intro),
+        )
+        assertEquals("OCT 26 · 87%", s(R.string.ask_cite_chip, "OCT 26", 87))
+        assertEquals("1 CITED ✦", p(R.plurals.ask_cited, 1, 1))
+        assertEquals("Ask, or find what you said about…", s(R.string.ask_placeholder))
+
+        assertEquals("● RECORDING · ON-DEVICE · 0 B OUT", s(R.string.dial_status_recording))
+        assertEquals("❙❙ PAUSED · ON-DEVICE · 0 B OUT", s(R.string.dial_status_paused))
+        assertEquals("OF 0:42 · 17 TICKS LIT", s(R.string.dial_ticks_lit, 17))
+        assertEquals("“…and then we walked”", s(R.string.dial_partial, "and then we walked"))
+        assertEquals("SARAH ✦ FILED TO YOUR SKY", s(R.string.dial_filed, "SARAH"))
+        assertEquals("Stop & keep ✦", s(R.string.dial_stop_keep))
+    }
+
+    @Test
+    fun `twin, insights, share sheet and widgets read exactly as before`() {
+        assertEquals("38 ✦ · EARLY", s(R.string.twin_star_count, 38, s(R.string.twin_depth_early)))
+        assertEquals(
+            "Who you are: warm, steady, expansive — from 12 entries.",
+            p(R.plurals.twin_summary, 12, s(R.string.twin_tone_warm), s(R.string.twin_length_expansive), 12),
+        )
+        assertEquals(
+            "Some names are reaching your journal spelled both ways — Ravi, Asha — so the Twin can't " +
+                "count them as one person. Correcting a transcript on an entry teaches it the right spelling.",
+            s(R.string.twin_casing_inconsistent, "Ravi, Asha"),
+        )
+        assertEquals(
+            "No names have come through yet. Either you haven't spoken about anyone, or this phone's " +
+                "speech recogniser isn't capitalising names — which is what the Twin reads them by.",
+            s(R.string.twin_casing_none),
+        )
+        assertEquals("3 of 5", s(R.string.goal_progress, 3, 5))
+        assertEquals("1 day left", p(R.plurals.goal_days_left, 1, 1))
+        assertEquals("4 days left", p(R.plurals.goal_days_left, 4, 4))
+        assertEquals("Nights, not entries — one evening counts once.", s(R.string.goal_counting_note))
+
+        assertEquals("Rendered on this phone and handed to whatever you pick. DailyVox has no way to send it itself.",
+                     s(R.string.share_sheet_intro))
+        assertEquals("Off — the card says “someone”.", s(R.string.share_sheet_names_off))
+        assertEquals("DAILYVOX  ·  RECORDED ON DEVICE", s(R.string.share_entry_card_footer))
+
+        assertEquals("Downloading the speech pack · 40%", s(R.string.speech_pack_progress, 40))
+        assertEquals("Asking your phone's speech service for the pack…", s(R.string.speech_pack_requested))
+
+        assertEquals("5 nights, which is what you set out to do.", p(R.plurals.goal_notification_met, 5, 5))
+        assertEquals("6 nights this week, past the 5 you set.", p(R.plurals.goal_notification_past, 6, 6, 5))
+        assertEquals("1:05 · on-device · 0 bytes out", s(R.string.recording_notification_text, 1, 5))
+        assertEquals("A nudge to record tonight's entry.", s(R.string.reminder_channel_description))
+        assertEquals("38 IN YOUR SKY", p(R.plurals.widget_in_your_sky, 38, 38))
+        assertEquals("0 IN YOUR SKY", s(R.string.widget_in_your_sky_placeholder))
+        assertEquals("Tonight's star", s(R.string.widget_star_description))
+
+        assertEquals("1 entries", p(R.plurals.export_pdf_entries, 1, 1))
+        assertEquals("  ·  mood +0.35", s(R.string.export_pdf_mood, 0.35f))
+        assertEquals("valence -0.20", s(R.string.export_md_valence, -0.2f))
+        assertEquals("The recogniser returned no words for this recording.", s(R.string.transcribe_no_words))
+    }
+
+    @Test
+    fun `mood words are the research canon's English words`() {
+        // SelfLabels.CANON is the study contract; the picker now reads strings.xml.
+        com.dailyvox.app.system.SelfLabels.CANON.forEach { (key, word) ->
+            assertEquals(word, com.dailyvox.app.ui.components.moodWord(res, key))
+        }
+        // A label saved under the old Android set keeps its canon word...
+        assertEquals("Sadness", com.dailyvox.app.ui.components.moodWord(res, "sad"))
+        // ...and one with no canon counterpart is shown as it was stored.
+        assertEquals("calm", com.dailyvox.app.ui.components.moodWord(res, "calm"))
+    }
+
     // ── B-13: dates in the reader's order ──────────────────────────────────
 
     private val day = LocalDate.of(2026, 10, 26)

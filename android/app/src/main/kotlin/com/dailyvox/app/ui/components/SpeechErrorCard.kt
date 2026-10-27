@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.components
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -53,18 +55,18 @@ fun SpeechErrorCard(
         Text(err.message, fontSize = if (compact) 13.sp else 14.sp,
              fontWeight = FontWeight.SemiBold, color = cs.onSurface)
         Spacer(Modifier.height(6.dp))
-        Text(packLine(pack) ?: err.fix, fontSize = if (compact) 12.sp else 13.sp,
+        Text(packLine(context.resources, pack) ?: err.fix, fontSize = if (compact) 12.sp else 13.sp,
              lineHeight = if (compact) 18.sp else 20.sp, color = cs.onSurfaceVariant)
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             val downloading = pack is PackDownload.Requested || pack is PackDownload.Progress
             when {
                 err.offerDownload && pack == PackDownload.Idle ->
-                    Pill("Download speech pack", primary = true, compact) { capture.downloadPack() }
+                    Pill(stringResource(R.string.speech_pack_download), primary = true, compact) { capture.downloadPack() }
                 err.offerDownload && pack == PackDownload.Done ->
-                    Pill("Try again", primary = true, compact) { capture.clearError() }
+                    Pill(stringResource(R.string.speech_pack_try_again), primary = true, compact) { capture.clearError() }
                 err.openLanguageSettings && !downloading ->
-                    Pill("Open speech settings", primary = !err.offerDownload || pack == PackDownload.Failed, compact) {
+                    Pill(stringResource(R.string.speech_pack_open_settings), primary = !err.offerDownload || pack == PackDownload.Failed, compact) {
                         openSpeechSettings(context)
                     }
             }
@@ -73,13 +75,13 @@ fun SpeechErrorCard(
     }
 }
 
-internal fun packLine(p: PackDownload): String? = when (p) {
+internal fun packLine(res: android.content.res.Resources, p: PackDownload): String? = when (p) {
     PackDownload.Idle -> null
-    PackDownload.Requested -> "Asking your phone's speech service for the pack…"
-    is PackDownload.Progress -> "Downloading the speech pack · ${p.percent}%"
-    PackDownload.Scheduled -> "Your phone will download the pack shortly, usually on Wi-Fi. Record whenever you like — entries keep their audio until it arrives."
-    PackDownload.Done -> "Speech pack installed. Your voice stays on this phone."
-    PackDownload.Failed -> "Your phone's speech service would not download it from here. It can be installed in Android Settings › System › Languages › Speech."
+    PackDownload.Requested -> res.getString(R.string.speech_pack_requested)
+    is PackDownload.Progress -> res.getString(R.string.speech_pack_progress, p.percent)
+    PackDownload.Scheduled -> res.getString(R.string.speech_pack_scheduled)
+    PackDownload.Done -> res.getString(R.string.speech_pack_done)
+    PackDownload.Failed -> res.getString(R.string.speech_pack_failed)
 }
 
 @Composable

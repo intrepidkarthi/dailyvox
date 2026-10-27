@@ -25,7 +25,7 @@
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginEnd="16dp"
-        android:contentDescription="Speak"
+        android:contentDescription="@string/widget_mic_description"
         android:src="@drawable/widget_mic_disc" />
 
     <LinearLayout
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textColor="#F1EDE2"
-            android:text="Speak tonight" />
+            android:text="@string/widget_speak_tonight" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -64,6 +64,6 @@
             android:textSize="10sp"
             android:letterSpacing="0.12"
             android:textColor="#EDCB86"
-            android:text="0 IN YOUR SKY" />
+            android:text="@string/widget_in_your_sky_placeholder" />
     </LinearLayout>
 </LinearLayout>

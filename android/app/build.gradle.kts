@@ -116,6 +116,13 @@ android {
     androidResources { generateLocaleConfig = true }
     // Robolectric tests read strings.xml (B-15 pins the English copy).
     testOptions { unitTests.isIncludeAndroidResources = true }
+    // B-15: user-facing copy lives in strings.xml. These two catch a literal
+    // creeping back into a layout or a setText call. Warnings, not errors:
+    // Compose Text("...") is invisible to both, so the real yardstick is
+    // tools/count-literals.py, and a warning here is a prompt to look.
+    lint {
+        warning += setOf("HardcodedText", "SetTextI18n")
+    }
     ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 }
 

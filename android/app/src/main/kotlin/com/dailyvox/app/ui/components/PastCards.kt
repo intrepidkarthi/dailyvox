@@ -66,6 +66,7 @@ fun RecapCard(recap: Resurface.Recap, goldText: Color, onOpen: (Entry) -> Unit) 
     val label = stringResource(R.string.recap_label)
     val range = stringResource(R.string.recap_range, recap.from.format(fmt), recap.to.format(fmt))
     val how = stringResource(R.string.recap_how_counted)
+    val description = stringResource(R.string.recap_description, label, range, counts)
 
     Column(
         Modifier
@@ -76,7 +77,7 @@ fun RecapCard(recap: Resurface.Recap, goldText: Color, onOpen: (Entry) -> Unit) 
             .padding(horizontal = 18.dp, vertical = 16.dp),
     ) {
         Column(Modifier.semantics(mergeDescendants = true) {
-            contentDescription = listOfNotNull("$label, $range.", "$counts.", name).joinToString(" ")
+            contentDescription = listOfNotNull(description, name).joinToString(" ")
         }) {
             Text("✦ $label", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = goldText)
             Spacer(Modifier.height(4.dp))

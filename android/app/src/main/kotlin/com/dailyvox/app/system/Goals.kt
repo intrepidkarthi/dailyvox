@@ -160,12 +160,14 @@ object Goals {
         )
         val n = NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(com.dailyvox.app.R.drawable.ic_nav_speak)
-            .setContentTitle("That is your week.")
+            .setContentTitle(context.getString(com.dailyvox.app.R.string.goal_notification_title))
             // No exclamation, no "keep it up". The reminder copy makes a point
             // of not trading in streak guilt and this is the same product.
             .setContentText(
-                if (nights == target) "$nights nights, which is what you set out to do."
-                else "$nights nights this week, past the $target you set."
+                if (nights == target) context.resources.getQuantityString(
+                    com.dailyvox.app.R.plurals.goal_notification_met, nights, nights)
+                else context.resources.getQuantityString(
+                    com.dailyvox.app.R.plurals.goal_notification_past, nights, nights, target)
             )
             .setContentIntent(open)
             .setAutoCancel(true)
@@ -177,8 +179,10 @@ object Goals {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         if (nm.getNotificationChannel(CHANNEL) == null) {
             nm.createNotificationChannel(
-                NotificationChannel(CHANNEL, "Weekly goal", NotificationManager.IMPORTANCE_LOW)
-                    .apply { description = "Posted once, the week you reach your goal." }
+                NotificationChannel(
+                    CHANNEL, context.getString(com.dailyvox.app.R.string.goal_channel_name),
+                    NotificationManager.IMPORTANCE_LOW,
+                ).apply { description = context.getString(com.dailyvox.app.R.string.goal_channel_description) }
             )
         }
     }

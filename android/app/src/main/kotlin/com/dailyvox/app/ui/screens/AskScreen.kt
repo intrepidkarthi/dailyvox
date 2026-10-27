@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -160,8 +164,8 @@ fun AskScreen(
             Spacer(Modifier.height(12.dp))
             // One "0 calls" claim, under the title as iOS has it. The trailing
             // "0 CALLS" beside the title said the same thing twice.
-            ScreenTitle("Ask your Twin")
-            MonoLabel("answers with receipts · 0 network calls")
+            ScreenTitle(stringResource(R.string.ask_title))
+            MonoLabel(stringResource(R.string.ask_subtitle))
             Spacer(Modifier.height(14.dp))
         }
 
@@ -176,13 +180,8 @@ fun AskScreen(
                         // The one sentence the old "what it can answer" card was
                         // for: templates compute, free text quotes. Said once,
                         // here, instead of a card that sat under every thread.
-                        if (facts.hasEnoughData)
-                            "Ask something, or pick one below. Every answer comes from your " +
-                                "own entries and names the ones it used. Anything else, it " +
-                                "finds rather than answers: the closest entries, quoted as you said them."
-                        else
-                            "A few more entries and the Twin will have something worth saying. " +
-                                "It only speaks from what you have actually said.",
+                        if (facts.hasEnoughData) stringResource(R.string.ask_intro)
+                        else stringResource(R.string.ask_intro_not_enough),
                         fontSize = 15.sp, lineHeight = 23.sp, color = scheme.onSurfaceVariant,
                     )
                 }
@@ -217,19 +216,22 @@ fun AskScreen(
                                 m.citations.forEach { c ->
                                     val entry = entries.firstOrNull { it.id == c.entryId }
                                     CiteChip(
-                                        com.dailyvox.app.system.LocaleFormat.upper(com.dailyvox.app.system.LocaleFormat.dateFormat("MMM d", "MMMd")
-                                            .format(Date(c.date))) +
-                                            " · %d%%".format((c.score * 100).toInt()),
+                                        stringResource(
+                                            R.string.ask_cite_chip,
+                                            com.dailyvox.app.system.LocaleFormat.upper(com.dailyvox.app.system.LocaleFormat.dateFormat("MMM d", "MMMd")
+                                                .format(Date(c.date))),
+                                            (c.score * 100).toInt(),
+                                        ),
                                         onClick = { entry?.let(onOpenEntry) },
                                     )
                                 }
-                                CiteChip("${m.citations.size} CITED ✦", solid = true)
+                                CiteChip(pluralStringResource(R.plurals.ask_cited, m.citations.size, m.citations.size), solid = true)
                             }
                         }
 
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            if (speakingId == m.id) "Stop" else "Read aloud",
+                            stringResource(if (speakingId == m.id) R.string.ask_read_aloud_stop else R.string.ask_read_aloud),
                             fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
                             color = scheme.primary,
                             modifier = Modifier
@@ -310,7 +312,7 @@ fun AskScreen(
                 modifier = Modifier.weight(1f).padding(vertical = 12.dp),
                 decorationBox = { inner ->
                     if (typed.isEmpty()) {
-                        Text("Ask, or find what you said about…", fontSize = 14.sp,
+                        Text(stringResource(R.string.ask_placeholder), fontSize = 14.sp,
                              color = scheme.onSurfaceVariant)
                     }
                     inner()

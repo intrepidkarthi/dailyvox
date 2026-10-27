@@ -79,7 +79,7 @@ object ShareCard {
         )
         meta.color = Color.parseColor("#E0B15C")
         meta.textSize = 22f
-        c.drawText("DAILYVOX  ·  RECORDED ON DEVICE", W / 2f, H - 96f, meta)
+        c.drawText(context.getString(com.dailyvox.app.R.string.share_entry_card_footer), W / 2f, H - 96f, meta)
 
         val out = File(context.getExternalFilesDir(null), "dailyvox-card.png")
         out.outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
