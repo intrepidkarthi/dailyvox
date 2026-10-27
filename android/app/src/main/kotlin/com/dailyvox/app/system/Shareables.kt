@@ -1,5 +1,7 @@
 package com.dailyvox.app.system
 
+import com.dailyvox.app.R
+import android.content.res.Resources
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -61,26 +63,26 @@ object Shareables {
     private fun size(card: Card): Pair<Int, Int> =
         if (card == Card.WALLPAPER) 1080 to 1920 else S to S
 
-    fun title(card: Card): String = when (card) {
-        Card.MY_SKY -> "My Sky"
-        Card.RECEIPT -> "Receipt"
-        Card.YEAR_ONE -> "Year One"
-        Card.MILESTONE -> "Milestone"
-        Card.WALLPAPER -> "Wallpaper"
-        Card.GIFT -> "Gift a star"
+    /** The card's name on the share sheet's chips (a string resource). */
+    @androidx.annotation.StringRes
+    fun titleRes(card: Card): Int = when (card) {
+        Card.MY_SKY -> R.string.share_title_my_sky
+        Card.RECEIPT -> R.string.share_title_receipt
+        Card.YEAR_ONE -> R.string.share_title_year_one
+        Card.MILESTONE -> R.string.share_title_milestone
+        Card.WALLPAPER -> R.string.share_title_wallpaper
+        Card.GIFT -> R.string.share_title_gift
     }
 
-    fun caption(card: Card): String = when (card) {
-        Card.MY_SKY -> "Stars, no words. The sky is the only journal artifact that is " +
-            "beautiful and private at the same time."
-        Card.RECEIPT -> "Everything costs zero, itemised. It argues better than a feature list."
-        Card.YEAR_ONE -> "Your year, computed by this phone alone."
-        Card.MILESTONE -> "Minted once, at nights 42, 100 and 365. You cannot buy it or " +
-            "rush it — you can only have spoken that many times."
-        Card.WALLPAPER -> "Your constellation, sized for a lock screen. The one surface " +
-            "you look at forty times a day, and nobody else can read it."
-        Card.GIFT -> "A referral card with no tracking link, because there is nothing " +
-            "here that could carry one."
+    /** The line under the preview on the share sheet (a string resource). */
+    @androidx.annotation.StringRes
+    fun captionRes(card: Card): Int = when (card) {
+        Card.MY_SKY -> R.string.share_caption_my_sky
+        Card.RECEIPT -> R.string.share_caption_receipt
+        Card.YEAR_ONE -> R.string.share_caption_year_one
+        Card.MILESTONE -> R.string.share_caption_milestone
+        Card.WALLPAPER -> R.string.share_caption_wallpaper
+        Card.GIFT -> R.string.share_caption_gift
     }
 
     /**
@@ -107,13 +109,15 @@ object Shareables {
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
         BrandFaces.init(context)
+        // The words on a card are the app's, in the reader's language (B-15).
+        val r = context.resources
         when (card) {
-            Card.MY_SKY -> drawMySky(context, c, entries)
-            Card.RECEIPT -> drawReceipt(c, entries)
-            Card.YEAR_ONE -> drawYearOne(c, entries, includeNames)
-            Card.MILESTONE -> drawMilestone(c, entries)
+            Card.MY_SKY -> drawMySky(context, r, c, entries)
+            Card.RECEIPT -> drawReceipt(r, c, entries)
+            Card.YEAR_ONE -> drawYearOne(r, c, entries, includeNames)
+            Card.MILESTONE -> drawMilestone(r, c, entries)
             Card.WALLPAPER -> drawWallpaper(c, entries, h)
-            Card.GIFT -> drawGift(c, entries)
+            Card.GIFT -> drawGift(r, c, entries)
         }
         val out = File(context.getExternalFilesDir(null), "dailyvox-${card.name.lowercase()}.png")
         out.outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -141,7 +145,7 @@ object Shareables {
         }
         runCatching {
             context.startActivity(
-                android.content.Intent.createChooser(intent, "Set as wallpaper").apply {
+                android.content.Intent.createChooser(intent, context.getString(R.string.share_set_wallpaper)).apply {
                     addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
@@ -157,7 +161,7 @@ object Shareables {
      * label and no mood, regardless of the redaction toggle. There is nothing
      * here to redact, which is the entire idea.
      */
-    private fun drawMySky(context: Context, c: Canvas, entries: List<Entry>) {
+    private fun drawMySky(context: Context, r: Resources, c: Canvas, entries: List<Entry>) {
         c.drawColor(Color.parseColor(INK))
         val rng = Random(entries.firstOrNull()?.createdAt ?: 42L)
         val dot = paint()
@@ -210,26 +214,26 @@ object Shareables {
 
         val nights = nights(entries)
         val label = mono(20f, GOLD_TEXT)
-        c.drawText("MY SKY · NIGHT $nights", 84f, 120f, label)
+        c.drawText(r.getString(R.string.share_sky_label, nights), 84f, 120f, label)
 
         if (airplaneMode(context)) {
             // Only when it is actually true. A stamp that is decoration is a
             // lie, and this one is the whole point of the format.
             val stamp = mono(20f, GOLD_TEXT).apply { textAlign = Paint.Align.RIGHT }
-            c.drawText("ON AIRPLANE MODE", S - 84f, 120f, stamp)
+            c.drawText(r.getString(R.string.share_sky_airplane), S - 84f, 120f, stamp)
         }
 
         val big = display(58f, CREAM)
-        c.drawText("${entries.size} stars.", 84f, S - 268f, big)
-        c.drawText("Zero uploads.", 84f, S - 196f, big)
-        c.drawText("Every one made from my voice, on my phone.", 84f, S - 138f, body(26f))
+        c.drawText(r.getQuantityString(R.plurals.share_sky_stars, entries.size, entries.size), 84f, S - 268f, big)
+        c.drawText(r.getString(R.string.share_sky_zero_uploads), 84f, S - 196f, big)
+        c.drawText(r.getString(R.string.share_sky_body), 84f, S - 138f, body(26f))
 
-        footer(c, "A SKY MADE OF YOU · GETDAILYVOX.COM")
+        footer(c, r.getString(R.string.share_sky_footer))
     }
 
     // ── F2 · Privacy receipt ───────────────────────────────────────────────
 
-    private fun drawReceipt(c: Canvas, entries: List<Entry>) {
+    private fun drawReceipt(r: Resources, c: Canvas, entries: List<Entry>) {
         c.drawColor(Color.parseColor(CREAM))
         val ink = Color.parseColor("#1E2A26")
 
@@ -240,9 +244,11 @@ object Shareables {
 
         val sub = mono(20f, "#6B7A72").apply { textAlign = Paint.Align.CENTER }
         c.drawText(
-            "PRIVACY RECEIPT · " +
+            r.getString(
+                R.string.share_receipt_subtitle,
                 // The reader's language (B-13); 1.2 forced Locale.US on every phone.
                 LocaleFormat.receiptDate(java.time.LocalDate.now()),
+            ),
             S / 2f, 176f, sub,
         )
         dotted(c, 216f)
@@ -252,14 +258,14 @@ object Shareables {
         // Nothing on this card is aspirational: there is no network permission
         // in the manifest, so "0" is a fact about the build, not a promise.
         val rows = listOf(
-            "ENTRIES SPOKEN" to "%,d".format(entries.size),
-            "WORDS KEPT" to "%,d".format(words),
-            "NIGHTS IN A ROW" to "%,d".format(streak(entries)),
-            "NETWORK CALLS" to "0",
-            "BYTES UPLOADED" to "0",
-            "ADS SHOWN" to "0",
-            "ACCOUNTS CREATED" to "0",
-            "SUBSCRIPTION" to "FREE",
+            r.getString(R.string.share_receipt_entries) to "%,d".format(entries.size),
+            r.getString(R.string.share_receipt_words) to "%,d".format(words),
+            r.getString(R.string.share_receipt_streak) to "%,d".format(streak(entries)),
+            r.getString(R.string.share_receipt_network) to "0",
+            r.getString(R.string.share_receipt_bytes) to "0",
+            r.getString(R.string.share_receipt_ads) to "0",
+            r.getString(R.string.share_receipt_accounts) to "0",
+            r.getString(R.string.share_receipt_subscription) to r.getString(R.string.share_receipt_free),
         )
         val left = mono(26f, "#1E2A26")
         val right = mono(26f, "#1E2A26").apply { textAlign = Paint.Align.RIGHT }
@@ -273,13 +279,13 @@ object Shareables {
         dotted(c, y + 8f)
         y += 78f
         val kept = mono(28f, "#8A6A1F")
-        c.drawText("YOUR DATA STAYED HOME", 96f, y, kept)
+        c.drawText(r.getString(R.string.share_receipt_stayed_home), 96f, y, kept)
         star(c, S - 118f, y - 10f, 20f, Color.parseColor(GOLD))
 
         dotted(c, y + 40f)
         val thanks = mono(22f, "#6B7A72").apply { textAlign = Paint.Align.CENTER }
-        c.drawText("THANK YOU FOR TALKING TO YOURSELF", S / 2f, y + 108f, thanks)
-        c.drawText("GETDAILYVOX.COM · OPEN SOURCE", S / 2f, y + 150f, thanks)
+        c.drawText(r.getString(R.string.share_receipt_thanks), S / 2f, y + 108f, thanks)
+        c.drawText(r.getString(R.string.share_receipt_footer), S / 2f, y + 150f, thanks)
         // Deliberately no "0 network calls" footer here: the receipt has already
         // itemised it twice, and a third claim starts to sound like protesting.
         // No trailing star either — centred at S-96 it landed on top of the
@@ -288,7 +294,7 @@ object Shareables {
 
     // ── F3 · Year One ──────────────────────────────────────────────────────
 
-    private fun drawYearOne(c: Canvas, entries: List<Entry>, includeNames: Boolean) {
+    private fun drawYearOne(r: Resources, c: Canvas, entries: List<Entry>, includeNames: Boolean) {
         c.drawColor(Color.parseColor(INK))
         val rng = Random(entries.size.toLong() * 7919L)
         val dot = paint()
@@ -297,25 +303,26 @@ object Shareables {
             c.drawCircle(rng.nextFloat() * S, rng.nextFloat() * S, 1f + rng.nextFloat() * 1.8f, dot)
         }
 
-        c.drawText("YOUR SKY · YEAR ONE", 84f, 130f, mono(22f, GOLD_TEXT))
+        c.drawText(r.getString(R.string.share_year_label), 84f, 130f, mono(22f, GOLD_TEXT))
 
         val nights = nights(entries)
         val big = display(66f, CREAM)
-        c.drawText("$nights nights.", 84f, 256f, big)
-        c.drawText("One sky.", 84f, 330f, big)
+        c.drawText(r.getQuantityString(R.plurals.share_year_nights, nights, nights), 84f, 256f, big)
+        c.drawText(r.getString(R.string.share_year_one_sky), 84f, 330f, big)
 
         val brightest = brightestStar(entries)
         val rows = listOf(
-            "Brightest star" to when {
-                brightest == null -> "not yet"
+            r.getString(R.string.share_year_brightest) to when {
+                brightest == null -> r.getString(R.string.share_year_brightest_none)
                 // Redacted by default. The count still communicates the shape of
                 // the year without naming a real person to a public feed.
-                !includeNames -> "someone · ${brightest.value} nights"
-                else -> "${brightest.key} · ${brightest.value} nights"
+                !includeNames -> r.getQuantityString(R.plurals.share_year_brightest_redacted, brightest.value, brightest.value)
+                else -> r.getQuantityString(R.plurals.share_year_brightest_named, brightest.value, brightest.key, brightest.value)
             },
-            "Warmest month" to warmestMonth(entries),
-            "Most-said word" to (mostSaidWord(entries) ?: "—"),
-            "Computed by" to "this phone only",
+            r.getString(R.string.share_year_warmest) to warmestMonth(entries),
+            r.getString(R.string.share_year_word) to
+                (mostSaidWord(entries)?.let { r.getString(R.string.share_year_word_quoted, it) } ?: "—"),
+            r.getString(R.string.share_year_computed) to r.getString(R.string.share_year_computed_value),
         )
         val k = body(26f, "#99F1EDE2")
         val v = body(26f, CREAM).apply { textAlign = Paint.Align.RIGHT; typeface = BrandFaces.inter(700) }
@@ -328,7 +335,7 @@ object Shareables {
             y += 92f
         }
 
-        footer(c, "YEAR ONE · 0 NETWORK CALLS")
+        footer(c, r.getString(R.string.share_year_footer))
     }
 
     // ── F · milestone stamp ────────────────────────────────────────────────
@@ -338,7 +345,7 @@ object Shareables {
      * streak to protect and nothing is taken away for missing a night — the
      * card simply cannot exist until you have actually spoken that many times.
      */
-    private fun drawMilestone(c: Canvas, entries: List<Entry>) {
+    private fun drawMilestone(r: Resources, c: Canvas, entries: List<Entry>) {
         val night = milestoneReached(entries) ?: 42
         c.drawColor(Color.parseColor(INK))
 
@@ -365,26 +372,26 @@ object Shareables {
         c.drawText("$night", cx, cy + 52f, number)
 
         val label = mono(24f, GOLD_TEXT).apply { textAlign = Paint.Align.CENTER }
-        c.drawText(if (night == 1) "NIGHT SPOKEN" else "NIGHTS SPOKEN", cx, cy + 128f, label)
+        c.drawText(r.getQuantityString(R.plurals.share_milestone_spoken, night), cx, cy + 128f, label)
 
         val big = display(52f, CREAM).apply { textAlign = Paint.Align.CENTER }
         // Derived from the number on the seal, never a fallback string. A probe
         // with the gate forced open rendered a seal reading 1 under a headline
         // reading "Forty-two nights." — the else branch could disagree with the
         // figure above it, and adding a milestone would have shipped that.
-        c.drawText(milestoneHeadline(night), cx, S - 236f, big)
+        c.drawText(milestoneHeadline(r, night), cx, S - 236f, big)
         val sub = body(26f).apply { textAlign = Paint.Align.CENTER }
-        c.drawText("Nobody sold me this. I just kept talking.", cx, S - 178f, sub)
+        c.drawText(r.getString(R.string.share_milestone_body), cx, S - 178f, sub)
 
-        footer(c, "MINTED ON THIS PHONE · GETDAILYVOX.COM")
+        footer(c, r.getString(R.string.share_milestone_footer))
     }
 
-    private fun milestoneHeadline(night: Int): String = when (night) {
-        365 -> "A year of showing up."
-        100 -> "One hundred nights."
-        42 -> "Forty-two nights."
-        1 -> "One night."
-        else -> "$night nights."
+    private fun milestoneHeadline(r: Resources, night: Int): String = when (night) {
+        365 -> r.getString(R.string.share_milestone_365)
+        100 -> r.getString(R.string.share_milestone_100)
+        42 -> r.getString(R.string.share_milestone_42)
+        1 -> r.getString(R.string.share_milestone_1)
+        else -> r.getQuantityString(R.plurals.share_milestone_nights, night, night)
     }
 
     // ── F · sky wallpaper ──────────────────────────────────────────────────
@@ -448,30 +455,30 @@ object Shareables {
 
     // ── F · gift a star ────────────────────────────────────────────────────
 
-    private fun drawGift(c: Canvas, entries: List<Entry>) {
+    private fun drawGift(r: Resources, c: Canvas, entries: List<Entry>) {
         c.drawColor(Color.parseColor(INK_SOFT))
         val cx = S / 2f
 
         star(c, cx, 300f, 74f, Color.parseColor(GOLD))
 
         val big = display(60f, CREAM).apply { textAlign = Paint.Align.CENTER }
-        c.drawText("I kept ${entries.size} stars.", cx, 490f, big)
-        c.drawText("Start yours.", cx, 566f, big)
+        c.drawText(r.getQuantityString(R.plurals.share_gift_kept, entries.size, entries.size), cx, 490f, big)
+        c.drawText(r.getString(R.string.share_gift_start), cx, 566f, big)
 
         val sub = body(27f).apply { textAlign = Paint.Align.CENTER }
-        c.drawText("Forty-two seconds a night, spoken not typed.", cx, 648f, sub)
-        c.drawText("Free, open source, and it never goes online.", cx, 694f, sub)
+        c.drawText(r.getString(R.string.share_gift_body_1), cx, 648f, sub)
+        c.drawText(r.getString(R.string.share_gift_body_2), cx, 694f, sub)
 
         // Said out loud because it is unusual and checkable: there is no
         // referral code on this card, and no way to add one -- the app cannot
         // phone home to attribute anything.
         val note = mono(21f, GOLD_TEXT).apply { textAlign = Paint.Align.CENTER }
-        c.drawText("NO TRACKING LINK · NOTHING TO ATTRIBUTE", cx, S - 300f, note)
+        c.drawText(r.getString(R.string.share_gift_note), cx, S - 300f, note)
 
         val url = display(34f, CREAM).apply { textAlign = Paint.Align.CENTER }
         c.drawText("getdailyvox.com", cx, S - 220f, url)
 
-        footer(c, "A SKY MADE OF YOU")
+        footer(c, r.getString(R.string.share_gift_footer))
     }
 
     // ── shared bits ────────────────────────────────────────────────────────
@@ -610,7 +617,7 @@ object Shareables {
             .groupingBy { it }.eachCount()
             .filter { it.value >= 3 }
             .maxByOrNull { it.value }
-            ?.let { "\"${it.key}\"" }
+            ?.key
     }
 }
 

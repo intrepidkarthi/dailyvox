@@ -1,5 +1,8 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -82,7 +85,7 @@ fun SettingsScreen(
                  modifier = Modifier.clip(RoundedCornerShape(24.dp)).clickable(onClick = onBack)
                      .defaultMinSize(48.dp, 48.dp).wrapContentSize())
             Spacer(Modifier.width(4.dp))
-            Text("Settings", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
+            Text(stringResource(R.string.settings_title), fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
         }
 
@@ -90,13 +93,13 @@ fun SettingsScreen(
         // First, because it is the product's argument. Every line is a fact the
         // reader can check without trusting this screen.
         SettingsCard {
-            SectionLabel("DATA SHIELD", positive)
+            SectionLabel(stringResource(R.string.settings_shield_label), positive)
             Spacer(Modifier.height(11.dp))
-            LedgerRow("Network calls made") {
-                Mono("0 · EVER", positive)
+            LedgerRow(stringResource(R.string.settings_shield_network)) {
+                Mono(stringResource(R.string.settings_shield_network_value), positive)
             }
-            LedgerRow("Encryption at rest") { Mono("AES-256", scheme.onSurfaceVariant) }
-            LedgerRow("Biometric lock") {
+            LedgerRow(stringResource(R.string.settings_shield_encryption)) { Mono("AES-256", scheme.onSurfaceVariant) }
+            LedgerRow(stringResource(R.string.settings_shield_lock)) {
                 Switch(
                     checked = lockEnabled, onCheckedChange = onLock, enabled = lockAvailable,
                     colors = dvSwitchColors(),
@@ -107,16 +110,14 @@ fun SettingsScreen(
             // be decoration. It returns with a real Body signals opt-in.
             Spacer(Modifier.height(11.dp))
             Text(
-                "The complete permission list: microphone, notifications, vibration, " +
-                    "biometrics. No network permission of any kind — check it in " +
-                    "Android Settings › Apps › DailyVox.",
+                stringResource(R.string.settings_shield_permissions),
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(11.dp))
             // This card is the privacy receipt, so it is also where you take a
             // copy of it. §F: the screenshot does the arguing.
             Text(
-                "Share this as a receipt", fontSize = 11.5.sp,
+                stringResource(R.string.settings_shield_share), fontSize = 11.5.sp,
                 fontWeight = FontWeight.SemiBold, color = goldText,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
@@ -128,13 +129,13 @@ fun SettingsScreen(
 
         // ── THEME ──────────────────────────────────────────────────────────
         SettingsCard {
-            SectionLabel("THEME", scheme.onSurfaceVariant)
+            SectionLabel(stringResource(R.string.settings_theme_label), scheme.onSurfaceVariant)
             Spacer(Modifier.height(11.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(
-                    ThemeChoice.LIGHT to "Day",
-                    ThemeChoice.DARK to "Night",
-                    ThemeChoice.SUNSET to "Sunset",
+                    ThemeChoice.LIGHT to stringResource(R.string.settings_theme_day),
+                    ThemeChoice.DARK to stringResource(R.string.settings_theme_night),
+                    ThemeChoice.SUNSET to stringResource(R.string.settings_theme_sunset),
                 ).forEach { (choice, label) ->
                     val on = choice == theme
                     Text(
@@ -167,7 +168,7 @@ fun SettingsScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SectionLabel("DAILY REMINDER · LOCAL ONLY", scheme.onSurfaceVariant)
+                SectionLabel(stringResource(R.string.settings_reminder_label), scheme.onSurfaceVariant)
                 Switch(
                     checked = reminderOn,
                     onCheckedChange = { onReminder(it, reminderHour) },
@@ -182,7 +183,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "\u201CTonight\u2019s star is waiting\u201D",
+                    stringResource(R.string.settings_reminder_preview),
                     fontSize = 12.sp, lineHeight = 17.sp,
                     fontWeight = FontWeight.Medium, color = scheme.onSurface,
                 )
@@ -259,7 +260,7 @@ fun SettingsScreen(
             // reads today's entries and returns without notifying if one exists,
             // and there is no network permission for a push server to arrive on.
             Text(
-                "Skips once you\u2019ve spoken · scheduled on-device, no push servers.",
+                stringResource(R.string.settings_reminder_note),
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
             )
         }
@@ -278,7 +279,7 @@ fun SettingsScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SectionLabel("WEEKLY GOAL · OFF BY DEFAULT", scheme.onSurfaceVariant)
+                SectionLabel(stringResource(R.string.settings_goal_label), scheme.onSurfaceVariant)
                 Switch(
                     checked = goalOn,
                     onCheckedChange = { goalOn = it; com.dailyvox.app.system.Goals.setEnabled(context, it) },
@@ -288,7 +289,7 @@ fun SettingsScreen(
             if (goalOn) {
                 Spacer(Modifier.height(11.dp))
                 Text(
-                    "Nights a week you want to show up",
+                    stringResource(R.string.settings_goal_prompt),
                     fontSize = 12.sp, lineHeight = 17.sp,
                     fontWeight = FontWeight.Medium, color = scheme.onSurface,
                 )
@@ -317,7 +318,7 @@ fun SettingsScreen(
                     }
                 }
                 Spacer(Modifier.height(10.dp))
-                LedgerRow("Tell me when I reach it") {
+                LedgerRow(stringResource(R.string.settings_goal_notify)) {
                     Switch(
                         checked = goalNotify,
                         onCheckedChange = {
@@ -332,7 +333,7 @@ fun SettingsScreen(
                 // it is what stops three recordings in one evening from clearing
                 // a target of three.
                 Text(
-                    "Counts nights, not entries \u00b7 once a week at most \u00b7 never a reminder that you missed one.",
+                    stringResource(R.string.settings_goal_note),
                     fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
                 )
             }
@@ -340,14 +341,14 @@ fun SettingsScreen(
 
         // ── BACKUP & EXPORT ────────────────────────────────────────────────
         SettingsCard {
-            SectionLabel("BACKUP & EXPORT", scheme.onSurfaceVariant)
+            SectionLabel(stringResource(R.string.settings_backup_label), scheme.onSurfaceVariant)
             Spacer(Modifier.height(11.dp))
-            ChevronRow("Export as PDF", "· printable, shareable", onExportPdf)
-            ChevronRow("Export as JSON", "· readable, portable", onExport)
-            ChevronRow("Export as Markdown", "· Obsidian, Bear, anything", onExportMarkdown)
-            ChevronRow("Export as CSV", "· spreadsheets", onExportCsv)
-            ChevronRow("Encrypted backup", "· opens on any phone", onExportEncrypted)
-            ChevronRow("Import backup", "· adds, never replaces", onImport)
+            ChevronRow(stringResource(R.string.settings_export_pdf), stringResource(R.string.settings_export_pdf_hint), onExportPdf)
+            ChevronRow(stringResource(R.string.settings_export_json), stringResource(R.string.settings_export_json_hint), onExport)
+            ChevronRow(stringResource(R.string.settings_export_markdown), stringResource(R.string.settings_export_markdown_hint), onExportMarkdown)
+            ChevronRow(stringResource(R.string.settings_export_csv), stringResource(R.string.settings_export_csv_hint), onExportCsv)
+            ChevronRow(stringResource(R.string.settings_export_encrypted), stringResource(R.string.settings_export_encrypted_hint), onExportEncrypted)
+            ChevronRow(stringResource(R.string.settings_import), stringResource(R.string.settings_import_hint), onImport)
         }
 
         // ── RESEARCH ───────────────────────────────────────────────────────
@@ -356,13 +357,14 @@ fun SettingsScreen(
         // consent form and rides every export, so it is shown beside the export
         // and copies in one tap -- hand-copying it is where typos come from.
         SettingsCard {
-            SectionLabel("RESEARCH", scheme.onSurfaceVariant)
+            SectionLabel(stringResource(R.string.settings_research_label), scheme.onSurfaceVariant)
             Spacer(Modifier.height(11.dp))
             val code = remember { com.dailyvox.app.system.Research.participantCode(context) }
             var copied by remember { mutableStateOf(false) }
-            LedgerRow("Participant code") {
+            val codeLabel = stringResource(R.string.settings_participant_code)
+            LedgerRow(codeLabel) {
                 Text(
-                    if (copied) "$code  \u2713" else code,
+                    if (copied) stringResource(R.string.settings_participant_code_copied, code) else code,
                     fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 12.sp,
                     letterSpacing = 0.5.sp, fontWeight = FontWeight.SemiBold, color = goldText,
                     modifier = Modifier
@@ -370,13 +372,13 @@ fun SettingsScreen(
                         .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
                         .clickable {
                             val cm = context.getSystemService(android.content.ClipboardManager::class.java)
-                            cm?.setPrimaryClip(android.content.ClipData.newPlainText("Participant code", code))
+                            cm?.setPrimaryClip(android.content.ClipData.newPlainText(codeLabel, code))
                             copied = true
                         }
                         .padding(horizontal = 10.dp, vertical = 6.dp),
                 )
             }
-            ChevronRow("Export research data", "· labelled entries", onExportResearch)
+            ChevronRow(stringResource(R.string.settings_export_research), stringResource(R.string.settings_export_research_hint), onExportResearch)
             // Same preference key as iOS. On Android the mood check already
             // follows every entry, so the switch does one thing here: every
             // third day, the question of the day is a plain "log your day".
@@ -399,7 +401,7 @@ fun SettingsScreen(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Nothing leaves this phone unless you share the file yourself.",
+                stringResource(R.string.settings_research_note),
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
             )
         }
@@ -415,7 +417,7 @@ fun SettingsScreen(
         }
 
         SettingsCard {
-            SectionLabel("WORDS WE KEEP GETTING WRONG", scheme.onSurfaceVariant)
+            SectionLabel(stringResource(R.string.settings_words_label), scheme.onSurfaceVariant)
             Spacer(Modifier.height(9.dp))
             // The only user-facing lever on the port's biggest measured
             // weakness: a name the recogniser mishears never reaches the graph
@@ -428,12 +430,12 @@ fun SettingsScreen(
                 OutlinedTextField(
                     value = draft, onValueChange = { draft = it },
                     keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
-                    placeholder = { Text("Add a name", fontSize = 12.sp) },
+                    placeholder = { Text(stringResource(R.string.settings_words_placeholder), fontSize = 12.sp) },
                     singleLine = true, modifier = Modifier.weight(1f),
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    "Add", fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                    stringResource(R.string.settings_words_add), fontSize = 12.sp, fontWeight = FontWeight.Bold,
                     color = scheme.onPrimary,
                     modifier = Modifier
                         .clip(RoundedCornerShape(14.dp))
@@ -452,7 +454,7 @@ fun SettingsScreen(
                         verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     words.forEach { w ->
                         Text(
-                            "$w  ×", fontSize = 9.5.sp, letterSpacing = 0.5.sp,
+                            stringResource(R.string.settings_words_chip, w), fontSize = 9.5.sp, letterSpacing = 0.5.sp,
                             fontWeight = FontWeight.SemiBold, color = goldText,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
@@ -468,7 +470,7 @@ fun SettingsScreen(
             }
             Spacer(Modifier.height(9.dp))
             Text(
-                "These make the recogniser more likely to hear the word. A nudge, not a guarantee.",
+                stringResource(R.string.settings_words_note),
                 fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
             )
         }
@@ -488,14 +490,14 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
-                Text("Enjoying DailyVox?", fontSize = 12.sp,
+                Text(stringResource(R.string.settings_review_title), fontSize = 12.sp,
                      fontWeight = FontWeight.Medium, color = scheme.onSurface)
-                Text("A review helps more than you\u2019d think.", fontSize = 10.5.sp,
+                Text(stringResource(R.string.settings_review_body), fontSize = 10.5.sp,
                      lineHeight = 15.sp, color = scheme.onSurfaceVariant)
             }
             Spacer(Modifier.width(12.dp))
             Text(
-                "Rate \u2726", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold,
+                stringResource(R.string.settings_review_rate), fontSize = 11.sp, fontWeight = FontWeight.ExtraBold,
                 color = com.dailyvox.app.ui.theme.NightBackground,
                 modifier = Modifier
                     .clip(RoundedCornerShape(13.dp))
@@ -533,9 +535,9 @@ fun SettingsScreen(
             Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("In development · open source", fontSize = 11.sp,
+            Text(stringResource(R.string.settings_footer_status), fontSize = 11.sp,
                  color = scheme.onSurfaceVariant)
-            Text("$entryCount entries", fontSize = 11.sp, color = scheme.onSurfaceVariant)
+            Text(pluralStringResource(R.plurals.settings_footer_entries, entryCount, entryCount), fontSize = 11.sp, color = scheme.onSurfaceVariant)
         }
         Spacer(Modifier.height(130.dp))
     }
@@ -611,10 +613,19 @@ private fun Divider() {
         .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.12f)))
 }
 
-private fun hourLabel(h: Int): String = when {
-    h == 12 -> "noon"
-    h > 12 -> "${h - 12}pm"
-    else -> "${h}am"
+/**
+ * The reminder hour on a chip. English keeps 1.2's "9pm" and "noon" (the
+ * strings below); every other language gets the platform's own hour format
+ * (B-13), never a clock hand-built from English parts.
+ */
+@Composable
+private fun hourLabel(h: Int): String {
+    val english = when {
+        h == 12 -> stringResource(R.string.settings_hour_noon)
+        h > 12 -> stringResource(R.string.settings_hour_pm, h - 12)
+        else -> stringResource(R.string.settings_hour_am, h)
+    }
+    return com.dailyvox.app.system.LocaleFormat.hourLabel(h, english)
 }
 
 /** Brand green track, cream thumb — not M3's baseline purple-tinted defaults. */
