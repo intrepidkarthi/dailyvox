@@ -88,7 +88,6 @@ struct TodayView: View {
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
     @State private var errorTitle: String?
-    @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var processingPhase: Int = 0
     @State private var processingTimer: Timer?
@@ -125,6 +124,12 @@ struct TodayView: View {
     /// "Now" for resurfacing, moved on when the app comes forward so a screen
     /// left open overnight does not keep showing yesterday's week-ago entry.
     @State private var resurfaceClock = Date()
+    /// Today's questions, first one showing. Worked out in a task keyed on
+    /// the day and the entries, like resurfacing, never inside `body`.
+    @State private var questionLineup: [DailyQuestion] = []
+    /// How many times today's question has been changed, as "day:turn", so a
+    /// relaunch keeps the one you moved to and midnight starts over.
+    @AppStorage("dailyQuestionTurn") private var questionTurnStored = ""
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -234,6 +239,7 @@ struct TodayView: View {
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
                                title: "Today",
+                               prompt: todaysQuestion.text,
                                footnote: "Typed, not recorded. Nothing is sent to DailyVox.",
                                style: .themed,
                                onSave: saveTypedEntry,
@@ -521,6 +527,12 @@ struct TodayView: View {
         .task(id: resurfaceKey) {
             resurface = ResurfaceSnapshot.make(from: PastEntry.snapshots(of: allEntries), now: Date())
         }
+        .task(id: questionKey) {
+            questionLineup = DailyQuestions.lineup(on: Date(),
+                                                   entries: QuestionSource.snapshots(of: allEntries),
+                                                   pilotEnabled: pilotLabelingEnabled,
+                                                   read: DailyQuestions.engineReading)
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             Task { await BodyWhisperProvider.shared.refreshIfNeeded() }
             resurfaceClock = Date()
@@ -536,6 +548,12 @@ struct TodayView: View {
         let recapDue = Resurfacing.recapWeekIfDue(now: resurfaceClock) != nil
         let edited = allEntries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
         return "\(day)|\(recapDue)|\(allEntries.count)|\(edited)"
+    }
+
+    /// Changes when the day's question could: the day, the pilot setting,
+    /// and any entry added, deleted or edited.
+    private var questionKey: String {
+        "\(resurfaceKey)|\(pilotLabelingEnabled)"
     }
 
     /// Only what exists: each card is absent, not empty, when there is no
@@ -628,11 +646,7 @@ struct TodayView: View {
     /// answer it with are one gesture apart.
     private var questionAndMic: some View {
         VStack(spacing: 26) {
-            Text("How was your day,\nreally?")
-                .font(.dv(size: 30, weight: .bold, design: .rounded))
-                .foregroundColor(theme.textColor)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+            dailyQuestionView
 
             recordButton
 
@@ -650,6 +664,90 @@ struct TodayView: View {
                 .padding(.top, -20)   // reads as the caption's second line, not a fourth object
         }
         .frame(maxWidth: .infinity)
+    }
+
+    /// The day's question, as one control: tap it, or the small link under
+    /// it, for a different one. Never in the way of the mic — speaking
+    /// without reading it is the main path, and the recording does not know
+    /// or care which question was showing.
+    private var todaysQuestion: DailyQuestion {
+        // Store screenshots keep the original question whatever day they run.
+        if ScreenshotScene.current != nil { return DailyQuestions.fallback }
+        // Until the task has run, the day's lineup without grounding — cheap,
+        // and the same first question on every day but a grounded one — so
+        // the screen does not open on one question and flick to another.
+        let lineup = questionLineup.isEmpty
+            ? DailyQuestions.lineup(on: resurfaceClock, entries: [], pilotEnabled: pilotLabelingEnabled,
+                                    read: { _ in DailyQuestions.Reading() })
+            : questionLineup
+        return DailyQuestions.question(in: lineup,
+                                       turn: DailyQuestions.turn(from: questionTurnStored, on: resurfaceClock))
+    }
+
+    private func nextQuestion() {
+        guard recordingState == .idle, questionLineup.count > 1 else { return }
+        HapticManager.shared.selectionChanged()
+        let turn = DailyQuestions.turn(from: questionTurnStored, on: resurfaceClock) + 1
+        withAnimation(.easeInOut(duration: 0.25)) {
+            questionTurnStored = DailyQuestions.stored(turn: turn % questionLineup.count, on: resurfaceClock)
+        }
+    }
+
+    private var dailyQuestionView: some View {
+        let question = todaysQuestion
+        return VStack(spacing: 8) {
+            Button(action: nextQuestion) {
+                VStack(spacing: 8) {
+                    if let lead = question.lead {
+                        Text(lead)
+                            .font(.dv(.subheadline, design: .rounded, weight: .semibold))
+                            .foregroundColor(theme.isNight ? theme.goldText : theme.accentColor)
+                    }
+                    Text(question.text)
+                        .font(.dv(size: question.text.count > 34 ? 25 : 30, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.textColor)
+                    if let detail = question.detail {
+                        Text(detail)
+                            .font(.dv(.subheadline, design: .rounded))
+                            .foregroundColor(theme.secondaryTextColor)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .id(question.text)
+                .transition(.opacity)
+            }
+            .buttonStyle(.plain)
+            .disabled(recordingState != .idle)
+            .accessibilityLabel(question.spoken)
+            .accessibilityHint(String(localized: "Double-tap for a different question. You can speak about anything.",
+                                      comment: "VoiceOver hint on the question of the day above the mic."))
+            .accessibilityAddTraits(.isHeader)
+
+            if questionLineup.count > 1, ScreenshotScene.current == nil {
+                Button(action: nextQuestion) {
+                    Label {
+                        Text("Different question")
+                    } icon: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                    }
+                    .font(.dv(.footnote, design: .rounded, weight: .medium))
+                    .foregroundColor(theme.secondaryTextColor)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, 12)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(.vertical, -10)
+                .opacity(recordingState == .idle ? 1 : 0)
+                .disabled(recordingState != .idle)
+                .accessibilityHidden(recordingState != .idle)
+                .accessibilityLabel(String(localized: "Different question",
+                                           comment: "Button under the question of the day that shows another question."))
+            }
+        }
     }
 
     /// The quiet way out of speaking. Same words as onboarding's escape hatch
@@ -736,50 +834,6 @@ struct TodayView: View {
             return "Welcome to your sky"
         }
         return timeGreeting
-    }
-
-    // MARK: - Prompts Section
-
-    /// Every third day, pilot participants see a plain "log your day" prompt
-    /// first — the neutral-rich slice the affect research needs (R1 §10
-    /// item 5); the default prompts all pull toward an emotional register.
-    /// Day-of-year cadence keeps it deterministic and testable.
-    private var orderedPrompts: [EntryPrompt] {
-        guard pilotLabelingEnabled,
-              let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()),
-              day % 3 == 0
-        else { return EntryPrompt.defaultPrompts }
-        let neutral = EntryPrompt.neutralPrompts[(day / 3) % EntryPrompt.neutralPrompts.count]
-        return [neutral] + EntryPrompt.defaultPrompts
-    }
-
-    private var promptsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("A starting thought")
-                    .font(.dv(.subheadline, weight: .semibold))
-                Spacer()
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(orderedPrompts) { prompt in
-                        PromptChip(
-                            prompt: prompt,
-                            isSelected: prompt == selectedPrompt
-                        ) {
-                            if selectedPrompt == prompt {
-                                selectedPrompt = nil
-                            } else {
-                                selectedPrompt = prompt
-                                HapticManager.shared.selectionChanged()
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 2)
-            }
-        }
     }
 
     // MARK: - Reflection
@@ -1062,14 +1116,6 @@ struct TodayView: View {
                     Text("Your voice stays on this device")
                         .font(.dv(.caption, weight: .medium))
                         .foregroundColor(.secondary)
-
-                    if let prompt = selectedPrompt {
-                        Text(prompt.detail)
-                            .font(.dv(.caption))
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 4)
-                    }
                 }
             }
         }
@@ -1446,8 +1492,6 @@ struct TodayView: View {
     /// What happens at the moment of capture: before the transcript for voice,
     /// after the text for typing. Assumes the entry has just been saved.
     private func entryCaptured(_ entry: DiaryEntry) {
-        // Clear any selected prompt once an entry has been saved
-        selectedPrompt = nil
         WidgetCenter.shared.reloadAllTimelines()
         // Tonight is spoken for, so drop tonight's reminder. The Settings
         // card promises "skips once you've spoken" and this is the moment
@@ -1754,98 +1798,33 @@ struct TodayReflectionCard: View {
     }
 }
 
-struct EntryPrompt: Identifiable, Equatable {
-    let id = UUID()
+/// A prompt with a short title and the longer guidance under it. Only the
+/// research pilot's neutral prompts use this shape now; the everyday
+/// questions live in `DailyQuestions`.
+struct EntryPrompt: Equatable {
     let title: String
     let detail: String
 
-    static let defaultPrompts: [EntryPrompt] = [
-        EntryPrompt(
-            title: "Daily reflection",
-            detail: "What is one moment from today that you want to remember?"
-        ),
-        EntryPrompt(
-            title: "Gratitude",
-            detail: "What are three small things you feel grateful for right now?"
-        ),
-        EntryPrompt(
-            title: "Energy check",
-            detail: "How does your body feel today - tense, tired, or calm?"
-        ),
-        EntryPrompt(
-            title: "Letting go",
-            detail: "What is one worry you can gently put down for tonight?"
-        ),
-        EntryPrompt(
-            title: "Self-kindness",
-            detail: "If you spoke to yourself like a friend, what would you say?"
-        ),
-        EntryPrompt(
-            title: "Tomorrow",
-            detail: "What is one gentle intention you have for tomorrow?"
-        )
-    ]
-
     /// Plain, factual prompts (pilot protocol R1 §10 item 5): neutral is the
-    /// scarce hard class in real diary data, and every default prompt above
-    /// invites an emotional register. Pilot days periodically lead with one
-    /// of these instead.
-    static let neutralPrompts: [EntryPrompt] = [
-        EntryPrompt(
-            title: "Just log your day",
-            detail: "Walk through your day start to finish - what you did, where, with whom. Facts are enough."
-        ),
-        EntryPrompt(
-            title: "Plain notes",
-            detail: "What did today actually look like? No reflection needed - just what happened."
-        )
-    ]
-}
-
-struct PromptChip: View {
-    let prompt: EntryPrompt
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    /// The card underneath is `warmCardBackground`, which is navy at night —
-    /// but the title was pinned to `DS.Palette.ink` and the detail to
-    /// `inkMute`, both DAY tokens. At night the prompt titles rendered
-    /// near-black on navy and simply were not there.
-    @Environment(\.dvTheme) private var theme
-
-    var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(prompt.title)
-                    .font(.dsCallout)
-                    .foregroundColor(isSelected
-                                     ? (theme.isNight ? DS.Palette.navy : DS.Palette.sageDeep)
-                                     : theme.textColor)
-                Text(prompt.detail)
-                    .font(.dsCaption)
-                    .foregroundColor(isSelected
-                                     ? (theme.isNight ? DS.Palette.navy.opacity(0.7) : DS.Palette.inkMute)
-                                     : theme.secondaryTextColor)
-                    .lineLimit(2)
-            }
-            .padding(.horizontal, DS.Space.md)
-            .padding(.vertical, DS.Space.sm)
-            .frame(maxWidth: 280, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .fill(isSelected
-                          ? (theme.isNight ? DS.Palette.gold : DS.Palette.tintSage)
-                          : theme.cardBackgroundColor)
+    /// scarce hard class in real diary data, and most everyday questions
+    /// invite an emotional register. Pilot days periodically lead with one
+    /// of these instead. Order matters: `DailyQuestions.pilotNeutral` picks
+    /// by index.
+    static var neutralPrompts: [EntryPrompt] {
+        [
+            EntryPrompt(
+                title: String(localized: "Just log your day",
+                              comment: "Research pilot: a neutral question of the day."),
+                detail: String(localized: "Walk through your day start to finish - what you did, where, with whom. Facts are enough.",
+                               comment: "Research pilot: guidance under the neutral question of the day.")
+            ),
+            EntryPrompt(
+                title: String(localized: "Plain notes",
+                              comment: "Research pilot: a neutral question of the day."),
+                detail: String(localized: "What did today actually look like? No reflection needed - just what happened.",
+                               comment: "Research pilot: guidance under the neutral question of the day.")
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .stroke(isSelected
-                            ? theme.accentColor.opacity(0.40)
-                            : theme.textColor.opacity(0.06), lineWidth: 1)
-            )
-            .dsShadowSoft()
-        }
-        .buttonStyle(.plain)
+        ]
     }
 }
 
