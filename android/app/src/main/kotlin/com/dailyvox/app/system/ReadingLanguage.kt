@@ -78,5 +78,16 @@ object ReadingLanguage {
     fun valence(entry: Entry): Float? =
         entry.valence?.takeIf { reads(LanguageFeature.SENTIMENT, entry) }
 
+    /**
+     * The entry's people where names can be read in its language, otherwise
+     * empty. A German entry saved before 1.3 can still carry every capitalised
+     * noun ("Arbeit") in its entities column, and nothing rewrites that
+     * column, so every surface that shows or counts people reads them through
+     * here rather than [Entry.entityList]. For an English entry, exactly
+     * [Entry.entityList].
+     */
+    fun people(entry: Entry): List<String> =
+        if (com.dailyvox.twin.NameDetector.canRead(entry.text, of(entry))) entry.entityList else emptyList()
+
     private fun isEnglish(tag: String) = LanguageGate.baseCode(tag) == "en"
 }

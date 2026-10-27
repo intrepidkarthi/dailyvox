@@ -221,7 +221,7 @@ internal fun Entry.toChatEntry(): com.dailyvox.twin.ChatEntry {
         // the gate existed can still carry every capitalised noun as a
         // "person"; the Twin's people and the "X lifts you" finding must not
         // count them.
-        entities = if (com.dailyvox.twin.NameDetector.canRead(text, reading)) entityList else emptyList(),
+        entities = com.dailyvox.app.system.ReadingLanguage.people(this),
         sleepHours = sleepHours,
         hourOfDay = hourOfDay,
         dayOfWeek = dayOfWeek,

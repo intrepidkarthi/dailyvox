@@ -206,7 +206,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         val all = db.entries().allOnce()
         if (all.isEmpty()) return@withContext 0
         val volume = (all.size / 200f).coerceAtMost(1f)
-        val breadth = (all.flatMap { it.entityList }.toSet().size / 40f).coerceAtMost(1f)
+        val breadth = (all.flatMap { com.dailyvox.app.system.ReadingLanguage.people(it) }.toSet().size / 40f).coerceAtMost(1f)
         ((0.6f * volume + 0.4f * breadth) * 100).toInt().coerceIn(0, 100)
     }
 

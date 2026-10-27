@@ -169,8 +169,7 @@ object EarlySignals {
 
         // People only from entries whose names can be read (German, caseless
         // scripts: no), the same gate the engine's detector uses.
-        val names = spoken.filter { com.dailyvox.twin.NameDetector.canRead(it.text, ReadingLanguage.of(it)) }
-            .flatMap { it.entityList }.distinct()
+        val names = spoken.flatMap { ReadingLanguage.people(it) }.distinct()
             .map { name -> Recurring(name, spoken.count { Reflection.nameIn(name, it.text) }, true) }
             .filter { it.entries >= MIN_RECURRING_ENTRIES }
             .sortedWith(compareByDescending<Recurring> { it.entries }.thenBy { it.word })

@@ -118,12 +118,7 @@ fun TwinScreen(
         )
     }
 
-    val named = remember(entries) {
-        entries.flatMap { it.entityList }
-            .groupingBy { it }.eachCount()
-            .entries.sortedByDescending { it.value }
-            .take(3).map { it.key to it.value }
-    }
+    val named = remember(entries) { constellationNames(entries) }
     // Whether this phone's recogniser is capitalising names at all. The
     // constellation is built entirely from capitalised tokens, so a sky with no
     // names has two completely different causes and they need different words.
@@ -585,3 +580,15 @@ private fun DrawScope.drawSky(
         )
     }
 }
+
+/**
+ * The constellation's named stars: the three people on the most entries,
+ * from entries whose names the gate can read (B-5). A German entry saved
+ * before 1.3 can still carry "Arbeit" as a person; in the Twin's sky that
+ * would be a claim about a life.
+ */
+internal fun constellationNames(entries: List<com.dailyvox.app.data.Entry>): List<Pair<String, Int>> =
+    entries.flatMap { com.dailyvox.app.system.ReadingLanguage.people(it) }
+        .groupingBy { it }.eachCount()
+        .entries.sortedByDescending { it.value }
+        .take(3).map { it.key to it.value }

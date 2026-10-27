@@ -110,10 +110,10 @@ object Reflection {
         // as written. A detector hit that the text does not contain would put
         // a name on screen the user never said. Whole words only, so "Ann"
         // is not found inside "Annual" and "Sam" not inside "Samsung".
-        val person = entry.entityList.firstOrNull { nameIn(it, entry.text) }
+        val person = ReadingLanguage.people(entry).firstOrNull { nameIn(it, entry.text) }
         val personEarlier = if (person == null) 0 else earlier.count { e ->
             entry.createdAt - e.createdAt <= 30 * DAY &&
-                (e.entityList.any { it.equals(person, ignoreCase = true) } ||
+                (ReadingLanguage.people(e).any { it.equals(person, ignoreCase = true) } ||
                     nameIn(person, e.text))
         }
 

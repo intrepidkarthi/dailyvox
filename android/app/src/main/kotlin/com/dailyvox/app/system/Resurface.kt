@@ -167,7 +167,7 @@ object Resurface {
         // Counted per entry: saying "Sarah" five times in one entry is one
         // entry about Sarah.
         val counts = week
-            .flatMap { e -> e.entityList.filter { Reflection.nameIn(it, e.text) } }
+            .flatMap { e -> ReadingLanguage.people(e).filter { Reflection.nameIn(it, e.text) } }
             .distinct()
             .map { name -> name to week.count { Reflection.nameIn(name, it.text) } }
             .filter { it.second >= RECAP_MIN_MENTIONS }

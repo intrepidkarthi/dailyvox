@@ -174,7 +174,7 @@ object DailyQuestion {
         val saidToday = withText.filter { daysAgo(it) == 0L }
 
         return recent
-            .flatMap { e -> e.entityList.filter { looksLikeName(it) && saidAsWritten(it, e.text) } }
+            .flatMap { e -> ReadingLanguage.people(e).filter { looksLikeName(it) && saidAsWritten(it, e.text) } }
             .distinct()
             // "Will" opened a sentence once and "will" is everywhere else: a
             // word the user also says lowercase is a word, not a name.

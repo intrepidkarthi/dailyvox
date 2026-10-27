@@ -548,8 +548,7 @@ object Shareables {
      * person; on a card titled "Brightest star" that is a claim about a life.
      */
     internal fun brightestStar(entries: List<Entry>): Map.Entry<String, Int>? =
-        entries.filter { com.dailyvox.twin.NameDetector.canRead(it.text, ReadingLanguage.of(it)) }
-            .flatMap { it.entityList }.groupingBy { it }.eachCount()
+        entries.flatMap { ReadingLanguage.people(it) }.groupingBy { it }.eachCount()
             .maxByOrNull { it.value }
 
     private fun warmestMonth(entries: List<Entry>): String {

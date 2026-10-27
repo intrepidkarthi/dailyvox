@@ -3,13 +3,16 @@ package com.dailyvox.app
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.data.Repo
 import com.dailyvox.app.data.toChatEntry
+import com.dailyvox.app.system.DailyQuestion
 import com.dailyvox.app.system.EarlySignals
 import com.dailyvox.app.system.MoodSuggestion
 import com.dailyvox.app.system.ReadingLanguage
 import com.dailyvox.app.system.Reflection
+import com.dailyvox.app.system.Resurface
 import com.dailyvox.app.system.Shareables
 import com.dailyvox.app.system.Valence
 import com.dailyvox.app.ui.screens.askFacts
+import com.dailyvox.app.ui.screens.constellationNames
 import com.dailyvox.app.ui.screens.noticedPatterns
 import com.dailyvox.twin.ChatEntry
 import com.dailyvox.twin.Insights
@@ -131,6 +134,26 @@ class LanguageGateTest {
         assertTrue(hi.toChatEntry().entities.isEmpty())
         assertEquals(listOf("Lucía"), es.toChatEntry().entities)
         assertEquals("de", de.toChatEntry().language)
+    }
+
+    @Test fun `a German row saved before 1_3 shows no people on the Twin sky, recap or Journal`() {
+        // 1.2.x filed every capitalised noun as a person and stored no language.
+        val zone = java.time.ZoneId.of("UTC")
+        val from = Resurface.localDate(now - 6 * day, zone)
+        val de = List(3) { entry("Heute war die Arbeit schwer und lang.", null, null, "Arbeit", now - it * day) }
+        assertTrue(de.all { ReadingLanguage.people(it).isEmpty() })
+        assertTrue(constellationNames(de).isEmpty())
+        val recap = Resurface.recap(de, from, zone)
+        assertNotNull(recap)
+        assertNull(recap!!.name)
+        assertEquals(0, recap.nameEntries)
+        assertNull(DailyQuestion.grounded(de, now, zone))
+        // English beside it is untouched: same stars, same recap name.
+        val en = List(3) { entry("Dinner with Sarah was lovely tonight.", 0.5f, null, "Sarah", now - it * day) }
+        assertEquals(listOf("Sarah" to 3), constellationNames(de + en))
+        assertEquals(constellationNames(en), constellationNames(en.map { it.copy(language = "en-US") }))
+        assertEquals("Sarah", Resurface.recap(de + en, from, zone)?.name)
+        assertEquals(listOf("Sarah"), ReadingLanguage.people(en[0]))
     }
 
     @Test fun `Insights makes no finding from valences or people the gate cannot read`() {
