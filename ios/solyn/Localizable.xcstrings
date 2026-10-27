@@ -4,11 +4,29 @@
     "" : {
       "shouldTranslate" : false
     },
+    "%@ was suggested from your words. Pick a mood to make it yours, or choose No mood." : {
+      "comment" : "Footer in the mood picker when the current mood was suggested, not chosen. %@ is the mood name."
+    },
+    "Double-tap to change." : {
+      "comment" : "VoiceOver hint on a mood chip or mood button."
+    },
+    "Feeling %@" : {
+      "comment" : "Mood chip on Today and onboarding once the user chose the mood. %@ is the mood, lowercased (e.g. calm)."
+    },
     "For tomorrow: you mentioned %@. Maybe start there." : {
       "comment" : "Today reflection card. %@ is a person or place the entry itself names."
     },
+    "Lighter bars are moods suggested from your words. Tap the mood on an entry to change it." : {
+      "comment" : "Insights mood trends: caption shown when some bars are suggested moods."
+    },
     "Listening back to what you said…" : {
       "comment" : "Today reflection card while the new recording is still being transcribed."
+    },
+    "Mood: %@." : {
+      "comment" : "VoiceOver label for a mood the user chose. %@ is the mood, lowercased."
+    },
+    "Moods appear here as you record — suggested from your words, or set by you." : {
+      "comment" : "Insights mood trends, empty state."
     },
     "No catching up to do. Forty-two seconds, whenever you're ready." : {
       "comment" : "Body of the one-off welcome-back notification. No streak guilt."
@@ -21,6 +39,15 @@
     },
     "Reflection: %@" : {
       "comment" : "VoiceOver label for the Today reflection card. %@ is the reflection text."
+    },
+    "SOUNDS %@?" : {
+      "comment" : "Entry detail header: a suggested mood, in the mono caps style. %@ is the mood name in caps."
+    },
+    "Sounds %@ — tap to change" : {
+      "comment" : "Mood chip on Today and onboarding: a mood suggested from the entry's words. %@ is the mood, lowercased (e.g. calm)."
+    },
+    "Suggested mood: %@." : {
+      "comment" : "VoiceOver label for a suggested mood chip. %@ is the mood, lowercased."
     },
     "Tonight's star is waiting" : {
       "comment" : "Evening reminder notification title."
@@ -852,7 +879,6 @@
       }
     },
     "Add mood" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

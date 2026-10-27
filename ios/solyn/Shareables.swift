@@ -157,8 +157,9 @@ enum Shareables {
         }
     }
 
+    /// Chosen moods only — a shared card should not state a suggested one.
     private static func valence(of entry: DiaryEntry) -> Double {
-        let m = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+        let m = Mood(rawValue: entry.userMood ?? "") ?? Mood.none
         return (Double(m.moodValue) - 3.0) / 2.0
     }
 

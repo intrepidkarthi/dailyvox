@@ -329,7 +329,8 @@ struct StatsView: View {
             }
 
             if moodData.isEmpty {
-                Text("Record entries with moods to see trends")
+                Text("Moods appear here as you record \u{2014} suggested from your words, or set by you.")
+                    .multilineTextAlignment(.center)
                     .font(.dv(.subheadline))
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -360,6 +361,13 @@ struct StatsView: View {
                 // Mood over the last 14 days
                 moodStrip
                     .padding(.top, DS.Space.sm)
+
+                if moodChartData.contains(where: \.suggested) {
+                    Text("Lighter bars are moods suggested from your words. Tap the mood on an entry to change it.")
+                        .font(.dsCaption2)
+                        .foregroundColor(DS.Palette.inkMute)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .dsCard()
@@ -382,6 +390,9 @@ struct StatsView: View {
                                         startPoint: .top, endPoint: .bottom
                                     )
                                 )
+                                // A suggested mood is drawn lighter: it counts,
+                                // but it is the words' reading, not the user's.
+                                .opacity(item.suggested ? 0.45 : 1)
                                 .frame(height: max(12, maxH * CGFloat(mood.moodValue) / 5.0))
                         } else {
                             Circle()
@@ -468,9 +479,11 @@ struct StatsView: View {
         bodyInsightsKey = key
 
         // Main-thread extraction only — no Core Data access off-main.
+        // Chosen moods only: "how the day felt" against sleep or steps is a
+        // claim about the user, and a mood read from their words is not one.
         let moodPairs: [(date: Date, mood: String)] = entries.compactMap { entry in
             guard let date = entry.date,
-                  let moodString = entry.value(forKey: "mood") as? String else { return nil }
+                  let moodString = entry.userMood else { return nil }
             return (date, moodString)
         }
         let snapshots = kept.map(\.snapshot)
@@ -706,7 +719,7 @@ struct StatsView: View {
               let priorStart = cal.date(byAdding: .day, value: -28, to: now)
         else { return nil }
 
-        func mean(_ window: [(date: Date, mood: Mood?)]) -> Double? {
+        func mean(_ window: [(date: Date, mood: Mood?, suggested: Bool)]) -> Double? {
             let values = window.compactMap { $0.mood }.map { (Double($0.moodValue) - 3) / 2 }
             guard values.count >= 3 else { return nil }
             return values.reduce(0, +) / Double(values.count)
@@ -735,23 +748,23 @@ struct StatsView: View {
         Array(moodData.prefix(4))
     }
 
-    private var moodChartData: [(date: Date, mood: Mood?)] {
+    /// Suggested and chosen moods both fill the strip — otherwise it stays
+    /// empty for nearly everyone — with `suggested` kept so it can be drawn
+    /// lighter. "No mood" is no bar, not a middling one.
+    private var moodChartData: [(date: Date, mood: Mood?, suggested: Bool)] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
 
-        return (0..<14).compactMap { offset -> (Date, Mood?)? in
+        return (0..<14).compactMap { offset -> (Date, Mood?, Bool)? in
             guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
             let entry = entries.first { entry in
                 guard let entryDate = entry.date else { return false }
                 return calendar.isDate(entryDate, inSameDayAs: date)
             }
-            let mood: Mood?
-            if let moodString = entry?.value(forKey: "mood") as? String {
-                mood = Mood(rawValue: moodString)
-            } else {
-                mood = nil
-            }
-            return (date, mood)
+            guard let moodString = entry?.value(forKey: "mood") as? String,
+                  let mood = Mood(rawValue: moodString), mood != .none
+            else { return (date, nil, false) }
+            return (date, mood, entry?.isMoodSuggested ?? false)
         }.reversed()
     }
 

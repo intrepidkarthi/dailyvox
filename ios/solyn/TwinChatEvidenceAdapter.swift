@@ -55,7 +55,7 @@ final class TwinChatEvidenceAdapter: TwinChatEvidenceSource, @unchecked Sendable
             return entries.map {
                 TwinEntryInput(date: $0.date,
                                text: $0.text,
-                               mood: $0.mood,
+                               mood: $0.userMood,
                                duration: $0.duration,
                                isStarred: $0.isStarred)
             }
