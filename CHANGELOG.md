@@ -2,6 +2,38 @@
 
 All notable changes to DailyVox are documented here.
 
+## [1.13.1] (iOS) — fixes for people who don't speak English to DailyVox
+
+Build 47. A patch for everyone whose phone is set to a language other than
+English, or who speaks to DailyVox in one. It ships before the languages
+release (iOS 1.14 / Android 1.3) and adds no new language. Where a feature only
+understands English, it now stays quiet on other languages instead of
+guessing. Nothing changes for entries spoken in English.
+
+### Fixed
+- **No more English transcripts of non-English speech.** If your phone is set to
+  Spanish, Hindi or any language other than English and its speech model is not
+  installed, DailyVox used to fall back to the English model and write down a
+  confident, wrong English version of what you said. It now transcribes only in
+  your own language. When there is no on-device model for it, the entry is
+  saved as audio and the app tells you how to install the model, as it already
+  did for English.
+- **No suggested mood on entries that aren't in English.** The mood suggestion
+  reads English feeling words, so on other languages it could pick a mood from
+  noise. Those entries now get no suggestion; any mood you pick yourself works
+  as before.
+- **No wrong reflection after saving a non-English entry.** An entry about a
+  loss, said in Spanish, could be told it sounded calm. Entries that aren't in
+  English now get no reflection rather than a wrong one.
+- **The daily question no longer asks about names from non-English entries.**
+  The check that keeps it from asking about someone after a hard entry only
+  reads English, so it could not protect those entries. They are now left out.
+- **Names in Hindi, Tamil and other scripts with vowel signs** are no longer
+  matched inside longer names (राम inside रामू).
+- **Early signals in Chinese, Japanese and Thai.** "Words that recur" no longer
+  shows half-sentences as words in scripts written without spaces, and entry
+  length is counted in words there, not in space-separated chunks.
+
 ## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
 
 Live on the App Store since 17 October 2026 (build 46). Android 1.2

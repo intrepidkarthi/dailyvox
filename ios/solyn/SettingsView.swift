@@ -1350,6 +1350,22 @@ struct SettingsView: View {
                     }
                 }
             }
+            NavigationLink {
+                SpeechLocaleProbeView()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "waveform.badge.magnifyingglass")
+                        .font(.dv(.subheadline))
+                        .foregroundColor(DS.Palette.gold)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Speech locale probe")
+                            .font(.dv(.subheadline, weight: .semibold))
+                        Text("Which languages this phone transcribes on-device")
+                            .font(.dv(.caption))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
         } header: {
             Text("Developer")
         } footer: {

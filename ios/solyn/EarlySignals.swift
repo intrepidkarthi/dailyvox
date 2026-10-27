@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NaturalLanguage
 
 /// Patterns need eight entries and the Twin's summary needs five. With one
 /// entry a day, a new user cannot see either inside their first week — the
@@ -177,6 +178,11 @@ enum EarlySignals {
         for entry in entries {
             var seen = Set<String>()
             for token in words(in: entry.text) {
+                // Scripts written without spaces (Chinese, Japanese, Thai…)
+                // are skipped rather than guessed at: there a run of letters
+                // between spaces is a whole phrase, not a word, and "you
+                // keep saying <half a sentence>" is not a signal.
+                guard !containsUnspacedScript(token) else { continue }
                 let key = token.lowercased()
                 guard isCandidate(token, key: key) else { continue }
                 uses[key, default: 0] += 1
@@ -212,14 +218,62 @@ enum EarlySignals {
 
     // MARK: - Pieces
 
+    /// Words in an entry.
+    ///
+    /// Spaces are a fine word boundary for English and every other spaced
+    /// script, and that path is unchanged. In a script written without
+    /// spaces, splitting on whitespace counts a whole paragraph as one or two
+    /// "words", so there the count comes from `NLTokenizer`, which knows
+    /// where those words end.
     static func wordCount(_ text: String) -> Int {
-        text.split(whereSeparator: \.isWhitespace).count
+        guard containsUnspacedScript(text) else {
+            return text.split(whereSeparator: \.isWhitespace).count
+        }
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = text
+        var count = 0
+        tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { _, _ in
+            count += 1
+            return true
+        }
+        return count
     }
 
     /// Letters only, so "Sarah's" is "Sarah" and "work," is "work".
+    /// (`CharacterSet.letters` includes combining marks, so a Hindi word keeps
+    /// its vowel signs.)
     static func words(in text: String) -> [String] {
         text.components(separatedBy: CharacterSet.letters.inverted).filter { !$0.isEmpty }
     }
+
+    /// True when the text has any character from a script written without
+    /// spaces between words. Same list as the Android build's EarlySignals.
+    static func containsUnspacedScript(_ text: String) -> Bool {
+        text.unicodeScalars.contains { scalar in
+            unspacedRanges.contains { $0.contains(scalar.value) }
+        }
+    }
+
+    private static let unspacedRanges: [ClosedRange<UInt32>] = [
+        0x0E00...0x0E7F,   // Thai
+        0x0E80...0x0EFF,   // Lao
+        0x1000...0x109F,   // Myanmar
+        0x1780...0x17FF,   // Khmer
+        0x19E0...0x19FF,   // Khmer symbols
+        0x2E80...0x2FDF,   // CJK radicals, Kangxi
+        0x3005...0x3007,   // Ideographic iteration / number zero
+        0x3021...0x3029,   // Hangzhou numerals
+        0x3040...0x309F,   // Hiragana
+        0x30A0...0x30FF,   // Katakana
+        0x31F0...0x31FF,   // Katakana phonetic extensions
+        0x3400...0x4DBF,   // CJK Extension A
+        0x4E00...0x9FFF,   // CJK Unified Ideographs
+        0xA9E0...0xA9FF,   // Myanmar Extended-B
+        0xAA60...0xAA7F,   // Myanmar Extended-A
+        0xF900...0xFAFF,   // CJK Compatibility Ideographs
+        0xFF66...0xFF9D,   // Halfwidth Katakana
+        0x20000...0x323AF, // CJK Extensions B–H
+    ]
 
     private static func isCandidate(_ token: String, key: String) -> Bool {
         key.count >= 3 && !stopWords.contains(key)

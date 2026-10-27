@@ -319,6 +319,10 @@ enum DailyQuestions {
         var seen: Set<String> = []
         var out: [Subject] = []
         for entry in recent {
+            // `sensitiveWords` is English. An entry it cannot read cannot be
+            // shown to be gentle, so it is never asked about — a Spanish
+            // entry about a funeral would otherwise pass every check.
+            guard EntryLanguage.isEnglish(entry.text) else { continue }
             let reading = read(entry.text)
             guard isGentle(entry, reading: reading) else { continue }
             // The engine's names come out of a Set, in an order that changes

@@ -1,0 +1,47 @@
+DailyVox 1.13.1 (build 47) — notes for review
+
+WHAT CHANGED IN 1.13.1
+
+A patch for people who use DailyVox in a language other than English. Transcription now uses only the speaker's own language on device; if that language's on-device speech model is not installed, the app explains how to install it instead of falling back to English. Features that only understand English (suggested mood, reflection, the daily question's name prompts) now stay silent on other languages. Nothing changes for English.
+
+WHAT CHANGED IN 1.13.0
+
+The app now responds on the first day of use. After an entry is saved it shows a short reflection, a suggested mood, and (from the third entry) simple counts such as the usual time of day the user records. A daily question rotates, earlier entries are resurfaced ("A week ago you said", "On this day", a weekly recap), and a streak survives one missed day per week. All of this is computed on the device from the user's own entries. Nothing is transmitted.
+
+SUGGESTED MOODS
+
+A mood is suggested from the entry text, on the device, and is labelled as a suggestion wherever it appears, including exports ("Calm (suggested)"). It never overwrites a mood the user chose. To reproduce: record or type a clearly positive sentence; the mood chip reads "Sounds … — tap to change".
+
+REMINDERS ON THE LOCK SCREEN
+
+Reminders are local notifications scheduled on the device and are generic by default. An optional setting, off by default, lets the evening reminder quote a line from the user's own entry of exactly seven days earlier: Settings > "Include a line from your past in reminders". The setting explains that the line will be visible on the Lock Screen. Turning it off removes pending and already delivered reminders.
+
+SPEECH IS TRANSCRIBED ON THE DEVICE, ALWAYS
+
+Recognition is on-device only (requiresOnDeviceRecognition). On a device with no installed speech model, transcription stops and explains how to enable Dictation; the recording is kept and the user can type instead. That is intended behaviour, not a defect.
+
+ICLOUD SYNC
+
+Off by default for new installs (Settings > iCloud Sync). When on, entries sync through the user's own private iCloud database via CloudKit; DailyVox has no server. The Settings text says the data is encrypted by Apple and end-to-end only with Advanced Data Protection.
+
+No analytics, no advertising identifiers, no third-party SDKs, no accounts. PrivacyInfo.xcprivacy declares no tracking and no collected data.
+
+HEALTH AND THE "BODY" SHARE CARD (UNCHANGED)
+
+HealthKit data is read only with permission, reviewed by the user before it is kept, and never leaves the device. The Body share card appears only after a snapshot is kept, has its own switch that is off each time the share sheet opens, and never shows heart-rate variability or resting heart rate. To reproduce: Settings > Body Twin, keep a snapshot, then Share > Body.
+
+PERMISSIONS USED (ALL OPTIONAL EXCEPT MICROPHONE AND SPEECH)
+
+Microphone: recording entries.
+Speech recognition: on-device transcription only.
+Notifications: the local daily reminder.
+Face ID: optional app lock.
+HealthKit: optional body context, reviewed by the user.
+Motion: optional "at rest / in motion" tag beside an entry.
+Photo library and Apple Music: optional "Your Day" notes (off by default), which turn the kind of photos taken and music played into one-line labels on the device. Photos and audio are never uploaded.
+
+No new permissions or entitlements were added in this build.
+
+TEST ACCOUNT
+
+None required. The app has no accounts and no server. Launch and record.
