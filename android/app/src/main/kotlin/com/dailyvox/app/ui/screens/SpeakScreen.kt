@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.R
 import com.dailyvox.app.audio.AudioRecorder
+import com.dailyvox.app.system.DailyQuestion
 import com.dailyvox.app.system.Reflection
 import com.dailyvox.app.audio.SpeechCapture
 import androidx.compose.ui.text.buildAnnotatedString
@@ -90,6 +91,10 @@ fun SpeakScreen(
     /** Last week, counted. Only passed on recap day. */
     recap: com.dailyvox.app.system.Resurface.Recap? = null,
     onOpenEntry: (com.dailyvox.app.data.Entry) -> Unit = {},
+    /** Today's question ([DailyQuestion]). The default is the original line. */
+    question: DailyQuestion.Question = DailyQuestion.Question.Everyday(0),
+    /** "Another question". Only ever changes the words above the button. */
+    onAnotherQuestion: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -352,20 +357,58 @@ fun SpeakScreen(
         }
 
         Spacer(Modifier.height(if (tall) 56.dp else 28.dp))
+        // The question of the day. An invitation, never a gate: the record
+        // button below works the same whatever it says, and most nights it is
+        // not read at all. At rest, a tap on it (or on "Another question")
+        // asks something else; while recording it gives way to the state.
+        val asked = dailyQuestionText(question)
+        val atRest = state == SpeechCapture.State.IDLE
+        val anotherLabel = stringResource(R.string.daily_question_another_action)
         Text(
             when (state) {
                 SpeechCapture.State.RECORDING -> "Listening."
                 SpeechCapture.State.PROCESSING -> "Filing it."
-                else -> "How was your day,\nreally?"
+                // The signature question keeps the break it has always had.
+                else -> if (question == DailyQuestion.Question.Everyday(0))
+                    asked.replaceFirst(", ", ",\n") else asked
             },
-            fontSize = 32.sp, lineHeight = 38.sp, fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
+            // A longer question steps down a size rather than filling the
+            // screen; sp throughout, so the user's font scale still applies.
+            fontSize = if (!atRest || asked.length <= 34) 32.sp else 26.sp,
+            lineHeight = if (!atRest || asked.length <= 34) 38.sp else 32.sp,
+            fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .widthIn(max = 460.dp)
+                .then(
+                    if (atRest && !typing) Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable(onClickLabel = anotherLabel, onClick = onAnotherQuestion)
+                        .semantics { liveRegion = LiveRegionMode.Polite }
+                    else Modifier
+                ),
         )
+        if (atRest && !typing) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                stringResource(R.string.daily_question_another),
+                fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(onClick = onAnotherQuestion)
+                    .semantics { role = Role.Button }
+                    .defaultMinSize(minHeight = 44.dp)
+                    .padding(horizontal = 12.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
 
         if (typing) {
             Spacer(Modifier.height(if (tall) 28.dp else 16.dp))
             TypedComposer(
+                hint = asked,
                 text = typed,
                 onText = { typed = it },
                 onSave = {
@@ -791,6 +834,7 @@ private fun ReflectionMood(card: Reflection.Card, onMood: (String?) -> Unit) {
  */
 @Composable
 private fun TypedComposer(
+    hint: String,
     text: String,
     onText: (String) -> Unit,
     onSave: () -> Unit,
@@ -806,7 +850,7 @@ private fun TypedComposer(
             value = text,
             onValueChange = onText,
             keyboardOptions = PrivateKeyboard,
-            placeholder = { Text("How was your day, really?") },
+            placeholder = { Text(hint) },
             minLines = 4,
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp).focusRequester(focus),
@@ -997,3 +1041,28 @@ private fun RecordButton(
 
 /** Shortest wordless recording worth keeping as an audio-only entry. */
 private const val MIN_KEPT_SECONDS = 2
+
+/**
+ * The words for a [DailyQuestion.Question]. Picking is pure and lives in
+ * DailyQuestion; the words live in strings.xml so they translate. An index
+ * past the end of a list (a translation that ships fewer questions) falls back
+ * to the original line rather than crashing the home screen.
+ */
+@Composable
+internal fun dailyQuestionText(q: DailyQuestion.Question): String {
+    val everyday = androidx.compose.ui.res.stringArrayResource(R.array.daily_questions)
+    val plain = androidx.compose.ui.res.stringArrayResource(R.array.daily_questions_plain)
+    val fallback = everyday.firstOrNull() ?: "How was your day, really?"
+    return when (q) {
+        is DailyQuestion.Question.Everyday -> everyday.getOrNull(q.index) ?: fallback
+        is DailyQuestion.Question.Plain -> plain.getOrNull(q.index) ?: fallback
+        is DailyQuestion.Question.Grounded -> stringResource(
+            when {
+                q.daysAgo <= 1 -> R.string.daily_question_grounded_yesterday
+                q.daysAgo < 7 -> R.string.daily_question_grounded_days
+                else -> R.string.daily_question_grounded_week
+            },
+            q.name,
+        )
+    }
+}

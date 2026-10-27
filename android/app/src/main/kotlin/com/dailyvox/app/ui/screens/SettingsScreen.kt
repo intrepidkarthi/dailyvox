@@ -12,6 +12,8 @@ import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.border
@@ -374,6 +376,26 @@ fun SettingsScreen(
                 )
             }
             ChevronRow("Export research data", "· labelled entries", onExportResearch)
+            // Same preference key as iOS. On Android the mood check already
+            // follows every entry, so the switch does one thing here: every
+            // third day, the question of the day is a plain "log your day".
+            var pilot by remember { mutableStateOf(com.dailyvox.app.system.DailyQuestion.isPilot(context)) }
+            val pilotLabel = androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_pilot)
+            LedgerRow(pilotLabel) {
+                Switch(
+                    modifier = Modifier.semantics { contentDescription = pilotLabel },
+                    checked = pilot,
+                    onCheckedChange = {
+                        pilot = it
+                        com.dailyvox.app.system.DailyQuestion.setPilot(context, it)
+                    },
+                    colors = dvSwitchColors(),
+                )
+            }
+            Text(
+                androidx.compose.ui.res.stringResource(com.dailyvox.app.R.string.settings_pilot_note),
+                fontSize = 11.sp, lineHeight = 17.sp, color = scheme.onSurfaceVariant,
+            )
             Spacer(Modifier.height(8.dp))
             Text(
                 "Nothing leaves this phone unless you share the file yourself.",
