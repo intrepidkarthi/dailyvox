@@ -25,6 +25,9 @@ struct ConstellationWidgetEntry: TimelineEntry {
     let date: Date
     let stars: [ConstellationStar]
     let streak: Int
+    /// Whether the journal has any entry at all, so a broken run reads as
+    /// "welcome back" and an empty journal does not.
+    var hasEntries: Bool = true
 }
 
 struct ConstellationProvider: TimelineProvider {
@@ -44,8 +47,9 @@ struct ConstellationProvider: TimelineProvider {
 
     private func buildEntry() -> ConstellationWidgetEntry {
         let stars = fetchRecentStars()
-        let streak = WidgetDataFetcher.shared.calculateStreak()
-        return ConstellationWidgetEntry(date: Date(), stars: stars, streak: streak)
+        let status = WidgetDataFetcher.shared.streakStatus()
+        return ConstellationWidgetEntry(date: Date(), stars: stars, streak: status.current,
+                                        hasEntries: status.kind != .new)
     }
 
     /// Pull the last 30 days of entries from the App-Group store and lay them
@@ -91,7 +95,7 @@ struct ConstellationLockScreenView: View {
         case .accessoryRectangular:
             ConstellationRectangular(entry: entry)
         case .accessoryInline:
-            Text("Day \(entry.streak) · \(entry.stars.count) stars")
+            Text("\(entry.dayLabel) · \(entry.stars.count) stars")
         case .accessoryCircular:
             ConstellationCircular(entry: entry)
         default:
@@ -111,7 +115,7 @@ struct ConstellationRectangular: View {
             .aspectRatio(1.4, contentMode: .fit)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Day \(entry.streak)")
+                Text(entry.dayLabel)
                     .font(.dv(.headline))
                 Text("\(entry.stars.count) stars")
                     .font(.dv(.caption2))
@@ -172,5 +176,13 @@ struct ConstellationLockScreenWidget: Widget {
         .configurationDisplayName("Constellation")
         .description("Your inner sky on the Lock Screen — one star per recent entry.")
         .supportedFamilies([.accessoryRectangular, .accessoryCircular, .accessoryInline])
+    }
+}
+
+extension ConstellationWidgetEntry {
+    /// "Day N" while a run is going; never "Day 0".
+    var dayLabel: String {
+        if streak > 0 { return String(localized: "Day \(streak)") }
+        return hasEntries ? String(localized: "Welcome back") : String(localized: "Speak tonight")
     }
 }

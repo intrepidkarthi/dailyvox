@@ -44,9 +44,15 @@ enum EntityMatch {
         // lookarounds ask the question that is actually meant — "is there a
         // word character glued to this?" — which is false for "A.J. " and true
         // for the "e" in "mom|ents".
-        let pattern = "(?<![\\p{L}\\p{N}_])"
+        //
+        // Combining marks count as part of a word. Without `\p{M}`, a name
+        // followed by a vowel sign (Devanagari, Tamil, Bengali…) was "whole"
+        // because the sign is a mark, not a letter: "राम" (Ram) matched
+        // inside "रामू" (Ramu), and a match could end in the middle of a
+        // character the reader sees as one.
+        let pattern = "(?<![\\p{L}\\p{M}\\p{N}_])"
             + NSRegularExpression.escapedPattern(for: name)
-            + "(?![\\p{L}\\p{N}_])"
+            + "(?![\\p{L}\\p{M}\\p{N}_])"
         guard let regex = try? NSRegularExpression(
             pattern: pattern, options: [.caseInsensitive]) else { return [] }
 

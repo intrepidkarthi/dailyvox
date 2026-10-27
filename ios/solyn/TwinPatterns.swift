@@ -35,8 +35,9 @@ struct TwinPattern: Identifiable {
 /// `BodyTwinManager`, which the Insights screen already shows separately.
 enum TwinPatterns {
 
-    /// Below this there is not enough of anything to be sure.
-    private static let minimumEntries = 8
+    /// Below this there is not enough of anything to be sure. Until then,
+    /// Insights shows `EarlySignals` instead — counts, not claims.
+    static let minimumEntries = 8
     /// At most this many day-of-week findings, so one weekday quirk cannot fill
     /// the whole list.
     private static let dayOfWeekCap = 2
@@ -115,9 +116,10 @@ enum TwinPatterns {
     }
 
     /// Same mapping the share cards use, so a number on a card and a number in
-    /// this list can never disagree.
+    /// this list can never disagree. Chosen moods only, as the cards read: a
+    /// pattern is a claim about the user, not about the app's suggestions.
     private static func valence(of entry: DiaryEntry) -> Double {
-        let mood = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+        let mood = Mood(rawValue: entry.userMood ?? "") ?? Mood.none
         return (Double(mood.moodValue) - 3.0) / 2.0
     }
 }

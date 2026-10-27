@@ -631,6 +631,19 @@ struct SettingsView: View {
                         displayedComponents: .hourAndMinute
                     )
                 }
+
+                // Off by default: a notification is shown on the lock screen,
+                // and a journal says nothing there unless asked to. The
+                // explanation is part of the toggle so it is read with it.
+                Toggle(isOn: $reminderManager.includesPastLine) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Include a line from your past in reminders")
+                        Text("Quotes a few words you said a week ago. Reminders show on your lock screen, so anyone who sees your phone can read them.")
+                            .font(.dv(.caption))
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
             }
         } header: {
             Text("Daily Reminder")
@@ -689,7 +702,7 @@ struct SettingsView: View {
                         Image(systemName: "lock.fill")
                             .foregroundColor(DS.Palette.forest)
                             .font(.dv(.caption))
-                        Text("End-to-end encrypted with your Apple ID")
+                        Text("Encrypted by Apple; end-to-end only with Advanced Data Protection")
                             .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }
@@ -1208,6 +1221,9 @@ struct SettingsView: View {
                 SemanticSearchManager.shared.removeEntry(id: id)
                 DigitalTwinEngine.shared.forgetEntry(id.uuidString)
             }
+            // Nor the reminders: one armed to quote an entry would otherwise
+            // still put its words on the lock screen.
+            ReminderManager.shared.refresh(in: viewContext)
         }
         Self.clearDirectory(name: "Recordings")
         Self.clearDirectory(name: "Photos")
@@ -1329,6 +1345,22 @@ struct SettingsView: View {
                         Text("Memory probe")
                             .font(.dv(.subheadline, weight: .semibold))
                         Text("Measure what a workload costs this process")
+                            .font(.dv(.caption))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            NavigationLink {
+                SpeechLocaleProbeView()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "waveform.badge.magnifyingglass")
+                        .font(.dv(.subheadline))
+                        .foregroundColor(DS.Palette.gold)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Speech locale probe")
+                            .font(.dv(.subheadline, weight: .semibold))
+                        Text("Which languages this phone transcribes on-device")
                             .font(.dv(.caption))
                             .foregroundColor(.secondary)
                     }

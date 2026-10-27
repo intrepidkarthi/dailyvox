@@ -64,6 +64,8 @@ Pick your tool based on where your friction lives:
 - Choose **Rosebud** if you want an interactive system to challenge your thoughts and you do not mind cloud-based processing.
 - Choose **DailyVox** if you want to talk your way through an anxiety spike and keep every word stored strictly on your physical phone.
 
+Related reading: [An AI Mood App Should Predict Tomorrow, Not Just Log Today](/blog/ai-mood-prediction-vs-tracking).
+
 ## Frequently Asked Questions
 
 ### Does journaling actually help with anxiety?
