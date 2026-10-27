@@ -37,9 +37,29 @@ object Reflection {
          * ever their words, never a suggestion the app made up.
          */
         val tomorrow: String?,
+        /** The saved entry, so a mood picked on the card lands on the right row. */
+        val entryId: String = "",
+        /** The user's own label for this entry. Wins over [suggestedMood]. */
+        val chosenMood: String? = null,
+        /** The app's suggestion ([MoodSuggestion]); shown only as one. */
+        val suggestedMood: String? = null,
     ) {
         /** Audio kept, no words heard. The card says so and nothing else. */
         val wordless: Boolean get() = words == 0
+
+        /** The mood the card shows, and whether it is still only a suggestion. */
+        val mood: String? get() = chosenMood ?: suggestedMood
+        val moodIsSuggested: Boolean get() = chosenMood == null && suggestedMood != null
+
+        /**
+         * The card after the user picks a label on it, or clears it with
+         * null. Same rule as [com.dailyvox.app.data.Repo.setSelfLabel], so the
+         * card and the row cannot disagree.
+         */
+        fun withMood(label: String?): Card = copy(
+            chosenMood = label,
+            suggestedMood = if (label == null) null else suggestedMood,
+        )
     }
 
     /** VADER's own convention for where neutral ends. */
@@ -95,6 +115,9 @@ object Reflection {
             person = person,
             personEarlier = personEarlier,
             tomorrow = tomorrowSentence(entry.text),
+            entryId = entry.id,
+            chosenMood = entry.selfLabel,
+            suggestedMood = entry.suggestedMood,
         )
     }
 
