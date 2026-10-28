@@ -34,6 +34,12 @@
             "state" : "needs_review",
             "value" : "Con il tuo permesso, DailyVox legge i tuoi ascolti musicali recenti su questo iPhone per ricavare una nota d'umore di una riga (come «ha cercato musica calma») per il tuo Gemello. Rivedi ogni nota prima che venga tenuta; viene prodotta solo l'etichetta derivata e nulla della tua musica lascia questo dispositivo."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Com sua permissão, o DailyVox lê as músicas que você ouviu recentemente neste iPhone para criar uma nota de humor de uma linha (como “buscou músicas calmas”) para o seu Twin. Você revisa cada nota antes de ela ser guardada; só o rótulo derivado é produzido, e nada sobre suas músicas sai deste aparelho."
+          }
         }
       }
     },
@@ -69,6 +75,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox usa Face ID per bloccare e sbloccare l'accesso alle voci private del tuo diario."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o Face ID para bloquear e desbloquear o acesso aos registros privados do seu diário."
           }
         }
       }
@@ -106,6 +118,12 @@
             "state" : "needs_review",
             "value" : "DailyVox legge i dati di sonno, cuore, passi e consapevolezza su questo iPhone, così il tuo Gemello può capire cosa ha sentito il tuo corpo intorno a ogni voce. Rivedi ogni segnale prima che il tuo Gemello lo impari; nulla viene caricato o sincronizzato."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox lê dados de sono, coração, passos e atenção plena neste iPhone para que seu Twin entenda o que seu corpo sentiu em torno de cada registro. Você revisa cada sinal antes de o Twin aprender; nada é enviado nem sincronizado."
+          }
         }
       }
     },
@@ -141,6 +159,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox non scrive né modifica mai nulla in Apple Salute. L'app legge soltanto i dati di sonno, cuore, passi e consapevolezza su questo iPhone; nessun accesso in scrittura viene richiesto o usato."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox nunca grava nem altera nada no app Saúde. O app só lê dados de sono, coração, passos e atenção plena neste iPhone; nenhum acesso de atualização é pedido ou usado."
           }
         }
       }
@@ -178,6 +202,12 @@
             "state" : "needs_review",
             "value" : "DailyVox usa il microfono per registrare le voci del tuo diario."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o microfone para gravar os registros do seu diário."
+          }
         }
       }
     },
@@ -213,6 +243,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox usa l'attività di movimento per capire se ti stavi muovendo quando hai registrato una voce, così i segnali del corpo vengono letti nel giusto contesto. Il contesto dell'attività resta su questo iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa a atividade de movimento para saber se você estava em movimento quando um registro foi feito, para que os sinais do corpo sejam lidos no contexto certo. O contexto de atividade fica neste iPhone."
           }
         }
       }
@@ -250,6 +286,12 @@
             "state" : "needs_review",
             "value" : "DailyVox ti permette di allegare foto alle voci del diario e, solo se attivi Contesto foto, legge le foto della giornata su questo iPhone per ricavare una nota di una riga sulla scena (come «soprattutto foto di sentieri») per il tuo Gemello. Rivedi ogni nota prima che venga tenuta. Le foto vengono analizzate sul dispositivo e non lasciano mai il tuo iPhone."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox permite anexar fotos aos registros do seu diário e — só se você ativar o Contexto das fotos — lê as fotos do dia neste iPhone para criar uma nota de cena de uma linha (como “quase só fotos de trilha”) para o seu Twin. Você revisa cada nota antes de ela ser guardada. As fotos são analisadas no aparelho e nunca saem do seu iPhone."
+          }
         }
       }
     },
@@ -285,6 +327,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox usa il riconoscimento vocale per trasformare in testo il tuo diario registrato, direttamente sul tuo iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o reconhecimento de fala para transformar seu diário gravado em texto, neste iPhone."
           }
         }
       }

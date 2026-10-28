@@ -32,6 +32,12 @@
             "state" : "needs_review",
             "value" : "%1$@ · %2$lld stelle"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$lld estrelas"
+          }
         }
       },
       "comment" : "Lock Screen constellation widget, inline (one line above the clock). First placeholder: a day label such as 'Day 12' or 'Welcome back'. Second: the number of recent entries shown as stars. About 24 characters."
@@ -58,6 +64,12 @@
           }
         },
         "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%lld"
@@ -91,6 +103,12 @@
             "state" : "needs_review",
             "value" : "%lld NEL TUO CIELO"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld NO SEU CÉU"
+          }
         }
       }
     },
@@ -119,6 +137,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%lld stelle"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld estrelas"
           }
         }
       }
@@ -149,6 +173,12 @@
             "state" : "needs_review",
             "value" : "%lld stelle nel tuo cielo interiore"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld estrelas no seu céu interior"
+          }
         }
       }
     },
@@ -177,6 +207,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ancora %lld s al tuo 42"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%llds para os 42 do dia"
           }
         }
       }
@@ -212,6 +248,12 @@
             "state" : "needs_review",
             "value" : "%1$lld→%2$lld"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld→%2$lld"
+          }
         }
       },
       "comment" : "Star-birth Live Activity, Dynamic Island expanded: the star count ticking up by one, as in 140→141. Both placeholders are counts; keep the arrow."
@@ -238,6 +280,12 @@
           }
         },
         "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+1"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "+1"
@@ -271,6 +319,12 @@
             "state" : "needs_review",
             "value" : "0 BYTE INVIATI"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "0 BYTES ENVIADOS"
+          }
         }
       }
     },
@@ -299,6 +353,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Una nuova stella nel tuo cielo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma nova estrela apareceu no seu céu"
           }
         }
       }
@@ -329,6 +389,12 @@
             "state" : "needs_review",
             "value" : "Rabbia"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Raiva"
+          }
         }
       }
     },
@@ -358,6 +424,12 @@
             "state" : "needs_review",
             "value" : "Ansia"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansiedade"
+          }
         }
       }
     },
@@ -383,6 +455,12 @@
           }
         },
         "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Calma"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Calma"
@@ -416,6 +494,12 @@
             "state" : "needs_review",
             "value" : "Costellazione"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Constelação"
+          }
         }
       }
     },
@@ -441,6 +525,12 @@
           }
         },
         "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox"
@@ -474,6 +564,12 @@
             "state" : "needs_review",
             "value" : "Giorno %@ · parla stasera"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dia %@ · fale hoje à noite"
+          }
         }
       }
     },
@@ -502,6 +598,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Giorno %@ · fatto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dia %@ · registrado"
           }
         }
       }
@@ -532,6 +634,12 @@
             "state" : "needs_review",
             "value" : "Giorno %@: la tua costellazione cresce."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dia %@ — sua constelação está crescendo."
+          }
         }
       }
     },
@@ -560,6 +668,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Giorno %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dia %lld"
           }
         }
       }
@@ -590,6 +704,12 @@
             "state" : "needs_review",
             "value" : "Voce del diario"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registro do diário"
+          }
         }
       }
     },
@@ -618,6 +738,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Scarta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descartar"
           }
         }
       }
@@ -648,6 +774,12 @@
             "state" : "needs_review",
             "value" : "Scarta registrazione"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descartar gravação"
+          }
         }
       }
     },
@@ -676,6 +808,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Fatto oggi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Feito hoje"
           }
         }
       }
@@ -706,6 +844,12 @@
             "state" : "needs_review",
             "value" : "Voce registrata"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registro gravado"
+          }
         }
       }
     },
@@ -734,6 +878,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Entusiasmo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Empolgação"
           }
         }
       }
@@ -764,6 +914,12 @@
             "state" : "needs_review",
             "value" : "Termina registrazione"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminar gravação"
+          }
         }
       }
     },
@@ -792,6 +948,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Fine ✦"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Concluir ✦"
           }
         }
       }
@@ -822,6 +984,12 @@
             "state" : "needs_review",
             "value" : "Prima stella stasera. Il tuo cielo interiore prende forma."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Primeira estrela hoje à noite. Seu céu interior está se formando."
+          }
         }
       }
     },
@@ -850,6 +1018,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Gratitudine"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gratidão"
           }
         }
       }
@@ -880,6 +1054,12 @@
             "state" : "needs_review",
             "value" : "Felicità"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Felicidade"
+          }
         }
       }
     },
@@ -908,6 +1088,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "In ascolto…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvindo…"
           }
         }
       }
@@ -938,6 +1124,12 @@
             "state" : "needs_review",
             "value" : "Diario dell'umore"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Humor"
+          }
         }
       }
     },
@@ -966,6 +1158,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Umore finora"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Humor até agora"
           }
         }
       }
@@ -996,6 +1194,12 @@
             "state" : "needs_review",
             "value" : "Nessun umore"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sem humor"
+          }
         }
       }
     },
@@ -1024,6 +1228,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Nessun umore"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sem humor definido"
           }
         }
       }
@@ -1054,6 +1264,12 @@
             "state" : "needs_review",
             "value" : "Nessun umore registrato"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nenhum humor registrado"
+          }
         }
       }
     },
@@ -1082,6 +1298,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Non impostato"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Não definido"
           }
         }
       }
@@ -1112,6 +1334,12 @@
             "state" : "needs_review",
             "value" : "Apri DailyVox"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abrir o DailyVox"
+          }
         }
       }
     },
@@ -1140,6 +1368,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Apri DailyVox e inizia a registrare una voce."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abra o DailyVox e comece a gravar um registro."
           }
         }
       }
@@ -1170,6 +1404,12 @@
             "state" : "needs_review",
             "value" : "Oltre il tuo 42 quotidiano: continua quanto vuoi."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Passou dos 42 do dia — continue o quanto quiser."
+          }
         }
       }
     },
@@ -1198,6 +1438,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "In pausa"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Em pausa"
           }
         }
       }
@@ -1228,6 +1474,12 @@
             "state" : "needs_review",
             "value" : "Registrazione rapida"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gravação rápida"
+          }
         }
       }
     },
@@ -1256,6 +1508,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Registra oggi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grave hoje"
           }
         }
       }
@@ -1286,6 +1544,12 @@
             "state" : "needs_review",
             "value" : "Registrazione della voce"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gravando seu registro"
+          }
         }
       }
     },
@@ -1314,6 +1578,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Registrazione, secondi: %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gravando, %lld segundos"
           }
         }
       }
@@ -1344,6 +1614,12 @@
             "state" : "needs_review",
             "value" : "Tristezza"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tristeza"
+          }
         }
       }
     },
@@ -1372,6 +1648,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Il tuo umore a colpo d'occhio."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Veja seu humor num relance."
           }
         }
       }
@@ -1402,6 +1684,12 @@
             "state" : "needs_review",
             "value" : "Parla"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Falar"
+          }
         }
       }
     },
@@ -1430,6 +1718,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Registra una voce"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fale um registro"
           }
         }
       }
@@ -1460,6 +1754,12 @@
             "state" : "needs_review",
             "value" : "Parla stasera"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fale hoje à noite"
+          }
         }
       }
     },
@@ -1488,6 +1788,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Fatto stasera"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registrado hoje à noite"
           }
         }
       }
@@ -1518,6 +1824,12 @@
             "state" : "needs_review",
             "value" : "Stella %lld custodita"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Estrela %lld guardada"
+          }
         }
       }
     },
@@ -1546,6 +1858,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Inizia una voce DailyVox. Nulla lascia il tuo dispositivo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comece um registro no DailyVox. Nada sai do seu aparelho."
           }
         }
       }
@@ -1576,6 +1894,12 @@
             "state" : "needs_review",
             "value" : "Ferma la registrazione e tieni la voce."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Para a gravação e guarda o registro."
+          }
         }
       }
     },
@@ -1604,6 +1928,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Contatore serie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sequência"
           }
         }
       }
@@ -1634,6 +1964,12 @@
             "state" : "needs_review",
             "value" : "Tocca per registrare"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toque para gravar"
+          }
         }
       }
     },
@@ -1662,6 +1998,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Tocca per aprire DailyVox e iniziare a registrare."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toque para abrir o DailyVox e começar a gravar."
           }
         }
       }
@@ -1692,6 +2034,12 @@
             "state" : "needs_review",
             "value" : "Tocca per registrare"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toque para gravar"
+          }
         }
       }
     },
@@ -1720,6 +2068,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Questa settimana"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta semana"
           }
         }
       }
@@ -1750,6 +2104,12 @@
             "state" : "needs_review",
             "value" : "Scarta questa registrazione senza salvarla."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descarta esta gravação sem salvar."
+          }
         }
       }
     },
@@ -1778,6 +2138,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Stanchezza"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cansaço"
           }
         }
       }
@@ -1808,6 +2174,12 @@
             "state" : "needs_review",
             "value" : "Oggi"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoje"
+          }
         }
       }
     },
@@ -1836,6 +2208,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Oggi fatto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoje: feito"
           }
         }
       }
@@ -1866,6 +2244,12 @@
             "state" : "needs_review",
             "value" : "Oggi è qui, quando vuoi tu."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O dia de hoje está aberto quando você estiver."
+          }
         }
       }
     },
@@ -1894,6 +2278,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Oggi aperto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoje: aberto"
           }
         }
       }
@@ -1924,6 +2314,12 @@
             "state" : "needs_review",
             "value" : "Umore di oggi"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Humor de hoje"
+          }
         }
       }
     },
@@ -1952,6 +2348,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "La voce di oggi c'è. Stelle in totale: %lld."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O registro de hoje está feito. %lld estrelas no total."
           }
         }
       }
@@ -1982,6 +2384,12 @@
             "state" : "needs_review",
             "value" : "Vedi la voce di oggi e registra in un attimo."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Veja o registro de hoje e grave com acesso rápido."
+          }
         }
       }
     },
@@ -2010,6 +2418,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Che bello rivederti"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oi de novo"
           }
         }
       }
@@ -2040,6 +2454,12 @@
             "state" : "needs_review",
             "value" : "Hai superato i 42 s. Apri l'app per fermarti quando vuoi."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Já passou dos 42s. Toque no app para parar quando quiser."
+          }
         }
       }
     },
@@ -2068,6 +2488,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "La tua prima stella è a una voce di distanza."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sua primeira estrela está a um registro de distância."
           }
         }
       }
@@ -2098,6 +2524,12 @@
             "state" : "needs_review",
             "value" : "Il tuo cielo interiore sulla schermata di blocco: una stella per ogni voce recente."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seu céu interior na Tela Bloqueada — uma estrela por registro recente."
+          }
         }
       }
     },
@@ -2126,6 +2558,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "La tua serie di giorni raccontati. Un giorno saltato a settimana non la interrompe."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seus dias seguidos de fala. Um dia perdido por semana não quebra a sequência."
           }
         }
       }
@@ -2156,6 +2594,12 @@
             "state" : "needs_review",
             "value" : "Il tuo cielo ti ha tenuto il posto."
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seu céu guardou seu lugar."
+          }
         }
       }
     },
@@ -2184,6 +2628,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "giorni di fila"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "de sequência"
           }
         }
       }
@@ -2214,6 +2664,12 @@
             "state" : "needs_review",
             "value" : "pari"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "neutro"
+          }
         }
       }
     },
@@ -2243,6 +2699,12 @@
             "state" : "needs_review",
             "value" : "pesante"
           }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pesado"
+          }
         }
       }
     },
@@ -2268,6 +2730,12 @@
           }
         },
         "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "positivo"
+          }
+        },
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "positivo"
@@ -2300,6 +2768,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "stelle"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "estrelas"
           }
         }
       }
