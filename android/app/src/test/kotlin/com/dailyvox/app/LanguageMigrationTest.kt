@@ -38,15 +38,23 @@ class LanguageMigrationTest {
     ).getJSONObject("database")
 
     /** A database file in exactly the shape 1.2.1 (schema 5) wrote. */
-    private fun versionFive(name: String, seed: (SupportSQLiteDatabase) -> Unit) {
+    private fun versionFive(name: String, seed: (SupportSQLiteDatabase) -> Unit) =
+        exported(5, name, seed)
+
+    /**
+     * A database file in exactly the shape the build that exported schema
+     * [version] wrote: its createSql, and its identity hash in
+     * room_master_table, so Room treats it as that version and migrates.
+     */
+    private fun exported(version: Int, name: String, seed: (SupportSQLiteDatabase) -> Unit) {
         ctx.deleteDatabase(name)
-        val v5 = schema(5)
+        val v = schema(version)
         val cfg = SupportSQLiteOpenHelper.Configuration.builder(ctx).name(name)
-            .callback(object : SupportSQLiteOpenHelper.Callback(5) {
+            .callback(object : SupportSQLiteOpenHelper.Callback(version) {
                 override fun onCreate(db: SupportSQLiteDatabase) {
-                    val entity = v5.getJSONArray("entities").getJSONObject(0)
+                    val entity = v.getJSONArray("entities").getJSONObject(0)
                     db.execSQL(entity.getString("createSql").replace("\${TABLE_NAME}", entity.getString("tableName")))
-                    val setup = v5.getJSONArray("setupQueries")
+                    val setup = v.getJSONArray("setupQueries")
                     for (i in 0 until setup.length()) db.execSQL(setup.getString(i))
                     seed(db)
                 }
@@ -93,6 +101,47 @@ class LanguageMigrationTest {
             // And the new column takes a value.
             runBlocking { room.entries().upsert(a.copy(language = "hi-IN")) }
             assertEquals("hi-IN", runBlocking { room.entries().byId("a") }!!.language)
+        } finally { room.close() }
+    }
+
+    /**
+     * The upgrade Play will actually deliver. 1.2 (versionCode 6) shipped
+     * schema 4 and 1.2.1 never shipped, so every upgrading phone goes 4 -> 5
+     * -> 6 in one launch: the table rebuild that makes valence nullable, then
+     * the language column. Room validates the result against the entity.
+     */
+    @Test
+    fun `a 1_2 journal (schema 4) opens in Room on 1_3, every row intact`() {
+        exported(4, "v4-to-v6.db") { db ->
+            db.execSQL(
+                "INSERT INTO entries (id, text, createdAt, durationSec, valence, entities, selfLabel, " +
+                    "suggestedMood, hrvMs, audioPath, speakingRate) VALUES ('a', 'Dinner with Priya', 1, 42, " +
+                    "0.4, 'Priya', 'joy', 'joy', 41.5, '/x/a.m4a', 2.5)"
+            )
+            db.execSQL(
+                "INSERT INTO entries (id, text, createdAt, durationSec, valence, entities) " +
+                    "VALUES ('b', 'Heute war ein guter Tag', 2, 10, 0.0, '')"
+            )
+        }
+        val room = openWithRoom("v4-to-v6.db")
+        try {
+            val rows = runBlocking { room.entries().allOnce() }.associateBy { it.id }
+            assertEquals(2, rows.size)
+            val a = rows.getValue("a")
+            assertEquals("Dinner with Priya", a.text)
+            assertEquals(0.4f, a.valence!!, 1e-6f)
+            assertEquals("joy", a.selfLabel); assertEquals("joy", a.suggestedMood)
+            assertEquals(41.5f, a.hrvMs!!, 1e-6f); assertEquals(42, a.durationSec)
+            assertEquals(2.5f, a.speakingRate!!, 1e-6f)
+            assertEquals("/x/a.m4a", a.audioPath); assertEquals("Priya", a.entities)
+            assertNull(a.language)
+            // The migration copies values unchanged; clearing unread valence
+            // is Repo's launch pass, not the migration's.
+            assertEquals(0f, rows.getValue("b").valence!!, 0f)
+            // Schema 5's change: valence now takes NULL.
+            runBlocking { room.entries().upsert(rows.getValue("b").copy(valence = null, language = "de-DE")) }
+            val b = runBlocking { room.entries().byId("b") }!!
+            assertNull(b.valence); assertEquals("de-DE", b.language)
         } finally { room.close() }
     }
 
