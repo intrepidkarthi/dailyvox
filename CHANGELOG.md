@@ -2,21 +2,28 @@
 
 All notable changes to DailyVox are documented here.
 
-## [1.14.0] (iOS) — in progress: the language you speak (core)
+## [1.14.0] (iOS) — languages, and share your sky
 
-Build 48. Not released. This is the groundwork for the languages release. It
-adds no new interface language yet; translations come in later work. Nothing
-changes for entries spoken in English.
+Build 48. The app is now available in German, Spanish, French, Italian and
+Portuguese (Brazil) as well as English, and you choose the language you speak
+separately from the app's language. Hindi is not in this release: its
+interface translation waits until Hindi transcription is confirmed on a real
+iPhone. Nothing changes for entries spoken in English.
 
 ### Added
+- **DailyVox in German, Spanish, French, Italian and Portuguese (Brazil).** It
+  follows the language set for it in iOS Settings.
+- **Share your sky as a Story.** A 9:16 card of your real constellation, sized
+  for Instagram Stories and WhatsApp Status: a count and an address, no words,
+  names or moods. Today offers it once each at nights 7, 21 and 42; Settings >
+  Sharing turns the offer off.
 - **Settings > Language you speak.** You pick the language DailyVox listens in,
   separately from the app's language. The list shows only the languages this
   iPhone can transcribe on-device, either now or after a one-time download from
   Apple. Automatic, the default, behaves exactly like 1.13.1. Voice search uses
   the same choice.
-- **Hindi on iOS 26 uses Apple's on-device dictation model** when the newer
-  transcriber has no Hindi model, instead of falling back to the older
-  recogniser.
+- **Languages the newer iOS 26 transcriber does not cover use Apple's
+  on-device dictation model** instead of falling back to the older recogniser.
 - **Each entry records the language it is in.** Spoken entries record the
   recogniser that heard them. Typed entries, and entries from before 1.14, get a
   language read from their text once.
