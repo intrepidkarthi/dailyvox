@@ -787,4 +787,35 @@
     <string name="mood_neutral">Neutre</string>
     <string name="recap_description">%1$s, %2$s. %3$s.</string>
     <string name="share_entry_card_footer">"DAILYVOX  ·  ENREGISTRÉ SUR L\'APPAREIL"</string>
+
+    <!-- Story card and one-time share offer (PR #120). Machine draft, unreviewed. -->
+    <string name="sky_story_title">Story</string>
+    <string name="sky_story_caption">Au format des stories Instagram et des statuts WhatsApp. Tes étoiles et le nombre de nuits — aucun de tes mots.</string>
+    <string name="sky_story_eyebrow">MON CIEL</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d nuit tenue.</item>
+        <item quantity="many">%d nuits tenues.</item>
+        <item quantity="other">%d nuits tenues.</item>
+    </plurals>
+    <string name="sky_story_line">Une étoile pour chaque nuit où j\'ai parlé. Les mots sont restés sur mon téléphone.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Ton ciel après %d nuit. Seulement des étoiles et un nombre, aucun mot de ton journal.</item>
+        <item quantity="many">Ton ciel après %d nuits. Seulement des étoiles et un nombre, aucun mot de ton journal.</item>
+        <item quantity="other">Ton ciel après %d nuits. Seulement des étoiles et un nombre, aucun mot de ton journal.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">Mon ciel après %1$d nuit de DailyVox — %2$s</item>
+        <item quantity="many">Mon ciel après %1$d nuits de DailyVox — %2$s</item>
+        <item quantity="other">Mon ciel après %1$d nuits de DailyVox — %2$s</item>
+    </plurals>
+    <string name="share_offer_7">Sept nuits. Ton ciel prend forme — le partager ?</string>
+    <string name="share_offer_21">Vingt et une nuits. Ton ciel se remplit — le partager ?</string>
+    <string name="share_offer_42">Quarante-deux nuits. Ton ciel a sa propre forme — le partager ?</string>
+    <string name="share_offer_note">Seuls tes étoiles et le nombre figurent sur la carte. Aucun de tes mots.</string>
+    <string name="share_offer_share">Partager</string>
+    <string name="share_offer_not_now">Pas maintenant</string>
+    <string name="share_offer_not_now_description">Pas maintenant. Ce ne sera plus proposé.</string>
+    <string name="settings_share_offer">Proposer de partager les étapes</string>
+    <string name="settings_share_offer_note">Après les nuits 7, 21 et 42, une fois chacune, une carte te propose de partager ton ciel. Elle montre des étoiles et un nombre, jamais tes mots. Rien n\'est envoyé tant que tu ne choisis pas une app pour l\'envoyer.</string>
 </resources>

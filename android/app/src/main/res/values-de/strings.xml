@@ -737,4 +737,32 @@
     <string name="mood_neutral">Neutral</string>
     <string name="recap_description">%1$s, %2$s. %3$s.</string>
     <string name="share_entry_card_footer">"DAILYVOX  ·  AUF DEM GERÄT AUFGENOMMEN"</string>
+
+    <!-- Story card and one-time share offer (PR #120). Machine draft, unreviewed. -->
+    <string name="sky_story_title">Story</string>
+    <string name="sky_story_caption">Im Format für Instagram-Storys und den WhatsApp-Status. Deine Sterne und wie viele Nächte – keins deiner Worte.</string>
+    <string name="sky_story_eyebrow">MEIN HIMMEL</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d Nacht durchgehalten.</item>
+        <item quantity="other">%d Nächte durchgehalten.</item>
+    </plurals>
+    <string name="sky_story_line">Ein Stern für jede Nacht, in der ich gesprochen habe. Die Worte blieben auf meinem Telefon.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Dein Himmel nach %d Nacht. Nur Sterne und eine Zahl, keine Worte aus deinem Tagebuch.</item>
+        <item quantity="other">Dein Himmel nach %d Nächten. Nur Sterne und eine Zahl, keine Worte aus deinem Tagebuch.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">Mein Himmel nach %1$d Nacht mit DailyVox – %2$s</item>
+        <item quantity="other">Mein Himmel nach %1$d Nächten mit DailyVox – %2$s</item>
+    </plurals>
+    <string name="share_offer_7">Sieben Nächte. Dein Himmel nimmt Gestalt an – teilen?</string>
+    <string name="share_offer_21">Einundzwanzig Nächte. Dein Himmel füllt sich – teilen?</string>
+    <string name="share_offer_42">Zweiundvierzig Nächte. Dein Himmel hat eine eigene Gestalt – teilen?</string>
+    <string name="share_offer_note">Nur deine Sterne und die Zahl kommen auf die Karte. Keins deiner Worte.</string>
+    <string name="share_offer_share">Teilen</string>
+    <string name="share_offer_not_now">Nicht jetzt</string>
+    <string name="share_offer_not_now_description">Nicht jetzt. Das wird nicht noch einmal angeboten.</string>
+    <string name="settings_share_offer">Teilen bei Meilensteinen anbieten</string>
+    <string name="settings_share_offer_note">Nach den Nächten 7, 21 und 42, je einmal, bietet eine Karte deinen Himmel zum Teilen an. Sie zeigt Sterne und eine Zahl, nie deine Worte. Nichts wird gesendet, außer du wählst eine App zum Senden.</string>
 </resources>

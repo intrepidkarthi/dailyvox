@@ -781,4 +781,35 @@
     <string name="mood_neutral">Neutral</string>
     <string name="recap_description">%1$s, %2$s. %3$s.</string>
     <string name="share_entry_card_footer">"DAILYVOX  ·  GRABADO EN LOCAL"</string>
+
+    <!-- Story card and one-time share offer (PR #120). Machine draft, unreviewed. -->
+    <string name="sky_story_title">Historia</string>
+    <string name="sky_story_caption">A la medida de las historias de Instagram y los estados de WhatsApp. Tus estrellas y cuántas noches: ninguna de tus palabras.</string>
+    <string name="sky_story_eyebrow">MI CIELO</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d noche cumplida.</item>
+        <item quantity="many">%d noches cumplidas.</item>
+        <item quantity="other">%d noches cumplidas.</item>
+    </plurals>
+    <string name="sky_story_line">Una estrella por cada noche que hablé. Las palabras se quedaron en mi teléfono.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Tu cielo tras %d noche. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+        <item quantity="many">Tu cielo tras %d noches. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+        <item quantity="other">Tu cielo tras %d noches. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">Mi cielo tras %1$d noche de DailyVox: %2$s</item>
+        <item quantity="many">Mi cielo tras %1$d noches de DailyVox: %2$s</item>
+        <item quantity="other">Mi cielo tras %1$d noches de DailyVox: %2$s</item>
+    </plurals>
+    <string name="share_offer_7">Siete noches. Tu cielo va tomando forma. ¿Lo compartes?</string>
+    <string name="share_offer_21">Veintiuna noches. Tu cielo se va llenando. ¿Lo compartes?</string>
+    <string name="share_offer_42">Cuarenta y dos noches. Tu cielo ya tiene forma propia. ¿Lo compartes?</string>
+    <string name="share_offer_note">En la tarjeta solo van tus estrellas y el número. Ninguna de tus palabras.</string>
+    <string name="share_offer_share">Compartir</string>
+    <string name="share_offer_not_now">Ahora no</string>
+    <string name="share_offer_not_now_description">Ahora no. No se volverá a ofrecer.</string>
+    <string name="settings_share_offer">Ofrecer compartir los hitos</string>
+    <string name="settings_share_offer_note">Tras las noches 7, 21 y 42, una vez cada una, una tarjeta te ofrece compartir tu cielo. Muestra estrellas y un número, nunca tus palabras. No se envía nada a menos que elijas una app para enviarlo.</string>
 </resources>

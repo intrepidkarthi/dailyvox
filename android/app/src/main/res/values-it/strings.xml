@@ -781,4 +781,35 @@
     <string name="mood_neutral">Neutro</string>
     <string name="recap_description">%1$s, %2$s. %3$s.</string>
     <string name="share_entry_card_footer">"DAILYVOX  ·  REGISTRATA SUL DISPOSITIVO"</string>
+
+    <!-- Story card and one-time share offer (PR #120). Machine draft, unreviewed. -->
+    <string name="sky_story_title">Storia</string>
+    <string name="sky_story_caption">Nel formato delle storie di Instagram e dello stato di WhatsApp. Le tue stelle e quante notti: nessuna delle tue parole.</string>
+    <string name="sky_story_eyebrow">IL MIO CIELO</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d notte mantenuta.</item>
+        <item quantity="many">%d notti mantenute.</item>
+        <item quantity="other">%d notti mantenute.</item>
+    </plurals>
+    <string name="sky_story_line">Una stella per ogni notte in cui ho parlato. Le parole sono rimaste sul mio telefono.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Il tuo cielo dopo %d notte. Solo stelle e un numero, nessuna parola dal tuo diario.</item>
+        <item quantity="many">Il tuo cielo dopo %d notti. Solo stelle e un numero, nessuna parola dal tuo diario.</item>
+        <item quantity="other">Il tuo cielo dopo %d notti. Solo stelle e un numero, nessuna parola dal tuo diario.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">Il mio cielo dopo %1$d notte di DailyVox: %2$s</item>
+        <item quantity="many">Il mio cielo dopo %1$d notti di DailyVox: %2$s</item>
+        <item quantity="other">Il mio cielo dopo %1$d notti di DailyVox: %2$s</item>
+    </plurals>
+    <string name="share_offer_7">Sette notti. Il tuo cielo prende forma: lo condividi?</string>
+    <string name="share_offer_21">Ventuno notti. Il tuo cielo si sta riempiendo: lo condividi?</string>
+    <string name="share_offer_42">Quarantadue notti. Il tuo cielo ha una forma tutta sua: lo condividi?</string>
+    <string name="share_offer_note">Sulla scheda vanno solo le tue stelle e il numero. Nessuna delle tue parole.</string>
+    <string name="share_offer_share">Condividi</string>
+    <string name="share_offer_not_now">Non ora</string>
+    <string name="share_offer_not_now_description">Non ora. Non verrà proposto di nuovo.</string>
+    <string name="settings_share_offer">Proponi di condividere i traguardi</string>
+    <string name="settings_share_offer_note">Dopo le notti 7, 21 e 42, una volta ciascuna, una scheda ti propone di condividere il tuo cielo. Mostra stelle e un numero, mai le tue parole. Non viene inviato nulla finché non scegli un\'app per inviarlo.</string>
 </resources>
