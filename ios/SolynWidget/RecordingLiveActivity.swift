@@ -118,7 +118,8 @@ struct RecordingLiveActivityWidget: Widget {
                         // with no waveform competing — the compact island
                         // already carries the waveform.
                         if !context.state.phrase.isEmpty {
-                            Text("\u{201C}\(context.state.phrase)\u{201D}")
+                            Text(verbatim: (Locale.current.quotationBeginDelimiter ?? "\u{201C}") + context.state.phrase
+                                 + (Locale.current.quotationEndDelimiter ?? "\u{201D}"))
                                 .font(.dv(size: 14))
                                 .foregroundStyle(.primary)
                                 .lineLimit(2)

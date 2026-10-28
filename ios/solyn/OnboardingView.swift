@@ -20,6 +20,8 @@ struct OnboardingFirstEntry {
     var audioFileName: String?   // nil in demo / no-audio paths
     var duration: Double
     var transcript: String
+    /// The recogniser that heard it; nil for typed or demo words (B-1).
+    var transcriptLocale: Locale? = nil
 }
 
 // MARK: - Palette
@@ -113,6 +115,7 @@ struct OnboardingView: View {
         e.updatedAt = now
         e.text = text
         e.isStarred = false
+        e.noteLanguage(ofAppended: text, recognizerLocale: entry.transcriptLocale, entryHadText: false)
         // The ledger promised "the transcript, the mood, the star". The mood
         // is the one read from these words — or the one the user picked on
         // the Claim screen — and stays nil when neither happened.
@@ -347,6 +350,7 @@ private struct SpeakScreen: View {
     @State private var phase: Phase = .idle
     @State private var level: CGFloat = 0
     @State private var elapsed: Double = 0
+    @State private var transcriptLocale: Locale?
     @State private var transcript = ""
     @State private var flare: CGFloat = 0
     @State private var capturedFile: String?
@@ -489,9 +493,12 @@ private struct SpeakScreen: View {
         guard let res = recorder.stopRecording() else { born(); return }
         capturedFile = res.url.lastPathComponent
         capturedDuration = res.duration
-        SpeechTranscriber.shared.transcribe(from: res.url) { result in
+        SpeechTranscriber.shared.transcribeDetailed(from: res.url) { result in
             DispatchQueue.main.async {
-                if case .success(let t) = result { transcript = t }
+                if case .success(let t) = result {
+                    transcript = t.text
+                    transcriptLocale = t.locale
+                }
                 born()
             }
         }
@@ -503,7 +510,8 @@ private struct SpeakScreen: View {
         withAnimation(.spring(response: 0.7, dampingFraction: 0.52).delay(0.05)) { flare = 1 }
         let payload = OnboardingFirstEntry(audioFileName: capturedFile,
                                            duration: capturedDuration,
-                                           transcript: transcript)
+                                           transcript: transcript,
+                                           transcriptLocale: transcriptLocale)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) { onBorn(payload) }
     }
 
@@ -511,6 +519,7 @@ private struct SpeakScreen: View {
         let t = typedText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !t.isEmpty else { return }
         transcript = t
+        transcriptLocale = nil
         capturedFile = nil
         capturedDuration = 0
         typing = false
@@ -667,7 +676,7 @@ private struct ClaimScreen: View {
                     .foregroundColor(OB.ink)
                     .multilineTextAlignment(.center)
 
-                Text("“\(words)”")
+                Text(verbatim: LocaleFormat.quoted(words))
                     .font(.dv(.callout, design: .rounded, weight: .medium))
                     .italic()
                     .foregroundColor(OB.inkDim)

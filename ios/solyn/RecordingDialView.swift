@@ -109,7 +109,7 @@ struct RecordingDialView: View {
     private var listeningLine: String {
         if paused { return "Paused. Tap resume and keep going." }
         if live.phrase.isEmpty { return "Listening\u{2026}" }
-        return "\u{201C}\(live.phrase)\u{201D}"
+        return LocaleFormat.quoted(live.phrase)
     }
 
     private var statusText: String {

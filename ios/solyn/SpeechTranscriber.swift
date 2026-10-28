@@ -15,7 +15,8 @@ import Speech
 import AVFoundation
 
 /// Transcribes audio recordings to text using Apple's Speech framework.
-/// Prioritizes on-device recognition for privacy; falls back to Apple's servers when needed.
+/// On-device only: where no on-device model exists it fails and says so, and
+/// never sends audio to a server.
 final class SpeechTranscriber {
     
     // MARK: - Shared Instance
@@ -49,21 +50,38 @@ final class SpeechTranscriber {
 
     // MARK: - Transcription
     
+    /// What a transcription produced, and which recogniser heard it.
+    struct Transcription: Equatable {
+        let text: String
+        /// The locale of the model that ACTUALLY transcribed the audio, which
+        /// is what the entry records as `transcriptLocale` (B-1). It can
+        /// differ from the language the person picked: an en-IN speaker may
+        /// be heard by the en-US model.
+        let locale: Locale
+    }
+
     /// Transcribes audio from the given URL to text.
-    ///
-    /// On iOS 26+ this uses Apple's new on-device `SpeechAnalyzer`/`SpeechTranscriber`
-    /// — markedly lower word-error rate on sustained speech, no session length
-    /// limit, fully on-device — and falls back to the proven `SFSpeechRecognizer`
-    /// path on any failure (or on earlier iOS). Both keep audio on the device.
     /// - Parameters:
     ///   - audioURL: URL to the audio file to transcribe
     ///   - completion: Called with the transcription result or error
     func transcribe(from audioURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
+        transcribeDetailed(from: audioURL) { completion($0.map(\.text)) }
+    }
+
+    /// Transcribes audio and says which recogniser did it.
+    ///
+    /// On iOS 26+ this uses Apple's new on-device `SpeechAnalyzer`/`SpeechTranscriber`
+    /// — markedly lower word-error rate on sustained speech, no session length
+    /// limit, fully on-device — or, for a language that model does not cover
+    /// (Hindi), the on-device `DictationTranscriber`. It falls back to the
+    /// proven `SFSpeechRecognizer` path on any failure (or on earlier iOS).
+    /// Every path keeps audio on the device.
+    func transcribeDetailed(from audioURL: URL, completion: @escaping (Result<Transcription, Error>) -> Void) {
         if #available(iOS 26.0, *) {
             Task {
                 do {
-                    let text = try await self.transcribeWithSpeechAnalyzer(from: audioURL)
-                    await MainActor.run { completion(.success(text)) }
+                    let result = try await self.transcribeWithSpeechAnalyzer(from: audioURL)
+                    await MainActor.run { completion(.success(result)) }
                 } catch {
                     // SpeechAnalyzer unavailable for this locale/device, model not
                     // installable, or produced nothing — use the proven recognizer.
@@ -77,35 +95,77 @@ final class SpeechTranscriber {
 
     // MARK: - iOS 26+ SpeechAnalyzer path
 
+    /// Which iOS 26 module transcribes the speaker's language.
+    enum AnalyzerRoute: Equatable {
+        /// `SpeechTranscriber` in this locale.
+        case transcriber(Locale)
+        /// `DictationTranscriber` in this locale (B-7): for languages the
+        /// SpeechTranscriber model does not cover, such as Hindi, instead of
+        /// dropping to the legacy recogniser.
+        case dictation(Locale)
+    }
+
+    /// Chooses the iOS 26 module for `speaker`. The lookups are injected so the
+    /// order can be tested without the frameworks.
+    ///
+    /// 1. SpeechTranscriber in the speaker's language.
+    /// 2. English speakers only: SpeechTranscriber en-US. This is the 1.13.1
+    ///    order, untouched, so English goes exactly where it went before.
+    /// 3. Anyone else: DictationTranscriber in their language.
+    /// 4. Nothing: nil, and the legacy recogniser gets its turn, in the same
+    ///    language. Never another language.
+    static func analyzerRoute(for speaker: Locale,
+                              transcriberLocale: (Locale) async -> Locale?,
+                              dictationLocale: (Locale) async -> Locale?) async -> AnalyzerRoute? {
+        if let locale = await transcriberLocale(speaker) { return .transcriber(locale) }
+        if allowsEnglishFallback(for: speaker) {
+            if let locale = await transcriberLocale(Locale(identifier: "en-US")) { return .transcriber(locale) }
+            return nil
+        }
+        if let locale = await dictationLocale(speaker) { return .dictation(locale) }
+        return nil
+    }
+
     @available(iOS 26.0, *)
-    private func transcribeWithSpeechAnalyzer(from audioURL: URL) async throws -> String {
+    private func transcribeWithSpeechAnalyzer(from audioURL: URL) async throws -> Transcription {
         // Resolve a supported locale for the transcriber. Fully qualified —
-        // this app's own class is also named SpeechTranscriber. Sequenced
-        // explicitly: `??` can't wrap an `await` in its autoclosure.
+        // this app's own class is also named SpeechTranscriber.
         //
         // SAME LANGUAGE ONLY. This used to fall back to en-US whenever the
         // device language had no SpeechTranscriber model, which turned a
         // Hindi or Tamil entry into confident English gibberish. Now the
-        // en-US fallback is only for people whose device language IS English
-        // (en-IN, en-AU... with only the base model). Anyone else gets an
-        // error, the SFSpeech path tries their language, and if that has no
-        // on-device model either they see the honest "no on-device model"
-        // message instead of a wrong transcript.
-        let preferred = Self.speakerLocale
-        var resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: preferred)
-        if resolved == nil, Self.allowsEnglishFallback(for: preferred) {
-            resolved = await Speech.SpeechTranscriber.supportedLocale(equivalentTo: Locale(identifier: "en-US"))
+        // en-US fallback is only for people whose language IS English
+        // (en-IN, en-AU... with only the base model). Anyone else is routed
+        // to the dictation model in their own language, then to the SFSpeech
+        // path in their language, and if that has no on-device model either
+        // they see the honest "no on-device model" message instead of a
+        // wrong transcript.
+        let route = await Self.analyzerRoute(
+            for: Self.speakerLocale,
+            transcriberLocale: { await Speech.SpeechTranscriber.supportedLocale(equivalentTo: $0) },
+            dictationLocale: { await DictationTranscriber.supportedLocale(equivalentTo: $0) })
+
+        switch route {
+        case .transcriber(let locale):
+            return Transcription(text: try await runTranscriber(locale: locale, audioURL: audioURL),
+                                 locale: locale)
+        case .dictation(let locale):
+            return Transcription(text: try await runDictation(locale: locale, audioURL: audioURL),
+                                 locale: locale)
+        case nil:
+            throw TranscriptionError.onDeviceUnavailable
         }
-        guard let locale = resolved else { throw TranscriptionError.onDeviceUnavailable }
+    }
 
-        let transcriber = Speech.SpeechTranscriber(locale: locale, preset: .transcription)
-
-        // Ensure the on-device model asset is installed (downloads once, on-device).
-        switch await AssetInventory.status(forModules: [transcriber]) {
+    /// Makes sure a module's on-device model is installed (one download, from
+    /// Apple, the first time), or throws.
+    @available(iOS 26.0, *)
+    private func ensureInstalled(_ module: any SpeechModule) async throws {
+        switch await AssetInventory.status(forModules: [module]) {
         case .installed:
             break
         case .supported, .downloading:
-            if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
+            if let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
                 try await request.downloadAndInstall()
             }
         case .unsupported:
@@ -113,6 +173,12 @@ final class SpeechTranscriber {
         @unknown default:
             throw TranscriptionError.recognizerUnavailable
         }
+    }
+
+    @available(iOS 26.0, *)
+    private func runTranscriber(locale: Locale, audioURL: URL) async throws -> String {
+        let transcriber = Speech.SpeechTranscriber(locale: locale, preset: .transcription)
+        try await ensureInstalled(transcriber)
 
         let analyzer = SpeechAnalyzer(modules: [transcriber])
         let audioFile = try AVAudioFile(forReading: audioURL)
@@ -130,9 +196,55 @@ final class SpeechTranscriber {
         try await analyzer.finalizeAndFinishThroughEndOfInput()
         try await collector.value
 
-        var text = String(transcript.characters).trimmingCharacters(in: .whitespacesAndNewlines)
+        return try Self.finish(String(transcript.characters))
+    }
+
+    /// B-7: the dictation model, for languages SpeechTranscriber lacks.
+    @available(iOS 26.0, *)
+    private func runDictation(locale: Locale, audioURL: URL) async throws -> String {
+        let transcriber = DictationTranscriber(locale: locale, preset: .longDictation)
+        try await ensureInstalled(transcriber)
+
+        let analyzer = SpeechAnalyzer(modules: [transcriber])
+        let audioFile = try AVAudioFile(forReading: audioURL)
+
+        var segments: [String] = []
+        let collector = Task {
+            for try await result in transcriber.results where result.isFinal {
+                segments.append(String(result.text.characters))
+            }
+        }
+
+        _ = try await analyzer.analyzeSequence(from: audioFile)
+        try await analyzer.finalizeAndFinishThroughEndOfInput()
+        try await collector.value
+
+        return try Self.finish(Self.joinSegments(segments))
+    }
+
+    /// Joins final dictation segments, adding a space only where neither side
+    /// already has one, so a segment boundary never glues two words together.
+    static func joinSegments(_ segments: [String]) -> String {
+        var out = ""
+        for segment in segments where !segment.isEmpty {
+            if let last = out.last, let first = segment.first,
+               !last.isWhitespace, !first.isWhitespace {
+                out.append(" ")
+            }
+            out.append(segment)
+        }
+        return out
+    }
+
+    /// Trims, refuses an empty transcript, and closes the last sentence.
+    /// A danda (U+0964) ends a Hindi sentence, so it counts as an ending too;
+    /// for every other text this is the rule the app always had.
+    static func finish(_ raw: String) throws -> String {
+        var text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { throw TranscriptionError.noFinalResult }
-        if !text.hasSuffix(".") && !text.hasSuffix("?") && !text.hasSuffix("!") { text += "." }
+        if !text.hasSuffix(".") && !text.hasSuffix("?") && !text.hasSuffix("!") && !text.hasSuffix("\u{0964}") {
+            text += "."
+        }
         return text
     }
 
@@ -177,7 +289,17 @@ final class SpeechTranscriber {
     /// When that preference is the same language as `Locale.current` (every
     /// English user, and de/es/fr/it), `Locale.current` is kept as-is, so
     /// those users see exactly the recogniser order they had before.
+    ///
+    /// From 1.14 the "Language you speak" picker comes first: when someone has
+    /// chosen a language, that is the language. Automatic (the default) is
+    /// the rule above, so nothing changes for anyone who has not picked.
     static var speakerLocale: Locale {
+        SpeakingLanguage.resolve(chosen: SpeakingLanguage.chosenIdentifier,
+                                 automatic: automaticSpeakerLocale)
+    }
+
+    /// The 1.13.1 rule, with no picker involved: what Automatic means.
+    static var automaticSpeakerLocale: Locale {
         speakerLocale(preferredLanguages: Locale.preferredLanguages, current: .current)
     }
 
@@ -231,7 +353,7 @@ final class SpeechTranscriber {
 
     // MARK: - SFSpeechRecognizer path (iOS < 26, and the fallback)
 
-    private func transcribeWithSFSpeech(from audioURL: URL, completion: @escaping (Result<String, Error>) -> Void) {
+    private func transcribeWithSFSpeech(from audioURL: URL, completion: @escaping (Result<Transcription, Error>) -> Void) {
         SFSpeechRecognizer.requestAuthorization { status in
             DispatchQueue.main.async {
                 guard status == .authorized else {
@@ -299,11 +421,12 @@ final class SpeechTranscriber {
                             var text = result.bestTranscription.formattedString
 
                             // If offline transcription (no punctuation), add basic sentence ending
-                            if !text.isEmpty && !text.hasSuffix(".") && !text.hasSuffix("?") && !text.hasSuffix("!") {
+                            if !text.isEmpty && !text.hasSuffix(".") && !text.hasSuffix("?") && !text.hasSuffix("!")
+                                && !text.hasSuffix("\u{0964}") {
                                 text += "."
                             }
 
-                            completion(.success(text))
+                            completion(.success(Transcription(text: text, locale: recognizer.locale)))
                         }
                     }
                 }

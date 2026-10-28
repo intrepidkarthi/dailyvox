@@ -36,7 +36,7 @@ struct TwinResolutionCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.dv(.footnote, weight: .semibold))
                     .foregroundColor(.secondary.opacity(0.5))
             }

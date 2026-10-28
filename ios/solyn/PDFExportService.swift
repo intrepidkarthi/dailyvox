@@ -123,8 +123,7 @@ struct PDFExportService {
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .none
 
-        let exportDateFormatter = DateFormatter()
-        exportDateFormatter.dateFormat = "MMMM d, yyyy"
+        let exportDateFormatter = LocaleFormat.formatter(template: LocaleFormat.monthDayYear)
 
         let data = renderer.pdfData { context in
             // MARK: - Cover Page

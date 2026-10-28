@@ -937,9 +937,8 @@ struct TimelineView: View {
         comps.month = key.month
         let calendar = Calendar.current
         if let date = calendar.date(from: comps) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "LLLL yyyy" // e.g. December 2025
-            return formatter.string(from: date)
+            // "December 2025"; standalone month where the language has one.
+            return LocaleFormat.date(date, template: LocaleFormat.monthYear)
         }
         return "Unknown"
     }

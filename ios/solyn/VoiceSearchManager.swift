@@ -26,10 +26,14 @@ final class VoiceSearchManager: ObservableObject {
     private var audioEngine: AVAudioEngine?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
-    private let speechRecognizer = SFSpeechRecognizer(locale: SpeechTranscriber.speakerLocale)
-    // speakerLocale, not Locale.current: on a Hindi phone Locale.current is
-    // en_IN (the app is not localised in Hindi), which would turn spoken
-    // Hindi search terms into English words.
+    /// The same resolver entry transcription uses (`onDeviceRecognizer`): the
+    /// "Language you speak" choice, else the speaker's own language, only
+    /// with an on-device model, and English stand-ins only for English
+    /// speakers. Resolved when listening starts, so a new choice in Settings
+    /// applies to the very next search. Not Locale.current: on a Hindi phone
+    /// that is en_IN (the app is not localised in Hindi), which would turn
+    /// spoken Hindi search terms into English words.
+    private var speechRecognizer: SFSpeechRecognizer?
     
     // MARK: - Initialization
     
@@ -86,6 +90,7 @@ final class VoiceSearchManager: ObservableObject {
         // "Prefer on-device" meant a recogniser without on-device support sent
         // what you spoke into the search field to Apple. A search box is a diary
         // query; it leaks the same things the entries do.
+        speechRecognizer = SpeechTranscriber.onDeviceRecognizer()
         guard speechRecognizer?.supportsOnDeviceRecognition == true else {
             errorMessage = "Voice search needs an on-device speech model. Add your language under Settings > General > Keyboard > Dictation Languages — DailyVox will not send your voice to a server."
             return

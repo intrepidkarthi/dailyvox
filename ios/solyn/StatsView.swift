@@ -423,7 +423,7 @@ struct StatsView: View {
                 // answers "compared to what" instead of leaving the reader to
                 // guess — a bare arrow is a mood ring, not a measurement.
                 if let d = moodDelta {
-                    Text("\(d >= 0 ? "\u{25B2}" : "\u{25BC}") \(String(format: "%+.1f", d))")
+                    Text("\(d >= 0 ? "\u{25B2}" : "\u{25BC}") \(LocaleFormat.decimal(d, fractionDigits: 1, signed: true))")
                         .font(.dv(size: 11, weight: .bold, design: .rounded))
                         .foregroundColor(d >= 0 ? ThemeManager.shared.goldText : DS.Palette.coral)
                 }
@@ -645,8 +645,8 @@ struct StatsView: View {
         let days = "across \(insight.sampleDays) days"
         switch insight.kind {
         case .sleepAndMood:
-            let bright = String(format: "%.1f", insight.signalMeanOnBrighterDays)
-            let dim = String(format: "%.1f", insight.signalMeanOnDimmerDays)
+            let bright = LocaleFormat.decimal(insight.signalMeanOnBrighterDays, fractionDigits: 1)
+            let dim = LocaleFormat.decimal(insight.signalMeanOnDimmerDays, fractionDigits: 1)
             return "Your brighter days followed about \(bright)h of sleep; dimmer ones about \(dim)h — \(days)."
         case .stepsAndMood:
             let bright = Int(insight.signalMeanOnBrighterDays).formatted()
@@ -806,9 +806,9 @@ struct StatsView: View {
     }
 
     private func dayAbbreviation(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"
-        return String(formatter.string(from: date).prefix(1))
+        // The narrow weekday ("M"), which the locale defines, rather than the
+        // first letter of the short one: not every script abbreviates that way.
+        LocaleFormat.date(date, template: LocaleFormat.narrowWeekday)
     }
 
     /// Last fortnight against the one before it, on the 1–5 mood scale remapped

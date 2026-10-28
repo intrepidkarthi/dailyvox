@@ -68,8 +68,7 @@ enum TwinPatterns {
             let name = calendar.weekdaySymbols[weekday - 1]
             weekdayFindings.append(TwinPattern(
                 lead: delta < 0 ? "\(name)s run low." : "\(name)s run high.",
-                detail: String(format: "%+.2f against your %+.2f average, across %d entries.",
-                               mean, overall, values.count),
+                detail: "\(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) average, across \(values.count) entries.",
                 effect: abs(delta)
             ))
         }
@@ -88,8 +87,7 @@ enum TwinPatterns {
             guard abs(delta) > 0.2 else { continue }
             out.append(TwinPattern(
                 lead: delta > 0 ? "\(name) lifts you." : "\(name) weighs on you.",
-                detail: String(format: "Entries mentioning them average %+.2f against your %+.2f overall, across %d of them.",
-                               mean, overall, mentions.count),
+                detail: "Entries mentioning them average \(LocaleFormat.decimal(mean, fractionDigits: 2, signed: true)) against your \(LocaleFormat.decimal(overall, fractionDigits: 2, signed: true)) overall, across \(mentions.count) of them.",
                 effect: abs(delta)
             ))
         }
@@ -105,8 +103,7 @@ enum TwinPatterns {
             if abs(m - e) > 0.2 {
                 out.append(TwinPattern(
                     lead: m > e ? "Mornings read brighter." : "Evenings read brighter.",
-                    detail: String(format: "Before noon you write %+.2f; after six, %+.2f. %d entries and %d.",
-                                   m, e, morning.count, evening.count),
+                    detail: "Before noon you write \(LocaleFormat.decimal(m, fractionDigits: 2, signed: true)); after six, \(LocaleFormat.decimal(e, fractionDigits: 2, signed: true)). \(morning.count) entries and \(evening.count).",
                     effect: abs(m - e)
                 ))
             }

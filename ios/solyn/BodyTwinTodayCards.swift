@@ -253,7 +253,7 @@ struct BodyTwinIdleCards: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.dv(.caption, weight: .semibold))
                     .foregroundColor(inkMuted.opacity(0.6))
             }

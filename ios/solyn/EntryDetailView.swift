@@ -465,7 +465,7 @@ struct EntryDetailView: View {
     private var moodLine: String {
         guard selectedMood != .none else { return "not set" }
         let v = (Double(selectedMood.moodValue) - 3.0) / 2.0
-        let line = String(format: "%@ %+.1f", selectedMood.displayName, v)
+        let line = "\(selectedMood.displayName) \(LocaleFormat.decimal(v, fractionDigits: 1, signed: true))"
         return entry.isMoodSuggested ? line + " \u{00B7} suggested" : line
     }
 
@@ -861,15 +861,11 @@ struct EntryDetailView: View {
     }
 
     private var formattedShortDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return formatter.string(from: entry.date ?? Date())
+        LocaleFormat.date(entry.date ?? Date(), template: LocaleFormat.shortMonthDay)
     }
 
     private var formattedFullDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d, yyyy"
-        return formatter.string(from: entry.date ?? Date())
+        LocaleFormat.date(entry.date ?? Date(), template: LocaleFormat.weekdayMonthDayYear)
     }
 
     private func formattedTime(_ date: Date) -> String {

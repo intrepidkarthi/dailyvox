@@ -1420,19 +1420,27 @@ struct TodayView: View {
 
     /// Appends a segment of text to the day's entry, saves, and tells
     /// everything downstream. Shared by the transcript and the typed path.
+    ///
+    /// `recognizerLocale` is the locale of the model that transcribed a spoken
+    /// segment; nil for typed words, whose language is read from the text.
     @discardableResult
-    private func commitText(_ segment: String, to entry: DiaryEntry, twinDuration: Double) -> Bool {
+    private func commitText(_ segment: String, to entry: DiaryEntry, twinDuration: Double,
+                            recognizerLocale: Locale? = nil) -> Bool {
         let existingText = entry.text ?? ""
+        let existingLocale = entry.transcriptLocale
         if existingText.isEmpty {
             entry.text = segment
         } else {
             entry.text = existingText + "\n\n" + segment
         }
+        entry.noteLanguage(ofAppended: segment, recognizerLocale: recognizerLocale,
+                           entryHadText: !existingText.isEmpty)
         entry.updatedAt = Date()
         do {
             try viewContext.save()
         } catch {
             entry.text = existingText
+            entry.transcriptLocale = existingLocale
             logger.error("Failed to save entry text: \(error.localizedDescription)")
             return false
         }
@@ -1547,11 +1555,12 @@ struct TodayView: View {
         }
 
         #if os(iOS)
-        SpeechTranscriber.shared.transcribe(from: audioURL) { result in
+        SpeechTranscriber.shared.transcribeDetailed(from: audioURL) { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let textSegment):
-                    commitText(textSegment, to: entry, twinDuration: entry.duration)
+                case .success(let transcription):
+                    commitText(transcription.text, to: entry, twinDuration: entry.duration,
+                               recognizerLocale: transcription.locale)
                 case .failure(let error):
                     // No words, so nothing to reflect on — never a guess.
                     awaitingReflection = false
@@ -1574,9 +1583,7 @@ struct TodayView: View {
     // MARK: - Formatting
 
     private var formattedToday: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
-        return formatter.string(from: Date())
+        LocaleFormat.date(Date(), template: LocaleFormat.weekdayMonthDay)
     }
 
     private func formattedTime(_ date: Date) -> String {
@@ -1708,7 +1715,7 @@ struct TodayMoodChip: View {
                     .foregroundColor(theme.textColor.opacity(suggested ? 0.75 : 0.9))
                     .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "chevron.forward")
                         .font(.dv(.caption2, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)
                 }

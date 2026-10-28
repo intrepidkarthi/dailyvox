@@ -97,7 +97,11 @@ final class LiveTranscriber: ObservableObject {
     /// base language, then en-US only for English speakers — all of them
     /// required to be on-device. No model in the speaker's language means no
     /// live line at all, never an English guess at their words.
-    private let recognizer = SpeechTranscriber.onDeviceRecognizer()
+    ///
+    /// Resolved at every `start()`, not once: this object lives as long as
+    /// the recorder, and the "Language you speak" picker can change between
+    /// two recordings.
+    private var recognizer: SFSpeechRecognizer?
 
     /// Analysis is debounced: partials arrive several times a second and
     /// `NLTagger` is not free. Names and mood do not change that fast.
@@ -140,6 +144,7 @@ final class LiveTranscriber: ObservableObject {
     func start() {
         guard !isRunning else { return }
         reset()
+        recognizer = SpeechTranscriber.onDeviceRecognizer()
 
         guard SFSpeechRecognizer.authorizationStatus() == .authorized,
               let recognizer, recognizer.isAvailable else { return }

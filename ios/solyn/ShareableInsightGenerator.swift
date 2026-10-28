@@ -367,7 +367,7 @@ struct ShareableInsightGenerator {
         let ratio = longest.value / shortest.value
         guard ratio >= 1.5 else { return nil }
 
-        let ratioText = ratio >= 2.5 ? "\(Int(ratio))x" : String(format: "%.1fx", ratio)
+        let ratioText = ratio >= 2.5 ? "\(Int(ratio))x" : LocaleFormat.decimal(ratio, fractionDigits: 1) + "x"
 
         return ShareableInsight(
             headline: "You write \(ratioText) more when you're \(longest.key.displayName.lowercased()).",
