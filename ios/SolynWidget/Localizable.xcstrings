@@ -3,35 +3,213 @@
   "strings" : {
     "%@ · %lld stars" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$lld Sterne"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ · %2$lld stars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$lld estrellas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$lld étoiles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$@ · %2$lld stelle"
           }
         }
       },
       "comment" : "Lock Screen constellation widget, inline (one line above the clock). First placeholder: a day label such as 'Day 12' or 'Welcome back'. Second: the number of recent entries shown as stars. About 24 characters."
     },
     "%lld" : {
-      "comment" : "A bare number (a streak or a star count) in a widget or Live Activity. No translation needed unless the language writes numbers differently."
+      "comment" : "A bare number (a streak or a star count) in a widget or Live Activity. No translation needed unless the language writes numbers differently.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld IN YOUR SKY" : {
-      "comment" : "Medium Home Screen widget: total entries, upper case, monospaced, under the seven-night strip. The placeholder is the count. About 16 characters."
+      "comment" : "Medium Home Screen widget: total entries, upper case, monospaced, under the seven-night strip. The placeholder is the count. About 16 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld AN DEINEM HIMMEL"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld EN TU CIELO"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld DANS TON CIEL"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld NEL TUO CIELO"
+          }
+        }
+      }
     },
     "%lld stars" : {
-      "comment" : "Lock Screen constellation widget, rectangular: number of recent entries drawn as stars. About 12 characters."
+      "comment" : "Lock Screen constellation widget, rectangular: number of recent entries drawn as stars. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Sterne"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld estrellas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld étoiles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld stelle"
+          }
+        }
+      }
     },
     "%lld stars in your inner sky" : {
-      "comment" : "Streak Live Activity, Dynamic Island expanded: total entries. The placeholder is the count. About 30 characters."
+      "comment" : "Streak Live Activity, Dynamic Island expanded: total entries. The placeholder is the count. About 30 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Sterne an deinem inneren Himmel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld estrellas en tu cielo interior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld étoiles dans ton ciel intérieur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld stelle nel tuo cielo interiore"
+          }
+        }
+      }
     },
     "%llds to your daily 42" : {
-      "comment" : "Recording Live Activity: seconds left before the soft 42-second target. The placeholder is a whole number of seconds (0-42); 's' is the local unit for seconds. Keep 42 literal. About 25 characters."
+      "comment" : "Recording Live Activity: seconds left before the soft 42-second target. The placeholder is a whole number of seconds (0-42); 's' is the local unit for seconds. Keep 42 literal. About 25 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch %lld s bis zu deinen 42"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld s para tus 42 de hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Encore %lld s jusqu'à tes 42"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ancora %lld s al tuo 42"
+          }
+        }
+      }
     },
     "%lld→%lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld→%2$lld"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "%1$lld→%2$lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld→%2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%1$lld→%2$lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "%1$lld→%2$lld"
           }
         }
@@ -39,220 +217,2092 @@
       "comment" : "Star-birth Live Activity, Dynamic Island expanded: the star count ticking up by one, as in 140→141. Both placeholders are counts; keep the arrow."
     },
     "+1" : {
-      "comment" : "Star-birth Live Activity, Dynamic Island compact: one new star. Keep it as is unless the language writes it differently."
+      "comment" : "Star-birth Live Activity, Dynamic Island compact: one new star. Keep it as is unless the language writes it differently.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+1"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+1"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+1"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "+1"
+          }
+        }
+      }
     },
     "0 BYTES OUT" : {
-      "comment" : "Recording Live Activity, Dynamic Island expanded, top right: nothing leaves the phone. Upper case, monospaced, about 12 characters."
+      "comment" : "Recording Live Activity, Dynamic Island expanded, top right: nothing leaves the phone. Upper case, monospaced, about 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "0 BYTE RAUS"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "0 BYTES ENVIADOS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "0 OCTET ENVOYÉ"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "0 BYTE INVIATI"
+          }
+        }
+      }
     },
     "A new star appeared in your sky" : {
-      "comment" : "Star-birth Live Activity, Lock Screen: shown right after an entry is saved. 'Star' is the app's word for an entry. About 35 characters."
+      "comment" : "Star-birth Live Activity, Lock Screen: shown right after an entry is saved. 'Star' is the app's word for an entry. About 35 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ein neuer Stern an deinem Himmel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apareció una estrella nueva en tu cielo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une nouvelle étoile est apparue dans ton ciel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una nuova stella nel tuo cielo"
+          }
+        }
+      }
     },
     "Angry" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wütend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enfado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En colère"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rabbia"
+          }
+        }
+      }
     },
     "Anxious" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ängstlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansiedad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sur les nerfs"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ansia"
+          }
+        }
+      }
     },
     "Calm" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ruhig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Calma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Calme"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Calma"
+          }
+        }
+      }
     },
     "Constellation" : {
-      "comment" : "Widget gallery: name of the Lock Screen constellation widget. About 20 characters."
+      "comment" : "Widget gallery: name of the Lock Screen constellation widget. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sternbild"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Constelación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Constellation"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Costellazione"
+          }
+        }
+      }
     },
     "DailyVox" : {
-      "comment" : "The app's name in the small Home Screen widget. Do not translate."
+      "comment" : "The app's name in the small Home Screen widget. Do not translate.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox"
+          }
+        }
+      }
     },
     "Day %@ · speak tonight" : {
-      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). No entry yet tonight; the number is the day the streak reaches if the user speaks tonight (2 or more). An invitation, never guilt."
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). No entry yet tonight; the number is the day the streak reaches if the user speaks tonight (2 or more). An invitation, never guilt.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tag %@ · heute sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Día %@ · habla esta noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour %@ · parle ce soir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giorno %@ · parla stasera"
+          }
+        }
+      }
     },
     "Day %@ · spoken" : {
-      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). Tonight's entry is in; the number is the streak day (1 or more)."
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). Tonight's entry is in; the number is the streak day (1 or more).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tag %@ · gesprochen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Día %@ · hecho"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour %@ · c'est dit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giorno %@ · fatto"
+          }
+        }
+      }
     },
     "Day %@ — your constellation is growing." : {
-      "comment" : "Star-birth Live Activity on the Lock Screen after an entry. The placeholder is the streak day (2 or more). About 50 characters."
+      "comment" : "Star-birth Live Activity on the Lock Screen after an entry. The placeholder is the streak day (2 or more). About 50 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tag %@ – dein Sternbild wächst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Día %@: tu constelación está creciendo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour %@ — ta constellation grandit."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giorno %@: la tua costellazione cresce."
+          }
+        }
+      }
     },
     "Day %lld" : {
-      "comment" : "Widgets and Live Activities: the current streak day. The placeholder is the day number. About 10 characters."
+      "comment" : "Widgets and Live Activities: the current streak day. The placeholder is the day number. About 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tag %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Día %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jour %lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giorno %lld"
+          }
+        }
+      }
     },
     "Diary Entry" : {
-      "comment" : "Widget gallery: name of the main Home Screen widget. About 20 characters."
+      "comment" : "Widget gallery: name of the main Home Screen widget. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tagebucheintrag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrada del diario"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrée du journal"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Voce del diario"
+          }
+        }
+      }
     },
     "Discard" : {
-      "comment" : "Recording Live Activity: button that throws the recording away. One word, about 10 characters."
+      "comment" : "Recording Live Activity: button that throws the recording away. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Verwerfen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descartar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jeter"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Scarta"
+          }
+        }
+      }
     },
     "Discard recording" : {
-      "comment" : "Live Activity / Control Center action title: throw the current recording away without saving it. About 20 characters."
+      "comment" : "Live Activity / Control Center action title: throw the current recording away without saving it. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufnahme verwerfen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descartar grabación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jeter l'enregistrement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Scarta registrazione"
+          }
+        }
+      }
     },
     "Done today" : {
-      "comment" : "Small streak widget: today's entry is recorded. About 12 characters."
+      "comment" : "Small streak widget: today's entry is recorded. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute erledigt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hecho hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fait aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fatto oggi"
+          }
+        }
+      }
     },
     "Entry recorded" : {
-      "comment" : "Small Home Screen widget: today's entry is in. About 16 characters."
+      "comment" : "Small Home Screen widget: today's entry is in. About 16 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Eintrag gespeichert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrada grabada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entrée enregistrée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Voce registrata"
+          }
+        }
+      }
     },
     "Excited" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufgeregt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entusiasmo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enthousiaste"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Entusiasmo"
+          }
+        }
+      }
     },
     "Finish recording" : {
-      "comment" : "Live Activity / Control Center action title: stop recording and keep the entry. About 20 characters."
+      "comment" : "Live Activity / Control Center action title: stop recording and keep the entry. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufnahme beenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminar grabación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminer l'enregistrement"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Termina registrazione"
+          }
+        }
+      }
     },
     "Finish ✦" : {
-      "comment" : "Recording Live Activity: button that stops and keeps the entry. Keep the ✦ star after the word. About 10 characters."
+      "comment" : "Recording Live Activity: button that stops and keeps the entry. Keep the ✦ star after the word. About 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fertig ✦"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminar ✦"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Finir ✦"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fine ✦"
+          }
+        }
+      }
     },
     "First star tonight. Your inner sky is forming." : {
-      "comment" : "Star-birth Live Activity on the Lock Screen after the first entry of a run. 'Star' and 'sky' are the app's metaphor for entries, not astrology. About 50 characters."
+      "comment" : "Star-birth Live Activity on the Lock Screen after the first entry of a run. 'Star' and 'sky' are the app's metaphor for entries, not astrology. About 50 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erster Stern heute Abend. Dein innerer Himmel entsteht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Primera estrella esta noche. Tu cielo interior se está formando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Première étoile ce soir. Ton ciel intérieur se forme."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prima stella stasera. Il tuo cielo interiore prende forma."
+          }
+        }
+      }
     },
     "Grateful" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dankbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gratitud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gratitude"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gratitudine"
+          }
+        }
+      }
     },
     "Happy" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Glücklich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alegría"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Le cœur léger"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Felicità"
+          }
+        }
+      }
     },
     "Listening…" : {
-      "comment" : "Recording Live Activity: shown while recording before any words are transcribed. About 14 characters."
+      "comment" : "Recording Live Activity: shown while recording before any words are transcribed. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ich höre zu…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Escuchando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À l'écoute…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "In ascolto…"
+          }
+        }
+      }
     },
     "Mood Tracker" : {
-      "comment" : "Widget gallery: name of the mood widget. About 20 characters."
+      "comment" : "Widget gallery: name of the mood widget. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stimmung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registro de ánimo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Suivi d'humeur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diario dell'umore"
+          }
+        }
+      }
     },
     "Mood so far" : {
-      "comment" : "Recording Live Activity: VoiceOver label of the live mood dot. About 16 characters."
+      "comment" : "Recording Live Activity: VoiceOver label of the live mood dot. About 16 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stimmung bisher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ánimo hasta ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Humeur pour l'instant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Umore finora"
+          }
+        }
+      }
     },
     "No mood" : {
-      "comment" : "Mood widget: the entry has no mood. About 12 characters."
+      "comment" : "Mood widget: the entry has no mood. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Stimmung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ninguno"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune humeur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nessun umore"
+          }
+        }
+      }
     },
     "No mood set" : {
-      "comment" : "Mood widget: today's entry has no mood. About 14 characters."
+      "comment" : "Mood widget: today's entry has no mood. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Stimmung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sin ánimo elegido"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune humeur choisie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nessun umore"
+          }
+        }
+      }
     },
     "No moods recorded" : {
-      "comment" : "Mood widget, large: no moods this week yet. About 20 characters."
+      "comment" : "Mood widget, large: no moods this week yet. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Stimmungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sin estados de ánimo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aucune humeur notée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nessun umore registrato"
+          }
+        }
+      }
     },
     "Not set" : {
-      "comment" : "Mood widget: a day with no mood. About 10 characters."
+      "comment" : "Mood widget: a day with no mood. About 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nicht gesetzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sin definir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non définie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non impostato"
+          }
+        }
+      }
     },
     "Open DailyVox" : {
-      "comment" : "Widget link label: opens the app. Keep 'DailyVox'. About 16 characters."
+      "comment" : "Widget link label: opens the app. Keep 'DailyVox'. About 16 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abrir DailyVox"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvrir DailyVox"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apri DailyVox"
+          }
+        }
+      }
     },
     "Open DailyVox and start recording an entry." : {
-      "comment" : "Control Center / Shortcuts description of the Speak action. Keep 'DailyVox'. About 50 characters."
+      "comment" : "Control Center / Shortcuts description of the Speak action. Keep 'DailyVox'. About 50 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öffne DailyVox und starte die Aufnahme eines Eintrags."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abre DailyVox y empieza a grabar una entrada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvre DailyVox et commence à enregistrer une entrée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apri DailyVox e inizia a registrare una voce."
+          }
+        }
+      }
     },
     "Past your daily 42 — keep going as long as you like." : {
-      "comment" : "Recording Live Activity, Lock Screen subtitle once 42 seconds have passed. 42 is a soft target, never a limit: keep the number 42 and never say 'at least' or 'maximum'. About 55 characters."
+      "comment" : "Recording Live Activity, Lock Screen subtitle once 42 seconds have passed. 42 is a soft target, never a limit: keep the number 42 and never say 'at least' or 'maximum'. About 55 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Über deine 42 hinaus – sprich weiter, so lange du magst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ya pasaste tus 42 de hoy: sigue todo lo que quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Au-delà de tes 42 du jour — continue aussi longtemps que tu veux."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oltre il tuo 42 quotidiano: continua quanto vuoi."
+          }
+        }
+      }
     },
     "Paused" : {
-      "comment" : "Recording Live Activity: the recording is paused. One word, about 10 characters."
+      "comment" : "Recording Live Activity: the recording is paused. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pausiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En pausa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En pause"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "In pausa"
+          }
+        }
+      }
     },
     "Quick Record" : {
-      "comment" : "Widget gallery: name of the one-tap record widget. About 20 characters."
+      "comment" : "Widget gallery: name of the one-tap record widget. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schnellaufnahme"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grabación rápida"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrement rapide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registrazione rapida"
+          }
+        }
+      }
     },
     "Record today" : {
-      "comment" : "Small streak widget: nothing recorded yet today, an invitation. About 12 characters."
+      "comment" : "Small streak widget: nothing recorded yet today, an invitation. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Graba hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dis ta journée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registra oggi"
+          }
+        }
+      }
     },
     "Recording your entry" : {
-      "comment" : "Recording Live Activity, Lock Screen: title while recording. About 24 characters."
+      "comment" : "Recording Live Activity, Lock Screen: title while recording. About 24 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Eintrag wird aufgenommen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grabando tu entrada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrement de ton entrée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registrazione della voce"
+          }
+        }
+      }
     },
     "Recording, %lld seconds" : {
-      "comment" : "Recording Live Activity: VoiceOver label for the timer. The placeholder is the elapsed whole seconds."
+      "comment" : "Recording Live Activity: VoiceOver label for the timer. The placeholder is the elapsed whole seconds.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufnahme, %lld Sekunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grabando, %lld segundos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrement, %lld secondes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registrazione, secondi: %lld"
+          }
+        }
+      }
     },
     "Sad" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Traurig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tristeza"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Triste"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tristezza"
+          }
+        }
+      }
     },
     "See your mood at a glance." : {
-      "comment" : "Widget gallery: description of the mood widget. About 40 characters."
+      "comment" : "Widget gallery: description of the mood widget. About 40 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Deine Stimmung auf einen Blick."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu ánimo de un vistazo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton humeur en un coup d'œil."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il tuo umore a colpo d'occhio."
+          }
+        }
+      }
     },
     "Speak" : {
-      "comment" : "Control Center control and action title: start a spoken entry. One short word, about 8 characters."
+      "comment" : "Control Center control and action title: start a spoken entry. One short word, about 8 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hablar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Parler"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Parla"
+          }
+        }
+      }
     },
     "Speak an entry" : {
-      "comment" : "Small Home Screen widget: invitation under the mic. About 16 characters."
+      "comment" : "Small Home Screen widget: invitation under the mic. About 16 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Eintrag sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Graba una entrada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dis une entrée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Registra una voce"
+          }
+        }
+      }
     },
     "Speak tonight" : {
-      "comment" : "Widgets: invitation to record tonight when nothing has been spoken. About 24 characters."
+      "comment" : "Widgets: invitation to record tonight when nothing has been spoken. About 24 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute Abend sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Habla esta noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Parle ce soir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Parla stasera"
+          }
+        }
+      }
     },
     "Spoken tonight" : {
-      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters. Tonight's entry is in and there is no streak running."
+      "comment" : "Medium Home Screen widget, one line beside the mic, about 24 characters. Tonight's entry is in and there is no streak running.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute gesprochen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hecho esta noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "C'est dit ce soir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fatto stasera"
+          }
+        }
+      }
     },
     "Star %lld kept" : {
-      "comment" : "Star-birth Live Activity, Dynamic Island expanded: the entry just saved became star number N. 'Kept' is the app's verb for saving. About 18 characters."
+      "comment" : "Star-birth Live Activity, Dynamic Island expanded: the entry just saved became star number N. 'Kept' is the app's verb for saving. About 18 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stern %lld bewahrt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Estrella %lld guardada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Étoile %lld gardée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stella %lld custodita"
+          }
+        }
+      }
     },
     "Start a DailyVox entry. Nothing leaves your device." : {
-      "comment" : "Control Center control description. Keep 'DailyVox'. About 50 characters."
+      "comment" : "Control Center control description. Keep 'DailyVox'. About 50 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Starte einen DailyVox-Eintrag. Nichts verlässt dein Gerät."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Empieza una entrada de DailyVox. Nada sale de tu dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Commence une entrée DailyVox. Rien ne quitte ton appareil."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Inizia una voce DailyVox. Nulla lascia il tuo dispositivo."
+          }
+        }
+      }
     },
     "Stop recording and keep the entry." : {
-      "comment" : "Live Activity / Control Center action description for Finish recording. About 40 characters."
+      "comment" : "Live Activity / Control Center action description for Finish recording. About 40 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufnahme beenden und den Eintrag behalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Detén la grabación y conserva la entrada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Arrêter l'enregistrement et garder l'entrée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ferma la registrazione e tieni la voce."
+          }
+        }
+      }
     },
     "Streak Counter" : {
-      "comment" : "Widget gallery: name of the streak widget. About 20 characters."
+      "comment" : "Widget gallery: name of the streak widget. About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Serienzähler"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Contador de racha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Compteur de série"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Contatore serie"
+          }
+        }
+      }
     },
     "Tap to Record" : {
-      "comment" : "Quick Record widget: the button label. About 14 characters."
+      "comment" : "Quick Record widget: the button label. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aufnehmen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toca para grabar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Enregistrer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tocca per registrare"
+          }
+        }
+      }
     },
     "Tap to open DailyVox and start recording." : {
-      "comment" : "Widget gallery: description of the Quick Record widget. Keep 'DailyVox'. About 45 characters."
+      "comment" : "Widget gallery: description of the Quick Record widget. Keep 'DailyVox'. About 45 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tippe, um DailyVox zu öffnen und aufzunehmen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toca para abrir DailyVox y empezar a grabar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Touche pour ouvrir DailyVox et commencer à enregistrer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tocca per aprire DailyVox e iniziare a registrare."
+          }
+        }
+      }
     },
     "Tap to record" : {
-      "comment" : "Small Home Screen widget: invitation when nothing is recorded today. About 14 characters."
+      "comment" : "Small Home Screen widget: invitation when nothing is recorded today. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zum Aufnehmen tippen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toca para grabar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Touche et parle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tocca per registrare"
+          }
+        }
+      }
     },
     "This Week" : {
-      "comment" : "Mood widget, large: header over the week's moods. About 14 characters."
+      "comment" : "Mood widget, large: header over the week's moods. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Woche"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta semana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cette semaine"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Questa settimana"
+          }
+        }
+      }
     },
     "Throw this recording away without saving it." : {
-      "comment" : "Live Activity / Control Center action description for Discard recording. About 45 characters."
+      "comment" : "Live Activity / Control Center action description for Discard recording. About 45 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Diese Aufnahme verwerfen, ohne sie zu speichern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descarta esta grabación sin guardarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jeter cet enregistrement sans le sauvegarder."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Scarta questa registrazione senza salvarla."
+          }
+        }
+      }
     },
     "Tired" : {
-      "comment" : "Mood name in the mood widget. One word, about 10 characters."
+      "comment" : "Mood name in the mood widget. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Müde"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cansancio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À plat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Stanchezza"
+          }
+        }
+      }
     },
     "Today" : {
-      "comment" : "Mood widget: label for today's mood. One word, about 10 characters."
+      "comment" : "Mood widget: label for today's mood. One word, about 10 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oggi"
+          }
+        }
+      }
     },
     "Today done" : {
-      "comment" : "Streak Live Activity: today's entry is in. About 12 characters."
+      "comment" : "Streak Live Activity: today's entry is in. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute erledigt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoy, hecho"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fait aujourd'hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oggi fatto"
+          }
+        }
+      }
     },
     "Today is open whenever you are." : {
-      "comment" : "Streak Live Activity, Lock Screen: no entry yet today. An invitation, never guilt. About 35 characters."
+      "comment" : "Streak Live Activity, Lock Screen: no entry yet today. An invitation, never guilt. About 35 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der Tag wartet, wann immer du bereit bist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoy está abierto cuando tú quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aujourd'hui t'attend, quand tu veux."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oggi è qui, quando vuoi tu."
+          }
+        }
+      }
     },
     "Today open" : {
-      "comment" : "Streak Live Activity: no entry yet today. About 12 characters."
+      "comment" : "Streak Live Activity: no entry yet today. About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heute offen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hoy, abierto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À faire"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Oggi aperto"
+          }
+        }
+      }
     },
     "Today's Mood" : {
-      "comment" : "Mood widget, small: header. About 14 characters."
+      "comment" : "Mood widget, small: header. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Heutige Stimmung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ánimo de hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Humeur du jour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Umore di oggi"
+          }
+        }
+      }
     },
     "Today's entry is in. %lld stars total." : {
-      "comment" : "Streak Live Activity, Lock Screen: today's entry is saved. The placeholder is the total number of entries (stars). About 40 characters."
+      "comment" : "Streak Live Activity, Lock Screen: today's entry is saved. The placeholder is the total number of entries (stars). About 40 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Der heutige Eintrag ist da. Insgesamt %lld Sterne."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La entrada de hoy ya está. %lld estrellas en total."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'entrée du jour est là. Étoiles au total : %lld."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La voce di oggi c'è. Stelle in totale: %lld."
+          }
+        }
+      }
     },
     "View today's diary entry and quick access to record." : {
-      "comment" : "Widget gallery: description of the Diary Entry widget. About 55 characters."
+      "comment" : "Widget gallery: description of the Diary Entry widget. About 55 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sieh deinen heutigen Eintrag und nimm schnell auf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mira la entrada de hoy y graba en un toque."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vois l'entrée du jour et enregistre en un geste."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vedi la voce di oggi e registra in un attimo."
+          }
+        }
+      }
     },
     "Welcome back" : {
-      "comment" : "Widgets: shown after a break in the streak, instead of a zero. Warm, never guilt. About 14 characters."
+      "comment" : "Widgets: shown after a break in the streak, instead of a zero. Warm, never guilt. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Willkommen zurück"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hola de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bon retour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Che bello rivederti"
+          }
+        }
+      }
     },
     "You're past 42s. Tap the app to stop when ready." : {
-      "comment" : "Recording Live Activity, Dynamic Island expanded, once 42 seconds have passed. 42 is a soft target, never a limit: keep 42 literal and the local unit for seconds. About 50 characters."
+      "comment" : "Recording Live Activity, Dynamic Island expanded, once 42 seconds have passed. 42 is a soft target, never a limit: keep 42 literal and the local unit for seconds. About 50 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Über 42 s. Tippe auf die App, um zu stoppen, wenn du so weit bist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ya pasaste los 42 s. Toca la app para parar cuando quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu as passé 42 s. Touche l'app pour arrêter quand tu veux."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hai superato i 42 s. Apri l'app per fermarti quando vuoi."
+          }
+        }
+      }
     },
     "Your first star is one entry away." : {
-      "comment" : "Small Home Screen widget before the first entry. 'Star' is the app's word for an entry. About 36 characters."
+      "comment" : "Small Home Screen widget before the first entry. 'Star' is the app's word for an entry. About 36 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein erster Stern ist nur einen Eintrag entfernt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu primera estrella está a una entrada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta première étoile n'est qu'à une entrée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La tua prima stella è a una voce di distanza."
+          }
+        }
+      }
     },
     "Your inner sky on the Lock Screen — one star per recent entry." : {
-      "comment" : "Widget gallery: description of the constellation widget. About 60 characters."
+      "comment" : "Widget gallery: description of the constellation widget. About 60 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein innerer Himmel auf dem Sperrbildschirm – ein Stern pro neuem Eintrag."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu cielo interior en la pantalla bloqueada: una estrella por cada entrada reciente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton ciel intérieur sur l'écran verrouillé — une étoile par entrée récente."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il tuo cielo interiore sulla schermata di blocco: una stella per ogni voce recente."
+          }
+        }
+      }
     },
     "Your run of spoken days. One missed day a week won't break it." : {
-      "comment" : "Widget gallery: description of the streak widget. About 60 characters."
+      "comment" : "Widget gallery: description of the streak widget. About 60 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Deine Serie gesprochener Tage. Ein verpasster Tag pro Woche beendet sie nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tus días seguidos hablando. Un día sin hablar a la semana no rompe la racha."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ta série de jours parlés. Un jour manqué par semaine ne la casse pas."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La tua serie di giorni raccontati. Un giorno saltato a settimana non la interrompe."
+          }
+        }
+      }
     },
     "Your sky kept your place." : {
-      "comment" : "Small widget after a break in the streak: the sky is still there. Warm, never guilt. About 30 characters."
+      "comment" : "Small widget after a break in the streak: the sky is still there. Warm, never guilt. About 30 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein Himmel hält dir den Platz frei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu cielo te guardó el sitio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton ciel t'a gardé ta place."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il tuo cielo ti ha tenuto il posto."
+          }
+        }
+      }
     },
     "day streak" : {
-      "comment" : "Streak widget: caption under the streak number (the same for every count). About 12 characters."
+      "comment" : "Streak widget: caption under the streak number (the same for every count). About 12 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tage-Serie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "de racha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "série en jours"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "giorni di fila"
+          }
+        }
+      }
     },
     "even" : {
-      "comment" : "Recording Live Activity: VoiceOver value of the mood dot, neither positive nor heavy. One word."
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot, neither positive nor heavy. One word.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ausgeglichen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "neutro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "stable"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pari"
+          }
+        }
+      }
     },
     "heavy" : {
-      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as low. Gentle. One word."
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as low. Gentle. One word.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "schwer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "bajo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "lourde"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "pesante"
+          }
+        }
+      }
     },
     "positive" : {
-      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as positive. One word."
+      "comment" : "Recording Live Activity: VoiceOver value of the mood dot when the words so far read as positive. One word.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "positiv"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "positivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "positive"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "positivo"
+          }
+        }
+      }
     },
     "stars" : {
-      "comment" : "Streak Live Activity, Lock Screen: caption under the total star count. One word, about 8 characters."
+      "comment" : "Streak Live Activity, Lock Screen: caption under the total star count. One word, about 8 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sterne"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "estrellas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "étoiles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "stelle"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
