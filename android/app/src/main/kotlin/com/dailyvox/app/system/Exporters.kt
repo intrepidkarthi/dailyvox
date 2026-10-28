@@ -157,11 +157,12 @@ object Exporters {
         return sb.toString()
     }
 
-    fun share(context: Context, file: File, mime: String) {
+    fun share(context: Context, file: File, mime: String, text: String? = null) {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.files", file)
         val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
             type = mime
             putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            if (text != null) putExtra(android.content.Intent.EXTRA_TEXT, text)
             clipData = android.content.ClipData.newRawUri(file.name, uri)
             addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }

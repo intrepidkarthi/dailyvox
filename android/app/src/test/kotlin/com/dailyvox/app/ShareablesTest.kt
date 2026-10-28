@@ -221,6 +221,6 @@ class ShareablesTest {
             assertTrue(res.getString(Shareables.titleRes(c)).isNotBlank())
             assertTrue(res.getString(Shareables.captionRes(c)).isNotBlank())
         }
-        assertEquals(6, Shareables.Card.entries.size)
+        assertEquals(7, Shareables.Card.entries.size)
     }
 }

@@ -1319,4 +1319,51 @@
     <string name="recap_description">%1$s, %2$s. %3$s.</string>
     <!-- Footer of the single-entry share card, small gold mono CAPITALS. Keep DAILYVOX and the two spaces each side of the dot. About 32 characters. -->
     <string name="share_entry_card_footer">"DAILYVOX  ·  RECORDED ON DEVICE"</string>
+
+    <!-- ── The 9:16 Story card ("share your sky, never your words"), PR #120. Nothing in this group may ever carry entry text, a name or a mood: it is counts and stars only. Keep that promise in translation. -->
+    <!-- Share sheet chip naming the 9:16 card, as in "an Instagram Story". Use the word your language's Instagram uses. About 12 characters. -->
+    <string name="sky_story_title">Story</string>
+    <!-- Line under the Story card preview on the share sheet. Use the product names your language's apps use ("Instagram Stories", "WhatsApp Status"). About 110 characters. -->
+    <string name="sky_story_caption">Sized for Instagram Stories and WhatsApp Status. Your stars and how many nights — none of your words.</string>
+    <!-- Printed on the Story card image, small gold CAPITALS above the headline. Same meaning as share_title_my_sky. About 14 characters. -->
+    <string name="sky_story_eyebrow">MY SKY</string>
+    <!-- Printed on the Story card image, the big headline. %d = nights with at least one entry (1 or more). "Kept" as in kept up / held onto, not "saved". About 20 characters. -->
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d night kept.</item>
+        <item quantity="other">%d nights kept.</item>
+    </plurals>
+    <!-- Printed on the Story card image under the headline, in the first person (the person sharing is speaking). About 70 characters. -->
+    <string name="sky_story_line">One star for every night I spoke. The words stayed on my phone.</string>
+    <!-- Printed at the foot of the Story card image. Keep DailyVox and the dot. %1$s = the web address (getdailyvox.com/sky). -->
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <!-- TalkBack: what the Story card preview shows. %d = nights with at least one entry (1 or more). -->
+    <plurals name="sky_story_description">
+        <item quantity="one">Your sky after %d night. Stars and a count only, no words from your journal.</item>
+        <item quantity="other">Your sky after %d nights. Stars and a count only, no words from your journal.</item>
+    </plurals>
+    <!-- The text sent alongside the Story image, in the first person. %1$d = nights (1 or more); %2$s = the web address (getdailyvox.com/sky). Keep DailyVox. About 60 characters. -->
+    <plurals name="sky_story_share_text">
+        <item quantity="one">My sky after %1$d night of DailyVox — %2$s</item>
+        <item quantity="other">My sky after %1$d nights of DailyVox — %2$s</item>
+    </plurals>
+
+    <!-- ── The one-time share offer on the Speak screen after nights 7, 21 and 42. Each is shown once, ever; calm, never a nag. -->
+    <!-- Offer card title after the 7th night with an entry. Spell the number out if your language reads well that way. About 55 characters. -->
+    <string name="share_offer_7">Seven nights. Your sky is taking shape — share it?</string>
+    <!-- Offer card title after the 21st night. About 55 characters. -->
+    <string name="share_offer_21">Twenty-one nights. Your sky is filling in — share it?</string>
+    <!-- Offer card title after the 42nd night. Forty-two is the app's signature number; spell it out as share_milestone_42 does. About 60 characters. -->
+    <string name="share_offer_42">Forty-two nights. Your sky has a shape of its own — share it?</string>
+    <!-- Offer card note under the title. About 70 characters. -->
+    <string name="share_offer_note">Only your stars and the count go on the card. None of your words.</string>
+    <!-- Offer card button that opens the Story card preview. About 12 characters. -->
+    <string name="share_offer_share">Share</string>
+    <!-- Offer card button that closes the offer for good. About 12 characters. -->
+    <string name="share_offer_not_now">Not now</string>
+    <!-- TalkBack for share_offer_not_now: says the offer will not come back. About 50 characters. -->
+    <string name="share_offer_not_now_description">Not now. This will not be offered again.</string>
+    <!-- Settings switch label for the share offer. About 40 characters. -->
+    <string name="settings_share_offer">Offer to share milestones</string>
+    <!-- Settings note under the switch. Keep the numbers 7, 21 and 42. About 200 characters. -->
+    <string name="settings_share_offer_note">After nights 7, 21 and 42, once each, a card offers your sky to share. It shows stars and a count, never your words. Nothing is sent unless you pick an app to send it.</string>
 </resources>

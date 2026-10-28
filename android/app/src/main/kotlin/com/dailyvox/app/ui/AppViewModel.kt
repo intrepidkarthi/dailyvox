@@ -30,6 +30,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun dismissReflection() { _reflection.value = null }
 
     /**
+     * The night (7, 21 or 42) whose Story card is on offer, or null. Set after
+     * the save that makes that night, by [com.dailyvox.app.system.ShareOffer],
+     * and recorded as shown at the same moment so it can never come back.
+     */
+    private val _shareOffer = MutableStateFlow<Int?>(null)
+    val shareOffer: StateFlow<Int?> = _shareOffer
+
+    fun dismissShareOffer() { _shareOffer.value = null }
+
+    /**
      * A mood picked (or cleared, with null) on the reflection card. The card
      * updates at once and the row follows; both apply the same rule, so the
      * suggestion is kept beside a choice and dropped with a clear.
@@ -62,7 +72,13 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     private val body = com.dailyvox.app.body.BodySignals(app)
 
-    fun add(text: String, durationSec: Int, audioPath: String? = null) = viewModelScope.launch {
+    fun add(
+        text: String,
+        durationSec: Int,
+        audioPath: String? = null,
+        /** True for the first star, saved by onboarding: never offers a share. */
+        onboarding: Boolean = false,
+    ) = viewModelScope.launch {
         val prefs = getApplication<Application>()
             .getSharedPreferences("dailyvox", android.content.Context.MODE_PRIVATE)
         val snapshot = if (prefs.getBoolean("body", false)) {
@@ -73,11 +89,24 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         // these words (B-2). Typed text is classified inside Repo instead.
         val spoken = com.dailyvox.app.audio.SpeechCapture.lastSessionLanguage(getApplication())
         val saved = repo.add(text, durationSec, audioPath, snapshot, spokenLanguage = spoken)
+        val table = repo.observeAll().first()
         // Off the saved row and the rest of the table, nothing else. Wrapped so
         // a reflection that cannot be built never looks like a failed save.
         _reflection.value = runCatching {
-            com.dailyvox.app.system.Reflection.of(saved, repo.observeAll().first())
+            com.dailyvox.app.system.Reflection.of(saved, table)
         }.getOrNull()
+        val app = getApplication<Application>()
+        com.dailyvox.app.system.ShareOffer.due(
+            before = table.filter { it.id != saved.id }.map { it.createdAt },
+            savedAt = saved.createdAt,
+            zone = java.time.ZoneId.systemDefault(),
+            shown = com.dailyvox.app.system.ShareOffer.shown(app),
+            enabled = com.dailyvox.app.system.ShareOffer.isEnabled(app),
+            onboarding = onboarding,
+        )?.let { night ->
+            com.dailyvox.app.system.ShareOffer.markShown(app, night)
+            _shareOffer.value = night
+        }
         refreshStats()
         // The widget is the only surface that can go stale without anyone
         // noticing -- it has no lifecycle of its own and its update period is an

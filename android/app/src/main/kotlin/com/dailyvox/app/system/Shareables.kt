@@ -54,19 +54,23 @@ object Shareables {
     private const val GOLD = "#D9A441"
     private const val GOLD_TEXT = "#EDCB86"
 
-    enum class Card { MY_SKY, RECEIPT, YEAR_ONE, MILESTONE, WALLPAPER, GIFT }
+    enum class Card { MY_SKY, STORY, RECEIPT, YEAR_ONE, MILESTONE, WALLPAPER, GIFT }
 
     /** Nights that mint a one-time card. Scarcity without gamification guilt. */
     val MILESTONES = listOf(42, 100, 365)
 
-    /** Portrait for the lock screen, square for feeds. */
+    /** Portrait for the lock screen and Stories, square for feeds. */
     private fun size(card: Card): Pair<Int, Int> =
-        if (card == Card.WALLPAPER) 1080 to 1920 else S to S
+        if (portrait(card)) SkyStory.WIDTH to SkyStory.HEIGHT else S to S
+
+    /** 9:16 cards. The share sheet sizes its preview by this. */
+    fun portrait(card: Card): Boolean = card == Card.WALLPAPER || card == Card.STORY
 
     /** The card's name on the share sheet's chips (a string resource). */
     @androidx.annotation.StringRes
     fun titleRes(card: Card): Int = when (card) {
         Card.MY_SKY -> R.string.share_title_my_sky
+        Card.STORY -> R.string.sky_story_title
         Card.RECEIPT -> R.string.share_title_receipt
         Card.YEAR_ONE -> R.string.share_title_year_one
         Card.MILESTONE -> R.string.share_title_milestone
@@ -78,6 +82,7 @@ object Shareables {
     @androidx.annotation.StringRes
     fun captionRes(card: Card): Int = when (card) {
         Card.MY_SKY -> R.string.share_caption_my_sky
+        Card.STORY -> R.string.sky_story_caption
         Card.RECEIPT -> R.string.share_caption_receipt
         Card.YEAR_ONE -> R.string.share_caption_year_one
         Card.MILESTONE -> R.string.share_caption_milestone
@@ -113,6 +118,10 @@ object Shareables {
         val r = context.resources
         when (card) {
             Card.MY_SKY -> drawMySky(context, r, c, entries)
+            // Shape first, then draw: the Story renderer never sees an Entry.
+            Card.STORY -> SkyStory.shape(entries).let { shape ->
+                SkyStory.draw(c, shape, SkyStory.copy(r, shape.nights))
+            }
             Card.RECEIPT -> drawReceipt(r, c, entries)
             Card.YEAR_ONE -> drawYearOne(r, c, entries, includeNames)
             Card.MILESTONE -> drawMilestone(r, c, entries)
@@ -125,7 +134,9 @@ object Shareables {
         return out
     }
 
-    fun share(context: Context, file: File) = Exporters.share(context, file, "image/png")
+    /** [text] rides beside the image (the Story card's one line and link). */
+    fun share(context: Context, file: File, text: String? = null) =
+        Exporters.share(context, file, "image/png", text)
 
     /**
      * Hands the image to whatever can set a wallpaper, via ACTION_ATTACH_DATA.
@@ -499,7 +510,7 @@ object Shareables {
     }
 
     /** The four-point mark, drawn as a path so the card needs no asset. */
-    private fun star(c: Canvas, cx: Float, cy: Float, r: Float, colour: Int) {
+    internal fun star(c: Canvas, cx: Float, cy: Float, r: Float, colour: Int) {
         val p = Path().apply {
             moveTo(cx, cy - r)
             quadTo(cx + r * 0.18f, cy - r * 0.18f, cx + r, cy)
@@ -511,23 +522,23 @@ object Shareables {
         c.drawPath(p, paint().apply { color = colour })
     }
 
-    private fun paint() = Paint().apply { isAntiAlias = true }
+    internal fun paint() = Paint().apply { isAntiAlias = true }
 
     // The brand's three roles (spec §8.2): DM Mono for data, Nunito 800 for
     // headlines, Inter for body. These used to be the platform's MONOSPACE and
     // SANS_SERIF, i.e. Roboto, so every card left the app off-brand.
-    private fun mono(size: Float, colour: String) = paint().apply {
+    internal fun mono(size: Float, colour: String) = paint().apply {
         color = Color.parseColor(colour); textSize = size
         typeface = BrandFaces.mono()
         letterSpacing = 0.10f
     }
 
-    private fun display(size: Float, colour: String) = paint().apply {
+    internal fun display(size: Float, colour: String) = paint().apply {
         color = Color.parseColor(colour); textSize = size
         typeface = BrandFaces.nunito(800)
     }
 
-    private fun body(size: Float, colour: String = "#99F1EDE2") = paint().apply {
+    internal fun body(size: Float, colour: String = "#99F1EDE2") = paint().apply {
         color = Color.parseColor(colour); textSize = size
         typeface = BrandFaces.inter(400)
     }

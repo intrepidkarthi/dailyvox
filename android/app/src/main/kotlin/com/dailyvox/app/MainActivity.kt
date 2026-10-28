@@ -224,6 +224,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val query by vm.query.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
     val reflection by vm.reflection.collectAsStateWithLifecycle()
+    val shareOffer by vm.shareOffer.collectAsStateWithLifecycle()
 
     // The past, brought back. Read from the whole table, keyed on the local
     // date so the cards move on at midnight rather than at the next write.
@@ -281,7 +282,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                 // a sky that already holds something.
                 // Audio with no words is still the user's first entry: the
                 // recogniser failed, they did not. It stays, untranscribed.
-                if (text.isNotBlank() || path != null) vm.add(text, secs, path)
+                if (text.isNotBlank() || path != null) vm.add(text, secs, path, onboarding = true)
                 // The claim beat asked, and already requested the notification
                 // permission if the answer was yes -- so the bootstrap below has
                 // nothing left to ask. A no (or a denied dialog) turns it off.
@@ -559,6 +560,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
                         reflection = reflection,
                         onDismissReflection = vm::dismissReflection,
+                        shareOffer = shareOffer,
+                        onShareOffer = {
+                            vm.dismissShareOffer()
+                            shareCard = com.dailyvox.app.system.Shareables.Card.STORY
+                        },
+                        onDismissShareOffer = vm::dismissShareOffer,
                         onReflectionMood = vm::setReflectionMood,
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },

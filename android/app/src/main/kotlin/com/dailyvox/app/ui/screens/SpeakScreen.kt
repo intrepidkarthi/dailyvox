@@ -81,6 +81,10 @@ fun SpeakScreen(
     onDismissReflection: () -> Unit = {},
     /** A mood picked on the reflection card, or null when it was cleared. */
     onReflectionMood: (String?) -> Unit = {},
+    /** 7, 21 or 42 when the one-time Story offer is up; null hides it. */
+    shareOffer: Int? = null,
+    onShareOffer: () -> Unit = {},
+    onDismissShareOffer: () -> Unit = {},
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
@@ -461,7 +465,7 @@ fun SpeakScreen(
                     // Only from IDLE. A tap during PROCESSING used to reach here:
                     // capture.start() returned early, recorder.start() did not, and
                     // a second MediaRecorder opened over the entry being filed.
-                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); onDismissShareOffer(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
                 },
             )
 
@@ -493,7 +497,7 @@ fun SpeakScreen(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .clickable { onDismissReflection(); capture.clearError(); typing = true }
+                        .clickable { onDismissReflection(); onDismissShareOffer(); capture.clearError(); typing = true }
                         .semantics {
                             role = Role.Button
                             contentDescription = typeInsteadDescription
@@ -518,6 +522,14 @@ fun SpeakScreen(
             Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
             ReflectionCard(reflection, onDismiss = onDismissReflection,
                            onMood = onReflectionMood, goldText = goldText)
+        }
+
+        // The one-time Story offer, after the save that made night 7, 21 or 42.
+        // Below the reflection, so the entry is answered before anything asks.
+        if (shareOffer != null && state == SpeechCapture.State.IDLE && !typing) {
+            Spacer(Modifier.height(if (tall) 16.dp else 12.dp))
+            ShareOfferCard(shareOffer, onShare = onShareOffer,
+                           onNotNow = onDismissShareOffer, goldText = goldText)
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -787,6 +799,87 @@ private fun ReflectionCard(
                 .padding(horizontal = 14.dp)
                 .wrapContentHeight(Alignment.CenterVertically),
         )
+    }
+}
+
+/**
+ * "Seven nights. Your sky is taking shape — share it?" Calm, flat, once.
+ *
+ * Share opens the Story preview (so the person sees exactly what would leave)
+ * and the system share sheet goes from there. Not now closes it for good: the
+ * offer was recorded as shown when it appeared, and nothing ever re-asks.
+ */
+@Composable
+private fun ShareOfferCard(
+    night: Int,
+    onShare: () -> Unit,
+    onNotNow: () -> Unit,
+    goldText: Color,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val title = stringResource(
+        when (night) {
+            7 -> R.string.share_offer_7
+            21 -> R.string.share_offer_21
+            else -> R.string.share_offer_42
+        }
+    )
+    val note = stringResource(R.string.share_offer_note)
+    val notNowDescription = stringResource(R.string.share_offer_not_now_description)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .widthIn(max = 460.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(scheme.surface)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
+                liveRegion = LiveRegionMode.Polite
+            },
+        ) {
+            Text(
+                "✦ $title",
+                fontSize = 15.sp, lineHeight = 21.sp, fontWeight = FontWeight.Bold,
+                color = scheme.onSurface,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(note, fontSize = 12.5.sp, lineHeight = 18.sp, color = scheme.onSurfaceVariant)
+        }
+        Spacer(Modifier.height(10.dp))
+        Row(
+            Modifier.align(Alignment.End),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                stringResource(R.string.share_offer_not_now),
+                fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = scheme.primary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable(onClick = onNotNow)
+                    .semantics {
+                        role = Role.Button
+                        contentDescription = notNowDescription
+                    }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 14.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+            Text(
+                stringResource(R.string.share_offer_share),
+                fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, color = scheme.onPrimary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(scheme.primary)
+                    .clickable(onClick = onShare)
+                    .semantics { role = Role.Button }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 18.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
     }
 }
 
