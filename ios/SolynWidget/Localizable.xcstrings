@@ -27,12 +27,6 @@
             "value" : "%1$@ · %2$lld étoiles"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%1$@ · तारे: %2$lld"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -64,12 +58,6 @@
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%lld"
-          }
-        },
-        "hi" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%lld"
@@ -110,12 +98,6 @@
             "value" : "%lld DANS TON CIEL"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आपके आसमान में %lld"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -149,12 +131,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%lld étoiles"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "तारे: %lld"
           }
         },
         "it" : {
@@ -192,12 +168,6 @@
             "value" : "%lld étoiles dans ton ciel intérieur"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "भीतर के आसमान में तारे: %lld"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -231,12 +201,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Encore %lld s jusqu'à tes 42"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रोज़ के 42 तक %lld सेकंड"
           }
         },
         "it" : {
@@ -279,12 +243,6 @@
             "value" : "%1$lld→%2$lld"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%1$lld→%2$lld"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -316,12 +274,6 @@
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "+1"
-          }
-        },
-        "hi" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "+1"
@@ -362,12 +314,6 @@
             "value" : "0 OCTET ENVOYÉ"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "0 बाइट बाहर"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -401,12 +347,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Une nouvelle étoile est apparue dans ton ciel"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आपके आसमान में एक नया तारा आया"
           }
         },
         "it" : {
@@ -444,12 +384,6 @@
             "value" : "En colère"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "गुस्से में"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -483,12 +417,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Sur les nerfs"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "बेचैन"
           }
         },
         "it" : {
@@ -526,12 +454,6 @@
             "value" : "Calme"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "शांत"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -567,12 +489,6 @@
             "value" : "Constellation"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "तारामंडल"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -603,12 +519,6 @@
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "DailyVox"
-          }
-        },
-        "hi" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox"
@@ -649,12 +559,6 @@
             "value" : "Jour %@ · parle ce soir"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "दिन %@ · आज रात बोलिए"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -688,12 +592,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Jour %@ · c'est dit"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "दिन %@ · बात हो गई"
           }
         },
         "it" : {
@@ -731,12 +629,6 @@
             "value" : "Jour %@ — ta constellation grandit."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "दिन %@ — आपका तारामंडल बढ़ रहा है।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -770,12 +662,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Jour %lld"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "दिन %lld"
           }
         },
         "it" : {
@@ -813,12 +699,6 @@
             "value" : "Entrée du journal"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "डायरी एंट्री"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -852,12 +732,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Jeter"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "हटाएँ"
           }
         },
         "it" : {
@@ -895,12 +769,6 @@
             "value" : "Jeter l'enregistrement"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्डिंग हटाएँ"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -934,12 +802,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Fait aujourd'hui"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज हो गया"
           }
         },
         "it" : {
@@ -977,12 +839,6 @@
             "value" : "Entrée enregistrée"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "एंट्री रिकॉर्ड हुई"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1016,12 +872,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Enthousiaste"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "उत्साहित"
           }
         },
         "it" : {
@@ -1059,12 +909,6 @@
             "value" : "Terminer l'enregistrement"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्डिंग पूरी करें"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1098,12 +942,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Finir ✦"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "पूरा ✦"
           }
         },
         "it" : {
@@ -1141,12 +979,6 @@
             "value" : "Première étoile ce soir. Ton ciel intérieur se forme."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज रात पहला तारा। आपके भीतर का आसमान बन रहा है।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1180,12 +1012,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Gratitude"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "शुक्रगुज़ार"
           }
         },
         "it" : {
@@ -1223,12 +1049,6 @@
             "value" : "Le cœur léger"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ख़ुश"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1262,12 +1082,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "À l'écoute…"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "सुन रहे हैं…"
           }
         },
         "it" : {
@@ -1305,12 +1119,6 @@
             "value" : "Suivi d'humeur"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "मूड ट्रैकर"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1344,12 +1152,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Humeur pour l'instant"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "अब तक का मूड"
           }
         },
         "it" : {
@@ -1387,12 +1189,6 @@
             "value" : "Aucune humeur"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "कोई मूड नहीं"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1426,12 +1222,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Aucune humeur choisie"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "कोई मूड नहीं चुना"
           }
         },
         "it" : {
@@ -1469,12 +1259,6 @@
             "value" : "Aucune humeur notée"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "कोई मूड दर्ज नहीं"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1508,12 +1292,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Non définie"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "तय नहीं"
           }
         },
         "it" : {
@@ -1551,12 +1329,6 @@
             "value" : "Ouvrir DailyVox"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "DailyVox खोलें"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1590,12 +1362,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ouvre DailyVox et commence à enregistrer une entrée."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "DailyVox खोलें और एंट्री रिकॉर्ड करना शुरू करें।"
           }
         },
         "it" : {
@@ -1633,12 +1399,6 @@
             "value" : "Au-delà de tes 42 du jour — continue aussi longtemps que tu veux."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रोज़ के 42 पूरे — जितना चाहें, बोलते रहिए।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1672,12 +1432,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "En pause"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रुका हुआ"
           }
         },
         "it" : {
@@ -1715,12 +1469,6 @@
             "value" : "Enregistrement rapide"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "झटपट रिकॉर्ड"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1754,12 +1502,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Dis ta journée"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज रिकॉर्ड करें"
           }
         },
         "it" : {
@@ -1797,12 +1539,6 @@
             "value" : "Enregistrement de ton entrée"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आपकी एंट्री रिकॉर्ड हो रही है"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1836,12 +1572,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Enregistrement, %lld secondes"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्डिंग, %lld सेकंड"
           }
         },
         "it" : {
@@ -1879,12 +1609,6 @@
             "value" : "Triste"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "उदास"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -1918,12 +1642,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ton humeur en un coup d'œil."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "एक नज़र में अपना मूड देखें।"
           }
         },
         "it" : {
@@ -1961,12 +1679,6 @@
             "value" : "Parler"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "बोलें"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2000,12 +1712,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Dis une entrée"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "एक एंट्री बोलिए"
           }
         },
         "it" : {
@@ -2043,12 +1749,6 @@
             "value" : "Parle ce soir"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज रात बोलिए"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2082,12 +1782,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "C'est dit ce soir"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज रात की बात हो गई"
           }
         },
         "it" : {
@@ -2125,12 +1819,6 @@
             "value" : "Étoile %lld gardée"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "तारा %lld सँजोया गया"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2164,12 +1852,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Commence une entrée DailyVox. Rien ne quitte ton appareil."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "DailyVox एंट्री शुरू करें। आपके डिवाइस से कुछ भी बाहर नहीं जाता।"
           }
         },
         "it" : {
@@ -2207,12 +1889,6 @@
             "value" : "Arrêter l'enregistrement et garder l'entrée."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्डिंग रोकें और एंट्री रखें।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2246,12 +1922,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Compteur de série"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "सिलसिला काउंटर"
           }
         },
         "it" : {
@@ -2289,12 +1959,6 @@
             "value" : "Enregistrer"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्ड के लिए टैप"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2328,12 +1992,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Touche pour ouvrir DailyVox et commencer à enregistrer."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "DailyVox खोलकर रिकॉर्डिंग शुरू करने के लिए टैप करें।"
           }
         },
         "it" : {
@@ -2371,12 +2029,6 @@
             "value" : "Touche et parle"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "रिकॉर्ड के लिए टैप"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2410,12 +2062,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Cette semaine"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "इस हफ़्ते"
           }
         },
         "it" : {
@@ -2453,12 +2099,6 @@
             "value" : "Jeter cet enregistrement sans le sauvegarder."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "यह रिकॉर्डिंग सेव किए बिना हटा दें।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2492,12 +2132,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "À plat"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "थकान में"
           }
         },
         "it" : {
@@ -2535,12 +2169,6 @@
             "value" : "Aujourd'hui"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2574,12 +2202,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Fait aujourd'hui"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज हो गया"
           }
         },
         "it" : {
@@ -2617,12 +2239,6 @@
             "value" : "Aujourd'hui t'attend, quand tu veux."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "जब आपका मन हो, आज का दिन खुला है।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2656,12 +2272,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "À faire"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज बाकी"
           }
         },
         "it" : {
@@ -2699,12 +2309,6 @@
             "value" : "Humeur du jour"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज का मूड"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2738,12 +2342,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "L'entrée du jour est là. Étoiles au total : %lld."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज की एंट्री हो गई। कुल तारे: %lld।"
           }
         },
         "it" : {
@@ -2781,12 +2379,6 @@
             "value" : "Vois l'entrée du jour et enregistre en un geste."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आज की डायरी एंट्री देखें और झट से रिकॉर्ड करें।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2820,12 +2412,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Bon retour"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "फिर से स्वागत है"
           }
         },
         "it" : {
@@ -2863,12 +2449,6 @@
             "value" : "Tu as passé 42 s. Touche l'app pour arrêter quand tu veux."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "42 सेकंड पूरे। जब मन हो, रोकने के लिए ऐप पर टैप करें।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2902,12 +2482,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ta première étoile n'est qu'à une entrée."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आपका पहला तारा बस एक एंट्री दूर है।"
           }
         },
         "it" : {
@@ -2945,12 +2519,6 @@
             "value" : "Ton ciel intérieur sur l'écran verrouillé — une étoile par entrée récente."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "लॉक स्क्रीन पर आपके भीतर का आसमान — हाल की हर एंट्री का एक तारा।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -2984,12 +2552,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ta série de jours parlés. Un jour manqué par semaine ne la casse pas."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "बोले गए दिनों का आपका सिलसिला। हफ़्ते में एक छूटा दिन इसे नहीं तोड़ेगा।"
           }
         },
         "it" : {
@@ -3027,12 +2589,6 @@
             "value" : "Ton ciel t'a gardé ta place."
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "आपके आसमान ने आपकी जगह संभाले रखी।"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -3066,12 +2622,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "série en jours"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "दिन का सिलसिला"
           }
         },
         "it" : {
@@ -3109,12 +2659,6 @@
             "value" : "stable"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "बीच का"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -3148,12 +2692,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "lourde"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "भारी"
           }
         },
         "it" : {
@@ -3191,12 +2729,6 @@
             "value" : "positive"
           }
         },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "सकारात्मक"
-          }
-        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -3230,12 +2762,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "étoiles"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "तारे"
           }
         },
         "it" : {
