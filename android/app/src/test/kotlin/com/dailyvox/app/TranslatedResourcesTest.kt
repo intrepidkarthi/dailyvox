@@ -117,4 +117,19 @@ class TranslatedResourcesTest {
         val pt = res("pt-BR")
         assertEquals("Este celular tem: inglês.", pt.getString(R.string.speech_installed_packs, "inglês").trim())
     }
+
+    @Test
+    fun `Hindi resolves and formats, in Devanagari with Western digits`() {
+        everythingResolves("hi-IN")
+        val hi = res("hi-IN")
+        assertEquals("आपकी कही कोई बात इस फ़ोन से बाहर नहीं जाती।", hi.getString(R.string.onboarding_ledger_title))
+        assertEquals("DailyVox", hi.getString(R.string.app_name))
+        assertEquals("1:05  ·  हो गया", hi.getString(R.string.onboarding_done_timer, 1, 5))
+        assertEquals("कल आपने Asha का ज़िक्र किया था। सब कैसा चल रहा है?", hi.getString(R.string.daily_question_grounded_yesterday, "Asha"))
+        assertEquals(
+            "इसमें Asha का ज़िक्र है, और पिछले 30 दिनों की 4 और एंट्रियों में भी।",
+            hi.getQuantityString(R.plurals.reflection_person_earlier, 4, "Asha", 4),
+        )
+        assertEquals("3 दिन पहले आपने कहा", hi.getQuantityString(R.plurals.past_days_ago, 3, 3))
+    }
 }
