@@ -132,7 +132,9 @@ object Exporters {
      * on the first entry that quotes someone.
      */
     fun csv(entries: List<Entry>): String {
-        val iso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+        // A machine format: ROOT, so the file reads the same on every phone
+        // (identical output to the Locale.US it replaces).
+        val iso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         fun q(v: String) = "\"" + v.replace("\"", "\"\"") + "\""
         val sb = StringBuilder("date,seconds,valence,sleep_hours,people,text\n")
         entries.sortedBy { it.createdAt }.forEach { e ->

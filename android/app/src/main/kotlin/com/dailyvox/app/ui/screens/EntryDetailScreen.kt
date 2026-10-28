@@ -50,6 +50,8 @@ fun EntryDetailScreen(
     onPhoto: (String?) -> Unit = {},
     /** B4: correct what the recogniser heard. Transcription is good, not right. */
     onEdit: (String) -> Unit = {},
+    /** Transcribed later from the saved audio: the text, and the recogniser tag it was heard with. */
+    onTranscribed: (String, String) -> Unit = { text, _ -> onEdit(text) },
     /** B4: open the Twin with this entry as the question. */
     onAsk: (String) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -62,7 +64,7 @@ fun EntryDetailScreen(
     // question makes the answer echo the entry back instead of relating it to
     // everything around it.
     val askSeed = remember(entry.id) {
-        val on = SimpleDateFormat("MMMM d", Locale.getDefault()).format(Date(entry.createdAt))
+        val on = com.dailyvox.app.system.LocaleFormat.dateFormat("MMMM d", "MMMMd").format(Date(entry.createdAt))
         val who = entry.entityList.firstOrNull()
         if (who != null) "What do my entries say about $who, around $on?"
         else "What was going on for me around $on?"
@@ -95,7 +97,8 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(8.dp))
         var menu by remember { mutableStateOf(false) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("‹", fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground,
+            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = com.dailyvox.app.ui.components.Directional.GlyphStyle,
+                 color = MaterialTheme.colorScheme.onBackground,
                  modifier = Modifier
                      .clip(CircleShape)
                      .clickable(onClick = onBack)
@@ -103,10 +106,10 @@ fun EntryDetailScreen(
                      .wrapContentSize())
             Spacer(Modifier.width(6.dp))
             Column(Modifier.weight(1f)) {
-                Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
+                Text(com.dailyvox.app.system.LocaleFormat.dateFormat("EEEE d MMMM", "EEEEdMMMM").format(Date(entry.createdAt)),
                      fontSize = 21.sp, fontWeight = FontWeight.ExtraBold, fontFamily = Nunito,
                      color = MaterialTheme.colorScheme.onBackground)
-                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
+                MonoLabel("${com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }
             // Read aloud and Delete live here rather than in the action row.
             // Neither is what you came to the entry to do, and Delete sitting at
@@ -117,7 +120,27 @@ fun EntryDetailScreen(
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(
                         text = { Text(if (speaking) "Stop reading" else "Read aloud") },
-                        onClick = { menu = false; speaker.toggle(entry.text); speaking = !speaking },
+                        onClick = {
+                            menu = false
+                            // In the entry's own language (B-13). No voice for it
+                            // on this phone: say so, rather than read Hindi words
+                            // with an English voice.
+                            when (speaker.toggle(entry.text, entry.language)) {
+                                com.dailyvox.app.system.Speaker.Outcome.SPEAKING -> speaking = true
+                                com.dailyvox.app.system.Speaker.Outcome.STOPPED -> speaking = false
+                                com.dailyvox.app.system.Speaker.Outcome.NO_VOICE -> {
+                                    speaking = false
+                                    android.widget.Toast.makeText(
+                                        context,
+                                        "This phone has no voice for " +
+                                            com.dailyvox.app.audio.LanguageTags.languageName(entry.language ?: "") +
+                                            " yet. It can be added in Android Settings › Text-to-speech.",
+                                        android.widget.Toast.LENGTH_LONG,
+                                    ).show()
+                                }
+                                com.dailyvox.app.system.Speaker.Outcome.NOT_READY -> Unit
+                            }
+                        },
                     )
                     DropdownMenuItem(
                         text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
@@ -174,7 +197,7 @@ fun EntryDetailScreen(
         val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
                        else com.dailyvox.app.ui.theme.DayGoldText
         if (entry.isUntranscribed) {
-            UntranscribedBlock(entry, onEdit)
+            UntranscribedBlock(entry, onTranscribed)
             Spacer(Modifier.height(6.dp))
         }
         val marked = remember(entry.text, entry.entities) {
@@ -572,7 +595,7 @@ private fun ShareGlyph(color: androidx.compose.ui.graphics.Color) {
  * entry is IN, not an event that just happened, and it is still true tomorrow.
  */
 @Composable
-private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
+private fun UntranscribedBlock(entry: Entry, onTranscribed: (String, String) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember(entry.id) { mutableStateOf<TranscribeState>(TranscribeState.Idle) }
@@ -615,12 +638,20 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
             FilledTonalButton(
                 onClick = {
                     val f = entry.audioPath?.let { java.io.File(it) } ?: return@FilledTonalButton
+                    // The language the entry was spoken in, matched to an
+                    // installed pack. None means no model here can hear it:
+                    // say so, never hand Hindi audio to the English model.
+                    val tag = com.dailyvox.app.audio.SpeechCapture.fileTag(context, entry.language)
+                    if (tag == null) {
+                        state = TranscribeState.Failed(noModelCopy(entry.language ?: com.dailyvox.app.audio.SpeechCapture.wanted(context).toLanguageTag()))
+                        return@FilledTonalButton
+                    }
                     state = TranscribeState.Running
                     scope.launch {
                         state = when (val r = com.dailyvox.app.audio.FileTranscriber
-                            .transcribe(context, f, null)) {
+                            .transcribe(context, f, tag)) {
                             is com.dailyvox.app.audio.FileTranscriber.Result.Text -> {
-                                onTranscribed(r.value); TranscribeState.Idle
+                                onTranscribed(r.value, tag); TranscribeState.Idle
                             }
                             // Named, not swallowed. A recogniser that ignored the
                             // file was listening to the ROOM, and saving that as
@@ -642,6 +673,11 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
         }
     }
 }
+
+/** Plan section 3: the recording is safe, and nothing guesses in another language. */
+internal fun noModelCopy(tag: String): String =
+    "Your phone can't transcribe ${com.dailyvox.app.audio.LanguageTags.languageName(tag)} on-device yet. " +
+        "Your recording is saved, and you can transcribe it later if a model becomes available."
 
 private sealed interface TranscribeState {
     data object Idle : TranscribeState

@@ -222,7 +222,7 @@ fun RecordingDial(
         if (lastEntity != null) {
             Spacer(Modifier.height(14.dp))
             Text(
-                "${lastEntity.uppercase()} ✦ FILED TO YOUR SKY",
+                "${com.dailyvox.app.system.LocaleFormat.upper(lastEntity)} ✦ FILED TO YOUR SKY",
                 fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 0.8.sp,

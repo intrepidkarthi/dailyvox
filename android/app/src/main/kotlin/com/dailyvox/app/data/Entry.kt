@@ -76,6 +76,20 @@ data class Entry(
     val hrvMs: Float? = null,
     val restingHrBpm: Float? = null,
     val stepsToday: Int? = null,
+
+    /**
+     * The language the words are in, as a BCP-47 tag, or null for unknown
+     * (plan B-2). Spoken entries take the tag the recogniser was ASKED for --
+     * the pack that produced the words, not the phone's locale. Typed and
+     * imported text is classified on the phone by the platform TextClassifier
+     * ([com.dailyvox.app.system.TextLanguage]), and stays null when it is not
+     * confident.
+     *
+     * Null is a real answer and every reader must treat it as "unknown", never
+     * as English: entries written before 1.3 have none, and are not guessed at
+     * behind the user's back.
+     */
+    val language: String? = null,
 ) {
     /**
      * Words actually spoken. `text.split(" ").size` returns **1** for an empty
@@ -158,6 +172,10 @@ interface EntryDao {
 }
 
 /**
+ * Version 6 adds `language` (plan B-2). Nullable and not backfilled: an entry
+ * from before 1.3 has no record of what the recogniser was asked for, and a
+ * guess written into the column would be indistinguishable from a fact.
+ *
  * Version 5 makes valence nullable (MIGRATION_4_5 rebuilds the table, which is
  * the only way SQLite drops a NOT NULL). Existing rows keep their number; the
  * ones the lexicon never actually read are cleared once at launch.
@@ -176,7 +194,7 @@ interface EntryDao {
  * existing install crashed on launch. Bumping the number is only half the fix —
  * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
  */
-@Database(entities = [Entry::class], version = 5, exportSchema = true)
+@Database(entities = [Entry::class], version = 6, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }

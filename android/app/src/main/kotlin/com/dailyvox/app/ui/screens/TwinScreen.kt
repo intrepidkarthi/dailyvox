@@ -424,7 +424,7 @@ private fun skyAnchors(w: Float, h: Float): List<Offset> {
 @Composable
 private fun SkyName(name: String, anchor: Offset, core: Offset, w: Float, h: Float, color: Color) {
     Text(
-        name.uppercase(),
+        com.dailyvox.app.system.LocaleFormat.upper(name),
         fontFamily = Nunito, fontSize = 11.5.sp, fontWeight = FontWeight.Black,
         letterSpacing = 0.6.sp, color = color, maxLines = 1,
         modifier = Modifier.layout { measurable, constraints ->

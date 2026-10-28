@@ -249,7 +249,8 @@ fun JournalScreen(
         // Month sections, as iOS groups them. Entries arrive newest-first, so
         // grouping preserves order; LinkedHashMap keeps the months in it.
         val months = remember(shown) {
-            val fmt = SimpleDateFormat("LLLL yyyy", Locale.getDefault())   // standalone month form
+            // Standalone month form; the platform's order outside English (B-13).
+            val fmt = com.dailyvox.app.system.LocaleFormat.dateFormat("LLLL yyyy", "LLLLyyyy")
             shown.groupBy { fmt.format(Date(it.createdAt)) }
         }
         val newestId = shown.firstOrNull()?.id
@@ -260,7 +261,7 @@ fun JournalScreen(
                 // pinned one would sit on top of the card being read.
                 item(key = "month-$month", contentType = "month") {
                     Text(
-                        month.uppercase(),
+                        com.dailyvox.app.system.LocaleFormat.upper(month),
                         fontFamily = com.dailyvox.app.ui.theme.DmMono,
                         fontSize = 10.sp, letterSpacing = 1.3.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -302,7 +303,7 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                 // of every card is gone: the spec reserves it for starred entries,
                 // Entry has no starred field, and on every row it meant nothing.
                 MonoLabel(
-                    "${dateLabel(e.createdAt).uppercase()} · ${if (e.audioPath.isNullOrBlank() && e.durationSec == 0) "TYPED" else durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
+                    "${com.dailyvox.app.system.LocaleFormat.upper(dateLabel(e.createdAt))} · ${if (e.audioPath.isNullOrBlank() && e.durationSec == 0) "TYPED" else durationLabel(e.durationSec)} · ${if (e.isUntranscribed) "NOT TRANSCRIBED" else "${e.wordCount} WORDS"}"
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
@@ -320,7 +321,7 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
                     // what you said, a body reading is something it was given.
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        e.entityList.take(3).forEach { SpecChip(it.uppercase(), gold = false) }
+                        e.entityList.take(3).forEach { SpecChip(com.dailyvox.app.system.LocaleFormat.upper(it), gold = false) }
                         e.sleepHours?.let { SpecChip("%.1fH SLEEP".format(it), gold = true) }
                     }
                 }
@@ -362,7 +363,7 @@ private fun SpecChip(text: String, gold: Boolean) {
 private fun dateLabel(ts: Long): String {
     val day = 86_400_000L
     val today = System.currentTimeMillis() / day
-    val time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(ts))
+    val time = com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(Date(ts))
     return when (ts / day) {
         today -> {
             val hour = Calendar.getInstance().apply { timeInMillis = ts }
@@ -370,7 +371,7 @@ private fun dateLabel(ts: Long): String {
             if (hour >= 17 || hour < 4) "Tonight · $time" else "Today · $time"
         }
         today - 1 -> "Yesterday · $time"
-        else -> SimpleDateFormat("EEE d · h:mm a", Locale.getDefault()).format(Date(ts))
+        else -> com.dailyvox.app.system.LocaleFormat.dateFormat("EEE d", "EEEd").format(Date(ts)) + " · " + time
     }
 }
 

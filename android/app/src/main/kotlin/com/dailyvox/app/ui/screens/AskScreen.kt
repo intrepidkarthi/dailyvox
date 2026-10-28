@@ -214,8 +214,8 @@ fun AskScreen(
                                 m.citations.forEach { c ->
                                     val entry = entries.firstOrNull { it.id == c.entryId }
                                     CiteChip(
-                                        SimpleDateFormat("MMM d", Locale.getDefault())
-                                            .format(Date(c.date)).uppercase() +
+                                        com.dailyvox.app.system.LocaleFormat.upper(com.dailyvox.app.system.LocaleFormat.dateFormat("MMM d", "MMMd")
+                                            .format(Date(c.date))) +
                                             " · %d%%".format((c.score * 100).toInt()),
                                         onClick = { entry?.let(onOpenEntry) },
                                     )
