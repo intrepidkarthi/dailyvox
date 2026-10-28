@@ -110,4 +110,11 @@ class TranslatedResourcesTest {
         assertTrue(de.getString(R.string.export_pdf_mood, 0.25).startsWith("  ·  Stimmung +0"))
         assertNotEquals(english.getStringArray(R.array.daily_questions)[0], de.getStringArray(R.array.daily_questions)[0])
     }
+
+    @Test
+    fun `Brazilian Portuguese resolves and formats`() {
+        everythingResolves("pt-BR")
+        val pt = res("pt-BR")
+        assertEquals("Este celular tem: inglês.", pt.getString(R.string.speech_installed_packs, "inglês").trim())
+    }
 }
