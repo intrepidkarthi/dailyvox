@@ -114,6 +114,14 @@ android {
     // unqualified values/ folder (en-US). Adding a translation is then just a
     // new values-xx folder; the list cannot drift from what actually ships.
     androidResources { generateLocaleConfig = true }
+    // Every language ships in the base APK. By default Play splits an app
+    // bundle by language and installs only the device's system languages; a
+    // language picked later in the per-app setting above arrives only if the
+    // app asks Play for it through Play Core's SplitInstallManager. DailyVox
+    // has no Play Core and no INTERNET permission, and adds neither for this:
+    // without the split off, a Spanish speaker on an English phone who picks
+    // Español would get English. The strings are a few hundred KB.
+    bundle { language { enableSplit = false } }
     // Robolectric tests read strings.xml (B-15 pins the English copy).
     testOptions { unitTests.isIncludeAndroidResources = true }
     // B-15: user-facing copy lives in strings.xml. These two catch a literal

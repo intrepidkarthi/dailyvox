@@ -107,18 +107,18 @@ private fun earlyLines(s: EarlySignals.Signals): List<String> = buildList {
             EarlySignals.Part.EVENING -> R.string.early_part_evening
             EarlySignals.Part.LATE_NIGHT -> R.string.early_part_late_night
         })
-        add(stringResource(R.string.early_time_of_day, part, t.count, t.of))
+        add(pluralStringResource(R.plurals.early_time_of_day, t.of, part, t.count, t.of))
     }
     s.length?.let { l ->
         add(pluralStringResource(R.plurals.early_length_average, l.averageWords, l.averageWords))
         add(when (l.trend) {
             EarlySignals.Trend.STEADY -> stringResource(R.string.early_length_steady)
             EarlySignals.Trend.LONGER ->
-                if (l.half == 1) stringResource(R.string.early_length_longer_one, l.later, l.earlier)
-                else stringResource(R.string.early_length_longer_many, l.later, l.earlier, l.half)
+                if (l.half == 1) pluralStringResource(R.plurals.early_length_longer_one, l.later, l.later, l.earlier)
+                else pluralStringResource(R.plurals.early_length_longer_many, l.later, l.later, l.earlier, l.half)
             EarlySignals.Trend.SHORTER ->
-                if (l.half == 1) stringResource(R.string.early_length_shorter_one, l.later, l.earlier)
-                else stringResource(R.string.early_length_shorter_many, l.later, l.earlier, l.half)
+                if (l.half == 1) pluralStringResource(R.plurals.early_length_shorter_one, l.later, l.later, l.earlier)
+                else pluralStringResource(R.plurals.early_length_shorter_many, l.later, l.later, l.earlier, l.half)
         })
     }
     s.recurring.forEach { r ->
