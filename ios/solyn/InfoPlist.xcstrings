@@ -29,6 +29,12 @@
             "value" : "Avec ton autorisation, DailyVox lit tes écoutes musicales récentes sur cet iPhone pour en tirer une note d'humeur d'une ligne (comme « envie de musique calme ») pour ton Jumeau. Tu valides chaque note avant qu'elle soit gardée ; seule l'étiquette dérivée est produite, et rien de ta musique ne quitte cet appareil."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "आपकी अनुमति से, DailyVox इस iPhone पर हाल में सुना गया संगीत पढ़ता है, ताकि आपके Twin के लिए एक पंक्ति का मूड-नोट (जैसे “शांत संगीत की ओर झुकाव”) बन सके। हर नोट आपकी मंज़ूरी के बाद ही रखा जाता है; सिर्फ़ निकाला गया लेबल बनता है, और आपके संगीत के बारे में कुछ भी इस डिवाइस से बाहर नहीं जाता।"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -69,6 +75,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox utilise Face ID pour verrouiller et déverrouiller l'accès aux entrées privées de ton journal."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox आपकी निजी डायरी एंट्रियों को लॉक और अनलॉक करने के लिए Face ID का उपयोग करता है।"
           }
         },
         "it" : {
@@ -113,6 +125,12 @@
             "value" : "DailyVox lit les données de sommeil, de cœur, de pas et de pleine conscience sur cet iPhone pour que ton Jumeau comprenne ce que ton corps a ressenti autour de chaque entrée. Tu valides chaque signal avant que ton Jumeau l'apprenne ; rien n'est envoyé ni synchronisé."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox इस iPhone पर नींद, दिल, कदम और माइंडफ़ुलनेस का डेटा पढ़ता है, ताकि आपका Twin समझ सके कि हर एंट्री के आसपास आपके शरीर ने क्या महसूस किया। आपका Twin कोई भी संकेत आपकी मंज़ूरी के बाद ही सीखता है; कुछ भी अपलोड या सिंक नहीं होता।"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -153,6 +171,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox n'écrit et ne modifie jamais rien dans Santé. L'app lit seulement les données de sommeil, de cœur, de pas et de pleine conscience sur cet iPhone ; aucun accès en écriture n'est demandé ni utilisé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox, Apple Health में कभी कुछ नहीं लिखता या बदलता। ऐप इस iPhone पर सिर्फ़ नींद, दिल, कदम और माइंडफ़ुलनेस का डेटा पढ़ता है; लिखने की अनुमति न माँगी जाती है, न इस्तेमाल होती है।"
           }
         },
         "it" : {
@@ -197,6 +221,12 @@
             "value" : "DailyVox utilise le micro pour enregistrer les entrées de ton journal."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox आपकी डायरी एंट्रियाँ रिकॉर्ड करने के लिए माइक्रोफ़ोन का उपयोग करता है।"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -237,6 +267,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox utilise ton activité de mouvement pour savoir si tu bougeais au moment d'une entrée, afin que les signaux du corps soient lus dans le bon contexte. Ce contexte d'activité reste sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox मोशन गतिविधि से यह जानता है कि डायरी एंट्री के समय शरीर गतिविधि में था या नहीं, ताकि शरीर के संकेत सही संदर्भ में पढ़े जाएँ। गतिविधि का संदर्भ इसी iPhone पर रहता है।"
           }
         },
         "it" : {
@@ -281,6 +317,12 @@
             "value" : "DailyVox te permet de joindre des photos à tes entrées et — seulement si tu actives Contexte photo — lit les photos du jour sur cet iPhone pour en tirer une note d'une ligne (comme « surtout des photos de randonnée ») pour ton Jumeau. Tu valides chaque note avant qu'elle soit gardée. Les photos sont analysées sur l'appareil et ne quittent jamais ton iPhone."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox में डायरी एंट्रियों के साथ फ़ोटो जोड़ी जा सकती हैं, और — सिर्फ़ तब, जब आप “फ़ोटो से संदर्भ” चालू करें — यह इस iPhone पर उस दिन की फ़ोटो पढ़कर आपके Twin के लिए एक पंक्ति का दृश्य-नोट (जैसे “ज़्यादातर पहाड़ी रास्तों की फ़ोटो”) बनाता है। हर नोट आपकी मंज़ूरी के बाद ही रखा जाता है। फ़ोटो का विश्लेषण डिवाइस पर ही होता है और वे कभी आपके iPhone से बाहर नहीं जातीं।"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -321,6 +363,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "DailyVox utilise la reconnaissance vocale, sur cet iPhone, pour convertir ton journal enregistré en texte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox आपकी रिकॉर्ड की गई डायरी को इसी iPhone पर टेक्स्ट में बदलने के लिए स्पीच रिकग्निशन का उपयोग करता है।"
           }
         },
         "it" : {
