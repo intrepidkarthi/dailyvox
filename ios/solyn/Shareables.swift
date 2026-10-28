@@ -60,7 +60,7 @@ enum Shareables {
             case .milestone: return String(localized: "Milestone", comment: "Share sheet, the card picker: name of the 42/100/365-night milestone card. About 14 characters.")
             case .wallpaper: return String(localized: "Wallpaper", comment: "Share sheet, the card picker: name of the lock-screen wallpaper card. About 14 characters.")
             case .gift: return String(localized: "Gift a star", comment: "Share sheet, the card picker: name of the invite-a-friend card. About 14 characters.")
-            case .body: return String(localized: "Body", comment: "Share sheet, the card picker: name of the sleep-and-mood card. About 14 characters.")
+            case .body: return String(localized: "shareCard.body.name", defaultValue: "Body", comment: "Share sheet, the card picker: name of the sleep-and-mood card. About 14 characters.")
             }
         }
 

@@ -238,7 +238,7 @@ struct ShareableInsightGenerator {
             headline: String(localized: "You mentioned \(topPerson.key) \(topPerson.value.count) times this week.", comment: "Stats > Your Week, Decoded: insight card headline (large type, also drawn into a shared image). The card appears only for weeks the app could read, which today means English entries. First placeholder: a person's name from the journal. Second: how many times (3 or more). About 45 characters."),
             subtext: moodLine,
             category: .people,
-            dataPoint: String(localized: "\(topPerson.value.count)x", comment: "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. How many times a person was mentioned this week, as a multiplier ('8x'). Keep it very short."),
+            dataPoint: String(localized: "weekDecoded.personMentions.count", defaultValue: "\(topPerson.value.count)x", comment: "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. How many times a person was mentioned this week, as a multiplier ('8x'). Keep it very short."),
             generatedAt: Date()
         )
     }
@@ -335,7 +335,7 @@ struct ShareableInsightGenerator {
             .reduce(into: [:]) { counts, mood in counts[mood, default: 0] += 1 }
             .max(by: { $0.value < $1.value })?.key
 
-        let worstLabel = worstMood?.displayName.lowercased() ?? String(localized: "low", comment: "Stats > Your Week, Decoded: stands in for a mood name in 'Most <mood> on <weekday>.' when the weekday's low mood has no name. Lower case, one word.")
+        let worstLabel = worstMood?.displayName.lowercased() ?? String(localized: "weekDecoded.moodFallback.low", defaultValue: "low", comment: "Stats > Your Week, Decoded: stands in for a mood name in 'Most <mood> on <weekday>.' when the weekday's low mood has no name. Lower case, one word.")
         let bestLabel = bestMood?.displayName.lowercased() ?? String(localized: "good", comment: "Stats > Your Week, Decoded: stands in for a mood name in 'Most <mood> on <weekday>.' when the weekday's good mood has no name. Lower case, one word.")
 
         return ShareableInsight(
@@ -364,7 +364,7 @@ struct ShareableInsightGenerator {
                     headline: String(localized: "You haven't mentioned \"\(topic)\" this week.", comment: "Stats > Your Week, Decoded: insight card headline (large type, also drawn into a shared image). The card appears only for weeks the app could read, which today means English entries. The placeholder is a topic word from the user's past entries, shown in quotation marks. About 45 characters."),
                     subtext: String(localized: "You used to bring it up all the time. What changed?", comment: "Stats > Your Week, Decoded: insight card line under the headline (also drawn into a shared image). Under 'You haven't mentioned <topic> this week.' About 50 characters."),
                     category: .pattern,
-                    dataPoint: String(localized: "\(count) total mentions before", comment: "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. The placeholder is how many times the topic came up in earlier weeks (5 or more)."),
+                    dataPoint: String(localized: "\(String(count)) total mentions before", comment: "Stats > Your Week, Decoded: small stat chip on the insight card (also drawn into a shared image). About 20 characters. The placeholder is how many times the topic came up in earlier weeks (5 or more). It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count."),
                     generatedAt: Date()
                 )
             }

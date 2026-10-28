@@ -5,10 +5,40 @@
       "comment" : "Permission alert for media library access, asked only when the user turns on Music mood in Settings. The quoted phrase is an example of the note DailyVox writes: translate it as an example and use the target language's quotation marks. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mit deiner Erlaubnis liest DailyVox auf diesem iPhone, welche Musik du zuletzt gehört hast, und leitet daraus eine einzeilige Stimmungsnotiz (etwa „hat zu ruhiger Musik gegriffen“) für deinen Twin ab. Du prüfst jede Notiz, bevor sie behalten wird; es entsteht nur die abgeleitete Kennzeichnung, und nichts über deine Musik verlässt dieses Gerät."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "With your permission, DailyVox reads your recent music listening on this iPhone to derive a one-line mood note (like \"reached for calm music\") for your Twin. You review every note before it is kept; only the derived label is produced, and nothing about your music leaves this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Con tu permiso, DailyVox lee la música que has escuchado recientemente en este iPhone para crear una nota de ánimo de una línea (como «buscaste música tranquila») para tu Gemelo. Revisas cada nota antes de conservarla; solo se genera la etiqueta derivada y nada sobre tu música sale de este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Avec ton autorisation, DailyVox lit tes écoutes musicales récentes sur cet iPhone pour en tirer une note d'humeur d'une ligne (comme « envie de musique calme ») pour ton Jumeau. Tu valides chaque note avant qu'elle soit gardée ; seule l'étiquette dérivée est produite, et rien de ta musique ne quitte cet appareil."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Con il tuo permesso, DailyVox legge i tuoi ascolti musicali recenti su questo iPhone per ricavare una nota d'umore di una riga (come «ha cercato musica calma») per il tuo Gemello. Rivedi ogni nota prima che venga tenuta; viene prodotta solo l'etichetta derivata e nulla della tua musica lascia questo dispositivo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Com sua permissão, o DailyVox lê as músicas que você ouviu recentemente neste iPhone para criar uma nota de humor de uma linha (como “buscou músicas calmas”) para o seu Twin. Você revisa cada nota antes de ela ser guardada; só o rótulo derivado é produzido, e nada sobre suas músicas sai deste aparelho."
           }
         }
       }
@@ -17,10 +47,40 @@
       "comment" : "Permission alert for Face ID, asked when the user turns on the app lock in Settings. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox nutzt Face ID, um den Zugang zu deinen privaten Tagebucheinträgen zu sperren und zu entsperren."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox uses Face ID to lock and unlock access to your private diary entries."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa Face ID para bloquear y desbloquear el acceso a las entradas privadas de tu diario."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox utilise Face ID pour verrouiller et déverrouiller l'accès aux entrées privées de ton journal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa Face ID per bloccare e sbloccare l'accesso alle voci private del tuo diario."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o Face ID para bloquear e desbloquear o acesso aos registros privados do seu diário."
           }
         }
       }
@@ -29,10 +89,40 @@
       "comment" : "Permission alert for Apple Health read access (sleep, heart, steps, mindfulness), asked when the user connects Health for Body Twin. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox liest Schlaf-, Herz-, Schritt- und Achtsamkeitsdaten auf diesem iPhone, damit dein Twin verstehen kann, was dein Körper rund um jeden Eintrag gespürt hat. Du prüfst jedes Signal, bevor dein Twin es lernt; nichts wird hochgeladen oder synchronisiert."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox reads sleep, heart, steps and mindfulness data on this iPhone so your Twin can understand what your body felt around each entry. You review every signal before your Twin learns it; nothing is uploaded or synced."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox lee en este iPhone datos de sueño, corazón, pasos y atención plena para que tu Gemelo entienda lo que sintió tu cuerpo en torno a cada entrada. Revisas cada señal antes de que tu Gemelo la aprenda; nada se sube ni se sincroniza."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox lit les données de sommeil, de cœur, de pas et de pleine conscience sur cet iPhone pour que ton Jumeau comprenne ce que ton corps a ressenti autour de chaque entrée. Tu valides chaque signal avant que ton Jumeau l'apprenne ; rien n'est envoyé ni synchronisé."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox legge i dati di sonno, cuore, passi e consapevolezza su questo iPhone, così il tuo Gemello può capire cosa ha sentito il tuo corpo intorno a ogni voce. Rivedi ogni segnale prima che il tuo Gemello lo impari; nulla viene caricato o sincronizzato."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox lê dados de sono, coração, passos e atenção plena neste iPhone para que seu Twin entenda o que seu corpo sentiu em torno de cada registro. Você revisa cada sinal antes de o Twin aprender; nada é enviado nem sincronizado."
           }
         }
       }
@@ -41,10 +131,40 @@
       "comment" : "Permission text for Apple Health write access. DailyVox never writes to Health; iOS requires the key anyway. Keep the 'never writes' meaning exact. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox schreibt oder ändert nie etwas in Apple Health. Die App liest nur Schlaf-, Herz-, Schritt- und Achtsamkeitsdaten auf diesem iPhone; Schreibzugriff wird weder angefordert noch genutzt."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox never writes or changes anything in Apple Health. The app only reads sleep, heart, steps and mindfulness data on this iPhone; no update access is requested or used."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox nunca escribe ni cambia nada en Salud. La app solo lee en este iPhone datos de sueño, corazón, pasos y atención plena; no se solicita ni se usa ningún acceso de escritura."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox n'écrit et ne modifie jamais rien dans Santé. L'app lit seulement les données de sommeil, de cœur, de pas et de pleine conscience sur cet iPhone ; aucun accès en écriture n'est demandé ni utilisé."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox non scrive né modifica mai nulla in Apple Salute. L'app legge soltanto i dati di sonno, cuore, passi e consapevolezza su questo iPhone; nessun accesso in scrittura viene richiesto o usato."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox nunca grava nem altera nada no app Saúde. O app só lê dados de sono, coração, passos e atenção plena neste iPhone; nenhum acesso de atualização é pedido ou usado."
           }
         }
       }
@@ -53,10 +173,40 @@
       "comment" : "Permission alert for the microphone, asked on the first recording (onboarding or the Speak tab). Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox nutzt das Mikrofon, um deine Tagebucheinträge aufzunehmen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox uses the microphone to record your diary entries."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa el micrófono para grabar las entradas de tu diario."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox utilise le micro pour enregistrer les entrées de ton journal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa il microfono per registrare le voci del tuo diario."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o microfone para gravar os registros do seu diário."
           }
         }
       }
@@ -65,10 +215,40 @@
       "comment" : "Permission alert for Motion & Fitness activity, asked when Body Twin is connected. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox nutzt Bewegungsaktivität, um zu erkennen, ob du in Bewegung warst, als ein Eintrag entstand, damit Körpersignale im richtigen Kontext gelesen werden. Der Aktivitätskontext bleibt auf diesem iPhone."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox uses motion activity to tell whether you were moving when a journal entry was made, so body signals are read in the right context. Activity context stays on this iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa la actividad de movimiento para saber si te estabas moviendo cuando hiciste una entrada, para leer las señales del cuerpo en su contexto. El contexto de actividad se queda en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox utilise ton activité de mouvement pour savoir si tu bougeais au moment d'une entrée, afin que les signaux du corps soient lus dans le bon contexte. Ce contexte d'activité reste sur cet iPhone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa l'attività di movimento per capire se ti stavi muovendo quando hai registrato una voce, così i segnali del corpo vengono letti nel giusto contesto. Il contesto dell'attività resta su questo iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa a atividade de movimento para saber se você estava em movimento quando um registro foi feito, para que os sinais do corpo sejam lidos no contexto certo. O contexto de atividade fica neste iPhone."
           }
         }
       }
@@ -77,10 +257,40 @@
       "comment" : "Permission alert for the photo library, asked when the user attaches a photo or turns on Photo context. The quoted phrase is an example of the note DailyVox writes: translate it as an example and use the target language's quotation marks. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mit DailyVox kannst du Fotos an deine Tagebucheinträge anhängen, und – nur wenn du „Fotokontext“ einschaltest – liest es die Fotos des Tages auf diesem iPhone, um eine einzeilige Szenennotiz (etwa „vor allem Wanderfotos“) für deinen Twin abzuleiten. Du prüfst jede Notiz, bevor sie behalten wird. Fotos werden auf dem Gerät analysiert und verlassen dein iPhone nie."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox lets you attach photos to your diary entries, and — only if you turn on Photo context — reads the day's photos on this iPhone to derive a one-line scene note (like \"mostly trail photos\") for your Twin. You review every note before it is kept. Photos are analyzed on-device and never leave your iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox te permite adjuntar fotos a tus entradas y, solo si activas Contexto de fotos, lee las fotos del día en este iPhone para crear una nota de una línea sobre la escena (como «sobre todo fotos de senderos») para tu Gemelo. Revisas cada nota antes de conservarla. Las fotos se analizan en el dispositivo y nunca salen de tu iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox te permet de joindre des photos à tes entrées et — seulement si tu actives Contexte photo — lit les photos du jour sur cet iPhone pour en tirer une note d'une ligne (comme « surtout des photos de randonnée ») pour ton Jumeau. Tu valides chaque note avant qu'elle soit gardée. Les photos sont analysées sur l'appareil et ne quittent jamais ton iPhone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox ti permette di allegare foto alle voci del diario e, solo se attivi Contesto foto, legge le foto della giornata su questo iPhone per ricavare una nota di una riga sulla scena (come «soprattutto foto di sentieri») per il tuo Gemello. Rivedi ogni nota prima che venga tenuta. Le foto vengono analizzate sul dispositivo e non lasciano mai il tuo iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox permite anexar fotos aos registros do seu diário e — só se você ativar o Contexto das fotos — lê as fotos do dia neste iPhone para criar uma nota de cena de uma linha (como “quase só fotos de trilha”) para o seu Twin. Você revisa cada nota antes de ela ser guardada. As fotos são analisadas no aparelho e nunca saem do seu iPhone."
           }
         }
       }
@@ -89,10 +299,40 @@
       "comment" : "Permission alert for speech recognition, asked on the first recording. Transcription runs on the iPhone. Shown by iOS in the permission alert, under the app name. No placeholders. Keep it about as long as the English: iOS alerts scroll, but long text buries the Allow button. Wherever the English says the data stays on this iPhone, the translation must say so too.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox nutzt die Spracherkennung auf dem Gerät, um dein aufgenommenes Tagebuch in Text umzuwandeln."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "DailyVox uses speech recognition to convert your recorded diary into text."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa el reconocimiento de voz en este iPhone para convertir en texto tu diario grabado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox utilise la reconnaissance vocale, sur cet iPhone, pour convertir ton journal enregistré en texte."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "DailyVox usa il riconoscimento vocale per trasformare in testo il tuo diario registrato, direttamente sul tuo iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "O DailyVox usa o reconhecimento de fala para transformar seu diário gravado em texto, neste iPhone."
           }
         }
       }

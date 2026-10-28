@@ -52,14 +52,14 @@ final class TwinResolutionManager: ObservableObject {
             SelfPredictionQuestion(
                 id: "expressiveness",
                 prompt: String(localized: "How do you tend to express yourself?", comment: "Twin tab > 'How well does your Twin know you?' quiz: a question about the user, answered on a slider between two ends. About 40 characters."),
-                lowLabel: String(localized: "Reserved", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters."),
-                highLabel: String(localized: "Expressive", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters."),
+                lowLabel: String(localized: "quiz.expression.low", defaultValue: "Reserved", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters."),
+                highLabel: String(localized: "quiz.expression.high", defaultValue: "Expressive", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'How do you tend to express yourself?'. About 14 characters."),
                 twinValue: { t.communicationStyle.expressiveness }),
             SelfPredictionQuestion(
                 id: "directness",
                 prompt: String(localized: "When you say what you mean, you're usually…", comment: "Twin tab > 'How well does your Twin know you?' quiz: a question about the user, answered on a slider between two ends. Ends with an ellipsis: the slider labels complete it. About 45 characters."),
-                lowLabel: String(localized: "Nuanced", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters."),
-                highLabel: String(localized: "Direct", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters."),
+                lowLabel: String(localized: "quiz.directness.low", defaultValue: "Nuanced", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters."),
+                highLabel: String(localized: "quiz.directness.high", defaultValue: "Direct", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'When you say what you mean, you're usually…'. About 14 characters."),
                 twinValue: { t.communicationStyle.directness }),
             SelfPredictionQuestion(
                 id: "analytical",
@@ -70,8 +70,8 @@ final class TwinResolutionManager: ObservableObject {
             SelfPredictionQuestion(
                 id: "abstract",
                 prompt: String(localized: "Your thinking leans…", comment: "Twin tab > 'How well does your Twin know you?' quiz: a question about the user, answered on a slider between two ends. Ends with an ellipsis: the slider labels complete it. About 25 characters."),
-                lowLabel: String(localized: "Concrete", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Your thinking leans…'. About 14 characters."),
-                highLabel: String(localized: "Abstract", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'Your thinking leans…'. About 14 characters."),
+                lowLabel: String(localized: "quiz.abstraction.low", defaultValue: "Concrete", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Your thinking leans…'. About 14 characters."),
+                highLabel: String(localized: "quiz.abstraction.high", defaultValue: "Abstract", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'Your thinking leans…'. About 14 characters."),
                 twinValue: { t.thoughtPatterns.abstractScore }),
             SelfPredictionQuestion(
                 id: "future",
@@ -88,7 +88,7 @@ final class TwinResolutionManager: ObservableObject {
             SelfPredictionQuestion(
                 id: "emotionalRange",
                 prompt: String(localized: "Across a week, your emotions are…", comment: "Twin tab > 'How well does your Twin know you?' quiz: a question about the user, answered on a slider between two ends. Ends with an ellipsis: the slider labels complete it. About 35 characters."),
-                lowLabel: String(localized: "Steady", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Across a week, your emotions are…'. About 14 characters."),
+                lowLabel: String(localized: "quiz.emotionalRange.low", defaultValue: "Steady", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the left (low) end of the slider for the question 'Across a week, your emotions are…'. About 14 characters."),
                 highLabel: String(localized: "Wide-ranging", comment: "Twin tab > 'How well does your Twin know you?' quiz: label under the right (high) end of the slider for the question 'Across a week, your emotions are…'. About 14 characters."),
                 twinValue: { t.emotionalSignature.emotionalRange }),
         ]

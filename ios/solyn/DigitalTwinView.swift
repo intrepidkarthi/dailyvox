@@ -617,8 +617,8 @@ struct DigitalTwinView: View {
 
     private var skyDepth: String {
         switch starCount {
-        case 200...: return String(localized: "Deep", comment: "Twin tab: how deep the sky is, 200 or more entries. Shown upper case after the star count. One word, about 12 characters.")
-        case 100..<200: return String(localized: "Established", comment: "Twin tab: how deep the sky is, 100-199 entries. Shown upper case after the star count. One word, about 12 characters.")
+        case 200...: return String(localized: "twin.skyDepth.deep", defaultValue: "Deep", comment: "Twin tab: how deep the sky is, 200 or more entries. Shown upper case after the star count. One word, about 12 characters.")
+        case 100..<200: return String(localized: "twin.skyDepth.established", defaultValue: "Established", comment: "Twin tab: how deep the sky is, 100-199 entries. Shown upper case after the star count. One word, about 12 characters.")
         case 40..<100: return String(localized: "Forming", comment: "Twin tab: how deep the sky is, 40-99 entries. Shown upper case after the star count. One word, about 12 characters.")
         case 10..<40: return String(localized: "Early", comment: "Twin tab: how deep the sky is, 10-39 entries. Shown upper case after the star count. One word, about 12 characters.")
         default: return String(localized: "Seed", comment: "Twin tab: how deep the sky is, under 10 entries. Shown upper case after the star count. One word, about 12 characters.")
@@ -869,7 +869,7 @@ struct DigitalTwinView: View {
 
     private func confidenceWord(_ confidence: Double) -> String {
         switch confidence {
-        case ..<0.2:  return String(localized: "low", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — low confidence.' Lower case.")
+        case ..<0.2:  return String(localized: "twin.confidence.low", defaultValue: "low", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — low confidence.' Lower case.")
         case ..<0.4:  return String(localized: "growing", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — growing confidence.' Lower case.")
         default:      return String(localized: "moderate", comment: "Twin tab > Personality: confidence word inside 'A learned estimate — moderate confidence.' Lower case.")
         }
@@ -924,7 +924,7 @@ struct DigitalTwinView: View {
                 sectionHeader(String(localized: "Growth Indicators", comment: "Twin tab > Personality: card header. About 24 characters."), icon: "arrow.up.heart.fill")
 
                 traitBar(label: String(localized: "Growth Mindset", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.growthMindsetScore, lowLabel: String(localized: "Fixed", comment: "Twin tab: the low (left) end of the 'Growth Mindset' bar. One word, about 12 characters."), highLabel: String(localized: "Growth", comment: "Twin tab: the high (right) end of the 'Growth Mindset' bar. One word, about 12 characters."))
-                traitBar(label: String(localized: "Self-Awareness", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.selfAwarenessLevel, lowLabel: String(localized: "Developing", comment: "Twin tab: the low (left) end of the 'Self-Awareness' bar. One word, about 12 characters."), highLabel: String(localized: "Deep", comment: "Twin tab: the high (right) end of the 'Self-Awareness' bar. One word, about 12 characters."))
+                traitBar(label: String(localized: "Self-Awareness", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.selfAwarenessLevel, lowLabel: String(localized: "twin.selfAwareness.low", defaultValue: "Developing", comment: "Twin tab: the low (left) end of the 'Self-Awareness' bar. One word, about 12 characters."), highLabel: String(localized: "twin.selfAwareness.high", defaultValue: "Deep", comment: "Twin tab: the high (right) end of the 'Self-Awareness' bar. One word, about 12 characters."))
                 traitBar(label: String(localized: "Gratitude", comment: "Twin tab: label above a bar in the Growth Indicators card. About 16 characters."), value: twin.thoughtPatterns.gratitudeTendency, lowLabel: String(localized: "Occasional", comment: "Twin tab: the low (left) end of the 'Gratitude' bar. One word, about 12 characters."), highLabel: String(localized: "Frequent", comment: "Twin tab: the high (right) end of the 'Gratitude' bar. One word, about 12 characters."))
             }
             .padding()
@@ -1406,7 +1406,7 @@ struct DigitalTwinView: View {
 
                             Spacer()
 
-                            Text("\(node.mentions)x", comment: "Twin tab > My World: how many times a person or place was mentioned, as in '12x'. The placeholder is the count. About 5 characters.")
+                            Text(String(localized: "twin.myWorld.mentions.count", defaultValue: "\(node.mentions)x", comment: "Twin tab > My World: how many times a person or place was mentioned, as in '12x'. The placeholder is the count. About 5 characters."))
                                 .font(.dv(.caption))
                                 .foregroundColor(themeManager.secondaryTextColor)
 
