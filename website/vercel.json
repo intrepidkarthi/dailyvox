@@ -193,6 +193,11 @@
       "source": "/blog/voice-journal-for-morning-routine",
       "destination": "/blog/five-minute-voice-morning-journal",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/secure-journal-app",
+      "destination": "/blog/best-journal-app-for-privacy",
+      "statusCode": 301
     }
   ],
   "headers": [
