@@ -131,6 +131,12 @@ struct TodayView: View {
     /// relaunch keeps the one you moved to and midnight starts over.
     @AppStorage("dailyQuestionTurn") private var questionTurnStored = ""
 
+    /// The once-only "share your sky?" card at nights 7, 21 and 42, rendered
+    /// at the save that reached the night (see `SkyShareOffer`).
+    @State private var skyOffer: SkyOfferPrompt?
+    /// The Story card, written to a temp file, on its way to the share sheet.
+    @State private var skyShare: SkyShareItems?
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -235,6 +241,9 @@ struct TodayView: View {
             MoodPickerSheet(selectedMood: $pickedMood,
                             isSuggestion: entry.isMoodSuggested,
                             onSave: { chooseMood(pickedMood, for: entry) })
+        }
+        .sheet(item: $skyShare) { share in
+            ActivityView(items: [share.url, share.text])
         }
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
@@ -508,6 +517,18 @@ struct TodayView: View {
                         // something: the BODY row of an entry's ledger, and the
                         // Body card on the Twin tab.
                             entryCardSection
+                            if let offer = skyOffer {
+                                SkyShareOfferCard(
+                                    night: offer.night,
+                                    image: offer.image,
+                                    imageDescription: offer.description,
+                                    onShare: { shareSky(offer) },
+                                    onDismiss: {
+                                        withAnimation(.easeOut(duration: 0.2)) { skyOffer = nil }
+                                    })
+                                .padding(.top, 12)
+                                .transition(.opacity)
+                            }
                             pastSection
                                 .padding(.top, 12)
                         }
@@ -1541,6 +1562,35 @@ struct TodayView: View {
             || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
             withAnimation(.spring(response: 0.4)) { labelTarget = entry }
         }
+
+        offerSkyShareIfDue()
+    }
+
+    /// Nights 7, 21 and 42: offer, once each, to share the sky.
+    ///
+    /// Counted from a fresh fetch rather than `allEntries`, which may not have
+    /// caught up with the save that just happened. `consume` marks the night
+    /// offered as it decides, so the card never comes back — not after Not
+    /// now, not after a relaunch with it still on screen.
+    private func offerSkyShareIfDue() {
+        let request: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
+        guard let all = try? viewContext.fetch(request),
+              let night = SkyShareOffer.consume(dates: all.compactMap(\.date))
+        else { return }
+        let facts = Shareables.facts(from: all)
+        let image = Shareables.render(.story, facts: facts, includeNames: false, airplane: false)
+        withAnimation(.easeOut(duration: 0.25)) {
+            skyOffer = SkyOfferPrompt(night: night, image: image,
+                                      description: Shareables.storyAccessibilityLabel(facts))
+        }
+    }
+
+    /// Writes the card already on screen and hands it, with its one line of
+    /// text, to the system share sheet. The app sends nothing itself.
+    private func shareSky(_ offer: SkyOfferPrompt) {
+        guard let url = Shareables.pngURL(.story, image: offer.image) else { return }
+        skyShare = SkyShareItems(url: url, text: Shareables.storyShareText(nights: offer.night))
+        withAnimation(.easeOut(duration: 0.2)) { skyOffer = nil }
     }
 
     private func saveEntry(audioURL: URL, duration: TimeInterval) {

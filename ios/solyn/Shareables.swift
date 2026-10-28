@@ -39,7 +39,14 @@ enum Shareables {
         /// stars by when they were spoken, so a new one lands in a new place and
         /// the field grows outward. No words, no names — the same rule as My Sky.
         case tonight
-        case mySky, receipt, yearOne, milestone, wallpaper, gift
+        case mySky
+        /// My Sky at 9:16, for Instagram Stories and WhatsApp Status.
+        ///
+        /// The square cards crop badly in a Story frame, and a Story is where a
+        /// sky actually gets posted. Same rule as My Sky: the real constellation,
+        /// a count, a quiet address — and not one word from an entry.
+        case story
+        case receipt, yearOne, milestone, wallpaper, gift
         /// Sleep against mood, and ONLY when the user turns it on.
         ///
         /// Health is held to a stricter rule than names: names are redacted by
@@ -55,6 +62,7 @@ enum Shareables {
             switch self {
             case .tonight: return String(localized: "Tonight", comment: "Share sheet, the card picker: name of the daily (tonight's star) card. About 14 characters.")
             case .mySky: return String(localized: "My Sky", comment: "Share sheet, the card picker: name of the whole-sky card. About 14 characters.")
+            case .story: return String(localized: "Story", comment: "Share sheet, the card picker: name of the 9:16 sky card made for Instagram Stories and WhatsApp Status. About 14 characters.")
             case .receipt: return String(localized: "Receipt", comment: "Share sheet, the card picker: name of the privacy receipt card. About 14 characters.")
             case .yearOne: return String(localized: "Year One", comment: "Share sheet, the card picker: name of the year-in-review card. About 14 characters.")
             case .milestone: return String(localized: "Milestone", comment: "Share sheet, the card picker: name of the 42/100/365-night milestone card. About 14 characters.")
@@ -70,6 +78,8 @@ enum Shareables {
                 return String(localized: "The one you made today, in the sky it landed in. A new place every night — no words on it, ever.", comment: "Share sheet, the card picker: one-line description under the Tonight card's name. Up to two lines.")
             case .mySky:
                 return String(localized: "Stars, no words. The sky is the only journal artifact that is beautiful and private at the same time.", comment: "Share sheet, the card picker: one-line description under the My Sky card's name. Up to two lines.")
+            case .story:
+                return String(localized: "Your real sky, sized for Stories and Status. A count and an address \u{2014} no words, names or moods.", comment: "Share sheet, the card picker: one-line description under the Story card's name. Up to two lines. Stories and Status are Instagram's and WhatsApp's features; use the names those apps use in your language.")
             case .receipt:
                 return String(localized: "Everything costs zero, itemised. It argues better than a feature list.", comment: "Share sheet, the card picker: one-line description under the Receipt card's name. Up to two lines.")
             case .yearOne:
@@ -87,7 +97,7 @@ enum Shareables {
 
         /// Portrait for the lock screen, square for feeds.
         var size: CGSize {
-            self == .wallpaper ? CGSize(width: 1080, height: 1920)
+            self == .wallpaper || self == .story ? CGSize(width: 1080, height: 1920)
                                : CGSize(width: Shareables.side, height: Shareables.side)
         }
     }
@@ -249,11 +259,17 @@ enum Shareables {
     static func render(_ card: Card, facts f: [Fact], includeNames: Bool, includeBody: Bool = false,
                        airplane: Bool) -> UIImage {
         let size = card.size
-        return UIGraphicsImageRenderer(size: size).image { ctx in
+        let format = UIGraphicsImageRendererFormat.preferred()
+        // The Story card is exactly 1080x1920 PIXELS — the frame Instagram and
+        // WhatsApp expect — rather than 1080x1920 points at the screen's 3x,
+        // which is a 5760px-tall file the apps would only shrink again.
+        if card == .story { format.scale = 1 }
+        return UIGraphicsImageRenderer(size: size, format: format).image { ctx in
             let c = ctx.cgContext
             switch card {
             case .tonight:   drawTonight(c, size, f, airplane)
             case .mySky:     drawMySky(c, size, f, airplane)
+            case .story:     drawStory(c, size, f)
             case .receipt:   drawReceipt(c, size, f)
             case .yearOne:   drawYearOne(c, size, f, includeNames)
             case .milestone: drawMilestone(c, size, f)
@@ -380,6 +396,129 @@ enum Shareables {
              font: body(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6))
 
         footer(c, s, String(localized: "A SKY MADE OF YOU · GETDAILYVOX.COM", comment: "Share card image: footer line along the bottom edge, upper case, monospaced. Keep it under about 40 characters. The address stays as it is."))
+    }
+
+    // MARK: - F1b · Story (9:16)
+
+    /// Every word the Story card prints, in drawing order: a label, the count,
+    /// the footer. Built from the night count and nothing else, so there is no
+    /// path by which a transcript, a mood or a name can reach the card — and
+    /// the test that says so reads this list.
+    static func storyLines(_ f: [Fact]) -> [String] {
+        let n = nights(f)
+        let count = n == 1
+            ? String(localized: "1 night kept", comment: "Story share card: one night with an entry.")
+            : String(localized: "\(n) nights kept", comment: "Story share card: number of nights with at least one entry.")
+        return [
+            String(localized: "MY SKY", comment: "Story share card: small label above the constellation."),
+            count,
+            storyFooter,
+        ]
+    }
+
+    /// Brand and address; not translated.
+    static let storyFooter = "DailyVox \u{00B7} getdailyvox.com/sky" // i18n-ignore: brand name and web address, identical in every language
+
+    /// What VoiceOver reads for the card. Same facts as the pixels.
+    static func storyAccessibilityLabel(_ f: [Fact]) -> String {
+        let stars = f.count == 1
+            ? String(localized: "A constellation of 1 star.", comment: "VoiceOver description of the Story share card's sky.")
+            : String(localized: "A constellation of \(f.count) stars.", comment: "VoiceOver description of the Story share card's sky.")
+        return ([stars] + storyLines(f).dropFirst()).joined(separator: " ")
+    }
+
+    /// The text handed to the share sheet beside the image.
+    static func storyShareText(nights n: Int) -> String {
+        String(localized: "My sky after \(n) nights of DailyVox \u{2014} getdailyvox.com/sky",
+               comment: "Text shared alongside the Story sky card. The number is nights with at least one entry.")
+    }
+
+    /// The real constellation, portrait. Placed by `SkyEncoding` exactly as the
+    /// Twin tab and the Tonight card place it — distance is how long ago, angle
+    /// is the hour — then threaded oldest to newest so it reads as one figure.
+    private static func drawStory(_ c: CGContext, _ s: CGSize, _ f: [Fact]) {
+        fill(c, s, UIColor(DS.Palette.navy))
+        var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
+        scatter(c, s, count: 420, rng: &rng, topInset: 0, bottomInset: 0)
+
+        let lines = storyLines(f)
+        let centre = CGPoint(x: s.width / 2, y: s.height * 0.46)
+        orbits(c, centre: centre, radii: [s.width * 0.20, s.width * 0.33])
+
+        let sorted = f.sorted { $0.date < $1.date }
+        let span = SkyEncoding.Span(dates: sorted.map(\.date))
+        // A stable per-entry jitter, as the sky's own seed does, so a habit of
+        // speaking at 21:00 is a cluster and not a single spoke.
+        func place(_ date: Date) -> CGPoint {
+            let secs = UInt64(abs(Int64(date.timeIntervalSince1970.rounded())))
+            return SkyEncoding.entryPoint(date: date, in: span,
+                                          jitter: (secs &* 2_654_435_761) | 1,
+                                          centre: centre,
+                                          near: s.width * 0.08, far: s.width * 0.42)
+        }
+        let drawn = Array(sorted.suffix(240))
+        let points = drawn.map { place($0.date) }
+
+        // The core the sky grows out of, as on the Twin tab.
+        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.14).cgColor)
+        c.fillEllipse(in: CGRect(x: centre.x - 40, y: centre.y - 40, width: 80, height: 80))
+        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.55).cgColor)
+        c.fillEllipse(in: CGRect(x: centre.x - 12, y: centre.y - 12, width: 24, height: 24))
+
+        // Constellation lines: each star to its nearest neighbour, when it is
+        // close. A thread in time order zig-zags across the sky (angle is the
+        // hour, so consecutive nights jump between evening and morning); the
+        // nearest-neighbour links instead draw the clusters a habit makes.
+        if points.count > 1 {
+            c.saveGState()
+            c.setLineWidth(2)
+            c.setLineCap(.round)
+            c.setStrokeColor(UIColor(DS.Palette.gold).withAlphaComponent(0.30).cgColor)
+            let reach = s.width * 0.11
+            for (i, p) in points.enumerated() {
+                var best: (j: Int, d: CGFloat)? = nil
+                for (j, q) in points.enumerated() where j != i {
+                    let d = hypot(p.x - q.x, p.y - q.y)
+                    if d > 0.5, d < (best?.d ?? .greatestFiniteMagnitude) { best = (j, d) }
+                }
+                if let best, best.d <= reach {
+                    c.move(to: p); c.addLine(to: points[best.j])
+                }
+            }
+            c.strokePath()
+            c.restoreGState()
+        }
+
+        for (fact, p) in zip(drawn, points).dropLast() {
+            let age = SkyEncoding.age(fact.date, in: span)
+            let r: CGFloat = 5 + CGFloat(1 - age) * 4
+            c.setFillColor(UIColor(DS.Palette.navyText)
+                .withAlphaComponent(0.35 + 0.5 * (1 - age)).cgColor)
+            c.fillEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2))
+        }
+
+        // The newest, marked the way the Tonight card marks it.
+        if let newest = points.last {
+            for step in stride(from: 5, through: 1, by: -1) {
+                let r = CGFloat(step) * 16
+                c.setFillColor(UIColor(DS.Palette.gold)
+                    .withAlphaComponent(0.05 * (1.15 - CGFloat(step) / 6)).cgColor)
+                c.fillEllipse(in: CGRect(x: newest.x - r, y: newest.y - r,
+                                         width: r * 2, height: r * 2))
+            }
+            star(c, at: newest, r: 26, colour: UIColor(DS.Palette.gold))
+        }
+
+        // Top and bottom stay clear of the Story chrome: Instagram lays its
+        // progress bar and avatar over roughly the top 250px and the reply bar
+        // over the bottom 250px.
+        text(c, lines[0], at: CGPoint(x: s.width / 2, y: 300),
+             font: mono(26), colour: UIColor(DS.Palette.goldNight), align: .center)
+        text(c, lines[1], at: CGPoint(x: s.width / 2, y: s.height - 560),
+             font: display(92), colour: UIColor(DS.Palette.navyText), align: .center)
+        text(c, lines[2], at: CGPoint(x: s.width / 2, y: s.height - 330),
+             font: mono(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.55),
+             align: .center)
     }
 
     // MARK: - F2 · Privacy receipt

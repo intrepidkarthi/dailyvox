@@ -40212,6 +40212,671 @@
           }
         }
       }
+    },
+    "A picture of your sky — no words from your entries. Made on this phone; nothing is sent unless you pick somewhere to send it." : {
+      "comment" : "Today screen: explains the one-time offer to share a picture of the user's constellation.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ein Bild deines Himmels – ohne Worte aus deinen Einträgen. Auf diesem Telefon erstellt; nichts wird gesendet, außer du wählst, wohin."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una imagen de tu cielo, sin palabras de tus entradas. Se crea en este teléfono; no se envía nada a menos que elijas adónde enviarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une image de ton ciel — sans aucun mot de tes entrées. Créée sur ce téléphone ; rien n'est envoyé tant que tu ne choisis pas où l'envoyer."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Un'immagine del tuo cielo, senza parole dalle tue voci. Creata su questo telefono; non viene inviato nulla finché non scegli dove mandarla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma imagem do seu céu — sem palavras dos seus registros. Feita neste celular; nada é enviado a menos que você escolha para onde mandar."
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "comment" : "Button: dismiss the one-time offer to share the sky. It is not offered again for this night.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Jetzt nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ahora no"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pas maintenant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non ora"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Agora não"
+          }
+        }
+      }
+    },
+    "Opens the share sheet with a picture of your sky." : {
+      "comment" : "VoiceOver hint for the Share button on the sky share offer.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Öffnet das Teilen-Menü mit einem Bild deines Himmels."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abre el menú de compartir con una imagen de tu cielo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ouvre le menu de partage avec une image de ton ciel."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apre il menu di condivisione con un'immagine del tuo cielo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Abre o menu de compartilhamento com uma imagem do seu céu."
+          }
+        }
+      }
+    },
+    "Offer to share milestones" : {
+      "comment" : "Settings toggle: whether Today offers, once each at nights 7, 21 and 42, to share a picture of the sky.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Meilensteine zum Teilen anbieten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ofrecer compartir hitos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Proposer de partager les étapes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Proponi di condividere i traguardi"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sugerir compartilhar marcos"
+          }
+        }
+      }
+    },
+    "At nights 7, 21 and 42, once each, Today offers a picture of your sky." : {
+      "comment" : "Settings: explanation under the Offer to share milestones toggle. Keep the numbers 7, 21 and 42.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "In den Nächten 7, 21 und 42 bietet dir „Heute“ jeweils einmal ein Bild deines Himmels an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "En las noches 7, 21 y 42, una sola vez cada una, Hoy te ofrece una imagen de tu cielo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aux nuits 7, 21 et 42, une seule fois chacune, Aujourd'hui te propose une image de ton ciel."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle notti 7, 21 e 42, una sola volta ciascuna, Oggi ti propone un'immagine del tuo cielo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nas noites 7, 21 e 42, uma vez cada, a tela Hoje oferece uma imagem do seu céu."
+          }
+        }
+      }
+    },
+    "Sharing" : {
+      "comment" : "Settings section header.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Compartir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Partage"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Condivisione"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Compartilhamento"
+          }
+        }
+      }
+    },
+    "The picture never includes your words, names or moods. It is made on this iPhone and only goes where you send it from the share sheet." : {
+      "comment" : "Settings footer for the Sharing section.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Bild enthält nie deine Worte, Namen oder Stimmungen. Es entsteht auf diesem iPhone und geht nur dorthin, wohin du es über das Teilen-Menü sendest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La imagen nunca incluye tus palabras, nombres ni estados de ánimo. Se crea en este iPhone y solo va adonde la envíes desde el menú de compartir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'image n'inclut jamais tes mots, des noms ni tes humeurs. Elle est créée sur cet iPhone et ne va que là où tu l'envoies depuis le menu de partage."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "L'immagine non include mai le tue parole, nomi o umori. Viene creata su questo iPhone e va solo dove la mandi tu dal menu di condivisione."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "A imagem nunca inclui suas palavras, nomes ou humores. Ela é feita neste iPhone e só vai para onde você a enviar pelo menu de compartilhamento."
+          }
+        }
+      }
+    },
+    "Seven nights. Your sky is taking shape — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 7 nights of entries.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sieben Nächte. Dein Himmel nimmt Gestalt an – teilen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Siete noches. Tu cielo va tomando forma: ¿lo compartes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sept nuits. Ton ciel prend forme — tu le partages ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sette notti. Il tuo cielo prende forma: lo condividi?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sete noites. Seu céu está tomando forma — quer compartilhar?"
+          }
+        }
+      }
+    },
+    "Twenty-one nights. Your sky is filling in — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 21 nights of entries.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einundzwanzig Nächte. Dein Himmel füllt sich – teilen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Veintiuna noches. Tu cielo se va llenando: ¿lo compartes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vingt et une nuits. Ton ciel se remplit — tu le partages ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ventuno notti. Il tuo cielo si sta riempiendo: lo condividi?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vinte e uma noites. Seu céu está se enchendo — quer compartilhar?"
+          }
+        }
+      }
+    },
+    "Forty-two nights. Your sky is its own now — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation after 42 nights of entries.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zweiundvierzig Nächte. Dein Himmel ist jetzt ganz er selbst – teilen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cuarenta y dos noches. Tu cielo ya tiene vida propia: ¿lo compartes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quarante-deux nuits. Ton ciel a désormais sa propre forme — tu le partages ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quarantadue notti. Il tuo cielo ormai ha una forma tutta sua: lo condividi?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quarenta e duas noites. Seu céu agora tem forma própria — quer compartilhar?"
+          }
+        }
+      }
+    },
+    "%lld nights. Your sky is taking shape — share it?" : {
+      "comment" : "One-time offer to share a picture of the user's constellation. The number is nights with at least one entry.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Nächte. Dein Himmel nimmt Gestalt an – teilen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld noches. Tu cielo va tomando forma: ¿lo compartes?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld nuits. Ton ciel prend forme — tu le partages ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld notti. Il tuo cielo prende forma: lo condividi?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld noites. Seu céu está tomando forma — quer compartilhar?"
+          }
+        }
+      }
+    },
+    "1 night kept" : {
+      "comment" : "Story share card: one night with an entry.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 Nacht festgehalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 noche guardada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 nuit gardée"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 notte custodita"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "1 noite guardada"
+          }
+        }
+      }
+    },
+    "%lld nights kept" : {
+      "comment" : "Story share card: number of nights with at least one entry.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld Nächte festgehalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld noches guardadas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld nuits gardées"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld notti custodite"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lld noites guardadas"
+          }
+        }
+      }
+    },
+    "MY SKY" : {
+      "comment" : "Story share card: small label above the constellation.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MEIN HIMMEL"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MI CIELO"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MON CIEL"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "IL MIO CIELO"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "MEU CÉU"
+          }
+        }
+      }
+    },
+    "A constellation of 1 star." : {
+      "comment" : "VoiceOver description of the Story share card's sky.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ein Sternbild aus 1 Stern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una constelación de 1 estrella."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une constellation de 1 étoile."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una costellazione di 1 stella."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma constelação de 1 estrela."
+          }
+        }
+      }
+    },
+    "A constellation of %lld stars." : {
+      "comment" : "VoiceOver description of the Story share card's sky.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ein Sternbild aus %lld Sternen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una constelación de %lld estrellas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Une constellation de %lld étoiles."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Una costellazione di %lld stelle."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Uma constelação de %lld estrelas."
+          }
+        }
+      }
+    },
+    "My sky after %lld nights of DailyVox — getdailyvox.com/sky" : {
+      "comment" : "Text shared alongside the Story sky card. The number is nights with at least one entry.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mein Himmel nach %lld Nächten DailyVox – getdailyvox.com/sky"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mi cielo tras %lld noches de DailyVox: getdailyvox.com/sky"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mon ciel après %lld nuits de DailyVox — getdailyvox.com/sky"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il mio cielo dopo %lld notti di DailyVox: getdailyvox.com/sky"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Meu céu depois de %lld noites de DailyVox — getdailyvox.com/sky"
+          }
+        }
+      }
+    },
+    "Story" : {
+      "comment" : "Share sheet, the card picker: name of the 9:16 sky card made for Instagram Stories and WhatsApp Status. About 14 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Story"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Historia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Story"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Storia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Story"
+          }
+        }
+      }
+    },
+    "Your real sky, sized for Stories and Status. A count and an address — no words, names or moods." : {
+      "comment" : "Share sheet, the card picker: one-line description under the Story card's name. Up to two lines. Stories and Status are Instagram's and WhatsApp's features; use the names those apps use in your language.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein echter Himmel, im Format für Storys und Status. Eine Zahl und eine Adresse – keine Worte, Namen oder Stimmungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tu cielo real, a medida para Historias y Estados. Un número y una dirección, sin palabras, nombres ni estados de ánimo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ton vrai ciel, au format des Stories et des Statuts. Un nombre et une adresse — ni mots, ni noms, ni humeurs."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Il tuo vero cielo, nel formato di Storie e Stato. Un numero e un indirizzo, nessuna parola, nome o umore."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seu céu de verdade, no formato de Stories e Status. Um número e um endereço — sem palavras, nomes ou humores."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
