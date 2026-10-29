@@ -198,6 +198,11 @@
       "source": "/blog/secure-journal-app",
       "destination": "/blog/best-journal-app-for-privacy",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/private-journal-app",
+      "destination": "/blog/journal-app-privacy-comparison",
+      "statusCode": 301
     }
   ],
   "headers": [
