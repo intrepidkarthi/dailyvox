@@ -162,7 +162,7 @@
 
 <p>The phrase "AI-powered journaling" has become a selling point in every app store listing. It sounds modern, helpful, even therapeutic. But behind the marketing language, a fundamental question goes unasked: <em>where does the AI actually run?</em> The answer, for the vast majority of journal apps, is: on someone else's computer. Your deepest reflections, your anxieties, your unfiltered thoughts &mdash; sent over the internet to a data center you will never see, processed by a model you do not control, and stored in ways you cannot verify.</p>
 
-<p>We examined this problem in detail in our <a href="/reports/journal-app-privacy-audit-2026">Journal App Privacy Audit 2026</a>, analyzing the network behavior, SDK composition, and AI architecture of popular journal apps. The findings were stark. This article breaks down what we found, how the deception works, and how you can protect yourself.</p>
+<p>We examined this problem in detail in our <a href="/blog/journal-app-privacy-comparison">Journal App Privacy Audit 2026</a>, analyzing the network behavior, SDK composition, and AI architecture of popular journal apps. The findings were stark. This article breaks down what we found, how the deception works, and how you can protect yourself.</p>
 
 <nav style="background:rgba(91,124,107,0.04);border:1px solid rgba(91,124,107,0.12);border-radius:12px;padding:24px;margin:32px 0;">
 <strong>Table of Contents</strong>
@@ -182,7 +182,7 @@
 <h2 id="the-95-problem">The 95% Problem</h2>
 <!-- ============================================ -->
 
-<p>When we audited AI journal apps for our <a href="/reports/journal-app-privacy-audit-2026">Journal App Privacy Audit 2026</a>, we looked at every app in the App Store that markets itself as an "AI journal" or "AI diary." We checked their network traffic, decompiled their SDKs, read their privacy policies, and tested every AI feature with a network proxy running. The results were not subtle.</p>
+<p>When we audited AI journal apps for our <a href="/blog/journal-app-privacy-comparison">Journal App Privacy Audit 2026</a>, we looked at every app in the App Store that markets itself as an "AI journal" or "AI diary." We checked their network traffic, decompiled their SDKs, read their privacy policies, and tested every AI feature with a network proxy running. The results were not subtle.</p>
 
 <p>Of the apps that advertise AI features &mdash; smart prompts, mood analysis, therapeutic reflections, pattern recognition, sentiment detection &mdash; approximately 95% rely on cloud APIs to deliver those features. The most common backend is OpenAI's GPT API. Others use Anthropic's Claude API, Google's Gemini, or custom models hosted on AWS or Google Cloud. A handful use smaller providers. Nearly all of them require an active internet connection for their AI features to function.</p>
 
