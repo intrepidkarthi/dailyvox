@@ -223,7 +223,9 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
      *
      * Two locks, because one was clearly not enough. `BuildConfig.DEBUG` means
      * R8 removes the whole branch from any release build; SEED_DEMO_DATA means
-     * even a debug build needs `-PseedDemo` to ask for it.
+     * even a debug build needs `-PseedDemo` to ask for it. `-PseedDemoLang=de`
+     * (es, fr, it, pt-BR) seeds the same journal in that language, for the
+     * localized store screenshots.
      */
     suspend fun seedIfEmpty(context: Context) {
         Lexicon.ensureLoaded(context)
@@ -231,7 +233,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         clearUnreadValence(context)
         if (!BuildConfig.DEBUG || !BuildConfig.SEED_DEMO_DATA) return
         if (db.entries().count() > 0) return
-        DummyData.entries().forEach { db.entries().upsert(it) }
+        DummyData.entries(BuildConfig.SEED_DEMO_LANG).forEach { db.entries().upsert(it) }
     }
 
     /**

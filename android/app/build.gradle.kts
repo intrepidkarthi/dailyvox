@@ -70,6 +70,14 @@ android {
             "SEED_DEMO_DATA",
             (project.hasProperty("seedDemo")).toString(),
         )
+        // Which language the demo journal is seeded in, for the localized store
+        // screenshots: -PseedDemoLang=de (es, fr, it, pt-BR). Empty is English.
+        // Only read where SEED_DEMO_DATA is, so it can never seed anything alone.
+        buildConfigField(
+            "String",
+            "SEED_DEMO_LANG",
+            "\"" + (project.findProperty("seedDemoLang") as String? ?: "").replace("\"", "") + "\"",
+        )
     }
 
     // Signing credentials live in keystore.properties, which is gitignored and
@@ -97,6 +105,7 @@ android {
             // Belt and braces with the DEBUG guard at the call site: -PseedDemo
             // on a release build must not be a way to ship the demo journal.
             buildConfigField("boolean", "SEED_DEMO_DATA", "false")
+            buildConfigField("String", "SEED_DEMO_LANG", "\"\"")
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release")
