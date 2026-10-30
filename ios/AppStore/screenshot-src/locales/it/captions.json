@@ -1,0 +1,215 @@
+{
+  "00_your_language": {
+    "eyebrow": "ORA IN ITALIANO",
+    "head": [
+      [
+        "parla in",
+        null
+      ],
+      [
+        null,
+        "italiano"
+      ]
+    ],
+    "figure": null,
+    "gloss": "trascritto su questo telefono",
+    "sticker": {
+      "title": "sul dispositivo",
+      "sub": "niente cloud, niente account"
+    }
+  },
+  "01_a_sky_made_of_you": {
+    "eyebrow": "CONOSCI IL TUO GEMELLO",
+    "head": [
+      [
+        "un cielo",
+        null
+      ],
+      [
+        "fatto di ",
+        "te"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "stelle nel tuo cielo",
+    "sticker": {
+      "title": "100% sul dispositivo",
+      "sub": "niente cloud, niente account"
+    }
+  },
+  "02_42_seconds": {
+    "eyebrow": "PARLA E BASTA",
+    "head": [
+      [
+        null,
+        "42 secondi"
+      ],
+      [
+        "sono l’app",
+        null
+      ]
+    ],
+    "figure": "0:42",
+    "gloss": "tutto il rituale",
+    "sticker": {
+      "title": "la tua voce",
+      "sub": "trascritta su questo telefono"
+    }
+  },
+  "03_answers_with_receipts": {
+    "eyebrow": "CHIEDI AL TUO GEMELLO",
+    "head": [
+      [
+        "risposte con",
+        null
+      ],
+      [
+        null,
+        "le prove"
+      ]
+    ],
+    "figure": null,
+    "gloss": "3 voci citate, ogni volta",
+    "sticker": {
+      "title": "3 voci citate",
+      "sub": "toccane una per leggerla"
+    }
+  },
+  "04_describe_find": {
+    "eyebrow": "CERCA NEL TUO DIARIO",
+    "head": [
+      [
+        "una parola,",
+        null
+      ],
+      [
+        null,
+        "ogni notte"
+      ]
+    ],
+    "figure": null,
+    "gloss": "ogni voce che la contiene",
+    "sticker": {
+      "title": "ricerca per parola",
+      "sub": "in tutte le tue notti"
+    }
+  },
+  "05_streak": {
+    "eyebrow": "IL TUO RITMO",
+    "head": [
+      [
+        "vede la tua",
+        null
+      ],
+      [
+        null,
+        "serie"
+      ],
+      [
+        "prima di te",
+        null
+      ]
+    ],
+    "figure": "33",
+    "gloss": "giorni di fila, il tuo record",
+    "sticker": {
+      "title": "33 giorni di fila",
+      "sub": "la tua serie più lunga"
+    }
+  },
+  "06_private_by_design": {
+    "eyebrow": "PRIVATO FIN DALL’ORIGINE",
+    "head": [
+      [
+        "il tuo diario,",
+        null
+      ],
+      [
+        null,
+        "solo tuo"
+      ]
+    ],
+    "figure": "0",
+    "gloss": "server di DailyVox",
+    "sticker": {
+      "title": "sempre sul dispositivo",
+      "sub": "Dati non raccolti"
+    }
+  },
+  "07_first_star": {
+    "eyebrow": "I TUOI PRIMI 42 SECONDI",
+    "head": [
+      [
+        "parla una volta,",
+        null
+      ],
+      [
+        "e si ",
+        "accende"
+      ]
+    ],
+    "figure": "1",
+    "gloss": "stella. Poi un cielo.",
+    "sticker": {
+      "title": "la tua prima stella",
+      "sub": "nata dalla tua voce"
+    }
+  },
+  "08_cant_talk_type_it": {
+    "eyebrow": "ORA NON PUOI PARLARE?",
+    "head": [
+      [
+        "allora",
+        null
+      ],
+      [
+        null,
+        "scrivilo"
+      ]
+    ],
+    "figure": null,
+    "gloss": "conta allo stesso modo",
+    "sticker": {
+      "title": "scritta, non parlata",
+      "sub": "vale comunque per la serie"
+    }
+  },
+  "09_share_a_star": {
+    "eyebrow": "CONDIVIDI UNA STELLA",
+    "head": [
+      [
+        "il tuo cielo,",
+        null
+      ],
+      [
+        null,
+        "non le parole"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "notti custodite, sulla card",
+    "sticker": {
+      "title": "nessuna parola",
+      "sub": "mai"
+    }
+  },
+  "10_every_night_kept": {
+    "eyebrow": "IL TUO DIARIO",
+    "head": [
+      [
+        "ogni notte,",
+        null
+      ],
+      [
+        null,
+        "custodita"
+      ]
+    ],
+    "figure": null,
+    "gloss": "un colore per l’umore scelto",
+    "sticker": {
+      "title": "umore a colpo d’occhio",
+      "sub": "una riga per voce"
+    }
+  }
+}

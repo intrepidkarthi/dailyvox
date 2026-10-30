@@ -1,0 +1,215 @@
+{
+  "00_your_language": {
+    "eyebrow": "MAINTENANT EN FRANÇAIS",
+    "head": [
+      [
+        "parle",
+        null
+      ],
+      [
+        null,
+        "en français"
+      ]
+    ],
+    "figure": null,
+    "gloss": "transcrit sur ce téléphone",
+    "sticker": {
+      "title": "sur l’appareil",
+      "sub": "sans cloud, sans compte"
+    }
+  },
+  "01_a_sky_made_of_you": {
+    "eyebrow": "DÉCOUVRE TON JUMEAU",
+    "head": [
+      [
+        "un ciel",
+        null
+      ],
+      [
+        "fait de ",
+        "toi"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "étoiles dans ton ciel",
+    "sticker": {
+      "title": "100 % sur l’appareil",
+      "sub": "sans cloud, sans compte"
+    }
+  },
+  "02_42_seconds": {
+    "eyebrow": "PARLE, C’EST TOUT",
+    "head": [
+      [
+        null,
+        "42 secondes"
+      ],
+      [
+        "c’est l’appli",
+        null
+      ]
+    ],
+    "figure": "0:42",
+    "gloss": "tout le rituel",
+    "sticker": {
+      "title": "ta voix",
+      "sub": "transcrite sur ce téléphone"
+    }
+  },
+  "03_answers_with_receipts": {
+    "eyebrow": "DEMANDE À TON JUMEAU",
+    "head": [
+      [
+        "des réponses",
+        null
+      ],
+      [
+        null,
+        "sourcées"
+      ]
+    ],
+    "figure": null,
+    "gloss": "3 entrées citées, toujours",
+    "sticker": {
+      "title": "3 entrées citées",
+      "sub": "touche-en une pour la lire"
+    }
+  },
+  "04_describe_find": {
+    "eyebrow": "CHERCHE DANS TON JOURNAL",
+    "head": [
+      [
+        "un mot,",
+        null
+      ],
+      [
+        null,
+        "chaque nuit"
+      ]
+    ],
+    "figure": null,
+    "gloss": "chaque entrée qui le dit",
+    "sticker": {
+      "title": "recherche par mot",
+      "sub": "dans toutes tes nuits"
+    }
+  },
+  "05_streak": {
+    "eyebrow": "TON RYTHME",
+    "head": [
+      [
+        "il voit ta",
+        null
+      ],
+      [
+        null,
+        "série"
+      ],
+      [
+        "avant toi",
+        null
+      ]
+    ],
+    "figure": "33",
+    "gloss": "jours d’affilée, ton record",
+    "sticker": {
+      "title": "série de 33 jours",
+      "sub": "ta plus longue à ce jour"
+    }
+  },
+  "06_private_by_design": {
+    "eyebrow": "PRIVÉ DÈS LA CONCEPTION",
+    "head": [
+      [
+        "ton journal,",
+        null
+      ],
+      [
+        null,
+        "rien qu’à toi"
+      ]
+    ],
+    "figure": "0",
+    "gloss": "serveur chez DailyVox",
+    "sticker": {
+      "title": "toujours en local",
+      "sub": "Données non collectées"
+    }
+  },
+  "07_first_star": {
+    "eyebrow": "TES 42 PREMIÈRES SECONDES",
+    "head": [
+      [
+        "parle une fois,",
+        null
+      ],
+      [
+        "et ça ",
+        "s’allume"
+      ]
+    ],
+    "figure": "1",
+    "gloss": "étoile. Puis un ciel.",
+    "sticker": {
+      "title": "ta première étoile",
+      "sub": "née de ta voix"
+    }
+  },
+  "08_cant_talk_type_it": {
+    "eyebrow": "PAS MOYEN DE PARLER",
+    "head": [
+      [
+        "alors",
+        null
+      ],
+      [
+        null,
+        "écris-le"
+      ]
+    ],
+    "figure": null,
+    "gloss": "ça compte tout autant",
+    "sticker": {
+      "title": "tapée, pas enregistrée",
+      "sub": "compte aussi pour ta série"
+    }
+  },
+  "09_share_a_star": {
+    "eyebrow": "PARTAGE UNE ÉTOILE",
+    "head": [
+      [
+        "ton ciel,",
+        null
+      ],
+      [
+        null,
+        "pas tes mots"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "nuits gardées, sur la carte",
+    "sticker": {
+      "title": "aucun mot dessus",
+      "sub": "jamais"
+    }
+  },
+  "10_every_night_kept": {
+    "eyebrow": "TON JOURNAL",
+    "head": [
+      [
+        "chaque nuit,",
+        null
+      ],
+      [
+        null,
+        "gardée"
+      ]
+    ],
+    "figure": null,
+    "gloss": "une couleur par humeur choisie",
+    "sticker": {
+      "title": "humeur d’un coup d’œil",
+      "sub": "une ligne par entrée"
+    }
+  }
+}

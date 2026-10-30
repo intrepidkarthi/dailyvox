@@ -14,12 +14,17 @@ bottom edge, and one rotated sticker overlapping the device.
 
 Everything is measured from the canvas at 440x956 and multiplied by S=3.
 
-Usage:  python3 make_frames.py <raw-dir> <out-dir>
+Usage:  python3 make_frames.py <raw-dir> <out-dir> [locale]
+
+With a locale (1.14), the copy comes from locales/<locale>/captions.json and
+the frame list from LOCALE_FRAMES below; layout, grounds and stickers' colours
+and positions stay the English set's.
 """
-import sys, os
+import sys, os, json
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 RAW, OUT = sys.argv[1], sys.argv[2]
+LOCALE = sys.argv[3] if len(sys.argv) > 3 else None
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP_FONTS = os.path.join(HERE, "..", "..", "solyn", "Fonts")
 OWN_FONTS = os.path.join(HERE, "fonts")
@@ -128,6 +133,8 @@ def sticker(img, spec):
 
     shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     x, y = pos
+    # A longer translation must not push the card off the right edge.
+    x = min(x, W - card.width - 16 * S)
     shadow.paste((0, 0, 0, 46), (x, y + 6 * S), card.split()[3])
     shadow = shadow.filter(ImageFilter.GaussianBlur(18 * S / 3))
     img.paste(Image.alpha_composite(img.convert("RGBA"), shadow).convert("RGB"), (0, 0))
@@ -237,8 +244,17 @@ def build(spec):
     tracked(d, (pad_l, pad_t), spec["eyebrow"], mono(13 * S), accent,
             tracking=13 * S * 0.18)
 
-    # headline — Nunito 900 52px/1.08, one word in the accent
-    fh = nunito(52 * S)
+    # headline — Nunito 900 52px/1.08, one word in the accent. English was
+    # written to fit; German compounds are not, so the size steps down until
+    # the longest line clears the right margin (the same 44px as the left).
+    size = 52
+    while size > 36:
+        fh = nunito(size * S)
+        widest = max(d.textlength((p or "") + (h or ""), font=fh) for p, h in spec["head"])
+        if widest <= W - 2 * pad_l:
+            break
+        size -= 2
+    fh = nunito(size * S)
     y = pad_t + 18 * S + 13 * S
     for line in spec["head"]:
         x = pad_l
@@ -248,7 +264,7 @@ def build(spec):
             x += d.textlength(plain, font=fh)
         if hot:
             d.text((x, y), hot, font=fh, fill=accent)
-        y += 52 * S * 1.08
+        y += size * S * 1.08
 
     # figure + handwritten gloss, sharing a baseline
     y += 26 * S - 8 * S
@@ -261,7 +277,10 @@ def build(spec):
     else:
         gx, gy = pad_l, y + 6 * S
     fg_gloss = tuple(int(c * 0.85 + bg[i] * 0.15) for i, c in enumerate(fg))
-    d.text((gx, gy), spec["gloss"], font=caveat(26 * S), fill=fg_gloss)
+    gs = 26
+    while gs > 18 and gx + d.textlength(spec["gloss"], font=caveat(gs * S)) > W - pad_l:
+        gs -= 1
+    d.text((gx, gy), spec["gloss"], font=caveat(gs * S), fill=fg_gloss)
 
     phone(img, os.path.join(RAW, spec["shot"]), spec.get("anchor", "top"))
     sticker(img, spec["sticker"])
@@ -278,6 +297,59 @@ SIZES = {
     "iPhone_DI_medium_1179x2556": (1179, 2556),
 }
 
+# ---------------------------------------------------------------- locales
+#
+# What each localized set shows, in store order. App Store Connect takes ten
+# per locale. Every frame here was checked against that locale's capture: the
+# app is quiet where it cannot read a language, so the sets differ.
+#
+#   · 00 leads: the language is the news for these users. It sits over the
+#     journal in that language, not the Language-you-speak picker, which lists
+#     every language Apple can transcribe and would claim far more than five.
+#   · 04 is captioned for WORD search (meaning search is English-only) but
+#     left out for now: the search screen itself is still titled "Search by
+#     meaning" and shows match percentages in every language. It comes back
+#     when that screen says what it does.
+#   · 03 Ask your Twin is left out everywhere for now. The engine's answer
+#     frame is English ("From your journal, the closest I have to that is…",
+#     and the abstention line), so a German question gets an English answer
+#     around German quotes. It comes back once those lines are localized, and
+#     never for pt-BR, which the app does not name as an Ask language (#127).
+#   · 10 drops: 00 already shows the journal.
+LANGUAGE_FRAME = dict(name="00_your_language", shot="journal.png",
+                      bg="#2A2357", fg="#F1EDE2", accent="#F2C14E",
+                      sticker=dict(bg="#D9A441", fg="#101B2D", rot=-4,
+                                   pos=(int(232 * 3), int(560 * 3))))
+LOCALE_FRAMES = {
+    "default": ["00_your_language", "01_a_sky_made_of_you", "02_42_seconds",
+                "05_streak", "06_private_by_design",
+                "08_cant_talk_type_it", "09_share_a_star", "07_first_star"],
+}
+
+
+def localized(locale):
+    with open(os.path.join(HERE, "locales", locale, "captions.json"), encoding="utf-8") as f:
+        copy = json.load(f)
+    by_name = {f["name"]: f for f in FRAMES + [LANGUAGE_FRAME]}
+    out = []
+    for i, name in enumerate(LOCALE_FRAMES.get(locale, LOCALE_FRAMES["default"]), 1):
+        c = copy[name]
+        spec = dict(by_name[name])
+        spec.update(eyebrow=c["eyebrow"], head=[tuple(l) for l in c["head"]],
+                    figure=c.get("figure"), gloss=c["gloss"])
+        spec["sticker"] = dict(spec["sticker"], title=c["sticker"]["title"], sub=c["sticker"]["sub"])
+        # Store order is the file order, so the numbers are renumbered per set.
+        spec["out"] = "%02d_%s" % (i, name.split("_", 1)[1])
+        out.append(spec)
+    return out
+
+
+# A localized set is uploaded at the required size and the 6.9" base only.
+if LOCALE:
+    FRAMES = localized(LOCALE)
+    SIZES = {k: v for k, v in SIZES.items()
+             if k in ("iPhone_6.9_1320x2868", "iPhone_DI_medium_1179x2556")}
+
 base = os.path.dirname(OUT.rstrip("/"))
 for spec in FRAMES:
     frame = build(spec)
@@ -285,5 +357,5 @@ for spec in FRAMES:
         dst = os.path.join(base, folder)
         os.makedirs(dst, exist_ok=True)
         out = frame if (w, h) == (W, H) else frame.resize((w, h), Image.LANCZOS)
-        out.save(os.path.join(dst, spec["name"] + ".png"))
-    print("wrote", spec["name"])
+        out.save(os.path.join(dst, spec.get("out", spec["name"]) + ".png"))
+    print("wrote", spec.get("out", spec["name"]))

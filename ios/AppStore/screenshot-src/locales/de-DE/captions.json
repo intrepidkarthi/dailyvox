@@ -1,0 +1,215 @@
+{
+  "00_your_language": {
+    "eyebrow": "JETZT AUF DEUTSCH",
+    "head": [
+      [
+        "sprich einfach",
+        null
+      ],
+      [
+        null,
+        "Deutsch"
+      ]
+    ],
+    "figure": null,
+    "gloss": "auf dem Handy transkribiert",
+    "sticker": {
+      "title": "auf dem Gerät",
+      "sub": "keine Cloud, kein Konto"
+    }
+  },
+  "01_a_sky_made_of_you": {
+    "eyebrow": "TRIFF DEINEN TWIN",
+    "head": [
+      [
+        "ein Himmel",
+        null
+      ],
+      [
+        "aus ",
+        "dir"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "Sterne an deinem Himmel",
+    "sticker": {
+      "title": "100 % auf dem Gerät",
+      "sub": "keine Cloud, kein Konto"
+    }
+  },
+  "02_42_seconds": {
+    "eyebrow": "EINFACH REDEN",
+    "head": [
+      [
+        null,
+        "42 Sekunden"
+      ],
+      [
+        "sind die App",
+        null
+      ]
+    ],
+    "figure": "0:42",
+    "gloss": "das ganze Ritual",
+    "sticker": {
+      "title": "deine Stimme",
+      "sub": "auf dem Handy transkribiert"
+    }
+  },
+  "03_answers_with_receipts": {
+    "eyebrow": "FRAG DEINEN TWIN",
+    "head": [
+      [
+        "Antworten mit",
+        null
+      ],
+      [
+        null,
+        "Belegen"
+      ]
+    ],
+    "figure": null,
+    "gloss": "3 Einträge zitiert, jedes Mal",
+    "sticker": {
+      "title": "3 Einträge zitiert",
+      "sub": "zum Lesen antippen"
+    }
+  },
+  "04_describe_find": {
+    "eyebrow": "DURCHSUCHE DEIN TAGEBUCH",
+    "head": [
+      [
+        "ein Wort,",
+        null
+      ],
+      [
+        null,
+        "jede Nacht"
+      ]
+    ],
+    "figure": null,
+    "gloss": "jeder Eintrag, der es sagt",
+    "sticker": {
+      "title": "Wortsuche",
+      "sub": "über alle Nächte hinweg"
+    }
+  },
+  "05_streak": {
+    "eyebrow": "DEIN RHYTHMUS",
+    "head": [
+      [
+        "es sieht deine",
+        null
+      ],
+      [
+        null,
+        "Serie"
+      ],
+      [
+        "vor dir",
+        null
+      ]
+    ],
+    "figure": "33",
+    "gloss": "Tage in Folge, dein Rekord",
+    "sticker": {
+      "title": "33-Tage-Serie",
+      "sub": "deine längste bisher"
+    }
+  },
+  "06_private_by_design": {
+    "eyebrow": "PRIVAT VON GRUND AUF",
+    "head": [
+      [
+        "dein Tagebuch,",
+        null
+      ],
+      [
+        null,
+        "nur deins"
+      ]
+    ],
+    "figure": "0",
+    "gloss": "DailyVox-Server gibt es",
+    "sticker": {
+      "title": "immer auf dem Gerät",
+      "sub": "Keine Daten erfasst"
+    }
+  },
+  "07_first_star": {
+    "eyebrow": "DEINE ERSTEN 42 SEKUNDEN",
+    "head": [
+      [
+        "sprich einmal,",
+        null
+      ],
+      [
+        "sieh es ",
+        "leuchten"
+      ]
+    ],
+    "figure": "1",
+    "gloss": "Stern. Dann ein Himmel.",
+    "sticker": {
+      "title": "dein erster Stern",
+      "sub": "geboren aus deiner Stimme"
+    }
+  },
+  "08_cant_talk_type_it": {
+    "eyebrow": "REDEN GEHT GERADE NICHT?",
+    "head": [
+      [
+        "dann tipp",
+        null
+      ],
+      [
+        null,
+        "stattdessen"
+      ]
+    ],
+    "figure": null,
+    "gloss": "zählt ganz genauso",
+    "sticker": {
+      "title": "getippt, ohne Audio",
+      "sub": "zählt trotzdem für die Serie"
+    }
+  },
+  "09_share_a_star": {
+    "eyebrow": "TEILE EINEN STERN",
+    "head": [
+      [
+        "dein Himmel,",
+        null
+      ],
+      [
+        null,
+        "nicht deine Worte"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "Nächte, auf der Karte",
+    "sticker": {
+      "title": "kein Wort darauf",
+      "sub": "niemals"
+    }
+  },
+  "10_every_night_kept": {
+    "eyebrow": "DEIN TAGEBUCH",
+    "head": [
+      [
+        "jede Nacht,",
+        null
+      ],
+      [
+        null,
+        "bewahrt"
+      ]
+    ],
+    "figure": null,
+    "gloss": "Stimmung wählen, Farbe sehen",
+    "sticker": {
+      "title": "Stimmung im Blick",
+      "sub": "eine Zeile pro Eintrag"
+    }
+  }
+}
