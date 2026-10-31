@@ -12480,37 +12480,37 @@
         }
       }
     },
-    "Ask your Twin understands English, Spanish, French, German and Italian for now." : {
+    "Ask your Twin understands English, Spanish, French, German, Italian and Portuguese for now." : {
       "comment" : "Shown in Ask your Twin instead of an answer when the question, or the language the person speaks, is one the Twin cannot read yet. Language names are the languages Ask supports.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "„Frag deinen Twin“ versteht vorerst Englisch, Spanisch, Französisch, Deutsch und Italienisch."
+            "value" : "„Frag deinen Twin“ versteht vorerst Englisch, Spanisch, Französisch, Deutsch, Italienisch und Portugiesisch."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Por ahora, Pregunta a tu Gemelo entiende inglés, español, francés, alemán e italiano."
+            "value" : "Por ahora, Pregunta a tu Gemelo entiende inglés, español, francés, alemán, italiano y portugués."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Pour l'instant, Demande à ton Jumeau comprend l'anglais, l'espagnol, le français, l'allemand et l'italien."
+            "value" : "Pour l'instant, Demande à ton Jumeau comprend l'anglais, l'espagnol, le français, l'allemand, l'italien et le portugais."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Per ora Chiedi al tuo Gemello capisce inglese, spagnolo, francese, tedesco e italiano."
+            "value" : "Per ora Chiedi al tuo Gemello capisce inglese, spagnolo, francese, tedesco, italiano e portoghese."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Por enquanto, o Pergunte ao seu Twin entende inglês, espanhol, francês, alemão e italiano."
+            "value" : "Por enquanto, o Pergunte ao seu Twin entende inglês, espanhol, francês, alemão, italiano e português."
           }
         }
       }

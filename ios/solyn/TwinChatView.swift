@@ -33,6 +33,10 @@ struct TwinChatMessage: Identifiable {
     let timestamp = Date()
     /// Journal entries this answer cited ("From your journal" chips).
     var citations: [TwinChatEvidence] = []
+    /// Whether each citation shows its match percentage. Only English is
+    /// searched by meaning; elsewhere the score is a word-overlap number and
+    /// Search hides it too.
+    var showsMatch: Bool = true
 }
 
 // MARK: - Twin Chat View
@@ -246,7 +250,7 @@ struct TwinChatView: View {
                     )
 
                 if !message.citations.isEmpty {
-                    citationRow(for: message.citations)
+                    citationRow(for: message.citations, showsMatch: message.showsMatch)
                 }
 
                 // Read-aloud, on the Twin's replies only — there is no reason to speak the
@@ -333,7 +337,7 @@ struct TwinChatView: View {
 
     // MARK: - Citations
 
-    private func citationRow(for citations: [TwinChatEvidence]) -> some View {
+    private func citationRow(for citations: [TwinChatEvidence], showsMatch: Bool) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("FROM YOUR ENTRIES")
                 .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
@@ -361,7 +365,9 @@ struct TwinChatView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "book.closed.fill")
                                     .font(.dv(.caption2))
-                                Text("\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%")
+                                Text(showsMatch
+                                     ? "\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%"
+                                     : "\(citation.date, format: .dateTime.month(.abbreviated).day())")
                                     .font(.dv(.caption2))
                             }
                             .foregroundColor(themeManager.accentColor)
@@ -425,7 +431,7 @@ struct TwinChatView: View {
 
     private var questionChips: some View {
         VStack(spacing: 8) {
-            if !brain.isActive && availableQuestions.isEmpty {
+            if offersQuestionBank && !brain.isActive && availableQuestions.isEmpty {
                 Text("You've asked all the questions! Tap any to ask again.")
                     .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
@@ -460,7 +466,7 @@ struct TwinChatView: View {
                         }
                     }
 
-                    ForEach(displayedQuestions) { question in
+                    ForEach(offersQuestionBank ? displayedQuestions : []) { question in
                         Button {
                             askQuestion(question)
                         } label: {
@@ -502,6 +508,13 @@ struct TwinChatView: View {
     }
 
     // MARK: - Logic
+
+    /// The ten template questions, and their answers, are English. Someone
+    /// who speaks another language gets their own questions answered from
+    /// their entries, and no row of English chips.
+    private var offersQuestionBank: Bool {
+        (LanguageGate.baseCode(SpeechTranscriber.speakerLocale.language.languageCode?.identifier) ?? "en") == "en"
+    }
 
     private var availableQuestions: [TwinQuestion] {
         TwinQuestion.allCases.filter { !askedQuestions.contains($0) }
@@ -607,7 +620,8 @@ struct TwinChatView: View {
             withAnimation(.easeIn(duration: 0.2)) {
                 messages.append(TwinChatMessage(text: turn?.answer ?? "",
                                                 isUser: false,
-                                                citations: turn?.citations ?? []))
+                                                citations: turn?.citations ?? [],
+                                                showsMatch: language == "en"))
             }
             latestFollowUps = turn?.suggestedFollowUps ?? []
         }

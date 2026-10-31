@@ -122,7 +122,7 @@ enum AskLanguage {
     }
 
     static var unsupportedMessage: String {
-        String(localized: "Ask your Twin understands English, Spanish, French, German and Italian for now.",
+        String(localized: "Ask your Twin understands English, Spanish, French, German, Italian and Portuguese for now.",
                comment: "Shown in Ask your Twin instead of an answer when the question, or the language the person speaks, is one the Twin cannot read yet. Language names are the languages Ask supports.")
     }
 }
