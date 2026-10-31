@@ -4,11 +4,13 @@ All notable changes to DailyVox are documented here.
 
 ## [1.14.0] (iOS) — languages, and share your sky
 
-Build 48. The app is now available in German, Spanish, French, Italian and
+Build 49. The app is now available in German, Spanish, French, Italian and
 Portuguese (Brazil) as well as English, and you choose the language you speak
 separately from the app's language. Hindi is not in this release: its
 interface translation waits until Hindi transcription is confirmed on a real
-iPhone. Nothing changes for entries spoken in English.
+iPhone. Nothing changes for entries spoken in English. The five translations
+are machine drafts, shipped before a native review. 1.13.1 was never submitted
+on its own; its fixes reach the App Store with this release.
 
 ### Added
 - **DailyVox in German, Spanish, French, Italian and Portuguese (Brazil).** It
@@ -38,6 +40,20 @@ iPhone. Nothing changes for entries spoken in English.
   languages.
 - **Hindi and other non-Latin text uses the system font for that script, at
   the right weight.** Latin text still uses Nunito, Inter and DM Mono.
+
+### Fixed
+- **Ask your Twin answers in the language you asked in.** The words around
+  quoted entries, the dates and the "nothing close enough" line come in German,
+  Spanish, French, Italian and Portuguese; the quotes stay as they were said.
+  This holds in the app, in the retrieval answers on iPhones without Apple
+  Intelligence, and from Siri and Shortcuts. Before, every answer was framed in
+  English. English is unchanged.
+- **Search says "by meaning" only when it searched by meaning.** Meaning search
+  is English only in 1.14; every other language is a word search, but the
+  screen still said "Search by meaning" and showed a "% match" on every result.
+  The title, prompt and empty state now follow what actually ran, "% match"
+  appears only on meaning hits, and the journal's "Search by meaning instead"
+  button appears only for queries that would run by meaning.
 
 ## [1.13.1] (iOS) — fixes for people who don't speak English to DailyVox
 
