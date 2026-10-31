@@ -100,6 +100,44 @@ final class SemanticSearchManager: ObservableObject {
     struct Hit: Identifiable {
         let id: String   // entry UUID string
         let score: Double
+        /// True when this entry was ranked by meaning: the query ran in a
+        /// language with a sentence model AND the entry is in that same
+        /// language. False when it matched on words alone (a Spanish query,
+        /// or an English query meeting a Spanish entry), where the score is
+        /// word overlap, not closeness of meaning, and must not be shown as a
+        /// "% match".
+        let byMeaning: Bool
+    }
+
+    /// How a query is searched. 1.14: meaning (sentence-embedding) search is
+    /// English only; every other language the engine's `LanguageGate` lists
+    /// gets word search (`.searchLexical`).
+    enum Mode: Equatable {
+        case meaning
+        case words
+    }
+
+    /// The language the engine reads `query` in: the exact composition
+    /// `SemanticMemoryIndex.search` uses (`readingLanguage(of:declared:)`
+    /// over the language this manager declares for it).
+    nonisolated static func searchLanguage(of query: String, speaking: Locale) -> String {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        return LanguageGate.readingLanguage(of: trimmed,
+                                            declared: FeatureLanguage.queryLanguage(trimmed, speaking: speaking))
+    }
+
+    /// Whether `query` is searched by meaning or by words. The same gate the
+    /// engine applies before it embeds the query (`.searchSemantic`).
+    nonisolated static func mode(for query: String,
+                                 speaking: Locale = SpeechTranscriber.speakerLocale) -> Mode {
+        LanguageGate.supports(.searchSemantic, languageCode: searchLanguage(of: query, speaking: speaking))
+            ? .meaning : .words
+    }
+
+    /// The mode before anything is typed: what a query in the language the
+    /// person speaks gets.
+    nonisolated static func defaultMode(speaking: Locale = SpeechTranscriber.speakerLocale) -> Mode {
+        LanguageGate.supports(.searchSemantic, locale: speaking) ? .meaning : .words
     }
 
     /// Search by meaning. Returns [] when the best match is below the
@@ -118,6 +156,11 @@ final class SemanticSearchManager: ObservableObject {
         let language = FeatureLanguage.queryLanguage(trimmed, speaking: speaking)
         let results = index.search(trimmed, topK: topK, in: dateRange, language: language)
         guard let best = results.first, best.score >= Self.abstentionThreshold else { return [] }
-        return results.map { Hit(id: $0.entryId, score: $0.score) }
+        let queryLanguage = Self.searchLanguage(of: trimmed, speaking: speaking)
+        let semantic = LanguageGate.supports(.searchSemantic, languageCode: queryLanguage)
+        return results.map {
+            Hit(id: $0.entryId, score: $0.score,
+                byMeaning: semantic && index.language(ofEntry: $0.entryId) == queryLanguage)
+        }
     }
 }

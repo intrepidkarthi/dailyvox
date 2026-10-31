@@ -807,7 +807,11 @@ struct TimelineView: View {
             // previously bound to the Return key, which ejected people mid-type
             // into a second search screen — and then to nothing at all, once
             // the navigation bar that held its button stopped rendering.
-            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            // 1.14: only where the query would actually be searched by
+            // meaning (English). A word query in another language would get
+            // the same word search that just found nothing.
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               SemanticSearchManager.mode(for: searchText) == .meaning {
                 Button {
                     showSemanticSearch = true
                     HapticManager.shared.buttonTap()

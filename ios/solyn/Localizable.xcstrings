@@ -23832,6 +23832,41 @@
       },
       "comment" : "Settings > PDF export: shown when the journal is empty. About 30 characters."
     },
+    "No entries with these words" : {
+      "comment" : "Search: empty-state title when a word search (not meaning search) finds no entry containing the query's words. About 28 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Einträge mit diesen Wörtern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna entrada con estas palabras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune entrée avec ces mots"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna voce con queste parole"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum registro com essas palavras"
+          }
+        }
+      }
+    },
     "No final transcription result." : {
       "comment" : "Alert message on the Speak tab when the recognizer finished without any words. Under the title 'Recording Error'.",
       "localizations" : {
@@ -29526,6 +29561,76 @@
         }
       }
     },
+    "Search for a word or a name" : {
+      "comment" : "Search: placeholder in the search field when search matches words, not meaning (any language but English in this version). About 28 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach einem Wort oder Namen suchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busca una palabra o un nombre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherche un mot ou un nom"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca una parola o un nome"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busque uma palavra ou um nome"
+          }
+        }
+      }
+    },
+    "Search looks for the words you type. Try another word or a name. Searching by meaning works in English for now." : {
+      "comment" : "Search: empty-state text under 'No entries with these words'. Says search matches words, and that search by meaning is English-only in this version. About 110 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Suche findet die Wörter, die du eingibst. Versuch ein anderes Wort oder einen Namen. Die Suche nach Bedeutung gibt es vorerst nur auf Englisch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La búsqueda encuentra las palabras que escribes. Prueba con otra palabra o un nombre. Por ahora, la búsqueda por significado solo funciona en inglés."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La recherche trouve les mots que tu tapes. Essaie un autre mot ou un nom. Pour l'instant, la recherche par sens ne fonctionne qu'en anglais."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La ricerca trova le parole che scrivi. Prova un'altra parola o un nome. Per ora la ricerca per significato funziona solo in inglese."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A busca encontra as palavras que você digita. Tente outra palavra ou um nome. Por enquanto, a busca por sentido só funciona em inglês."
+          }
+        }
+      }
+    },
     "Search your entries" : {
       "comment" : "Journal tab: placeholder in the search field. About 22 characters.",
       "localizations" : {
@@ -29557,6 +29662,41 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Busque nos seus registros"
+          }
+        }
+      }
+    },
+    "Search your journal" : {
+      "comment" : "Search: navigation bar title when the query is searched by its words, not by meaning (any language but English in this version). About 20 characters.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagebuch durchsuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar en tu diario"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher dans ton journal"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca nel tuo diario"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar no seu diário"
           }
         }
       }
