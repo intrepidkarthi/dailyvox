@@ -50,7 +50,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 /**
  * Ask Your Twin — the Android read of iOS's TwinChatView, feature for feature.
@@ -97,6 +96,9 @@ fun AskScreen(
     // The aggregate is derived from the whole journal, so it is recomputed only
     // when the journal changes rather than on every keystroke.
     val facts = remember(entries) { askFacts(entries) }
+    // The app's own language (per-app language setting included), the last
+    // word on what language a question is in.
+    val appLanguage = androidx.compose.ui.platform.LocalConfiguration.current.locales[0].toLanguageTag()
     val bank = remember(facts) { TwinQuestion.available(facts) }
 
     var messages by remember { mutableStateOf(listOf<Msg>()) }
@@ -141,20 +143,22 @@ fun AskScreen(
         // out of an entry that happens to contain the word "house".
         // Searched as the Journal searches (B-9): each entry in its stored
         // language, Unicode tokens, quiet on languages word search cannot read.
-        val hits = Retrieval.retrieve(question, entries.map { it.toSearchEntry() })
+        // The question's language, decided first: it tells retrieval which
+        // function words to ignore ("wann", "habe", "ich" are not search
+        // terms), and picks the language of the answer's frame and abstention
+        // line (quotes stay in the language they were written in). The
+        // platform classifier when it is sure; a short question is in the
+        // language the person speaks, else the app's own language.
+        val language = withContext(Dispatchers.IO) {
+            com.dailyvox.app.system.TextLanguage.detect(context, question)
+        } ?: com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
+            ?: appLanguage
+        val hits = Retrieval.retrieve(question, entries.map { it.toSearchEntry() }, language = language)
             .mapNotNull { hit ->
                 entries.firstOrNull { it.id == hit.entryId }?.let { e ->
                     TwinChatEvidence(e.id, e.createdAt, e.text, hit.score)
                 }
             }
-        // The frame and the abstention line follow the question's language
-        // (quotes stay in the language they were written in). The platform
-        // classifier when it is sure; a short question is in the language the
-        // person speaks, else the phone's.
-        val language = withContext(Dispatchers.IO) {
-            com.dailyvox.app.system.TextLanguage.detect(context, question)
-        } ?: com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
-            ?: Locale.getDefault().toLanguageTag()
         val turn = RetrievalAnswerComposer.compose(question, hits, facts, language)
         seq += 1
         push(Msg(seq, turn.answer, isUser = false,
@@ -284,7 +288,7 @@ fun AskScreen(
         // The bank's questions and their template answers are English-only, so only English speakers get the row.
         val speaksEnglish = com.dailyvox.twin.LanguageGate.baseCode(
             com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
-                ?: Locale.getDefault().toLanguageTag()
+                ?: appLanguage
         ) == "en"
         if (speaksEnglish && remaining.isNotEmpty()) {
             FlowRow(
