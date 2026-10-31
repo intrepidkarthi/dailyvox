@@ -17,7 +17,7 @@ because the app is quiet where it cannot read a language yet:
   suggested mood, reflections, traits,
   mood trends, themes                  no              no
   search by meaning                    no (words)      no (words)
-  Ask your Twin                        yes             not claimed
+  Ask your Twin                        yes             yes
   names (people)                       not claimed: iOS reads them in es/fr/de/it
                                        but Android cannot in German, and this page
                                        speaks for both apps
@@ -563,9 +563,9 @@ C["pt-br"] = dict(
         ("Não dá para falar agora?",
          ["Toque em \"Não posso falar agora\" e escreva. O registro vai para o diário e para o seu céu como um falado."],
          None),
-        ("Seu passado de volta",
-         ["\"Uma semana atrás você disse…\", este dia em anos anteriores e um resumo da semana. Uma pergunta nova todo dia, e uma sequência que um dia de descanso por semana não quebra."],
-         None),
+        ("Pergunte ao seu Twin",
+         ["Pergunte com as suas palavras. As respostas vêm dos seus registros e citam de onde vieram. Se você nunca falou sobre algo, o DailyVox diz isso em vez de inventar."],
+         "Fora do inglês, a busca por trás é mais simples, e as respostas sobre humor e personalidade, por enquanto, só existem em inglês."),
         ("Compartilhe seu céu, nunca suas palavras",
          ["Nas noites 7, 21 e 42, o DailyVox oferece uma única vez uma imagem da sua constelação para os Stories. Ela mostra só quantas noites você guardou, nunca suas palavras, nomes ou humores, e só vai para onde você mandar."],
          None),
@@ -581,10 +581,12 @@ C["pt-br"] = dict(
            "\"Uma semana atrás você disse…\", este dia em anos anteriores e um resumo da semana",
            "Marcar o seu humor e destacar registros com estrela",
            "Busca por palavras no diário inteiro",
+           "Pergunte ao seu Twin: encontra e cita seus registros",
            "Exportação e bloqueio do app"],
     w_later_h="Por enquanto, só em inglês",
     w_later=["Humor sugerido e uma breve reflexão em cada registro",
              "Tendências de humor, temas e leituras de personalidade",
+             "Respostas do Twin sobre humor e personalidade",
              "Busca por significado"],
     quiet="A leitura do humor e as percepções do Twin são mais completas em inglês e estão sendo ampliadas. Onde o DailyVox ainda não lê bem o seu idioma, ele fica quieto em vez de chutar.",
     faq_eyebrow="Perguntas frequentes", faq_h2="Em poucas palavras",
