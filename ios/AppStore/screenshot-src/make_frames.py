@@ -306,15 +306,13 @@ SIZES = {
 #   · 00 leads: the language is the news for these users. It sits over the
 #     journal in that language, not the Language-you-speak picker, which lists
 #     every language Apple can transcribe and would claim far more than five.
-#   · 04 is captioned for WORD search (meaning search is English-only) but
-#     left out for now: the search screen itself is still titled "Search by
-#     meaning" and shows match percentages in every language. It comes back
-#     when that screen says what it does.
-#   · 03 Ask your Twin is left out everywhere for now. The engine's answer
-#     frame is English ("From your journal, the closest I have to that is…",
-#     and the abstention line), so a German question gets an English answer
-#     around German quotes. It comes back once those lines are localized, and
-#     never for pt-BR, which the app does not name as an Ask language (#127).
+#   · 03 Ask your Twin answers in the question's language (AskPhrases): the
+#     frame around the quotes, the dates and the abstention line. Each seed's
+#     cannedAsk is chosen so the answer quotes a seeded entry, not the
+#     abstention. pt-BR is in: LanguageGate lists .askTwin for "pt" and
+#     AskPhrases has a Portuguese frame.
+#   · 04 is WORD search (meaning search is English only), captioned as such.
+#     The screen says so too since 1.14: "Search your journal", no "% match".
 #   · 10 drops: 00 already shows the journal.
 LANGUAGE_FRAME = dict(name="00_your_language", shot="journal.png",
                       bg="#2A2357", fg="#F1EDE2", accent="#F2C14E",
@@ -322,6 +320,7 @@ LANGUAGE_FRAME = dict(name="00_your_language", shot="journal.png",
                                    pos=(int(232 * 3), int(560 * 3))))
 LOCALE_FRAMES = {
     "default": ["00_your_language", "01_a_sky_made_of_you", "02_42_seconds",
+                "03_answers_with_receipts", "04_describe_find",
                 "05_streak", "06_private_by_design",
                 "08_cant_talk_type_it", "09_share_a_star", "07_first_star"],
 }

@@ -76,7 +76,11 @@ shoot () {
   xcrun simctl status_bar "$DEV" override \
     --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
 
-  xcrun simctl launch "$DEV" "$BUNDLE" -ScreenshotMode ${LOCALE_ARGS[@]+"${LOCALE_ARGS[@]}"} "$@" >/dev/null
+  # The Night theme, pinned. The default theme (Sunset) follows the real
+  # clock, so a set shot in the morning came out in Day colours next to a set
+  # shot the evening before in Night ones. THEME=Day re-shoots in daylight.
+  xcrun simctl launch "$DEV" "$BUNDLE" -ScreenshotMode -selectedTheme "${THEME:-Night}" \
+    ${LOCALE_ARGS[@]+"${LOCALE_ARGS[@]}"} "$@" >/dev/null
   sleep "${WAIT:-5}"                         # the launch seeds and folds
   xcrun simctl io "$DEV" screenshot --type=png "$RAW/$name.png" >/dev/null 2>&1
   echo "  captured $name"
