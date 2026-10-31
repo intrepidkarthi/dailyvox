@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
 import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -102,30 +104,29 @@ private fun LedgerBeat(onNext: () -> Unit) {
             .padding(horizontal = 26.dp, vertical = 28.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        MonoLabel("01 / 04 · permission")
+        MonoLabel(stringResource(R.string.onboarding_step_permission))
         Spacer(Modifier.height(18.dp))
         Text(
-            "Nothing you say leaves this phone.",
+            stringResource(R.string.onboarding_ledger_title),
             style = MaterialTheme.typography.displayMedium,
             color = MaterialTheme.colorScheme.onBackground,
         )
         Spacer(Modifier.height(14.dp))
         Text(
-            "Transcription runs on your device. No account, no server, no analytics SDK. " +
-                "Prove it: switch on airplane mode and record your first entry.",
+            stringResource(R.string.onboarding_ledger_body),
             fontSize = 15.sp, lineHeight = 24.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.widthIn(max = 520.dp),
         )
 
         Spacer(Modifier.height(28.dp))
-        LedgerRow("Microphone", "required", MaterialTheme.colorScheme.secondary)
+        LedgerRow(stringResource(R.string.onboarding_ledger_mic), stringResource(R.string.onboarding_ledger_mic_state), MaterialTheme.colorScheme.secondary)
         Spacer(Modifier.height(8.dp))
-        LedgerRow("Speech recognition", "on device", MaterialTheme.colorScheme.tertiary)
+        LedgerRow(stringResource(R.string.onboarding_ledger_speech), stringResource(R.string.onboarding_ledger_speech_state), MaterialTheme.colorScheme.tertiary)
         Spacer(Modifier.height(8.dp))
-        LedgerRow("Internet", "not requested", MaterialTheme.colorScheme.tertiary)
+        LedgerRow(stringResource(R.string.onboarding_ledger_internet), stringResource(R.string.onboarding_ledger_internet_state), MaterialTheme.colorScheme.tertiary)
         Spacer(Modifier.height(8.dp))
-        LedgerRow("Sent to DailyVox", "nothing, ever", MaterialTheme.colorScheme.tertiary)
+        LedgerRow(stringResource(R.string.onboarding_ledger_sent), stringResource(R.string.onboarding_ledger_sent_state), MaterialTheme.colorScheme.tertiary)
 
         Spacer(Modifier.height(18.dp))
         // The proof card (B1). Navy on cream — the one dark object on the
@@ -155,7 +156,7 @@ private fun LedgerBeat(onNext: () -> Unit) {
             Spacer(Modifier.width(13.dp))
             Column {
                 Text(
-                    "Try it in airplane mode",
+                    stringResource(R.string.onboarding_airplane_title),
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
                     color = NightText,
                 )
@@ -164,7 +165,7 @@ private fun LedgerBeat(onNext: () -> Unit) {
                     // Not "before your first entry", as iOS says: an Android
                     // phone may still need its offline speech pack, and that
                     // download is the one step that needs a connection.
-                    "Turn the radios off and speak. The transcript, the mood, the star — all of it still happens, on the phone. If your phone needs its offline speech pack first, DailyVox will offer it.",
+                    stringResource(R.string.onboarding_airplane_body),
                     fontSize = 13.sp, lineHeight = 19.sp,
                     color = NightText.copy(alpha = 0.72f),
                 )
@@ -176,7 +177,7 @@ private fun LedgerBeat(onNext: () -> Unit) {
         // which showed nothing: it skipped the microphone request and landed on
         // a recording screen with no way to grant it. The ask now lives on the
         // invite beat, where iOS puts it.
-        FilledAction("Continue", onNext)
+        FilledAction(stringResource(R.string.onboarding_continue), onNext)
     }
 }
 
@@ -196,7 +197,7 @@ private fun InviteBeat(onNext: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        MonoLabel("02 / 04 · your voice")
+        MonoLabel(stringResource(R.string.onboarding_step_voice))
         Spacer(Modifier.height(26.dp))
         // Gold rings and a drawn waveform: iOS's invite mark, geometric per §8.9.
         Canvas(Modifier.size(140.dp)) {
@@ -214,7 +215,7 @@ private fun InviteBeat(onNext: () -> Unit) {
         }
         Spacer(Modifier.height(30.dp))
         Text(
-            "Your sky starts\nwith your voice",
+            stringResource(R.string.onboarding_invite_title),
             style = MaterialTheme.typography.displayMedium,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
@@ -222,7 +223,7 @@ private fun InviteBeat(onNext: () -> Unit) {
         )
         Spacer(Modifier.height(14.dp))
         Text(
-            "No forms, no sign-up. Just talk about your day, and watch your voice become the first star in a sky only you can see.",
+            stringResource(R.string.onboarding_invite_body),
             fontSize = 16.sp, lineHeight = 25.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -231,7 +232,7 @@ private fun InviteBeat(onNext: () -> Unit) {
         Spacer(Modifier.weight(1.4f))
         // The microphone is asked for here, on the calm screen, so the system
         // dialog never interrupts the recording moment itself (as on iOS).
-        FilledAction("I'm ready") {
+        FilledAction(stringResource(R.string.onboarding_ready)) {
             if (mic.granted || mic.permanentlyDenied) onNext() else mic.request()
         }
     }
@@ -314,13 +315,13 @@ private fun SpeakBeat(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MonoLabel("03 / 04 · your first star")
+        MonoLabel(stringResource(R.string.onboarding_step_first_star))
         Spacer(Modifier.height(18.dp))
         Text(
             when (phase) {
-                Phase.BORN -> "A star is born."
-                Phase.PROCESSING -> "Finding your words."
-                else -> "How was your day,\nreally?"
+                Phase.BORN -> stringResource(R.string.onboarding_speak_title_born)
+                Phase.PROCESSING -> stringResource(R.string.onboarding_speak_title_processing)
+                else -> stringResource(R.string.onboarding_speak_title)
             },
             style = MaterialTheme.typography.displayMedium,
             color = MaterialTheme.colorScheme.onBackground,
@@ -329,10 +330,10 @@ private fun SpeakBeat(
         Spacer(Modifier.height(12.dp))
         if (!typing) Text(
             when (phase) {
-                Phase.IDLE -> "Speak, don't type. Forty-two seconds is plenty — and it stays on this phone."
-                Phase.RECORDING -> "Listening. Take as long as you like."
-                Phase.PROCESSING -> "On-device. Nothing left your phone."
-                Phase.BORN -> "Your voice, now a light in your sky."
+                Phase.IDLE -> stringResource(R.string.onboarding_speak_body_idle)
+                Phase.RECORDING -> stringResource(R.string.onboarding_speak_body_recording)
+                Phase.PROCESSING -> stringResource(R.string.onboarding_speak_body_processing)
+                Phase.BORN -> stringResource(R.string.onboarding_speak_body_born)
             },
             fontSize = 15.sp, lineHeight = 23.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -353,24 +354,24 @@ private fun SpeakBeat(
                     value = typed,
                     keyboardOptions = com.dailyvox.app.ui.components.PrivateKeyboard,
                     onValueChange = { typed = it },
-                    placeholder = { Text("How was your day, really?") },
+                    placeholder = { Text(stringResource(R.string.onboarding_typed_placeholder)) },
                     minLines = 3,
                     shape = RoundedCornerShape(18.dp),
                     modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp),
                 )
                 Spacer(Modifier.height(8.dp))
-                MonoLabel("stored only on this phone")
+                MonoLabel(stringResource(R.string.onboarding_typed_stored))
                 Spacer(Modifier.height(16.dp))
-                FilledAction("Save my first star") {
+                FilledAction(stringResource(R.string.onboarding_typed_save)) {
                     if (typed.isNotBlank()) onCaptured(typed.trim(), 0, null)
                 }
                 Spacer(Modifier.height(8.dp))
-                QuietAction("Back to speaking") { typing = false }
+                QuietAction(stringResource(R.string.onboarding_typed_back)) { typing = false }
             }
             // Declined on the invite beat. Offer it again, rather than a screen
             // whose only way forward is to give up on the first entry.
             !granted -> {
-                FilledAction(if (mic.permanentlyDenied) "Allow the microphone in Settings" else "Allow the microphone") {
+                FilledAction(if (mic.permanentlyDenied) stringResource(R.string.onboarding_mic_settings) else stringResource(R.string.onboarding_mic_allow)) {
                     if (mic.permanentlyDenied) context.startActivity(
                         android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                             android.net.Uri.fromParts("package", context.packageName, null))
@@ -378,28 +379,28 @@ private fun SpeakBeat(
                     ) else mic.request()
                 }
                 Spacer(Modifier.height(8.dp))
-                QuietAction("I can't talk right now") { typing = true }
-                QuietAction("Skip for now", onSkip)
+                QuietAction(stringResource(R.string.onboarding_cant_talk)) { typing = true }
+                QuietAction(stringResource(R.string.onboarding_skip), onSkip)
             }
             phase == Phase.IDLE -> {
-                FilledAction("Start speaking") { recorder.start(); capture.start() }
+                FilledAction(stringResource(R.string.onboarding_start_speaking)) { recorder.start(); capture.start() }
                 Spacer(Modifier.height(8.dp))
-                QuietAction("I can't talk right now") { typing = true }
-                QuietAction("Skip for now", onSkip)
+                QuietAction(stringResource(R.string.onboarding_cant_talk)) { typing = true }
+                QuietAction(stringResource(R.string.onboarding_skip), onSkip)
             }
             phase == Phase.RECORDING -> {
-                FilledAction("%d:%02d  ·  Done".format(elapsed / 60, elapsed % 60)) { capture.stop() }
+                FilledAction(stringResource(R.string.onboarding_done_timer, elapsed / 60, elapsed % 60)) { capture.stop() }
                 Spacer(Modifier.height(12.dp))
                 // Even mid-recording. If the recogniser dies without calling
                 // onError — and OEM implementations do — this is the only exit.
-                QuietAction("Skip for now") { capture.cancel(); recorder.discard(); onSkip() }
+                QuietAction(stringResource(R.string.onboarding_skip)) { capture.cancel(); recorder.discard(); onSkip() }
             }
             else -> Spacer(Modifier.height(56.dp))
         }
 
         captureError?.let { err ->
             Spacer(Modifier.height(22.dp))
-            SpeechErrorCard(err, capture, "Continue anyway",
+            SpeechErrorCard(err, capture, stringResource(R.string.onboarding_continue_anyway),
                 onSecondary = { capture.clearError(); onSkip() },
                 modifier = Modifier.widthIn(max = 420.dp))
         }
@@ -499,7 +500,7 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.weight(1f))
-        MonoLabel("04 / 04 · yours")
+        MonoLabel(stringResource(R.string.onboarding_step_yours))
         Spacer(Modifier.height(22.dp))
         // The star, landed: a gold point with a white core in a soft halo.
         Canvas(Modifier.size(110.dp).graphicsLayer { scaleX = 0.6f + 0.4f * appear; scaleY = scaleX; alpha = appear }) {
@@ -510,7 +511,7 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
         }
         Spacer(Modifier.height(24.dp))
         Text(
-            if (transcript.isBlank()) "Your sky is ready." else "That star is yours.",
+            if (transcript.isBlank()) stringResource(R.string.onboarding_claim_title_empty) else stringResource(R.string.onboarding_claim_title),
             style = MaterialTheme.typography.displayMedium,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
@@ -518,7 +519,7 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
         Spacer(Modifier.height(16.dp))
         if (transcript.isNotBlank()) {
             Text(
-                "\u201C$transcript\u201D",
+                stringResource(R.string.onboarding_claim_quote, transcript),
                 fontSize = 16.sp, lineHeight = 25.sp,
                 fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -557,8 +558,8 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
             }
         }
         Text(
-            if (transcript.isBlank()) "Speak whenever you are ready. Nothing is required of you tonight."
-            else "It lives on your phone, nowhere else.\nSpeak again tomorrow, and your sky grows.",
+            if (transcript.isBlank()) stringResource(R.string.onboarding_claim_body_empty)
+            else stringResource(R.string.onboarding_claim_body),
             fontSize = 15.sp, lineHeight = 23.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -591,14 +592,14 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
             }
             Spacer(Modifier.width(14.dp))
             Column {
-                Text("Remind me each evening", fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
+                Text(stringResource(R.string.onboarding_remind_title), fontSize = 15.sp, fontWeight = FontWeight.SemiBold,
                      color = MaterialTheme.colorScheme.onSurface)
-                Text("One nudge at 9 pm. Change it any time in Settings.", fontSize = 13.sp,
+                Text(stringResource(R.string.onboarding_remind_body), fontSize = 13.sp,
                      color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Spacer(Modifier.height(14.dp))
-        FilledAction("Enter my sky") {
+        FilledAction(stringResource(R.string.onboarding_enter)) {
             val needsAsk = remind && android.os.Build.VERSION.SDK_INT >= 33 &&
                 androidx.core.content.ContextCompat.checkSelfPermission(
                     context, android.Manifest.permission.POST_NOTIFICATIONS

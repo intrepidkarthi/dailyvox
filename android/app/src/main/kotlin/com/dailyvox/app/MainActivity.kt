@@ -211,7 +211,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     val saveMd = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/markdown")
-    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.markdown(vm.allEntries())) } }
+    ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.markdown(context.resources, vm.allEntries())) } }
     val saveCsv = rememberLauncherForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.CreateDocument("text/csv")
     ) { uri -> if (uri != null) scope.launch { writeText(uri, com.dailyvox.app.system.Exporters.csv(vm.allEntries())) } }
@@ -224,6 +224,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val query by vm.query.collectAsStateWithLifecycle()
     val resolution by vm.resolution.collectAsStateWithLifecycle()
     val reflection by vm.reflection.collectAsStateWithLifecycle()
+    val shareOffer by vm.shareOffer.collectAsStateWithLifecycle()
 
     // The past, brought back. Read from the whole table, keyed on the local
     // date so the cards move on at midnight rather than at the next write.
@@ -231,7 +232,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     val zone = java.time.ZoneId.systemDefault()
     val today = java.time.LocalDate.now(zone)
     val firstDay = com.dailyvox.app.system.Resurface.firstDayOfWeek(
-        context.resources.configuration.locales[0])
+        // LocalConfiguration, not context.resources: it recomposes when the
+        // app's language changes (lint LocalContextConfigurationRead).
+        androidx.compose.ui.platform.LocalConfiguration.current.locales[0])
     val weekAgo = remember(all, today) {
         com.dailyvox.app.system.Resurface.weekAgo(all, System.currentTimeMillis(), zone)
     }
@@ -279,7 +282,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                 // a sky that already holds something.
                 // Audio with no words is still the user's first entry: the
                 // recogniser failed, they did not. It stays, untranscribed.
-                if (text.isNotBlank() || path != null) vm.add(text, secs, path)
+                if (text.isNotBlank() || path != null) vm.add(text, secs, path, onboarding = true)
                 // The claim beat asked, and already requested the notification
                 // permission if the answer was yes -- so the bootstrap below has
                 // nothing left to ask. A no (or a denied dialog) turns it off.
@@ -362,9 +365,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         // protects is decoration.
         pendingBackup?.let { uri ->
             PassphraseDialog(
-                title = "Choose a passphrase",
-                body = "This backup can be restored on any phone, including an iPhone, by anyone who knows this passphrase. There is no way to recover it — write it down somewhere safe.",
-                confirmLabel = "Back up",
+                title = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_title),
+                body = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_body),
+                confirmLabel = androidx.compose.ui.res.stringResource(R.string.backup_passphrase_confirm),
                 requireLength = 8,
                 onConfirm = { pass -> vm.writeExport(context, uri, pass); pendingBackup = null },
                 onDismiss = { pendingBackup = null },
@@ -373,9 +376,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
 
         pendingRestore?.let { uri ->
             PassphraseDialog(
-                title = "Passphrase",
-                body = "Enter the passphrase this backup was made with.",
-                confirmLabel = "Restore",
+                title = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_title),
+                body = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_body),
+                confirmLabel = androidx.compose.ui.res.stringResource(R.string.restore_passphrase_confirm),
                 requireLength = 1,
                 onConfirm = { pass ->
                     vm.importFrom(context, uri, passphrase = pass)
@@ -467,6 +470,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                                     com.dailyvox.app.system.DailyQuestion.isPilot(context))))
                         }
                     },
+                    onTranscribed = { text, language ->
+                        // Transcribed later from the saved audio: the words AND
+                        // the language the recogniser heard them in (B-2).
+                        vm.editText(detail.id, text, language)
+                        openEntry = detail.copy(text = text, language = language)
+                    },
                     onAsk = { question ->
                         // Close the entry and land on Ask with the question
                         // already sent — B4's action is a destination, not a
@@ -551,6 +560,12 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onSaved = { text, secs, path -> vm.add(text, secs, path) },
                         reflection = reflection,
                         onDismissReflection = vm::dismissReflection,
+                        shareOffer = shareOffer,
+                        onShareOffer = {
+                            vm.dismissShareOffer()
+                            shareCard = com.dailyvox.app.system.Shareables.Card.STORY
+                        },
+                        onDismissShareOffer = vm::dismissShareOffer,
                         onReflectionMood = vm::setReflectionMood,
                         onRecordingChanged = { isRecording = it },
                         onInsights = { overlay = Overlay.INSIGHTS },
@@ -618,7 +633,7 @@ private fun PassphraseDialog(
                     value = value,
                     onValueChange = { value = it },
                     singleLine = true,
-                    label = { androidx.compose.material3.Text("Passphrase") },
+                    label = { androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.passphrase_field)) },
                     visualTransformation = if (visible)
                         androidx.compose.ui.text.input.VisualTransformation.None
                     else
@@ -627,7 +642,7 @@ private fun PassphraseDialog(
                         // Typing a long passphrase blind, twice, is how people end
                         // up choosing a short one.
                         androidx.compose.material3.TextButton(onClick = { visible = !visible }) {
-                            androidx.compose.material3.Text(if (visible) "Hide" else "Show")
+                            androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(if (visible) R.string.passphrase_hide else R.string.passphrase_show))
                         }
                     },
                 )
@@ -641,7 +656,7 @@ private fun PassphraseDialog(
         },
         dismissButton = {
             androidx.compose.material3.TextButton(onClick = onDismiss) {
-                androidx.compose.material3.Text("Cancel")
+                androidx.compose.material3.Text(androidx.compose.ui.res.stringResource(R.string.passphrase_cancel))
             }
         },
     )
@@ -653,13 +668,13 @@ private fun LockScreen(onUnlock: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
         Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
             androidx.compose.material3.Text(
-                "DailyVox is locked",
+                androidx.compose.ui.res.stringResource(R.string.lock_title),
                 style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
                 color = androidx.compose.material3.MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(16.dp))
             androidx.compose.material3.Text(
-                "Unlock",
+                androidx.compose.ui.res.stringResource(R.string.lock_unlock),
                 modifier = Modifier
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
                     .background(androidx.compose.material3.MaterialTheme.colorScheme.primary)

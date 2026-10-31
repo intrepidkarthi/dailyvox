@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -67,6 +66,7 @@ fun RecapCard(recap: Resurface.Recap, goldText: Color, onOpen: (Entry) -> Unit) 
     val label = stringResource(R.string.recap_label)
     val range = stringResource(R.string.recap_range, recap.from.format(fmt), recap.to.format(fmt))
     val how = stringResource(R.string.recap_how_counted)
+    val description = stringResource(R.string.recap_description, label, range, counts)
 
     Column(
         Modifier
@@ -77,7 +77,7 @@ fun RecapCard(recap: Resurface.Recap, goldText: Color, onOpen: (Entry) -> Unit) 
             .padding(horizontal = 18.dp, vertical = 16.dp),
     ) {
         Column(Modifier.semantics(mergeDescendants = true) {
-            contentDescription = listOfNotNull("$label, $range.", "$counts.", name).joinToString(" ")
+            contentDescription = listOfNotNull(description, name).joinToString(" ")
         }) {
             Text("✦ $label", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = goldText)
             Spacer(Modifier.height(4.dp))
@@ -173,7 +173,7 @@ private fun Quote(excerpt: String) {
 
 @Composable
 private fun entryDate(entry: Entry): String {
-    val locale = LocalContext.current.resources.configuration.locales[0]
+    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
     return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM, locale)
         .format(java.util.Date(entry.createdAt))
 }

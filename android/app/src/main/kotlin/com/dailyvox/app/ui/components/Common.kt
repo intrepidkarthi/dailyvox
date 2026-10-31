@@ -89,7 +89,8 @@ fun valenceColor(v: Float?): Color = when {
 @Composable
 fun MonoLabel(text: String, modifier: Modifier = Modifier) {
     Text(
-        text.uppercase(),
+        // The reader's capitals, not Locale.ROOT's (B-13). Same for English.
+        com.dailyvox.app.system.LocaleFormat.upper(text),
         fontFamily = DmMono,
         fontSize = 10.5.sp,
         letterSpacing = 1.2.sp,
@@ -117,7 +118,7 @@ fun ScreenTitle(
             // real one is worse than no chrome at all.
             if (onBack != null) {
                 Text(
-                    "\u2039", fontSize = 30.sp,
+                    backGlyph(), fontSize = 30.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(Directional.GlyphStyle),
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .clip(CircleShape)

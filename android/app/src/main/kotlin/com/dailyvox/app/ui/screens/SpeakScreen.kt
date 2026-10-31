@@ -81,6 +81,10 @@ fun SpeakScreen(
     onDismissReflection: () -> Unit = {},
     /** A mood picked on the reflection card, or null when it was cleared. */
     onReflectionMood: (String?) -> Unit = {},
+    /** 7, 21 or 42 when the one-time Story offer is up; null hides it. */
+    shareOffer: Int? = null,
+    onShareOffer: () -> Unit = {},
+    onDismissShareOffer: () -> Unit = {},
     onRecordingChanged: (Boolean) -> Unit = {},
     onInsights: () -> Unit = {},
     onSettings: () -> Unit = {},
@@ -134,8 +138,12 @@ fun SpeakScreen(
     // reflects what is actually on screen.
     val caughtEntity = remember(partial) {
         if (partial.isBlank()) null
+        // Read in the language being spoken (B-5): quiet for German, where
+        // every noun is capitalised, and for a caseless script.
         else com.dailyvox.twin.NameDetector
-            .detect(partial, corpus = listOf(partial))
+            .detect(partial, corpus = listOf(partial),
+                    language = com.dailyvox.app.system.ReadingLanguage.of(
+                        SpeechCapture.lastSessionLanguage(context), partial))
             .lastOrNull()
     }
 
@@ -316,18 +324,18 @@ fun SpeakScreen(
             Column {
                 val cal = java.util.Calendar.getInstance()
                 Text(
-                    when (cal.get(java.util.Calendar.HOUR_OF_DAY)) {
-                        in 0..4 -> "Still up"
-                        in 5..11 -> "Good morning"
-                        in 12..16 -> "Good afternoon"
-                        else -> "Good evening"
-                    },
+                    stringResource(when (cal.get(java.util.Calendar.HOUR_OF_DAY)) {
+                        in 0..4 -> R.string.speak_greeting_night
+                        in 5..11 -> R.string.speak_greeting_morning
+                        in 12..16 -> R.string.speak_greeting_afternoon
+                        else -> R.string.speak_greeting_evening
+                    }),
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault())
+                    com.dailyvox.app.system.LocaleFormat.dateFormat("EEEE, MMMM d", "EEEEMMMMd")
                         .format(java.util.Date()),
                     fontSize = 12.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -352,7 +360,7 @@ fun SpeakScreen(
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "\u2726 $yearCount this year", fontSize = 11.sp,
+                        androidx.compose.ui.res.pluralStringResource(R.plurals.speak_year_count, yearCount, yearCount), fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold, color = goldText,
                     )
                 }
@@ -378,8 +386,8 @@ fun SpeakScreen(
         val anotherLabel = stringResource(R.string.daily_question_another_action)
         Text(
             when (state) {
-                SpeechCapture.State.RECORDING -> "Listening."
-                SpeechCapture.State.PROCESSING -> "Filing it."
+                SpeechCapture.State.RECORDING -> stringResource(R.string.speak_state_listening)
+                SpeechCapture.State.PROCESSING -> stringResource(R.string.speak_state_filing)
                 // The signature question keeps the break it has always had.
                 else -> if (question == DailyQuestion.Question.Everyday(0))
                     asked.replaceFirst(", ", ",\n") else asked
@@ -457,20 +465,20 @@ fun SpeakScreen(
                     // Only from IDLE. A tap during PROCESSING used to reach here:
                     // capture.start() returned early, recorder.start() did not, and
                     // a second MediaRecorder opened over the entry being filed.
-                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
+                    else if (state == SpeechCapture.State.IDLE) { onDismissReflection(); onDismissShareOffer(); capture.clearError(); haptics.recordStart(); elapsed = 0; recorder.start(); capture.start() }
                 },
             )
 
             Spacer(Modifier.height(22.dp))
             Text(
                 if (state == SpeechCapture.State.RECORDING) "%d:%02d".format(elapsed / 60, elapsed % 60)
-                else if (!granted) "Allow the microphone to begin" else "Tap to record \u00B7 42 seconds",
+                else stringResource(if (!granted) R.string.speak_allow_mic else R.string.speak_tap_to_record),
                 fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                if (partial.isNotBlank()) partial else "Also on your home screen and Quick Settings",
+                if (partial.isNotBlank()) partial else stringResource(R.string.speak_also_on_home),
                 fontSize = 13.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.widthIn(max = 420.dp),
@@ -481,17 +489,18 @@ fun SpeakScreen(
             // has the strongest reason to want it. Not during PROCESSING, when
             // the entry being filed is still the screen's business.
             if (state == SpeechCapture.State.IDLE) {
+                val typeInsteadDescription = stringResource(R.string.speak_cant_talk_description)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "I can't talk right now",
+                    stringResource(R.string.speak_cant_talk),
                     fontSize = 14.sp, fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .clickable { onDismissReflection(); capture.clearError(); typing = true }
+                        .clickable { onDismissReflection(); onDismissShareOffer(); capture.clearError(); typing = true }
                         .semantics {
                             role = Role.Button
-                            contentDescription = "Type an entry instead"
+                            contentDescription = typeInsteadDescription
                         }
                         .defaultMinSize(minHeight = 48.dp)
                         .padding(horizontal = 14.dp)
@@ -504,7 +513,7 @@ fun SpeakScreen(
         // returning to "Tap to start" taught people the button was broken.
         captureError?.let { err ->
             Spacer(Modifier.height(20.dp))
-            SpeechErrorCard(err, capture, "Dismiss", onSecondary = { capture.clearError() })
+            SpeechErrorCard(err, capture, stringResource(R.string.speak_error_dismiss), onSecondary = { capture.clearError() })
         }
 
         // Something back for what was just given. Only at rest: while the next
@@ -513,6 +522,14 @@ fun SpeakScreen(
             Spacer(Modifier.height(if (tall) 28.dp else 18.dp))
             ReflectionCard(reflection, onDismiss = onDismissReflection,
                            onMood = onReflectionMood, goldText = goldText)
+        }
+
+        // The one-time Story offer, after the save that made night 7, 21 or 42.
+        // Below the reflection, so the entry is answered before anything asks.
+        if (shareOffer != null && state == SpeechCapture.State.IDLE && !typing) {
+            Spacer(Modifier.height(if (tall) 16.dp else 12.dp))
+            ShareOfferCard(shareOffer, onShare = onShareOffer,
+                           onNotNow = onDismissShareOffer, goldText = goldText)
         }
 
         // Today's entry, once it exists (B2). The design surfaces the star the
@@ -527,7 +544,7 @@ fun SpeakScreen(
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
-                    MonoLabel("today ✦ · ${java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date(e.createdAt))}")
+                    MonoLabel(stringResource(R.string.speak_today_label, com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(java.util.Date(e.createdAt))))
                     // It looked like a play button and was a label: no
                     // clickable, no player, nothing behind the triangle.
                     //
@@ -538,6 +555,8 @@ fun SpeakScreen(
                     //
                     // Only when there is audio: a typed entry showed "▶ 0:00",
                     // a play button with nothing behind it.
+                    val playDescription = stringResource(
+                        if (playingToday) R.string.speak_today_stop_description else R.string.speak_today_play_description)
                     if (!e.audioPath.isNullOrBlank()) Box(
                         Modifier
                             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
@@ -549,7 +568,7 @@ fun SpeakScreen(
                                     if (path.isNullOrBlank()) {
                                         android.widget.Toast.makeText(
                                             context,
-                                            "This entry has no audio saved.",
+                                            context.getString(R.string.speak_today_no_audio),
                                             android.widget.Toast.LENGTH_SHORT,
                                         ).show()
                                     } else {
@@ -559,9 +578,7 @@ fun SpeakScreen(
                                 }
                             }
                             .semantics {
-                                contentDescription =
-                                    if (playingToday) "Stop playing today's entry"
-                                    else "Play today's entry"
+                                contentDescription = playDescription
                             },
                         contentAlignment = Alignment.Center,
                     ) {
@@ -634,10 +651,10 @@ fun SpeakScreen(
             Box(Modifier.size(7.dp).clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.tertiary))
             Spacer(Modifier.width(10.dp))
-            Text("Works in airplane mode. Nothing leaves this phone.",
+            Text(stringResource(R.string.speak_privacy_line),
                  fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface,
                  modifier = Modifier.weight(1f))
-            MonoLabel("0 calls")
+            MonoLabel(stringResource(R.string.speak_privacy_calls))
         }
         Spacer(Modifier.height(if (tall) 132.dp else 112.dp))   // clears the floating nav pill
     }
@@ -704,8 +721,10 @@ private fun ReflectionCard(
     val moodLine = firstSuggestion?.let {
         stringResource(R.string.reflection_mood_suggested_line, moodWord(it))
     }
-    val spoken = (listOf("$label. $meta.") + lines +
-        listOfNotNull(tomorrowQuote?.let { "$tomorrowLabel: $it" }, moodLine)).joinToString(" ")
+    val spokenHeader = stringResource(R.string.reflection_spoken_header, label, meta)
+    val spokenTomorrow = tomorrowQuote?.let { stringResource(R.string.reflection_spoken_tomorrow, tomorrowLabel, it) }
+    val spoken = (listOf(spokenHeader) + lines +
+        listOfNotNull(spokenTomorrow, moodLine)).joinToString(" ")
     val doneDescription = stringResource(R.string.reflection_done_description)
     // Shown once there was a mood to show, and kept after a clear so the user
     // can still pick one; a section that vanished on "Clear" would take the
@@ -780,6 +799,87 @@ private fun ReflectionCard(
                 .padding(horizontal = 14.dp)
                 .wrapContentHeight(Alignment.CenterVertically),
         )
+    }
+}
+
+/**
+ * "Seven nights. Your sky is taking shape — share it?" Calm, flat, once.
+ *
+ * Share opens the Story preview (so the person sees exactly what would leave)
+ * and the system share sheet goes from there. Not now closes it for good: the
+ * offer was recorded as shown when it appeared, and nothing ever re-asks.
+ */
+@Composable
+private fun ShareOfferCard(
+    night: Int,
+    onShare: () -> Unit,
+    onNotNow: () -> Unit,
+    goldText: Color,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val title = stringResource(
+        when (night) {
+            7 -> R.string.share_offer_7
+            21 -> R.string.share_offer_21
+            else -> R.string.share_offer_42
+        }
+    )
+    val note = stringResource(R.string.share_offer_note)
+    val notNowDescription = stringResource(R.string.share_offer_not_now_description)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .widthIn(max = 460.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(scheme.surface)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().semantics(mergeDescendants = true) {
+                liveRegion = LiveRegionMode.Polite
+            },
+        ) {
+            Text(
+                "✦ $title",
+                fontSize = 15.sp, lineHeight = 21.sp, fontWeight = FontWeight.Bold,
+                color = scheme.onSurface,
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(note, fontSize = 12.5.sp, lineHeight = 18.sp, color = scheme.onSurfaceVariant)
+        }
+        Spacer(Modifier.height(10.dp))
+        Row(
+            Modifier.align(Alignment.End),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                stringResource(R.string.share_offer_not_now),
+                fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = scheme.primary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable(onClick = onNotNow)
+                    .semantics {
+                        role = Role.Button
+                        contentDescription = notNowDescription
+                    }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 14.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+            Text(
+                stringResource(R.string.share_offer_share),
+                fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, color = scheme.onPrimary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(scheme.primary)
+                    .clickable(onClick = onShare)
+                    .semantics { role = Role.Button }
+                    .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                    .padding(horizontal = 18.dp)
+                    .wrapContentHeight(Alignment.CenterVertically),
+            )
+        }
     }
 }
 
@@ -872,10 +972,10 @@ private fun TypedComposer(
             modifier = Modifier.fillMaxWidth().widthIn(max = 460.dp).focusRequester(focus),
         )
         Spacer(Modifier.height(8.dp))
-        MonoLabel("typed, not recorded \u00B7 stays on this phone")
+        MonoLabel(stringResource(R.string.speak_typed_stored))
         Spacer(Modifier.height(16.dp))
         Text(
-            "Save to today",
+            stringResource(R.string.speak_typed_save),
             fontSize = 16.sp, fontWeight = FontWeight.Bold,
             color = if (canSave) scheme.onPrimary else scheme.onPrimary.copy(alpha = 0.6f),
             modifier = Modifier
@@ -890,7 +990,7 @@ private fun TypedComposer(
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "Back to speaking",
+            stringResource(R.string.speak_typed_back),
             fontSize = 14.sp,
             color = scheme.onSurfaceVariant,
             modifier = Modifier
@@ -914,11 +1014,11 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val label = when (state) {
-        SpeechCapture.State.RECORDING -> "Stop recording"
-        SpeechCapture.State.PROCESSING -> "Processing"
-        else -> "Start recording"
-    }
+    val label = stringResource(when (state) {
+        SpeechCapture.State.RECORDING -> R.string.speak_button_stop
+        SpeechCapture.State.PROCESSING -> R.string.speak_button_processing
+        else -> R.string.speak_button_start
+    })
 
     // FINAL-SPEC §2.2, read off the design's own markup rather than eyeballed:
     //   ring   r=70 in a 150 box, stroke 4.5, dasharray "0.1 10.37" -> 42 dots

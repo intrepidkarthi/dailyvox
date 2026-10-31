@@ -40,8 +40,8 @@ object AppLock {
         )
         prompt.authenticate(
             BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Unlock DailyVox")
-                .setSubtitle("Your journal is locked on this device")
+                .setTitle(activity.getString(com.dailyvox.app.R.string.applock_prompt_title))
+                .setSubtitle(activity.getString(com.dailyvox.app.R.string.applock_prompt_subtitle))
                 .setAllowedAuthenticators(AUTHENTICATORS)
                 // No setNegativeButtonText: illegal with DEVICE_CREDENTIAL.
                 .build()

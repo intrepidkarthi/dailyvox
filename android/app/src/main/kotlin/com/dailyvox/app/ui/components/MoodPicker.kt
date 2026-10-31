@@ -25,11 +25,31 @@ import androidx.compose.ui.unit.sp
 import com.dailyvox.app.R
 import com.dailyvox.app.system.SelfLabels
 
+/**
+ * The word the picker shows for each canon key, in strings.xml so it can be
+ * translated. [SelfLabels.CANON] keeps the English words as the research
+ * contract; StringResourcesTest holds the two in step.
+ */
+internal val MOOD_WORDS: Map<String, Int> = mapOf(
+    "joy" to R.string.mood_joy,
+    "sadness" to R.string.mood_sadness,
+    "anger" to R.string.mood_anger,
+    "fear" to R.string.mood_fear,
+    "surprise" to R.string.mood_surprise,
+    "disgust" to R.string.mood_disgust,
+    "neutral" to R.string.mood_neutral,
+)
+
 /** The word the picker shows for a stored label, or the label itself (calm, tired). */
-fun moodWord(label: String): String {
+fun moodWord(res: android.content.res.Resources, label: String): String {
     val key = SelfLabels.canonical(label) ?: label
-    return SelfLabels.CANON.firstOrNull { it.first == key }?.second ?: label
+    return MOOD_WORDS[key]?.let(res::getString) ?: label
 }
+
+/** [moodWord] in the composition's resources. */
+@Composable
+fun moodWord(label: String): String =
+    moodWord(androidx.compose.ui.platform.LocalContext.current.resources, label)
 
 /**
  * The mood picker: the preregistered canon, worded as on iOS (SelfLabels).
@@ -58,7 +78,8 @@ fun MoodPicker(
     // picked, theirs is the only mood on the entry.
     val hint = if (current == null) SelfLabels.canonical(suggested) else null
     val legacy = current?.takeIf { SelfLabels.canonical(it) == null }
-    val chips = SelfLabels.CANON + listOfNotNull(legacy?.let { it to it })
+    val chips = SelfLabels.CANON.map { (key, _) -> key to moodWord(key) } +
+        listOfNotNull(legacy?.let { it to it })
     val scheme = MaterialTheme.colorScheme
 
     FlowRow(

@@ -1,5 +1,7 @@
 package com.dailyvox.app.system
 
+import com.dailyvox.app.R
+import android.content.res.Resources
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -39,10 +41,12 @@ object Exporters {
         var canvas: Canvas = page.canvas
         var y = MARGIN + 20f
         var pageNo = 1
+        val res = context.resources
 
         canvas.drawText("DailyVox", MARGIN, y, title); y += 26f
         canvas.drawText(
-            if (authorName.isBlank()) "${entries.size} entries" else "$authorName · ${entries.size} entries",
+            if (authorName.isBlank()) res.getQuantityString(R.plurals.export_pdf_entries, entries.size, entries.size)
+            else res.getQuantityString(R.plurals.export_pdf_author_entries, entries.size, authorName, entries.size),
             MARGIN, y, muted
         )
         y += 30f
@@ -53,16 +57,19 @@ object Exporters {
             canvas = page.canvas; y = MARGIN
         }
 
-        val fmt = SimpleDateFormat("EEEE d MMMM yyyy · h:mm a", Locale.getDefault())
+        // The reader's date order and clock (B-13); English prints exactly what
+        // 1.2's single "EEEE d MMMM yyyy · h:mm a" pattern printed.
+        val fmtDay = LocaleFormat.dateFormat("EEEE d MMMM yyyy", "EEEEdMMMMyyyy")
+        val fmtTime = LocaleFormat.dateFormat("h:mm a", "jmm")
         entries.forEach { e ->
             val lines = wrap(e.text, body, W - MARGIN * 2)
             // Page break measured against actual wrapped height, since an entry
             // can be one line or thirty.
             if (y + 34f + lines.size * 15f > H - MARGIN) newPage()
-            canvas.drawText(fmt.format(Date(e.createdAt)), MARGIN, y, date); y += 15f
+            canvas.drawText(res.getString(R.string.export_when, fmtDay.format(Date(e.createdAt)), fmtTime.format(Date(e.createdAt))), MARGIN, y, date); y += 15f
             val meta = buildString {
                 append("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
-                e.valence?.let { append("  ·  mood %+.2f".format(it)) }
+                e.valence?.let { append(res.getString(R.string.export_pdf_mood, it)) }
                 if (e.entityList.isNotEmpty()) append("  ·  ").append(e.entityList.joinToString(", "))
             }
             canvas.drawText(meta, MARGIN, y, accent); y += 16f
@@ -105,19 +112,21 @@ object Exporters {
      * the format that opens in Obsidian, Bear and every plain-text editor
      * without a converter, which is the whole reason it is here.
      */
-    fun markdown(entries: List<Entry>): String {
-        val day = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
-        val time = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val sb = StringBuilder("# DailyVox journal\n\n")
-        sb.append("_${entries.size} entries, exported ${day.format(Date())}._\n\n")
+    fun markdown(res: Resources, entries: List<Entry>): String {
+        val day = LocaleFormat.dateFormat("EEEE, d MMMM yyyy", "EEEEdMMMMyyyy")
+        val time = LocaleFormat.dateFormat("HH:mm", "Hmm")
+        val sb = StringBuilder("# ").append(res.getString(R.string.export_md_title)).append("\n\n")
+        sb.append("_")
+            .append(res.getQuantityString(R.plurals.export_md_summary, entries.size, entries.size, day.format(Date())))
+            .append("_\n\n")
         entries.sortedBy { it.createdAt }.forEach { e ->
             val d = Date(e.createdAt)
-            sb.append("## ${day.format(d)} · ${time.format(d)}\n\n")
+            sb.append("## ").append(res.getString(R.string.export_when, day.format(d), time.format(d))).append("\n\n")
             sb.append(e.text.trim()).append("\n\n")
             val meta = buildList {
-                e.valence?.let { add("valence %+.2f".format(it)) }
+                e.valence?.let { add(res.getString(R.string.export_md_valence, it)) }
                 add("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
-                e.sleepHours?.let { add("%.1fh sleep".format(it)) }
+                e.sleepHours?.let { add(res.getString(R.string.export_md_sleep, it)) }
                 if (e.entities.isNotBlank()) add(e.entityList.joinToString(", "))
             }
             sb.append("`").append(meta.joinToString(" · ")).append("`\n\n")
@@ -132,7 +141,9 @@ object Exporters {
      * on the first entry that quotes someone.
      */
     fun csv(entries: List<Entry>): String {
-        val iso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+        // A machine format: ROOT, so the file reads the same on every phone
+        // (identical output to the Locale.US it replaces).
+        val iso = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         fun q(v: String) = "\"" + v.replace("\"", "\"\"") + "\""
         val sb = StringBuilder("date,seconds,valence,sleep_hours,people,text\n")
         entries.sortedBy { it.createdAt }.forEach { e ->
@@ -146,16 +157,17 @@ object Exporters {
         return sb.toString()
     }
 
-    fun share(context: Context, file: File, mime: String) {
+    fun share(context: Context, file: File, mime: String, text: String? = null) {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.files", file)
         val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
             type = mime
             putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            if (text != null) putExtra(android.content.Intent.EXTRA_TEXT, text)
             clipData = android.content.ClipData.newRawUri(file.name, uri)
             addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         context.startActivity(
-            android.content.Intent.createChooser(intent, "Share").apply {
+            android.content.Intent.createChooser(intent, context.getString(R.string.share_chooser_title)).apply {
                 addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
             }

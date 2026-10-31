@@ -132,7 +132,12 @@ object TwinResponseGenerator {
 }
 
 object RetrievalAnswerComposer {
-    fun compose(question: String, evidence: List<TwinChatEvidence>, facts: TwinFacts): TwinChatTurn =
+    fun compose(
+        question: String,
+        evidence: List<TwinChatEvidence>,
+        facts: TwinFacts,
+        language: String? = null,
+    ): TwinChatTurn =
         TwinChatTurn(answer = "")
 }
 

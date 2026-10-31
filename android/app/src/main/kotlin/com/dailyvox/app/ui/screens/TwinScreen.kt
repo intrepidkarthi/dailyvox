@@ -118,12 +118,7 @@ fun TwinScreen(
         )
     }
 
-    val named = remember(entries) {
-        entries.flatMap { it.entityList }
-            .groupingBy { it }.eachCount()
-            .entries.sortedByDescending { it.value }
-            .take(3).map { it.key to it.value }
-    }
+    val named = remember(entries) { constellationNames(entries) }
     // Whether this phone's recogniser is capitalising names at all. The
     // constellation is built entirely from capitalised tokens, so a sky with no
     // names has two completely different causes and they need different words.
@@ -133,12 +128,12 @@ fun TwinScreen(
     // One star per named person at least, so every label has a star to sit
     // beside even when a single entry named three people.
     val starCount = maxOf(minOf(entries.size, 4), named.size)
-    val depth = when {
-        entries.size >= 120 -> "DEEP"
-        entries.size >= 60 -> "FORMING"
-        entries.size >= 20 -> "EARLY"
-        else -> "NEW"
-    }
+    val depth = stringResource(when {
+        entries.size >= 120 -> R.string.twin_depth_deep
+        entries.size >= 60 -> R.string.twin_depth_forming
+        entries.size >= 20 -> R.string.twin_depth_early
+        else -> R.string.twin_depth_new
+    })
 
     // Sized against what is BELOW it rather than as a fraction of the screen.
     // At 46% capped to 440dp, a 950dp phone showed the sky ending two thirds of
@@ -174,12 +169,12 @@ fun TwinScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom,
         ) {
-            Text("Your sky", fontFamily = Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
+            Text(stringResource(R.string.twin_title), fontFamily = Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
                  color = NightText)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Star count, not a percentage. The number is what the user made.
                 Text(
-                    "${entries.size} ✦ · $depth",
+                    stringResource(R.string.twin_star_count, entries.size, depth),
                     fontFamily = Nunito, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 0.5.sp, color = goldText,
                 )
@@ -257,7 +252,7 @@ fun TwinScreen(
                      color = NightBackground)   // ink on the gold disc, both themes
             }
             Text(
-                summary(entries) ?: stringResource(
+                summary(androidx.compose.ui.platform.LocalContext.current.resources, entries) ?: stringResource(
                     if (com.dailyvox.app.system.EarlySignals.shows(entries.size))
                         R.string.twin_still_listening_early
                     else R.string.twin_still_listening
@@ -283,8 +278,10 @@ fun TwinScreen(
         // Insights is a SEGMENT of this tab (§3), not a fifth destination.
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            SkyLink("Insights", "streak, mood, patterns", onInsights, Modifier.weight(1f))
-            SkyLink("Ask", "answers with receipts", onAsk, Modifier.weight(1f))
+            SkyLink(stringResource(R.string.twin_link_insights), stringResource(R.string.twin_link_insights_sub),
+                    onInsights, Modifier.weight(1f))
+            SkyLink(stringResource(R.string.twin_link_ask), stringResource(R.string.twin_link_ask_sub),
+                    onAsk, Modifier.weight(1f))
         }
         Spacer(Modifier.height(120.dp))
     }
@@ -311,17 +308,15 @@ private fun CasingNote(
 ) {
     val text = when (verdict) {
         is com.dailyvox.app.system.CasingCheck.Verdict.Inconsistent ->
-            "Some names are reaching your journal spelled both ways — " +
-                verdict.contested.joinToString(", ") { it.replaceFirstChar(Char::uppercase) } +
-                " — so the Twin can't count them as one person. Correcting a " +
-                "transcript on an entry teaches it the right spelling."
+            stringResource(
+                R.string.twin_casing_inconsistent,
+                verdict.contested.joinToString(", ") { it.replaceFirstChar(Char::uppercase) },
+            )
         // Only worth saying when there is genuinely nothing in the sky. With
         // names already showing, the recogniser is plainly casing and this
         // verdict would just be wrong.
         com.dailyvox.app.system.CasingCheck.Verdict.NotCasing -> if (hasNames) null else
-            "No names have come through yet. Either you haven't spoken about " +
-                "anyone, or this phone's speech recogniser isn't capitalising " +
-                "names — which is what the Twin reads them by."
+            stringResource(R.string.twin_casing_none)
         // Caseless (a journal mostly in Devanagari, Tamil...): no note. Casing
         // is not evidence about names in a script without capitals, and the
         // NotCasing copy above would blame the phone for the script.
@@ -338,23 +333,23 @@ private fun CasingNote(
 }
 
 /** The one sentence, or null while there are too few entries to say it. */
-private fun summary(entries: List<Entry>): String? {
+private fun summary(res: android.content.res.Resources, entries: List<Entry>): String? {
     if (entries.size < 5) return null
     // Only entries the lexicon read. A journal it could not read (another
     // language) has no tone to name, and "measured" from a pile of unread
     // zeros would be a guess said as a finding.
-    val read = entries.mapNotNull { it.valence }
+    val read = entries.mapNotNull { com.dailyvox.app.system.ReadingLanguage.valence(it) }
     if (read.size < 5) return null
     val v = read.average()
-    val tone = when {
-        v > 0.25 -> "warm, steady"
-        v > 0.05 -> "even-handed"
-        v > -0.15 -> "measured"
-        else -> "candid, unsparing"
-    }
+    val tone = res.getString(when {
+        v > 0.25 -> R.string.twin_tone_warm
+        v > 0.05 -> R.string.twin_tone_even
+        v > -0.15 -> R.string.twin_tone_measured
+        else -> R.string.twin_tone_candid
+    })
     val words = entries.sumOf { it.text.split(" ").size } / entries.size
-    val length = if (words > 40) "expansive" else "economical"
-    return "Who you are: $tone, $length — from ${entries.size} entries."
+    val length = res.getString(if (words > 40) R.string.twin_length_expansive else R.string.twin_length_economical)
+    return res.getQuantityString(R.plurals.twin_summary, entries.size, tone, length, entries.size)
 }
 
 @Composable
@@ -424,7 +419,7 @@ private fun skyAnchors(w: Float, h: Float): List<Offset> {
 @Composable
 private fun SkyName(name: String, anchor: Offset, core: Offset, w: Float, h: Float, color: Color) {
     Text(
-        name.uppercase(),
+        com.dailyvox.app.system.LocaleFormat.upper(name),
         fontFamily = Nunito, fontSize = 11.5.sp, fontWeight = FontWeight.Black,
         letterSpacing = 0.6.sp, color = color, maxLines = 1,
         modifier = Modifier.layout { measurable, constraints ->
@@ -585,3 +580,15 @@ private fun DrawScope.drawSky(
         )
     }
 }
+
+/**
+ * The constellation's named stars: the three people on the most entries,
+ * from entries whose names the gate can read (B-5). A German entry saved
+ * before 1.3 can still carry "Arbeit" as a person; in the Twin's sky that
+ * would be a claim about a life.
+ */
+internal fun constellationNames(entries: List<com.dailyvox.app.data.Entry>): List<Pair<String, Int>> =
+    entries.flatMap { com.dailyvox.app.system.ReadingLanguage.people(it) }
+        .groupingBy { it }.eachCount()
+        .entries.sortedByDescending { it.value }
+        .take(3).map { it.key to it.value }

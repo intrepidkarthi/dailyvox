@@ -2,9 +2,74 @@
 
 All notable changes to DailyVox are documented here.
 
-## [Android 1.2.1] — unreleased
+## [Android 1.3] — languages, and share your sky
 
-A patch that ships before the languages release (Android 1.3 / iOS 1.14). In a
+versionCode 9. The app is now available in German, Spanish, French, Italian and
+Brazilian Portuguese as well as English, and you choose the language you speak
+separately from the app's language. Hindi is held back until its on-device
+speech check passes on real phones: there is no `values-hi` and no Hindi in the
+locale config. The five translations are machine drafts, shipped before a native
+review. 1.2.1 never shipped, so its fixes (below) reach Google Play with this
+release; phones upgrade from 1.2. Nothing changes for entries spoken in English.
+
+### Added
+- **DailyVox in German, Spanish, French, Italian and Brazilian Portuguese.** Every
+  user-facing string is in resources, with a translator comment on each key and
+  every plural class. The generated locale config lists exactly these six
+  languages, so the per-app language setting offers them.
+- **Settings › Language you speak.** Pick the language DailyVox listens in, from
+  the languages the phone can transcribe on-device. Choosing one that is not
+  installed asks the phone's speech service to download it; DailyVox still holds
+  no internet permission.
+- **Each entry records its language.** Spoken entries keep the tag the recogniser
+  was asked for; typed and imported text is classified on the phone, and left
+  unknown when unsure. Database version 6; JSON export and import carry it.
+- **Share your sky as a Story.** A 9:16 card of your constellation for Instagram
+  Stories and WhatsApp Status, showing how many nights and none of your words,
+  names or moods. Offered once each at nights 7, 21 and 42.
+
+### Changed
+- **Features speak only in languages they understand.** Suggested mood,
+  reflections, tone and drift, Insights, mood trends and the Twin's style and
+  personality reads are English only; on other entries they stay quiet. Names
+  are read in English, Spanish, French, Italian and Portuguese, not German (it
+  capitalises every noun), and a German entry saved before 1.3 shows no people.
+- **Search and Ask read each entry in its own language**, so "mamá" stays one
+  word and a Devanagari query finds its entry.
+- **Dates and numbers follow your region**, read-aloud follows the entry's
+  language, and chevrons follow the layout direction.
+
+### Fixed
+- **Ask your Twin answers in the language you asked in.** The words around quoted
+  entries, the dates and the "nothing close enough" line come in German, Spanish,
+  French, Italian and Portuguese; quotes stay as said. Outside English the
+  "nothing close enough" answer no longer offers English-only template chips.
+- **Ask finds your entries when you ask in another language.** Retrieval now
+  knows the question's language, so its own small words ("wann", "habe", "ich")
+  are not search terms. Before, an ordinary German question like "Wann habe ich
+  schlecht geschlafen?" got "nothing close enough" even with an entry saying it.
+  A short question is taken to be in the language you speak unless it is clearly
+  another one, and Spanish question words count as small words with or without
+  the accent ("cuándo").
+- **No English suggested questions outside English.** The ten template questions
+  and their answers are English, so the row shows only for English speakers. An
+  answer quoting two entries says "the entries below", not "the entry below".
+- **Entry buttons fit every language.** Edit and Ask shrink before they clip and
+  wrap only after that; shorter Ask labels in Spanish, Italian and Portuguese.
+- **Onboarding no longer implies mood reading outside English.** The airplane-mode
+  card in the five new languages says the transcript and your star stay on the
+  phone, without "the mood".
+- The Insights streak row keeps its labels apart on a near-full line.
+
+### Upgrade
+- From 1.2 (schema 4), one launch runs `MIGRATION_4_5` then `MIGRATION_5_6`.
+  `LanguageMigrationTest` opens a 1.2 database through Room and checks every value
+  survives. No destructive fallback.
+
+## [Android 1.2.1] — never shipped; folded into Android 1.3
+
+Built as versionCode 7 but never uploaded: these fixes ship to Google Play in
+Android 1.3. It was a patch meant to go before the languages release. In a
 language a feature cannot read, the feature now stays quiet; English is unchanged.
 
 ### Fixed
