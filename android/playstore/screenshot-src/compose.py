@@ -41,17 +41,18 @@ quoting the closest entries, with their dates, and that is all its caption
 claims. Each Ask capture is a real question in that language, typed on the
 phone, answered from the seeded journal (not the abstention):
 
-    de     Was hat Marie aus Mumbai geschickt?
+    de     Wann habe ich schlecht geschlafen?
     es     ¿Carmen se va a vivir a Mumbai?
-    fr     Qu'est-ce que Léa m'a envoyé de Mumbai ?
-    it     Cosa mi ha mandato Chiara da Mumbai?
-    pt-BR  A Beatriz vai morar em Mumbai?
+    fr     Quand est-ce que j'ai mal dormi ?
+    it     Quando ho dormito male?
+    pt-BR  Quando eu dormi mal?
 
-Ask's word match counts the question's own function words against it (they
-are not stopped in the question), so a long natural question can abstain;
-these were checked to clear the threshold. German has no name detection
-(every noun is capitalised), so its sky has no named stars and no caption
-mentions people; pt-BR copy does not claim names either. The entry frame is
+Since 1.3's fix, Ask drops the question's own function words in its
+language, so ordinary questions find their entry. The platform language
+classifier still reads some short Spanish as English (e.g. "¿Carmen se muda
+a Mumbai?" gets an English frame), so es uses a longer question. German has
+no name detection (every noun is capitalised), so its sky has no named stars
+and no caption mentions people; pt-BR copy does not claim names either. The entry frame is
 in every set again: since 1.3's fix the Edit and Ask buttons fit in every
 language. The "speak your language" Settings card is no longer used; its
 capture showed debug-build rows.
