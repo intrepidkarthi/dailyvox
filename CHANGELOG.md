@@ -54,6 +54,12 @@ on its own; its fixes reach the App Store with this release.
   The title, prompt and empty state now follow what actually ran, "% match"
   appears only on meaning hits, and the journal's "Search by meaning instead"
   button appears only for queries that would run by meaning.
+- **Ask your Twin shows no English where it answers in another language.** The
+  ten suggested questions, whose answers are English, no longer appear for
+  someone who speaks another language, and citation chips show "% match" only
+  for English questions. An answer quoting two entries says "the entries
+  below", not "the entry below" (English too). The note listing the languages
+  Ask understands now includes Portuguese.
 
 ## [1.13.1] (iOS) — fixes for people who don't speak English to DailyVox
 
