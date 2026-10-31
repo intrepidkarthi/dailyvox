@@ -6,6 +6,13 @@
 # tapping. It is now one command.
 #
 #   ./make_screenshots.sh [device-name]
+#   LOCALE=de-DE ./make_screenshots.sh     # one localized set (1.14)
+#   SKIP_BUILD=1 LOCALE=fr-FR ./make_screenshots.sh
+#
+# A localized run reads its journal, canned search/Ask/typed text from
+# locales/<LOCALE>/seed.json and its captions from locales/<LOCALE>/captions.json,
+# runs the app in that language, and writes raw/<LOCALE> and
+# ../screenshots/<LOCALE>/<size>. Without LOCALE it is the English set, unchanged.
 #
 set -euo pipefail
 
@@ -13,9 +20,26 @@ DEVICE_NAME="${1:-iPhone 16 Pro Max}"     # 6.9" — 1320x2868, Apple's current 
 BUNDLE="com.dailyvox.app"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 IOS="$HERE/../.."
-RAW="$HERE/raw"
-OUT="$HERE/../screenshots/iPhone_6.9_1320x2868"
-DD="$(mktemp -d)/dd"
+LOCALE="${LOCALE:-}"
+DD="${DD:-$HERE/.dd}"
+if [ -n "$LOCALE" ]; then
+  RAW="$HERE/raw/$LOCALE"
+  OUT="$HERE/../screenshots/$LOCALE/iPhone_6.9_1320x2868"
+  SEED="$HERE/locales/$LOCALE/seed.json"
+  [ -f "$SEED" ] || { echo "No seed for $LOCALE at $SEED"; exit 1; }
+  LANG_CODE="${LOCALE%%-*}"
+  REGION="${LOCALE/-/_}"
+  case "$LOCALE" in
+    pt-BR) LANG_CODE="pt-BR" ;;          # Portuguese the app ships is Brazil's
+    it)    REGION="it_IT" ;;             # App Store's code for Italian has no region
+  esac
+  # The app's language, the region's formats (dates, "Okt."), and the journal.
+  LOCALE_ARGS=(-AppleLanguages "($LANG_CODE)" -AppleLocale "$REGION" -ScreenshotSeedFile "$SEED")
+else
+  RAW="$HERE/raw"
+  OUT="$HERE/../screenshots/iPhone_6.9_1320x2868"
+  LOCALE_ARGS=()
+fi
 
 DEV=$(xcrun simctl list devices available | grep "$DEVICE_NAME (" | head -1 | grep -oE '[0-9A-F-]{36}')
 [ -n "$DEV" ] || { echo "No simulator named '$DEVICE_NAME'"; exit 1; }
@@ -24,9 +48,11 @@ echo "device: $DEVICE_NAME ($DEV)"
 xcrun simctl boot "$DEV" 2>/dev/null || true
 xcrun simctl bootstatus "$DEV" -b >/dev/null
 
+if [ -z "${SKIP_BUILD:-}" ]; then
 echo "building…"
 xcodebuild -project "$IOS/solyn.xcodeproj" -scheme solyn -configuration Debug \
   -destination "id=$DEV" -derivedDataPath "$DD" build >/dev/null
+fi
 
 APP="$DD/Build/Products/Debug-iphonesimulator/solyn.app"
 
@@ -50,7 +76,7 @@ shoot () {
   xcrun simctl status_bar "$DEV" override \
     --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
 
-  xcrun simctl launch "$DEV" "$BUNDLE" -ScreenshotMode "$@" >/dev/null
+  xcrun simctl launch "$DEV" "$BUNDLE" -ScreenshotMode ${LOCALE_ARGS[@]+"${LOCALE_ARGS[@]}"} "$@" >/dev/null
   sleep "${WAIT:-5}"                         # the launch seeds and folds
   xcrun simctl io "$DEV" screenshot --type=png "$RAW/$name.png" >/dev/null 2>&1
   echo "  captured $name"
@@ -76,7 +102,7 @@ shoot entry     -StartTab journal -ScreenshotScene entry
 shoot share     -StartTab journal -ScreenshotScene share
 
 echo "composing…"
-python3 "$HERE/make_frames.py" "$RAW" "$OUT"
+python3 "$HERE/make_frames.py" "$RAW" "$OUT" ${LOCALE:+"$LOCALE"}
 
 echo
 echo "Done → $OUT"

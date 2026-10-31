@@ -1,0 +1,253 @@
+{
+  "locale": "de-DE",
+  "cannedQuery": "Julia",
+  "cannedAsk": "Was hilft mir, zur Ruhe zu kommen?",
+  "cannedTyped": "Langer Tag. Das Team hat endlich gelauncht, und ich konnte in der Bahn nach Hause nicht aufhören zu lächeln. Mama hat angerufen, während ich Abendessen gemacht habe.",
+  "entries": [
+    {
+      "text": "Julia hat auf der Heimfahrt angerufen, und am Ende habe ich das ausgesprochen, um das ich seit ungefähr drei Wochen herumschleiche – dass es mir mit dem Umzug eigentlich gar nicht gut geht. Sie hat nicht versucht, es zu lösen. Sie hat mich einfach reden lassen. Danach saß ich noch zehn Minuten auf dem Parkplatz und war so leicht wie lange nicht mehr. Ich glaube, ich musste mich das selbst sagen hören, mehr als ich eine Antwort von ihr brauchte.",
+      "mood": "calm",
+      "daysAgo": 0,
+      "starred": true,
+      "duration": 96
+    },
+    {
+      "text": "Die Präsentation hat gesessen. Markus hat genau die eine Frage gestellt, vor der ich Angst hatte, und ich hatte tatsächlich eine Antwort – das hat mich mehr überrascht als ihn. Wochen an Arbeit, und nach elf Minuten war alles vorbei. Mir fällt auf, dass ich mich jedes Mal innerlich wappne, und dann geht es gut. Das sollte ich mir merken, wenn ich das nächste Mal in der Nacht davor nicht schlafen kann.",
+      "mood": "excited",
+      "daysAgo": 1,
+      "starred": true,
+      "duration": 84
+    },
+    {
+      "text": "Heute Abend wollte ich nicht aufnehmen. Es ist nichts passiert, und fast hätte ich es ausgelassen. Aber ich habe genau das laut gesagt und dann noch eine Minute weitergeredet, warum mich solche Nichts-Tage so stören – und das war dann der eigentliche Eintrag. Notiz an mich: Die Tage, an denen ich nicht reden will, sind meistens die, unter denen etwas liegt.",
+      "mood": "calm",
+      "daysAgo": 2,
+      "starred": false,
+      "duration": 62
+    },
+    {
+      "text": "Heute bin ich so dankbar für meine Familie. Mama hat angerufen, und wir haben über eine Stunde über alles und nichts geredet. Sie hat mir Geschichten aus meiner Kindheit erzählt, die ich noch nie gehört hatte. Papa hat im Hintergrund seine üblichen Witze reingerufen. Ich muss sie öfter besuchen.",
+      "mood": "grateful",
+      "daysAgo": 3,
+      "starred": true,
+      "duration": 150
+    },
+    {
+      "text": "Neues Trainingsprogramm im Fitnessstudio angefangen. Fünf Kilometer auf dem Laufband und ein bisschen Krafttraining. Mein Körper tut weh, aber mein Kopf ist klar und voller Energie. Wenn ich mich körperlich durch etwas durchbeiße, fühlt sich alles andere irgendwie leichter an.",
+      "mood": "excited",
+      "daysAgo": 4,
+      "starred": false,
+      "duration": 45
+    },
+    {
+      "text": "Ruhiger Sonntag zu Hause. Ich habe einen großen Topf Tomatensoße nach Omas Rezept gekocht, ganz von Grund auf. Die ganze Wohnung hat herrlich gerochen. Danach eine Doku über Meeresschutz geschaut, die mich echt zum Nachdenken gebracht hat, was ich im Alltag im Kleinen ändern kann.",
+      "mood": "calm",
+      "daysAgo": 5,
+      "starred": false,
+      "duration": 80
+    },
+    {
+      "text": "Heute Morgen Kaffee mit Jonas. Wir haben über unsere Pläne für den Sommer geredet, und er hat eine Wandertour in die Berge erwähnt. Ich liebe es, wie unsere Freundschaft über die Jahre gewachsen ist. Es ist selten, jemanden zu finden, der einen ohne viele Worte versteht.",
+      "mood": "happy",
+      "daysAgo": 6,
+      "starred": false,
+      "duration": 110
+    },
+    {
+      "text": "Gerade ist mir alles ein bisschen zu viel. Die Deadlines stapeln sich, und ich schlafe schlecht. Ich muss einen Schritt zurücktreten und schauen, was wirklich wichtig ist. Vielleicht probiere ich mal die Meditations-App, die Lena mir empfohlen hat.",
+      "mood": "anxious",
+      "daysAgo": 9,
+      "starred": false,
+      "duration": 60
+    },
+    {
+      "text": "Wunderschöner Sonnenuntergang heute Abend von der Dachterrasse. Ich habe ein paar Fotos gemacht, aber die zeigen nicht, wie es wirklich aussah. Orange und rosa Streifen über den ganzen Himmel, und unten gingen gerade die Lichter der Stadt an. Genau wegen solcher Momente bin ich hierhergezogen.",
+      "mood": "grateful",
+      "daysAgo": 11,
+      "starred": true,
+      "duration": 75
+    },
+    {
+      "text": "Schwieriges Gespräch mit meiner Chefin über den Zeitplan des Projekts. Ich war nervös, aber ich bin froh, dass ich die unrealistischen Erwartungen angesprochen habe. Sie hat wirklich zugehört, und zusammen haben wir einen besseren Plan gefunden. Für mich selbst einzustehen fällt mir langsam leichter.",
+      "mood": "calm",
+      "daysAgo": 13,
+      "starred": false,
+      "duration": 90
+    },
+    {
+      "text": "Heute Abend ein neues Rezept ausprobiert, grünes Thai-Curry, und es ist richtig gut geworden. Das Geheimnis ist frisches Zitronengras und eine gute Kokosmilch. Ich habe meiner Nachbarin etwas abgegeben, und sie war begeistert. Für andere zu kochen macht mich so glücklich.",
+      "mood": "happy",
+      "daysAgo": 15,
+      "starred": false,
+      "duration": 100
+    },
+    {
+      "text": "Regentag. Ich bin drinnen geblieben und habe endlich das Buch fertig gelesen, an dem ich seit Wochen sitze. Das Ende war bittersüß, aber schön. Danach habe ich in meinem Notizbuch herumgezeichnet, einfach abstrakte Muster. Manchmal fließt die Kreativität am besten, wenn es sonst nichts zu tun gibt.",
+      "mood": "calm",
+      "daysAgo": 17,
+      "starred": false,
+      "duration": 130
+    },
+    {
+      "text": "Heute habe ich Heimweh. Im Park habe ich eine Familie gesehen, die mich an die Wochenenden mit meinen Geschwistern erinnert hat. Wir haben stundenlang draußen gespielt, bis die Straßenlaternen angingen. Ich muss bald mal wieder nach Hause fahren.",
+      "mood": "sad",
+      "daysAgo": 19,
+      "starred": false,
+      "duration": 55
+    },
+    {
+      "text": "Tolle Yogastunde heute Morgen. Am Ende hat uns die Lehrerin durch eine Meditation geführt, danach war ich völlig mit mir im Frieden. Ich merke, dass mir das regelmäßige Üben wirklich hilft, im Alltag mit Stress umzugehen.",
+      "mood": "calm",
+      "daysAgo": 21,
+      "starred": false,
+      "duration": 70
+    },
+    {
+      "text": "Heute im Gemeinschaftsgarten mitgeholfen. Mit einer Gruppe toller Leute Tomaten, Kräuter und Sonnenblumen gepflanzt. Es ist so befriedigend, mit den Händen in der Erde zu arbeiten. Ich habe eine pensionierte Lehrerin namens Hildegard kennengelernt, die die schönsten Geschichten erzählt hat.",
+      "mood": "grateful",
+      "daysAgo": 23,
+      "starred": true,
+      "duration": 180
+    },
+    {
+      "text": "Total erschöpft nach einer langen Woche. Bin kaum durch den Tag gekommen. Manchmal muss man sich einfach eingestehen, dass der Akku leer ist, und sich erlauben, auszuruhen. Morgen ist ein neuer Tag.",
+      "mood": "tired",
+      "daysAgo": 25,
+      "starred": false,
+      "duration": 30
+    },
+    {
+      "text": "Mit Anna in einer Kunstausstellung in der Innenstadt gewesen. Die moderne Abteilung hat mich echt zum Nachdenken gebracht, vor allem die Installation über den Klimawandel. Beim Abendessen danach hatten wir richtig gute Gespräche über Kunst und darüber, was sie bedeutet.",
+      "mood": "excited",
+      "daysAgo": 27,
+      "starred": false,
+      "duration": 95
+    },
+    {
+      "text": "Neue Ziele für den Monat gesetzt. Ich will zwei Bücher lesen, viermal pro Woche Sport machen und mehr Zeit mit meinem Fotografie-Hobby verbringen. Wenn ich Ziele aufschreibe, fühlen sie sich echter und machbarer an. Ich bin motiviert und voller Hoffnung.",
+      "mood": "excited",
+      "daysAgo": 28,
+      "starred": false,
+      "duration": 65
+    },
+    {
+      "text": "Letzte Nacht konnte ich nicht schlafen. Meine Gedanken haben sich ständig um die anstehenden Veränderungen bei der Arbeit gedreht. Ich weiß, dass Grübeln nichts bringt, aber manchmal lässt sich der Lärm im Kopf einfach nicht abstellen. Ich probiere die Atemübungen, die Dr. Weber mir empfohlen hat.",
+      "mood": "anxious",
+      "daysAgo": 29,
+      "starred": false,
+      "duration": 40
+    },
+    {
+      "text": "Perfekter Tag für eine Radtour am Wasser entlang. Kühle Brise, warme Sonne. Ich habe an einem kleinen Buchladen angehalten, der mir noch nie aufgefallen war, und eine Erstausgabe eines Gedichtbands gefunden. Das Leben überrascht einen, wenn man langsam genug ist, um hinzuschauen.",
+      "mood": "happy",
+      "daysAgo": 30,
+      "starred": true,
+      "duration": 140
+    },
+    {
+      "text": "Heute wieder Mittagessen mit Julia. Sie hat gerade eine schwere Zeit im neuen Job, und ich bin froh, dass sie sich mir gegenüber öffnen kann. Wir haben über Grenzen geredet und wie schwer es ist, Nein zu sagen. Ich habe ihr denselben Rat gegeben, den Jonas mir mal gegeben hat: Schütz zuerst deine Energie.",
+      "mood": "calm",
+      "daysAgo": 7,
+      "starred": false,
+      "duration": 85
+    },
+    {
+      "text": "Mit der Kamera im Botanischen Garten gewesen. Fotografieren zur goldenen Stunde wird gerade mein liebstes kreatives Ventil. Ich habe ein paar unglaubliche Makroaufnahmen von Tau auf Rosenblättern gemacht. Julia hat mir später geschrieben, dass meine Instagram-Story sie dazu gebracht hat, wieder mit dem Malen anzufangen.",
+      "mood": "happy",
+      "daysAgo": 8,
+      "starred": false,
+      "duration": 95
+    },
+    {
+      "text": "Das Meeting hat zwei Stunden überzogen. Der Launch wurde um eine Woche vorgezogen, und ich spüre, wie der Druck steigt. Markus hat mich danach zur Seite genommen und gesagt, dass ich mit dem Gegenwind richtig gut umgegangen bin. Kleine Erfolge zählen, gerade an harten Tagen.",
+      "mood": "anxious",
+      "daysAgo": 10,
+      "starred": false,
+      "duration": 70
+    },
+    {
+      "text": "Abendlauf am Fluss, danach war mein Kopf frei. Ich denke immer noch darüber nach, was Mama letztes Wochenende gesagt hat – dass ich immer dem nächsten Ding hinterherjage, statt zu schätzen, wo ich gerade bin. Sie hat recht. Dankbarkeit passiert nicht von allein, sie braucht Übung. Aber immerhin: neue Bestzeit auf fünf Kilometer.",
+      "mood": "grateful",
+      "daysAgo": 12,
+      "starred": false,
+      "duration": 55
+    },
+    {
+      "text": "Jonas und ich haben endlich die Wandertour für nächsten Monat gebucht. Drei Tage, zwei Gipfel, null Empfang. Anna will auch mitkommen, dann wird es noch schöner. Ich habe den ganzen Abend Routen und Ausrüstung recherchiert. Ein Abenteuer zu planen ist eine ganz eigene Art von Freude.",
+      "mood": "excited",
+      "daysAgo": 14,
+      "starred": false,
+      "duration": 120
+    },
+    {
+      "text": "Langes, tiefes Videotelefonat mit Lena heute Abend. Sie fängt eine Therapie an und war mutig genug, mir das zu erzählen. Das hat mich über meinen eigenen Weg mit meiner psychischen Gesundheit nachdenken lassen. Jeden Tag hier ins Tagebuch zu sprechen tut mir besser, als ich erwartet hätte. Die Muster in meinen eigenen Worten überraschen mich.",
+      "mood": "calm",
+      "daysAgo": 16,
+      "starred": false,
+      "duration": 100
+    },
+    {
+      "text": "Einen neuen Kochkurs ausprobiert, mediterrane Küche in der Innenstadt. Wir haben Shakshuka und frisches Pita-Brot selbst gemacht. Der Kursleiter kam aus Tel Aviv und hat ganz lebendig von den Märkten dort erzählt. Die Reste habe ich Jonas vorbeigebracht, und er meinte, das war das beste Essen seit Wochen.",
+      "mood": "happy",
+      "daysAgo": 18,
+      "starred": false,
+      "duration": 130
+    },
+    {
+      "text": "Um fünf Uhr aufgewacht und nicht mehr eingeschlafen. Die Deadlines verfolgen mich bis in meine Träume. Also habe ich das Beste draus gemacht: eine Prioritätenliste geschrieben und drei Aufgaben erledigt, bevor das Team überhaupt online war. Es hat sich stark angefühlt, Angst in Schwung zu verwandeln.",
+      "mood": "anxious",
+      "daysAgo": 20,
+      "starred": false,
+      "duration": 50
+    },
+    {
+      "text": "Fotospaziergang mit Anna durch die Altstadt. Sie hat einen ganz anderen Blick als ich – sie fängt Menschen und Gefühle ein, mich zieht es eher zu Architektur und Licht. Wir planen eine gemeinsame Ausstellung im Gemeindezentrum. Die kreative Energie zwischen uns ist elektrisierend.",
+      "mood": "excited",
+      "daysAgo": 22,
+      "starred": false,
+      "duration": 110
+    },
+    {
+      "text": "Mama und Papa waren übers Wochenende da. Papa hat mir den tropfenden Wasserhahn repariert, der ihm seit Monaten keine Ruhe gelassen hat. Mama hat meine ganze Küche umgeräumt und Essen für zwei Wochen gekocht. Die Wohnung fühlt sich wärmer an, wenn sie da sind. Ich vermisse sie jetzt schon.",
+      "mood": "grateful",
+      "daysAgo": 24,
+      "starred": true,
+      "duration": 160
+    },
+    {
+      "text": "Julia hat mir ein Buch über stoische Philosophie empfohlen, und ich habe heute schon die Hälfte verschlungen. Der Gedanke, dass wir Ereignisse nicht kontrollieren können, wohl aber unsere Reaktion darauf, trifft bei mir einen Nerv. Heute Nachmittag habe ich es bei einem nervigen Arbeitscall ausprobiert, und es hat wirklich geholfen. Wachstum fühlt sich gerade greifbar an.",
+      "mood": "calm",
+      "daysAgo": 26,
+      "starred": false,
+      "duration": 90
+    },
+    {
+      "text": "Heute Morgen Yoga und Meditation, danach im Park Tagebuch geschrieben. Lena sagt, ich wirke in letzter Zeit ausgeglichener, und ich glaube, sie hat recht. Mein Verhältnis zu Stress verändert sich. Ich laufe nicht mehr davor weg, ich lerne, ihn auszuhalten. Sogar meine Fotos zeigen das – mehr Stille, weniger Chaos.",
+      "mood": "calm",
+      "daysAgo": 31,
+      "starred": false,
+      "duration": 75
+    },
+    {
+      "text": "Kleines Abendessen bei mir. Julia, Jonas, Anna und Lena waren alle da. Ich habe Omas Pasta und das Thai-Curry gemacht. Alle haben Wein und Geschichten mitgebracht. Jonas hat einen Toast auf die Freundschaft ausgesprochen, bei dem Anna geweint hat. Das sind die Menschen, die mein Leben reich machen. Dankbar trifft es nicht mal annähernd.",
+      "mood": "grateful",
+      "daysAgo": 33,
+      "starred": true,
+      "duration": 170
+    },
+    {
+      "text": "Das Projekt ist endlich live. Drei Monate lange Nächte und Wochenendschichten, und jetzt ist es draußen. Markus hat eine Mail an die ganze Firma geschickt und das Team gelobt. Ich bin stolz, aber auch fertig. Morgen nehme ich mir frei, um aufzutanken. Julia sagt, das habe ich mir verdient – und ausnahmsweise glaube ich ihr.",
+      "mood": "excited",
+      "daysAgo": 35,
+      "starred": true,
+      "duration": 80
+    },
+    {
+      "text": "Allein zum Wasserfall gewandert. Keine Musik, keine Podcasts, nur Vogelgezwitscher und meine eigenen Gedanken. Mir ist klar geworden, dass ich diesen Monat so präsent war wie schon lange nicht mehr. Die Mischung aus Tagebuch, Sport und bewusst gepflegten Freundschaften funktioniert. Mein zukünftiges Ich wird mir für diese Gewohnheiten danken.",
+      "mood": "happy",
+      "daysAgo": 37,
+      "starred": false,
+      "duration": 140
+    }
+  ]
+}

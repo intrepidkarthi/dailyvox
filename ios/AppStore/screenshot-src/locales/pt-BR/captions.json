@@ -1,0 +1,215 @@
+{
+  "00_your_language": {
+    "eyebrow": "AGORA EM PORTUGUÊS",
+    "head": [
+      [
+        "fale em",
+        null
+      ],
+      [
+        null,
+        "português"
+      ]
+    ],
+    "figure": null,
+    "gloss": "transcrito neste celular",
+    "sticker": {
+      "title": "no aparelho",
+      "sub": "sem nuvem, sem conta"
+    }
+  },
+  "01_a_sky_made_of_you": {
+    "eyebrow": "CONHEÇA SEU TWIN",
+    "head": [
+      [
+        "um céu",
+        null
+      ],
+      [
+        "feito de ",
+        "você"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "estrelas no seu céu",
+    "sticker": {
+      "title": "100% no aparelho",
+      "sub": "sem nuvem, sem conta"
+    }
+  },
+  "02_42_seconds": {
+    "eyebrow": "É SÓ FALAR",
+    "head": [
+      [
+        null,
+        "42 segundos"
+      ],
+      [
+        "são o app",
+        null
+      ]
+    ],
+    "figure": "0:42",
+    "gloss": "o ritual inteiro",
+    "sticker": {
+      "title": "sua voz",
+      "sub": "transcrita neste celular"
+    }
+  },
+  "03_answers_with_receipts": {
+    "eyebrow": "PERGUNTE AO SEU TWIN",
+    "head": [
+      [
+        "respostas com",
+        null
+      ],
+      [
+        null,
+        "provas"
+      ]
+    ],
+    "figure": null,
+    "gloss": "3 registros citados, sempre",
+    "sticker": {
+      "title": "3 registros citados",
+      "sub": "toque em um para ler"
+    }
+  },
+  "04_describe_find": {
+    "eyebrow": "BUSQUE NO SEU DIÁRIO",
+    "head": [
+      [
+        "uma palavra,",
+        null
+      ],
+      [
+        null,
+        "toda noite"
+      ]
+    ],
+    "figure": null,
+    "gloss": "todo registro que a contém",
+    "sticker": {
+      "title": "busca por palavra",
+      "sub": "em todas as suas noites"
+    }
+  },
+  "05_streak": {
+    "eyebrow": "SEU RITMO",
+    "head": [
+      [
+        "ele vê sua",
+        null
+      ],
+      [
+        null,
+        "sequência"
+      ],
+      [
+        "antes de você",
+        null
+      ]
+    ],
+    "figure": "33",
+    "gloss": "dias seguidos, seu recorde",
+    "sticker": {
+      "title": "33 dias seguidos",
+      "sub": "sua maior sequência"
+    }
+  },
+  "06_private_by_design": {
+    "eyebrow": "PRIVADO POR PRINCÍPIO",
+    "head": [
+      [
+        "seu diário,",
+        null
+      ],
+      [
+        null,
+        "só seu"
+      ]
+    ],
+    "figure": "0",
+    "gloss": "servidores do DailyVox",
+    "sticker": {
+      "title": "sempre no aparelho",
+      "sub": "Dados não coletados"
+    }
+  },
+  "07_first_star": {
+    "eyebrow": "SEUS PRIMEIROS 42 SEGUNDOS",
+    "head": [
+      [
+        "fale uma vez,",
+        null
+      ],
+      [
+        "e veja ",
+        "acender"
+      ]
+    ],
+    "figure": "1",
+    "gloss": "estrela. Depois, um céu.",
+    "sticker": {
+      "title": "sua primeira estrela",
+      "sub": "nascida da sua voz"
+    }
+  },
+  "08_cant_talk_type_it": {
+    "eyebrow": "NÃO PODE FALAR AGORA?",
+    "head": [
+      [
+        "então",
+        null
+      ],
+      [
+        null,
+        "digite"
+      ]
+    ],
+    "figure": null,
+    "gloss": "conta do mesmo jeito",
+    "sticker": {
+      "title": "digitado, não gravado",
+      "sub": "conta para a sua sequência"
+    }
+  },
+  "09_share_a_star": {
+    "eyebrow": "COMPARTILHE UMA ESTRELA",
+    "head": [
+      [
+        "seu céu,",
+        null
+      ],
+      [
+        null,
+        "não seu diário"
+      ]
+    ],
+    "figure": "35",
+    "gloss": "noites guardadas, no cartão",
+    "sticker": {
+      "title": "nenhuma palavra",
+      "sub": "nunca"
+    }
+  },
+  "10_every_night_kept": {
+    "eyebrow": "SEU DIÁRIO",
+    "head": [
+      [
+        "cada noite,",
+        null
+      ],
+      [
+        null,
+        "guardada"
+      ]
+    ],
+    "figure": null,
+    "gloss": "uma cor para o humor escolhido",
+    "sticker": {
+      "title": "humor num relance",
+      "sub": "uma linha por registro"
+    }
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "locale": "fr-FR",
+  "cannedQuery": "Camille",
+  "cannedAsk": "Qu'est-ce qui m'aide à me poser ?",
+  "cannedTyped": "Longue journée. L'équipe a enfin livré, et je n'arrêtais pas de sourire dans le train du retour. Maman a appelé pendant que je préparais le dîner.",
+  "entries": [
+    {
+      "text": "Camille m'a appelée sur la route du retour et j'ai fini par dire à voix haute ce que j'évite depuis à peu près trois semaines : qu'en fait, ce déménagement, je ne le vis pas si bien que ça. Elle n'a pas essayé d'arranger les choses. Elle m'a juste laissée le dire. Je suis restée dix minutes sur le parking après, plus légère que je ne l'avais été depuis longtemps. Je crois que j'avais plus besoin de m'entendre le dire que d'entendre sa réponse.",
+      "mood": "calm",
+      "daysAgo": 0,
+      "starred": true,
+      "duration": 96
+    },
+    {
+      "text": "La présentation est bien passée. Julien a posé LA question que je redoutais et j'avais vraiment une réponse, ce qui m'a plus surprise que lui. Des semaines de boulot, et tout était plié en onze minutes. Je remarque que je me prépare toujours au pire et qu'au final ça se passe bien. À retenir pour la prochaine fois que je n'arriverai pas à dormir la veille.",
+      "mood": "excited",
+      "daysAgo": 1,
+      "starred": true,
+      "duration": 84
+    },
+    {
+      "text": "Je n'avais pas envie d'enregistrer ce soir. Il ne s'est rien passé, et j'ai failli zapper. Mais je l'ai dit à voix haute, puis j'ai continué encore une minute sur pourquoi les journées où il ne se passe rien me dérangent autant, et c'est ça qui est devenu la vraie entrée. Note pour moi : les jours où je n'ai pas envie de parler, il y a souvent quelque chose en dessous.",
+      "mood": "calm",
+      "daysAgo": 2,
+      "starred": false,
+      "duration": 62
+    },
+    {
+      "text": "Reconnaissante pour ma famille aujourd'hui. Maman m'a appelée et on a parlé plus d'une heure de tout et de rien. Elle m'a raconté des histoires de quand j'étais petite que je n'avais jamais entendues. Papa glissait ses blagues habituelles en fond. Il faut que j'aille les voir plus souvent.",
+      "mood": "grateful",
+      "daysAgo": 3,
+      "starred": true,
+      "duration": 150
+    },
+    {
+      "text": "J'ai commencé un nouveau programme à la salle. Cinq kilomètres sur le tapis et un peu de renforcement. J'ai des courbatures partout, mais la tête claire et pleine d'énergie. Il y a quelque chose dans le fait de dépasser l'inconfort physique qui rend tout le reste plus facile à gérer.",
+      "mood": "excited",
+      "daysAgo": 4,
+      "starred": false,
+      "duration": 45
+    },
+    {
+      "text": "Dimanche tranquille à la maison. J'ai préparé une grosse marmite de sauce tomate maison avec la recette de mamie. Tout l'appartement sentait divinement bon. J'ai regardé un documentaire sur la protection des océans qui m'a vraiment fait réfléchir aux petits changements que je peux faire au quotidien.",
+      "mood": "calm",
+      "daysAgo": 5,
+      "starred": false,
+      "duration": 80
+    },
+    {
+      "text": "Café avec Thomas ce matin. On a parlé de nos projets pour l'été et il a évoqué une randonnée en montagne. J'adore voir comment notre amitié a grandi au fil des années. C'est rare de trouver quelqu'un qui te comprend vraiment sans avoir besoin de beaucoup de mots.",
+      "mood": "happy",
+      "daysAgo": 6,
+      "starred": false,
+      "duration": 110
+    },
+    {
+      "text": "Je me sens un peu submergée par tout ce qui se passe. Les deadlines s'accumulent au boulot et je dors mal. Il faut que je prenne du recul et que je me concentre sur ce qui compte vraiment. Je devrais peut-être essayer l'appli de méditation que Léa m'a conseillée.",
+      "mood": "anxious",
+      "daysAgo": 9,
+      "starred": false,
+      "duration": 60
+    },
+    {
+      "text": "Magnifique coucher de soleil ce soir depuis le toit. J'ai pris quelques photos, mais elles ne rendent pas du tout ce que c'était vraiment. Des traînées orange et roses dans tout le ciel, et en bas les lumières de la ville qui commençaient à s'allumer. Ce sont ces moments-là qui me rappellent pourquoi je suis venue vivre ici.",
+      "mood": "grateful",
+      "daysAgo": 11,
+      "starred": true,
+      "duration": 75
+    },
+    {
+      "text": "Conversation difficile avec ma responsable sur le calendrier du projet. J'étais nerveuse en y allant, mais je suis contente d'avoir dit que les attentes n'étaient pas réalistes. Elle m'a vraiment écoutée et on a trouvé un meilleur plan ensemble. M'affirmer devient plus facile.",
+      "mood": "calm",
+      "daysAgo": 13,
+      "starred": false,
+      "duration": 90
+    },
+    {
+      "text": "J'ai testé une nouvelle recette de curry vert thaï ce soir et c'était une réussite. Le secret, c'est la citronnelle fraîche et un bon lait de coco. J'en ai apporté à ma voisine et elle a adoré. Cuisiner pour les autres me rend tellement heureuse.",
+      "mood": "happy",
+      "daysAgo": 15,
+      "starred": false,
+      "duration": 100
+    },
+    {
+      "text": "Journée de pluie. Je suis restée à l'intérieur et j'ai enfin fini le livre que je lisais depuis des semaines. La fin était douce-amère, mais belle. Après, je me suis mise à dessiner dans mon carnet, juste des motifs abstraits. Parfois, la créativité vient mieux quand il n'y a rien d'autre à faire.",
+      "mood": "calm",
+      "daysAgo": 17,
+      "starred": false,
+      "duration": 130
+    },
+    {
+      "text": "Le mal du pays aujourd'hui. J'ai vu une famille au parc qui m'a rappelé les week-ends avec mes frères et sœurs quand on était petits. On passait des heures à jouer dehors jusqu'à ce que les lampadaires s'allument. Il faut que je prévoie d'y retourner bientôt.",
+      "mood": "sad",
+      "daysAgo": 19,
+      "starred": false,
+      "duration": 55
+    },
+    {
+      "text": "Super cours de yoga ce matin. À la fin, la prof nous a guidés dans une méditation qui m'a laissée complètement apaisée. Je remarque que pratiquer régulièrement change vraiment ma façon de gérer le stress au quotidien.",
+      "mood": "calm",
+      "daysAgo": 21,
+      "starred": false,
+      "duration": 70
+    },
+    {
+      "text": "Bénévolat au jardin partagé aujourd'hui. On a planté des tomates, des herbes aromatiques et des tournesols avec une bande de gens formidables. Travailler la terre avec ses mains, c'est profondément satisfaisant. J'ai rencontré une institutrice à la retraite, Monique, qui racontait des histoires merveilleuses.",
+      "mood": "grateful",
+      "daysAgo": 23,
+      "starred": true,
+      "duration": 180
+    },
+    {
+      "text": "Épuisée après une longue semaine. J'ai à peine tenu la journée. Parfois, il faut juste reconnaître qu'on est à bout et s'autoriser à se reposer. Demain est un autre jour.",
+      "mood": "tired",
+      "daysAgo": 25,
+      "starred": false,
+      "duration": 30
+    },
+    {
+      "text": "Expo d'art dans le centre avec Chloé. La partie art moderne donnait à réfléchir, surtout l'installation sur le changement climatique. Au dîner après, on a eu de super discussions sur l'art et sur ce qu'il veut dire.",
+      "mood": "excited",
+      "daysAgo": 27,
+      "starred": false,
+      "duration": 95
+    },
+    {
+      "text": "Je me suis fixé de nouveaux objectifs pour le mois. Lire deux livres, faire du sport quatre fois par semaine et passer plus de temps sur la photo. Les écrire les rend plus concrets et plus atteignables. Je me sens motivée et pleine d'espoir.",
+      "mood": "excited",
+      "daysAgo": 28,
+      "starred": false,
+      "duration": 65
+    },
+    {
+      "text": "Impossible de dormir cette nuit. Je n'arrêtais pas de ruminer les changements qui arrivent au travail. Je sais que m'inquiéter ne sert à rien, mais parfois c'est dur de couper le bruit. Je vais essayer les exercices de respiration que le docteur Martin m'a conseillés.",
+      "mood": "anxious",
+      "daysAgo": 29,
+      "starred": false,
+      "duration": 40
+    },
+    {
+      "text": "Journée parfaite pour un tour à vélo le long des quais. Une brise fraîche, un soleil chaud. Je me suis arrêtée dans une petite librairie que je n'avais jamais remarquée et j'y ai trouvé une édition originale d'un recueil de poèmes. La vie sait nous surprendre quand on ralentit assez pour la remarquer.",
+      "mood": "happy",
+      "daysAgo": 30,
+      "starred": true,
+      "duration": 140
+    },
+    {
+      "text": "Encore un déjeuner avec Camille aujourd'hui. Elle traverse une période difficile dans son nouveau boulot et je suis contente qu'elle se sente assez à l'aise pour se confier à moi. On a parlé de poser ses limites et de la difficulté de dire non. Je lui ai donné le même conseil que Thomas m'avait donné un jour : protège d'abord ton énergie.",
+      "mood": "calm",
+      "daysAgo": 7,
+      "starred": false,
+      "duration": 85
+    },
+    {
+      "text": "J'ai emmené mon appareil photo au jardin botanique. La photo à l'heure dorée devient mon exutoire créatif préféré. J'ai fait des macros incroyables de rosée sur des pétales de rose. Camille m'a écrit plus tard que ma story Instagram lui avait donné envie de se remettre à la peinture.",
+      "mood": "happy",
+      "daysAgo": 8,
+      "starred": false,
+      "duration": 95
+    },
+    {
+      "text": "La réunion a débordé de deux heures. Le lancement a été avancé d'une semaine et je sens la pression monter. Julien m'a prise à part après et m'a dit que j'avais super bien géré les objections. Les petites victoires comptent, même les jours difficiles.",
+      "mood": "anxious",
+      "daysAgo": 10,
+      "starred": false,
+      "duration": 70
+    },
+    {
+      "text": "Un footing le long de la rivière ce soir m'a vidé la tête. Je repense à ce que Maman m'a dit le week-end dernier, que je cours toujours après la prochaine chose au lieu d'apprécier là où j'en suis. Elle a raison. La gratitude n'a rien de passif, ça se pratique. Nouveau record perso sur 5 km quand même.",
+      "mood": "grateful",
+      "daysAgo": 12,
+      "starred": false,
+      "duration": 55
+    },
+    {
+      "text": "Thomas et moi avons enfin réservé la rando en montagne pour le mois prochain. Trois jours, deux sommets, zéro réseau. Chloé veut venir aussi, ce qui rendrait ça encore mieux. J'ai passé la soirée à regarder les sentiers et le matériel. Préparer une aventure, c'est une joie en soi.",
+      "mood": "excited",
+      "daysAgo": 14,
+      "starred": false,
+      "duration": 120
+    },
+    {
+      "text": "Longue discussion en visio avec Léa ce soir. Elle commence une thérapie et elle a eu le courage de me le dire. Ça m'a fait réfléchir à mon propre chemin avec ma santé mentale. Parler à ce journal tous les jours me fait plus de bien que je ne l'aurais cru. Les schémas que je repère dans mes propres mots me surprennent.",
+      "mood": "calm",
+      "daysAgo": 16,
+      "starred": false,
+      "duration": 100
+    },
+    {
+      "text": "J'ai essayé un cours de cuisine méditerranéenne dans le centre. On a fait une chakchouka et du pain pita maison. Le chef venait de Tel-Aviv et racontait les marchés de là-bas de façon incroyablement vivante. J'ai apporté les restes à Thomas, et il m'a dit que c'était son meilleur repas du mois.",
+      "mood": "happy",
+      "daysAgo": 18,
+      "starred": false,
+      "duration": 130
+    },
+    {
+      "text": "Réveillée à 5 h, impossible de me rendormir. Les deadlines s'invitent jusque dans mes rêves. J'ai décidé d'en profiter : j'ai fait une liste de priorités et j'ai bouclé trois tâches avant même que l'équipe soit connectée. Transformer l'angoisse en élan, ça m'a donné de la force.",
+      "mood": "anxious",
+      "daysAgo": 20,
+      "starred": false,
+      "duration": 50
+    },
+    {
+      "text": "Balade photo avec Chloé dans la vieille ville. Elle a un regard tellement différent du mien, elle capte les gens et les émotions alors que moi, je suis attirée par l'architecture et la lumière. On prépare une expo commune au centre culturel du quartier. L'énergie créative entre nous est électrique.",
+      "mood": "excited",
+      "daysAgo": 22,
+      "starred": false,
+      "duration": 110
+    },
+    {
+      "text": "Maman et Papa sont venus pour le week-end. Papa m'a réparé le robinet qui fuyait, ça le tracassait depuis des mois. Maman a réorganisé toute ma cuisine et cuisiné de quoi tenir deux semaines. La maison est plus chaleureuse quand ils sont là. Ils me manquent déjà.",
+      "mood": "grateful",
+      "daysAgo": 24,
+      "starred": true,
+      "duration": 160
+    },
+    {
+      "text": "Camille m'a conseillé un livre sur le stoïcisme et j'en ai dévoré la moitié aujourd'hui. L'idée qu'on ne contrôle pas les événements, mais qu'on contrôle notre réaction, me parle vraiment. Je l'ai appliquée cet après-midi pendant un appel de boulot agaçant et ça m'a vraiment aidée. En ce moment, j'ai l'impression de grandir, concrètement.",
+      "mood": "calm",
+      "daysAgo": 26,
+      "starred": false,
+      "duration": 90
+    },
+    {
+      "text": "Yoga et méditation ce matin, puis un moment à écrire mon journal au parc. Léa trouve que je suis plus posée ces temps-ci, et je crois qu'elle a raison. Mon rapport au stress est en train de changer. Je ne le fuis plus, j'apprends à faire avec. Même mes photos le montrent, plus de calme, moins de chaos.",
+      "mood": "calm",
+      "daysAgo": 31,
+      "starred": false,
+      "duration": 75
+    },
+    {
+      "text": "Petit dîner à la maison. Camille, Thomas, Chloé et Léa sont tous venus. J'ai fait les pâtes de mamie et le curry thaï. Tout le monde a apporté du vin et des histoires. Thomas a porté un toast à l'amitié qui a fait pleurer Chloé. Ce sont ces gens-là qui rendent ma vie riche. Dire que je suis reconnaissante, c'est bien en dessous de la vérité.",
+      "mood": "grateful",
+      "daysAgo": 33,
+      "starred": true,
+      "duration": 170
+    },
+    {
+      "text": "Le projet est enfin lancé. Trois mois de soirées tardives et de week-ends au bureau, et c'est en ligne. Julien a envoyé un mail à toute l'entreprise pour féliciter l'équipe. Je suis fière, mais vidée. Je prends ma journée demain pour recharger les batteries. Camille dit que je l'ai bien mérité, et pour une fois, je la crois.",
+      "mood": "excited",
+      "daysAgo": 35,
+      "starred": true,
+      "duration": 80
+    },
+    {
+      "text": "Rando en solo jusqu'à la cascade. Pas de musique, pas de podcast, juste le chant des oiseaux et mes pensées. J'ai réalisé que j'ai été plus présente ce mois-ci que jamais. Le combo journal, sport et amitiés entretenues fonctionne. La moi du futur me remerciera d'avoir pris ces habitudes.",
+      "mood": "happy",
+      "daysAgo": 37,
+      "starred": false,
+      "duration": 140
+    }
+  ]
+}
