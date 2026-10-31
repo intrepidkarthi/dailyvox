@@ -66,7 +66,23 @@ object DummyData {
     /** The corpus, for the purge that removes it from installs that got it. */
     fun demoTexts(): List<String> = texts.map { it.first }
 
-    fun entries(): List<Entry> {
+    /**
+     * The demo journal, in English by default. [lang] ("de", "es-ES",
+     * "pt-BR"...) picks one of [DummyDataTranslations] for localized store
+     * screenshots, from `-PseedDemoLang`; an unknown or blank tag is English.
+     *
+     * A translated entry is seeded the way 1.3 saves a spoken one: its
+     * [Entry.language] column holds the recogniser tag, and valence and people
+     * are derived THROUGH the language gate ([Valence.of] and
+     * [com.dailyvox.twin.NameDetector.detect] with that tag). So a German
+     * journal gets no valence and no people, exactly what a real German
+     * journal gets, and the screenshots cannot show a feature the language
+     * does not have. English keeps the 1.2 path below unchanged (null column).
+     */
+    fun entries(lang: String? = null): List<Entry> {
+        val tag = lang?.let { DummyDataTranslations.tagFor(it) }
+        val texts: List<Pair<String, Int>> = if (tag == null) this.texts
+            else DummyDataTranslations.byTag.getValue(tag).zip(this.texts) { t, en -> t to en.second }
         val now = System.currentTimeMillis()
         val day = 86_400_000L
         // Spread across ~13 weeks, with an unbroken run of 21 recent days.
@@ -82,6 +98,7 @@ object DummyData {
         val corpus = mutableListOf<Entry>()
         texts.forEachIndexed { i, (text, dur) ->
             val (mid, lower) = com.dailyvox.twin.NameDetector.vocabulary(texts.map { it.first })
+            val corpusTexts = texts.map { it.first }
             corpus.add(
                 Entry(
                     id = UUID.randomUUID().toString(),
@@ -93,8 +110,10 @@ object DummyData {
                     // and showed "Day 7" for a 21-day seed.
                     createdAt = now - offsets[i] * day - ((i % 5) * 1_800_000L),
                     durationSec = dur,
-                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table),
-                    entities = com.dailyvox.twin.NameDetector.extract(text, mid, lower).joinToString(","),
+                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table, tag),
+                    entities = (if (tag == null) com.dailyvox.twin.NameDetector.extract(text, mid, lower)
+                        else com.dailyvox.twin.NameDetector.detect(text, corpusTexts, tag)).joinToString(","),
+                    language = tag,
                     // Cycled, not indexed. This was a fixed 12-element list read
                     // at [i] while the loop grew to 38 entries — an
                     // IndexOutOfBoundsException on launch, and one that only
