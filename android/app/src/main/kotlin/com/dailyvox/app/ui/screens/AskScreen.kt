@@ -147,12 +147,12 @@ fun AskScreen(
         // function words to ignore ("wann", "habe", "ich" are not search
         // terms), and picks the language of the answer's frame and abstention
         // line (quotes stay in the language they were written in). The
-        // platform classifier when it is sure; a short question is in the
-        // language the person speaks, else the app's own language.
+        // person's language (spoken, else the app's) unless the platform
+        // classifier is sure of another one (TextLanguage.question).
+        val person = com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context) ?: appLanguage
         val language = withContext(Dispatchers.IO) {
-            com.dailyvox.app.system.TextLanguage.detect(context, question)
-        } ?: com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
-            ?: appLanguage
+            com.dailyvox.app.system.TextLanguage.question(context, question, person)
+        }
         val hits = Retrieval.retrieve(question, entries.map { it.toSearchEntry() }, language = language)
             .mapNotNull { hit ->
                 entries.firstOrNull { it.id == hit.entryId }?.let { e ->

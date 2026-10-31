@@ -50,7 +50,39 @@ object TextLanguage {
     }
 
     /** The confident answer, or null. Pure, so the rule is testable without a phone. */
-    internal fun choose(text: String, hypotheses: List<Pair<String, Float>>): String? {
+    /**
+     * Overruling the language a person speaks takes more than a confident
+     * guess: the classifier calls a short Spanish question ("¿Carmen se muda a
+     * Mumbai?") English with better than [MIN_CONFIDENCE].
+     */
+    const val OVERRULE_CONFIDENCE = 0.9f
+    const val OVERRULE_LETTERS = 40
+
+    /**
+     * The language a QUESTION is in (Ask your Twin), given [personLanguage]:
+     * the language they speak, else the app's. The classifier's answer when it
+     * agrees with that language, or when it is very sure about a question long
+     * enough to judge; otherwise the person's language.
+     */
+    fun question(context: Context, text: String, personLanguage: String): String =
+        question(platform(context), text, personLanguage)
+
+    fun question(detector: Detector, text: String, personLanguage: String): String {
+        if (text.isBlank()) return personLanguage
+        val hypotheses = detector.hypotheses(text)
+        val detected = choose(text, hypotheses) ?: return personLanguage
+        if (base(detected) == base(personLanguage)) return detected
+        return choose(text, hypotheses, OVERRULE_LETTERS, OVERRULE_CONFIDENCE) ?: personLanguage
+    }
+
+    private fun base(tag: String) = Locale.forLanguageTag(tag.replace('_', '-')).language
+
+    internal fun choose(
+        text: String,
+        hypotheses: List<Pair<String, Float>>,
+        minLetters: Int = MIN_LETTERS,
+        minConfidence: Float = MIN_CONFIDENCE,
+    ): String? {
         // Combining marks count: Devanagari writes most vowels as marks, and a
         // letters-only count makes a full Hindi sentence look half as long.
         val letters = text.count {
@@ -58,9 +90,9 @@ object TextLanguage {
                 t == Character.NON_SPACING_MARK.toInt() || t == Character.COMBINING_SPACING_MARK.toInt()
             }
         }
-        if (letters < MIN_LETTERS) return null
+        if (letters < minLetters) return null
         val (tag, score) = hypotheses.maxByOrNull { it.second } ?: return null
-        if (score < MIN_CONFIDENCE) return null
+        if (score < minConfidence) return null
         val clean = Locale.forLanguageTag(tag.replace('_', '-')).toLanguageTag()
         return clean.takeUnless { it.isBlank() || it == "und" }
     }

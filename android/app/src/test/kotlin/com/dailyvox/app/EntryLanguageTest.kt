@@ -90,4 +90,18 @@ class EntryLanguageTest {
         assertFalse(Repo.isTyped("/a.m4a", 0))
         assertEquals(Locale.ROOT, Locale.ROOT)
     }
+
+    @Test
+    fun `a short question stays in the language the person speaks`() {
+        // The platform classifier calls this English with 0.8.
+        val q = "¿Carmen se muda a Mumbai?"
+        assertEquals("es", TextLanguage.question({ listOf("en" to 0.8f) }, q, "es"))
+        // Agreement keeps the classifier's fuller tag.
+        assertEquals("es-MX", TextLanguage.question({ listOf("es-MX" to 0.7f) }, q, "es"))
+        // A long question it is sure of may overrule.
+        val long = "What did I say about moving to Mumbai with Carmen last spring?"
+        assertEquals("en", TextLanguage.question({ listOf("en" to 0.95f) }, long, "es"))
+        assertEquals("es", TextLanguage.question({ listOf("en" to 0.85f) }, long, "es"))
+        assertEquals("de", TextLanguage.question({ error("must not be asked") }, "  ", "de"))
+    }
 }
