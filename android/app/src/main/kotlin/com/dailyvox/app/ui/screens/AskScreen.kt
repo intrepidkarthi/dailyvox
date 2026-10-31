@@ -281,7 +281,12 @@ fun AskScreen(
         // questions only, so the set changes as the conversation grows rather
         // than repeating what was just answered.
         val remaining = bank.filter { it !in asked }.take(3)
-        if (remaining.isNotEmpty()) {
+        // The bank's questions and their template answers are English-only, so only English speakers get the row.
+        val speaksEnglish = com.dailyvox.twin.LanguageGate.baseCode(
+            com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
+                ?: Locale.getDefault().toLanguageTag()
+        ) == "en"
+        if (speaksEnglish && remaining.isNotEmpty()) {
             FlowRow(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
