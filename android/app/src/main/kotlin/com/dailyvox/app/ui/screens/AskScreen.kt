@@ -45,7 +45,9 @@ import com.dailyvox.twin.RetrievalAnswerComposer
 import com.dailyvox.twin.TwinChatEvidence
 import com.dailyvox.twin.TwinFacts
 import com.dailyvox.twin.TwinQuestion
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -145,7 +147,15 @@ fun AskScreen(
                     TwinChatEvidence(e.id, e.createdAt, e.text, hit.score)
                 }
             }
-        val turn = RetrievalAnswerComposer.compose(question, hits, facts)
+        // The frame and the abstention line follow the question's language
+        // (quotes stay in the language they were written in). The platform
+        // classifier when it is sure; a short question is in the language the
+        // person speaks, else the phone's.
+        val language = withContext(Dispatchers.IO) {
+            com.dailyvox.app.system.TextLanguage.detect(context, question)
+        } ?: com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
+            ?: Locale.getDefault().toLanguageTag()
+        val turn = RetrievalAnswerComposer.compose(question, hits, facts, language)
         seq += 1
         push(Msg(seq, turn.answer, isUser = false,
                  citations = turn.citations, followUps = turn.suggestedFollowUps))
