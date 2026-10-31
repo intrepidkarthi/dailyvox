@@ -48,6 +48,9 @@ release; phones upgrade from 1.2. Nothing changes for entries spoken in English.
   knows the question's language, so its own small words ("wann", "habe", "ich")
   are not search terms. Before, an ordinary German question like "Wann habe ich
   schlecht geschlafen?" got "nothing close enough" even with an entry saying it.
+  A short question is taken to be in the language you speak unless it is clearly
+  another one, and Spanish question words count as small words with or without
+  the accent ("cuándo").
 - **No English suggested questions outside English.** The ten template questions
   and their answers are English, so the row shows only for English speakers. An
   answer quoting two entries says "the entries below", not "the entry below".
