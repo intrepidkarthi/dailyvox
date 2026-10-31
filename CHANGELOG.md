@@ -44,6 +44,13 @@ release; phones upgrade from 1.2. Nothing changes for entries spoken in English.
   entries, the dates and the "nothing close enough" line come in German, Spanish,
   French, Italian and Portuguese; quotes stay as said. Outside English the
   "nothing close enough" answer no longer offers English-only template chips.
+- **Ask finds your entries when you ask in another language.** Retrieval now
+  knows the question's language, so its own small words ("wann", "habe", "ich")
+  are not search terms. Before, an ordinary German question like "Wann habe ich
+  schlecht geschlafen?" got "nothing close enough" even with an entry saying it.
+- **No English suggested questions outside English.** The ten template questions
+  and their answers are English, so the row shows only for English speakers. An
+  answer quoting two entries says "the entries below", not "the entry below".
 - **Entry buttons fit every language.** Edit and Ask shrink before they clip and
   wrap only after that; shorter Ask labels in Spanish, Italian and Portuguese.
 - **Onboarding no longer implies mood reading outside English.** The airplane-mode
