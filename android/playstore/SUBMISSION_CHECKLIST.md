@@ -154,7 +154,8 @@ language switched too (Android's permission labels ignore per-app language).
 ./gradlew installDebug -PseedDemo -PseedDemoLang=de     # es, fr, it, pt-BR
 adb shell cmd locale set-app-locales com.dailyvox.app --locales de-DE
 # set Settings › Design to Day before capturing: Sunset turns dark after 17:00
-# captures go in screenshot-src/de/ (same filenames, plus 08-language.png)
+# captures go in screenshot-src/de/ (same filenames as English, 05-ask.png included:
+# a question typed in that language, answered from the seeded journal)
 python3 screenshot-src/compose.py de    # -> assets/screenshots/de/
 ```
 

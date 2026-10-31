@@ -31,15 +31,30 @@ LOCALIZED SETS (1.3, the languages release). Captures for each live in
 (`./gradlew installDebug -PseedDemo -PseedDemoLang=de`) with the app's own
 language set to match (`adb shell cmd locale set-app-locales com.dailyvox.app
 --locales de-DE`), and frames go to assets/screenshots/<locale>/. English keeps
-its old paths. Outside English the app does NOT suggest a mood, reflect, read
-traits, draw a mood curve, find themes or search by meaning, and Ask your Twin
-still answers in English -- so no localized frame claims any of those, and the
-Ask frame is replaced by the "speak your language" Settings card. German has
-no name detection (every noun is capitalised), so its sky has no named stars
-and its caption does not mention people; pt-BR copy does not claim names
-either. es/it/pt-BR have no "filed" frame: the entry screen's "Ask about this"
-button is clipped in those languages (an app bug), and a store frame must not
-show clipped text.
+its old paths. Each set has the same eight frames, order and grounds as
+English: speak, sky, journal, Ask, streak, permissions, entry, onboarding.
+
+Outside English the app does NOT suggest a mood, reflect, read traits, draw a
+mood curve, find themes or search by meaning, so no localized caption claims
+any of those. Ask your Twin is in: it answers in the question's language by
+quoting the closest entries, with their dates, and that is all its caption
+claims. Each Ask capture is a real question in that language, typed on the
+phone, answered from the seeded journal (not the abstention):
+
+    de     Was hat Marie aus Mumbai geschickt?
+    es     ¿Carmen se va a vivir a Mumbai?
+    fr     Qu'est-ce que Léa m'a envoyé de Mumbai ?
+    it     Cosa mi ha mandato Chiara da Mumbai?
+    pt-BR  A Beatriz vai morar em Mumbai?
+
+Ask's word match counts the question's own function words against it (they
+are not stopped in the question), so a long natural question can abstain;
+these were checked to clear the threshold. German has no name detection
+(every noun is capitalised), so its sky has no named stars and no caption
+mentions people; pt-BR copy does not claim names either. The entry frame is
+in every set again: since 1.3's fix the Edit and Ask buttons fit in every
+language. The "speak your language" Settings card is no longer used; its
+capture showed debug-build rows.
 """
 import html
 import os
@@ -100,8 +115,7 @@ FRAMES = [
          stk=None),
 ]
 
-# Same order and grounds as English. The Ask slot holds the language card,
-# because Ask still answers in English (see the docstring).
+# Same order and grounds as English.
 SLOTS = [CORAL, VIOLET, EMERALD, OCEAN, BERRY, TEAL, ORCHID, NIGHT]
 
 def localized(rows):
@@ -114,7 +128,7 @@ def localized(rows):
 
 STK_SPEAK = "left:54px;top:1640px"
 STK_TWIN = "right:54px;top:1760px"
-STK_LANG = "right:54px;top:1960px"
+STK_ASK = "right:54px;top:1960px"
 STK_PERM = "right:54px;top:1290px"
 
 LOCALES = {
@@ -132,10 +146,10 @@ LOCALES = {
         ("02-journal.png", "Dein Tagebuch",
          'Jede Nacht<br><mark>hier bewahrt</mark>.',
          "Durchsuchen per Tastatur oder per Stimme.", None),
-        ("08-language.png", "Auf Deutsch",
-         'Sprich einfach<br><mark>Deutsch</mark>.',
-         "Die Spracherkennung läuft auf dem Telefon, auch auf Deutsch.",
-         sticker("Sprachpaket", "auf dem Telefon", STK_LANG, 4)),
+        ("05-ask.png", "Frag deinen Twin",
+         'Antworten mit<br><mark>Belegen</mark>.',
+         "Er zitiert deine eigenen Einträge, mit Datum.",
+         sticker("Netzwerkaufrufe", "keine, nie", STK_ASK, 4)),
         ("04-insights.png", "Deine Serie",
          'Jede Nacht<br><mark>zählt</mark>.',
          "Serie und Wochenrückblick, gezählt auf diesem Telefon.", None),
@@ -162,10 +176,10 @@ LOCALES = {
         ("02-journal.png", "Tu diario",
          'Cada noche,<br><mark>guardada aquí</mark>.',
          "Busca escribiendo o con la voz.", None),
-        ("08-language.png", "En español",
-         'Habla en<br><mark>español</mark>.',
-         "El reconocimiento de voz funciona en el teléfono, también en español.",
-         sticker("paquete de voz", "en el teléfono", STK_LANG, 4)),
+        ("05-ask.png", "Pregunta a tu Gemelo",
+         'Respuestas<br><mark>con pruebas</mark>.',
+         "Cita tus propias entradas, con su fecha.",
+         sticker("llamadas a la red", "cero, nunca", STK_ASK, 4)),
         ("04-insights.png", "Tu racha",
          'Cada noche<br><mark>cuenta</mark>.',
          "Tu racha y tu semana, contadas en este teléfono.", None),
@@ -173,7 +187,9 @@ LOCALES = {
          'Sin internet.<br><mark>Compruébalo</mark>.',
          "Micrófono y notificaciones. Nada más.",
          sticker("permiso de internet", "no solicitado", STK_PERM, 4)),
-        (None, None, None, None, None),   # filed: button clipped in Spanish
+        ("06-filed.png", "Tu propia palabra",
+         'Lo que sentiste<br><mark>de verdad</mark>.',
+         "Tú nombras la emoción y corriges cada palabra.", None),
         ("07-onboarding-ledger.png", "Antes de tu primera palabra",
          'Primero,<br><mark>los permisos</mark>.',
          "Antes de grabar nada: lo que necesita y lo que nunca envía.", None),
@@ -190,10 +206,10 @@ LOCALES = {
         ("02-journal.png", "Ton journal",
          'Chaque soir,<br><mark>gardé ici</mark>.',
          "Cherche en tapant ou à la voix.", None),
-        ("08-language.png", "En français",
-         'Parle<br><mark>français</mark>.',
-         "La reconnaissance vocale tourne sur le téléphone, en français aussi.",
-         sticker("pack vocal", "sur le téléphone", STK_LANG, 4)),
+        ("05-ask.png", "Demande à ton Jumeau",
+         'Des réponses<br><mark>sourcées</mark>.',
+         "Il cite tes propres entrées, avec leur date.",
+         sticker("appels réseau", "zéro, jamais", STK_ASK, 4)),
         ("04-insights.png", "Ta série",
          'Chaque soir<br><mark>compte</mark>.',
          "Ta série et ta semaine, comptées sur ce téléphone.", None),
@@ -220,10 +236,10 @@ LOCALES = {
         ("02-journal.png", "Il tuo diario",
          'Ogni sera,<br><mark>custodita qui</mark>.',
          "Cerca scrivendo o con la voce.", None),
-        ("08-language.png", "In italiano",
-         'Parla<br><mark>italiano</mark>.',
-         "Il riconoscimento vocale funziona sul telefono, anche in italiano.",
-         sticker("pacchetto vocale", "sul telefono", STK_LANG, 4)),
+        ("05-ask.png", "Chiedi al tuo Gemello",
+         'Risposte<br><mark>con le fonti</mark>.',
+         "Cita le tue voci, con la loro data.",
+         sticker("chiamate di rete", "zero, mai", STK_ASK, 4)),
         ("04-insights.png", "La tua serie",
          'Ogni sera<br><mark>conta</mark>.',
          "La tua serie e la tua settimana, contate su questo telefono.", None),
@@ -231,7 +247,9 @@ LOCALES = {
          'Niente internet.<br><mark>Verifica tu</mark>.',
          "Microfono e notifiche. Nient'altro.",
          sticker("permesso internet", "non richiesto", STK_PERM, 4)),
-        (None, None, None, None, None),   # filed: button clipped in Italian
+        ("06-filed.png", "La tua parola",
+         'Com\'era<br><mark>davvero</mark>.',
+         "Dai tu il nome all'emozione e correggi ogni parola.", None),
         ("07-onboarding-ledger.png", "Prima di dire una parola",
          'Prima<br><mark>i permessi</mark>.',
          "Prima di registrare: cosa serve all'app e cosa non invia mai.", None),
@@ -249,10 +267,10 @@ LOCALES = {
         ("02-journal.png", "Seu diário",
          'Toda noite,<br><mark>guardada aqui</mark>.',
          "Busque digitando ou pela voz.", None),
-        ("08-language.png", "Em português",
-         'Fale em<br><mark>português</mark>.',
-         "O reconhecimento de voz roda no celular, em português também.",
-         sticker("pacote de voz", "no celular", STK_LANG, 4)),
+        ("05-ask.png", "Pergunte ao seu Twin",
+         'Respostas<br><mark>com fontes</mark>.',
+         "Ele cita os seus próprios registros, com a data.",
+         sticker("chamadas de rede", "zero, nunca", STK_ASK, 4)),
         ("04-insights.png", "Sua sequência",
          'Toda noite<br><mark>conta</mark>.',
          "Sua sequência e sua semana, contadas neste celular.", None),
@@ -260,7 +278,9 @@ LOCALES = {
          'Sem internet.<br><mark>Confira você mesmo</mark>.',
          "Microfone e notificações. Mais nada.",
          sticker("permissão de internet", "não solicitada", STK_PERM, 4)),
-        (None, None, None, None, None),   # filed: button clipped in Portuguese
+        ("06-filed.png", "Sua própria palavra",
+         'Como foi<br><mark>de verdade</mark>.',
+         "Você dá nome à emoção e corrige cada palavra.", None),
         ("07-onboarding-ledger.png", "Antes da primeira palavra",
          'As permissões<br><mark>vêm primeiro</mark>.',
          "Antes de gravar: o que o app precisa e o que ele nunca envia.", None),
