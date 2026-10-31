@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -349,28 +350,30 @@ fun EntryDetailScreen(
         // Photo attachments are OUT OF SCOPE for v1 (FINAL-SPEC §9), so there is
         // no button for them. The column, the storage and the picker are all
         // still here and working, and any photo an early build saved renders above.
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp),
+        //
+        // The two labels have to fit in every language: each shrinks a little
+        // before it would clip, and only then wraps to a second line, with the
+        // row growing to match. English fits at full size and looks as before.
+        Row(Modifier.height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
             val shape = RoundedCornerShape(18.dp)
             val shareDescription = stringResource(R.string.entry_action_share_description)
             Box(
-                Modifier.weight(1f).height(52.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = 52.dp).fillMaxHeight().clip(shape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable { editing = true },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(stringResource(R.string.entry_action_edit), fontFamily = Nunito, fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                     color = MaterialTheme.colorScheme.onSurface)
+                FittedLabel(stringResource(R.string.entry_action_edit), MaterialTheme.colorScheme.onSurface)
             }
             Box(
-                Modifier.weight(1f).height(52.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = 52.dp).fillMaxHeight().clip(shape)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable { onAsk(askSeed) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(stringResource(R.string.entry_action_ask), fontFamily = Nunito, fontSize = 17.sp,
-                     fontWeight = FontWeight.Bold, maxLines = 1,
-                     color = MaterialTheme.colorScheme.onPrimary)
+                FittedLabel(stringResource(R.string.entry_action_ask), MaterialTheme.colorScheme.onPrimary)
             }
             Box(
                 Modifier.size(52.dp).clip(CircleShape)
@@ -720,3 +723,30 @@ private fun valenceLabel(v: Float): String {
     }
     return stringResource(R.string.entry_valence_value, "$sign${"%.2f".format(v)}", word)
 }
+
+/**
+ * A button label that fits its box in any language. It starts at the design's
+ * 17sp on one line; if that would clip, it steps down to [MIN_LABEL_SP], and if
+ * it still does not fit it wraps onto a second line. The text is drawn only once
+ * its size is settled, so the steps never flash.
+ */
+@Composable
+private fun FittedLabel(text: String, color: androidx.compose.ui.graphics.Color) {
+    var size by remember(text) { mutableStateOf(17f) }
+    var settled by remember(text) { mutableStateOf(false) }
+    val wrap = size <= MIN_LABEL_SP
+    Text(
+        text,
+        fontFamily = Nunito, fontSize = size.sp, fontWeight = FontWeight.Bold,
+        lineHeight = (size + 3f).sp, color = color,
+        maxLines = if (wrap) 2 else 1, softWrap = wrap,
+        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        onTextLayout = { layout ->
+            if (!wrap && layout.didOverflowWidth) size -= 1f else settled = true
+        },
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+            .drawWithContent { if (settled) drawContent() },
+    )
+}
+
+private const val MIN_LABEL_SP = 14f

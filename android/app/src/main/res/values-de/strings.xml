@@ -240,7 +240,7 @@
     <string name="onboarding_ledger_sent">An DailyVox gesendet</string>
     <string name="onboarding_ledger_sent_state">nichts, niemals</string>
     <string name="onboarding_airplane_title">Probier es im Flugmodus</string>
-    <string name="onboarding_airplane_body">Schalte die Funkverbindungen aus und sprich. Das Transkript, die Stimmung, der Stern – alles passiert weiterhin auf dem Telefon. Braucht dein Telefon zuerst sein Offline-Sprachpaket, bietet DailyVox es an.</string>
+    <string name="onboarding_airplane_body">Schalte die Funkverbindungen aus und sprich. Das Transkript, dein Stern – alles bleibt auf diesem Telefon. Braucht dein Telefon zuerst sein Offline-Sprachpaket, bietet DailyVox es an.</string>
     <string name="onboarding_continue">Weiter</string>
     <string name="onboarding_invite_title">Dein Himmel beginnt\nmit deiner Stimme</string>
     <string name="onboarding_invite_body">Keine Formulare, keine Anmeldung. Erzähl einfach von deinem Tag – und sieh, wie deine Stimme zum ersten Stern an einem Himmel wird, den nur du siehst.</string>

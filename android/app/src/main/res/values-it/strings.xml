@@ -261,7 +261,7 @@
     <string name="onboarding_ledger_sent">Inviato a DailyVox</string>
     <string name="onboarding_ledger_sent_state">niente, mai</string>
     <string name="onboarding_airplane_title">Provalo in modalità aereo</string>
-    <string name="onboarding_airplane_body">Spegni le connessioni e parla. La trascrizione, l\'umore, la stella: succede tutto lo stesso, sul telefono. Se il telefono ha prima bisogno del pacchetto vocale offline, DailyVox te lo proporrà.</string>
+    <string name="onboarding_airplane_body">Spegni le connessioni e parla. La trascrizione, la tua stella: tutto resta su questo telefono. Se il telefono ha prima bisogno del pacchetto vocale offline, DailyVox te lo proporrà.</string>
     <string name="onboarding_continue">Continua</string>
     <string name="onboarding_invite_title">Il tuo cielo inizia\ncon la tua voce</string>
     <string name="onboarding_invite_body">Niente moduli, niente registrazione. Parla della tua giornata e guarda la tua voce diventare la prima stella di un cielo che solo tu puoi vedere.</string>
@@ -407,7 +407,7 @@
     <string name="entry_filed_when_evening">sera</string>
     <string name="entry_filed_when_late_night">tarda notte</string>
     <string name="entry_action_edit">Modifica</string>
-    <string name="entry_action_ask">"✦  Chiedi a riguardo"</string>
+    <string name="entry_action_ask">"✦  Chiedi"</string>
     <string name="entry_action_share_description">Condividi questa voce</string>
     <string name="entry_edit_title">Modifica trascrizione</string>
     <string name="entry_edit_save">Salva</string>

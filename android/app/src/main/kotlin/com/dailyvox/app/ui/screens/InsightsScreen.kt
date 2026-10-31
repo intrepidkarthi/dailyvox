@@ -184,10 +184,12 @@ fun InsightsScreen(
             }
             Spacer(Modifier.height(11.dp))
             // A flow rather than a fixed row, so the labels wrap instead of
-            // colliding at the largest font sizes.
+            // colliding at the largest font sizes or in longer languages. Spread
+            // edge to edge like before, but never closer than a set gap: plain
+            // SpaceBetween let a near-full line close up to nothing ("22DÍAS").
             FlowRow(
                 Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = SpaceBetweenAtLeast,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 MonoLabel(stringResource(R.string.streak_longest, streak.longest))
@@ -437,3 +439,16 @@ private fun MoodCurve(entries: List<Entry>) {
  * deliberately conservative: it is better to show nothing than to tell someone
  * something about themselves that the data does not carry.
  */
+
+/**
+ * [Arrangement.SpaceBetween] with a minimum gap. A FlowRow breaks lines using
+ * the arrangement's [Arrangement.Horizontal.spacing], so items only share a
+ * line when this gap fits between them; the spare room is then spread as before.
+ */
+private object SpaceBetweenAtLeast : Arrangement.Horizontal {
+    override val spacing = 14.dp
+    override fun androidx.compose.ui.unit.Density.arrange(
+        totalSize: Int, sizes: IntArray,
+        layoutDirection: androidx.compose.ui.unit.LayoutDirection, outPositions: IntArray,
+    ) = with(Arrangement.SpaceBetween) { arrange(totalSize, sizes, layoutDirection, outPositions) }
+}

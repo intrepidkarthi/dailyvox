@@ -266,7 +266,7 @@
     <string name="onboarding_ledger_sent">Envoyé à DailyVox</string>
     <string name="onboarding_ledger_sent_state">rien, jamais</string>
     <string name="onboarding_airplane_title">Essaie en mode Avion</string>
-    <string name="onboarding_airplane_body">Coupe les connexions et parle. La transcription, l\'humeur, l\'étoile — tout se passe quand même, sur le téléphone. Si ton téléphone a d\'abord besoin de son pack vocal hors ligne, DailyVox te le proposera.</string>
+    <string name="onboarding_airplane_body">Coupe les connexions et parle. La transcription, ton étoile — tout reste sur ce téléphone. Si ton téléphone a d\'abord besoin de son pack vocal hors ligne, DailyVox te le proposera.</string>
     <string name="onboarding_continue">Continuer</string>
     <string name="onboarding_invite_title">Ton ciel commence\navec ta voix</string>
     <string name="onboarding_invite_body">Aucun formulaire, aucune inscription. Parle simplement de ta journée, et regarde ta voix devenir la première étoile d\'un ciel rien qu\'à toi.</string>

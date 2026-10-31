@@ -266,7 +266,7 @@
     <string name="onboarding_ledger_sent">Enviado ao DailyVox</string>
     <string name="onboarding_ledger_sent_state">nada, nunca</string>
     <string name="onboarding_airplane_title">Experimente no modo avião</string>
-    <string name="onboarding_airplane_body">Desligue as conexões e fale. A transcrição, o humor, a estrela — tudo continua acontecendo, no celular. Se seu celular precisar antes do pacote de fala offline, o DailyVox vai oferecer.</string>
+    <string name="onboarding_airplane_body">Desligue as conexões e fale. A transcrição, sua estrela — tudo fica neste celular. Se seu celular precisar antes do pacote de fala offline, o DailyVox vai oferecer.</string>
     <string name="onboarding_continue">Continuar</string>
     <string name="onboarding_invite_title">Seu céu começa\ncom sua voz</string>
     <string name="onboarding_invite_body">Sem formulários, sem cadastro. Só fale sobre seu dia e veja sua voz virar a primeira estrela de um céu que só você vê.</string>
@@ -412,7 +412,7 @@
     <string name="entry_filed_when_evening">começo da noite</string>
     <string name="entry_filed_when_late_night">tarde da noite</string>
     <string name="entry_action_edit">Editar</string>
-    <string name="entry_action_ask">"✦  Perguntar sobre isto"</string>
+    <string name="entry_action_ask">"✦  Perguntar"</string>
     <string name="entry_action_share_description">Compartilhar este registro</string>
     <string name="entry_edit_title">Editar transcrição</string>
     <string name="entry_edit_save">Salvar</string>
