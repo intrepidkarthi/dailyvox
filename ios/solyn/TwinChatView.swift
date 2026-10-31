@@ -588,7 +588,7 @@ struct TwinChatView: View {
             // language the brain has always been asked in.
             if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat,
                language == "en" || FoundationTwinChat.supportsLanguage(of: Locale(identifier: language)) {
-                turn = await brainPipeline.ask(text)
+                turn = await brainPipeline.ask(text, language: language)
             }
             #endif
 
@@ -601,7 +601,8 @@ struct TwinChatView: View {
                     question: text,
                     evidence: evidence,
                     twin: DigitalTwinEngine.shared,
-                    profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+                    profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile),
+                    language: language)
             }
 
             isThinking = false

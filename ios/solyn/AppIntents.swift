@@ -154,12 +154,16 @@ struct AskYourTwinIntent: AppIntent {
             return .result(dialog: "Ask me something about your journal.")
         }
 
+        // The frame and the abstention line follow the question's language,
+        // as in the app; quotes stay in the language they were written in.
+        let language = AskLanguage.language(of: trimmed, speaking: SpeechTranscriber.speakerLocale)
         let evidence = await TwinChatEvidenceAdapter().recall(query: trimmed, topK: 3, dateRange: nil)
         let turn = RetrievalAnswerComposer.compose(
             question: trimmed,
             evidence: evidence,
             twin: DigitalTwinEngine.shared,
-            profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+            profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile),
+            language: language)
 
         let answer = turn.answer.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !answer.isEmpty else {
