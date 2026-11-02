@@ -113,6 +113,11 @@ fun SpeakScreen(
     var playingToday by remember { mutableStateOf(false) }
     val haptics = remember { com.dailyvox.app.system.Haptics(context) }
     var audioPath by remember { mutableStateOf<String?>(null) }
+    // A deaf entry's file while it is being transcribed: leaving the screen
+    // then must still file it (see the PROCESSING branch on dispose).
+    var pendingFile by remember { mutableStateOf<String?>(null) }
+    // The recorder is the witness when the recogniser hears nothing (S24).
+    LaunchedEffect(Unit) { capture.soundCheck = { recorder.peak() > HEARD_PEAK } }
     // Handles the two cases the inline version could not: a permanent denial,
     // where re-launching the request is a silent no-op and the only way out is
     // app settings, and a permission granted in Settings while the app was
@@ -197,6 +202,38 @@ fun SpeakScreen(
         }
     }
 
+    // The recogniser went deaf mid-entry and the recorder carried on (see
+    // SpeechCapture.deaf): the dial's level comes from the recorder, and the
+    // words come from the file once the user stops and the mic is free.
+    LaunchedEffect(state) {
+        while (state == SpeechCapture.State.RECORDING) {
+            if (capture.deaf) capture.feedLevel(kotlin.math.sqrt(recorder.peak()))
+            delay(100)
+        }
+    }
+    LaunchedEffect(Unit) {
+        capture.needsFileTranscript.collect { before ->
+            val seconds = elapsed.coerceAtLeast(1)
+            val file = recorder.stop()
+            if (file == null) {
+                capture.fileDone()
+                if (before.isNotBlank()) onSaved(before, seconds, null)
+                return@collect
+            }
+            pendingFile = file.absolutePath
+            val tag = SpeechCapture.fileTag(context, SpeechCapture.lastSessionLanguage(context))
+            val heard = if (tag == null) "" else
+                (com.dailyvox.app.audio.FileTranscriber.transcribe(context, file, tag)
+                    as? com.dailyvox.app.audio.FileTranscriber.Result.Text)?.value.orEmpty()
+            pendingFile = null
+            capture.fileDone()
+            // No words is still an entry: the audio is kept and the entry page
+            // offers to transcribe it again.
+            onSaved(heard.ifBlank { before }, seconds, file.absolutePath)
+            if (streakMilestone(liveStreak)) haptics.streakMilestone() else haptics.entrySaved()
+        }
+    }
+
     // Transcription failed, but the microphone worked and the audio is on disk.
     //
     // Save it anyway. Losing the recording is a strictly worse outcome than an
@@ -251,7 +288,7 @@ fun SpeakScreen(
             when (capture.state.value) {
                 SpeechCapture.State.IDLE -> Unit
                 SpeechCapture.State.PROCESSING -> {
-                    val path = recorder.stop()?.absolutePath
+                    val path = recorder.stop()?.absolutePath ?: pendingFile
                     val heard = capture.partial.value
                     if (path != null || heard.isNotBlank()) onSaved(heard, elapsed.coerceAtLeast(1), path)
                 }
@@ -1157,6 +1194,13 @@ private fun RecordButton(
 
 /** Shortest wordless recording worth keeping as an audio-only entry. */
 private const val MIN_KEPT_SECONDS = 2
+
+/**
+ * Loudest sample (0..1) above which the recorder counts as having heard the
+ * room. About -24 dBFS: speech at arm's length clears it, a quiet room does
+ * not. Shared with onboarding.
+ */
+internal const val HEARD_PEAK = 0.06f
 
 /**
  * Every seventh day of a run, felt once: on the entry that makes it, not on a

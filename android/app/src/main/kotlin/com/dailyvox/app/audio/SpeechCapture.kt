@@ -190,6 +190,75 @@ class SpeechCapture(private val context: Context) {
     private var recognizer: SpeechRecognizer? = null
 
     /**
+     * Recording on after the recogniser went deaf.
+     *
+     * Two things listen when you speak: the screen's MediaRecorder (the audio
+     * file) and the platform recogniser, a separate service. Android hands the
+     * microphone to one capture at a time. On a Pixel the recogniser is
+     * privileged and hears the room; on a Samsung Galaxy S24 a user reported
+     * every recording ending after about five seconds with "Nothing was
+     * heard", while the audio file played back fine. The recogniser was
+     * getting silence, timing out, and its timeout ended the whole entry.
+     *
+     * So when the recogniser gives up before the user stopped, and the
+     * recorder says the room was NOT silent ([soundCheck]), the entry keeps
+     * recording without it. Stop then hands the file to [needsFileTranscript]:
+     * the screen transcribes the saved audio (FileTranscriber), when nothing
+     * else holds the microphone. A phone whose recogniser hears is unchanged.
+     */
+    @Volatile var deaf = false
+        private set
+
+    /** Set by the screen: did the recorder hear more than silence? */
+    var soundCheck: (() -> Boolean)? = null
+
+    /** True once the user pressed stop: the recogniser ending then is expected. */
+    @Volatile private var userStopped = false
+
+    private val _needsFileTranscript = MutableSharedFlow<String>(
+        replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
+    /**
+     * A deaf entry was stopped. Carries what was transcribed before the
+     * recogniser went deaf (usually nothing), as the fallback if the file
+     * cannot be transcribed. State stays PROCESSING until [fileDone].
+     */
+    val needsFileTranscript: SharedFlow<String> = _needsFileTranscript
+
+    /** The screen has filed the deaf entry. */
+    fun fileDone() {
+        deaf = false
+        _level.value = 0f
+        _state.value = State.IDLE
+    }
+
+    /** While deaf, the dial's level comes from the recorder instead. */
+    fun feedLevel(v: Float) {
+        if (deaf) _level.value = v.coerceIn(0f, 1f)
+    }
+
+    /**
+     * Go deaf instead of ending the entry, if the user has not stopped and the
+     * recorder heard sound. False leaves the session to end as it always did.
+     */
+    private fun continueWithoutRecogniser(why: String): Boolean {
+        if (deaf || abandoned || pausing || userStopped) return false
+        if (soundCheck?.invoke() != true) return false
+        android.util.Log.w(TAG, "recogniser gave up ($why) while the recorder hears sound; recording on")
+        disarm()
+        deaf = true
+        val r = recognizer
+        recognizer = null
+        runCatching { r?.cancel() }
+        runCatching { r?.destroy() }
+        _partial.value = ""
+        _error.value = null
+        _state.value = State.RECORDING
+        return true
+    }
+
+    /**
      * Transcript from the segments before the current one.
      *
      * SpeechRecognizer has no pause: a session that stops is over, and resuming
@@ -283,6 +352,8 @@ class SpeechCapture(private val context: Context) {
         if (_state.value != State.IDLE) return
         kept.setLength(0)
         abandoned = false
+        deaf = false
+        userStopped = false
         // A session that never reaches the recogniser must not inherit the
         // previous one's language label.
         prefs.edit().remove(SESSION_LANG_KEY).apply()
@@ -367,6 +438,7 @@ class SpeechCapture(private val context: Context) {
     /** Pick up where a pause left off. The kept transcript survives. */
     fun resume() {
         if (_state.value != State.PAUSED) return
+        if (deaf) { _state.value = State.RECORDING; return }
         // If the recogniser has gone away mid-entry, save what was already said
         // rather than dropping the user back to idle with their words in limbo.
         if (!beginSession(mayReprobe = false)) finish("")
@@ -442,6 +514,7 @@ class SpeechCapture(private val context: Context) {
             override fun onBeginningOfSpeech() { disarm() }
             // 0..10 dB-ish; normalised for the button's pulse.
             override fun onRmsChanged(rms: Float) {
+                if (deaf) return
                 disarm()
                 _level.value = (rms / 10f).coerceIn(0f, 1f)
             }
@@ -450,6 +523,7 @@ class SpeechCapture(private val context: Context) {
             // asked it to, and flipping to PROCESSING would drop the dial for a
             // frame on its way to PAUSED.
             override fun onEndOfSpeech() {
+                if (deaf) return
                 if (!pausing && !abandoned) _state.value = State.PROCESSING
                 // Listening is over and the transcript is owed. If it never
                 // arrives, keep the words already heard rather than stranding
@@ -458,7 +532,11 @@ class SpeechCapture(private val context: Context) {
             }
             override fun onError(error: Int) {
                 android.util.Log.w(TAG, "onError code=$error")
+                if (deaf) return
                 disarm()
+                // No speech, or no microphone: what a recogniser that was handed
+                // silence (or could not open the mic) says. See [deaf].
+                if (error in DEAF_ERRORS && continueWithoutRecogniser("error $error")) return
                 // A discarded session raises ERROR_CLIENT on its way out. That
                 // is us, not the phone, and an error card for it would be a lie.
                 if (!abandoned && !pausing) _error.value = describe(error)
@@ -467,10 +545,14 @@ class SpeechCapture(private val context: Context) {
             override fun onResults(results: Bundle?) {
                 android.util.Log.i(TAG, "onResults n=" +
                     (results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.size ?: -1))
+                if (deaf) return
                 disarm()
-                finish(results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty())
+                val text = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull().orEmpty()
+                if (text.isBlank() && _partial.value.isBlank() && continueWithoutRecogniser("empty result")) return
+                finish(text)
             }
             override fun onPartialResults(partialResults: Bundle?) {
+                if (deaf) return
                 disarm()
                 partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     ?.firstOrNull()?.let { _partial.value = it }
@@ -502,6 +584,7 @@ class SpeechCapture(private val context: Context) {
         // From here the recogniser owes us a callback. Anything it says cancels
         // this; saying nothing surfaces an error and puts the button back.
         arm(START_TIMEOUT_MS) {
+            if (continueWithoutRecogniser("no callback")) return@arm
             _error.value = recogniserSilent()
             recognizer?.let { runCatching { it.cancel() } }
             pausing = false
@@ -523,10 +606,22 @@ class SpeechCapture(private val context: Context) {
     private fun armResults() = arm(RESULT_TIMEOUT_MS) {
         if (_state.value != State.PROCESSING) return@arm
         android.util.Log.w(TAG, "recogniser produced no result within ${RESULT_TIMEOUT_MS}ms")
+        if (_partial.value.isBlank() && continueWithoutRecogniser("no result")) return@arm
         finish(_partial.value)
     }
 
     fun stop() {
+        if (deaf) {
+            if (_state.value != State.RECORDING && _state.value != State.PAUSED) return
+            userStopped = true
+            _level.value = 0f
+            _state.value = State.PROCESSING
+            val before = kept.toString().trim()
+            kept.setLength(0)
+            _needsFileTranscript.tryEmit(before)
+            return
+        }
+        userStopped = true
         when (_state.value) {
             State.RECORDING -> {
                 _state.value = State.PROCESSING
@@ -547,6 +642,7 @@ class SpeechCapture(private val context: Context) {
     /** Bank the current segment and stop listening, without ending the entry. */
     fun pause() {
         if (_state.value != State.RECORDING) return
+        if (deaf) { _state.value = State.PAUSED; return }
         pausing = true
         _state.value = State.PAUSED
         recognizer?.stopListening()
@@ -559,6 +655,8 @@ class SpeechCapture(private val context: Context) {
     fun cancel() {
         disarm()
         abandoned = true
+        deaf = false
+        userStopped = false
         pausing = false
         kept.setLength(0)
         _partial.value = ""
@@ -622,10 +720,17 @@ class SpeechCapture(private val context: Context) {
         _unrecognised.tryEmit(Unit)
     }
 
-    fun release() { disarm(); recognizer?.destroy(); recognizer = null }
+    fun release() { disarm(); deaf = false; recognizer?.destroy(); recognizer = null }
 
     companion object {
         private const val TAG = "DailyVoxSpeech"
+        /** What a recogniser says when it was handed silence or no microphone. */
+        private val DEAF_ERRORS = setOf(
+            SpeechRecognizer.ERROR_NO_MATCH,
+            SpeechRecognizer.ERROR_SPEECH_TIMEOUT,
+            SpeechRecognizer.ERROR_AUDIO,
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY,
+        )
         private const val LANG_KEY = "recogniser_language"
         private const val INSTALLED_KEY = "recogniser_installed"
         private const val SUPPORTED_KEY = "recogniser_supported"

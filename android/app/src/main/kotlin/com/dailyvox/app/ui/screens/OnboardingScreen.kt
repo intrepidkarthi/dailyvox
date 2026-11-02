@@ -275,7 +275,10 @@ private fun SpeakBeat(
 
     LaunchedEffect(state) {
         when (state) {
-            SpeechCapture.State.RECORDING -> { phase = Phase.RECORDING; elapsed = 0
+            // Zeroed only for a new recording: a recogniser that went deaf can
+            // bring the state back to RECORDING mid-entry (SpeechCapture.deaf).
+            SpeechCapture.State.RECORDING -> { if (phase == Phase.IDLE) elapsed = 0
+                phase = Phase.RECORDING
                 while (true) { delay(1000); elapsed++ } }
             SpeechCapture.State.PROCESSING -> phase = Phase.PROCESSING
             SpeechCapture.State.IDLE -> if (phase != Phase.BORN) phase = Phase.IDLE
@@ -292,6 +295,33 @@ private fun SpeakBeat(
             // Let the star land before moving on. The beat exists to be watched.
             delay(1600)
             onCaptured(t, elapsed.coerceAtLeast(1), path)
+        }
+    }
+    // The recogniser went deaf and the recorder carried on (SpeechCapture.deaf,
+    // the Galaxy S24 report): level from the recorder, words from the file.
+    LaunchedEffect(Unit) { capture.soundCheck = { recorder.peak() > HEARD_PEAK } }
+    LaunchedEffect(state) {
+        while (state == SpeechCapture.State.RECORDING) {
+            if (capture.deaf) capture.feedLevel(kotlin.math.sqrt(recorder.peak()))
+            delay(100)
+        }
+    }
+    LaunchedEffect(Unit) {
+        capture.needsFileTranscript.collect { before ->
+            val seconds = elapsed.coerceAtLeast(1)
+            val file = recorder.stop()
+            path = file?.absolutePath
+            val tag = SpeechCapture.fileTag(context, SpeechCapture.lastSessionLanguage(context))
+            val heard = if (file == null || tag == null) "" else
+                (com.dailyvox.app.audio.FileTranscriber.transcribe(context, file, tag)
+                    as? com.dailyvox.app.audio.FileTranscriber.Result.Text)?.value.orEmpty()
+            capture.fileDone()
+            text = heard.ifBlank { before }
+            if (text.isNotBlank()) {
+                phase = Phase.BORN
+                delay(1600)
+            }
+            if (text.isNotBlank() || path != null) onCaptured(text, seconds, path)
         }
     }
     // The recogniser failed but the microphone did not. On a phone like that,

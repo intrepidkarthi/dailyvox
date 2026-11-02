@@ -54,6 +54,15 @@ release; phones upgrade from 1.2. Nothing changes for entries spoken in English.
 - **No English suggested questions outside English.** The ten template questions
   and their answers are English, so the row shows only for English speakers. An
   answer quoting two entries says "the entries below", not "the entry below".
+- **Recording no longer stops after a few seconds when the phone's speech
+  recogniser cannot hear.** The app records the audio file and the recogniser
+  listens at the same time, and Android gives the microphone to only one of
+  them. On a Galaxy S24 the recogniser got silence, gave up after about five
+  seconds with "Nothing was heard", and ended the entry, though the audio file
+  was fine. Now, when the recogniser gives up before you stop and the recording
+  shows you were speaking, recording carries on; when you stop, the saved audio
+  is transcribed. A recogniser that hears is unaffected, and a silent room
+  still ends with "Nothing was heard".
 - **Entry buttons fit every language.** Edit and Ask shrink before they clip and
   wrap only after that; shorter Ask labels in Spanish, Italian and Portuguese.
 - **Onboarding no longer implies mood reading outside English.** The airplane-mode
