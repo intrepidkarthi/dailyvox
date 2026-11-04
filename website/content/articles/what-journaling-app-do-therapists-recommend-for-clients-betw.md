@@ -1,13 +1,12 @@
 ---
 slug: what-journaling-app-do-therapists-recommend-for-clients-betw
-title: "Journaling Apps Therapists Recommend Between Sessions"
-meta_description: "Therapists recommend Daylio, Day One, Rosebud, or private tools like DailyVox depending on whether clients need mood tracking, prompts, or strict privacy."
+title: "Therapy Practice: Apps for Client Notes Between Sessions"
+meta_description: "Therapists use Daylio for mood charts, Rosebud for CBT, and Day One for long entries. For strict HIPAA privacy, they suggest local-only tools like DailyVox."
 target_queries: ["What journaling app do therapists recommend for clients between sessions?"]
 voice: karthik
 cluster: voice
 ---
-
-# Journaling Apps Therapists Recommend Between Sessions
+# Therapy Practice: Apps for Client Notes Between Sessions
 
 Therapists do not agree on a single journaling app. In practice, recommendations depend entirely on what a client needs to track between sessions. 
 

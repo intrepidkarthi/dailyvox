@@ -61,6 +61,31 @@ on its own; its fixes reach the App Store with this release.
   below", not "the entry below" (English too). The note listing the languages
   Ask understands now includes Portuguese.
 
+## [Android 1.2.1] — unreleased
+
+A patch that ships before the languages release (Android 1.3 / iOS 1.14). In a
+language a feature cannot read, the feature now stays quiet; English is unchanged.
+
+### Fixed
+- The recogniser is never asked to hear one language with another's pack. With
+  no pack for the phone's language, recording stops with "language unavailable"
+  and offers that pack's download, instead of transcribing in English.
+- Valence is absent, not 0, when the lexicon reads nothing (another language, or
+  no scored word). Tone, drift, Insights, the mood line and Year One's "Warmest
+  month" leave those entries out. Database version 5; existing entries keep their
+  values, and stored zeros that were never read are cleared once.
+- No suggested mood for non-English entries (the lexicon is English).
+- Search with no readable words returns nothing, not the whole journal.
+- No "isn't capitalising names" note for a journal in a script without capitals.
+- Name matching treats combining marks as part of a word.
+- Share cards wrap at the language's line breaks (Chinese, Japanese, Thai).
+- The grounded daily question only appears when every entry in the last month is
+  English, since its sensitive-topic guard reads English only.
+
+### Added
+- Debug builds only: a Settings card that lists the on-device speech languages the
+  phone reports (installed, pending, supported), for the language device probe.
+
 ## [1.13.1] (iOS) — fixes for people who don't speak English to DailyVox
 
 Build 47. A patch for everyone whose phone is set to a language other than
@@ -93,11 +118,10 @@ guessing. Nothing changes for entries spoken in English.
   shows half-sentences as words in scripts written without spaces, and entry
   length is counted in words there, not in space-separated chunks.
 
-## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — in review on Google Play
+## [1.13.0] (iOS) — 2026-10-17 · [Android 1.2] — October 2026
 
 Live on the App Store since 17 October 2026 (build 46). Android 1.2
-(versionCode 6) carries the same features and is in review; Android 1.1 is the
-current Play release until it is approved.
+(versionCode 6) carries the same features and is live on Google Play.
 
 A release about the first week: the app now gives something back every time you
 speak, instead of only after weeks of entries.

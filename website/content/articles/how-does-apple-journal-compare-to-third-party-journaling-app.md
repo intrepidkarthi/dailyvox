@@ -1,13 +1,12 @@
 ---
 slug: how-does-apple-journal-compare-to-third-party-journaling-app
-title: "Apple Journal vs Third-Party Journaling Apps"
-meta_description: "Apple Journal offers tight iOS integration for free, but third-party apps beat it on export options, platforms, and dedicated workflows."
+title: "Apple Journal vs Others: Yes, Compare Export and Lock-in"
+meta_description: "Apple Journal is locked to iPhone and has no export tools. Third-party apps like Day One add Mac support, search, and full control over your entries."
 target_queries: ["How does Apple Journal compare to third-party journaling apps?"]
 voice: karthik
 cluster: compare
 ---
-
-# Apple Journal vs Third-Party Journaling Apps
+# Apple Journal vs Others: Yes, Compare Export and Lock-in
 
 Apple Journal gives you automatic iOS suggestions for free. Third-party journaling apps give you actual control over your data, your platform, and your input method. 
 

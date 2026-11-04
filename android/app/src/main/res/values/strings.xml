@@ -7,4 +7,229 @@
     <string name="shortcut_journal_long">Open my journal</string>
     <string name="shortcut_ask_short">Ask Twin</string>
     <string name="shortcut_ask_long">Ask your Twin about your journal</string>
+
+    <!-- The daily reminder. No streak guilt, and the welcome-back never says
+         how long it has been. -->
+    <string name="reminder_title">Tonight\'s star is waiting</string>
+    <string name="reminder_text">Whenever you\'re ready. Forty-two seconds.</string>
+    <string name="reminder_welcome_back_title">Your sky kept your place</string>
+    <string name="reminder_welcome_back_text">No catching up to do. One sentence is plenty, whenever you\'re ready.</string>
+
+    <!-- The reflection card on Speak, after an entry is saved. Every line is
+         built from the entry itself; a line with nothing under it is not shown. -->
+    <string name="reflection_label">Filed to your sky</string>
+    <plurals name="reflection_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
+    <string name="reflection_typed">typed</string>
+    <string name="reflection_wordless">Your voice is saved. The words can come later.</string>
+    <string name="reflection_tone_light">Your words lean light.</string>
+    <string name="reflection_tone_even">Your words sit fairly even.</string>
+    <string name="reflection_tone_heavy">Your words carry some weight. That is allowed here.</string>
+    <string name="reflection_drift_lighter">Lighter than your last few entries.</string>
+    <string name="reflection_drift_heavier">Heavier than your last few entries.</string>
+    <string name="reflection_drift_similar">Close to how your last few entries read.</string>
+    <string name="reflection_person">%1$s is in this one.</string>
+    <plurals name="reflection_person_earlier">
+        <item quantity="one">%1$s is in this one, and in %2$d other entry in the last 30 days.</item>
+        <item quantity="other">%1$s is in this one, and in %2$d other entries in the last 30 days.</item>
+    </plurals>
+    <string name="reflection_tomorrow_label">For tomorrow, in your words</string>
+    <string name="reflection_tomorrow_quote">“%1$s”</string>
+    <string name="reflection_done">Done</string>
+    <string name="reflection_done_description">Close the reflection</string>
+    <string name="reflection_how_read">Read on this phone from your words. Nothing was sent anywhere.</string>
+
+    <!-- The suggested mood. Always called a suggestion until the user taps it:
+         the app read the words, it did not ask how they felt. -->
+    <string name="reflection_mood_heading_suggested">Suggested mood</string>
+    <string name="reflection_mood_heading_mine">Your mood</string>
+    <string name="reflection_mood_suggested_body">%1$s, going by how your words read. Tap it to keep it, or pick another.</string>
+    <string name="reflection_mood_suggested_line">Suggested mood: %1$s. Only a suggestion, from your words.</string>
+    <string name="reflection_mood_chosen_body">%1$s. Your choice.</string>
+    <string name="reflection_mood_none">None. Pick one if you like.</string>
+    <string name="reflection_mood_clear">Clear</string>
+    <string name="reflection_mood_clear_suggested_description">Clear the suggested mood</string>
+    <string name="reflection_mood_clear_description">Clear your mood</string>
+
+    <!-- The mood picker's chips, on the entry page and the reflection card. -->
+    <string name="mood_chip_suggested">%1$s · suggested</string>
+    <!-- TalkBack: state is read after the word, the action after "Double-tap to". -->
+    <string name="mood_chip_state_suggested">Suggested from your words, not chosen</string>
+    <string name="mood_chip_state_chosen">Your mood</string>
+    <string name="mood_chip_action_choose">choose</string>
+    <string name="mood_chip_action_keep">keep this mood</string>
+    <string name="mood_chip_action_clear">clear</string>
+
+    <!-- Onboarding, under the first entry. The entry is saved a moment later
+         with this same suggestion, and the card that follows lets it change. -->
+    <string name="onboarding_suggested_mood">Reads like %1$s. Only a suggestion: you can change it in a moment.</string>
+    <!-- Your past, brought back. Every quote is the entry's own words, cut
+         only at a sentence or word; nothing here is paraphrased. -->
+    <string name="past_week_ago">A week ago you said</string>
+    <plurals name="past_days_ago">
+        <item quantity="one">A day ago you said</item>
+        <item quantity="other">%1$d days ago you said</item>
+    </plurals>
+    <plurals name="past_months_ago">
+        <item quantity="one">On this day, a month ago</item>
+        <item quantity="other">On this day, %1$d months ago</item>
+    </plurals>
+    <plurals name="past_years_ago">
+        <item quantity="one">On this day, a year ago</item>
+        <item quantity="other">On this day, %1$d years ago</item>
+    </plurals>
+    <string name="past_quote">“%1$s”</string>
+    <!-- TalkBack: the label, the quote, then what a tap does. -->
+    <string name="past_card_description">%1$s: %2$s. Opens the entry.</string>
+
+    <string name="recap_label">Your week</string>
+    <string name="recap_range">%1$s – %2$s</string>
+    <plurals name="recap_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <plurals name="recap_days">
+        <item quantity="one">on %1$d day</item>
+        <item quantity="other">on %1$d days</item>
+    </plurals>
+    <plurals name="recap_name">
+        <item quantity="one">%1$s came up in %2$d entry.</item>
+        <item quantity="other">%1$s came up in %2$d entries.</item>
+    </plurals>
+    <string name="recap_line_label">One line from the week</string>
+    <string name="recap_line_description">One line from the week: %1$s. Opens the entry.</string>
+    <string name="recap_how_counted">Counted from your entries on this phone.</string>
+
+    <!-- The reminder, when the user has opted in to a quote. Off by default:
+         a notification can be read on a locked phone. -->
+    <string name="reminder_past_text">A week ago you said: “%1$s”</string>
+    <string name="settings_reminder_quote">Include a line from your past in reminders</string>
+    <string name="settings_reminder_quote_note">Off by default. When on, tonight\'s reminder can quote what you said a week ago, and anyone who can see your lock screen can read it.</string>
+
+    <!-- The question of the day, above the record button. One a day, picked
+         from the date (DailyQuestion.kt), so it holds all day. Item 0 is the
+         original and the fallback. Questions, never instructions: speaking
+         about anything else is just as welcome. Keep the count in step with
+         DailyQuestion.EVERYDAY_COUNT. -->
+    <string-array name="daily_questions">
+        <item>How was your day, really?</item>
+        <item>What\'s one moment from today you want to keep?</item>
+        <item>Who did you talk to today?</item>
+        <item>How does your body feel right now?</item>
+        <item>What went better than you expected?</item>
+        <item>What made you smile today?</item>
+        <item>What\'s on your mind tonight?</item>
+        <item>What did you eat today? Anything good?</item>
+        <item>What\'s one small thing that went right?</item>
+        <item>What surprised you today?</item>
+        <item>Where did the hours go today?</item>
+        <item>What are you looking forward to?</item>
+        <item>Who was kind to you lately?</item>
+        <item>How did you sleep, and how did the day follow?</item>
+        <item>What did you notice outside today?</item>
+        <item>What would you like to set down tonight?</item>
+        <item>What did you learn today, even something small?</item>
+        <item>What\'s taking most of your energy this week?</item>
+        <item>What\'s one thing from today worth doing again?</item>
+        <item>What are you curious about lately?</item>
+        <item>How\'s your energy: tired, wired, or somewhere between?</item>
+        <item>What did today sound like?</item>
+        <item>Who\'s been on your mind?</item>
+        <item>Where were you today, and what was it like?</item>
+        <item>What\'s something you\'re quietly glad about?</item>
+        <item>What felt heavy today, and what felt light?</item>
+    </string-array>
+    <!-- The research pilot's plain days: every third day of the year a pilot
+         participant's question is one of these. Same sense as iOS
+         EntryPrompt.neutralPrompts, in the same order. -->
+    <string-array name="daily_questions_plain">
+        <item>Just log your day: what you did, where, with whom. Facts are enough.</item>
+        <item>What did today actually look like? No reflection needed, just what happened.</item>
+    </string-array>
+    <!-- A name the user said, given back. The name is theirs, word for word;
+         nothing here knows whether it is a person or a place, so no he, she or
+         they, and the follow-up fits either. -->
+    <string name="daily_question_grounded_yesterday">Yesterday you mentioned %1$s. How are things?</string>
+    <string name="daily_question_grounded_days">A few days ago you mentioned %1$s. How are things?</string>
+    <string name="daily_question_grounded_week">Last week you mentioned %1$s. How are things?</string>
+    <string name="daily_question_another">Another question</string>
+    <!-- TalkBack: read after the question, as what a double-tap does. -->
+    <string name="daily_question_another_action">ask another question</string>
+    <string name="settings_pilot">Research pilot</string>
+    <string name="settings_pilot_note">For study participants. Every third day, the question is a plain one: just log your day. Nothing is sent anywhere.</string>
+    <!-- The streak (Streak.kt). Counts days spoken, never days missed. A
+         returning user is welcomed back with what they kept, never reset to
+         the new-user state, and never told how long they were away. -->
+    <string name="streak_none_yet">no streak yet</string>
+    <plurals name="streak_header">
+        <item quantity="one">%1$d-day streak</item>
+        <item quantity="other">%1$d-day streak</item>
+    </plurals>
+    <string name="streak_header_welcome_back">Welcome back</string>
+    <string name="streak_welcome_back">Welcome back. Your sky kept your place.</string>
+    <plurals name="streak_days_in_a_row">
+        <item quantity="one">day in a row</item>
+        <item quantity="other">days in a row</item>
+    </plurals>
+    <plurals name="streak_days_in_a_row_longest">
+        <item quantity="one">day in a row — your longest</item>
+        <item quantity="other">days in a row — your longest</item>
+    </plurals>
+    <string name="streak_longest">longest %1$d</string>
+    <string name="streak_days_spoken">days spoken %1$d</string>
+    <string name="streak_this_month">this month %1$d</string>
+    <string name="streak_total">total %1$d</string>
+    <string name="streak_grace_rule">One quiet day won\'t break a run. Once a week, it\'s kept for you.</string>
+    <!-- TalkBack, the whole streak card in one reading. -->
+    <plurals name="streak_description_active">
+        <item quantity="one">%1$d day in a row. Longest run %2$d. %3$d days spoken in all.</item>
+        <item quantity="other">%1$d days in a row. Longest run %2$d. %3$d days spoken in all.</item>
+    </plurals>
+    <string name="streak_description_returning">Welcome back. Your sky kept your place. Longest run %1$d. %2$d days spoken in all.</string>
+    <string name="streak_description_new">No streak yet. Your first entry starts one.</string>
+    <!-- The wide widget's day line. -->
+    <string name="widget_day_spoken">Day %1$d · spoken</string>
+    <string name="widget_day_next">Day %1$d · speak tonight</string>
+    <string name="widget_speak_tonight">Speak tonight</string>
+    <string name="widget_welcome_back">Welcome back · speak tonight</string>
+
+    <!-- Early signals (EarlySignals.kt), from the third entry until patterns
+         take over. Counts only: nothing here is a claim about the person. -->
+    <plurals name="early_heading">
+        <item quantity="one">Early signals · from %1$d entry</item>
+        <item quantity="other">Early signals · from %1$d entries</item>
+    </plurals>
+    <string name="early_firm_up">These will firm up as you keep going.</string>
+    <string name="early_part_small_hours">in the small hours</string>
+    <string name="early_part_morning">in the morning</string>
+    <string name="early_part_afternoon">in the afternoon</string>
+    <string name="early_part_evening">in the evening</string>
+    <string name="early_part_late_night">late at night</string>
+    <string name="early_time_of_day">You usually speak %1$s: %2$d of %3$d entries.</string>
+    <plurals name="early_length_average">
+        <item quantity="one">About %1$d word an entry, on average.</item>
+        <item quantity="other">About %1$d words an entry, on average.</item>
+    </plurals>
+    <string name="early_length_longer_one">Your latest entry ran longer than your first: %1$d words against %2$d.</string>
+    <string name="early_length_shorter_one">Your latest entry ran shorter than your first: %1$d words against %2$d.</string>
+    <string name="early_length_longer_many">Your latest %3$d entries ran longer than your first %3$d: %1$d words against %2$d.</string>
+    <string name="early_length_shorter_many">Your latest %3$d entries ran shorter than your first %3$d: %1$d words against %2$d.</string>
+    <string name="early_length_steady">About the same length as when you started.</string>
+    <plurals name="early_recurring">
+        <item quantity="one">“%1$s” is in %2$d of your entries.</item>
+        <item quantity="other">“%1$s” is in %2$d of your entries.</item>
+    </plurals>
+    <string name="early_mood_count">%1$s (%2$d)</string>
+    <string name="early_moods_chosen">Moods you picked: %1$s.</string>
+    <string name="early_moods_suggested">Suggested from your words, not picked by you: %1$s.</string>
+    <string name="early_nothing_yet">Nothing countable stands out yet. Keep going.</string>
+    <string name="early_counted_here">Counted from your entries on this phone.</string>
+    <!-- Where the "not enough yet" states point. -->
+    <string name="patterns_not_enough">Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.</string>
+    <string name="patterns_not_enough_early">Not enough yet. Early signals start at your third entry; patterns once there is enough to be sure one is real rather than a coincidence.</string>
+    <string name="twin_still_listening">Still listening. A few more nights and there will be something to say.</string>
+    <string name="twin_still_listening_early">Still listening. Early signals are below; a fuller picture comes in a few more nights.</string>
+    <string name="patterns_label">Patterns your Twin noticed</string>
 </resources>

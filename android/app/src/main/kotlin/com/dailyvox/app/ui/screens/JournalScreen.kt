@@ -43,7 +43,7 @@ fun JournalScreen(
     // The strongest finding the Twin has, computed from the same code Insights
     // uses rather than a second copy of the thresholds. Null until the data
     // carries one, which is the point of the gates in Patterns.
-    val noticed = remember(entries) { Insights.find(entries.map { it.toChatEntry() }).firstOrNull() }
+    val noticed = remember(entries) { Insights.find(entries.filter { it.valence != null }.map { it.toChatEntry() }).firstOrNull() }
     val queue = remember { com.dailyvox.app.audio.AudioQueue() }
     var playingToday by remember { mutableStateOf(false) }
     DisposableEffect(Unit) { onDispose { queue.stop() } }
@@ -77,7 +77,7 @@ fun JournalScreen(
     val shown = remember(entries, filter) {
         when (filter) {
             "People" -> entries.filter { it.entityList.isNotEmpty() }
-            "Mood" -> entries.filter { kotlin.math.abs(it.valence) > 0.25f }
+            "Mood" -> entries.filter { v -> v.valence?.let { kotlin.math.abs(it) > 0.25f } == true }
             "Body" -> entries.filter { it.sleepHours != null }
             else -> entries
         }

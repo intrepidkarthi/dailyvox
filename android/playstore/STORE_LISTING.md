@@ -1,8 +1,8 @@
 # DailyVox — Google Play listing
 
-**Status: DRAFT. The app is not released and this listing has not been submitted.**
-Nothing here may be published while the recogniser-capitalisation assumption is
-untested on physical hardware (see `SUBMISSION_CHECKLIST.md`).
+**Status: LIVE on Google Play since 2026-10-02**
+(play.google.com/store/apps/details?id=com.dailyvox.app). The copy below is the
+listing for **1.2**; paste the full description on that release.
 
 ---
 
@@ -11,8 +11,8 @@ untested on physical hardware (see `SUBMISSION_CHECKLIST.md`).
 > description was out by 830 characters. Run `python3 playstore/verify.py`
 > instead; it reads the copy below and exits 1 on any overrun.
 >
-> The full description currently sits about 59 characters under the 4,000 limit.
-> That is a real constraint: adding a sentence means removing one.
+> The full description is close to the 4,000 limit, so adding a sentence usually
+> means removing one. Trust the number `verify.py` prints, not one written here.
 
 ## App name (30 characters max)
 
@@ -110,6 +110,13 @@ journal, and each one names the entries it drew from, so you can check it.
 There is no free-form chatbot, and that is a decision rather than a missing
 feature. A model small enough to run on every Android phone would guess, and a
 Twin that guesses about your life is worse than one that stays quiet.
+
+IT TALKS BACK
+
+Speak, and something comes back straight away: a short reflection, and a
+suggested mood that stays a suggestion until you tap it. A new question each
+day. A week later your own words return ("A week ago you said…"), with this day
+in earlier years and a weekly recap. One rest day a week won't break your streak.
 
 WHAT ELSE IS IN IT
 

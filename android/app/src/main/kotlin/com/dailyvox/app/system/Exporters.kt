@@ -62,7 +62,7 @@ object Exporters {
             canvas.drawText(fmt.format(Date(e.createdAt)), MARGIN, y, date); y += 15f
             val meta = buildString {
                 append("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
-                append("  ·  mood %+.2f".format(e.valence))
+                e.valence?.let { append("  ·  mood %+.2f".format(it)) }
                 if (e.entityList.isNotEmpty()) append("  ·  ").append(e.entityList.joinToString(", "))
             }
             canvas.drawText(meta, MARGIN, y, accent); y += 16f
@@ -115,7 +115,7 @@ object Exporters {
             sb.append("## ${day.format(d)} · ${time.format(d)}\n\n")
             sb.append(e.text.trim()).append("\n\n")
             val meta = buildList {
-                add("valence %+.2f".format(e.valence))
+                e.valence?.let { add("valence %+.2f".format(it)) }
                 add("%d:%02d".format(e.durationSec / 60, e.durationSec % 60))
                 e.sleepHours?.let { add("%.1fh sleep".format(it)) }
                 if (e.entities.isNotBlank()) add(e.entityList.joinToString(", "))
@@ -138,7 +138,7 @@ object Exporters {
         entries.sortedBy { it.createdAt }.forEach { e ->
             sb.append(q(iso.format(Date(e.createdAt)))).append(',')
                 .append(e.durationSec).append(',')
-                .append("%.4f".format(e.valence)).append(',')
+                .append(e.valence?.let { "%.4f".format(it) } ?: "").append(',')
                 .append(e.sleepHours?.let { "%.2f".format(it) } ?: "").append(',')
                 .append(q(e.entityList.joinToString("; "))).append(',')
                 .append(q(e.text)).append('\n')

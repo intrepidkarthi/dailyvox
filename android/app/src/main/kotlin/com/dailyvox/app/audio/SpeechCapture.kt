@@ -330,23 +330,8 @@ class SpeechCapture(private val context: Context) {
         }.onFailure { done(emptyList()) }
     }
 
-    /**
-     * Which installed pack to speak to, given the phone's locale.
-     *
-     * Exact tag first, then any pack in the same LANGUAGE — en-US is the right
-     * answer for a phone set to en-IN, and the wrong answer is to fail. Falls
-     * back to whatever single pack exists, because a recogniser with one
-     * language is better used than not.
-     */
-    private fun pick(langs: List<String>): String? {
-        if (langs.isEmpty()) return null
-        val want = Locale.getDefault()
-        val tag = want.toLanguageTag()
-        langs.firstOrNull { it.equals(tag, true) }?.let { return it }
-        langs.firstOrNull { it.replace('_', '-').substringBefore('-')
-            .equals(want.language, true) }?.let { return it }
-        return langs.first()
-    }
+    /** See [pickRecognizerLanguage]: same language or nothing. */
+    private fun pick(langs: List<String>): String? = pickRecognizerLanguage(langs, Locale.getDefault())
 
     /** Pick up where a pause left off. The kept transcript survives. */
     fun resume() {
@@ -371,6 +356,30 @@ class SpeechCapture(private val context: Context) {
             _error.value = noOnDeviceRecogniser()
             _state.value = State.IDLE
             return false
+        }
+        // Same language or nothing. The probe can report packs (say en-US) that
+        // are not the language this phone is set to (say hi-IN). Asking the
+        // recogniser for en-US then transcribes Hindi speech as English words --
+        // a confident, wrong entry, which is worse than none. So re-pick against
+        // TODAY's locale every session (the cached tag may predate a locale
+        // change) and, when nothing matches, stop with the error the recogniser
+        // itself would raise: ERROR_LANGUAGE_UNAVAILABLE, which offers the pack
+        // download for the phone's own language.
+        val packs = installed
+        if (packs.isNotEmpty()) {
+            val chosen = pick(packs)
+            if (chosen == null) {
+                language = null
+                _error.value = describe(SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE)
+                _state.value = State.IDLE
+                // A fresh start: the screen opened a MediaRecorder beside us, and
+                // `unrecognised` is the signal that makes it let go (a 0-second
+                // take is discarded, not filed). On resume() the caller's own
+                // finish("") saves the words kept before the pause instead.
+                if (kept.isEmpty()) _unrecognised.tryEmit(Unit)
+                return false
+            }
+            if (chosen != language) language = chosen
         }
         // Guarded. This throws on a device whose configured on-device
         // recogniser component does not resolve, and the call site is a Compose
@@ -695,5 +704,24 @@ class SpeechCapture(private val context: Context) {
             message = "The recogniser stopped unexpectedly.",
             fix = "Tap to try again.",
         )
+    }
+}
+
+/**
+ * Which installed pack to speak to, given the phone's locale.
+ *
+ * Exact tag first, then any pack in the same LANGUAGE -- en-US is the right
+ * answer for a phone set to en-IN. Then nothing. There used to be a third step,
+ * `langs.first()`, "because a recogniser with one language is better used than
+ * not" -- and that is how a phone set to Hindi with only an English pack
+ * transcribed Hindi speech as English words. Null means the caller raises
+ * ERROR_LANGUAGE_UNAVAILABLE and offers the download for the right language.
+ */
+internal fun pickRecognizerLanguage(langs: List<String>, want: Locale): String? {
+    if (langs.isEmpty()) return null
+    val tag = want.toLanguageTag()
+    langs.firstOrNull { it.replace('_', '-').equals(tag, true) }?.let { return it }
+    return langs.firstOrNull {
+        it.replace('_', '-').substringBefore('-').equals(want.language, true)
     }
 }

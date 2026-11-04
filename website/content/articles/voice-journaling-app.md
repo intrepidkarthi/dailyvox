@@ -84,3 +84,5 @@ Apps that run on-device, like DailyVox, work fully in airplane mode because tran
 
 **Are my voice entries private?**
 Privacy depends on the app architecture. Cloud-based apps transfer audio to remote servers for processing. DailyVox processes audio on-device using Apple frameworks, earning the App Store "Data Not Collected" privacy label.
+
+Related reading: [How to Start Voice Journaling: A Complete Beginner's Guide (2026)](/blog/how-to-start-voice-journaling).

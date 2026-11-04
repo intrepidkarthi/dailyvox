@@ -1,6 +1,8 @@
 # DailyVox Privacy Policy
 
-**Last Updated: February 28, 2026**
+**Last Updated: October 14, 2026**
+
+*The published policy at [getdailyvox.com/privacy](https://getdailyvox.com/privacy) is the source of truth, and also covers DailyVox for Android. This file is the iOS copy kept with the App Store materials.*
 
 ## Our Promise
 
@@ -13,10 +15,11 @@ DailyVox processes the following types of data **entirely on your device**:
 - **Voice Recordings**: Audio files recorded through the app
 - **Transcriptions**: Text converted from your voice recordings using Apple's Speech framework
 - **Journal Entries**: Text you write or dictate
-- **Mood Data**: Mood selections you make for your entries
+- **Mood Data**: Mood selections you make for your entries, and moods the app suggests from an entry's words, which are always marked as suggestions
 - **AI Analysis**: Emotional patterns, personality insights, and your Digital Twin model
 - **Digital Twin Data**: Personality model, emotional signature, and knowledge graph generated from your entries
 - **Photos**: Images you attach to diary entries (stored on-device only, never uploaded)
+- **Health and motion data** (optional, read-only): if you turn on Body Twin, sleep, heart rate, heart-rate variability, steps, mindful minutes and motion activity, read on your iPhone
 
 ## Where Your Data Lives
 
@@ -49,10 +52,13 @@ If you choose to enable iCloud sync, your diary entries are synced through **App
 
 All AI processing in DailyVox happens **100% on-device**:
 
-- **Speech Recognition**: Uses Apple's built-in Speech framework. When online, Apple may process audio for better accuracy (per Apple's privacy policy). When offline, all processing is entirely on-device.
+- **Speech Recognition**: Uses Apple's built-in Speech framework, on-device only, whether or not the phone is online. If no on-device speech model is available, transcription stops and says so rather than sending audio to a server.
 - **Emotion Detection**: On-device using Apple's NaturalLanguage framework
 - **Digital Twin Engine**: On-device machine learning that builds your personal model
 - **DailyVox Brain**: Rule-based cognitive AI running locally
+- **Ask Your Twin**: On iPhones with Apple Intelligence, answers come from Apple's on-device model
+- **Suggested moods**: Read from the entry's text on your iPhone, and never written over a mood you chose
+
 **No AI processing is sent to external servers.**
 
 ## Permissions We Request
@@ -63,9 +69,16 @@ All AI processing in DailyVox happens **100% on-device**:
 | Speech Recognition | To transcribe voice to text | Only when processing a recording |
 | Face ID / Touch ID | To lock the app for privacy | Only when app lock is enabled |
 | Notifications | To send daily journal reminders | Only if you enable reminders |
-| Photo Library | To attach photos to diary entries | Only when you use the photo picker |
+| Photo Library | To attach photos to entries, and for the optional photo context note | Only when you use the photo picker, or turn on Photo context |
+| Health (read-only) | Body Twin: what your body felt around each entry | Only if you turn on Body Twin |
+| Motion & Fitness | Body Twin: whether you were moving when you recorded | Only if you turn on Body Twin |
+| Media & Apple Music | The optional music context note | Only if you turn it on |
 
 All permissions are optional. The app functions without them (text-only mode).
+
+## Reminders on the Lock Screen
+
+Reminders are generic by default: they do not contain anything you said. If you turn on **"Include a line from your past in reminders"** in Settings, the daily reminder can quote, word for word, a line from an entry you made a week earlier. The notification is created on your iPhone and nothing leaves it, but it appears on the Lock Screen and in Notification Center, where anyone who can see your phone can read it. This setting is off by default, and turning it off takes the quotes out of reminders that are already scheduled.
 
 ## Photo Storage
 
@@ -93,6 +106,7 @@ DailyVox uses the following Apple frameworks (subject to Apple's privacy policy)
 - Apple Speech Framework (for transcription)
 - Apple NaturalLanguage Framework (for NLP)
 - Apple CloudKit (optional, for iCloud sync)
+- Apple HealthKit (optional, read-only, for Body Twin)
 - Apple WidgetKit (for Home Screen widgets)
 
 We do not integrate any third-party SDKs, analytics tools, or advertising networks.

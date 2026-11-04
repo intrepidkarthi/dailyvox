@@ -209,18 +209,23 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(16.dp))
         MonoLabel("How did this actually feel?")
         Spacer(Modifier.height(8.dp))
-        // The self-label. Deliberately optional and deliberately unprefilled:
-        // seeding it with the detector's guess would contaminate the only column
-        // in the database with ground truth in it, which is exactly the label an
-        // N=20 study needs and the one the affect work found disagrees with
-        // inferred valence.
-        SelfLabelRow(current = entry.selfLabel, onPick = onSelfLabel)
+        // The self-label. Deliberately optional and never prefilled: seeding it
+        // with the detector's guess would contaminate the only column in the
+        // database with ground truth in it, which is exactly the label an N=20
+        // study needs and the one the affect work found disagrees with inferred
+        // valence. The app's suggestion is shown beside it, outlined and marked,
+        // and only becomes the label when the user taps it.
+        // For a study participant, not even beside it (MoodSuggestion.offered).
+        val studyLabelling = com.dailyvox.app.system.DailyQuestion.isPilot(LocalContext.current)
+        MoodPicker(current = entry.selfLabel,
+                   suggested = entry.suggestedMood.takeUnless { studyLabelling }, onPick = onSelfLabel)
 
         Spacer(Modifier.height(22.dp))
         MonoLabel("What your Twin filed ✦")
         Spacer(Modifier.height(8.dp))
         DvCard {
-            FiledRow("Mood", valenceLabel(entry.valence), valenceColor(entry.valence))
+            // No row for an entry the lexicon could not read: "flat" would be a guess.
+            entry.valence?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
             if (entry.entityList.isNotEmpty()) {
                 Spacer(Modifier.height(10.dp))
                 FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)
@@ -386,40 +391,6 @@ private fun EntryTextEditor(
             androidx.compose.material3.TextButton(onClick = onCancel) { Text("Cancel") }
         },
     )
-}
-
-/**
- * The preregistered canon, worded as on iOS (SelfLabels). A label saved under
- * the old Android set is shown on its canon chip when it has one (sad lights
- * Sadness); calm and tired have none, so they keep a chip of their own, as
- * they were, until the user picks something else or clears it.
- */
-@Composable
-private fun SelfLabelRow(current: String?, onPick: (String?) -> Unit) {
-    val labels = com.dailyvox.app.system.SelfLabels
-    val selected = labels.canonical(current) ?: current
-    val legacy = current?.takeIf { labels.canonical(it) == null }
-    val chips = labels.CANON + listOfNotNull(legacy?.let { it to it })
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        chips.forEach { (label, word) ->
-            val on = label == selected
-            Text(
-                word, fontSize = 15.sp,
-                color = if (on) MaterialTheme.colorScheme.onPrimary
-                        else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(if (on) MaterialTheme.colorScheme.secondary
-                                else MaterialTheme.colorScheme.surfaceVariant)
-                    // Tapping the chosen label again clears it. Nothing here is
-                    // a commitment the user cannot take back.
-                    .clickable { onPick(if (on) null else label) }
-                    .defaultMinSize(minHeight = 44.dp)
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
-            )
-        }
-    }
 }
 
 /** iOS AudioPlayerView.barCount, so the two players draw the same density. */

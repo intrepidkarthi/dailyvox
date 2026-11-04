@@ -87,15 +87,59 @@ object ShareCard {
         return out
     }
 
-    private fun wrap(text: String, paint: Paint, max: Float): List<String> {
+    private fun wrap(text: String, paint: Paint, max: Float): List<String> =
+        wrapLines(text, max) { paint.measureText(it) }
+
+    /**
+     * Greedy line wrap at the places the language allows a break.
+     *
+     * Splitting on spaces assumed every script puts spaces between words.
+     * Chinese, Japanese and Thai do not, so a whole entry became one "word"
+     * drawn as one line straight off the right edge of the card. The line
+     * BreakIterator knows where each script may break (between CJK characters,
+     * at Thai word boundaries, after spaces and hyphens elsewhere), and a run
+     * still wider than the line on its own is broken between characters
+     * (grapheme clusters, so a Devanagari conjunct or an emoji is never cut).
+     *
+     * Whitespace runs, newlines included, are drawn as one space: drawText has
+     * no line breaks of its own. Pure, so it is tested on the JVM.
+     */
+    internal fun wrapLines(
+        text: String,
+        max: Float,
+        locale: Locale = Locale.getDefault(),
+        measure: (String) -> Float,
+    ): List<String> {
+        val flat = text.trim().replace(Regex("\\s+"), " ")
+        if (flat.isEmpty()) return emptyList()
         val out = mutableListOf<String>()
-        var line = StringBuilder()
-        text.split(" ").forEach { w ->
-            val cand = if (line.isEmpty()) w else "$line $w"
-            if (paint.measureText(cand) > max) { out.add(line.toString()); line = StringBuilder(w) }
-            else line = StringBuilder(cand)
+        var line = ""
+        fun push(seg: String) {
+            val cand = line + seg
+            if (line.isEmpty() || measure(cand.trimEnd()) <= max) { line = cand; return }
+            out += line.trimEnd()
+            line = seg
         }
-        if (line.isNotEmpty()) out.add(line.toString())
+        val breaks = java.text.BreakIterator.getLineInstance(locale).apply { setText(flat) }
+        var start = breaks.first()
+        var end = breaks.next()
+        while (end != java.text.BreakIterator.DONE) {
+            val seg = flat.substring(start, end)
+            if (measure(seg.trimEnd()) <= max) push(seg)
+            else graphemes(seg, locale).forEach { push(it) }
+            start = end
+            end = breaks.next()
+        }
+        if (line.isNotBlank()) out += line.trimEnd()
+        return out
+    }
+
+    private fun graphemes(s: String, locale: Locale): List<String> {
+        val it = java.text.BreakIterator.getCharacterInstance(locale).apply { setText(s) }
+        val out = mutableListOf<String>()
+        var a = it.first()
+        var b = it.next()
+        while (b != java.text.BreakIterator.DONE) { out += s.substring(a, b); a = b; b = it.next() }
         return out
     }
 }

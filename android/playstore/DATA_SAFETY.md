@@ -30,9 +30,9 @@ aapt2 dump permissions app-release.apk
 #   uses-permission: name='com.dailyvox.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 ```
 
-Nine, and this list is now generated from the artifact rather than typed. The
-version that stood here was wrong in both directions, in the one document that
-is a binding declaration to Google:
+Five lines, and this list is now generated from the artifact rather than typed.
+An earlier version that stood here was wrong in both directions, in the one
+document that is a binding declaration to Google:
 
   * it listed **USE_FINGERPRINT**, which the manifest explicitly removes
     (`tools:node="remove"`, because androidx.biometric merges it in for API 27
@@ -40,9 +40,10 @@ is a binding declaration to Google:
     the APK.
   * it omitted **DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION**, which androidx
     defines for the app's own use and which *is* in the artifact.
-  * it said the four `health.READ_*` lines appear "only when Body signals is
-    enabled". They are **declared in the manifest always** — what is conditional
-    is whether they are ever *granted*. `aapt2` shows them on any build.
+  * it said the four `health.READ_*` lines appeared "only when Body signals is
+    enabled". They were **declared in the manifest always** — what was
+    conditional was whether they were ever *granted*. Since v1.0 the app declares
+    no health permission at all (Section 4).
 
 Check it with `python3 playstore/verify.py`, which diffs this block against the
 built APK, rather than by reading it.
@@ -69,8 +70,9 @@ handles and where it stays:
 |---|---|---|
 | Voice recordings | app-private internal storage | No |
 | Transcripts | local Room database | No |
-| Derived mood, names, prosody | local Room database | No |
-| Photos attached to entries | copied into app-private storage | No |
+| Derived mood, suggested mood, names, prosody | local Room database | No |
+| Photos attached to entries | none: the current release has no control to attach one | No |
+| A line from a past entry in the reminder (opt-in, off by default) | a local notification on this phone, which can show on the lock screen | No |
 | Exports and backups | **only where the user chooses to save them** | Only by the user's own action |
 
 The last row is the one worth stating plainly. Export writes through the Storage
@@ -97,7 +99,8 @@ transfer, and silently losing a diary when changing phones is its own harm.
 
 ## Section 4 — Health Connect
 
-Not applicable to v1.0: the app declares no `health.*` permission. Answer "No"
+Not applicable: the app declares no `health.*` permission, as in every release
+since v1.0. Answer "No"
 to every health-data question in the Play form.
 
 ---

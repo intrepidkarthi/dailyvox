@@ -13,6 +13,7 @@ import android.graphics.fonts.FontStyle
 import android.provider.Settings
 import com.dailyvox.app.data.Entry
 import java.io.File
+import java.time.ZoneId
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -86,8 +87,8 @@ object Shareables {
      * The highest milestone this journal has passed, or null. Nights, not
      * entries: two entries in one evening is one night of showing up.
      */
-    fun milestoneReached(entries: List<Entry>): Int? {
-        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+    fun milestoneReached(entries: List<Entry>, zone: ZoneId = ZoneId.systemDefault()): Int? {
+        val nights = nights(entries, zone)
         return MILESTONES.filter { it <= nights }.maxOrNull()
     }
 
@@ -207,7 +208,7 @@ object Shareables {
         node.color = Color.parseColor(GOLD)
         c.drawCircle(cx, cy, 26f, node)
 
-        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+        val nights = nights(entries)
         val label = mono(20f, GOLD_TEXT)
         c.drawText("MY SKY · NIGHT $nights", 84f, 120f, label)
 
@@ -297,7 +298,7 @@ object Shareables {
 
         c.drawText("YOUR SKY · YEAR ONE", 84f, 130f, mono(22f, GOLD_TEXT))
 
-        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+        val nights = nights(entries)
         val big = display(66f, CREAM)
         c.drawText("$nights nights.", 84f, 256f, big)
         c.drawText("One sky.", 84f, 330f, big)
@@ -440,7 +441,7 @@ object Shareables {
 
         // No wordmark, no claim, no count. A wallpaper that advertises at its
         // owner is one they take off within a week.
-        val nights = entries.map { it.createdAt / 86_400_000L }.distinct().size
+        val nights = nights(entries)
         val quiet = mono(20f, "#66F1EDE2").apply { textAlign = Paint.Align.CENTER }
         c.drawText("$nights", cx, h - 108f, quiet)
     }
@@ -524,30 +525,47 @@ object Shareables {
         typeface = BrandFaces.inter(400)
     }
 
-    private fun streak(entries: List<Entry>): Int {
-        if (entries.isEmpty()) return 0
-        val days = entries.map { it.createdAt / 86_400_000L }.distinct().sortedDescending()
-        val today = System.currentTimeMillis() / 86_400_000L
-        // A streak that has already missed today is still alive until tomorrow,
-        // so it may start at today or yesterday — anything older is broken.
-        var cursor = if (days.first() == today || days.first() == today - 1) days.first()
-                     else return 0
-        var n = 0
-        days.forEach { d -> if (d == cursor) { n++; cursor-- } }
-        return n
-    }
+    /**
+     * The live run, by the same rules as every other surface ([Streak]): local
+     * days and one grace day a week. A broken run prints 0 here rather than a
+     * welcome back, because the receipt is a table of counts.
+     */
+    /**
+     * Local days with an entry, the same count as the Insights "days spoken".
+     * UTC days would put a 23:30 entry in California on tomorrow, so the card
+     * and the screen it was shared from would disagree.
+     */
+    internal fun nights(entries: List<Entry>, zone: ZoneId = ZoneId.systemDefault()): Int =
+        entries.map { Streak.localDay(it.createdAt, zone) }.distinct().size
+
+    private fun streak(entries: List<Entry>): Int =
+        Streak.of(entries.map { it.createdAt }, System.currentTimeMillis(),
+                  java.time.ZoneId.systemDefault()).current
 
     private fun warmestMonth(entries: List<Entry>): String {
-        if (entries.isEmpty()) return "—"
+        val best = warmestMonthIndex(entries) ?: return "—"
+        return SimpleDateFormat("MMMM", Locale.US).format(
+            Calendar.getInstance().apply { set(Calendar.MONTH, best) }.time
+        )
+    }
+
+    /**
+     * The Calendar.MONTH with the highest mean valence, or null for "—".
+     *
+     * Only entries the lexicon actually read count, and only when their valence
+     * VARIES. A journal the lexicon could not read (another language) used to
+     * be all zeros, and the max of equal averages is whichever month came
+     * first -- a "Warmest month" printed on a card about nothing.
+     */
+    internal fun warmestMonthIndex(entries: List<Entry>): Int? {
+        val read = entries.filter { it.valence != null }
+        if (read.mapNotNull { it.valence }.distinct().size < 2) return null
         val cal = Calendar.getInstance()
-        val best = entries.groupBy { e ->
+        return read.groupBy { e ->
             cal.timeInMillis = e.createdAt; cal.get(Calendar.MONTH)
         }.filter { it.value.size >= 3 }
-            .maxByOrNull { it.value.map { e -> e.valence }.average() }
-            ?: return "—"
-        return SimpleDateFormat("MMMM", Locale.US).format(
-            Calendar.getInstance().apply { set(Calendar.MONTH, best.key) }.time
-        )
+            .maxByOrNull { it.value.mapNotNull { e -> e.valence }.average() }
+            ?.key
     }
 
     /**
