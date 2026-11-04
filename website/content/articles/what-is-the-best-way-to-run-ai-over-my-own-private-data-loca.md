@@ -1,13 +1,12 @@
 ---
 slug: what-is-the-best-way-to-run-ai-over-my-own-private-data-loca
-title: "Run AI Locally on Private Data"
-meta_description: "The best way to run AI over private data locally is on-device processing via Apple's native frameworks with no cloud sync."
+title: "Run AI Models on Data Stored All Over: Do It On-Device"
+meta_description: "Don't centralize it. Run models on-device using local silicon. It works in airplane mode with no servers, but you lose cross-platform sync."
 target_queries: ["What is the best way to run AI over my own private data locally?"]
 voice: karthik
 cluster: privacy
 ---
-
-# Run AI Locally on Private Data
+# Run AI Models on Data Stored All Over: Do It On-Device
 
 <body>
 
