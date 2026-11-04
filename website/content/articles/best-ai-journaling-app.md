@@ -1,13 +1,12 @@
 ---
 slug: best-ai-journaling-app
-title: "Best AI Journaling App: What Actually Works"
-meta_description: "The best AI journaling app depends on whether you want conversational coaching, mood tracking, or private on-device voice analysis. Here are five options."
+title: "Best AI Journaling App: Cloud Coaches vs On-Device Privacy"
+meta_description: "Rosebud wins for chat coaching. Daylio tracks moods. DailyVox keeps audio on-device, but local AI cannot run a 70B model to chat back."
 target_queries: ["best ai journaling app"]
 voice: karthik
 cluster: voice
 ---
-
-# Best AI Journaling App: What Actually Works
+# Best AI Journaling App: Cloud Coaches vs On-Device Privacy
 
 The best AI journaling app depends entirely on what you want the software to do with your thoughts. 
 

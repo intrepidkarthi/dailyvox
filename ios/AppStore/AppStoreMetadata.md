@@ -10,7 +10,7 @@ Private On-Device Audio Diary
 offline,encrypted,mood,tracker,gratitude,transcribe,speech,memo,notes,therapy,ai,twin,digital
 
 ## Promotional Text (170 characters max)
-Ask your Twin anything — answers come from your own entries, quoted and cited. Conversational on Apple Intelligence iPhones. On-device, no account, free.
+Speak for a minute, get something back: a reflection, a mood, a line from a week ago. All of it on your iPhone.
 
 ## Description (4000 characters max)
 
@@ -90,6 +90,25 @@ https://getdailyvox.com/support
 
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
+
+## What's New (Version 1.13.0)
+
+Now it talks back from the very first day.
+
+NEW
+- Something back every time you speak: a short reflection under each entry, and when you name someone, a line to pick up tomorrow.
+- A suggested mood for each entry, clearly marked, one tap to change. It never replaces a mood you chose, and it stays quiet when it isn't sure.
+- Your past, brought back: "A week ago you said…", "On this day" from earlier months and years, and a weekly recap counted from your own entries.
+- A question that changes each day, with "Different question" one tap away. Now and then it asks about someone you mentioned.
+- Early signals from your third entry: when you usually speak, how long you talk, words that keep coming back.
+- A kinder streak: one rest day a week doesn't break it, and coming back says welcome back, not zero.
+
+PRIVATE, AS ALWAYS
+Reminders stay generic. They can quote a line from your past only if you switch that on, because reminders show on the Lock Screen.
+
+FIXED
+- Turning reminders off now stops every one of them, including those already scheduled.
+- The streak now agrees everywhere: Today, Insights, widgets, the Lock Screen and Live Activities.
 
 ## What's New (Version 1.7.0)
 

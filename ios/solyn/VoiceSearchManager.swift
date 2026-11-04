@@ -26,7 +26,10 @@ final class VoiceSearchManager: ObservableObject {
     private var audioEngine: AVAudioEngine?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale.current)
+    private let speechRecognizer = SFSpeechRecognizer(locale: SpeechTranscriber.speakerLocale)
+    // speakerLocale, not Locale.current: on a Hindi phone Locale.current is
+    // en_IN (the app is not localised in Hindi), which would turn spoken
+    // Hindi search terms into English words.
     
     // MARK: - Initialization
     

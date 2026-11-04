@@ -157,8 +157,9 @@ enum Shareables {
         }
     }
 
+    /// Chosen moods only — a shared card should not state a suggested one.
     private static func valence(of entry: DiaryEntry) -> Double {
-        let m = Mood(rawValue: entry.mood ?? "") ?? Mood.none
+        let m = Mood(rawValue: entry.userMood ?? "") ?? Mood.none
         return (Double(m.moodValue) - 3.0) / 2.0
     }
 
@@ -177,21 +178,11 @@ enum Shareables {
     /// user-declared here rather than detected — and the sheet says so. On
     /// Android it is checked, because `Settings.Global` allows it. Claiming a
     /// check we cannot perform would poison the one format built to be filmed.
+    ///
+    /// The same rule as every other streak in the app, grace day included, so
+    /// a card cannot print a number the Today header disagrees with.
     static func streak(_ f: [Fact]) -> Int {
-        guard !f.isEmpty else { return 0 }
-        let cal = Calendar.current
-        let days = Set(f.map { cal.startOfDay(for: $0.date) }).sorted(by: >)
-        let today = cal.startOfDay(for: Date())
-        guard let first = days.first,
-              first == today || first == cal.date(byAdding: .day, value: -1, to: today)
-        else { return 0 }
-        var n = 0
-        var cursor = first
-        for d in days where d == cursor {
-            n += 1
-            cursor = cal.date(byAdding: .day, value: -1, to: cursor)!
-        }
-        return n
+        Streak.current(dates: f.map(\.date))
     }
 
     /// A single glorious day in an otherwise empty month is not a warm month,

@@ -142,11 +142,15 @@ struct ShareableInsightGenerator {
     }
 
     // MARK: - Insight Generators
+    //
+    // Mood-based cards read `userMood`: a card is a claim about the user made
+    // to whoever it is shared with, so it counts only moods they chose, never
+    // ones suggested from their words.
 
     /// "Your top emotion this week: guilt. Last week: excitement."
     private static func topEmotionInsight(weekEntries: [DiaryEntry], profile: UserProfile) -> ShareableInsight? {
         let moods = weekEntries.compactMap { entry -> Mood? in
-            guard let moodString = entry.value(forKey: "mood") as? String,
+            guard let moodString = entry.userMood,
                   let mood = Mood(rawValue: moodString),
                   mood != .none else { return nil }
             return mood
@@ -263,7 +267,7 @@ struct ShareableInsightGenerator {
 
         for entry in weekEntries {
             guard let date = entry.date,
-                  let moodString = entry.value(forKey: "mood") as? String,
+                  let moodString = entry.userMood,
                   let mood = Mood(rawValue: moodString),
                   mood != .none else { continue }
             let weekday = calendar.component(.weekday, from: date)
@@ -342,7 +346,7 @@ struct ShareableInsightGenerator {
 
         for entry in weekEntries {
             guard let text = entry.text,
-                  let moodString = entry.value(forKey: "mood") as? String,
+                  let moodString = entry.userMood,
                   let mood = Mood(rawValue: moodString),
                   mood != .none else { continue }
             let wordCount = text.split { $0.isWhitespace }.count

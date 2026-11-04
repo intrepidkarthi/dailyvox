@@ -22,6 +22,14 @@ struct StatsView: View {
 
     @State private var showMilestone: Int? = nil
 
+    /// The latest weekly recap — the one Today shows on recap evening, kept
+    /// here all week. Counted from the entries in a task, not in `body`.
+    @State private var recap: WeeklyRecap?
+
+    /// Moves when the app comes forward, so the recap week rolls over even
+    /// while Insights stays open.
+    @State private var recapClock = Date()
+
     /// Embodied insights, computed off the render path in onAppear — the
     /// correlation math must never run inside body (Twin-perf lesson).
     @State private var bodyInsights: [BodyInsight] = []
@@ -44,6 +52,18 @@ struct StatsView: View {
                 if entries.isEmpty {
                     emptyStateCard
                 } else {
+                    if let recap {
+                        WeeklyRecapCard(recap: recap, title: recapTitle(recap), entries: entries)
+                    }
+
+                    // First week: counts, not claims, until the patterns
+                    // below have enough to go on. Top of the screen, because
+                    // the first week is when someone opens this to see whether
+                    // the app is doing anything with what they said.
+                    if let early = EarlySignals.report(for: entries) {
+                        EarlySignalsCard(report: early)
+                    }
+
                     // Shareable Weekly Insights
                     WeeklyInsightsSection(entries: Array(entries))
 
@@ -92,6 +112,10 @@ struct StatsView: View {
         }
         .background { WarmBackground() }
         .navigationTitle("Insights")
+        .task(id: recapKey) { refreshRecap() }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            recapClock = Date()
+        }
         .onAppear {
             refreshBodyInsights()
             // Reached milestones now surface as a gold line INSIDE the streak
@@ -109,6 +133,32 @@ struct StatsView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Weekly Recap
+
+    /// Changes when anything the recap reads does: the week it covers, and
+    /// any entry added, deleted or edited — an edit must never leave the
+    /// recap quoting words the entry no longer has.
+    private var recapKey: String {
+        let week = Resurfacing.latestRecapWeek(now: recapClock)?.start.timeIntervalSince1970 ?? 0
+        let edited = entries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
+        return "\(week)|\(entries.count)|\(edited)"
+    }
+
+    private func refreshRecap() {
+        let now = Date()
+        guard let week = Resurfacing.latestRecapWeek(now: now) else { recap = nil; return }
+        // Only the week's entries are snapshotted and read.
+        let inWeek = entries.filter { ($0.date).map { $0 >= week.start && $0 < week.end } ?? false }
+        recap = Resurfacing.recap(of: PastEntry.snapshots(of: inWeek), week: week,
+                                  candidates: Resurfacing.engineCandidates)
+    }
+
+    private func recapTitle(_ recap: WeeklyRecap) -> String {
+        recap.interval.contains(Date())
+            ? String(localized: "This week", comment: "Title of the weekly recap in Insights once the current week's recap is due.")
+            : String(localized: "Last week", comment: "Title of the weekly recap in Insights for the previous full week.")
     }
 
     // MARK: - Empty State
@@ -142,6 +192,11 @@ struct StatsView: View {
     // MARK: - Streak Card
 
     private var streakCard: some View {
+        streakCard(streakStatus)
+    }
+
+    /// Takes the status once, so one render walks the journal once.
+    private func streakCard(_ streakStatus: Streak.Status) -> some View {
         VStack(spacing: 16) {
             HStack {
                 Image(systemName: "flame.fill")
@@ -152,16 +207,46 @@ struct StatsView: View {
                 Spacer()
             }
 
-            HStack(alignment: .bottom, spacing: 4) {
-                Text("\(currentStreak)")
-                    .font(.dv(size: 48, weight: .bold, design: .rounded))
-                    .foregroundColor(DS.Palette.terracotta)
-                Text(currentStreak == 1 ? "day" : "days")
-                    .font(.dv(.title3))
-                    .foregroundColor(.secondary)
-                    .padding(.bottom, 8)
-                Spacer()
+            if streakStatus.kind == .returning {
+                // Not a flame reading "0 days". Someone who came back has a
+                // longest run and days spoken, and both stay on this card.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: "Welcome back. Your sky kept your place.",
+                                comment: "Insights streak card, for someone with entries whose run has ended. Warm, no guilt."))
+                        .font(.dv(.title3, design: .rounded, weight: .bold))
+                        .foregroundColor(DS.Palette.terracotta)
+                    Text(String(localized: "\(streakStatus.daysSpoken) days spoken so far. A new run starts whenever you speak.",
+                                comment: "Insights streak card, under the welcome-back line. The number is distinct days with an entry."))
+                        .font(.dv(.subheadline))
+                        .foregroundColor(.secondary)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+            } else {
+                HStack(alignment: .bottom, spacing: 4) {
+                    Text("\(streakStatus.current)")
+                        .font(.dv(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(DS.Palette.terracotta)
+                    Text(streakStatus.current == 1 ? "day" : "days")
+                        .font(.dv(.title3))
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 8)
+                    Spacer()
+                }
+                .accessibilityElement(children: .combine)
             }
+
+            // The grace rule, in one line, where the number it changes is.
+            Text(streakStatus.restingYesterday
+                 ? String(localized: "Yesterday was a rest day, and your run is held. One missed day is forgiven once a week.",
+                          comment: "Insights streak card: yesterday had no entry and the grace day is keeping the run.")
+                 : String(localized: "One missed day won't break a run \u{2014} once a week.",
+                          comment: "Insights streak card: explains the grace day rule in one line."))
+                .font(.dv(.caption))
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             // The milestone, where it belongs: one gold line on the card that
             // is already about the streak. Gold rewards.
@@ -189,7 +274,7 @@ struct StatsView: View {
                     Text("Longest")
                         .font(.dv(.caption))
                         .foregroundColor(.secondary)
-                    Text("\(longestStreak) days")
+                    Text("\(streakStatus.longest) days")
                         .font(.dv(.subheadline, weight: .medium))
                 }
 
@@ -272,7 +357,7 @@ struct StatsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if patterns.isEmpty {
-                Text("Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.")
+                Text(notEnoughYetCopy)
                     .font(.dv(.subheadline))
                     .foregroundColor(ThemeManager.shared.secondaryTextColor)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -310,6 +395,22 @@ struct StatsView: View {
         }
     }
 
+    /// The "not enough yet" line, pointing at the early signals while they
+    /// are what there is.
+    private var notEnoughYetCopy: String {
+        let base = String(localized: "Not enough yet. Patterns appear once there is enough to be sure one is real rather than a coincidence.",
+                          comment: "Insights: shown under 'Your Twin noticed' when no pattern has passed its gates.")
+        if EarlySignals.report(for: entries) != nil {
+            return base + " " + String(localized: "Until then, Early signals at the top shows what can already be counted.",
+                                       comment: "Insights: appended to the 'not enough yet' line while the early signals card is showing.")
+        }
+        if entries.lazy.filter({ $0.date != nil }).count < EarlySignals.minimumEntries {
+            return base + " " + String(localized: "Early signals appear from your third entry.",
+                                       comment: "Insights: appended to the 'not enough yet' line before the third entry.")
+        }
+        return base
+    }
+
     // MARK: - Mood Trends Card
 
     private var moodTrendsCard: some View {
@@ -329,7 +430,8 @@ struct StatsView: View {
             }
 
             if moodData.isEmpty {
-                Text("Record entries with moods to see trends")
+                Text("Moods appear here as you record \u{2014} suggested from your words, or set by you.")
+                    .multilineTextAlignment(.center)
                     .font(.dv(.subheadline))
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -360,6 +462,13 @@ struct StatsView: View {
                 // Mood over the last 14 days
                 moodStrip
                     .padding(.top, DS.Space.sm)
+
+                if moodChartData.contains(where: \.suggested) {
+                    Text("Lighter bars are moods suggested from your words. Tap the mood on an entry to change it.")
+                        .font(.dsCaption2)
+                        .foregroundColor(DS.Palette.inkMute)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .dsCard()
@@ -382,6 +491,9 @@ struct StatsView: View {
                                         startPoint: .top, endPoint: .bottom
                                     )
                                 )
+                                // A suggested mood is drawn lighter: it counts,
+                                // but it is the words' reading, not the user's.
+                                .opacity(item.suggested ? 0.45 : 1)
                                 .frame(height: max(12, maxH * CGFloat(mood.moodValue) / 5.0))
                         } else {
                             Circle()
@@ -468,9 +580,11 @@ struct StatsView: View {
         bodyInsightsKey = key
 
         // Main-thread extraction only — no Core Data access off-main.
+        // Chosen moods only: "how the day felt" against sleep or steps is a
+        // claim about the user, and a mood read from their words is not one.
         let moodPairs: [(date: Date, mood: String)] = entries.compactMap { entry in
             guard let date = entry.date,
-                  let moodString = entry.value(forKey: "mood") as? String else { return nil }
+                  let moodString = entry.userMood else { return nil }
             return (date, moodString)
         }
         let snapshots = kept.map(\.snapshot)
@@ -655,13 +769,14 @@ struct StatsView: View {
     // Both streaks go through `Streak` now. Insights was the one screen that
     // had the rule RIGHT, and it still had its own copy of it — which is how
     // the Record tab's wrong copy survived unnoticed.
-    private var currentStreak: Int {
-        Streak.current(days: entryDays)
+    private var streakStatus: Streak.Status {
+        Streak.status(days: entryDays)
     }
 
-    private var longestStreak: Int {
-        Streak.longest(days: entryDays)
+    private var currentStreak: Int {
+        streakStatus.current
     }
+
 
     private var entryDays: Set<Date> {
         Set(entries.compactMap { $0.date }.map { Calendar.current.startOfDay(for: $0) })
@@ -706,7 +821,7 @@ struct StatsView: View {
               let priorStart = cal.date(byAdding: .day, value: -28, to: now)
         else { return nil }
 
-        func mean(_ window: [(date: Date, mood: Mood?)]) -> Double? {
+        func mean(_ window: [(date: Date, mood: Mood?, suggested: Bool)]) -> Double? {
             let values = window.compactMap { $0.mood }.map { (Double($0.moodValue) - 3) / 2 }
             guard values.count >= 3 else { return nil }
             return values.reduce(0, +) / Double(values.count)
@@ -735,23 +850,23 @@ struct StatsView: View {
         Array(moodData.prefix(4))
     }
 
-    private var moodChartData: [(date: Date, mood: Mood?)] {
+    /// Suggested and chosen moods both fill the strip — otherwise it stays
+    /// empty for nearly everyone — with `suggested` kept so it can be drawn
+    /// lighter. "No mood" is no bar, not a middling one.
+    private var moodChartData: [(date: Date, mood: Mood?, suggested: Bool)] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
 
-        return (0..<14).compactMap { offset -> (Date, Mood?)? in
+        return (0..<14).compactMap { offset -> (Date, Mood?, Bool)? in
             guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
             let entry = entries.first { entry in
                 guard let entryDate = entry.date else { return false }
                 return calendar.isDate(entryDate, inSameDayAs: date)
             }
-            let mood: Mood?
-            if let moodString = entry?.value(forKey: "mood") as? String {
-                mood = Mood(rawValue: moodString)
-            } else {
-                mood = nil
-            }
-            return (date, mood)
+            guard let moodString = entry?.value(forKey: "mood") as? String,
+                  let mood = Mood(rawValue: moodString), mood != .none
+            else { return (date, nil, false) }
+            return (date, mood, entry?.isMoodSuggested ?? false)
         }.reversed()
     }
 

@@ -1,13 +1,12 @@
 ---
 slug: what-journaling-app-helps-with-anxiety-and-mood-tracking
-title: "Journaling Apps for Anxiety and Mood Tracking"
-meta_description: "For anxiety and mood tracking, Daylio tracks quick habits, Rosebud offers AI prompts, and DailyVox analyzes your voice locally on iPhone."
+title: "Oatmeal Apps & Prompted Journal Reviews for Mental Health"
+meta_description: "Oatmeal Apps' Daylio is fast for mood tracking, but lacks depth. Rosebud adds text prompts. DailyVox transcribes your voice locally without an account."
 target_queries: ["What journaling app helps with anxiety and mood tracking?"]
 voice: karthik
 cluster: voice
 ---
-
-# Journaling Apps for Anxiety and Mood Tracking
+# Oatmeal Apps & Prompted Journal Reviews for Mental Health
 
 The right journaling app for anxiety and mood tracking depends on whether you prefer clicking buttons, typing paragraphs, or speaking out loud. 
 
@@ -63,6 +62,8 @@ Pick your tool based on where your friction lives:
 - Choose **Apple Journal** or **Day One** if you prefer classic typing and want your notes integrated into your photo library.
 - Choose **Rosebud** if you want an interactive system to challenge your thoughts and you do not mind cloud-based processing.
 - Choose **DailyVox** if you want to talk your way through an anxiety spike and keep every word stored strictly on your physical phone.
+
+Related reading: [An AI Mood App Should Predict Tomorrow, Not Just Log Today](/blog/ai-mood-prediction-vs-tracking).
 
 ## Frequently Asked Questions
 

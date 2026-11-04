@@ -83,7 +83,7 @@ private struct StreakLockScreenView: View {
                     .foregroundStyle(lsWarmInk)
                 Text(context.state.hasEntryToday
                      ? "Today's entry is in. \(context.state.totalEntries) stars total."
-                     : "Open today — keep the streak alive.")
+                     : "Today is open whenever you are.")
                     .font(.dv(.caption))
                     .foregroundStyle(lsWarmInkMute)
             }

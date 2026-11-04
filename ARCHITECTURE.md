@@ -26,7 +26,7 @@ UI (SwiftUI, WidgetKit, AppIntents)                   ── app
 
 **The Digital Twin engine is not in this repository.** It is a separate Swift
 package, `DailyVoxTwinEngine`, consumed through a local Swift Package Manager
-reference (`project.pbxproj` → `relativePath = ../DailyVoxTwin`). 25 files under
+reference (`project.pbxproj` → `relativePath = ../DailyVoxTwin`). 32 files under
 `ios/solyn/` reach it with `import DailyVoxTwinEngine`; none of them contain
 engine code, and `.githooks/pre-commit` blocks engine sources from being added
 here.
@@ -150,9 +150,9 @@ before it shipped.
 | Entities | `NLTagger` NER | Capitalisation heuristic | 99.1% recall vs 94.6% on 28 transcribed entries, 111 gold spans |
 | Prosody | AVFoundation + Accelerate | MediaCodec + autocorrelation | Same `ProsodyFeatures` field contract; DSP unit-tested against synthesised signals |
 | Storage | Core Data + CloudKit | Room, no sync | Same schema shape; encrypted export is byte-compatible in both directions |
-| Backup | iCloud (opt-out) | Manual export only | Android Auto Backup explicitly disabled — see below |
+| Backup | iCloud sync (opt-in; off for new installs since v1.6) | Manual export only | Android Auto Backup explicitly disabled — see below |
 | Lock | Face ID + Secure Enclave | `BiometricPrompt` + Keystore | — |
-| Body | HealthKit | Health Connect (not in v1.0) | Read-only and opt-in when it lands; v1.0 requests no health permission, since no screen yet asks for it |
+| Body | HealthKit | Health Connect (not wired) | Read-only and opt-in when it lands; Android requests no health permission, since no screen yet asks for it |
 
 **The Android backup decision is load-bearing.** `allowBackup` defaults to true,
 and Android Auto Backup copies `filesDir` — the Room database and every audio
@@ -208,15 +208,29 @@ The engine maintains four interconnected models:
 |---|---|---|
 | **EncryptionService** | `EncryptionService.swift` | AES-256-GCM via CryptoKit. File format: `[DVX1 magic][salt][nonce][ciphertext+tag]` |
 | **AppLockManager** | `AppLockManager.swift` | Face ID / Touch ID via LocalAuthentication |
-| **ThemeManager** | `ThemeManager.swift` | 8 themes (System, Light, Sage, Lavender, Rose, Ocean, Warm, Dark) |
-| **PhotoStorageManager** | `PhotoStorageManager.swift` | On-device photo attachment storage (up to 5 per entry) |
+| **ThemeManager** | `ThemeManager.swift` | 3 themes (Day, Night, Sunset); Sunset follows the real sunset. Older stored themes decode onto these |
+| **PhotoStorageManager** | `PhotoStorageManager.swift` | On-device photo attachment storage (up to 5 per entry). Adding new photos has been off since v1.11 (`FeatureFlags.photoAttachments`); existing ones still show and export |
 | **GoalManager** | `GoalManager.swift` | Journaling goals, streaks, milestones |
 | **ReviewManager** | `ReviewManager.swift` | App Store review prompts via SKStoreReviewController |
 | **BackupService** | `BackupService.swift` | Export/import orchestration |
 | **PDFExportService** | `PDFExportService.swift` | PDF generation from entries |
 | **HapticManager** | `HapticManager.swift` | Haptic feedback patterns |
-| **ReminderManager** | `ReminderManager.swift` | Daily reminder notifications |
+| **ReminderManager** | `ReminderManager.swift` | Daily reminder notifications: a seven-day horizon, one note on day 10, then silence. Quoting a line from a week ago is opt-in (off by default, because reminders show on the lock screen) |
 | **AppIntents** | `AppIntents.swift` | Siri Shortcuts integration |
+| **ResearchExport** | `ResearchExport.swift` | The consented research pilot's export (`dailyvox-research-export/1`), same shape as Android's `Research.kt`. Self-labelled entries only |
+
+### The first week (v1.13)
+
+What the app gives back before the Twin has enough entries to say anything. All of it is app-side and runs on the device; none of it sends anything anywhere.
+
+| Module | File | Purpose |
+|---|---|---|
+| **EntryReflection** | `EntryReflection.swift` | The short reflection under a saved entry, and the line carried into tomorrow when the entry names someone |
+| **SuggestedMood** | `SuggestedMood.swift` | A mood suggested from the words. Stored in its own `suggestedMood` attribute; a mood is a suggestion only while `mood` still equals it, so a mood the user set is never overwritten. The Twin learns from `userMood`, never from a suggestion |
+| **Resurfacing** | `Resurfacing.swift`, `ResurfaceCards.swift` | "A week ago you said…", "On this day", and the weekly recap |
+| **DailyQuestion** | `DailyQuestion.swift` | The question above the record button, one per day |
+| **EarlySignals** | `EarlySignals.swift`, `EarlySignalsCard.swift` | Counts shown from the third entry, labelled early |
+| **Streak** | `Streak.swift` | One streak rule for the app, widgets, Lock Screen, Live Activities and share cards, with at most one grace day in seven |
 
 ## Apple Frameworks Used
 
@@ -241,14 +255,21 @@ The engine maintains four interconnected models:
 
 ## Building
 
+### iOS
+
+1. Check out the private engine package beside this repository, so that it sits at `DailyVoxTwin/` in the repository root (the Xcode project points at `../DailyVoxTwin` from `ios/`). Without it the package cannot resolve and the app does not build; see [CONTRIBUTING.md](CONTRIBUTING.md).
+2. Open `ios/solyn.xcodeproj` in Xcode 26 or later. The app calls iOS 26 APIs (`SpeechAnalyzer`) behind availability checks, so it needs the iOS 26 SDK even though it runs on iOS 17.
+3. Select the `solyn` scheme
+4. Build and run on an iOS 17+ Simulator or device
+5. Tests: `solynTests` (unit) and `solynUITests` (UI)
+
+### Android
+
+The engine goes in the same place (`DailyVoxTwin/` in the repository root); `android/README.md` has the steps and the stub for building without it.
+
 > **JDK 21, and check that you got it.** Homebrew's `openjdk@21` is keg-only, so
 > `/usr/libexec/java_home -v 21` cannot see it — and it does not fail when 21 is
 > absent, it returns whatever JDK it has. On a machine with only JDK 26 the
 > usual export silently selects 26, `:app` still builds because AGP forks its
 > own compiler, and only `:engine` dies, with `IllegalArgumentException: 26.0.2`
 > and nothing in it that mentions Java. Run `java -version` and read it.
-
-1. Open `ios/solyn.xcodeproj` in Xcode 15+
-2. Select the `solyn` scheme
-3. Build and run on an iOS 17+ Simulator or device
-4. Tests: `solynTests` (unit) and `solynUITests` (UI)

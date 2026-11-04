@@ -88,7 +88,6 @@ struct TodayView: View {
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
     @State private var errorTitle: String?
-    @State private var selectedPrompt: EntryPrompt? = nil
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var processingPhase: Int = 0
     @State private var processingTimer: Timer?
@@ -108,6 +107,29 @@ struct TodayView: View {
     // Research pilot: optional post-recording self-label picker (Settings → Research).
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled = false
     @State private var labelTarget: DiaryEntry?
+
+    /// What the entry gives back once it is saved — the reflection that used
+    /// to sit behind a collapsed toggle on the detail screen.
+    @State private var reflection: EntryReflection?
+    /// A recording has been kept and its transcript is still on the way, so
+    /// the reflection slot shows that it is coming rather than a stale one.
+    @State private var awaitingReflection = false
+    /// The entry whose mood is being changed from the Today screen, and the
+    /// picker's working value.
+    @State private var moodPickerEntry: DiaryEntry?
+    @State private var pickedMood: Mood = .none
+    /// The past brought back — a week ago, on this day, the weekly recap.
+    /// Worked out in a task keyed on the entries, never inside `body`.
+    @State private var resurface = ResurfaceSnapshot.empty
+    /// "Now" for resurfacing, moved on when the app comes forward so a screen
+    /// left open overnight does not keep showing yesterday's week-ago entry.
+    @State private var resurfaceClock = Date()
+    /// Today's questions, first one showing. Worked out in a task keyed on
+    /// the day and the entries, like resurfacing, never inside `body`.
+    @State private var questionLineup: [DailyQuestion] = []
+    /// How many times today's question has been changed, as "day:turn", so a
+    /// relaunch keeps the one you moved to and midnight starts over.
+    @AppStorage("dailyQuestionTurn") private var questionTurnStored = ""
 
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
@@ -209,9 +231,15 @@ struct TodayView: View {
         .sheet(isPresented: $showSettings) {
             NavigationStack { SettingsView() }
         }
+        .sheet(item: $moodPickerEntry) { entry in
+            MoodPickerSheet(selectedMood: $pickedMood,
+                            isSuggestion: entry.isMoodSuggested,
+                            onSave: { chooseMood(pickedMood, for: entry) })
+        }
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
                                title: "Today",
+                               prompt: todaysQuestion.text,
                                footnote: "Typed, not recorded. Nothing is sent to DailyVox.",
                                style: .themed,
                                onSave: saveTypedEntry,
@@ -473,6 +501,8 @@ struct TodayView: View {
                         // something: the BODY row of an entry's ledger, and the
                         // Body card on the Twin tab.
                             entryCardSection
+                            pastSection
+                                .padding(.top, 12)
                         }
 
                         Spacer(minLength: 0)
@@ -494,8 +524,66 @@ struct TodayView: View {
             Color.clear.frame(height: DailyVoxTabBar.reservedHeight - 10)
         }
         .task { await BodyWhisperProvider.shared.refreshIfNeeded() }
+        .task(id: resurfaceKey) {
+            resurface = ResurfaceSnapshot.make(from: PastEntry.snapshots(of: allEntries), now: Date())
+        }
+        .task(id: questionKey) {
+            questionLineup = DailyQuestions.lineup(on: Date(),
+                                                   entries: QuestionSource.snapshots(of: allEntries),
+                                                   pilotEnabled: pilotLabelingEnabled,
+                                                   read: DailyQuestions.engineReading)
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             Task { await BodyWhisperProvider.shared.refreshIfNeeded() }
+            resurfaceClock = Date()
+        }
+    }
+
+    // MARK: - Your Past
+
+    /// Changes when anything resurfacing depends on does: the day, whether the
+    /// recap is due, and any entry added, deleted or edited.
+    private var resurfaceKey: String {
+        let day = Calendar.current.startOfDay(for: resurfaceClock).timeIntervalSince1970
+        let recapDue = Resurfacing.recapWeekIfDue(now: resurfaceClock) != nil
+        let edited = allEntries.lazy.compactMap(\.updatedAt).max()?.timeIntervalSince1970 ?? 0
+        return "\(day)|\(recapDue)|\(allEntries.count)|\(edited)"
+    }
+
+    /// Changes when the day's question could: the day, the pilot setting,
+    /// and any entry added, deleted or edited.
+    private var questionKey: String {
+        "\(resurfaceKey)|\(pilotLabelingEnabled)"
+    }
+
+    /// Only what exists: each card is absent, not empty, when there is no
+    /// entry behind it. The recap leads on the evening it is due.
+    @ViewBuilder
+    private var pastSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if let recap = resurface.recap {
+                WeeklyRecapCard(recap: recap,
+                                title: String(localized: "Your week",
+                                              comment: "Title of the weekly recap card on the Today screen."),
+                                entries: allEntries)
+            }
+            if let weekAgo = resurface.weekAgo {
+                ResurfacedEntryLink(entryID: weekAgo.entryID, entries: allEntries) {
+                    PastLineCard(item: weekAgo)
+                }
+            }
+            if !resurface.onThisDay.isEmpty {
+                Text("On this day")
+                    .font(.dv(.caption, design: .rounded, weight: .bold))
+                    .foregroundColor(theme.secondaryTextColor)
+                    .padding(.top, 4)
+                    .accessibilityAddTraits(.isHeader)
+                ForEach(resurface.onThisDay, id: \.entryID) { item in
+                    ResurfacedEntryLink(entryID: item.entryID, entries: allEntries) {
+                        PastLineCard(item: item)
+                    }
+                }
+            }
         }
     }
 
@@ -523,16 +611,23 @@ struct TodayView: View {
                         .foregroundColor(theme.secondaryTextColor)
                 }
                 Spacer()
+                let streak = streakStatus
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(streakCount > 0 ? "\(streakCount)-day streak" : "no streak yet")
+                    Text(streakLine(streak))
                         .font(.dv(size: 12.5, weight: .bold, design: .rounded))
                         .foregroundColor(theme.textColor)
+                        .multilineTextAlignment(.trailing)
                     // GOLD REWARDS: the year count is a made thing, so it is
                     // the one figure up here allowed to be gold.
                     Text("\u{2726} \(daysRecordedThisYear) this year")
                         .font(.dv(size: 11, weight: .semibold, design: .rounded))
                         .foregroundColor(theme.goldText)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityValue(streak.kind == .returning
+                    ? String(localized: "Your sky kept your place. Longest run \(streak.longest) days.",
+                             comment: "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days.")
+                    : "")
                 Button { showSettings = true } label: {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
@@ -558,11 +653,7 @@ struct TodayView: View {
     /// answer it with are one gesture apart.
     private var questionAndMic: some View {
         VStack(spacing: 26) {
-            Text("How was your day,\nreally?")
-                .font(.dv(size: 30, weight: .bold, design: .rounded))
-                .foregroundColor(theme.textColor)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+            dailyQuestionView
 
             recordButton
 
@@ -580,6 +671,90 @@ struct TodayView: View {
                 .padding(.top, -20)   // reads as the caption's second line, not a fourth object
         }
         .frame(maxWidth: .infinity)
+    }
+
+    /// The day's question, as one control: tap it, or the small link under
+    /// it, for a different one. Never in the way of the mic — speaking
+    /// without reading it is the main path, and the recording does not know
+    /// or care which question was showing.
+    private var todaysQuestion: DailyQuestion {
+        // Store screenshots keep the original question whatever day they run.
+        if ScreenshotScene.current != nil { return DailyQuestions.fallback }
+        // Until the task has run, the day's lineup without grounding — cheap,
+        // and the same first question on every day but a grounded one — so
+        // the screen does not open on one question and flick to another.
+        let lineup = questionLineup.isEmpty
+            ? DailyQuestions.lineup(on: resurfaceClock, entries: [], pilotEnabled: pilotLabelingEnabled,
+                                    read: { _ in DailyQuestions.Reading() })
+            : questionLineup
+        return DailyQuestions.question(in: lineup,
+                                       turn: DailyQuestions.turn(from: questionTurnStored, on: resurfaceClock))
+    }
+
+    private func nextQuestion() {
+        guard recordingState == .idle, questionLineup.count > 1 else { return }
+        HapticManager.shared.selectionChanged()
+        let turn = DailyQuestions.turn(from: questionTurnStored, on: resurfaceClock) + 1
+        withAnimation(.easeInOut(duration: 0.25)) {
+            questionTurnStored = DailyQuestions.stored(turn: turn % questionLineup.count, on: resurfaceClock)
+        }
+    }
+
+    private var dailyQuestionView: some View {
+        let question = todaysQuestion
+        return VStack(spacing: 8) {
+            Button(action: nextQuestion) {
+                VStack(spacing: 8) {
+                    if let lead = question.lead {
+                        Text(lead)
+                            .font(.dv(.subheadline, design: .rounded, weight: .semibold))
+                            .foregroundColor(theme.isNight ? theme.goldText : theme.accentColor)
+                    }
+                    Text(question.text)
+                        .font(.dv(size: question.text.count > 34 ? 25 : 30, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.textColor)
+                    if let detail = question.detail {
+                        Text(detail)
+                            .font(.dv(.subheadline, design: .rounded))
+                            .foregroundColor(theme.secondaryTextColor)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .id(question.text)
+                .transition(.opacity)
+            }
+            .buttonStyle(.plain)
+            .disabled(recordingState != .idle)
+            .accessibilityLabel(question.spoken)
+            .accessibilityHint(String(localized: "Double-tap for a different question. You can speak about anything.",
+                                      comment: "VoiceOver hint on the question of the day above the mic."))
+            .accessibilityAddTraits(.isHeader)
+
+            if questionLineup.count > 1, ScreenshotScene.current == nil {
+                Button(action: nextQuestion) {
+                    Label {
+                        Text("Different question")
+                    } icon: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                    }
+                    .font(.dv(.footnote, design: .rounded, weight: .medium))
+                    .foregroundColor(theme.secondaryTextColor)
+                    .frame(minHeight: 44)
+                    .padding(.horizontal, 12)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(.vertical, -10)
+                .opacity(recordingState == .idle ? 1 : 0)
+                .disabled(recordingState != .idle)
+                .accessibilityHidden(recordingState != .idle)
+                .accessibilityLabel(String(localized: "Different question",
+                                           comment: "Button under the question of the day that shows another question."))
+            }
+        }
     }
 
     /// The quiet way out of speaking. Same words as onboarding's escape hatch
@@ -668,47 +843,47 @@ struct TodayView: View {
         return timeGreeting
     }
 
-    // MARK: - Prompts Section
+    // MARK: - Reflection
 
-    /// Every third day, pilot participants see a plain "log your day" prompt
-    /// first — the neutral-rich slice the affect research needs (R1 §10
-    /// item 5); the default prompts all pull toward an emotional register.
-    /// Day-of-year cadence keeps it deterministic and testable.
-    private var orderedPrompts: [EntryPrompt] {
-        guard pilotLabelingEnabled,
-              let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()),
-              day % 3 == 0
-        else { return EntryPrompt.defaultPrompts }
-        let neutral = EntryPrompt.neutralPrompts[(day / 3) % EntryPrompt.neutralPrompts.count]
-        return [neutral] + EntryPrompt.defaultPrompts
+    /// Below the entry card, once there is something to say. While a new
+    /// recording is still being transcribed into a day that already has text,
+    /// the slot says so instead of showing the reflection for the earlier part
+    /// of the day as if it were new. A first recording of the day needs no
+    /// placeholder here — the card above already reads "Understanding your
+    /// words...".
+    @ViewBuilder
+    private func reflectionSlot(for entry: DiaryEntry) -> some View {
+        if awaitingReflection, recordingState == .processing {
+            if let text = entry.text, !text.isEmpty {
+                TodayReflectionCard(reflection: nil)
+                    .transition(.opacity)
+            }
+        } else {
+            if let reflection, reflection.entryID == entry.id {
+                TodayReflectionCard(reflection: reflection)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+            TodayMoodChip(entry: entry) {
+                pickedMood = Mood(rawValue: entry.mood ?? "") ?? .none
+                moodPickerEntry = entry
+            }
+            .transition(.opacity)
+        }
     }
 
-    private var promptsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("A starting thought")
-                    .font(.dv(.subheadline, weight: .semibold))
-                Spacer()
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(orderedPrompts) { prompt in
-                        PromptChip(
-                            prompt: prompt,
-                            isSelected: prompt == selectedPrompt
-                        ) {
-                            if selectedPrompt == prompt {
-                                selectedPrompt = nil
-                            } else {
-                                selectedPrompt = prompt
-                                HapticManager.shared.selectionChanged()
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 2)
-            }
+    /// Anything picked here — a mood or "No mood" — is the user's, and from
+    /// then on no suggestion is ever written over it.
+    private func chooseMood(_ mood: Mood, for entry: DiaryEntry) {
+        entry.setMoodChosenByUser(mood.rawValue)
+        // Also marks the entry changed when the user confirms the very mood
+        // that was suggested, so the chip redraws as theirs.
+        entry.updatedAt = Date()
+        HapticManager.shared.moodSelected()
+        do {
+            try viewContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            logger.error("Failed to save mood: \(error.localizedDescription)")
         }
     }
 
@@ -790,6 +965,8 @@ struct TodayView: View {
                     .dsShadowSoft()
                 }
                 .buttonStyle(.plain)
+
+                reflectionSlot(for: entry)
             } else {
                 // No entry yet - show welcome card for first-time users
                 if allEntries.isEmpty {
@@ -946,14 +1123,6 @@ struct TodayView: View {
                     Text("Your voice stays on this device")
                         .font(.dv(.caption, weight: .medium))
                         .foregroundColor(.secondary)
-
-                    if let prompt = selectedPrompt {
-                        Text(prompt.detail)
-                            .font(.dv(.caption))
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 4)
-                    }
                 }
             }
         }
@@ -1279,14 +1448,29 @@ struct TodayView: View {
             }
         }
 
-        // Feed into Digital Twin for learning
+        // Feed into Digital Twin for learning. The user's mood only — a
+        // suggestion is the app's reading of these same words, not a report.
         DigitalTwinEngine.shared.processEntry(
             text: segment,
-            mood: entry.mood,
+            mood: entry.userMood,
             date: entry.date ?? Date(),
             duration: twinDuration,
             entryId: entry.id?.uuidString
         )
+
+        // Something back for what was just said. The whole day's text, as the
+        // detail screen reads it, so a second recording refreshes the
+        // reflection rather than answering only its last sentence.
+        withAnimation(.spring(response: 0.4)) {
+            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
+            awaitingReflection = false
+            // A mood read from the whole day's words, only where there is none
+            // or the one there was our own suggestion. The words are already
+            // saved; a failed save here only loses the suggestion.
+            if entry.refreshSuggestedMood() {
+                try? viewContext.save()
+            }
+        }
 
         // Fire the "a new star appeared" Live Activity and
         // refresh the persistent streak Live Activity (if opted in).
@@ -1300,7 +1484,7 @@ struct TodayView: View {
                 LiveActivityManager.shared.fireStarBirthActivity(
                     streak: streak,
                     totalStars: total,
-                    moodRaw: entry.mood ?? ""
+                    moodRaw: entry.userMood ?? ""
                 )
             }
             LiveActivityManager.shared.refreshStreakActivity(
@@ -1315,8 +1499,6 @@ struct TodayView: View {
     /// What happens at the moment of capture: before the transcript for voice,
     /// after the text for typing. Assumes the entry has just been saved.
     private func entryCaptured(_ entry: DiaryEntry) {
-        // Clear any selected prompt once an entry has been saved
-        selectedPrompt = nil
         WidgetCenter.shared.reloadAllTimelines()
         // Tonight is spoken for, so drop tonight's reminder. The Settings
         // card promises "skips once you've spoken" and this is the moment
@@ -1357,6 +1539,7 @@ struct TodayView: View {
         do {
             try viewContext.save()
             entryCaptured(entry)
+            awaitingReflection = true
         } catch {
             logger.error("Failed to save entry: \(error.localizedDescription)")
             recordingState = .idle
@@ -1370,6 +1553,8 @@ struct TodayView: View {
                 case .success(let textSegment):
                     commitText(textSegment, to: entry, twinDuration: entry.duration)
                 case .failure(let error):
+                    // No words, so nothing to reflect on — never a guess.
+                    awaitingReflection = false
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
@@ -1434,8 +1619,24 @@ struct TodayView: View {
         return days.filter { calendar.component(.year, from: $0) == currentYear }.count
     }
 
-    private var streakCount: Int {
-        Streak.current(dates: allEntries.compactMap(\.date))
+    private var streakStatus: Streak.Status {
+        Streak.status(dates: allEntries.compactMap(\.date))
+    }
+
+    /// A returning user is not a new one: "no streak yet" is for an empty
+    /// journal only.
+    private func streakLine(_ status: Streak.Status) -> String {
+        switch status.kind {
+        case .new:
+            return String(localized: "no streak yet",
+                          comment: "Today header, top right, for a journal with no entries.")
+        case .active:
+            return String(localized: "\(status.current)-day streak",
+                          comment: "Today header, top right. Spoken days in the current run; one missed day a week does not end it.")
+        case .returning:
+            return String(localized: "Welcome back",
+                          comment: "Today header, top right, for someone with entries whose run has ended. Replaces 'no streak yet'. No guilt.")
+        }
     }
 }
 
@@ -1470,98 +1671,183 @@ struct StatBadge: View {
     }
 }
 
-struct EntryPrompt: Identifiable, Equatable {
-    let id = UUID()
+// MARK: - Mood Chip
+
+/// The entry's mood under the Today card, and the one tap to change it.
+///
+/// A suggested mood is drawn as a suggestion — dashed outline, "Sounds calm" —
+/// so it never reads as something the user said about themselves. Once they
+/// pick, it is solid and plainly theirs. No mood, no chip: an empty slot is
+/// better than an invitation the reflection card already crowds.
+struct TodayMoodChip: View {
+    @ObservedObject var entry: DiaryEntry
+    let onTap: () -> Void
+    @ObservedObject private var theme = ThemeManager.shared
+
+    private var mood: Mood? {
+        guard let m = Mood(rawValue: entry.mood ?? ""), m != .none else { return nil }
+        return m
+    }
+
+    var body: some View {
+        if let mood {
+            let suggested = entry.isMoodSuggested
+            Button(action: onTap) {
+                HStack(spacing: 8) {
+                    Image(systemName: mood.icon)
+                        .font(.dv(.footnote, weight: .semibold))
+                        .foregroundColor(mood.color)
+                    Group {
+                        if suggested {
+                            Text("Sounds \(mood.displayName.lowercased()) \u{2014} tap to change")
+                        } else {
+                            Text("Feeling \(mood.displayName.lowercased())")
+                        }
+                    }
+                    .font(.dv(.footnote, design: .rounded, weight: .semibold))
+                    .foregroundColor(theme.textColor.opacity(suggested ? 0.75 : 0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right")
+                        .font(.dv(.caption2, weight: .semibold))
+                        .foregroundColor(theme.secondaryTextColor)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .frame(minHeight: 44)
+                // A rounded rectangle, not a capsule: at large Dynamic Type
+                // the label wraps, and a capsule that tall reads as a blob.
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(mood.color.opacity(suggested ? 0.06 : 0.12))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(
+                        mood.color.opacity(suggested ? 0.45 : 0.0),
+                        style: StrokeStyle(lineWidth: 1, dash: suggested ? [4, 3] : []))
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(suggested
+                ? Text("Suggested mood: \(mood.displayName.lowercased()).")
+                : Text("Mood: \(mood.displayName.lowercased())."))
+            .accessibilityHint(Text("Double-tap to change."))
+            .accessibilityAddTraits(.isButton)
+        }
+    }
+}
+
+// MARK: - Reflection Card
+
+/// The payoff after saving: the entry's reflection, and — only when the entry
+/// itself names someone or somewhere — one thread to pick up tomorrow.
+/// `reflection == nil` is the quiet state while the words are still arriving.
+///
+/// Text styles throughout, never point sizes, so it grows with Dynamic Type
+/// like the text around it. Read as one VoiceOver element: a reflection is a
+/// single thought, not three things to swipe through.
+struct TodayReflectionCard: View {
+    let reflection: EntryReflection?
+    @ObservedObject private var theme = ThemeManager.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DS.Space.sm) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkle")
+                    .font(.dv(.caption, weight: .semibold))
+                Text("Reflection")
+                    .font(.dv(.caption, design: .rounded, weight: .bold))
+                Spacer(minLength: 0)
+                Text("On this iPhone")
+                    .font(.dv(.caption2, design: .monospaced))
+                    .foregroundColor(theme.secondaryTextColor)
+            }
+            .foregroundColor(theme.goldText)
+
+            if let reflection {
+                Text(reflection.reflection)
+                    .font(.dv(.callout))
+                    .lineSpacing(3)
+                    .foregroundColor(theme.textColor.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let anchor = reflection.anchor {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Image(systemName: "moon.stars")
+                            .font(.dv(.footnote))
+                            .foregroundColor(theme.accentColor)
+                        Text("For tomorrow: you mentioned \(anchor). Maybe start there.")
+                            .font(.dv(.footnote, design: .rounded, weight: .semibold))
+                            .foregroundColor(theme.textColor.opacity(0.85))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, 2)
+                }
+            } else {
+                HStack(spacing: 10) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Listening back to what you said\u{2026}")
+                        .font(.dv(.footnote))
+                        .foregroundColor(theme.secondaryTextColor)
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(theme.cardBackgroundColor)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(DS.Palette.gold.opacity(0.28), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityText)
+    }
+
+    private var accessibilityText: Text {
+        guard let reflection else {
+            return Text("Reflection is on its way.")
+        }
+        var label = Text("Reflection: \(reflection.reflection)")
+        if let anchor = reflection.anchor {
+            label = label + Text(verbatim: " ")
+                + Text("For tomorrow: you mentioned \(anchor). Maybe start there.")
+        }
+        return label
+    }
+}
+
+/// A prompt with a short title and the longer guidance under it. Only the
+/// research pilot's neutral prompts use this shape now; the everyday
+/// questions live in `DailyQuestions`.
+struct EntryPrompt: Equatable {
     let title: String
     let detail: String
 
-    static let defaultPrompts: [EntryPrompt] = [
-        EntryPrompt(
-            title: "Daily reflection",
-            detail: "What is one moment from today that you want to remember?"
-        ),
-        EntryPrompt(
-            title: "Gratitude",
-            detail: "What are three small things you feel grateful for right now?"
-        ),
-        EntryPrompt(
-            title: "Energy check",
-            detail: "How does your body feel today - tense, tired, or calm?"
-        ),
-        EntryPrompt(
-            title: "Letting go",
-            detail: "What is one worry you can gently put down for tonight?"
-        ),
-        EntryPrompt(
-            title: "Self-kindness",
-            detail: "If you spoke to yourself like a friend, what would you say?"
-        ),
-        EntryPrompt(
-            title: "Tomorrow",
-            detail: "What is one gentle intention you have for tomorrow?"
-        )
-    ]
-
     /// Plain, factual prompts (pilot protocol R1 §10 item 5): neutral is the
-    /// scarce hard class in real diary data, and every default prompt above
-    /// invites an emotional register. Pilot days periodically lead with one
-    /// of these instead.
-    static let neutralPrompts: [EntryPrompt] = [
-        EntryPrompt(
-            title: "Just log your day",
-            detail: "Walk through your day start to finish - what you did, where, with whom. Facts are enough."
-        ),
-        EntryPrompt(
-            title: "Plain notes",
-            detail: "What did today actually look like? No reflection needed - just what happened."
-        )
-    ]
-}
-
-struct PromptChip: View {
-    let prompt: EntryPrompt
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    /// The card underneath is `warmCardBackground`, which is navy at night —
-    /// but the title was pinned to `DS.Palette.ink` and the detail to
-    /// `inkMute`, both DAY tokens. At night the prompt titles rendered
-    /// near-black on navy and simply were not there.
-    @Environment(\.dvTheme) private var theme
-
-    var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(prompt.title)
-                    .font(.dsCallout)
-                    .foregroundColor(isSelected
-                                     ? (theme.isNight ? DS.Palette.navy : DS.Palette.sageDeep)
-                                     : theme.textColor)
-                Text(prompt.detail)
-                    .font(.dsCaption)
-                    .foregroundColor(isSelected
-                                     ? (theme.isNight ? DS.Palette.navy.opacity(0.7) : DS.Palette.inkMute)
-                                     : theme.secondaryTextColor)
-                    .lineLimit(2)
-            }
-            .padding(.horizontal, DS.Space.md)
-            .padding(.vertical, DS.Space.sm)
-            .frame(maxWidth: 280, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .fill(isSelected
-                          ? (theme.isNight ? DS.Palette.gold : DS.Palette.tintSage)
-                          : theme.cardBackgroundColor)
+    /// scarce hard class in real diary data, and most everyday questions
+    /// invite an emotional register. Pilot days periodically lead with one
+    /// of these instead. Order matters: `DailyQuestions.pilotNeutral` picks
+    /// by index.
+    static var neutralPrompts: [EntryPrompt] {
+        [
+            EntryPrompt(
+                title: String(localized: "Just log your day",
+                              comment: "Research pilot: a neutral question of the day."),
+                detail: String(localized: "Walk through your day start to finish - what you did, where, with whom. Facts are enough.",
+                               comment: "Research pilot: guidance under the neutral question of the day.")
+            ),
+            EntryPrompt(
+                title: String(localized: "Plain notes",
+                              comment: "Research pilot: a neutral question of the day."),
+                detail: String(localized: "What did today actually look like? No reflection needed - just what happened.",
+                               comment: "Research pilot: guidance under the neutral question of the day.")
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: DS.Radius.md, style: .continuous)
-                    .stroke(isSelected
-                            ? theme.accentColor.opacity(0.40)
-                            : theme.textColor.opacity(0.06), lineWidth: 1)
-            )
-            .dsShadowSoft()
-        }
-        .buttonStyle(.plain)
+        ]
     }
 }
 

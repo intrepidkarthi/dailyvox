@@ -94,7 +94,9 @@ final class LiveTranscriber: ObservableObject {
     }
     private var task: SFSpeechRecognitionTask?
     /// Same resolver the file-based path uses: current locale first, then the
-    /// base language, then en-US — all of them required to be on-device.
+    /// base language, then en-US only for English speakers — all of them
+    /// required to be on-device. No model in the speaker's language means no
+    /// live line at all, never an English guess at their words.
     private let recognizer = SpeechTranscriber.onDeviceRecognizer()
 
     /// Analysis is debounced: partials arrive several times a second and

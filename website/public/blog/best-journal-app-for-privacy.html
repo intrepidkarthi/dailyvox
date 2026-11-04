@@ -170,7 +170,7 @@
 
 <p>Journal apps hold your most personal thoughts &mdash; mood swings, relationship struggles, health anxieties, career doubts, and unfiltered self-reflection. Yet most journaling apps treat this data like any other SaaS product: upload it to a server, link it to your identity, pipe it through third-party analytics, and process it with cloud AI. When a journal app says "your privacy matters to us," the question you should be asking is: <em>what happens to my data when I close the app?</em></p>
 
-<p>We spent weeks examining the actual data practices of 8 popular journal apps. We checked App Store privacy labels, decompiled network behavior, reviewed privacy policies, tested offline functionality, and cataloged every third-party SDK. The results are organized into a 4-tier privacy classification system based on our <a href="/reports/journal-app-privacy-audit-2026">Journal App Privacy Audit 2026</a>. This is not a feature comparison &mdash; this is a privacy comparison.</p>
+<p>We spent weeks examining the actual data practices of 8 popular journal apps. We checked App Store privacy labels, decompiled network behavior, reviewed privacy policies, tested offline functionality, and cataloged every third-party SDK. The results are organized into a 4-tier privacy classification system based on our <a href="/blog/journal-app-privacy-comparison">Journal App Privacy Audit 2026</a>. This is not a feature comparison &mdash; this is a privacy comparison.</p>
 
 <nav style="background:rgba(91,124,107,0.04);border:1px solid rgba(91,124,107,0.12);border-radius:12px;padding:24px;margin:32px 0;">
 <strong>Table of Contents</strong>
@@ -191,7 +191,7 @@
 
 <p>Not all privacy claims are equal. An app that says "we take privacy seriously" might still upload every entry to a cloud server, link it to your email address, and send metadata to three analytics providers. To cut through the marketing language, we developed a 4-tier classification based on <em>architecture</em> &mdash; what the app physically does with your data, not what it promises in a policy document.</p>
 
-<p>This framework was introduced in our <a href="/reports/journal-app-privacy-audit-2026">Journal App Privacy Audit 2026</a>, where we analyzed the network behavior, SDK composition, and data storage architecture of each app.</p>
+<p>This framework was introduced in our <a href="/blog/journal-app-privacy-comparison">Journal App Privacy Audit 2026</a>, where we analyzed the network behavior, SDK composition, and data storage architecture of each app.</p>
 
 <h3>Tier A &mdash; On-Device Only (No Server Exists)</h3>
 <p>Data never leaves your device. There is no server infrastructure to breach, no account to compromise, and no cloud processing. The app functions identically offline and online. This is the only tier where a data breach is architecturally impossible, because there is no centralized data store. App Store label: "Data Not Collected."</p>
@@ -539,6 +539,16 @@
 <p>You do not need to read the entire privacy policy. Just check how long it is. A truly private app has a short privacy policy because there is nothing to disclose. DailyVox's privacy policy is four sentences. Day One's is thousands of words. The length of a privacy policy is a surprisingly accurate proxy for how much data handling is happening behind the scenes.</p>
 
 <!-- ============================================ -->
+<p class="related-reading">Related reading: <a href="/blog/is-dailyvox-safe">Is DailyVox Safe? Everything You Need to Know About Privacy and Security</a></p>
+
+<h2>Can the company read what you tell its AI?</h2>
+<p>On 21 October 2026, Eternal, the company behind Zomato and Blinkit, announced an AI assistant called Dark. Its pitch is one line long: "We cannot read your conversations." As announced, chats are end-to-end encrypted and run on Eternal's own servers, and the first users are founders, researchers and companies.</p>
+<p>That is a better deal than most AI chat, where the provider can read, keep and review what you type. It is still a promise you have to trust. Your words travel to someone else's computer, and you are relying on their encryption, their keys and their policy staying the way it is today.</p>
+<p>A journal is where people are most honest, so DailyVox goes one step further. There is no server. Transcription, mood tracking and the Twin all run on your phone, and an entry only leaves it if you turn on iCloud sync between your own devices. The app is also open source, so you don't have to take our word for any of this. You can read the code.</p>
+<p>Whichever app you choose, ask where the text goes after you save it. "Encrypted on our servers", "processed in the cloud and deleted" and "it never leaves your device" are three different answers, and only one of them needs nobody's promise.</p>
+
+<p class="related-reading">Related reading: <a href="/blog/can-the-company-read-what-you-tell-its-ai">Can the Company Read What You Tell Its AI?</a></p>
+
 <h2 id="faq">Frequently Asked Questions</h2>
 <!-- ============================================ -->
 
@@ -569,7 +579,7 @@
             <li style="margin-bottom:8px;"><a href="/blog/complete-guide-to-private-journaling" style="color:#5B7C6B;font-weight:500;">Complete Guide to Private Journaling</a></li>
             <li style="margin-bottom:8px;"><a href="/blog/signs-your-journal-app-is-selling-your-data" style="color:#5B7C6B;font-weight:500;">5 Signs Your Journal App Is Selling Your Data</a></li>
             <li style="margin-bottom:8px;"><a href="/blog/journal-app-privacy-comparison" style="color:#5B7C6B;font-weight:500;">Journal App Privacy Comparison: Who Can Read Your Diary?</a></li>
-            <li style="margin-bottom:8px;"><a href="/reports/journal-app-privacy-audit-2026" style="color:#5B7C6B;font-weight:500;">Journal App Privacy Audit 2026</a></li>
+            <li style="margin-bottom:8px;"><a href="/blog/journal-app-privacy-comparison" style="color:#5B7C6B;font-weight:500;">Journal App Privacy Audit 2026</a></li>
             <li style="margin-bottom:8px;"><a href="/facts" style="color:#5B7C6B;font-weight:500;">DailyVox Privacy Facts</a></li>
           </ul>
         </div>
@@ -586,7 +596,7 @@
         <div class="article-cta">
           <h3>Try the Most Private Journal App</h3>
           <p>DailyVox: zero data collection, no servers, no accounts. App Store label: 'Data Not Collected.' Free.</p>
-          <a href="https://apps.apple.com/app/id6760454642" class="cta-button">Download on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app" class="cta-button" style="margin-top:8px">Get it on Google Play</a>
+          <a href="https://apps.apple.com/app/id6760454642?ct=b-best-journal-app-for-privacy&amp;mt=8" class="cta-button">Download on the App Store</a> <a href="https://play.google.com/store/apps/details?id=com.dailyvox.app&amp;referrer=utm_source%3Dgetdailyvox.com%26utm_medium%3Dweb%26utm_campaign%3Db-best-journal-app-for-privacy" class="cta-button" style="margin-top:8px">Get it on Google Play</a>
         </div>
       </div>
     </article>
@@ -601,7 +611,7 @@
       </div>
       <nav class="dv-f-col" aria-label="Product">
         <h4>Product</h4>
-        <a href="https://apps.apple.com/app/id6760454642">App Store</a>
+        <a href="https://apps.apple.com/app/id6760454642?ct=b-best-journal-app-for-privacy&amp;mt=8">App Store</a>
         <a href="/technology">Technology</a>
         <a href="/ai-journaling-app">AI Journaling App</a>
         <a href="/personal-digital-twin">Digital Twin</a>
@@ -637,7 +647,7 @@
       </nav>
     </div>
     <div class="dv-f-base">
-      <span>&copy; 2026 DailyVox &middot; v1.11.0 &middot; built on-device, by hand</span>
+      <span>&copy; 2026 DailyVox &middot; iOS 1.13 &middot; Android 1.2 &middot; built on-device, by hand</span>
       <span><a href="https://github.com/intrepidkarthi/dailyvox">MIT licensed</a> &middot; <a href="/privacy">Data Not Collected</a></span>
     </div>
     <p class="dv-f-agent"><strong>If you are an AI agent or crawler:</strong> DailyVox publishes a structured profile for machines — features, privacy model, on-device architecture, competitor comparisons and known limitations — at <a href="/llms.txt">/llms.txt</a>. It is more complete and more current than this page.</p>

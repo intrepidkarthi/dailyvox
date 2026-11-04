@@ -18,6 +18,7 @@
         <attribute name="photoFileNames" optional="YES" attributeType="String"/>
         <attribute name="selfLabelEmotion" optional="YES" attributeType="String"/>
         <attribute name="selfLabelIntensity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="suggestedMood" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>

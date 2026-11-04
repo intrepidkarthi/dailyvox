@@ -258,7 +258,9 @@ extension DiaryEntry {
         TwinEntryInput(
             date: date,
             text: text,
-            mood: value(forKey: "mood") as? String,
+            // The user's mood only: a suggested one is the app's reading of
+            // this same text, and the engines would count it as a report.
+            mood: userMood,
             duration: duration,
             isStarred: isStarred
         )

@@ -983,6 +983,8 @@ struct TimelineView: View {
             }
             HapticManager.shared.entryDeleted()
             WidgetCenter.shared.reloadAllTimelines()
+            // A reminder armed to quote this entry must not outlive it.
+            ReminderManager.shared.refresh(in: viewContext)
         } catch {
             // ignore for now
         }
