@@ -95,6 +95,14 @@ localized URLs after #141 is live (URL fields can be edited without a new versio
 Keywords are comma-separated with no spaces, and repeat no word from that
 locale's name or subtitle (Apple already indexes those).
 
+> **What is actually in ASC (filled 2026-11-04).** ASC refused the es-ES, fr-FR,
+> it and pt-BR names below as "already being used" (so were "Tu diario de voz",
+> "Ton journal vocal", "Il tuo diario vocale" and "Seu diário por voz"). Those four
+> locales carry the English name `DailyVox: Voice Journal Diary` with their own
+> subtitles; only de-DE has its localized name. Their keyword fields were written
+> for the localized names, so diario/voz, vocal, vocale and diário are indexed
+> nowhere for now.
+
 ### de-DE — German
 
 **Name** (30 max)
