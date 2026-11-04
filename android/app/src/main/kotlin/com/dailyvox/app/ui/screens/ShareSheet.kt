@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,6 +64,13 @@ fun ShareSheet(
     var card by remember { mutableStateOf(if (initial in cards) initial else cards.first()) }
     var includeNames by remember { mutableStateOf(false) }
 
+    // The Story card's words: its one line for the share sheet and what
+    // TalkBack reads for the preview. Counts only, from string resources.
+    val storyCopy = remember(entries) {
+        com.dailyvox.app.system.SkyStory.copy(
+            context.resources, com.dailyvox.app.system.SkyStory.shape(entries).nights)
+    }
+
     // Re-rendered only when something that changes the pixels changes. The
     // bitmap is decoded from the same file the chooser will receive, so the
     // preview cannot drift from what gets shared.
@@ -81,12 +90,11 @@ fun ShareSheet(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
         ) {
-            Text("Share", fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
+            Text(stringResource(R.string.share_sheet_title), fontFamily = com.dailyvox.app.ui.theme.Nunito, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
                  color = scheme.onBackground)
             Spacer(Modifier.height(4.dp))
             Text(
-                "Rendered on this phone and handed to whatever you pick. " +
-                    "DailyVox has no way to send it itself.",
+                stringResource(R.string.share_sheet_intro),
                 fontSize = 12.5.sp, lineHeight = 18.sp, color = scheme.onSurfaceVariant,
             )
 
@@ -98,7 +106,7 @@ fun ShareSheet(
                 cards.forEach { c ->
                     val on = c == card
                     Text(
-                        Shareables.title(c), fontSize = 12.sp,
+                        stringResource(Shareables.titleRes(c)), fontSize = 12.sp,
                         fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
                         color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
                         modifier = Modifier
@@ -118,7 +126,9 @@ fun ShareSheet(
             Spacer(Modifier.height(14.dp))
             if (bitmap != null) {
                 Image(
-                    bitmap.asImageBitmap(), contentDescription = Shareables.title(card),
+                    bitmap.asImageBitmap(),
+                    contentDescription = if (card == Shareables.Card.STORY) storyCopy.description
+                                         else stringResource(Shareables.titleRes(card)),
                     contentScale = ContentScale.Fit,
                     // The portrait card is sized by HEIGHT and lets width
                     // follow. Constraining width first and then applying a 9:16
@@ -126,7 +136,7 @@ fun ShareSheet(
                     // the height of the sheet drawn over its own buttons —
                     // heightIn cannot clamp a size the ratio has already fixed.
                     modifier = (
-                        if (card == Shareables.Card.WALLPAPER)
+                        if (Shareables.portrait(card))
                             Modifier.height(380.dp).aspectRatio(9f / 16f)
                         else Modifier.fillMaxWidth().aspectRatio(1f)
                     )
@@ -140,13 +150,13 @@ fun ShareSheet(
                         .background(scheme.surface),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("Could not render the card.", fontSize = 13.sp,
+                    Text(stringResource(R.string.share_sheet_render_failed), fontSize = 13.sp,
                          color = scheme.onSurfaceVariant)
                 }
             }
 
             Spacer(Modifier.height(10.dp))
-            Text(Shareables.caption(card), fontSize = 12.5.sp, lineHeight = 19.sp,
+            Text(stringResource(Shareables.captionRes(card)), fontSize = 12.5.sp, lineHeight = 19.sp,
                  color = scheme.onSurfaceVariant)
 
             // Only Year One can carry a name; My Sky has no words on it by
@@ -163,11 +173,10 @@ fun ShareSheet(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(Modifier.weight(1f)) {
-                        Text("Include names", fontSize = 13.sp, fontWeight = FontWeight.Medium,
+                        Text(stringResource(R.string.share_sheet_names), fontSize = 13.sp, fontWeight = FontWeight.Medium,
                              color = scheme.onSurface)
                         Text(
-                            if (includeNames) "The card will name a real person."
-                            else "Off — the card says “someone”.",
+                            stringResource(if (includeNames) R.string.share_sheet_names_on else R.string.share_sheet_names_off),
                             fontSize = 11.sp, lineHeight = 16.sp,
                             color = if (includeNames) goldText else scheme.onSurfaceVariant,
                         )
@@ -179,8 +188,7 @@ fun ShareSheet(
             if (card == Shareables.Card.MY_SKY && !Shareables.airplaneMode(context)) {
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Turn on airplane mode before sharing and the card stamps " +
-                        "ON AIRPLANE MODE — because then it is true.",
+                    stringResource(R.string.share_sheet_airplane_hint),
                     fontSize = 11.5.sp, lineHeight = 17.sp, color = goldText,
                 )
             }
@@ -188,7 +196,7 @@ fun ShareSheet(
             Spacer(Modifier.height(16.dp))
             if (card == Shareables.Card.WALLPAPER) {
                 Text(
-                    "Set as wallpaper", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                    stringResource(R.string.share_sheet_wallpaper), fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                     color = scheme.onPrimary,
                     modifier = Modifier.fillMaxWidth()
                         .clip(RoundedCornerShape(20.dp))
@@ -203,7 +211,7 @@ fun ShareSheet(
                 Spacer(Modifier.height(8.dp))
             }
             Text(
-                if (card == Shareables.Card.WALLPAPER) "Share the image instead" else "Share",
+                stringResource(if (card == Shareables.Card.WALLPAPER) R.string.share_sheet_share_instead else R.string.share_sheet_share),
                 fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
                 color = if (card == Shareables.Card.WALLPAPER) scheme.primary
                         else scheme.onPrimary,
@@ -217,7 +225,10 @@ fun ShareSheet(
                             if (file == null) scheme.primary.copy(alpha = 0.4f) else scheme.primary)
                     )
                     .clickable(enabled = file != null) {
-                        file?.let { Shareables.share(context, it) }
+                        file?.let {
+                            Shareables.share(context, it,
+                                if (card == Shareables.Card.STORY) storyCopy.shareText else null)
+                        }
                     }
                     .padding(vertical = 15.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally),

@@ -24,6 +24,18 @@ enum LifeArea: String, CaseIterable {
     case family = "Family"
     case creativity = "Creativity"
 
+    /// What a chip or the entry detail calls it. The raw value is only an identity.
+    var title: String {
+        switch self {
+        case .work: return String(localized: "Work", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .health: return String(localized: "lifeArea.health", defaultValue: "Health", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .relationships: return String(localized: "Relationships", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 13 characters.")
+        case .growth: return String(localized: "lifeArea.growth", defaultValue: "Growth", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. Personal growth. One word, about 12 characters.")
+        case .family: return String(localized: "Family", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        case .creativity: return String(localized: "Creativity", comment: "Life area (topic) of an entry: chip on a journal row and in entry detail's TOPICS row. One word, about 12 characters.")
+        }
+    }
+
     /// Warm-palette hues (same blue→sage, green→forest, pink→dusty rose,
     /// purple→plum, orange→terracotta, yellow→gold mapping as Insights).
     var color: Color {
@@ -95,6 +107,16 @@ enum JournalFilter: String, CaseIterable, Identifiable {
     case body = "Body"
 
     var id: String { rawValue }
+
+    /// What the chip says. The raw value is only an identity.
+    var title: String {
+        switch self {
+        case .all: return String(localized: "All", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows every entry.")
+        case .people: return String(localized: "People", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries that mention people.")
+        case .mood: return String(localized: "Mood", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries that have a mood.")
+        case .body: return String(localized: "Body", comment: "Journal tab: filter chip above the list; the active one is bold. Short, about 10 characters. Shows entries with a Health snapshot (Body Twin).")
+        }
+    }
 }
 
 struct TimelineView: View {
@@ -145,8 +167,8 @@ struct TimelineView: View {
     private var playTodayPill: some View {
         if let total = todayDuration {
             let label = todayQueue.isPlaying
-                ? "\(todayQueue.index + 1) of \(todayQueue.count)"
-                : "Play today \u{00B7} \(Self.clock(total))"
+                ? String(localized: "\(todayQueue.index + 1) of \(todayQueue.count)", comment: "Journal tab: pill in the header while today's recordings play one after another. First placeholder: which recording is playing. Second: how many there are today. About 8 characters.")
+                : String(localized: "Play today \u{00B7} \(Self.clock(total))", comment: "Journal tab: pill in the header that plays all of today's recordings in a row. The placeholder is their total length, as in '2:05'. About 18 characters.")
             Button {
                 todayQueue.toggle(in: viewContext)
                 HapticManager.shared.buttonTap()
@@ -212,7 +234,9 @@ struct TimelineView: View {
                 // EditButton is the one casualty — swipe-to-delete still works
                 // via .onDelete, so nothing became unreachable.
                 headerAction(showSearch ? "magnifyingglass.circle.fill" : "magnifyingglass",
-                             showSearch ? "Close search" : "Search entries") {
+                             showSearch
+                                 ? String(localized: "Close search", comment: "Journal header: VoiceOver label of the search button while search is open.")
+                                 : String(localized: "Search entries", comment: "Journal header: VoiceOver label of the search button.")) {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.86)) {
                         showSearch.toggle()
                     }
@@ -223,7 +247,7 @@ struct TimelineView: View {
                 // §F reaches the Journal as well. Three surfaces now offer a
                 // card — an entry, the sky, and the timeline — instead of one
                 // corner of one tab.
-                headerAction("square.and.arrow.up", "Share a card") {
+                headerAction("square.and.arrow.up", String(localized: "Share a card", comment: "Journal tab: VoiceOver label for the share icon in the header; it opens the share-card picker.")) {
                     showShareSheet = true
                 }
                 // Kept always visible. Hiding it unless a filter was already
@@ -234,7 +258,8 @@ struct TimelineView: View {
                 // change, not a deletion.
                 headerAction(hasActiveFilters
                              ? "line.3.horizontal.decrease.circle.fill"
-                             : "line.3.horizontal.decrease.circle", "Filters") {
+                             : "line.3.horizontal.decrease.circle",
+                             String(localized: "Filters", comment: "Journal header: VoiceOver label of the button that shows mood and date filters.")) {
                     withAnimation(.easeInOut(duration: 0.2)) { showFilters.toggle() }
                     HapticManager.shared.buttonTap()
                 }
@@ -536,7 +561,7 @@ struct TimelineView: View {
                         }
                         HapticManager.shared.selectionChanged()
                     } label: {
-                        Text(filter.rawValue)
+                        Text(filter.title)
                             .font(.dv(size: 11.5, weight: on ? .heavy : .bold, design: .rounded))
                             // Green tint, per §1: these select, they do not
                             // reward, so gold would be the wrong colour.
@@ -647,7 +672,7 @@ struct TimelineView: View {
                         } label: {
                             HStack(spacing: 4) {
                                 Image(systemName: mood.icon)
-                                Text(mood.rawValue)
+                                Text(mood.displayName.lowercased())
                             }
                             .font(.dv(.caption))
                             .padding(.horizontal, 12)
@@ -667,8 +692,8 @@ struct TimelineView: View {
             
             // Date range
             HStack(spacing: 12) {
-                DateRangeButton(title: "From", date: $startDate)
-                DateRangeButton(title: "To", date: $endDate)
+                DateRangeButton(title: String(localized: "From", comment: "Journal tab > filters: label on the button that picks the start of a date range. One short word."), date: $startDate)
+                DateRangeButton(title: String(localized: "To", comment: "Journal tab > filters: label on the button that picks the end of a date range. One short word."), date: $endDate)
                 
                 Spacer()
                 
@@ -696,25 +721,25 @@ struct TimelineView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 if showStarredOnly {
-                    FilterChip(label: "Starred", icon: "star.fill", color: DS.Palette.gold) {
+                    FilterChip(label: String(localized: "Starred", comment: "Journal tab: active-filter chip (tap to remove) when only starred entries are shown. About 10 characters."), icon: "star.fill", color: DS.Palette.gold) {
                         showStarredOnly = false
                     }
                 }
                 
                 if let mood = selectedMoodFilter {
-                    FilterChip(label: mood.rawValue, icon: mood.icon, color: mood.color) {
+                    FilterChip(label: mood.displayName.lowercased(), icon: mood.icon, color: mood.color) {
                         selectedMoodFilter = nil
                     }
                 }
                 
                 if let start = startDate {
-                    FilterChip(label: "From \(formatShortDate(start))", icon: "calendar", color: DS.Palette.terracotta) {
+                    FilterChip(label: String(localized: "From \(formatShortDate(start))", comment: "Journal tab: active-filter chip (tap to remove) for the start of a date range. The placeholder is a short date, already formatted for the locale. About 16 characters."), icon: "calendar", color: DS.Palette.terracotta) {
                         startDate = nil
                     }
                 }
                 
                 if let end = endDate {
-                    FilterChip(label: "To \(formatShortDate(end))", icon: "calendar", color: DS.Palette.terracotta) {
+                    FilterChip(label: String(localized: "To \(formatShortDate(end))", comment: "Journal tab: active-filter chip (tap to remove) for the end of a date range. The placeholder is a short date, already formatted for the locale. About 16 characters."), icon: "calendar", color: DS.Palette.terracotta) {
                         endDate = nil
                     }
                 }
@@ -782,7 +807,11 @@ struct TimelineView: View {
             // previously bound to the Return key, which ejected people mid-type
             // into a second search screen — and then to nothing at all, once
             // the navigation bar that held its button stopped rendering.
-            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            // 1.14: only where the query would actually be searched by
+            // meaning (English). A word query in another language would get
+            // the same word search that just found nothing.
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               SemanticSearchManager.mode(for: searchText) == .meaning {
                 Button {
                     showSemanticSearch = true
                     HapticManager.shared.buttonTap()
@@ -937,11 +966,10 @@ struct TimelineView: View {
         comps.month = key.month
         let calendar = Calendar.current
         if let date = calendar.date(from: comps) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "LLLL yyyy" // e.g. December 2025
-            return formatter.string(from: date)
+            // "December 2025"; standalone month where the language has one.
+            return LocaleFormat.date(date, template: LocaleFormat.monthYear)
         }
-        return "Unknown"
+        return String(localized: "Unknown", comment: "Journal tab: month section header when an entry's month cannot be worked out. One word.")
     }
 
     private func sectionSummary(for entries: [DiaryEntry]) -> String {
@@ -953,7 +981,9 @@ struct TimelineView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         let wordsFormatted = formatter.string(from: NSNumber(value: totalWords)) ?? "\(totalWords)"
-        return "\(entryCount) \(entryCount == 1 ? "entry" : "entries") · \(wordsFormatted) words"
+        return entryCount == 1
+            ? String(localized: "1 entry · \(wordsFormatted) words", comment: "Journal tab: summary under a month header when the month has one entry. The placeholder is that entry's word count, already formatted with the locale's grouping.")
+            : String(localized: "\(entryCount) entries · \(wordsFormatted) words", comment: "Journal tab: summary under a month header. First placeholder: entries that month (0 or 2 or more). Second: total words, already formatted with the locale's grouping.")
     }
 
     private func entryDateString(_ entry: DiaryEntry) -> String {
@@ -1012,11 +1042,16 @@ struct EntryRowView: View {
         var parts: [String] = [relativeDay]
         if entry.duration > 0 {
             let total = Int(entry.duration.rounded())
+            let seconds = String(format: "%02d", total % 60)
             parts.append(total >= 60
-                         ? String(format: "%dM %02d", total / 60, total % 60)
-                         : "0:\(String(format: "%02d", total))")
+                         ? String(localized: "\(total / 60)M \(seconds)",
+                                  comment: "Journal row meta line, upper case: a spoken entry's length of a minute or more, as in 'TODAY · 2M 05 · 58 WORDS'. First placeholder: whole minutes. Second: seconds, always two digits. 'M' abbreviates minutes; keep it short and upper case.")
+                         : "0:\(seconds)")
         }
-        if wordCount > 0 { parts.append("\(wordCount) WORDS") }
+        if wordCount > 0 {
+            parts.append(String(localized: "\(String(wordCount)) WORDS",
+                                comment: "Journal row meta line, upper case: the entry's word count, as in 'TODAY · 2M 05 · 58 WORDS'. The placeholder is the count (1 or more). About 10 characters."))
+        }
         return parts.joined(separator: " \u{00B7} ")
     }
 
@@ -1027,13 +1062,16 @@ struct EntryRowView: View {
         // "TONIGHT · 1M 20 · 58 WORDS". Today is today whatever the hour; the
         // word "tonight" belongs to the Tonight share card, which really is
         // drawn at the end of a day.
-        if cal.isDateInToday(date) { return "TODAY" }
-        if cal.isDateInYesterday(date) { return "YESTERDAY" }
+        if cal.isDateInToday(date) {
+            return String(localized: "TODAY", comment: "Journal row meta line, upper case: the entry was made today. About 10 characters.")
+        }
+        if cal.isDateInYesterday(date) {
+            return String(localized: "YESTERDAY", comment: "Journal row meta line, upper case: the entry was made yesterday. About 10 characters.")
+        }
         // Within the last week, the weekday alone locates it.
         if let days = cal.dateComponents([.day], from: cal.startOfDay(for: date),
                                          to: cal.startOfDay(for: Date())).day, days < 7 {
-            let f = DateFormatter(); f.dateFormat = "EEE"
-            return f.string(from: date).uppercased()
+            return LocaleFormat.date(date, template: LocaleFormat.shortWeekday).uppercased()
         }
         return dateString.uppercased()
     }
@@ -1104,7 +1142,7 @@ struct EntryRowView: View {
                                     Circle()
                                         .fill(area.color)
                                         .frame(width: 6, height: 6)
-                                    Text(area.rawValue)
+                                    Text(area.title)
                                         .font(.dsCaption2)
                                         .foregroundColor(area.color)
                                 }
@@ -1124,7 +1162,7 @@ struct EntryRowView: View {
                 Text("\u{2726}")
                     .font(.dv(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(DS.Palette.gold)
-                    .accessibilityLabel("Starred")
+                    .accessibilityLabel(String(localized: "journal.row.starred.a11y", defaultValue: "Starred", comment: "Journal tab: one entry's row, spoken by VoiceOver for the gold star mark. Says this one entry is starred. One word."))
             }
         }
         .padding(.vertical, DS.Space.xs)

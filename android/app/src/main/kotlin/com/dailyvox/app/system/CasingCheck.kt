@@ -112,18 +112,13 @@ object CasingCheck {
      * More letters with no case at all (Unicode category Lo: Devanagari, Tamil,
      * Arabic, Hebrew, CJK, Thai...) than letters with one. Cased scripts --
      * Latin, Cyrillic, Greek, Armenian -- keep the check.
+     *
+     * The engine's [com.dailyvox.twin.LanguageGate.isMostlyCaseless], the same
+     * test its name detector uses to go quiet (B-5), so this verdict and the
+     * detector cannot disagree about which journals have capitals to read.
      */
-    internal fun caselessDominant(texts: List<String>): Boolean {
-        var cased = 0
-        var caseless = 0
-        texts.forEach { t ->
-            for (ch in t) when (Character.getType(ch).toByte()) {
-                Character.UPPERCASE_LETTER, Character.LOWERCASE_LETTER, Character.TITLECASE_LETTER -> cased++
-                Character.OTHER_LETTER -> caseless++
-            }
-        }
-        return caseless > cased
-    }
+    internal fun caselessDominant(texts: List<String>): Boolean =
+        com.dailyvox.twin.LanguageGate.isMostlyCaseless(texts.joinToString("\n"))
 
     private fun wordCount(t: String): Int =
         t.split(' ', '\n', '\t').count { w -> w.any { it.isLetter() } }

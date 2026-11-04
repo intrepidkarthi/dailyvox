@@ -1,6 +1,7 @@
 package com.dailyvox.app.system
 
 import com.dailyvox.app.data.Entry
+import com.dailyvox.twin.LanguageFeature
 
 /**
  * What the Speak screen hands back after an entry is saved.
@@ -78,8 +79,12 @@ object Reflection {
 
         // A null valence is "the lexicon read nothing here" -- another language,
         // or no scored word. That is not EVEN, and the card says nothing about
-        // tone rather than calling an unread entry balanced.
-        val v = entry.valence
+        // tone rather than calling an unread entry balanced. The engine's gate
+        // decides which languages the reflection line reads (REFLECTION), and
+        // which valences count (SENTIMENT): a number stored before the entry's
+        // language was known does not give a German entry a tone.
+        val v = ReadingLanguage.valence(entry)
+            ?.takeIf { ReadingLanguage.reads(LanguageFeature.REFLECTION, entry) }
         val tone = if (words < MIN_WORDS_FOR_TONE || v == null) null else when {
             v >= NEUTRAL -> Tone.LIGHT
             v <= -NEUTRAL -> Tone.HEAVY
@@ -88,11 +93,12 @@ object Reflection {
 
         // Unread entries are left out of the baseline, not averaged in as 0.
         val recent = earlier
-            .filter { it.text.isNotBlank() && it.valence != null && entry.createdAt - it.createdAt <= 14 * DAY }
-            .sortedByDescending { it.createdAt }
+            .filter { it.text.isNotBlank() && entry.createdAt - it.createdAt <= 14 * DAY }
+            .mapNotNull { e -> ReadingLanguage.valence(e)?.let { e to it } }
+            .sortedByDescending { it.first.createdAt }
             .take(RECENT_TAKE)
         val drift = if (tone == null || v == null || recent.size < MIN_RECENT) null else {
-            val delta = v - recent.mapNotNull { it.valence }.average().toFloat()
+            val delta = v - recent.map { it.second }.average().toFloat()
             when {
                 delta > DRIFT -> Drift.LIGHTER
                 delta < -DRIFT -> Drift.HEAVIER
@@ -104,10 +110,10 @@ object Reflection {
         // as written. A detector hit that the text does not contain would put
         // a name on screen the user never said. Whole words only, so "Ann"
         // is not found inside "Annual" and "Sam" not inside "Samsung".
-        val person = entry.entityList.firstOrNull { nameIn(it, entry.text) }
+        val person = ReadingLanguage.people(entry).firstOrNull { nameIn(it, entry.text) }
         val personEarlier = if (person == null) 0 else earlier.count { e ->
             entry.createdAt - e.createdAt <= 30 * DAY &&
-                (e.entityList.any { it.equals(person, ignoreCase = true) } ||
+                (ReadingLanguage.people(e).any { it.equals(person, ignoreCase = true) } ||
                     nameIn(person, e.text))
         }
 

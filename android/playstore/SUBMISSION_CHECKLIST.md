@@ -176,6 +176,27 @@ time as they pass. Exclusions are reversible and need no new upload.
 python3 screenshot-src/compose.py     # needs Chrome; uses the app's bundled fonts
 ```
 
+Localized sets (1.3: de, es, fr, it, pt-BR) come from the same pipeline. Per
+language: a debug build seeded in that language, the app's language set to
+match, and the speech pack downloaded from Settings › Language you speak so the
+card reads "on this phone". The system permission frame needs the SYSTEM
+language switched too (Android's permission labels ignore per-app language).
+
+```bash
+# Clean first: an incremental build after an unseeded one keeps
+# SEED_DEMO_DATA=false inlined, and the journal comes up empty.
+./gradlew :app:clean && ./gradlew installDebug -PseedDemo -PseedDemoLang=de     # es, fr, it, pt-BR
+adb shell cmd locale set-app-locales com.dailyvox.app --locales de-DE
+# set Settings › Design to Day before capturing: Sunset turns dark after 17:00
+# captures go in screenshot-src/de/ (same filenames as English, 05-ask.png included:
+# a question typed in that language, answered from the seeded journal)
+python3 screenshot-src/compose.py de    # -> assets/screenshots/de/
+```
+
+What each localized set may claim, and which frames it drops, is in the
+docstring of `compose.py`. Upload `assets/screenshots/<locale>/` as that
+language's phone screenshots in Play Console.
+
 The feature graphic's render command is at the bottom of
 `assets/feature-graphic.html`. If the emulator's display goes black, cold-boot
 it — `emulator -avd <name> -wipe-data -no-snapshot` — rather than restarting.
