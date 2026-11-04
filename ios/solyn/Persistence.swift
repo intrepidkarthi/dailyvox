@@ -34,7 +34,7 @@ struct PersistenceController {
             entry.date = now
             entry.createdAt = now
             entry.updatedAt = now
-            entry.text = "Sample entry for preview day \(i + 1)"
+            entry.text = "Sample entry for preview day \(i + 1)"  // i18n-ignore: preview-only sample data
             entry.isStarred = i % 3 == 0
         }
         do {
@@ -151,7 +151,7 @@ struct PersistenceController {
     /// CloudKit container identifier based on bundle ID
     private static var cloudKitContainerIdentifier: String {
         let bundleId = Bundle.main.bundleIdentifier ?? "com.dailyvox.app"
-        return "iCloud.\(bundleId)"
+        return "iCloud.\(bundleId)"  // i18n-ignore: CloudKit container identifier
     }
 
     // MARK: - Sync Control
