@@ -90,9 +90,13 @@ struct ShareSheetView: View {
                         // follow; constraining width first and then applying a
                         // 9:16 ratio makes the ratio win and draws a preview
                         // taller than the sheet, over its own buttons.
-                        .frame(maxWidth: card == .wallpaper ? 260 : .infinity)
+                        .frame(maxWidth: card.size.height > card.size.width ? 260 : .infinity)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .accessibilityElement()
+                        .accessibilityLabel(card == .story
+                                            ? Shareables.storyAccessibilityLabel(facts)
+                                            : card.title)
 
                     Text(card.caption)
                         .font(.dsCaption)
@@ -116,7 +120,12 @@ struct ShareSheetView: View {
                 }
             }
             .sheet(item: $shareURL) { url in
-                ActivityView(items: [url])
+                // The Story card travels with a line of text — the count and
+                // the address, nothing else — so a Status post says where the
+                // sky came from without the image having to shout it.
+                ActivityView(items: card == .story
+                             ? [url, Shareables.storyShareText(nights: Shareables.nights(facts))]
+                             : [url])
             }
         }
     }
