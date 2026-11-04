@@ -48,10 +48,28 @@ package com.dailyvox.twin
 
 const val DAILYVOX_ENGINE_IS_STUB = true
 
+// ── Which features may read which language ───────────────────────────────────
+// The stub reads no language at all: every feature stays quiet everywhere.
+enum class LanguageFeature {
+    MOOD, SENTIMENT, NAMES, REFLECTION, SEARCH_SEMANTIC, SEARCH_LEXICAL, TRAITS, ASK_TWIN,
+}
+
+object LanguageGate {
+    val table: Map<String, Set<LanguageFeature>> = emptyMap()
+    fun supports(feature: LanguageFeature, languageTag: String?): Boolean = false
+    fun supports(feature: LanguageFeature, locale: java.util.Locale): Boolean = false
+    fun supportsRecorded(feature: LanguageFeature, recordedLanguage: String?): Boolean = false
+    fun baseCode(tag: String?): String? =
+        tag?.trim()?.takeIf { it.isNotEmpty() }?.split('-', '_')?.first()?.lowercase(java.util.Locale.ROOT)
+    fun isMostlyCaseless(text: String): Boolean = false
+}
+
 object NameDetector {
+    fun canRead(text: String, language: String? = null): Boolean = false
     fun vocabulary(texts: List<String>): Pair<Set<String>, Set<String>> = emptySet<String>() to emptySet()
-    fun extract(text: String, midSentence: Set<String>, seenLower: Set<String>): List<String> = emptyList()
-    fun detect(text: String, corpus: List<String>): List<String> = emptyList()
+    fun extract(text: String, midSentence: Set<String>, seenLower: Set<String>,
+                language: String? = null): List<String> = emptyList()
+    fun detect(text: String, corpus: List<String>, language: String? = null): List<String> = emptyList()
 }
 
 object Sentiment {
@@ -60,6 +78,8 @@ object Sentiment {
     fun install(table: Map<String, Float>) {}
     fun valence(text: String): Float = 0f
     fun valence(text: String, table: Map<String, Float>): Float = 0f
+    fun valenceOrNull(text: String, language: String? = null): Float? = null
+    fun valenceOrNull(text: String, language: String?, table: Map<String, Float>): Float? = null
 }
 
 data class ProsodyFeatures(
@@ -84,13 +104,14 @@ data class ChatEntry(
     val id: String,
     val createdAt: Long,
     val text: String,
-    val valence: Float,
+    val valence: Float?,
     val entities: List<String> = emptyList(),
     val sleepHours: Float? = null,
     val hourOfDay: Int? = null,
     val dayOfWeek: Int? = null,
     val stepsToday: Int? = null,
     val speakingRate: Float? = null,
+    val language: String? = null,
 )
 
 data class PersonNode(val label: String, val mentions: Int, val sentimentAssociation: Double)
@@ -145,13 +166,15 @@ object RetrievalAnswerComposer {
 object Retrieval {
     data class Hit(val entryId: String, val score: Float)
     const val TAU = 0.42f
-    fun words(text: String): Set<String> = emptySet()
-    fun rank(question: String, entries: List<ChatEntry>): List<Hit> = emptyList()
-    fun retrieve(question: String, entries: List<ChatEntry>, limit: Int = 3): List<Hit> = emptyList()
+    fun words(text: String, language: String? = null): Set<String> = emptySet()
+    fun rank(question: String, entries: List<ChatEntry>, language: String? = null): List<Hit> = emptyList()
+    fun retrieve(question: String, entries: List<ChatEntry>, limit: Int = 3,
+                 language: String? = null): List<Hit> = emptyList()
 }
 
 // ── Findings ─────────────────────────────────────────────────────────────────
 object Insights {
+    const val MIN_ENTRIES = 8
     data class Finding(val lead: String, val detail: String, val effect: Double)
     fun find(entries: List<ChatEntry>): List<Finding> = emptyList()
 }
