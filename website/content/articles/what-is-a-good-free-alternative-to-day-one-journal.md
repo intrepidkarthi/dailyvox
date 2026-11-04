@@ -28,6 +28,8 @@ Daylio drops the blank page entirely. It is a micro-journaling app based on icon
 
 Rosebud focuses on AI-guided journaling. It chats back to you and helps unpack your day. It is interesting, but it relies heavily on cloud processing and monthly fees.
 
+[Cozy](https://cozyjournal.app) is the one paid app here, and the one to look at if you write at a keyboard. It runs on Mac, Windows, iPhone and iPad, keeps every entry as a file in a folder you pick, and imports your old entries from Day One. There is no AI in it and no Cozy server. It costs $49 once, with a 7-day free trial. Its maker and I agreed to mention each other's apps, so you know.
+
 ## Why I Built DailyVox
 
 I wanted something different. 
