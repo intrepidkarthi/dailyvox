@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 210" width="310" height="210">
+  <defs>
+    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
+    <filter id="cut" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
+      <feGaussianBlur in="g" stdDeviation="3"/>
+      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
+      <feOffset in="d" dx="4" dy="5" result="o"/>
+      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
+      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#cut)" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- moon + stars -->
+    <path d="M262 18 A22 22 0 1 0 284 52 A17 17 0 1 1 262 18 Z" fill="#F2C14E"/>
+    <path d="M222 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3z" fill="#1D1F24"/>
+    <!-- bed -->
+    <rect x="16" y="66" width="20" height="112" rx="10" fill="#1F5A43"/>
+    <rect x="26" y="138" width="270" height="22" rx="8" fill="#1F5A43"/>
+    <rect x="40" y="158" width="10" height="26" rx="4" fill="#1D1F24"/>
+    <rect x="276" y="158" width="10" height="26" rx="4" fill="#1D1F24"/>
+    <rect x="30" y="120" width="264" height="22" rx="9" fill="#FFFFFF" stroke="#1D1F24" stroke-width="2.5"/>
+    <!-- pillow + head -->
+    <rect x="38" y="96" width="70" height="30" rx="14" fill="#FFFFFF" stroke="#1D1F24" stroke-width="2.5"/>
+    <ellipse cx="78" cy="96" rx="20" ry="18" fill="#6E4426"/>
+    <!-- curly hair -->
+    <g fill="#1D1F24"><circle cx="60" cy="88" r="9"/><circle cx="64" cy="77" r="9"/><circle cx="75" cy="72" r="9"/><circle cx="58" cy="100" r="8"/><circle cx="86" cy="73" r="7"/></g>
+    <circle cx="89" cy="87" r="2.4" fill="#1D1F24"/>
+    <ellipse cx="95" cy="99" rx="3.2" ry="2.8" fill="#1D1F24"/>
+    <!-- pajama arms up, phone above face -->
+    <path d="M118 120 L112 82 L100 58" fill="none" stroke="#3358C9" stroke-width="14"/>
+    <rect x="84" y="36" width="26" height="14" rx="3" fill="#1D1F24" transform="rotate(-18 97 43)"/>
+    <circle cx="100" cy="56" r="7" fill="#6E4426"/>
+    <path d="M118 44 q6 -2 9 4 M122 34 q12 -2 15 10" fill="none" stroke="#1D1F24" stroke-width="3"/>
+    <!-- blanket -->
+    <path d="M106 124 Q108 104 130 104 L196 106 Q220 80 246 102 L280 108 Q292 112 292 126 L292 142 L106 142 Z" fill="#F2C14E"/>
+    <path d="M150 105 L150 142 M190 106 L190 142 M236 92 L236 142" stroke="#E2553A" stroke-width="5"/>
+  </g>
+</svg>

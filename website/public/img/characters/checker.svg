@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 290" width="270" height="290">
+  <defs>
+    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
+    <filter id="cut" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
+      <feGaussianBlur in="g" stdDeviation="3"/>
+      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
+      <feOffset in="d" dx="4" dy="5" result="o"/>
+      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
+      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#cut)" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- giant phone she is inspecting -->
+    <rect x="168" y="58" width="80" height="156" rx="16" fill="#1D1F24"/>
+    <rect x="176" y="70" width="64" height="132" rx="9" fill="#FFFFFF"/>
+    <path d="M186 150 h22 M186 168 h22 M186 186 h22" stroke="#1D1F24" stroke-width="3"/>
+    <rect x="214" y="145" width="18" height="10" rx="5" fill="#C9C9C1"/><rect x="214" y="163" width="18" height="10" rx="5" fill="#C9C9C1"/><rect x="214" y="181" width="18" height="10" rx="5" fill="#1F5A43"/>
+    <circle cx="217" cy="150" r="4" fill="#fff"/><circle cx="217" cy="168" r="4" fill="#fff"/><circle cx="228" cy="186" r="4" fill="#fff"/>
+    <!-- legs + shoes -->
+    <path d="M90 246 L88 266 M114 246 L118 266" stroke="#1D1F24" stroke-width="12"/>
+    <path d="M76 270 Q78 262 90 262 L98 266 Q102 274 94 274 L80 274 Q75 274 76 270 Z" fill="#1D1F24"/>
+    <path d="M110 270 Q112 262 122 262 L132 266 Q138 274 128 274 L114 274 Q109 274 110 270 Z" fill="#1D1F24"/>
+    <!-- coat -->
+    <path d="M78 112 Q100 100 122 110 L140 250 L64 250 Z" fill="#1F5A43"/>
+    <path d="M100 114 L102 250" stroke="#174634" stroke-width="2.5"/>
+    <!-- back arm, hand on hip -->
+    <path d="M82 120 Q66 150 80 172" fill="none" stroke="#174634" stroke-width="14"/>
+    <!-- hijab + face -->
+    <path d="M70 76 Q68 42 98 42 Q126 42 126 72 L128 104 Q118 120 96 118 Q74 116 70 98 Z" fill="#3358C9"/>
+    <ellipse cx="108" cy="76" rx="14" ry="18" fill="#D69B6E"/>
+    <circle cx="113" cy="72" r="2.2" fill="#1D1F24"/>
+    <path d="M110 84 Q115 88 120 84" fill="none" stroke="#1D1F24" stroke-width="2.4"/>
+    <!-- front arm + magnifier -->
+    <path d="M114 122 L132 160 L150 150" fill="none" stroke="#1F5A43" stroke-width="14"/>
+    <path d="M152 150 L166 134" stroke="#1D1F24" stroke-width="9"/>
+    <circle cx="153" cy="151" r="7.5" fill="#D69B6E"/>
+    <circle cx="182" cy="114" r="27" fill="#FFFFFF" stroke="#1D1F24" stroke-width="6"/>
+    <!-- what the glass shows: wi-fi, struck through -->
+    <path d="M168 110 a20 20 0 0 1 28 0 M173 116 a12 12 0 0 1 18 0" fill="none" stroke="#3358C9" stroke-width="3.5"/>
+    <circle cx="182" cy="123" r="2.6" fill="#3358C9"/>
+    <path d="M168 100 L196 128" stroke="#E2553A" stroke-width="3.5"/>
+  </g>
+</svg>
