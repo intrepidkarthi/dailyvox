@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 260" width="250" height="260">
+  <defs>
+    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
+    <filter id="cut" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
+      <feGaussianBlur in="g" stdDeviation="3"/>
+      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
+      <feOffset in="d" dx="4" dy="5" result="o"/>
+      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
+      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#cut)" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- grab pole -->
+    <path d="M214 14 L214 250" stroke="#F2C14E" stroke-width="9"/>
+    <!-- seat -->
+    <rect x="30" y="60" width="44" height="150" rx="18" fill="#3358C9"/>
+    <rect x="36" y="178" width="140" height="26" rx="12" fill="#3358C9"/>
+    <rect x="52" y="202" width="10" height="44" rx="4" fill="#1D1F24"/>
+    <!-- legs -->
+    <path d="M96 186 L156 186 L160 238" fill="none" stroke="#1D1F24" stroke-width="22"/>
+    <path d="M150 248 Q150 236 162 236 L176 240 Q190 244 188 254 L156 254 Q150 253 150 248 Z" fill="#FFFFFF" stroke="#1D1F24" stroke-width="3"/>
+    <!-- hoodie -->
+    <path d="M70 190 L70 128 Q72 106 96 104 L110 104 Q128 108 130 128 L136 190 Z" fill="#1F5A43"/>
+    <!-- backpack on lap -->
+    <rect x="114" y="140" width="48" height="44" rx="12" fill="#E2553A"/>
+    <rect x="122" y="156" width="32" height="14" rx="5" fill="#C4462E"/>
+    <!-- head -->
+    <path d="M102 88 L104 106" stroke="#F1C7A5" stroke-width="15"/>
+    <ellipse cx="106" cy="78" rx="19" ry="22" fill="#F1C7A5"/>
+    <!-- bob hair -->
+    <path d="M84 82 Q80 54 106 52 Q128 52 128 70 Q118 66 108 68 Q100 76 98 98 Q86 98 84 82 Z" fill="#4A3326"/>
+    <!-- headphones -->
+    <path d="M86 70 Q90 46 112 48 Q126 50 128 64" fill="none" stroke="#1D1F24" stroke-width="5"/>
+    <rect x="80" y="68" width="14" height="22" rx="6" fill="#F2C14E" stroke="#1D1F24" stroke-width="2.5"/>
+    <circle cx="118" cy="76" r="2.2" fill="#1D1F24"/>
+    <ellipse cx="122" cy="90" rx="3" ry="2.4" fill="#1D1F24"/>
+    <!-- arm + phone -->
+    <path d="M100 116 L122 146 L136 106" fill="none" stroke="#1F5A43" stroke-width="14"/>
+    <rect x="132" y="78" width="12" height="22" rx="3" fill="#1D1F24" transform="rotate(14 138 89)"/>
+    <circle cx="137" cy="103" r="7" fill="#F1C7A5"/>
+    <path d="M152 78 q5 6 0 12 M160 73 q9 11 0 22" fill="none" stroke="#1D1F24" stroke-width="3"/>
+  </g>
+</svg>

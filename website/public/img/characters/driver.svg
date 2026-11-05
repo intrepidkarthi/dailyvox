@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 240" width="270" height="240">
+  <defs>
+    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
+    <filter id="cut" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
+      <feGaussianBlur in="g" stdDeviation="3"/>
+      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
+      <feOffset in="d" dx="4" dy="5" result="o"/>
+      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
+      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#cut)" stroke-linecap="round" stroke-linejoin="round">
+
+    <defs><clipPath id="win"><path d="M52 118 L84 54 Q87 48 94 48 L216 48 Q226 48 226 58 L226 118 Z"/></clipPath></defs>
+    <!-- wheels -->
+    <circle cx="66" cy="204" r="25" fill="#1D1F24"/><circle cx="66" cy="204" r="9" fill="#F4F5F1"/>
+    <circle cx="210" cy="204" r="25" fill="#1D1F24"/><circle cx="210" cy="204" r="9" fill="#F4F5F1"/>
+    <!-- body + roof frame -->
+    <path d="M14 122 L256 122 L256 194 Q256 204 246 204 L24 204 Q14 204 14 194 Z" fill="#3358C9"/>
+    <path d="M30 124 L72 42 Q76 34 86 34 L226 34 Q240 34 240 48 L240 124 Z" fill="#3358C9"/>
+    <path d="M52 118 L84 54 Q87 48 94 48 L216 48 Q226 48 226 58 L226 118 Z" fill="#C9D5F2"/>
+    <g clip-path="url(#win)">
+      <!-- steering wheel, behind -->
+      <path d="M60 120 Q66 92 94 96" fill="none" stroke="#1D1F24" stroke-width="7"/>
+      <!-- him: shirt, seatbelt -->
+      <path d="M106 124 Q108 102 132 100 L178 100 Q200 104 206 124 Z" fill="#1F5A43"/>
+      <path d="M182 102 L150 124" stroke="#F2C14E" stroke-width="7"/>
+      <path d="M150 88 L152 102" stroke="#F1C7A5" stroke-width="15"/>
+      <ellipse cx="154" cy="78" rx="19" ry="22" fill="#F1C7A5"/>
+      <!-- hair + beard -->
+      <path d="M136 72 Q134 52 156 52 Q176 52 174 74 Q170 64 162 62 Q150 66 144 62 Q138 66 136 72 Z" fill="#4A3326"/>
+      <path d="M170 74 Q174 96 156 100 Q144 100 138 92 Q146 94 150 90 Q160 90 170 74 Z" fill="#4A3326"/>
+      <circle cx="168" cy="80" r="5" fill="#E2B48F"/>
+      <!-- glasses -->
+      <circle cx="141" cy="76" r="7" fill="none" stroke="#1D1F24" stroke-width="2.4"/>
+      <path d="M148 75 L164 73" stroke="#1D1F24" stroke-width="2.4"/>
+      <ellipse cx="137" cy="91" rx="3" ry="2.4" fill="#1D1F24"/>
+      <!-- arm + phone -->
+      <path d="M150 122 L132 116 L122 98" fill="none" stroke="#1F5A43" stroke-width="14"/>
+      <rect x="114" y="74" width="12" height="22" rx="3" fill="#1D1F24" transform="rotate(-12 120 85)"/>
+      <circle cx="122" cy="96" r="7" fill="#F1C7A5"/>
+      <path d="M106 76 q-5 6 0 12 M98 71 q-9 11 0 22" fill="none" stroke="#1D1F24" stroke-width="3"/>
+    </g>
+    <!-- pillar between front and back window -->
+    <path d="M226 48 L226 118" stroke="#3358C9" stroke-width="4"/>
+    <!-- door seam, handle, mirror -->
+    <path d="M130 124 L130 202" stroke="#2847A6" stroke-width="3"/>
+    <path d="M24 152 L246 152" stroke="#2847A6" stroke-width="3"/>
+    <rect x="178" y="134" width="34" height="8" rx="4" fill="#1D1F24"/>
+    <path d="M30 108 Q20 104 22 94 Q26 86 36 90 L44 100 Z" fill="#1D1F24"/>
+    <circle cx="238" cy="140" r="5" fill="#F2C14E"/>
+  </g>
+</svg>

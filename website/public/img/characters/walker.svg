@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" width="240" height="320">
+  <defs>
+    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
+    <filter id="cut" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
+      <feGaussianBlur in="g" stdDeviation="3"/>
+      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
+      <feOffset in="d" dx="4" dy="5" result="o"/>
+      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
+      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#cut)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- back arm, swinging -->
+    <path d="M100 112 Q88 140 80 166" fill="none" stroke="#B9432C" stroke-width="15"/>
+    <circle cx="79" cy="171" r="7.5" fill="#A86B43"/>
+    <!-- back leg -->
+    <path d="M110 186 L96 238 L80 274" fill="none" stroke="#174634" stroke-width="19"/>
+    <path d="M62 276 Q66 264 82 266 L94 272 Q98 282 88 284 L66 284 Q60 283 62 276 Z" fill="#1D1F24"/>
+    <!-- front leg -->
+    <path d="M128 186 L150 240 L155 276" fill="none" stroke="#1F5A43" stroke-width="19"/>
+    <path d="M143 280 Q144 270 156 270 L170 274 Q184 278 182 290 L148 290 Q142 289 143 280 Z" fill="#1D1F24"/>
+    <!-- jacket -->
+    <path d="M94 104 Q120 90 144 104 L152 184 Q122 194 90 186 Z" fill="#E2553A"/>
+    <path d="M121 100 L124 188" stroke="#B9432C" stroke-width="2.5" fill="none"/>
+    <!-- tote bag strap + bag -->
+    <path d="M100 106 L136 168" stroke="#1D1F24" stroke-width="3" fill="none"/>
+    <path d="M124 160 h30 l-3 34 h-25 z" fill="#F2C14E"/>
+    <path d="M131 172 h16" stroke="#1D1F24" stroke-width="2" fill="none"/>
+    <!-- neck + head -->
+    <path d="M116 84 L119 100" stroke="#A86B43" stroke-width="15" fill="none"/>
+    <path d="M106 100 Q119 108 134 100" stroke="#B9432C" stroke-width="6" fill="none"/>
+    <ellipse cx="121" cy="66" rx="19" ry="22" fill="#A86B43"/>
+    <!-- hair: cap of hair + high ponytail -->
+    <path d="M101 64 Q100 40 122 42 Q138 42 141 56 Q128 52 118 60 Q112 68 108 78 Q101 74 101 64 Z" fill="#1D1F24"/>
+    <path d="M104 48 Q86 44 82 60 Q80 74 90 84 Q90 68 104 58 Z" fill="#1D1F24"/>
+    <circle cx="105" cy="50" r="5" fill="#F2C14E"/>
+    <!-- face: eye, open mouth (talking) -->
+    <circle cx="133" cy="63" r="2.2" fill="#1D1F24"/>
+    <ellipse cx="137" cy="76" rx="3.2" ry="2.6" fill="#1D1F24"/>
+    <!-- front arm raised: phone at her mouth -->
+    <path d="M136 112 L160 142 L156 96" fill="none" stroke="#E2553A" stroke-width="15"/>
+    <rect x="151" y="66" width="13" height="23" rx="3" fill="#1D1F24" transform="rotate(14 157 77)"/>
+    <circle cx="156" cy="92" r="7.5" fill="#A86B43"/>
+    <!-- voice -->
+    <path d="M172 66 q5 6 0 12 M180 61 q9 11 0 22 M188 56 q13 16 0 32" fill="none" stroke="#1D1F24" stroke-width="3"/>
+  </g>
+</svg>
