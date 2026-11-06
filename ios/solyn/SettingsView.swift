@@ -324,38 +324,32 @@ struct SettingsView: View {
         return base + " iCloud Sync is ON, so your entries are copied to your own iCloud account \u{2014} Apple's, not ours. Turn it off below and this device stops talking to anything."
     }
 
+    /// One row. The choices live on their own page, so Settings stays a list
+    /// of settings rather than a gallery.
     private var appearanceSection: some View {
         Section {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: horizontalSizeClass == .regular ? 6 : 4), spacing: 12) {
-                ForEach(AppTheme.allCases) { theme in
-                    ThemeButton(
-                        theme: theme,
-                        isSelected: themeManager.selectedTheme == theme
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            themeManager.selectedTheme = theme
-                            HapticManager.shared.themeChanged()
-                        }
-                    }
-                }
-            }
-            .padding(.vertical, 8)
-
-            NavigationLink {
-                ThemePickerView()
-            } label: {
+            NavigationLink(value: SettingsRoute.appearance) {
                 HStack(spacing: DS.Space.sm) {
-                    Text("Colour theme")
+                    Image(systemName: "paintpalette")
+                        .font(.dv(.body))
+                        .foregroundColor(theme.accentColor)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Appearance")
+                            .foregroundColor(theme.textColor)
+                        Text("\(themeManager.themeID.displayName) · \(themeManager.selectedTheme.label)")
+                            .font(.dsCaption)
+                            .foregroundColor(theme.secondaryTextColor)
+                    }
                     Spacer()
-                    Text(themeManager.themeID.displayName)
-                        .foregroundColor(.secondary)
-                    ThemeSwatch(palette: themeManager.themeID.palette)
+                    ThemeDots(palette: themeManager.themeID.palette)
                 }
+                .frame(minHeight: 44)
             }
-        } header: {
-            Text("Appearance")
-        } footer: {
-            Text("Day, Night, or Sunset to follow the sun. Then pick a colour theme: bold, calm, seasonal or festive.")
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Appearance")
+            .accessibilityValue("\(themeManager.themeID.displayName) theme, \(themeManager.selectedTheme.label) mode")
+            .accessibilityAddTraits(.isButton)
         }
     }
 

@@ -84,7 +84,6 @@ struct TodayView: View {
     /// by recording. This shows the dial without arming the recorder.
     @State private var recordingState: RecordingState =
         ScreenshotScene.current == .recording ? .recording : .idle
-    @State private var showSettings = ScreenshotScene.current == .settings
     @ObservedObject private var theme = ThemeManager.shared
     @State private var errorMessage: String?
     @State private var errorTitle: String?
@@ -228,13 +227,6 @@ struct TodayView: View {
             },
             onInterrupted: { paused in isPaused = paused }
         ))
-        .sheet(isPresented: $showSettings, onDismiss: {
-            // A colour theme picked in Settings is drawn from here on: the root
-            // rebuilds once the sheet is gone (ThemeManager.appliedThemeID).
-            ThemeManager.shared.applyPendingTheme()
-        }) {
-            NavigationStack { SettingsView() }
-        }
         .sheet(item: $moodPickerEntry) { entry in
             MoodPickerSheet(selectedMood: $pickedMood,
                             isSuggestion: entry.isMoodSuggested,
@@ -355,7 +347,7 @@ struct TodayView: View {
             // Shield until they had successfully recorded.
             HStack {
                 Spacer()
-                Button { showSettings = true } label: {
+                Button { SettingsPresenter.shared.open() } label: {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)
@@ -632,7 +624,7 @@ struct TodayView: View {
                     ? String(localized: "Your sky kept your place. Longest run \(streak.longest) days.",
                              comment: "VoiceOver, read after the Today header for someone whose run has ended. The number is their longest run in days.")
                     : "")
-                Button { showSettings = true } label: {
+                Button { SettingsPresenter.shared.open() } label: {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)

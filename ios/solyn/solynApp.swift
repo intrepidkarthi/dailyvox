@@ -22,6 +22,7 @@ struct DailyVoxApp: App {
     let persistenceController = PersistenceController.shared
     @ObservedObject private var lockManager = AppLockManager.shared
     @ObservedObject private var themeManager = ThemeManager.shared
+    @ObservedObject private var settingsPresenter = SettingsPresenter.shared
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
@@ -69,6 +70,14 @@ struct DailyVoxApp: App {
             // A new colour theme rebuilds the tree once, so every view that
             // reads `DS.Palette` picks it up (see ThemeManager.appliedThemeID).
             .id(themeManager.appliedThemeID)
+            // Settings hangs here, OUTSIDE the rebuilt tree, so picking a theme
+            // re-themes the app behind the sheet without closing it.
+            .sheet(isPresented: $settingsPresenter.isPresented, onDismiss: {
+                themeManager.applyPendingTheme()
+            }) {
+                SettingsSheet()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            }
             .animation(.easeInOut(duration: 0.3), value: hasCompletedOnboarding)
             .preferredColorScheme(themeManager.selectedTheme.colorScheme)
             // The app theme, as a value the tree can carry. The Twin screen

@@ -17,25 +17,48 @@ import SwiftUI
 /// app — `ivory`/`light` land on `.day`, `dark` on `.night`, `system` on the
 /// closest thing we now have to it, which is Sunset.
 enum AppTheme: String, CaseIterable, Identifiable {
+    /// Follows the phone's own light/dark setting. "Auto" rather than the old
+    /// "system" raw value, which still decodes to Sunset as it always has.
+    case auto = "Auto"
     case day = "Day"
     case night = "Night"
     case sunset = "Sunset"
 
     var id: String { rawValue }
 
-    /// Only the three current cases are offered in Settings.
-    static var allCases: [AppTheme] { [.day, .night, .sunset] }
+    static var allCases: [AppTheme] { [.auto, .day, .night, .sunset] }
 
     static func decode(_ raw: String) -> AppTheme {
         switch raw {
+        case "Auto": return .auto
         case "Day", "Ivory", "Light": return .day
         case "Night", "Dark": return .night
         default: return .sunset
         }
     }
 
+    /// What the mode control says. Stored values stay Day/Night.
+    var label: String {
+        switch self {
+        case .auto: return "Auto"
+        case .day: return "Light"
+        case .night: return "Dark"
+        case .sunset: return "Sunset"
+        }
+    }
+
+    var explanation: String {
+        switch self {
+        case .auto: return "Follows your iPhone's light and dark setting."
+        case .day: return "Always light."
+        case .night: return "Always dark."
+        case .sunset: return "Light by day, dark after sunset where you are."
+        }
+    }
+
     var icon: String {
         switch self {
+        case .auto: return "iphone"
         case .day: return "sun.max"
         case .night: return "moon.stars"
         case .sunset: return "circle.lefthalf.filled"
@@ -46,13 +69,17 @@ enum AppTheme: String, CaseIterable, Identifiable {
     /// the evening arrives, not on next launch.
     var isNight: Bool {
         switch self {
+        case .auto: return UIScreen.main.traitCollection.userInterfaceStyle == .dark
         case .day: return false
         case .night: return true
         case .sunset: return SolarClock.isAfterSunset()
         }
     }
 
-    var colorScheme: ColorScheme? { isNight ? .dark : .light }
+    /// Auto hands the decision back to the system.
+    var colorScheme: ColorScheme? {
+        self == .auto ? nil : (isNight ? .dark : .light)
+    }
 
     /// GREEN ACTS. Gold is never returned here — see DS.Palette.
     var accentColor: Color { isNight ? DS.Palette.gold : DS.Palette.sage }
