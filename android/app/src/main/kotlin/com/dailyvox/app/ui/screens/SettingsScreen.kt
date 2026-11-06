@@ -18,7 +18,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.border
@@ -58,6 +57,8 @@ fun SettingsScreen(
     onTheme: (ThemeChoice) -> Unit,
     themeId: com.dailyvox.app.ui.theme.ThemeId = com.dailyvox.app.ui.theme.ThemeId.DEFAULT,
     onThemeId: (com.dailyvox.app.ui.theme.ThemeId) -> Unit = {},
+    /** Debug screenshots only: open with Appearance already showing. */
+    startInAppearance: Boolean = false,
     onExport: () -> Unit,
     onExportPdf: () -> Unit = {},
     onExportMarkdown: () -> Unit = {},
@@ -71,6 +72,17 @@ fun SettingsScreen(
     onShareReceipt: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    var appearance by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(startInAppearance) }
+    if (appearance) {
+        androidx.activity.compose.BackHandler { appearance = false }
+        AppearanceScreen(
+            themeId = themeId, onThemeId = onThemeId,
+            mode = theme, onMode = onTheme,
+            onBack = { appearance = false },
+            modifier = modifier,
+        )
+        return
+    }
     val context = androidx.compose.ui.platform.LocalContext.current
     val scheme = MaterialTheme.colorScheme
     val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
@@ -131,52 +143,11 @@ fun SettingsScreen(
             )
         }
 
-        // ── THEME ──────────────────────────────────────────────────────────
+        // ── APPEARANCE ─────────────────────────────────────────────────────
+        // One row. The nineteen themes and the Day / Night / Sunset mode live on
+        // their own screen, so Settings stays a list of facts and switches.
         SettingsCard {
-            SectionLabel("DAY AND NIGHT", scheme.onSurfaceVariant)
-            Spacer(Modifier.height(11.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(
-                    ThemeChoice.LIGHT to "Day",
-                    ThemeChoice.DARK to "Night",
-                    ThemeChoice.SUNSET to "Sunset",
-                ).forEach { (choice, label) ->
-                    val on = choice == theme
-                    Text(
-                        label, fontSize = 11.sp,
-                        fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
-                        color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(RoundedCornerShape(15.dp))
-                            .then(
-                                if (on) Modifier.background(scheme.primary)
-                                else Modifier.border(1.5.dp, scheme.onSurfaceVariant.copy(alpha = 0.25f),
-                                                     RoundedCornerShape(15.dp))
-                            )
-                            .clickable { onTheme(choice) }
-                            .padding(vertical = 10.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally),
-                    )
-                }
-            }
-        }
-
-        // ── COLOURS ────────────────────────────────────────────────────────
-        // The palette is a separate choice from Day/Night/Sunset above. Most
-        // themes were drawn for daylight first; at night they keep their own
-        // accent on Default's navy until their dark versions are drawn.
-        SettingsCard {
-            SectionLabel("COLOURS", scheme.onSurfaceVariant)
-            com.dailyvox.app.ui.theme.ThemeGroup.entries.forEach { group ->
-                Spacer(Modifier.height(14.dp))
-                Text(group.label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = scheme.onSurface,
-                     modifier = Modifier.semantics { heading() })
-                Spacer(Modifier.height(6.dp))
-                com.dailyvox.app.ui.theme.ThemeId.entries.filter { it.group == group }.forEach { id ->
-                    ThemeRow(id, selected = id == themeId, nightMode = night, onClick = { onThemeId(id) })
-                }
-            }
+            AppearanceRow(themeId = themeId, mode = theme, onClick = { appearance = true })
         }
 
         // ── REMINDER ───────────────────────────────────────────────────────
@@ -637,52 +608,34 @@ private fun dvSwitchColors() = androidx.compose.material3.SwitchDefaults.colors(
     uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
 )
 
-
-/**
- * One theme: three swatches (page, actor, reward), its name, a tick when chosen.
- * A radio row for TalkBack, announced with its state ("Diwali, selected").
- */
+/** Settings' one line about looks: swatch, theme name, mode. Opens Appearance. */
 @Composable
-private fun ThemeRow(
-    id: com.dailyvox.app.ui.theme.ThemeId,
-    selected: Boolean,
-    nightMode: Boolean,
+private fun AppearanceRow(
+    themeId: com.dailyvox.app.ui.theme.ThemeId,
+    mode: ThemeChoice,
     onClick: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val pal = com.dailyvox.app.ui.theme.paletteFor(id, dark = false)
-    val lightOnly = nightMode && !id.hasOwnDark
+    val summary = "${themeId.label} \u00B7 ${modeLabel(mode)}"
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .then(if (selected) Modifier.background(scheme.surfaceVariant) else Modifier)
+            .clip(RoundedCornerShape(14.dp))
             .clickable(onClick = onClick)
             .semantics(mergeDescendants = true) {
-                role = Role.RadioButton
-                this.selected = selected
-                contentDescription = id.label + " colours" + if (lightOnly) ", drawn for daylight" else ""
+                role = Role.Button
+                contentDescription = "Appearance, $summary"
             }
             .heightIn(min = 48.dp)
-            .padding(horizontal = 10.dp, vertical = 8.dp),
+            .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy((-6).dp)) {
-            listOf(pal.ground, pal.action, pal.reward).forEach { c ->
-                Box(
-                    Modifier.size(22.dp).clip(CircleShape).background(c)
-                        .border(1.5.dp, scheme.surface, CircleShape)
-                        .border(1.dp, scheme.onSurface.copy(alpha = 0.12f), CircleShape)
-                )
-            }
-        }
+        ThemeSwatch(themeId, size = 18.dp)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text(id.label, fontSize = 14.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                 color = scheme.onSurface)
-            if (lightOnly) Text("Daylight version; nights use its accent", fontSize = 11.sp,
-                                color = scheme.onSurfaceVariant)
+            Text("Appearance", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = scheme.onSurface)
+            Text(summary, fontSize = 12.5.sp, color = scheme.onSurfaceVariant)
         }
-        if (selected) Text("\u2713", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = scheme.primary)
+        Text("\u203A", fontSize = 20.sp, color = scheme.onSurfaceVariant)
     }
 }

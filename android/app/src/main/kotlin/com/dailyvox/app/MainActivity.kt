@@ -136,7 +136,14 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     /** Set by B4's "Ask about this"; consumed by the Ask screen on arrival. */
     var askSeed by rememberSaveable { mutableStateOf<String?>(null) }
     var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
-    var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
+    // Debug builds only: `--es dv_open settings|appearance` lands straight on a
+    // screen, so screenshots of every theme can be scripted. Release ignores it.
+    val debugOpen = remember {
+        if (com.dailyvox.app.BuildConfig.DEBUG) activity.intent?.getStringExtra("dv_open") else null
+    }
+    var overlay by rememberSaveable {
+        mutableStateOf(if (debugOpen == "settings" || debugOpen == "appearance") Overlay.SETTINGS else Overlay.NONE)
+    }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
     // Recording takes the whole screen (B2b) — the tab bar would offer an exit
     // that silently discards what is being said.
@@ -510,6 +517,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
                         themeId = themeId,
                         onThemeId = { themeId = it; prefs.edit().putString("themeId", it.key).apply() },
+                        startInAppearance = debugOpen == "appearance",
                         onShareReceipt = { shareCard = com.dailyvox.app.system.Shareables.Card.RECEIPT },
                         onExport = { saveJson.launch("dailyvox-journal.json") },
                         onExportMarkdown = { saveMd.launch("dailyvox-journal.md") },
