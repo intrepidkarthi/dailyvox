@@ -154,18 +154,21 @@ fun TwinScreen(
     // NIGHT TOKENS, UNDER BOTH THEMES (FINAL-SPEC §1 rules, §8.4). This screen
     // does not read `MaterialTheme.colorScheme` for anything it paints: the sky
     // is always night, so a day-theme variant of it is not a thing that exists.
+    // Each theme brings its own night; the sky's grammar (gold core, blue
+    // accent star) stays, with the theme's dial colour as its gold.
+    val nz = LocalDvPalette.current.night
     val palette = SkyPalette(
-        ink = NightText,
-        line = Gold,
-        core = Gold,
+        ink = nz.ink,
+        line = nz.reward,
+        core = nz.reward,
         accent = StarBlue,
     )
-    val goldText = NightGoldText
+    val goldText = nz.rewardText
 
     Column(
         modifier
             .fillMaxSize()
-            .background(NightBackground)
+            .background(nz.ground)
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(14.dp))
@@ -175,7 +178,7 @@ fun TwinScreen(
             verticalAlignment = Alignment.Bottom,
         ) {
             Text("Your sky", fontFamily = Nunito, fontSize = 30.sp, fontWeight = FontWeight.ExtraBold,
-                 color = NightText)
+                 color = nz.ink)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Star count, not a percentage. The number is what the user made.
                 Text(
@@ -244,17 +247,17 @@ fun TwinScreen(
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(NightSurface)
+                .background(nz.surface)
                 .padding(horizontal = 16.dp, vertical = 13.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(11.dp),
         ) {
             Box(
-                Modifier.size(34.dp).clip(CircleShape).background(Gold),
+                Modifier.size(34.dp).clip(CircleShape).background(nz.reward),
                 contentAlignment = Alignment.Center,
             ) {
                 Text("✦", fontFamily = Nunito, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold,
-                     color = NightBackground)   // ink on the gold disc, both themes
+                     color = nz.onReward)   // ink on the gold disc, both themes
             }
             Text(
                 summary(entries) ?: stringResource(
@@ -263,7 +266,7 @@ fun TwinScreen(
                     else R.string.twin_still_listening
                 ),
                 fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Medium,
-                color = NightText,
+                color = nz.ink,
             )
         }
 
@@ -309,6 +312,7 @@ private fun CasingNote(
     verdict: com.dailyvox.app.system.CasingCheck.Verdict,
     hasNames: Boolean,
 ) {
+    val nz = LocalDvPalette.current.night
     val text = when (verdict) {
         is com.dailyvox.app.system.CasingCheck.Verdict.Inconsistent ->
             "Some names are reaching your journal spelled both ways — " +
@@ -332,7 +336,7 @@ private fun CasingNote(
     Text(
         text,
         fontSize = 13.5.sp, lineHeight = 20.sp,
-        color = NightTextSecondary,
+        color = nz.inkSoft,
         modifier = Modifier.padding(horizontal = 26.dp),
     )
 }
@@ -359,20 +363,21 @@ private fun summary(entries: List<Entry>): String? {
 
 @Composable
 private fun SkyLink(title: String, sub: String, onClick: () -> Unit, modifier: Modifier) {
+    val nz = LocalDvPalette.current.night
     Column(
         modifier
             .clip(RoundedCornerShape(20.dp))
             // Night, like everything else on this screen. These two cards sit
             // directly under the sky; a cream pair below a navy constellation
             // is the seam that made the old always-night build look broken.
-            .background(NightSurface)
+            .background(nz.surface)
             .clickable(onClick = onClick)
             .padding(horizontal = 15.dp, vertical = 14.dp),
     ) {
         Text(title, fontFamily = Nunito, fontSize = 16.sp, fontWeight = FontWeight.ExtraBold,
-             color = NightText)
+             color = nz.ink)
         Spacer(Modifier.height(3.dp))
-        Text(sub, fontSize = 12.5.sp, color = NightTextSecondary)
+        Text(sub, fontSize = 12.5.sp, color = nz.inkSoft)
     }
 }
 

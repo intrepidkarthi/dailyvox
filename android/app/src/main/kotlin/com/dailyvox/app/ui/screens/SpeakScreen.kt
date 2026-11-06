@@ -47,8 +47,6 @@ import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.components.MoodPicker
 import com.dailyvox.app.ui.components.moodWord
 import com.dailyvox.app.ui.components.PrivateKeyboard
-import com.dailyvox.app.ui.theme.Gold
-import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
 
 /**
@@ -98,9 +96,7 @@ fun SpeakScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val goldText = if (MaterialTheme.colorScheme.background ==
-                       com.dailyvox.app.ui.theme.NightBackground)
-        com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
     val capture = remember { SpeechCapture(context) }
     val recorder = remember { AudioRecorder(context) }
     // The Today card's play chip. Same AudioQueue the Journal's "Play today"
@@ -914,6 +910,8 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
+    val reward = com.dailyvox.app.ui.theme.LocalDvPalette.current.reward
+    val recordDisc = com.dailyvox.app.ui.theme.LocalDvPalette.current.record
     val label = when (state) {
         SpeechCapture.State.RECORDING -> "Stop recording"
         SpeechCapture.State.PROCESSING -> "Processing"
@@ -988,7 +986,7 @@ private fun RecordButton(
                 )
                 val on = state == SpeechCapture.State.RECORDING && i < litTicks
                 drawCircle(
-                    color = if (on) Gold else Gold.copy(alpha = 0.28f),
+                    color = if (on) reward else reward.copy(alpha = 0.28f),
                     radius = 2.25.dp.toPx(),
                     center = p,
                 )
@@ -1000,8 +998,8 @@ private fun RecordButton(
                 c.x + ((ringR + 6.dp.toPx()) * kotlin.math.cos(oa)).toFloat(),
                 c.y + ((ringR + 6.dp.toPx()) * kotlin.math.sin(oa)).toFloat(),
             )
-            drawCircle(Gold.copy(alpha = 0.35f), radius = 7.dp.toPx(), center = op)
-            drawCircle(Gold, radius = 4.5.dp.toPx(), center = op)
+            drawCircle(reward.copy(alpha = 0.35f), radius = 7.dp.toPx(), center = op)
+            drawCircle(reward, radius = 4.5.dp.toPx(), center = op)
 
             // The disc. Green acts in Day; at night the actor is gold, which is
             // already what colorScheme.primary resolves to.
@@ -1017,7 +1015,7 @@ private fun RecordButton(
             // Lit from above: a lighter crown falling to the base colour, so the
             // disc has the volume of the gold 3D mic in the brand mark rather
             // than reading as a flat sticker.
-            val base = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary
+            val base = if (state == SpeechCapture.State.RECORDING) recordDisc else scheme.primary
             drawCircle(
                 brush = Brush.verticalGradient(
                     listOf(androidx.compose.ui.graphics.lerp(base, Color.White, 0.16f), base),

@@ -14,6 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.border
@@ -51,6 +56,8 @@ fun SettingsScreen(
     onLock: (Boolean) -> Unit = {},
     theme: ThemeChoice,
     onTheme: (ThemeChoice) -> Unit,
+    themeId: com.dailyvox.app.ui.theme.ThemeId = com.dailyvox.app.ui.theme.ThemeId.DEFAULT,
+    onThemeId: (com.dailyvox.app.ui.theme.ThemeId) -> Unit = {},
     onExport: () -> Unit,
     onExportPdf: () -> Unit = {},
     onExportMarkdown: () -> Unit = {},
@@ -66,10 +73,9 @@ fun SettingsScreen(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scheme = MaterialTheme.colorScheme
-    val night = scheme.background == com.dailyvox.app.ui.theme.NightBackground
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
     val positive = scheme.tertiary
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
 
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Spacer(Modifier.height(14.dp))
@@ -119,7 +125,7 @@ fun SettingsScreen(
                 fontWeight = FontWeight.SemiBold, color = goldText,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.14f))
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.14f))
                     .clickable(onClick = onShareReceipt)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
             )
@@ -127,7 +133,7 @@ fun SettingsScreen(
 
         // ── THEME ──────────────────────────────────────────────────────────
         SettingsCard {
-            SectionLabel("THEME", scheme.onSurfaceVariant)
+            SectionLabel("DAY AND NIGHT", scheme.onSurfaceVariant)
             Spacer(Modifier.height(11.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(
@@ -152,6 +158,23 @@ fun SettingsScreen(
                             .padding(vertical = 10.dp)
                             .wrapContentWidth(Alignment.CenterHorizontally),
                     )
+                }
+            }
+        }
+
+        // ── COLOURS ────────────────────────────────────────────────────────
+        // The palette is a separate choice from Day/Night/Sunset above. Most
+        // themes were drawn for daylight first; at night they keep their own
+        // accent on Default's navy until their dark versions are drawn.
+        SettingsCard {
+            SectionLabel("COLOURS", scheme.onSurfaceVariant)
+            com.dailyvox.app.ui.theme.ThemeGroup.entries.forEach { group ->
+                Spacer(Modifier.height(14.dp))
+                Text(group.label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = scheme.onSurface,
+                     modifier = Modifier.semantics { heading() })
+                Spacer(Modifier.height(6.dp))
+                com.dailyvox.app.ui.theme.ThemeId.entries.filter { it.group == group }.forEach { id ->
+                    ThemeRow(id, selected = id == themeId, nightMode = night, onClick = { onThemeId(id) })
                 }
             }
         }
@@ -190,8 +213,8 @@ fun SettingsScreen(
                     fontWeight = FontWeight.SemiBold, color = goldText,
                     modifier = Modifier
                         .clip(RoundedCornerShape(11.dp))
-                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
-                        .border(1.dp, com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.4f),
+                        .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
+                        .border(1.dp, com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.4f),
                                 RoundedCornerShape(11.dp))
                         .clickable { picking = !picking }
                         .padding(horizontal = 10.dp, vertical = 6.dp),
@@ -366,7 +389,7 @@ fun SettingsScreen(
                     letterSpacing = 0.5.sp, fontWeight = FontWeight.SemiBold, color = goldText,
                     modifier = Modifier
                         .clip(RoundedCornerShape(11.dp))
-                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                        .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                         .clickable {
                             val cm = context.getSystemService(android.content.ClipboardManager::class.java)
                             cm?.setPrimaryClip(android.content.ClipData.newPlainText("Participant code", code))
@@ -445,7 +468,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.SemiBold, color = goldText,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                                .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                                 .clickable {
                                     com.dailyvox.app.system.Vocabulary.remove(context, w)
                                     words = com.dailyvox.app.system.Vocabulary.get(context)
@@ -485,10 +508,10 @@ fun SettingsScreen(
             Spacer(Modifier.width(12.dp))
             Text(
                 "Rate \u2726", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold,
-                color = com.dailyvox.app.ui.theme.NightBackground,
+                color = com.dailyvox.app.ui.theme.LocalDvPalette.current.onReward,
                 modifier = Modifier
                     .clip(RoundedCornerShape(13.dp))
-                    .background(com.dailyvox.app.ui.theme.Gold)
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward)
                     // A market:// intent, not the Play in-app review library.
                     // That library is a closed-source Google dependency for a
                     // build that ships zero network permissions and is trying to
@@ -613,3 +636,53 @@ private fun dvSwitchColors() = androidx.compose.material3.SwitchDefaults.colors(
     uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
     uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
 )
+
+
+/**
+ * One theme: three swatches (page, actor, reward), its name, a tick when chosen.
+ * A radio row for TalkBack, announced with its state ("Diwali, selected").
+ */
+@Composable
+private fun ThemeRow(
+    id: com.dailyvox.app.ui.theme.ThemeId,
+    selected: Boolean,
+    nightMode: Boolean,
+    onClick: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val pal = com.dailyvox.app.ui.theme.paletteFor(id, dark = false)
+    val lightOnly = nightMode && !id.hasOwnDark
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .then(if (selected) Modifier.background(scheme.surfaceVariant) else Modifier)
+            .clickable(onClick = onClick)
+            .semantics(mergeDescendants = true) {
+                role = Role.RadioButton
+                this.selected = selected
+                contentDescription = id.label + " colours" + if (lightOnly) ", drawn for daylight" else ""
+            }
+            .heightIn(min = 48.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy((-6).dp)) {
+            listOf(pal.ground, pal.action, pal.reward).forEach { c ->
+                Box(
+                    Modifier.size(22.dp).clip(CircleShape).background(c)
+                        .border(1.5.dp, scheme.surface, CircleShape)
+                        .border(1.dp, scheme.onSurface.copy(alpha = 0.12f), CircleShape)
+                )
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(id.label, fontSize = 14.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                 color = scheme.onSurface)
+            if (lightOnly) Text("Daylight version; nights use its accent", fontSize = 11.sp,
+                                color = scheme.onSurfaceVariant)
+        }
+        if (selected) Text("\u2713", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = scheme.primary)
+    }
+}

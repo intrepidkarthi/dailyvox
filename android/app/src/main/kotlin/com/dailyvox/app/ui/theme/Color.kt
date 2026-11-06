@@ -50,6 +50,9 @@ val Gold        = Color(0xFFD9A441)
 val StarBlue    = Color(0xFF9DC1E4)
 val StarGold    = Gold
 
+/** The recording disc and destructive text. Recording is the only red. */
+val RecordRed   = Color(0xFFC5533F)
+
 /** The Twin screen renders night tokens under BOTH themes: the sky is always
  *  night (FINAL-SPEC §8.4). */
 val SkyBackground = NightBackground

@@ -170,9 +170,8 @@ fun EntryDetailScreen(
         // B4: the entities the Twin found are underlined in gold, inside the
         // transcript. Seeing them in place is the point — it is the difference
         // between "the app says it found Sarah" and "here is where."
-        val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
-        val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                       else com.dailyvox.app.ui.theme.DayGoldText
+        val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+        val goldTone = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
         if (entry.isUntranscribed) {
             UntranscribedBlock(entry, onEdit)
             Spacer(Modifier.height(6.dp))
@@ -332,7 +331,7 @@ fun EntryDetailScreen(
             }
             Box(
                 Modifier.size(52.dp).clip(CircleShape)
-                    .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                     .clickable {
                         val card = com.dailyvox.app.system.ShareCard.render(context, entry)
                         com.dailyvox.app.system.Exporters.share(context, card, "image/png")
@@ -430,18 +429,20 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
     // length stands in so the label reads 1:42 rather than 0:00 before play.
     val total = playback.durationMs.takeIf { it > 0 } ?: fallbackMs.coerceAtLeast(1)
     val progress = (pos.toFloat() / total).coerceIn(0f, 1f)
-    val night = com.dailyvox.app.ui.theme.NightText
+    // The player is a piece of the night sky in every mode: the theme's own night.
+    val nz = com.dailyvox.app.ui.theme.LocalDvPalette.current.night
+    val night = nz.ink
 
     Row(
         Modifier.fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(com.dailyvox.app.ui.theme.NightSurface)
+            .background(nz.surface)
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             Modifier.size(44.dp).clip(CircleShape)
-                .background(com.dailyvox.app.ui.theme.Gold)
+                .background(nz.reward)
                 .clickable {
                     playback.toggle(path) { playing = false; pos = 0 }
                     playing = playback.isPlaying
@@ -451,7 +452,7 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
         ) {
             // Drawn, not a text glyph: ▶ and ‖ render at different weights and
             // baselines per font, and on some OEMs as colour emoji.
-            val ink = com.dailyvox.app.ui.theme.NightBackground
+            val ink = nz.onReward
             androidx.compose.foundation.Canvas(Modifier.size(16.dp)) {
                 if (playing) {
                     val bw = 4.dp.toPx()
@@ -495,7 +496,7 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
                 val lit = i.toFloat() / WAVE_BARS <= progress && progress > 0f
                 val bh = size.height * hf
                 drawRoundRect(
-                    if (lit) com.dailyvox.app.ui.theme.Gold else night.copy(alpha = 0.22f),
+                    if (lit) nz.reward else night.copy(alpha = 0.22f),
                     topLeft = androidx.compose.ui.geometry.Offset(i * (bw + gap), (size.height - bh) / 2f),
                     size = androidx.compose.ui.geometry.Size(bw, bh),
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(bw / 2f),
