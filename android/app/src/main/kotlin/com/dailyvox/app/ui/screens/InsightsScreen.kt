@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawStreakMotif
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -136,8 +137,17 @@ fun InsightsScreen(
                         },
                         fontSize = 13.sp, fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 3.dp),
+                        modifier = Modifier.padding(bottom = 3.dp).weight(1f, fill = false),
                     )
+                    // The theme's streak mark: a paper boat, a mug, a leaf, a ribbon.
+                    val markTheme = com.dailyvox.app.ui.theme.LocalThemeId.current
+                    if (com.dailyvox.app.ui.theme.hasStreakMotif(markTheme) &&
+                        com.dailyvox.app.ui.theme.decorated(markTheme, com.dailyvox.app.ui.theme.LocalDvPalette.current)) {
+                        Spacer(Modifier.weight(1f))
+                        androidx.compose.foundation.Canvas(Modifier.size(40.dp)) {
+                            drawStreakMotif(markTheme, center, size.width * .8f)
+                        }
+                    }
                 }
             }
             Spacer(Modifier.height(12.dp))

@@ -1,5 +1,8 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawSkyDecor
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -209,11 +212,19 @@ fun TwinScreen(
                 // the constellation never fires a share sheet by accident.
                 .combinedClickable(onClick = {}, onLongClick = onShare)
         ) {
+            val skyTheme = com.dailyvox.app.ui.theme.LocalThemeId.current
+            val skyPal = com.dailyvox.app.ui.theme.LocalDvPalette.current
+            val skyDecor = com.dailyvox.app.ui.theme.decorated(skyTheme, skyPal)
+            val weather by com.dailyvox.app.ui.theme.decorPhase(14000)
             Canvas(Modifier.fillMaxSize()) {
                 drawSky(
                     palette, entries, starCount, orbitInner, orbitOuter, comet, innerBody, coreGlow,
                     if (still) List(9) { 1f } else twinkle.map { it.value },
                 )
+                // The theme's sky: a Christmas star on the core, a crescent for
+                // Eid and Ramadan, soft rain or snow for Monsoon and Winter.
+                if (skyDecor) drawSkyDecor(skyTheme, skyPal, skyCore(size.width, size.height),
+                    if (com.dailyvox.app.ui.theme.hasAnimatedSky(skyTheme)) weather else 0f)
             }
             // Named stars, labelled beside their OWN star. The labels used to
             // sit at three hard-coded box offsets while the stars were drawn at
@@ -224,11 +235,14 @@ fun TwinScreen(
                 val h = constraints.maxHeight.toFloat()
                 val anchors = skyAnchors(w, h)
                 val core = skyCore(w, h)
+                val tags = skyDecor && skyTheme == com.dailyvox.app.ui.theme.ThemeId.STICKER
                 named.take(anchors.size).forEachIndexed { i, (n, _) ->
                     SkyName(
                         n, anchors[i], core, w, h,
                         // Quieter by rank, the way the stars thin out.
                         goldText.copy(alpha = 1f - i * 0.14f),
+                        // Sticker: the names are little name-tag stickers.
+                        tag = tags, tilt = if (i % 2 == 0) -4f else 3f,
                     )
                 }
             }
@@ -427,11 +441,14 @@ private fun skyAnchors(w: Float, h: Float): List<Offset> {
  * is clamped inside the sky so a name near the rim is never cut off.
  */
 @Composable
-private fun SkyName(name: String, anchor: Offset, core: Offset, w: Float, h: Float, color: Color) {
+private fun SkyName(
+    name: String, anchor: Offset, core: Offset, w: Float, h: Float, color: Color,
+    tag: Boolean = false, tilt: Float = 0f,
+) {
     Text(
-        name.uppercase(),
-        fontFamily = Nunito, fontSize = 11.5.sp, fontWeight = FontWeight.Black,
-        letterSpacing = 0.6.sp, color = color, maxLines = 1,
+        if (tag) name else name.uppercase(),
+        fontFamily = Nunito, fontSize = if (tag) 12.sp else 11.5.sp, fontWeight = FontWeight.Black,
+        letterSpacing = if (tag) 0.sp else 0.6.sp, color = if (tag) Color(0xFF1D1F24) else color, maxLines = 1,
         modifier = Modifier.layout { measurable, constraints ->
             val p = measurable.measure(constraints.copy(minWidth = 0, minHeight = 0))
             val dx = anchor.x - core.x
@@ -446,7 +463,17 @@ private fun SkyName(name: String, anchor: Offset, core: Offset, w: Float, h: Flo
             val y = (anchor.y + uy * push - p.height / 2f)
                 .coerceIn(margin, (h - p.height - margin).coerceAtLeast(margin))
             layout(p.width, p.height) { p.place(x.roundToInt(), y.roundToInt()) }
-        },
+        }.then(if (tag) Modifier
+            .rotate(tilt)
+            .drawBehind {
+                // a hard flat shadow, then the white tag with an ink edge
+                val cr = androidx.compose.ui.geometry.CornerRadius(5.dp.toPx())
+                drawRoundRect(Color.Black.copy(alpha = 0.55f), topLeft = Offset(2.dp.toPx(), 3.dp.toPx()), size = size, cornerRadius = cr)
+                drawRoundRect(Color.White, size = size, cornerRadius = cr)
+                drawRoundRect(Color(0xFF1D1F24), size = size, cornerRadius = cr,
+                              style = Stroke(1.5.dp.toPx()))
+            }
+            .padding(horizontal = 7.dp, vertical = 2.dp) else Modifier),
     )
 }
 

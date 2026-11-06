@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawHeaderDecorAt
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -108,8 +110,8 @@ fun AppearanceScreen(
         }
 
         Spacer(Modifier.height(10.dp))
-        Crossfade(targetState = pal, animationSpec = tween(220), label = "preview") { p ->
-            TodayPreview(p, Modifier.padding(horizontal = 24.dp))
+        Crossfade(targetState = themeId to pal, animationSpec = tween(220), label = "preview") { (id, p) ->
+            TodayPreview(id, p, Modifier.padding(horizontal = 24.dp))
         }
 
         Spacer(Modifier.height(14.dp))
@@ -247,7 +249,8 @@ private fun ThemeTile(id: ThemeId, selected: Boolean, onClick: () -> Unit) {
  * mood chip, the mic and the tab bar. The mood chip keeps its fixed mood colour.
  */
 @Composable
-private fun TodayPreview(p: DvPalette, modifier: Modifier) {
+private fun TodayPreview(id: ThemeId, p: DvPalette, modifier: Modifier) {
+    val deco = com.dailyvox.app.ui.theme.decorated(id, p)
     val shape = RoundedCornerShape(22.dp)
     Column(
         modifier
@@ -258,21 +261,33 @@ private fun TodayPreview(p: DvPalette, modifier: Modifier) {
             .semantics(mergeDescendants = true) { contentDescription = "Preview of Today in this theme" }
             .padding(horizontal = 14.dp, vertical = 11.dp),
     ) {
-        if (p.band != null) Box(
-            Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)).background(p.band)
-        )
-        if (p.band != null) Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // The header carries the theme's band and motif, still (no weather here).
+        val onBand = if (deco) p.onBand else null
+        Row(
+            Modifier.fillMaxWidth().then(
+                if (deco) Modifier.drawBehind {
+                    val area = androidx.compose.ui.geometry.Rect(-14.dp.toPx(), -11.dp.toPx(), size.width + 14.dp.toPx(), size.height + 8.dp.toPx())
+                    drawHeaderDecorAt(id, p, area, 0.3f, density, dense = false)
+                } else Modifier
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Column(Modifier.weight(1f)) {
-                Text("Good morning", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = p.ink)
-                Text("Friday, November 6", fontSize = 10.5.sp, color = p.inkSoft)
+                Text("Good morning", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = onBand ?: p.ink)
+                Text("Friday, November 6", fontSize = 10.5.sp, color = onBand?.copy(alpha = .82f) ?: p.inkSoft)
             }
-            Text("✦ 33 days", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = p.rewardText)
+            Text("✦ 33 days", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = onBand ?: p.rewardText)
         }
+        if (p.band != null && deco) Spacer(Modifier.height(6.dp))
         Spacer(Modifier.height(8.dp))
         val card = RoundedCornerShape(14.dp)
         Column(
-            Modifier.fillMaxWidth().clip(card).background(p.surface)
+            Modifier.fillMaxWidth()
+                .then(if (deco && id == ThemeId.STICKER) Modifier.drawBehind {
+                    drawRoundRect(p.ink.copy(alpha = .9f), topLeft = androidx.compose.ui.geometry.Offset(3.dp.toPx(), 3.dp.toPx()),
+                                  size = size, cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()))
+                } else Modifier)
+                .clip(card).background(p.surface)
                 .then(p.cardBorder?.let { Modifier.border(p.cardBorderWidth.coerceAtMost(1.5.dp), it, card) } ?: Modifier)
                 .padding(10.dp),
         ) {

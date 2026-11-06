@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.themeBandStrip
+import com.dailyvox.app.ui.theme.raindrop
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -92,8 +96,11 @@ fun EntryDetailScreen(
         }
     }
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
-        Spacer(Modifier.height(8.dp))
+        // The theme's band as a strip across the top, for themes that have one.
+        Spacer(Modifier.fillMaxWidth().height(8.dp).themeBandStrip(bleed = 20.dp))
         var menu by remember { mutableStateOf(false) }
+        val dropMark = com.dailyvox.app.ui.theme.LocalThemeId.current == com.dailyvox.app.ui.theme.ThemeId.MONSOON &&
+            com.dailyvox.app.ui.theme.decorated(com.dailyvox.app.ui.theme.ThemeId.MONSOON, com.dailyvox.app.ui.theme.LocalDvPalette.current)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("‹", fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground,
                  modifier = Modifier
@@ -105,7 +112,13 @@ fun EntryDetailScreen(
             Column(Modifier.weight(1f)) {
                 Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
                      fontSize = 21.sp, fontWeight = FontWeight.ExtraBold, fontFamily = Nunito,
-                     color = MaterialTheme.colorScheme.onBackground)
+                     color = MaterialTheme.colorScheme.onBackground,
+                     modifier = Modifier.drawWithContent {
+                         drawContent()
+                         // Monsoon marks a kept entry with a raindrop.
+                         if (dropMark) raindrop(Offset(size.width + 12.dp.toPx(), size.height / 2f), 13.dp.toPx(),
+                                                androidx.compose.ui.graphics.Color(0xFF5E8FB8), androidx.compose.ui.graphics.Color.White)
+                     })
                 MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }
             // Read aloud and Delete live here rather than in the action row.

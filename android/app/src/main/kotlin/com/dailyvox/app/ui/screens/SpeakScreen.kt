@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.themeHeader
 import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
@@ -302,6 +303,15 @@ fun SpeakScreen(
         modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // The theme's header: a band and its weather for the seasons and the
+        // banded festivals, a small motif for the rest. Drawn behind the header
+        // only, never behind what the user wrote. Text on a band takes its ink.
+        val pal = com.dailyvox.app.ui.theme.LocalDvPalette.current
+        val onBand = pal.band?.takeIf { com.dailyvox.app.ui.theme.decorated(com.dailyvox.app.ui.theme.LocalThemeId.current, pal) }?.let { pal.onBand }
+        val headInk = onBand ?: MaterialTheme.colorScheme.onBackground
+        val headSoft = onBand?.copy(alpha = 0.82f) ?: MaterialTheme.colorScheme.onSurfaceVariant
+        val headGold = onBand ?: goldText
+        Column(Modifier.fillMaxWidth().themeHeader(bleed = 24.dp)) {
         Spacer(Modifier.height(14.dp))
         // Spec §2.2: greeting + date on the left, streak and star chips on the
         // right. This read "Day 21 · 17% resolved" — a progress figure that
@@ -319,13 +329,13 @@ fun SpeakScreen(
                         else -> "Good evening"
                     },
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = headInk,
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
                     java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault())
                         .format(java.util.Date()),
-                    fontSize = 12.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.5.sp, color = headSoft,
                 )
             }
             Row(verticalAlignment = Alignment.Top) {
@@ -344,24 +354,25 @@ fun SpeakScreen(
                             com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_none_yet)
                         },
                         fontSize = 12.5.sp, fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = headInk,
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
                         "\u2726 $yearCount this year", fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold, color = goldText,
+                        fontWeight = FontWeight.SemiBold, color = headGold,
                     )
                 }
                 Text(
                     "\u22EF",
                     fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = headSoft,
                     modifier = Modifier.clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = onSettings)
                         .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
                         .wrapContentSize(),
                 )
             }
+        }
         }
 
         Spacer(Modifier.height(if (tall) 56.dp else 28.dp))

@@ -210,9 +210,9 @@ fun DrawScope.drawHeaderDecor(id: ThemeId, p: DvPalette, area: Rect, t: Float, d
         ThemeId.SPRING -> particles(inBand, if (dense) 9 else 4, t, 1f) { c, i ->
             petal(c, 5f * u, if (i % 2 == 0) Color(0xFFF2A7BC) else Color(0xFFE88AA6), i * 40f + t * 360f)
         }
-        ThemeId.SUMMER -> sun(Offset(area.right - 46f * u, area.top + 26f * u), 9f * u, White, White)
-        ThemeId.MONSOON -> particles(inBand, if (dense) 18 else 8, t, 2f) { c, _ ->
-            drawLine(White.copy(alpha = .45f), c, c + Offset(-3f * u, 9f * u), strokeWidth = 1.4f * u, cap = StrokeCap.Round)
+        ThemeId.SUMMER -> sun(Offset(area.center.x + 8f * u, area.bottom - 46f * u), 8f * u, White, White)
+        ThemeId.MONSOON -> particles(inBand, if (dense) 12 else 6, t, 2f) { c, _ ->
+            drawLine(White.copy(alpha = .32f), c, c + Offset(-3f * u, 9f * u), strokeWidth = 1.4f * u, cap = StrokeCap.Round)
         }
         ThemeId.AUTUMN -> particles(inBand, if (dense) 6 else 3, t, .8f) { c, i ->
             leaf(c, 5f * u, if (i % 2 == 0) Color(0xFFF7D27A) else Color(0xFFE9A15A), Color(0xFF8A3E1E), i * 55f + t * 200f)
@@ -244,14 +244,15 @@ fun DrawScope.drawHeaderDecor(id: ThemeId, p: DvPalette, area: Rect, t: Float, d
             while (x < area.right) { drawCircle(Color(0xFF7A3F12), 2f * u, Offset(x, y)); x += 11f * u }
         }
         ThemeId.RAMADAN -> {
-            crescent(Offset(area.right - 34f * u, area.top + 24f * u), 10f * u, Color(0xFFE8C46A))
-            lantern(Offset(area.right - 70f * u, area.top), 46f * u, Color(0xFFE8C46A), Color(0xFFE8C46A))
+            lantern(Offset(area.center.x + 4f * u, area.bottom - 92f * u), 56f * u, Color(0xFFE8C46A), Color(0xFFE8C46A))
+            crescent(Offset(area.center.x - 26f * u, area.bottom - 60f * u), 8f * u, Color(0xFFE8C46A))
         }
         ThemeId.HOLI -> {
-            splash(Offset(area.left + 6f * u, area.top + 4f * u), 13f * u, Color(0xFFF06FA4))
-            splash(Offset(area.right - 120f * u, area.top - 2f * u), 8f * u, Color(0xFFFFD23F))
-            splash(Offset(area.right - 30f * u, area.top + 2f * u), 11f * u, Color(0xFF3FB86B))
-            splash(Offset(area.right - 6f * u, area.top + 34f * u), 8f * u, Color(0xFF4C7FEA))
+            // gutters and the gap above the greeting only; the text row stays clear
+            splash(Offset(area.left + 8f * u, area.bottom - 30f * u), 6f * u, Color(0xFFF06FA4))
+            splash(Offset(area.center.x - 30f * u, area.bottom - 74f * u), 4.5f * u, Color(0xFFFFD23F))
+            splash(Offset(area.center.x + 20f * u, area.bottom - 70f * u), 4f * u, Color(0xFF3FB86B))
+            splash(Offset(area.right - 9f * u, area.bottom - 22f * u), 5.5f * u, Color(0xFF4C7FEA))
         }
         ThemeId.EID -> {
             val y = area.bottom - 6f * u
@@ -261,8 +262,8 @@ fun DrawScope.drawHeaderDecor(id: ThemeId, p: DvPalette, area: Rect, t: Float, d
         }
         ThemeId.MIST -> drawLine(p.action.copy(alpha = .35f), Offset(area.left + 12f * u, area.bottom - 4f * u), Offset(area.right - 12f * u, area.bottom - 4f * u), strokeWidth = 1.2f * u)
         ThemeId.SANDALWOOD -> drawLine(Color(0xFFB08D57), Offset(area.left + 12f * u, area.bottom - 4f * u), Offset(area.right - 12f * u, area.bottom - 4f * u), strokeWidth = 2f * u)
-        ThemeId.LOTUS -> lotus(Offset(area.right - 120f * u, area.top + 26f * u), 9f * u, Color(0xFFB0476B))
-        ThemeId.HUSH -> crescent(Offset(area.left + 128f * u, area.top + 22f * u), 6f * u, Color(0xFFB9A3D6))
+        ThemeId.LOTUS -> lotus(Offset(area.center.x + 8f * u, area.bottom - 46f * u), 9f * u, Color(0xFFB0476B))
+        ThemeId.HUSH -> crescent(Offset(area.center.x + 8f * u, area.bottom - 46f * u), 7f * u, Color(0xFFB9A3D6))
         ThemeId.PAPER_NOTEBOOK -> {
             drawLine(Color(0xFFC0392B).copy(alpha = .55f), Offset(area.left + 8f * u, area.top), Offset(area.left + 8f * u, area.bottom), strokeWidth = 1.2f * u)
             drawLine(Color(0xFF9AA3B5).copy(alpha = .5f), Offset(area.left, area.bottom - 3f * u), Offset(area.right, area.bottom - 3f * u), strokeWidth = 1f * u)
@@ -289,7 +290,18 @@ fun decorPhase(periodMs: Int = 9000): State<Float> {
 fun Modifier.themeHeader(bleed: Dp, bottomExtra: Dp = 10.dp): Modifier {
     val id = LocalThemeId.current
     val p = LocalDvPalette.current
-    if (!decorated(id, p) || id in setOf(ThemeId.DEFAULT, ThemeId.STICKER, ThemeId.HIGH_CONTRAST)) return this
+    if (!decorated(id, p) || id in setOf(ThemeId.DEFAULT, ThemeId.HIGH_CONTRAST)) return this
+    if (id == ThemeId.STICKER) return this.drawBehind {
+        // The streak column sits on a sunflower sticker: die-cut, hard shadow, a tilt.
+        val w = 116.dp.toPx(); val h = 62.dp.toPx()
+        val tl = Offset(size.width - 44.dp.toPx() - w + 8.dp.toPx(), 7.dp.toPx())
+        rotate(-3f, tl + Offset(w / 2, h / 2)) {
+            val cr = CornerRadius(14.dp.toPx())
+            drawRoundRect(Ink, tl + Offset(3.dp.toPx(), 4.dp.toPx()), Size(w, h), cr)
+            drawRoundRect(Color(0xFFF2C14E), tl, Size(w, h), cr)
+            drawRoundRect(Ink, tl, Size(w, h), cr, style = Stroke(1.6.dp.toPx()))
+        }
+    }
     val phase = decorPhase()
     return this.drawBehind {
         val b = bleed.toPx()
@@ -338,7 +350,7 @@ fun DrawScope.drawDialDecor(id: ThemeId, p: DvPalette, c: Offset, r: Float, t: F
         }
         ThemeId.MONSOON -> repeat(3) { i ->
             val k = (t * 1.5f + i / 3f) % 1f
-            drawCircle(p.night.reward.copy(alpha = .35f * (1f - k)), r * (1.02f + k * .22f), c, style = Stroke(r * .012f + 1f))
+            drawCircle(p.night.reward.copy(alpha = .7f * (1f - k)), r * (1.04f + k * .2f), c, style = Stroke(r * .02f + 1f))
         }
         ThemeId.SPRING -> repeat(8) { i ->
             val a = i * 2 * PI / 8 - PI / 2
@@ -434,4 +446,30 @@ fun DrawScope.drawTile(id: ThemeId, p: DvPalette, dpPx: Float) {
         }
         else -> Unit
     }
+}
+
+/**
+ * The entry screen's header mark: the theme's band as a strip across the top
+ * (full bleed). Never behind text.
+ */
+@Composable
+fun Modifier.themeBandStrip(bleed: Dp, height: Dp = 6.dp): Modifier {
+    val id = LocalThemeId.current
+    val p = LocalDvPalette.current
+    val band = p.band?.takeIf { decorated(id, p) } ?: return this
+    return this.drawBehind {
+        val b = bleed.toPx()
+        drawRect(band, topLeft = Offset(-b, 0f), size = Size(size.width + 2 * b, height.toPx()))
+    }
+}
+
+/** Monsoon's mark on a kept entry. */
+fun DrawScope.raindrop(c: Offset, h: Float, fill: Color, edge: Color) {
+    val p = Path().apply {
+        moveTo(c.x, c.y - h / 2)
+        cubicTo(c.x + h * .45f, c.y, c.x + h * .38f, c.y + h / 2, c.x, c.y + h / 2)
+        cubicTo(c.x - h * .38f, c.y + h / 2, c.x - h * .45f, c.y, c.x, c.y - h / 2)
+        close()
+    }
+    drawPath(p, edge, style = Stroke(h * .14f)); drawPath(p, fill)
 }

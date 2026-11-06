@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawDialDecor
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.foundation.border
+import androidx.compose.runtime.getValue
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -116,14 +120,21 @@ fun RecordingDial(
 
         Spacer(Modifier.weight(1f))
 
+        val themeId = com.dailyvox.app.ui.theme.LocalThemeId.current
+        val dialPal = LocalDvPalette.current
+        val dialDecor = com.dailyvox.app.ui.theme.decorated(themeId, dialPal)
+        val ripple by com.dailyvox.app.ui.theme.decorPhase(4200)
         Box(contentAlignment = Alignment.Center) {
             Canvas(Modifier.size(288.dp)) {
                 val c = center
                 val r = size.minDimension * 0.452f      // 104/230
 
-                // Breathing radial glow behind everything.
+                // The theme's dial: a die-cut ring, ripples, a bud, a rangoli.
+                if (dialDecor) { drawDialDecor(themeId, dialPal, c, r, if (com.dailyvox.app.ui.theme.hasAnimatedDial(themeId)) ripple else 0f) }
+
+                // Breathing radial glow behind everything. Sticker is flat.
                 val gScale = 1f + 0.18f * glow
-                drawCircle(
+                if (!(dialDecor && themeId == com.dailyvox.app.ui.theme.ThemeId.STICKER)) drawCircle(
                     brush = Brush.radialGradient(
                         listOf(sky.reward.copy(alpha = 0.55f - 0.40f * glow), Color.Transparent),
                         center = c, radius = r * 0.92f * gScale,
@@ -255,11 +266,18 @@ fun RecordingDial(
                 modifier = Modifier.height(96.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
+                // Sticker's stop is a tomato sticker: white die-cut edge, hard shadow.
+                val stickerStop = dialDecor && themeId == com.dailyvox.app.ui.theme.ThemeId.STICKER
                 Box(
                     Modifier
                         .size(76.dp)
+                        .then(if (stickerStop) Modifier.drawBehind {
+                            drawCircle(Color.Black.copy(alpha = 0.55f), size.minDimension / 2f,
+                                       center + Offset(3.dp.toPx(), 4.dp.toPx()))
+                        } else Modifier)
                         .clip(CircleShape)
                         .background(LocalDvPalette.current.record)
+                        .then(if (stickerStop) Modifier.border(3.dp, Color.White, CircleShape) else Modifier)
                         .clickable(onClick = onStop),
                     contentAlignment = Alignment.Center,
                 ) {

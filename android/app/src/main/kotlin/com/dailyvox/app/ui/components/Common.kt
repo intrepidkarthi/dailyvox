@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.components
 
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,10 +39,19 @@ fun DvCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() ->
     // draw their own line; Default keeps the 5% hairline in day, none at night.
     val border = pal.cardBorder?.let { Modifier.border(pal.cardBorderWidth, it, shape) }
         ?: if (dark) Modifier else Modifier.border(1.dp, pal.ink.copy(alpha = 0.05f), shape)
+    // Sticker cards sit on a hard, flat offset shadow instead of a soft one.
+    val hard = LocalThemeId.current == ThemeId.STICKER && decorated(ThemeId.STICKER, pal)
     Column(
         Modifier
             .fillMaxWidth()
-            .then(if (dark) Modifier else Modifier.shadow(
+            .then(if (hard) Modifier.drawBehind {
+                drawRoundRect(
+                    if (dark) Color.Black.copy(alpha = 0.65f) else pal.ink.copy(alpha = 0.9f),
+                    topLeft = androidx.compose.ui.geometry.Offset(3.dp.toPx(), 4.dp.toPx()),
+                    size = size, cornerRadius = androidx.compose.ui.geometry.CornerRadius(22.dp.toPx()),
+                )
+            } else Modifier)
+            .then(if (dark || hard) Modifier else Modifier.shadow(
                 elevation = 6.dp, shape = shape,
                 ambientColor = pal.ink.copy(alpha = 0.10f), spotColor = pal.ink.copy(alpha = 0.10f),
             ))

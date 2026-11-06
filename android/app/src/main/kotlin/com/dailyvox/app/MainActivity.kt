@@ -135,14 +135,18 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
     /** Set by B4's "Ask about this"; consumed by the Ask screen on arrival. */
     var askSeed by rememberSaveable { mutableStateOf<String?>(null) }
-    var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
-    // Debug builds only: `--es dv_open settings|appearance` lands straight on a
+    // Debug builds only: `--es dv_open settings|appearance|twin|insights|dial` lands straight on a
     // screen, so screenshots of every theme can be scripted. Release ignores it.
     val debugOpen = remember {
         if (com.dailyvox.app.BuildConfig.DEBUG) activity.intent?.getStringExtra("dv_open") else null
     }
+    var current by rememberSaveable { mutableStateOf(if (debugOpen == "twin") Destination.TWIN else Destination.SPEAK) }
     var overlay by rememberSaveable {
-        mutableStateOf(if (debugOpen == "settings" || debugOpen == "appearance") Overlay.SETTINGS else Overlay.NONE)
+        mutableStateOf(when (debugOpen) {
+            "settings", "appearance" -> Overlay.SETTINGS
+            "insights" -> Overlay.INSIGHTS
+            else -> Overlay.NONE
+        })
     }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
     // Recording takes the whole screen (B2b) — the tab bar would offer an exit
@@ -286,6 +290,19 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     }
 
     DailyVoxTheme(darkTheme = dark, themeId = themeId) {
+        // Debug only: the recording dial mid-entry, for theme screenshots.
+        if (debugOpen == "dial") {
+            Box(Modifier.fillMaxSize().background(com.dailyvox.app.ui.theme.LocalDvPalette.current.night.ground)) {
+                com.dailyvox.app.ui.screens.RecordingDial(
+                    elapsed = 28, level = 0.55f,
+                    partial = "Sarah called on the drive home and I finally said it out loud",
+                    lastEntity = "Sarah", paused = false,
+                    onStop = {}, onDiscard = {}, onPause = {}, onResume = {},
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            return@DailyVoxTheme
+        }
         if (!onboarded) {
             OnboardingScreen(onDone = { text, secs, path, remind ->
                 // The first star is persisted as a REAL entry, exactly as iOS
