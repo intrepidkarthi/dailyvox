@@ -48,9 +48,8 @@ fun ShareSheet(
 ) {
     val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
-    val night = scheme.background == com.dailyvox.app.ui.theme.NightBackground
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
 
     // The milestone card is only offered once it exists. Showing a locked
     // "night 42" chip to someone on night 9 turns a reward into a nag, which is

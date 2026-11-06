@@ -80,9 +80,8 @@ fun AskScreen(
 ) {
     val context = LocalContext.current
     val scheme = MaterialTheme.colorScheme
-    val night = scheme.background == com.dailyvox.app.ui.theme.NightBackground
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
 
     val speaker = remember { com.dailyvox.app.system.Speaker(context) }
     DisposableEffect(Unit) { onDispose { speaker.release() } }
@@ -247,7 +246,7 @@ fun AskScreen(
                                     color = goldText,
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(13.dp))
-                                        .background(com.dailyvox.app.ui.theme.Gold
+                                        .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward
                                             .copy(alpha = 0.14f))
                                         .clickable { send(f) }
                                         .padding(horizontal = 12.dp, vertical = 9.dp),
@@ -377,18 +376,17 @@ private fun ThinkingRow() {
  */
 @Composable
 private fun CiteChip(text: String, solid: Boolean = false, onClick: (() -> Unit)? = null) {
-    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
     Text(
         text,
         fontSize = 9.5.sp, letterSpacing = 0.6.sp, fontWeight = FontWeight.SemiBold,
-        color = if (solid && !night) com.dailyvox.app.ui.theme.DayGoldText else goldText,
+        color = if (solid && !night) com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText else goldText,
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .background(
-                if (solid) com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.28f else 0.38f)
-                else com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.16f else 0.20f)
+                if (solid) com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = if (night) 0.28f else 0.38f)
+                else com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = if (night) 0.16f else 0.20f)
             )
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = 9.dp, vertical = 5.dp),

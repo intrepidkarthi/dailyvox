@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.themeBandStrip
+import com.dailyvox.app.ui.theme.raindrop
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -92,8 +96,11 @@ fun EntryDetailScreen(
         }
     }
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp)) {
-        Spacer(Modifier.height(8.dp))
+        // The theme's band as a strip across the top, for themes that have one.
+        Spacer(Modifier.fillMaxWidth().height(8.dp).themeBandStrip(bleed = 20.dp))
         var menu by remember { mutableStateOf(false) }
+        val dropMark = com.dailyvox.app.ui.theme.LocalThemeId.current == com.dailyvox.app.ui.theme.ThemeId.MONSOON &&
+            com.dailyvox.app.ui.theme.decorated(com.dailyvox.app.ui.theme.ThemeId.MONSOON, com.dailyvox.app.ui.theme.LocalDvPalette.current)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("‹", fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground,
                  modifier = Modifier
@@ -105,7 +112,13 @@ fun EntryDetailScreen(
             Column(Modifier.weight(1f)) {
                 Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
                      fontSize = 21.sp, fontWeight = FontWeight.ExtraBold, fontFamily = Nunito,
-                     color = MaterialTheme.colorScheme.onBackground)
+                     color = MaterialTheme.colorScheme.onBackground,
+                     modifier = Modifier.drawWithContent {
+                         drawContent()
+                         // Monsoon marks a kept entry with a raindrop.
+                         if (dropMark) raindrop(Offset(size.width + 12.dp.toPx(), size.height / 2f), 13.dp.toPx(),
+                                                androidx.compose.ui.graphics.Color(0xFF5E8FB8), androidx.compose.ui.graphics.Color.White)
+                     })
                 MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
             }
             // Read aloud and Delete live here rather than in the action row.
@@ -170,9 +183,8 @@ fun EntryDetailScreen(
         // B4: the entities the Twin found are underlined in gold, inside the
         // transcript. Seeing them in place is the point — it is the difference
         // between "the app says it found Sarah" and "here is where."
-        val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
-        val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                       else com.dailyvox.app.ui.theme.DayGoldText
+        val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+        val goldTone = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
         if (entry.isUntranscribed) {
             UntranscribedBlock(entry, onEdit)
             Spacer(Modifier.height(6.dp))
@@ -332,7 +344,7 @@ fun EntryDetailScreen(
             }
             Box(
                 Modifier.size(52.dp).clip(CircleShape)
-                    .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                     .clickable {
                         val card = com.dailyvox.app.system.ShareCard.render(context, entry)
                         com.dailyvox.app.system.Exporters.share(context, card, "image/png")
@@ -430,18 +442,20 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
     // length stands in so the label reads 1:42 rather than 0:00 before play.
     val total = playback.durationMs.takeIf { it > 0 } ?: fallbackMs.coerceAtLeast(1)
     val progress = (pos.toFloat() / total).coerceIn(0f, 1f)
-    val night = com.dailyvox.app.ui.theme.NightText
+    // The player is a piece of the night sky in every mode: the theme's own night.
+    val nz = com.dailyvox.app.ui.theme.LocalDvPalette.current.night
+    val night = nz.ink
 
     Row(
         Modifier.fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(com.dailyvox.app.ui.theme.NightSurface)
+            .background(nz.surface)
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             Modifier.size(44.dp).clip(CircleShape)
-                .background(com.dailyvox.app.ui.theme.Gold)
+                .background(nz.reward)
                 .clickable {
                     playback.toggle(path) { playing = false; pos = 0 }
                     playing = playback.isPlaying
@@ -451,7 +465,7 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
         ) {
             // Drawn, not a text glyph: ▶ and ‖ render at different weights and
             // baselines per font, and on some OEMs as colour emoji.
-            val ink = com.dailyvox.app.ui.theme.NightBackground
+            val ink = nz.onReward
             androidx.compose.foundation.Canvas(Modifier.size(16.dp)) {
                 if (playing) {
                     val bw = 4.dp.toPx()
@@ -495,7 +509,7 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
                 val lit = i.toFloat() / WAVE_BARS <= progress && progress > 0f
                 val bh = size.height * hf
                 drawRoundRect(
-                    if (lit) com.dailyvox.app.ui.theme.Gold else night.copy(alpha = 0.22f),
+                    if (lit) nz.reward else night.copy(alpha = 0.22f),
                     topLeft = androidx.compose.ui.geometry.Offset(i * (bw + gap), (size.height - bh) / 2f),
                     size = androidx.compose.ui.geometry.Size(bw, bh),
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(bw / 2f),
