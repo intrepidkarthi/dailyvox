@@ -400,8 +400,8 @@ struct SkyView: View {
     /// The same valence ramp the 30-night strip uses, so a good day is the same
     /// colour wherever it appears.
     private func valenceColour(_ v: Double) -> Color {
-        if v > 0.2 { return DS.Palette.forest }
-        if v > -0.2 { return DS.Palette.gold }
-        return DS.Palette.coral
+        if v > 0.2 { return DS.Brand.forest }
+        if v > -0.2 { return DS.Brand.gold }
+        return DS.Brand.coral
     }
 }

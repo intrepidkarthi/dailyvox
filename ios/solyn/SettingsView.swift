@@ -340,10 +340,22 @@ struct SettingsView: View {
                 }
             }
             .padding(.vertical, 8)
+
+            NavigationLink {
+                ThemePickerView()
+            } label: {
+                HStack(spacing: DS.Space.sm) {
+                    Text("Colour theme")
+                    Spacer()
+                    Text(themeManager.themeID.displayName)
+                        .foregroundColor(.secondary)
+                    ThemeSwatch(palette: themeManager.themeID.palette)
+                }
+            }
         } header: {
             Text("Appearance")
         } footer: {
-            Text("Choose a soft color theme that suits your style.")
+            Text("Day, Night, or Sunset to follow the sun. Then pick a colour theme: bold, calm, seasonal or festive.")
         }
     }
 

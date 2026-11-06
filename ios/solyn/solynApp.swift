@@ -66,6 +66,9 @@ struct DailyVoxApp: App {
                 }
             }
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            // A new colour theme rebuilds the tree once, so every view that
+            // reads `DS.Palette` picks it up (see ThemeManager.appliedThemeID).
+            .id(themeManager.appliedThemeID)
             .animation(.easeInOut(duration: 0.3), value: hasCompletedOnboarding)
             .preferredColorScheme(themeManager.selectedTheme.colorScheme)
             // The app theme, as a value the tree can carry. The Twin screen

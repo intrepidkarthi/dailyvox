@@ -228,7 +228,11 @@ struct TodayView: View {
             },
             onInterrupted: { paused in isPaused = paused }
         ))
-        .sheet(isPresented: $showSettings) {
+        .sheet(isPresented: $showSettings, onDismiss: {
+            // A colour theme picked in Settings is drawn from here on: the root
+            // rebuilds once the sheet is gone (ThemeManager.appliedThemeID).
+            ThemeManager.shared.applyPendingTheme()
+        }) {
             NavigationStack { SettingsView() }
         }
         .sheet(item: $moodPickerEntry) { entry in

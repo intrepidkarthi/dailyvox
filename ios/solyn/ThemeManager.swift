@@ -207,6 +207,13 @@ final class ThemeManager: ObservableObject {
 
     private let defaults = UserDefaults.standard
     private let themeKey = "selectedTheme"
+    /// The colour theme, separate from Day/Night/Sunset. A new key, so nobody's
+    /// stored appearance is reinterpreted: everyone upgrading lands on Default
+    /// with the appearance they already had.
+    private let colourThemeKey = "selectedColourTheme"
+    /// Mirrored into the App Group so the widgets can follow the theme once
+    /// they get their theme pass. Nothing reads it there yet.
+    private let sharedDefaults = UserDefaults(suiteName: "group.com.dailyvox.app")
 
     @Published var selectedTheme: AppTheme {
         didSet {
@@ -214,9 +221,33 @@ final class ThemeManager: ObservableObject {
         }
     }
 
+    /// What the picker shows as chosen.
+    @Published var themeID: ThemeID {
+        didSet {
+            defaults.set(themeID.rawValue, forKey: colourThemeKey)
+            sharedDefaults?.set(themeID.rawValue, forKey: colourThemeKey)
+        }
+    }
+
+    /// What the app is actually drawn in. It catches up with `themeID` when
+    /// Settings closes: `DS.Palette` is read in hundreds of places that SwiftUI
+    /// does not know depend on it, so the root view is rebuilt on this value
+    /// (`.id` in `solynApp`) — and rebuilding while the Settings sheet is up
+    /// would close it under the user's finger.
+    @Published private(set) var appliedThemeID: ThemeID
+
     private init() {
         let saved = defaults.string(forKey: themeKey) ?? AppTheme.sunset.rawValue
         self.selectedTheme = AppTheme.decode(saved)
+        let colour = ThemeID(rawValue: defaults.string(forKey: colourThemeKey) ?? "") ?? .standard
+        self.themeID = colour
+        self.appliedThemeID = colour
+    }
+
+    /// Called as Settings goes away.
+    func applyPendingTheme() {
+        guard appliedThemeID != themeID else { return }
+        appliedThemeID = themeID
     }
 
     /// Every screen asks this rather than reading the case, so Sunset works
@@ -274,6 +305,17 @@ struct WarmBackground: View {
         ZStack {
             themeManager.backgroundColor
 
+            // High contrast is flat by definition: no tinted wash under text.
+            if ThemeManager.shared.appliedThemeID != .highContrast {
+                blooms
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private var blooms: some View {
+        Group {
             // One warm bloom, placed where the light would come from. Night gets
             // gold at low alpha (the sky glowing), day gets a paper warmth.
             RadialGradient(
