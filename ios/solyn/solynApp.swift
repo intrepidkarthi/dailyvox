@@ -69,7 +69,8 @@ struct DailyVoxApp: App {
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
             // A new colour theme rebuilds the tree once, so every view that
             // reads `DS.Palette` picks it up (see ThemeManager.appliedThemeID).
-            .id(themeManager.appliedThemeID)
+            .id(themeManager.rebuildKey)
+            .background(SystemAppearanceReader())
             // Settings hangs here, OUTSIDE the rebuilt tree, so picking a theme
             // re-themes the app behind the sheet without closing it.
             .sheet(isPresented: $settingsPresenter.isPresented, onDismiss: {

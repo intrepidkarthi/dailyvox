@@ -90,9 +90,10 @@ struct AppearanceView: View {
     private var c: ResolvedPalette { ResolvedPalette(palette, isNight: isNight) }
 
     var body: some View {
+        ScrollViewReader { page in
         ScrollView {
             VStack(alignment: .leading, spacing: DS.Space.xl) {
-                MiniTodayPreview(palette: palette, isNight: isNight)
+                MiniTodayPreview(palette: palette, isNight: isNight, decor: themeManager.themeID.decor)
                     .frame(maxWidth: .infinity)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Preview of Today in the \(themeManager.themeID.displayName) theme")
@@ -101,9 +102,18 @@ struct AppearanceView: View {
 
                 ForEach(ThemeGroup.allCases) { group in
                     themeRow(group)
+                        .id(group)
                 }
             }
             .padding(.vertical, DS.Space.lg)
+        }
+        // Opens where the chosen theme is: a Seasons or Festivals choice is
+        // below the fold otherwise.
+        .onAppear {
+            let group = themeManager.themeID.group
+            guard group != .bold else { return }
+            DispatchQueue.main.async { page.scrollTo(group, anchor: .bottom) }
+        }
         }
         .background(c.ground.ignoresSafeArea())
         .navigationTitle("Appearance")
@@ -203,33 +213,11 @@ struct ThemeCard: View {
     let action: () -> Void
 
     var body: some View {
-        let p = theme.palette
         Button(action: action) {
             VStack(spacing: 6) {
                 ZStack(alignment: .topTrailing) {
-                    // The theme's own paper, a header band in its sky colour,
-                    // a card, and its action and reward colours.
-                    VStack(spacing: 0) {
-                        Color(hex: p.navy).frame(height: 14)
-                        ZStack {
-                            Color(hex: p.ivory)
-                            VStack(spacing: 6) {
-                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .fill(Color(hex: p.ivory2))
-                                    .frame(height: 14)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                            .stroke(Color(hex: p.ink).opacity(0.10), lineWidth: 1))
-                                HStack(spacing: 6) {
-                                    Circle().fill(Color(hex: p.sage)).frame(width: 18, height: 18)
-                                    Circle().fill(Color(hex: p.gold)).frame(width: 9, height: 9)
-                                }
-                            }
-                            .padding(.horizontal, 10)
-                        }
-                    }
+                    ThemeCardArt(theme: theme)
                     .frame(width: 84, height: 72)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .stroke(isSelected ? labelColor : labelColor.opacity(0.14),
@@ -262,6 +250,59 @@ struct ThemeCard: View {
     }
 }
 
+// MARK: - Card art
+
+/// A theme in miniature, with its signature: the band and motif for seasons
+/// and festivals, the small mark for calm themes, the die-cut edge for
+/// Sticker, black and white for High contrast.
+struct ThemeCardArt: View {
+    let theme: ThemeID
+
+    var body: some View {
+        let p = theme.palette
+        let d = theme.decor
+        ZStack(alignment: .top) {
+            Color(hex: p.ivory)
+            VStack(spacing: 0) {
+                ZStack {
+                    if let band = d.band { Color(hex: band) }
+                    if d.hasBand {
+                        AmbientLayer(ambient: d.ambient,
+                                     colors: d.motifColors.map { Color(hex: $0) },
+                                     density: 9, still: true)
+                    }
+                    HeaderMotifLayer(decor: d, scale: 0.7)
+                }
+                .frame(height: 24)
+                .clipped()
+                VStack(spacing: 6) {
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .fill(Color(hex: p.ivory2))
+                        .frame(height: 13)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .stroke(Color(hex: p.ink).opacity(d.card == .soft ? 0.10 : 1),
+                                        lineWidth: d.card == .soft ? 1 : 1.5))
+                        .background(
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(Color(hex: p.ink).opacity(d.card == .sticker ? 0.9 : 0))
+                                .offset(x: 1.5, y: 2))
+                    HStack(spacing: 6) {
+                        Circle().fill(Color(hex: p.sage)).frame(width: 17, height: 17)
+                            .overlay(Circle().stroke(Color(hex: p.ink), lineWidth: d.card == .sticker ? 1.5 : 0))
+                        Circle().fill(Color(hex: d.card == .sticker ? 0xF2C14E : p.gold)).frame(width: 9, height: 9)
+                    }
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 6)
+                Spacer(minLength: 0)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityHidden(true)
+    }
+}
+
 // MARK: - Mini Today
 
 /// A small, faithful sketch of the Today screen in a given palette: header,
@@ -269,18 +310,44 @@ struct ThemeCard: View {
 struct MiniTodayPreview: View {
     let palette: ThemePalette
     let isNight: Bool
+    var decor: ThemeDecor = ThemeDecor()
 
     var body: some View {
         let c = ResolvedPalette(palette, isNight: isNight)
+        let banded = decor.hasBand && !isNight
+        let headInk = banded ? Color(hex: decor.bandInk) : c.ink
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Good morning").font(.dv(size: 11, weight: .bold, design: .rounded)).foregroundColor(c.action)
-                    Text("Friday").font(.dv(size: 9)).foregroundColor(c.inkSoft)
+                    Text("Good morning").font(.dv(size: 11, weight: .bold, design: .rounded))
+                        .foregroundColor(banded ? headInk : c.action)
+                    Text("Friday").font(.dv(size: 9))
+                        .foregroundColor(banded ? Color(hex: decor.bandInkSoft) : c.inkSoft)
                 }
                 Spacer()
-                Text("33-day streak").font(.dv(size: 9, weight: .bold)).foregroundColor(c.ink)
+                HStack(spacing: 3) {
+                    if !isNight && decor.streak != .none {
+                        StreakMark(mark: decor.streak, colors: decor.motifColors.map { Color(hex: $0) })
+                            .scaleEffect(0.55).frame(width: 15, height: 15)
+                    }
+                    Text("33-day streak").font(.dv(size: 9, weight: .bold)).foregroundColor(headInk)
+                }
             }
+            .padding(.horizontal, 12)
+            .padding(.top, 12)
+            .padding(.bottom, banded ? 10 : 0)
+            .background(alignment: .top) {
+                if !isNight {
+                    ZStack {
+                        if let band = decor.band { Color(hex: band) }
+                        HeaderMotifLayer(decor: decor, scale: 0.6)
+                    }
+                    .clipped()
+                }
+            }
+            .padding(.horizontal, -12)
+            .padding(.top, -12)
+
             VStack(alignment: .leading, spacing: 3) {
                 Text("TODAY · 8:54 AM").font(.dv(size: 7, design: .monospaced)).foregroundColor(c.inkSoft)
                 Text("Sarah called on the drive home and I said it out loud.")
@@ -289,6 +356,10 @@ struct MiniTodayPreview: View {
             .padding(8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 9, style: .continuous).fill(c.card))
+            .overlay(RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .stroke(c.ink, lineWidth: decor.card == .soft ? 0 : 1.5))
+            .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .fill(c.ink.opacity(decor.card == .sticker ? 0.9 : 0)).offset(x: 2, y: 2.5))
 
             HStack(spacing: 5) {
                 Circle().fill(DS.Brand.forest).frame(width: 7, height: 7)

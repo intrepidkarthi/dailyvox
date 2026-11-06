@@ -69,7 +69,7 @@ enum AppTheme: String, CaseIterable, Identifiable {
     /// the evening arrives, not on next launch.
     var isNight: Bool {
         switch self {
-        case .auto: return UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        case .auto: return ThemeManager.shared.systemIsDark
         case .day: return false
         case .night: return true
         case .sunset: return SolarClock.isAfterSunset()
@@ -262,6 +262,18 @@ final class ThemeManager: ObservableObject {
     /// (`.id` in `solynApp`) — and rebuilding while the Settings sheet is up
     /// would close it under the user's finger.
     @Published private(set) var appliedThemeID: ThemeID
+
+    /// The phone's own light/dark setting, for Auto. Kept current by
+    /// `SystemAppearanceReader` at the app root, so flipping the system switch
+    /// with the app open re-themes it.
+    @Published var systemIsDark: Bool = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+
+    /// What the root view is rebuilt on. High contrast's night set is a
+    /// different palette rather than the sky colours, so for it a change of
+    /// light/dark is a change of palette too.
+    var rebuildKey: String {
+        appliedThemeID == .highContrast ? "\(appliedThemeID.rawValue)-\(isNight)" : appliedThemeID.rawValue
+    }
 
     private init() {
         let saved = defaults.string(forKey: themeKey) ?? AppTheme.sunset.rawValue
