@@ -601,12 +601,21 @@ private fun hourLabel(h: Int): String = when {
 
 /** Brand green track, cream thumb — not M3's baseline purple-tinted defaults. */
 @Composable
-private fun dvSwitchColors() = androidx.compose.material3.SwitchDefaults.colors(
-    checkedTrackColor = MaterialTheme.colorScheme.primary,
-    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-    uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-)
+private fun dvSwitchColors(): androidx.compose.material3.SwitchColors {
+    // OFF is neutral grey in every theme: a tinted "off" (pink in Lotus, blue
+    // in Holi) read as half-on. ON is the theme's actor.
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val offTrack = if (night) androidx.compose.ui.graphics.Color(0xFF3A3F47) else androidx.compose.ui.graphics.Color(0xFFE3E3E3)
+    val offThumb = if (night) androidx.compose.ui.graphics.Color(0xFF9EA3AB) else androidx.compose.ui.graphics.Color(0xFF8A8A8A)
+    return androidx.compose.material3.SwitchDefaults.colors(
+        checkedTrackColor = MaterialTheme.colorScheme.primary,
+        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+        checkedBorderColor = MaterialTheme.colorScheme.primary,
+        uncheckedTrackColor = offTrack,
+        uncheckedThumbColor = offThumb,
+        uncheckedBorderColor = offThumb,
+    )
+}
 
 /** Settings' one line about looks: swatch, theme name, mode. Opens Appearance. */
 @Composable

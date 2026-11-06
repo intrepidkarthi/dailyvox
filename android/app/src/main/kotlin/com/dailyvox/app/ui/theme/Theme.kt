@@ -54,7 +54,7 @@ fun DailyVoxTheme(
     content: @Composable () -> Unit,
 ) {
     val palette = paletteFor(themeId, darkTheme)
-    CompositionLocalProvider(LocalDvPalette provides palette) {
+    CompositionLocalProvider(LocalDvPalette provides palette, LocalThemeId provides themeId) {
         MaterialTheme(
             colorScheme = palette.toScheme(),
             typography = DailyVoxTypography,

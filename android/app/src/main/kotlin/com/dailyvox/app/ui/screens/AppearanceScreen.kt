@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -37,6 +39,7 @@ import com.dailyvox.app.ui.theme.Nunito
 import com.dailyvox.app.ui.theme.ThemeGroup
 import com.dailyvox.app.ui.theme.ThemeId
 import com.dailyvox.app.ui.theme.paletteFor
+import com.dailyvox.app.ui.theme.drawTile
 
 /** Sunset is the automatic mode: night from the real sunset, day from sunrise. */
 fun modeLabel(mode: ThemeChoice) = when (mode) {
@@ -78,7 +81,18 @@ fun AppearanceScreen(
 ) {
     val scheme = MaterialTheme.colorScheme
     val pal = LocalDvPalette.current
-    Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    val scroll = rememberScrollState()
+    // Where each group's heading sits, so the screen can open on the chosen one.
+    val groupTop = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateMapOf<ThemeGroup, Int>() }
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    androidx.compose.runtime.LaunchedEffect(groupTop[themeId.group]) {
+        val y = groupTop[themeId.group] ?: return@LaunchedEffect
+        // Bold sits under the preview already; the rest scroll up just enough
+        if (themeId.group != ThemeGroup.BOLD && scroll.value == 0) {
+            scroll.scrollTo((y - with(density) { 220.dp.roundToPx() }).coerceAtLeast(0))
+        }
+    }
+    Column(modifier.fillMaxSize().verticalScroll(scroll)) {
         Spacer(Modifier.height(14.dp))
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 4.dp),
@@ -111,7 +125,8 @@ fun AppearanceScreen(
         ThemeGroup.entries.forEach { group ->
             Spacer(Modifier.height(14.dp))
             Text(group.label, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = scheme.onBackground,
-                 modifier = Modifier.padding(horizontal = 24.dp).semantics { heading() })
+                 modifier = Modifier.padding(horizontal = 24.dp).semantics { heading() }
+                     .onGloballyPositioned { groupTop[group] = it.positionInParent().y.toInt() })
             Spacer(Modifier.height(8.dp))
             val ids = ThemeId.entries.filter { it.group == group }
             // Open with the chosen tile in view, not off the edge of its row.
@@ -197,25 +212,18 @@ private fun ThemeTile(id: ThemeId, selected: Boolean, onClick: () -> Unit) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(54.dp)
+                .height(58.dp)
                 .clip(shape)
-                .background(p.ground)
                 .border(
                     if (selected) 2.5.dp else 1.dp,
                     if (selected) scheme.primary else scheme.onSurface.copy(alpha = 0.14f),
                     shape,
                 ),
         ) {
-            // the header band themes carry, or the page's own top
-            Box(Modifier.fillMaxWidth().height(14.dp).background(p.band ?: p.ground))
-            Box(
-                Modifier.align(Alignment.BottomStart).padding(start = 10.dp, bottom = 10.dp)
-                    .size(24.dp).clip(CircleShape).background(p.action)
-            )
-            Box(
-                Modifier.align(Alignment.BottomEnd).padding(end = 10.dp, bottom = 15.dp)
-                    .width(30.dp).height(7.dp).clip(RoundedCornerShape(4.dp)).background(p.reward)
-            )
+            // the theme's signature, drawn small: band, weather, lamps, crescent
+            androidx.compose.foundation.Canvas(Modifier.matchParentSize()) {
+                drawTile(id, p, density)
+            }
             if (selected) Box(
                 Modifier.align(Alignment.TopEnd).padding(5.dp).size(20.dp)
                     .clip(CircleShape).background(scheme.primary),
