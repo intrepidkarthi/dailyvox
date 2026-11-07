@@ -261,7 +261,9 @@ final class ThemeManager: ObservableObject {
     /// does not know depend on it, so the root view is rebuilt on this value
     /// (`.id` in `solynApp`) — and rebuilding while the Settings sheet is up
     /// would close it under the user's finger.
-    @Published private(set) var appliedThemeID: ThemeID
+    @Published private(set) var appliedThemeID: ThemeID {
+        didSet { DVFont.nunitoWeightBoost = appliedThemeID == .sticker ? 100 : 0 }
+    }
 
     /// The phone's own light/dark setting, for Auto. Kept current by
     /// `SystemAppearanceReader` at the app root, so flipping the system switch
@@ -281,6 +283,7 @@ final class ThemeManager: ObservableObject {
         let colour = ThemeID(rawValue: defaults.string(forKey: colourThemeKey) ?? "") ?? .standard
         self.themeID = colour
         self.appliedThemeID = colour
+        DVFont.nunitoWeightBoost = colour == .sticker ? 100 : 0
     }
 
     /// Called as Settings goes away.

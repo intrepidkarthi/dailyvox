@@ -187,7 +187,10 @@ struct ThemePalette: Equatable {
             $0.ivory = 0xFFFFFF; $0.ivory2 = 0xFFFFFF
             $0.ink = 0x000000; $0.inkSoft = 0x000000; $0.inkMute = 0x1A1A1A
             $0.sage = 0x0047FF; $0.sageDeep = 0x0033B8; $0.sagePositive = 0x005A2B
-            $0.gold = 0x000000; $0.goldDay = 0x000000
+            // A dark gold: the Twin sky is night even in Light mode and reads
+            // this same value, so it has to show on white (3.6:1) and on
+            // black (5.8:1). Gold TEXT stays black.
+            $0.gold = 0xA67C00; $0.goldDay = 0x000000
             $0.navy = 0x000000; $0.navySurface = 0x1A1A1A; $0.navyText = 0xFFFFFF
             $0.goldNight = 0xFFD60A; $0.forest = 0x7DFFB0; $0.starBlue = 0xFFFFFF
             $0.terracotta = 0x000000; $0.coral = 0xD70015

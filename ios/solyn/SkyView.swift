@@ -94,6 +94,7 @@ struct SkyView: View {
             Canvas { context, size in
                 draw(context: context, size: size, t: Self.stillPhase)
             }
+            .overlay { SkyDecoration(decor: themeDecor) }
             .overlay(alignment: .topLeading) { labels(t: Self.stillPhase) }
         } else {
             // SwiftUI.TimelineView, spelled out: this app already has a
@@ -106,6 +107,7 @@ struct SkyView: View {
                 Canvas { context, size in
                     draw(context: context, size: size, t: t)
                 }
+                .overlay { SkyDecoration(decor: themeDecor) }
                 .overlay(alignment: .topLeading) { labels(t: t) }
             }
         }
@@ -375,12 +377,7 @@ struct SkyView: View {
                         near: namedNear(minDim), far: namedFar(minDim))
                     let rad = SkyEncoding.namedDegrees(rank: i, of: shown.count) * .pi / 180
 
-                    Text(person.label.uppercased())
-                        .font(.dv(size: 10, weight: .heavy, design: .rounded))
-                        // A name not said in months is quieter, the same way its
-                        // star is.
-                        .foregroundColor(theme.goldText.opacity(0.55 + 0.45 * (1 - personAge)))
-                        .fixedSize()
+                    nameLabel(person.label, age: personAge)
                         // Nudged outward along its own spoke so the text never
                         // sits on its node.
                         .position(x: anchor.x + CGFloat(Foundation.cos(rad)) * 34,
@@ -389,6 +386,32 @@ struct SkyView: View {
             }
         }
         .allowsHitTesting(false)
+    }
+
+    private var themeDecor: ThemeDecor { ThemeManager.shared.appliedThemeID.decor }
+
+    /// A name in the sky. Sticker writes it on a little white name-tag
+    /// sticker; every other theme keeps the gold lettering.
+    @ViewBuilder
+    private func nameLabel(_ label: String, age personAge: Double) -> some View {
+        if themeDecor.card == .sticker {
+            Text(label)
+                .font(.dv(size: 10, weight: .heavy, design: .rounded))
+                .foregroundColor(Color(hex: 0x1D1F24))
+                .padding(.horizontal, 6).padding(.vertical, 2.5)
+                .background(RoundedRectangle(cornerRadius: 4, style: .continuous).fill(Color.white))
+                .background(RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    .fill(Color.black.opacity(0.55)).offset(x: 1.5, y: 2))
+                .rotationEffect(.degrees(label.count % 2 == 0 ? -4 : 3))
+                .fixedSize()
+        } else {
+            Text(label.uppercased())
+                .font(.dv(size: 10, weight: .heavy, design: .rounded))
+                // A name not said in months is quieter, the same way its
+                // star is.
+                .foregroundColor(theme.goldText.opacity(0.55 + 0.45 * (1 - personAge)))
+                .fixedSize()
+        }
     }
 
     // MARK: - Helpers

@@ -248,12 +248,14 @@ struct MotifGlyph: View {
                 ctx.fill(bowL, with: .color(c(0))); ctx.fill(bowR, with: .color(c(0)))
                 ctx.fill(Path(ellipseIn: CGRect(x: w * 0.38, y: h * 0.33, width: w * 0.24, height: h * 0.24)), with: .color(c(1)))
             case .diya:
-                var bowl = Path(); bowl.move(to: CGPoint(x: w * 0.08, y: h * 0.55))
-                bowl.addQuadCurve(to: CGPoint(x: w * 0.92, y: h * 0.55), control: CGPoint(x: w / 2, y: h * 1.05)); bowl.closeSubpath()
-                var flame = Path(); flame.move(to: CGPoint(x: w / 2, y: h * 0.05))
-                flame.addQuadCurve(to: CGPoint(x: w / 2, y: h * 0.5), control: CGPoint(x: w * 0.72, y: h * 0.4))
-                flame.addQuadCurve(to: CGPoint(x: w / 2, y: h * 0.05), control: CGPoint(x: w * 0.28, y: h * 0.4))
-                ctx.fill(bowl, with: .color(c(0))); ctx.fill(flame, with: .color(c(1)))
+                // A clay bowl (rounded only underneath) and a small flame.
+                let bowlRect = CGRect(x: w * 0.08, y: h * 0.52, width: w * 0.84, height: h * 0.4)
+                let bowl = UnevenRoundedRectangle(bottomLeadingRadius: bowlRect.height,
+                                                  bottomTrailingRadius: bowlRect.height,
+                                                  style: .continuous).path(in: bowlRect)
+                let flame = Path(ellipseIn: CGRect(x: w * 0.39, y: h * 0.06, width: w * 0.22, height: h * 0.42))
+                ctx.fill(bowl, with: .color(c(0)))
+                ctx.fill(flame, with: .color(c(1)))
             case .pot:
                 ctx.fill(Path(ellipseIn: CGRect(x: w * 0.12, y: h * 0.3, width: w * 0.76, height: h * 0.64)), with: .color(c(1)))
                 ctx.fill(Path(roundedRect: CGRect(x: w * 0.26, y: h * 0.22, width: w * 0.48, height: h * 0.14), cornerRadius: 2), with: .color(c(1)))
@@ -328,8 +330,14 @@ struct HeaderMotifLayer: View {
                     MotifGlyph(kind: .sun, colors: [colors[0]]).frame(width: 30 * scale, height: 30 * scale)
                         .position(x: w * 0.47, y: h * 0.42)
                 case .rain:
-                    MotifGlyph(kind: .boat, colors: [Color.white, colors[1]]).frame(width: 18 * scale, height: 14 * scale)
-                        .position(x: w * 0.47, y: h - 10 * scale)
+                    // The rain itself is `AmbientLayer`; the boat is the
+                    // streak mark. A still, thumbnail-sized hint of rain:
+                    ForEach(0..<4, id: \.self) { i in
+                        Rectangle().fill(colors[0].opacity(0.7))
+                            .frame(width: 1.2 * scale, height: 7 * scale)
+                            .rotationEffect(.degrees(15))
+                            .position(x: w * (0.38 + 0.07 * CGFloat(i)), y: h * (i % 2 == 0 ? 0.3 : 0.55))
+                    }
                 case .petals:
                     ForEach(0..<3, id: \.self) { i in
                         MotifGlyph(kind: .petal, colors: colors).frame(width: 12 * scale, height: 12 * scale)
@@ -472,7 +480,8 @@ struct AmbientLayer: View {
             switch ambient {
             case .rain:
                 var p = Path(); p.move(to: CGPoint(x: x, y: y)); p.addLine(to: CGPoint(x: x - 2.5, y: y + 9))
-                ctx.stroke(p, with: .color(colors[0].opacity(0.6)), style: StrokeStyle(lineWidth: 1.2, lineCap: .round))
+                // Faint: it falls behind the header's words.
+                ctx.stroke(p, with: .color(colors[0].opacity(0.32)), style: StrokeStyle(lineWidth: 1.1, lineCap: .round))
             case .snow:
                 let r = 1.4 + fx * 1.4
                 ctx.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)), with: .color(colors[0].opacity(0.85)))
@@ -539,7 +548,7 @@ extension View {
     /// Sticker: an ink outline and a hard offset shadow. High contrast: a 2pt
     /// outline. Everyone else: the soft shadow the app has always had.
     @ViewBuilder
-    func themedCardEdge(cornerRadius: CGFloat = 20) -> some View {
+    func themedCardEdge(cornerRadius: CGFloat = 20, softShadow: Bool = true) -> some View {
         let decor = ThemeManager.shared.appliedThemeID.decor
         let ink = DS.Palette.ink
         switch decor.card {
@@ -551,7 +560,7 @@ extension View {
         case .outlined:
             self.overlay(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous).stroke(ink, lineWidth: 2))
         case .soft:
-            self.dsShadowSoft()
+            if softShadow { self.dsShadowSoft() } else { self }
         }
     }
 }
@@ -657,7 +666,7 @@ struct StreakMark: View {
             case .lotus: MotifGlyph(kind: .lotus, colors: colors)
             case .petal: MotifGlyph(kind: .petal, colors: colors)
             case .sun: MotifGlyph(kind: .sun, colors: [colors.first ?? .orange])
-            case .boat: MotifGlyph(kind: .boat, colors: [Color(hex: 0x3E5466), Color(hex: 0xF2B705)])
+            case .boat: MotifGlyph(kind: .boat, colors: [Color.white, Color(hex: 0xF2B705)])
             case .leaf: MotifGlyph(kind: .leaf, colors: [Color(hex: 0xC9971F), Color(hex: 0x7A3E5A)])
             case .mug: MotifGlyph(kind: .mug, colors: [Color(hex: 0x9AB7C8), Color(hex: 0xA3243F)])
             case .ribbon: MotifGlyph(kind: .ribbon, colors: [Color(hex: 0x9B1F2E), Color(hex: 0xC8A13A)])

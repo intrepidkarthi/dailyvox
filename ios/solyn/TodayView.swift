@@ -472,6 +472,15 @@ struct TodayView: View {
             headerSection
                 .padding(.horizontal)
                 .padding(.top)
+                // A theme's header band (Monsoon's slate, Diwali's indigo…)
+                // sits under the greeting, below the status bar so the clock
+                // stays readable; calm themes put their small mark here
+                // instead, under the text rather than through it.
+                .padding(.bottom, headerDecorated ? 14 : 0)
+                .background(alignment: .top) {
+                    TodayHeaderDecoration()
+                }
+                .padding(.bottom, headerBanded ? 8 : 0)
 
             // Today's card sits directly under the header, where a device
             // actually puts it. Centring it in the band — which is what this
@@ -592,8 +601,15 @@ struct TodayView: View {
     /// their own row below — three stacked bands before the screen said
     /// anything. The date is demoted to a subtitle because you know what day it
     /// is; the question is the only thing on this screen that needs answering.
+    /// The colour theme's decoration, and whether its header band is showing.
+    private var decor: ThemeDecor { theme.appliedThemeID.decor }
+    private var headerBanded: Bool { decor.hasBand && !theme.isNight }
+    private var headerDecorated: Bool { !theme.isNight && (decor.hasBand || decor.motif != .none) }
+
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        // On a theme's header band the text takes the band's own inks.
+        let dv = theme.palette
+        return VStack(alignment: .leading, spacing: 22) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
                     // Green by day, gold by night — the canvas colours the
@@ -601,23 +617,27 @@ struct TodayView: View {
                     // word on the screen before you speak.
                     Text(greeting)
                         .font(.dv(size: 15, weight: .bold, design: .rounded))
-                        .foregroundColor(theme.isNight ? theme.goldText : theme.accentColor)
+                        .foregroundColor(decor.headerInk(dv) ?? (theme.isNight ? theme.goldText : theme.accentColor))
                     Text(formattedToday)
                         .font(.dv(size: 12.5))
-                        .foregroundColor(theme.secondaryTextColor)
+                        .foregroundColor(decor.headerInkSoft(dv) ?? theme.secondaryTextColor)
                 }
                 Spacer()
                 let streak = streakStatus
+                if !theme.isNight && decor.streak != .none {
+                    StreakMark(mark: decor.streak, colors: decor.motifColors.map { Color(hex: $0) })
+                        .padding(.top, 2)
+                }
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(streakLine(streak))
                         .font(.dv(size: 12.5, weight: .bold, design: .rounded))
-                        .foregroundColor(theme.textColor)
+                        .foregroundColor(decor.headerInk(dv) ?? theme.textColor)
                         .multilineTextAlignment(.trailing)
                     // GOLD REWARDS: the year count is a made thing, so it is
                     // the one figure up here allowed to be gold.
                     Text("\u{2726} \(daysRecordedThisYear) this year")
                         .font(.dv(size: 11, weight: .semibold, design: .rounded))
-                        .foregroundColor(theme.goldText)
+                        .foregroundColor(decor.headerGold(dv) ?? theme.goldText)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityValue(streak.kind == .returning
@@ -627,7 +647,7 @@ struct TodayView: View {
                 Button { SettingsPresenter.shared.open() } label: {
                     Image(systemName: "ellipsis")
                         .font(.dv(size: 16, weight: .semibold))
-                        .foregroundColor(theme.secondaryTextColor)
+                        .foregroundColor(decor.headerInkSoft(dv) ?? theme.secondaryTextColor)
                         // 34pt against a 44pt floor, on the app's only route to
                         // Settings.
                         .frame(width: 44, height: 44)
@@ -958,7 +978,9 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                    .dsShadowSoft()
+                    // Soft shadow, or Sticker's die-cut edge, or High
+                    // contrast's outline.
+                    .themedCardEdge(cornerRadius: 20)
                 }
                 .buttonStyle(.plain)
 
@@ -1800,6 +1822,7 @@ struct TodayReflectionCard: View {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .strokeBorder(DS.Palette.gold.opacity(0.28), lineWidth: 1)
         )
+        .themedCardEdge(cornerRadius: 20, softShadow: false)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityText)
     }
