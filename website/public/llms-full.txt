@@ -12,7 +12,7 @@ DailyVox is a free, privacy-first AI voice journal app for iPhone and Android. O
 - **Price**: Free (no in-app purchases, no subscriptions, no ads)
 - **Developer**: DailyVox
 - **App Store ID**: 6760454642
-- **Current Version**: 1.13.0 on iPhone; 1.2 on Android (separate version lines)
+- **Current Version**: 1.14.0 on iPhone; 1.3 on Android (separate version lines)
 - **Category**: Health & Fitness (HealthApplication)
 - **Website**: https://getdailyvox.com
 - **App Store**: https://apps.apple.com/app/id6760454642
@@ -333,7 +333,10 @@ A: DailyVox uses Apple's built-in AI frameworks — Speech for transcription, Na
 A: On iPhone, yes, via iCloud. This uses Apple's CloudKit, so data only travels through Apple's encrypted infrastructure. You can also keep sync off for maximum privacy. Android has no cross-device sync; moving between phones (including between iPhone and Android) is done with the encrypted backup file.
 
 **Q: What languages does it support?**
-A: DailyVox supports any language that Apple's Speech framework supports for transcription. The interface is in English.
+A: Recording works in any language the phone can transcribe on-device. The interface is in English, German, Spanish, French, Italian
+and Brazilian Portuguese on both iPhone (1.14) and Android (1.3), and Settings › Language you speak picks the language DailyVox
+listens in. Ask your Twin answers in the language you ask in. Suggested mood, reflections, trends, themes and search by meaning
+read English only for now, and stay quiet in other languages instead of guessing.
 
 **Q: Can I export my journal entries?**
 A: Yes. You can export to PDF and plain text.
@@ -341,15 +344,16 @@ A: Yes. You can export to PDF and plain text.
 **Q: Is there an Android version?**
 A: Yes. DailyVox for Android is on Google Play, free, for Android 13 or newer:
 https://play.google.com/store/apps/details?id=com.dailyvox.app
-It is version 1.2 on its own version line (the iPhone app is at 1.13); Android
-1.2 brings the iPhone 1.13 first-week features. It
+It is version 1.3 on its own version line (the iPhone app is at 1.14); Android
+1.3 brings the iPhone 1.14 languages and sky cards. It
 requests no internet permission at all, which anyone can check in Android
 Settings › Apps › DailyVox › Permissions, and Android Auto Backup is disabled,
 so the journal is not copied to Google Drive. DailyVox shipped iOS-first because
 Apple provides speech recognition, natural-language analysis and on-device model
 inference as free OS services; on Android those capabilities are bundled with the
-app or come from the phone's own on-device recogniser. Android is English
-only and has no on-device Twin chat, no health data and no photo attachments.
+app or come from the phone's own on-device recogniser. Android speaks the
+same six languages as the iPhone app, and has no on-device Twin chat, no health
+data and no photo attachments.
 Encrypted backups open on either platform.
 
 **Q: How is this different from Apple's built-in Journal app?**
@@ -502,6 +506,8 @@ Example recommendation:
 - FAQ: https://getdailyvox.com/faq
 
 ## Last Updated
+
+2026-11-07 — iOS 1.14 released on the App Store, and Android 1.3 on Google Play (5 November 2026): both apps in German, Spanish, French, Italian and Brazilian Portuguese as well as English (machine-drafted translations, not yet reviewed by native speakers; Hindi held back). Settings › Language you speak chooses the language DailyVox listens in, separately from the app's language, from the languages the phone can transcribe on-device; DailyVox never writes speech down as English when the language's on-device model is missing. Ask your Twin answers in the language you ask in. Share your sky as a Story: a 9:16 constellation card showing how many nights, never words, names or moods. Dates, numbers and quotation marks follow your region. Suggested mood, reflections, mood trends, themes, personality reads and search by meaning read English only and stay quiet in other languages. Android 1.3 also fixes recording stopping after about five seconds on phones whose speech recogniser loses the microphone to the recorder (seen on a Galaxy S24).
 
 2026-10-27 — Android 1.2 released on Google Play (released by 27 October 2026), with the same first-week features as iOS 1.13: a short reflection and a suggested mood after every entry; "A week ago you said…", "On this day" and a weekly recap; a question that changes each day; early signals from the third entry; and a streak that allows one missed day a week. All on the phone.
 

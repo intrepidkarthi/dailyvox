@@ -91,6 +91,27 @@ https://getdailyvox.com/support
 ## Privacy Policy URL
 https://getdailyvox.com/privacy
 
+## What's New (Version 1.14.0)
+
+DailyVox now speaks German, Spanish, French, Italian and Portuguese (Brazil).
+
+NEW
+- The whole app in German, Spanish, French, Italian and Brazilian Portuguese, as well as English. It follows the language you set for DailyVox in iOS Settings.
+- Settings > Language you speak: choose the language DailyVox listens in, separately from the app's language. The list shows only languages this iPhone can transcribe on the device.
+- Ask your Twin answers in the language you ask in. Quoted entries stay exactly as you said them.
+- Share your sky as a Story: a card of your real constellation, sized for Instagram Stories and WhatsApp Status. It shows how many nights, never your words, names or moods. Offered once each at nights 7, 21 and 42; Settings > Sharing turns the offer off.
+- Dates, numbers and quotation marks follow your region.
+
+HONEST ABOUT LANGUAGES
+Suggested moods, reflections, mood trends, themes, personality reads and search by meaning read English only for now. In other languages they stay quiet instead of guessing, and search finds the words you said. You can always set a mood yourself.
+
+FIXED
+- Speech in another language is never written down as English when its on-device model is missing. The recording is kept, and the app tells you how to install the model.
+- Search says "by meaning" only when it actually searched by meaning.
+- The daily question no longer asks about people from entries it can't read.
+- Names in Hindi, Tamil and other scripts with vowel signs are no longer matched inside longer names.
+- Early signals count words properly in Chinese, Japanese and Thai.
+
 ## What's New (Version 1.13.0)
 
 Now it talks back from the very first day.

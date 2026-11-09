@@ -98,6 +98,16 @@ This roadmap outlines the planned evolution of DailyVox. Contributions are welco
 - **Streak grace day**: one missed day in seven no longer breaks a run, and coming back after a gap says "Welcome back" instead of zero
 - **Reminder fixes**: turning reminders off on iOS now also clears already-scheduled and delivered ones; after a week away both platforms send one note on day 10 and stop (iOS used to go silent, Android repeated forever); Android's "already spoke today" check uses the local day, its reminder time holds across daylight-saving changes, and the reminder follows a time-zone change. Quoting a line from the past in a reminder is opt-in and off by default, because reminders show on the lock screen
 
+### v1.14.0 and Android v1.3 — Your language, and your sky *(iOS: shipped 7 November 2026, build 49 · Android: versionCode 9, live on Google Play 5 November 2026)*
+- **Six interface languages on both platforms**: English, German, Spanish, French, Italian and Brazilian Portuguese. The five translations are machine drafts shipped before a native review; Hindi is held back until on-device Hindi transcription passes on real phones
+- **Language you speak**: chosen in Settings apart from the app's language, from the languages the phone can transcribe on-device. A missing on-device model keeps the recording and says how to install it; speech is never written down as English
+- **Each entry records its language**, so search and Ask read each entry in its own language
+- **Ask answers in the language you ask in**: framing, dates and "nothing close enough" in the question's language, quotes left as said; retrieval knows the question's language, so its small words are not search terms
+- **Features speak only in languages they understand**: suggested mood, reflections, mood trends, themes, personality reads and search by meaning are English only and stay quiet elsewhere
+- **Share your sky as a Story**: a 9:16 constellation card (count of nights, no words, names or moods), offered once each at nights 7, 21 and 42
+- **Android recording fix**: when the phone's recogniser loses the microphone to the recorder and gives up (seen on a Galaxy S24), recording carries on and the saved audio is transcribed after stopping
+- iOS 1.13.1 and Android 1.2.1 never shipped on their own; their fixes reach the stores in this release
+
 ## Planned
 
 > **⚠️ Version numbers & status (corrected 2026-07-02; v1.4.1 shipped 2026-07-04).** App Store **1.4.0 shipped the *Warm Look*, not Body Twin.** Body Twin and its review-and-discard queue are **not built yet** — the Phase-1 engine code sits in the private package, unwired (the June 2026 App Review rejection came from *leftover* HealthKit Info.plist keys, since removed). Because the "1.4" build number is already spent, the feature stages below are renumbered up one minor: **Body Twin → v1.5, Ambient → v1.5.5, Memory & Fidelity → v1.6, Foundation Models → v1.7** (v2.0+ unchanged). *Since then: v1.8 became Research Pilot & retrieval-fix, v1.9 became Voice & Access, and Multi-Language moved again to v1.10.* The stage labels are the Twin's growth stages; App Store build numbers increment independently.
@@ -123,14 +133,17 @@ milestones; this table says which platform has reached them.
 
 | | iOS | Android |
 |:--|:--|:--|
-| **Current** | v1.13.0 *(shipped 2026-10-17)* | v1.2 *(October 2026, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
+| **Current** | v1.14.0 *(shipped 2026-11-07)* | v1.3 *(2026-11-05, [Google Play](https://play.google.com/store/apps/details?id=com.dailyvox.app))* |
 | Voice journaling, on-device transcription | ✅ *(unconditional since v1.11)* | ✅ *(unconditional; minSdk 33)* |
 | Live transcription while speaking | ✅ *(screen + Dynamic Island)* | ✅ *(screen only)* |
 | Digital Twin personality models | ✅ | ✅ |
 | Entity graph | ✅ | ✅ *(heuristic NER, measured)* |
 | Semantic memory / search by meaning | ✅ `NLEmbedding` | ranked lexical only — no embedder yet |
 | Encrypted export / `.twin` | ✅ | ✅ **byte-compatible both directions** |
-| Multi-language interface | ✅ 5 languages | English only — **no translations exist** |
+| Multi-language interface | ✅ 6 languages *(Portuguese added in v1.14; machine drafts)* | ✅ 6 languages *(v1.3; machine drafts)* |
+| Language you speak, apart from the app's | ✅ *(v1.14)* | ✅ *(v1.3)* |
+| Ask answers in the question's language | ✅ *(v1.14)* | ✅ *(v1.3)* |
+| Share your sky as a Story | ✅ *(v1.14)* | ✅ *(v1.3)* |
 | Journaling goals and weekly targets | ✅ | ✅ *(2026-08-25)* |
 | Photo attachments | existing ones shown; adding new ones off since v1.11 | no |
 | PDF / JSON / Markdown / CSV export | ✅ | ✅ |
@@ -184,10 +197,12 @@ is congratulated on different nights. Unresolved on purpose: picking one means
 either dropping 42, which is the brand, or adding six milestones to iOS that its
 users have already passed unremarked.
 
-**Android has no translations at all.** iOS ships five languages; Android ships
-one `values/strings.xml`. This is a larger gap than the table's single row
-suggests, and it is not a build-system problem — it is 400-odd strings that
-nobody has translated.
+**Both platforms now ship the same six languages** (English, German, Spanish,
+French, Italian, Brazilian Portuguese) since iOS 1.14 and Android 1.3. The five
+translations are machine drafts not yet reviewed by native speakers, and the
+features that read meaning (suggested mood, reflections, trends, themes, search
+by meaning) are still English only and stay quiet in other languages. Hindi is
+held back until its on-device transcription is confirmed on real phones.
 
 **Why the version numbers differ.** Android v1.0 is not a regression from iOS
 v1.10; it is a first release. Sharing one number across platforms would force
