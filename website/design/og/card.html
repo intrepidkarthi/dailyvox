@@ -1,169 +1,24 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<title>DailyVox social card</title>
-<!-- Source for /og-image.png (1200x630). Rebuild: website/design/og/render.sh -->
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Figtree:wght@500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
-<style>
-:root{--ground:#F4F5F1;--sheet:#fff;--text:#1D1F24;--text-2:#4A4E57;--forest:#1F5A43;--forest-ink:#174634;--tomato:#E2553A;--sun:#F2C14E;--cobalt:#3358C9;
-  --hard:3px 4px 0 rgba(29,31,36,.2);--f-display:'Bricolage Grotesque',system-ui,sans-serif;--f-body:'Figtree',system-ui,sans-serif;--f-hand:'Caveat',cursive}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:1200px;height:630px;overflow:hidden;background:var(--ground);color:var(--text);font-family:var(--f-body)}
-.card{position:relative;width:1200px;height:630px;padding:50px 0 0 68px}
-.brand{display:flex;align-items:center;gap:12px;font:800 30px/1 var(--f-display);letter-spacing:-.01em}
-.brand img{width:46px;height:46px;border-radius:11px}
-h1{margin-top:40px;font:800 84px/.93 var(--f-display);letter-spacing:-.03em;font-variation-settings:"opsz" 96}
-h1 .l2{display:block;color:var(--forest)}
-.sub{margin-top:26px;font:600 24px/1.35 var(--f-body);color:var(--text-2);max-width:21em}
-.sub b{color:var(--text);font-weight:700}
-.foot{position:absolute;left:68px;bottom:48px;display:flex;align-items:center;gap:14px}
-.pill{font:700 19px/1 var(--f-body);padding:12px 16px;border:2px solid var(--text);border-radius:12px;background:var(--sheet);box-shadow:var(--hard)}
-.pill.solid{background:var(--forest);border-color:var(--forest-ink);color:#fff}
-.url{font:700 26px/1 var(--f-hand);color:var(--text-2);margin-left:6px}
-.desk{position:absolute;left:620px;top:0;width:580px;height:630px}
-.phone{position:absolute;left:318px;top:66px;width:226px;background:#14161A;border-radius:40px;padding:8px;box-shadow:0 0 0 2px #3A3D44 inset;rotate:3deg}
-.phone img{display:block;width:100%;border-radius:35px}
-.stickers{list-style:none}
-.stk{position:absolute;z-index:2;transform:rotate(var(--rot,0deg));border-radius:16px}
-.stk-in{display:block;padding:12px 16px 13px;border:4px solid #fff;border-radius:16px;box-shadow:var(--hard);max-width:220px}
-.stk b{display:block;font:800 23px/1.04 var(--f-display);letter-spacing:-.015em}
-.stk i{display:block;margin-top:5px;font:700 19px/1.05 var(--f-hand);font-style:normal}
-.c-ink{background:var(--text);color:var(--sun)} .c-ink i{color:#fff}
-.c-tomato{background:var(--tomato);color:var(--text)}
-.c-cobalt{background:var(--cobalt);color:#fff}
-.c-sun{background:var(--sun);color:var(--text)}
-.stk.round .stk-in{width:132px;height:132px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px}
-.stk.round b{font-size:40px;line-height:.9} .stk.round i{font-size:21px;margin-top:2px}
-.dial{display:none}
-.stk.art{border-radius:24px}
-.stk-in.art{padding:0;border:0;background:none;box-shadow:none;max-width:none}
-.stk-in.art svg.fig{display:block;width:100%;height:auto;overflow:visible}
-.cap{display:block;font:700 22px/1 var(--f-hand);color:var(--text-2);text-align:center;margin-top:2px}
-.s2{left:250px;top:22px;--rot:6deg;z-index:3}
-.s4{left:352px;top:440px;--rot:-5deg;z-index:3}
-.lang{left:120px;top:236px;--rot:-5deg;z-index:3}
-.lang .stk-in{max-width:200px}
-.c1{left:44px;top:34px;--rot:-6deg;width:190px}
-.c2{left:150px;top:340px;--rot:4deg;width:170px;z-index:1}
-.c2 .cap{rotate:-4deg}
-.s6{left:16px;top:440px;--rot:-9deg}
-</style></head>
-<body><div class="card">
-  <div class="brand"><img src="../../public/apple-touch-icon.png" alt="">DailyVox</div>
-  <h1>Say it out loud.<span class="l2">Nobody else<br>hears&nbsp;it.</span></h1>
-  <p class="sub">A free voice journal. <b>Your phone writes it down and keeps every word to itself.</b></p>
-  <div class="foot"><span class="pill solid">iPhone</span><span class="pill">Android</span><span class="url">getdailyvox.com</span></div>
-  <div class="desk">
-    <div class="phone"><img src="../../public/app/app-113-today.webp" alt=""></div>
-    <ul class="stickers">
-<li class="stk art c1" tabindex="0" style="--i:4" data-label="Sticker: a man in his parked car, recording an entry"><span class="stk-in art">
-          <svg class="fig driver" viewBox="0 0 270 240" aria-hidden="true" focusable="false">
-  <defs>
-    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
-    <filter id="cutD" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
-      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
-      <feGaussianBlur in="g" stdDeviation="3"/>
-      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
-      <feOffset in="d" dx="4" dy="5" result="o"/>
-      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
-      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
-      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <g class="dr-car"><g filter="url(#cutD)" stroke-linecap="round" stroke-linejoin="round">
-
-    <defs><clipPath id="winD"><path d="M52 118 L84 54 Q87 48 94 48 L216 48 Q226 48 226 58 L226 118 Z"/></clipPath></defs>
-    <!-- wheels -->
-    <circle cx="66" cy="204" r="25" fill="#1D1F24"/><circle cx="66" cy="204" r="9" fill="#F4F5F1"/>
-    <circle cx="210" cy="204" r="25" fill="#1D1F24"/><circle cx="210" cy="204" r="9" fill="#F4F5F1"/>
-    <!-- body + roof frame -->
-    <path d="M14 122 L256 122 L256 194 Q256 204 246 204 L24 204 Q14 204 14 194 Z" fill="#3358C9"/>
-    <path d="M30 124 L72 42 Q76 34 86 34 L226 34 Q240 34 240 48 L240 124 Z" fill="#3358C9"/>
-    <path d="M52 118 L84 54 Q87 48 94 48 L216 48 Q226 48 226 58 L226 118 Z" fill="#C9D5F2"/>
-    <g clip-path="url(#winD)">
-      <!-- steering wheel, behind -->
-      <path d="M60 120 Q66 92 94 96" fill="none" stroke="#1D1F24" stroke-width="7"/>
-      <!-- him: shirt, seatbelt -->
-      <path d="M106 124 Q108 102 132 100 L178 100 Q200 104 206 124 Z" fill="#1F5A43"/>
-      <path d="M182 102 L150 124" stroke="#F2C14E" stroke-width="7"/>
-      <g class="dr-head"><path d="M150 88 L152 102" stroke="#F1C7A5" stroke-width="15"/>
-      <ellipse cx="154" cy="78" rx="19" ry="22" fill="#F1C7A5"/>
-      <!-- hair + beard -->
-      <path d="M136 72 Q134 52 156 52 Q176 52 174 74 Q170 64 162 62 Q150 66 144 62 Q138 66 136 72 Z" fill="#4A3326"/>
-      <path d="M170 74 Q174 96 156 100 Q144 100 138 92 Q146 94 150 90 Q160 90 170 74 Z" fill="#4A3326"/>
-      <circle cx="168" cy="80" r="5" fill="#E2B48F"/>
-      <!-- glasses -->
-      <circle cx="141" cy="76" r="7" fill="none" stroke="#1D1F24" stroke-width="2.4"/>
-      <path d="M148 75 L164 73" stroke="#1D1F24" stroke-width="2.4"/>
-      <ellipse class="mouth" cx="137" cy="91" rx="3" ry="2.4" fill="#1D1F24"/></g>
-      <!-- arm + phone -->
-      <path d="M150 122 L132 116 L122 98" fill="none" stroke="#1F5A43" stroke-width="14"/>
-      <rect x="114" y="74" width="12" height="22" rx="3" fill="#1D1F24" transform="rotate(-12 120 85)"/>
-      <circle cx="122" cy="96" r="7" fill="#F1C7A5"/>
-      <g class="voice" fill="none" stroke="#1D1F24" stroke-width="3"><path d="M106 76 q-5 6 0 12"/><path d="M98 71 q-9 11 0 22"/></g>
-    </g>
-    <!-- pillar between front and back window -->
-    <path d="M226 48 L226 118" stroke="#3358C9" stroke-width="4"/>
-    <!-- door seam, handle, mirror -->
-    <path d="M130 124 L130 202" stroke="#2847A6" stroke-width="3"/>
-    <path d="M24 152 L246 152" stroke="#2847A6" stroke-width="3"/>
-    <rect x="178" y="134" width="34" height="8" rx="4" fill="#1D1F24"/>
-    <path d="M30 108 Q20 104 22 94 Q26 86 36 90 L44 100 Z" fill="#1D1F24"/>
-    <circle cx="238" cy="140" r="5" fill="#F2C14E"/>
-  </g></g>
-</svg><i class="cap">parked, engine off</i></span></li>
-<li class="stk art c2" tabindex="0" style="--i:6" data-label="Sticker: a woman recording an entry on the walk home"><span class="stk-in art">
-          <svg class="fig walker" viewBox="0 0 240 320" aria-hidden="true" focusable="false">
-  <defs>
-    <!-- die-cut: grow the silhouette, round it, hard-threshold it (no soft edge), add a flat offset shadow -->
-    <filter id="cutW" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
-      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="g"/>
-      <feGaussianBlur in="g" stdDeviation="3"/>
-      <feComponentTransfer result="d"><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer>
-      <feOffset in="d" dx="4" dy="5" result="o"/>
-      <feFlood flood-color="#1D1F24" flood-opacity=".2"/><feComposite in2="o" operator="in" result="sh"/>
-      <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
-      <feMerge><feMergeNode in="sh"/><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <g filter="url(#cutW)" stroke-linecap="round" stroke-linejoin="round">
-    <g class="wk-arm"><path d="M100 112 Q88 140 80 166" fill="none" stroke="#B9432C" stroke-width="15"/>
-    <circle cx="79" cy="171" r="7.5" fill="#A86B43"/></g>
-    <g class="wk-back"><path d="M110 186 L96 238 L80 274" fill="none" stroke="#174634" stroke-width="19"/>
-    <path d="M62 276 Q66 264 82 266 L94 272 Q98 282 88 284 L66 284 Q60 283 62 276 Z" fill="#1D1F24"/></g>
-    <g class="wk-front"><path d="M128 186 L150 240 L155 276" fill="none" stroke="#1F5A43" stroke-width="19"/>
-    <path d="M143 280 Q144 270 156 270 L170 274 Q184 278 182 290 L148 290 Q142 289 143 280 Z" fill="#1D1F24"/></g>
-    <g class="wk-up">
-    <!-- jacket -->
-    <path d="M94 104 Q120 90 144 104 L152 184 Q122 194 90 186 Z" fill="#E2553A"/>
-    <path d="M121 100 L124 188" stroke="#B9432C" stroke-width="2.5" fill="none"/>
-    <!-- tote bag strap + bag -->
-    <path d="M100 106 L136 168" stroke="#1D1F24" stroke-width="3" fill="none"/>
-    <path d="M124 160 h30 l-3 34 h-25 z" fill="#F2C14E"/>
-    <path d="M131 172 h16" stroke="#1D1F24" stroke-width="2" fill="none"/>
-    <!-- neck + head -->
-    <path d="M116 84 L119 100" stroke="#A86B43" stroke-width="15" fill="none"/>
-    <path d="M106 100 Q119 108 134 100" stroke="#B9432C" stroke-width="6" fill="none"/>
-    <ellipse cx="121" cy="66" rx="19" ry="22" fill="#A86B43"/>
-    <!-- hair: cap of hair + high ponytail -->
-    <path d="M101 64 Q100 40 122 42 Q138 42 141 56 Q128 52 118 60 Q112 68 108 78 Q101 74 101 64 Z" fill="#1D1F24"/>
-    <path d="M104 48 Q86 44 82 60 Q80 74 90 84 Q90 68 104 58 Z" fill="#1D1F24"/>
-    <circle cx="105" cy="50" r="5" fill="#F2C14E"/>
-    <!-- face: eye, open mouth (talking) -->
-    <circle cx="133" cy="63" r="2.2" fill="#1D1F24"/>
-    <ellipse class="mouth" cx="137" cy="76" rx="3.2" ry="2.6" fill="#1D1F24"/>
-    <!-- front arm raised: phone at her mouth -->
-    <path d="M136 112 L160 142 L156 96" fill="none" stroke="#E2553A" stroke-width="15"/>
-    <rect x="151" y="66" width="13" height="23" rx="3" fill="#1D1F24" transform="rotate(14 157 77)"/>
-    <circle cx="156" cy="92" r="7.5" fill="#A86B43"/>
-    <!-- voice -->
-    <g class="voice" fill="none" stroke="#1D1F24" stroke-width="3"><path d="M172 66 q5 6 0 12"/><path d="M180 61 q9 11 0 22"/><path d="M188 56 q13 16 0 32"/></g>
-    </g>
-  </g>
-</svg><i class="cap">on the walk home</i></span></li>
-<li class="stk s2" tabindex="0" style="--i:1"><span class="stk-in c-ink"><b>0 bytes to us</b><i>there is no DailyVox server</i></span></li>
-<li class="stk s4" tabindex="0" style="--i:3"><span class="stk-in c-tomato"><b>Data Not Collected</b><i>the App Store label, verbatim</i></span></li>
-<li class="stk lang"><span class="stk-in c-cobalt"><b>Now in 6 languages</b><i>Hallo · Hola · Bonjour · Ciao · Olá</i></span></li>
-<li class="stk s6 round" tabindex="0" style="--i:5"><span class="stk-in c-sun"><span class="dial" aria-hidden="true"><span class="hand"></span></span><b>42<br>sec</b><i>a night</i></span></li>
-    </ul>
-  </div>
+<!doctype html><html><head><meta charset="utf-8"><title>DailyVox social card</title><!-- Source for /og-image.png (1200x630). Rebuild with render.sh. --><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@600;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet"><link rel="stylesheet" href="_base.css"><style>
+.card{background:var(--tomato)}
+.ring{position:absolute;left:640px;top:-40px;width:710px;height:710px;border-radius:50%;background:var(--sun);border:10px solid #fff;box-shadow:12px 14px 0 rgba(29,31,36,.2)}
+.ticks{position:absolute;inset:26px;border-radius:50%;border:6px dashed rgba(29,31,36,.35)}
+.num{position:absolute;left:744px;top:96px;font:800 330px/.8 var(--f-display);letter-spacing:-.06em;color:var(--text)}
+.secs{position:absolute;left:770px;top:370px;font:700 64px/1 var(--f-hand);rotate:-6deg}
+h1{position:absolute;left:58px;top:188px;font:800 92px/.88 var(--f-display);letter-spacing:-.04em;color:var(--text);width:560px}
+.eyebrow{position:absolute;left:60px;top:122px;display:inline-block;background:var(--text);color:var(--sun);font:800 21px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;border:4px solid #fff;border-radius:10px;rotate:-2deg;box-shadow:var(--hard)}
+h1 span{display:block;color:#fff}
+.br{position:absolute;left:60px;top:50px;color:var(--text)}
+.br img{border:3px solid #fff}
+.note{position:absolute;left:62px;top:470px;font:700 30px/1.15 var(--f-hand);color:var(--text);rotate:-2deg;width:520px}
+.w{left:540px;top:262px;width:230px;--r:-3deg}
+.plat{left:60px;bottom:30px;--r:-2deg;background:var(--sheet);padding:10px 16px}
+.plat b{font-size:22px}
+</style></head><body><div class="card">
+<div class="ring"><div class="ticks"></div></div>
+<div class="num">42</div><div class="secs">seconds a night</div>
+<div class="br brand"><img src="../../public/apple-touch-icon.png">DailyVox</div>
+<div class="eyebrow">The private voice journal</div>
+<h1>Say it out loud. <span>Nobody else hears it.</span></h1>
+<div class="fig w"><img src="../../public/img/characters/walker.svg"></div>
+<div class="cta" style="left:60px;bottom:30px"><span class="b dark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3-.8-1.6 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span><small>Download on the</small>App Store</span></span><span class="b"><svg viewBox="0 0 24 24"><path fill="#1F5A43" d="M4 2.8 13.6 12 4 21.2c-.4-.2-.6-.6-.6-1.1V3.9c0-.5.2-.9.6-1.1z"/><path fill="#3358C9" d="M16.8 8.8 13.6 12l3.2 3.2 3.6-2c.9-.5.9-1.9 0-2.4z"/><path fill="#F2C14E" d="M4 2.8c.3-.2.8-.2 1.2 0l11.6 6L13.6 12z"/><path fill="#E2553A" d="M13.6 12l3.2 3.2-11.6 6c-.4.2-.9.2-1.2 0z"/></svg><span><small>Get it on</small>Google Play</span></span><span class="free" style="color:#fff">free, no account</span></div>
 </div></body></html>

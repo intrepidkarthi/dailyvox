@@ -1,0 +1,23 @@
+:root{--ground:#F4F5F1;--sheet:#fff;--text:#1D1F24;--text-2:#4A4E57;--forest:#1F5A43;--forest-ink:#174634;--tomato:#E2553A;--sun:#F2C14E;--cobalt:#3358C9;
+  --hard:4px 5px 0 rgba(29,31,36,.22);--f-display:'Bricolage Grotesque',system-ui,sans-serif;--f-body:'Figtree',system-ui,sans-serif;--f-hand:'Caveat',cursive}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1200px;height:630px;overflow:hidden;font-family:var(--f-body);color:var(--text)}
+.card{position:relative;width:1200px;height:630px;overflow:hidden}
+.abs{position:absolute}
+.stk{position:absolute;display:block;border:5px solid #fff;border-radius:18px;box-shadow:var(--hard);padding:14px 20px 15px;rotate:var(--r,0deg)}
+.stk b{display:block;font:800 30px/1.02 var(--f-display);letter-spacing:-.015em}
+.stk i{display:block;margin-top:6px;font:700 24px/1.05 var(--f-hand);font-style:normal}
+.fig{position:absolute;rotate:var(--r,0deg)}
+.fig img{display:block;width:100%;height:auto}
+.phone{position:absolute;background:#14161A;border-radius:44px;padding:9px;box-shadow:0 0 0 2px #3A3D44 inset;rotate:var(--r,0deg)}
+.phone img{display:block;width:100%;border-radius:36px}
+.brand{display:inline-flex;align-items:center;gap:12px;font:800 32px/1 var(--f-display);letter-spacing:-.01em}
+.brand img{width:48px;height:48px;border-radius:12px}
+.tape{position:absolute;height:34px;border-radius:3px;opacity:.92;rotate:var(--r,0deg)}
+.hand{font:700 28px/1 var(--f-hand)}
+.cta{position:absolute;display:flex;align-items:center;gap:12px;z-index:8}
+.cta .b{display:inline-flex;align-items:center;gap:10px;padding:11px 17px 11px 14px;border:3px solid var(--text);border-radius:14px;background:var(--sheet);color:var(--text);box-shadow:4px 5px 0 rgba(29,31,36,.28);font:800 23px/1 var(--f-body)}
+.cta .b small{display:block;font:600 13px/1 var(--f-body);opacity:.8;margin-bottom:3px}
+.cta .b.dark{background:var(--text);color:#fff}
+.cta svg{width:26px;height:26px;flex:none}
+.cta .free{font:700 30px/1 var(--f-hand);color:var(--text);margin-left:4px;rotate:-4deg}
