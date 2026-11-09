@@ -172,7 +172,23 @@ scored against the Apple frameworks they replace on the same real diary text.
 
 ---
 
-## What's New — v1.13.0 (iPhone, 17 October 2026) · Android 1.2 (October 2026)
+## What's New — v1.14.0 (iPhone, 7 November 2026) · Android 1.3 (5 November 2026)
+
+DailyVox now speaks German, Spanish, French, Italian and Brazilian Portuguese as well as English, on iPhone and Android. The translations are machine drafts that native speakers have not reviewed yet; Hindi is held back until on-device Hindi transcription is confirmed on real phones.
+
+**The language you speak, apart from the app's language.** Settings › Language you speak picks the language DailyVox listens in, from the languages the phone can transcribe on-device. When a language's on-device model is missing, the recording is kept and the app says how to install it; it never writes the speech down as English.
+
+**Ask your Twin answers in the language you ask in.** The words around quoted entries, the dates and the "nothing close enough" line follow the question's language, and the quotes stay as said. Ask also finds entries when the question is in another language.
+
+**Share your sky as a Story.** A 9:16 card of your constellation for Instagram Stories and WhatsApp Status: how many nights, never your words, names or moods. Offered once each at nights 7, 21 and 42.
+
+**Honest about languages.** Suggested mood, reflections, mood trends, themes, personality reads and search by meaning read English only; in other languages they stay quiet instead of guessing, and search finds the words you said. Dates, numbers and quotation marks follow your region.
+
+**Fixed:** on Android, recording no longer stops after about five seconds on phones where the speech recogniser loses the microphone to the recorder (seen on a Galaxy S24); search no longer lists the whole journal for a query it cannot read. iOS 1.13.1 and Android 1.2.1 never shipped on their own; their fixes are in this release.
+
+## Previously
+
+**v1.13.0 (17 October 2026) and Android 1.2 — something back from the first week.**
 
 A release about the first week: the app now gives something back every time you speak, instead of only after weeks of entries. Everything here is on iPhone and Android, and all of it runs on the phone.
 
@@ -185,8 +201,6 @@ A release about the first week: the app now gives something back every time you 
 **A question that changes each day**, with another one a tap away. **Early signals from the third entry** — when you usually speak, how long your entries run, words that recur — each a count, labelled early. And **a streak that welcomes you back**: one missed day a week no longer breaks a run.
 
 **Fixed:** turning reminders off on iPhone left already-scheduled ones in place; after a week away reminders went silent on iPhone and repeated forever on Android, and both now send one note on day 10 and stop; Android's "already spoke today" check used UTC days and its reminder times drifted at daylight-saving changes; and the streak on widgets, the Lock Screen, Live Activities and share cards now follows one rule everywhere.
-
-## Previously
 
 **v1.12.0 and Android 1.1 — type when you can't talk.** "I can't talk right now" sits under the record button on the main screen, on iPhone and Android, not only during setup. A typed entry gets a mood, finds the people you mention and counts toward your streak, the same as a spoken one. A reader asked for it: they journal at work and at home, around people, where speaking out loud is not an option.
 
@@ -225,8 +239,9 @@ A release about the first week: the app now gives something back every time you 
 | v1.11.0 | Live transcription, unconditional on-device speech, the encoded sky | Shipped Aug 2026 |
 | Android v1.0 | Android, first release | Shipped 2026-10-02 |
 | v1.12.0 · Android v1.1 | Type an entry any time ("I can't talk right now" on the main screen) | Shipped Oct 2026 |
-| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | **Shipped Oct 2026** (iOS 17 Oct · Android 1.2) |
-| Next | Multi-language beyond Apple's five, as the Speech APIs allow | Planned |
+| v1.13.0 · Android v1.2 | Something back from the first week: reflection, suggested mood, your past brought back, a daily question, early signals, a streak with a rest day | Shipped Oct 2026 |
+| v1.14.0 · Android v1.3 | German, Spanish, French, Italian and Brazilian Portuguese on both platforms, the language you speak, Ask in your language, sky cards for Stories | **Shipped Nov 2026** (iOS 7 Nov · Android 5 Nov) |
+| Next | More languages (Hindi first, once on-device transcription is confirmed), as the Speech APIs allow | Planned |
 | v2.0 | Apple Intelligence native (Siri AI, iOS 27) | Planned |
 
 Beyond v2.0: Personality Depth, Agentic Twin, Ambient Twin, the open Twin Protocol, and the DailyVox Mirror device.
