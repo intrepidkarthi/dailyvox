@@ -5,6 +5,9 @@ import com.dailyvox.app.system.Exporters
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * The CSV writer is the one export where a naive implementation looks correct
@@ -17,7 +20,12 @@ import org.junit.Test
  * These tests parse the output back rather than string-matching it, so they
  * fail if the quoting is wrong regardless of how it is wrong.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34], qualifiers = "en-rUS")
 class ExportersTest {
+
+    private val res get() = androidx.test.core.app.ApplicationProvider
+        .getApplicationContext<android.content.Context>().resources
 
     private fun entry(text: String, entities: String = "") = Entry(
         id = "t", text = text, createdAt = 1_700_000_000_000L, durationSec = 42,
@@ -87,11 +95,20 @@ class ExportersTest {
     fun `markdown renders one heading per entry in chronological order`() {
         val first = entry("Oldest.").copy(createdAt = 1_700_000_000_000L)
         val last = entry("Newest.").copy(createdAt = 1_700_600_000_000L)
-        val md = Exporters.markdown(listOf(last, first))
+        val md = Exporters.markdown(res, listOf(last, first))
 
         assertEquals("one heading per entry", 2, Regex("(?m)^## ").findAll(md).count())
         assertTrue("chronological, not the list order it was handed",
                    md.indexOf("Oldest.") < md.indexOf("Newest."))
         assertTrue("entry count is stated", md.contains("2 entries"))
+    }
+
+    @Test
+    fun `markdown English reads exactly as 1_2 wrote it`() {
+        // B-15 moved these words into strings.xml; the file must not change.
+        val md = Exporters.markdown(res, listOf(entry("Slept well.")))
+        assertTrue(md, md.startsWith("# DailyVox journal\n\n_1 entries, exported "))
+        assertTrue(md, Regex("(?m)^## \\w+, \\d{1,2} \\w+ \\d{4} · \\d{2}:\\d{2}$").containsMatchIn(md))
+        assertTrue(md, md.contains("`valence +0.50 · 0:42 · 7.3h sleep`"))
     }
 }

@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish (es). MACHINE DRAFT for native review: nothing here ships
+     until a named native reviewer signs the section-5 checklist in
+     docs/multilingual-plan-2026-10.md. Generated from the English in
+     values/strings.xml; the translator notes live there, not here. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">DailyVox</string>
+    <string name="widget_description">La estrella de esta noche y las últimas siete noches. Nunca muestra lo que escribiste.</string>
+    <string name="shortcut_speak_short">Hablar</string>
+    <string name="shortcut_speak_long">Grabar la entrada de hoy</string>
+    <string name="shortcut_journal_short">Diario</string>
+    <string name="shortcut_journal_long">Abrir mi diario</string>
+    <string name="shortcut_ask_short">Preguntar</string>
+    <string name="shortcut_ask_long">Pregunta a tu Gemelo sobre tu diario</string>
+    <string name="reminder_title">La estrella de esta noche te espera</string>
+    <string name="reminder_text">Cuando quieras. Cuarenta y dos segundos.</string>
+    <string name="reminder_welcome_back_title">Tu cielo te guardó el sitio</string>
+    <string name="reminder_welcome_back_text">Nada que recuperar. Una frase basta, cuando quieras.</string>
+    <string name="reflection_label">Añadido a tu cielo</string>
+    <plurals name="reflection_words">
+        <item quantity="one">%d palabra</item>
+        <item quantity="many">%d palabras</item>
+        <item quantity="other">%d palabras</item>
+    </plurals>
+    <string name="reflection_typed">escrita</string>
+    <string name="reflection_wordless">Tu voz está guardada. Las palabras pueden llegar después.</string>
+    <string name="reflection_tone_light">Tus palabras tienden a lo ligero.</string>
+    <string name="reflection_tone_even">Tus palabras están bastante equilibradas.</string>
+    <string name="reflection_tone_heavy">Tus palabras llevan algo de peso. Aquí eso está permitido.</string>
+    <string name="reflection_drift_lighter">Más ligera que tus últimas entradas.</string>
+    <string name="reflection_drift_heavier">Más pesada que tus últimas entradas.</string>
+    <string name="reflection_drift_similar">Parecida a tus últimas entradas.</string>
+    <string name="reflection_person">%1$s aparece en esta.</string>
+    <plurals name="reflection_person_earlier">
+        <item quantity="one">%1$s aparece en esta y en %2$d entrada más de los últimos 30 días.</item>
+        <item quantity="many">%1$s aparece en esta y en %2$d entradas más de los últimos 30 días.</item>
+        <item quantity="other">%1$s aparece en esta y en %2$d entradas más de los últimos 30 días.</item>
+    </plurals>
+    <string name="reflection_tomorrow_label">Para mañana, con tus palabras</string>
+    <string name="reflection_tomorrow_quote">«%1$s»</string>
+    <string name="reflection_done">Listo</string>
+    <string name="reflection_done_description">Cerrar la reflexión</string>
+    <string name="reflection_how_read">Leído en este teléfono a partir de tus palabras. No se envió nada a ningún sitio.</string>
+    <string name="reflection_mood_heading_suggested">Ánimo sugerido</string>
+    <string name="reflection_mood_heading_mine">Tu ánimo</string>
+    <string name="reflection_mood_suggested_body">%1$s, por cómo se leen tus palabras. Tócalo para conservarlo o elige otro.</string>
+    <string name="reflection_mood_suggested_line">Ánimo sugerido: %1$s. Es solo una sugerencia, a partir de tus palabras.</string>
+    <string name="reflection_mood_chosen_body">%1$s. Lo elegiste tú.</string>
+    <string name="reflection_mood_none">Ninguno. Elige uno si quieres.</string>
+    <string name="reflection_mood_clear">Quitar</string>
+    <string name="reflection_mood_clear_suggested_description">Quitar el ánimo sugerido</string>
+    <string name="reflection_mood_clear_description">Quitar tu ánimo</string>
+    <string name="mood_chip_suggested">%1$s · sugerido</string>
+    <string name="mood_chip_state_suggested">Sugerido a partir de tus palabras, no elegido</string>
+    <string name="mood_chip_state_chosen">Tu ánimo</string>
+    <string name="mood_chip_action_choose">elegir</string>
+    <string name="mood_chip_action_keep">conservar este ánimo</string>
+    <string name="mood_chip_action_clear">quitar</string>
+    <string name="onboarding_suggested_mood">Suena a %1$s. Es solo una sugerencia: podrás cambiarla en un momento.</string>
+    <string name="past_week_ago">Hace una semana dijiste</string>
+    <plurals name="past_days_ago">
+        <item quantity="one">Hace un día dijiste</item>
+        <item quantity="many">Hace %1$d días dijiste</item>
+        <item quantity="other">Hace %1$d días dijiste</item>
+    </plurals>
+    <plurals name="past_months_ago">
+        <item quantity="one">Tal día como hoy, hace un mes</item>
+        <item quantity="many">Tal día como hoy, hace %1$d meses</item>
+        <item quantity="other">Tal día como hoy, hace %1$d meses</item>
+    </plurals>
+    <plurals name="past_years_ago">
+        <item quantity="one">Tal día como hoy, hace un año</item>
+        <item quantity="many">Tal día como hoy, hace %1$d años</item>
+        <item quantity="other">Tal día como hoy, hace %1$d años</item>
+    </plurals>
+    <string name="past_quote">«%1$s»</string>
+    <string name="past_card_description">%1$s: %2$s. Abre la entrada.</string>
+    <string name="recap_label">Tu semana</string>
+    <string name="recap_range">%1$s – %2$s</string>
+    <plurals name="recap_entries">
+        <item quantity="one">%1$d entrada</item>
+        <item quantity="many">%1$d entradas</item>
+        <item quantity="other">%1$d entradas</item>
+    </plurals>
+    <plurals name="recap_days">
+        <item quantity="one">en %1$d día</item>
+        <item quantity="many">en %1$d días</item>
+        <item quantity="other">en %1$d días</item>
+    </plurals>
+    <plurals name="recap_name">
+        <item quantity="one">%1$s apareció en %2$d entrada.</item>
+        <item quantity="many">%1$s apareció en %2$d entradas.</item>
+        <item quantity="other">%1$s apareció en %2$d entradas.</item>
+    </plurals>
+    <string name="recap_line_label">Una frase de la semana</string>
+    <string name="recap_line_description">Una frase de la semana: %1$s. Abre la entrada.</string>
+    <string name="recap_how_counted">Contado a partir de tus entradas en este teléfono.</string>
+    <string name="reminder_past_text">Hace una semana dijiste: «%1$s»</string>
+    <string name="settings_reminder_quote">Incluir en los recordatorios una frase de tu pasado</string>
+    <string name="settings_reminder_quote_note">Desactivado por defecto. Si lo activas, el recordatorio de esta noche puede citar lo que dijiste hace una semana, y cualquiera que vea tu pantalla de bloqueo podrá leerlo.</string>
+    <string-array name="daily_questions">
+        <item>¿Cómo fue tu día, de verdad?</item>
+        <item>¿Qué momento de hoy quieres guardar?</item>
+        <item>¿Con quién hablaste hoy?</item>
+        <item>¿Cómo sientes el cuerpo ahora mismo?</item>
+        <item>¿Qué salió mejor de lo que esperabas?</item>
+        <item>¿Qué te hizo sonreír hoy?</item>
+        <item>¿Qué tienes en mente esta noche?</item>
+        <item>¿Qué comiste hoy? ¿Algo rico?</item>
+        <item>¿Qué pequeña cosa salió bien?</item>
+        <item>¿Qué te sorprendió hoy?</item>
+        <item>¿En qué se fueron las horas hoy?</item>
+        <item>¿Qué te hace ilusión?</item>
+        <item>¿Quién fue amable contigo últimamente?</item>
+        <item>¿Cómo dormiste, y cómo fue el día después?</item>
+        <item>¿Qué notaste hoy al aire libre?</item>
+        <item>¿Qué te gustaría soltar esta noche?</item>
+        <item>¿Qué aprendiste hoy, aunque sea algo pequeño?</item>
+        <item>¿Qué se lleva la mayor parte de tu energía esta semana?</item>
+        <item>¿Qué cosa de hoy valdría la pena repetir?</item>
+        <item>¿Qué te despierta curiosidad últimamente?</item>
+        <item>¿Cómo está tu energía: con cansancio, a tope o en algún punto intermedio?</item>
+        <item>¿Cómo sonó el día de hoy?</item>
+        <item>¿Quién ha estado en tus pensamientos?</item>
+        <item>¿Dónde estuviste hoy, y cómo fue?</item>
+        <item>¿Qué te alegra en silencio?</item>
+        <item>¿Qué se sintió pesado hoy, y qué se sintió ligero?</item>
+    </string-array>
+    <string-array name="daily_questions_plain">
+        <item>Solo registra tu día: qué hiciste, dónde y con quién. Con los hechos basta.</item>
+        <item>¿Cómo fue el día de hoy en realidad? No hace falta reflexionar: solo lo que pasó.</item>
+    </string-array>
+    <string name="daily_question_grounded_yesterday">Ayer hablaste de %1$s. ¿Qué tal va todo?</string>
+    <string name="daily_question_grounded_days">Hace unos días hablaste de %1$s. ¿Qué tal va todo?</string>
+    <string name="daily_question_grounded_week">La semana pasada hablaste de %1$s. ¿Qué tal va todo?</string>
+    <string name="daily_question_another">Otra pregunta</string>
+    <string name="daily_question_another_action">ver otra pregunta</string>
+    <string name="settings_pilot">Piloto de investigación</string>
+    <string name="settings_pilot_note">Para participantes del estudio. Uno de cada tres días, la pregunta es sencilla: solo registra tu día. No se envía nada a ningún sitio.</string>
+    <string name="streak_none_yet">aún sin racha</string>
+    <plurals name="streak_header">
+        <item quantity="one">Racha de %1$d día</item>
+        <item quantity="many">Racha de %1$d días</item>
+        <item quantity="other">Racha de %1$d días</item>
+    </plurals>
+    <string name="streak_header_welcome_back">Hola de nuevo</string>
+    <string name="streak_welcome_back">Hola de nuevo. Tu cielo te guardó el sitio.</string>
+    <plurals name="streak_days_in_a_row">
+        <item quantity="one">día seguido</item>
+        <item quantity="many">días seguidos</item>
+        <item quantity="other">días seguidos</item>
+    </plurals>
+    <plurals name="streak_days_in_a_row_longest">
+        <item quantity="one">día seguido: tu racha más larga</item>
+        <item quantity="many">días seguidos: tu racha más larga</item>
+        <item quantity="other">días seguidos: tu racha más larga</item>
+    </plurals>
+    <string name="streak_longest">más larga %1$d</string>
+    <string name="streak_days_spoken">días con voz %1$d</string>
+    <string name="streak_this_month">este mes %1$d</string>
+    <string name="streak_total">total %1$d</string>
+    <string name="streak_grace_rule">Un día tranquilo no rompe una racha. Una vez por semana, te lo guardamos.</string>
+    <plurals name="streak_description_active">
+        <item quantity="one">%1$d día seguido. Racha más larga: %2$d. %3$d días con voz en total.</item>
+        <item quantity="many">%1$d días seguidos. Racha más larga: %2$d. %3$d días con voz en total.</item>
+        <item quantity="other">%1$d días seguidos. Racha más larga: %2$d. %3$d días con voz en total.</item>
+    </plurals>
+    <plurals name="streak_description_returning">
+        <item quantity="one">Hola de nuevo. Tu cielo te guardó el sitio. Racha más larga: %1$d. %2$d día con voz en total.</item>
+        <item quantity="many">Hola de nuevo. Tu cielo te guardó el sitio. Racha más larga: %1$d. %2$d días con voz en total.</item>
+        <item quantity="other">Hola de nuevo. Tu cielo te guardó el sitio. Racha más larga: %1$d. %2$d días con voz en total.</item>
+    </plurals>
+    <string name="streak_description_new">Aún no hay racha. Tu primera entrada la empieza.</string>
+    <string name="widget_day_spoken">Día %1$d · hecho</string>
+    <string name="widget_day_next">Día %1$d · habla esta noche</string>
+    <string name="widget_speak_tonight">Habla esta noche</string>
+    <string name="widget_welcome_back">Hola de nuevo · habla esta noche</string>
+    <plurals name="early_heading">
+        <item quantity="one">Primeras señales · de %1$d entrada</item>
+        <item quantity="many">Primeras señales · de %1$d entradas</item>
+        <item quantity="other">Primeras señales · de %1$d entradas</item>
+    </plurals>
+    <string name="early_firm_up">Se irán afianzando a medida que sigas.</string>
+    <string name="early_part_small_hours">de madrugada</string>
+    <string name="early_part_morning">por la mañana</string>
+    <string name="early_part_afternoon">por la tarde</string>
+    <string name="early_part_evening">al anochecer</string>
+    <string name="early_part_late_night">tarde por la noche</string>
+    <plurals name="early_time_of_day">
+        <item quantity="one">Sueles hablar %1$s: %2$d de %3$d entrada.</item>
+        <item quantity="many">Sueles hablar %1$s: %2$d de %3$d entradas.</item>
+        <item quantity="other">Sueles hablar %1$s: %2$d de %3$d entradas.</item>
+    </plurals>
+    <plurals name="early_length_average">
+        <item quantity="one">Unas %1$d palabra por entrada, de media.</item>
+        <item quantity="many">Unas %1$d palabras por entrada, de media.</item>
+        <item quantity="other">Unas %1$d palabras por entrada, de media.</item>
+    </plurals>
+    <plurals name="early_length_longer_one">
+        <item quantity="one">Tu última entrada fue más larga que la primera: %1$d palabra frente a %2$d.</item>
+        <item quantity="many">Tu última entrada fue más larga que la primera: %1$d palabras frente a %2$d.</item>
+        <item quantity="other">Tu última entrada fue más larga que la primera: %1$d palabras frente a %2$d.</item>
+    </plurals>
+    <plurals name="early_length_shorter_one">
+        <item quantity="one">Tu última entrada fue más corta que la primera: %1$d palabra frente a %2$d.</item>
+        <item quantity="many">Tu última entrada fue más corta que la primera: %1$d palabras frente a %2$d.</item>
+        <item quantity="other">Tu última entrada fue más corta que la primera: %1$d palabras frente a %2$d.</item>
+    </plurals>
+    <plurals name="early_length_longer_many">
+        <item quantity="one">Tus últimas %3$d entradas fueron más largas que las %3$d primeras: %1$d palabra frente a %2$d.</item>
+        <item quantity="many">Tus últimas %3$d entradas fueron más largas que las %3$d primeras: %1$d palabras frente a %2$d.</item>
+        <item quantity="other">Tus últimas %3$d entradas fueron más largas que las %3$d primeras: %1$d palabras frente a %2$d.</item>
+    </plurals>
+    <plurals name="early_length_shorter_many">
+        <item quantity="one">Tus últimas %3$d entradas fueron más cortas que las %3$d primeras: %1$d palabra frente a %2$d.</item>
+        <item quantity="many">Tus últimas %3$d entradas fueron más cortas que las %3$d primeras: %1$d palabras frente a %2$d.</item>
+        <item quantity="other">Tus últimas %3$d entradas fueron más cortas que las %3$d primeras: %1$d palabras frente a %2$d.</item>
+    </plurals>
+    <string name="early_length_steady">Más o menos la misma extensión que al principio.</string>
+    <plurals name="early_recurring">
+        <item quantity="one">«%1$s» aparece en %2$d de tus entradas.</item>
+        <item quantity="many">«%1$s» aparece en %2$d de tus entradas.</item>
+        <item quantity="other">«%1$s» aparece en %2$d de tus entradas.</item>
+    </plurals>
+    <string name="early_mood_count">%1$s (%2$d)</string>
+    <string name="early_moods_chosen">Estados de ánimo que elegiste: %1$s.</string>
+    <string name="early_moods_suggested">Sugeridos a partir de tus palabras, no elegidos por ti: %1$s.</string>
+    <string name="early_nothing_yet">Aún no destaca nada que se pueda contar. Sigue así.</string>
+    <string name="early_counted_here">Contado a partir de tus entradas en este teléfono.</string>
+    <string name="patterns_not_enough">Aún no hay suficiente. Los patrones aparecen cuando hay datos suficientes para tener la certeza de que son reales y no una casualidad.</string>
+    <string name="patterns_not_enough_early">Aún no hay suficiente. Las primeras señales empiezan en tu tercera entrada; los patrones, cuando hay datos suficientes para tener la certeza de que son reales y no una casualidad.</string>
+    <string name="twin_still_listening">Sigo escuchando. Unas noches más y habrá algo que decir.</string>
+    <string name="twin_still_listening_early">Sigo escuchando. Las primeras señales están abajo; una imagen más completa llegará en unas noches más.</string>
+    <string name="patterns_label">Patrones que notó tu Gemelo</string>
+    <string name="speak_lang_title">IDIOMA EN EL QUE HABLAS</string>
+    <string name="speak_lang_explain">DailyVox escucha un idioma cada vez. Elige el que vas a hablar esta noche. Puede ser distinto del idioma de la app.</string>
+    <string name="speak_lang_same_as_phone">Igual que el teléfono · %1$s</string>
+    <string name="speak_lang_change">Cambiar</string>
+    <string name="speak_lang_state_on_phone">En este teléfono</string>
+    <string name="speak_lang_state_download">Necesita una descarga única</string>
+    <string name="speak_lang_state_unavailable">Sin modelo en el dispositivo en este teléfono</string>
+    <string name="speak_lang_needs_download">Para %1$s hace falta una descarga única de %2$s. Después, todo lo que digas se queda en este teléfono.</string>
+    <string name="speak_lang_provider_fallback">el servicio de voz de tu teléfono</string>
+    <string name="speak_lang_download">Descargar</string>
+    <string name="speak_lang_unavailable">Tu teléfono aún no puede transcribir %1$s en el dispositivo. Elige otro idioma o escribe la entrada de esta noche. DailyVox nunca envía tu voz a ningún sitio para suplirlo.</string>
+    <string name="speak_lang_checking">Preguntando a este teléfono qué puede oír…</string>
+    <string name="speak_lang_dialog_title">Idioma en el que hablas</string>
+    <string name="speak_lang_cancel">Cancelar</string>
+    <string name="onboarding_step_permission">01 / 04 · permisos</string>
+    <string name="onboarding_step_voice">02 / 04 · tu voz</string>
+    <string name="onboarding_step_first_star">03 / 04 · tu primera estrella</string>
+    <string name="onboarding_step_yours">04 / 04 · tuya</string>
+    <string name="onboarding_ledger_title">Nada de lo que dices sale de este teléfono.</string>
+    <string name="onboarding_ledger_body">La transcripción se hace en tu dispositivo. Sin cuenta, sin servidor, sin SDK de analíticas. Compruébalo: activa el modo avión y graba tu primera entrada.</string>
+    <string name="onboarding_ledger_mic">Micrófono</string>
+    <string name="onboarding_ledger_mic_state">necesario</string>
+    <string name="onboarding_ledger_speech">Reconocimiento de voz</string>
+    <string name="onboarding_ledger_speech_state">en el dispositivo</string>
+    <string name="onboarding_ledger_internet">Internet</string>
+    <string name="onboarding_ledger_internet_state">no solicitado</string>
+    <string name="onboarding_ledger_sent">Enviado a DailyVox</string>
+    <string name="onboarding_ledger_sent_state">nada, nunca</string>
+    <string name="onboarding_airplane_title">Pruébalo en modo avión</string>
+    <string name="onboarding_airplane_body">Apaga las conexiones y habla. La transcripción, tu estrella: todo se queda en este teléfono. Si tu teléfono necesita antes su paquete de voz sin conexión, DailyVox te lo ofrecerá.</string>
+    <string name="onboarding_continue">Continuar</string>
+    <string name="onboarding_invite_title">Tu cielo empieza\ncon tu voz</string>
+    <string name="onboarding_invite_body">Sin formularios, sin registro. Solo habla de tu día y mira cómo tu voz se convierte en la primera estrella de un cielo que solo tú ves.</string>
+    <string name="onboarding_ready">Empezar</string>
+    <string name="onboarding_speak_title">¿Qué tal tu día,\nde verdad?</string>
+    <string name="onboarding_speak_title_processing">Buscando tus palabras.</string>
+    <string name="onboarding_speak_title_born">Ha nacido una estrella.</string>
+    <string name="onboarding_speak_body_idle">Habla, no escribas. Cuarenta y dos segundos son suficientes, y todo se queda en este teléfono.</string>
+    <string name="onboarding_speak_body_recording">Escuchando. Tómate el tiempo que quieras.</string>
+    <string name="onboarding_speak_body_processing">En el dispositivo. Nada salió de tu teléfono.</string>
+    <string name="onboarding_speak_body_born">Tu voz, ahora una luz en tu cielo.</string>
+    <string name="onboarding_typed_placeholder">¿Qué tal tu día, de verdad?</string>
+    <string name="onboarding_typed_stored">guardado solo en este teléfono</string>
+    <string name="onboarding_typed_save">Guardar mi primera estrella</string>
+    <string name="onboarding_typed_back">Volver a hablar</string>
+    <string name="onboarding_mic_allow">Permitir el micrófono</string>
+    <string name="onboarding_mic_settings">Permitir el micrófono en Ajustes</string>
+    <string name="onboarding_cant_talk">Ahora no puedo hablar</string>
+    <string name="onboarding_skip">Saltar por ahora</string>
+    <string name="onboarding_start_speaking">Empezar a hablar</string>
+    <string name="onboarding_done_timer">"%1$d:%2$02d  ·  Listo"</string>
+    <string name="onboarding_continue_anyway">Continuar de todos modos</string>
+    <string name="onboarding_claim_title_empty">Tu cielo está listo.</string>
+    <string name="onboarding_claim_title">Esa estrella es tuya.</string>
+    <string name="onboarding_claim_quote">«%1$s»</string>
+    <string name="onboarding_claim_body_empty">Habla cuando quieras. Esta noche no tienes que hacer nada.</string>
+    <string name="onboarding_claim_body">Vive en tu teléfono, en ningún otro sitio.\nHabla otra vez mañana y tu cielo crecerá.</string>
+    <string name="onboarding_remind_title">Recordármelo cada noche</string>
+    <string name="onboarding_remind_body">Un aviso a las 21:00. Cámbialo cuando quieras en Ajustes.</string>
+    <string name="onboarding_enter">Entrar en mi cielo</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_shield_label">ESCUDO DE DATOS</string>
+    <string name="settings_shield_network">Llamadas de red hechas</string>
+    <string name="settings_shield_network_value">0 · NUNCA</string>
+    <string name="settings_shield_encryption">Cifrado en reposo</string>
+    <string name="settings_shield_lock">Bloqueo biométrico</string>
+    <string name="settings_shield_permissions">La lista completa de permisos: micrófono, notificaciones, vibración, biometría. Ningún permiso de red de ningún tipo: compruébalo en Ajustes de Android › Aplicaciones › DailyVox.</string>
+    <string name="settings_shield_share">Compartir como recibo</string>
+    <string name="settings_theme_label">TEMA</string>
+    <string name="settings_theme_day">Día</string>
+    <string name="settings_theme_night">Noche</string>
+    <string name="settings_theme_sunset">Atardecer</string>
+    <string name="settings_reminder_label">RECORDATORIO DIARIO · SOLO LOCAL</string>
+    <string name="settings_reminder_preview">«La estrella de esta noche te espera»</string>
+    <string name="settings_reminder_note">Se omite si ya hablaste · programado en el dispositivo, sin servidores push.</string>
+    <string name="settings_goal_label">OBJETIVO SEMANAL · OPCIONAL</string>
+    <string name="settings_goal_prompt">Noches por semana que quieres estar</string>
+    <string name="settings_goal_notify">Avísame cuando lo cumpla</string>
+    <string name="settings_goal_note">Cuenta noches, no entradas · como mucho una vez por semana · nunca te recuerda que te saltaste una.</string>
+    <string name="settings_backup_label">COPIA Y EXPORTACIÓN</string>
+    <string name="settings_export_pdf">Exportar como PDF</string>
+    <string name="settings_export_pdf_hint">· para imprimir y compartir</string>
+    <string name="settings_export_json">Exportar como JSON</string>
+    <string name="settings_export_json_hint">· legible, portátil</string>
+    <string name="settings_export_markdown">Exportar como Markdown</string>
+    <string name="settings_export_markdown_hint">· Obsidian, Bear, lo que sea</string>
+    <string name="settings_export_csv">Exportar como CSV</string>
+    <string name="settings_export_csv_hint">· hojas de cálculo</string>
+    <string name="settings_export_encrypted">Copia cifrada</string>
+    <string name="settings_export_encrypted_hint">· se abre en cualquier teléfono</string>
+    <string name="settings_import">Importar copia</string>
+    <string name="settings_import_hint">· añade, nunca reemplaza</string>
+    <string name="settings_research_label">INVESTIGACIÓN</string>
+    <string name="settings_participant_code">Código de participante</string>
+    <string name="settings_participant_code_copied">"%1$s  ✓"</string>
+    <string name="settings_export_research">Exportar datos de investigación</string>
+    <string name="settings_export_research_hint">· entradas etiquetadas</string>
+    <string name="settings_research_note">Nada sale de este teléfono a menos que compartas tú el archivo.</string>
+    <string name="settings_words_label">PALABRAS QUE SOLEMOS OÍR MAL</string>
+    <string name="settings_words_placeholder">Añade un nombre</string>
+    <string name="settings_words_add">Añadir</string>
+    <string name="settings_words_chip">"%1$s  ×"</string>
+    <string name="settings_words_note">Hacen que el reconocedor tenga más probabilidades de oír la palabra. Una ayuda, no una garantía.</string>
+    <string name="settings_review_title">¿Te gusta DailyVox?</string>
+    <string name="settings_review_body">Una reseña ayuda más de lo que crees.</string>
+    <string name="settings_review_rate">Valorar ✦</string>
+    <string name="settings_footer_status">En desarrollo · código abierto</string>
+    <plurals name="settings_footer_entries">
+        <item quantity="one">%1$d entrada</item>
+        <item quantity="many">%1$d entradas</item>
+        <item quantity="other">%1$d entradas</item>
+    </plurals>
+    <string name="entry_ask_seed_person">¿Qué dicen mis entradas sobre %1$s, hacia el %2$s?</string>
+    <string name="entry_ask_seed">¿Qué me pasaba hacia el %1$s?</string>
+    <string name="entry_header_meta">%1$s · %2$s · %3$s</string>
+    <string name="entry_header_typed">escrita</string>
+    <string name="entry_header_untranscribed">sin transcribir</string>
+    <plurals name="entry_header_words">
+        <item quantity="one">%1$d palabra</item>
+        <item quantity="many">%1$d palabras</item>
+        <item quantity="other">%1$d palabras</item>
+    </plurals>
+    <string name="entry_menu_read_aloud">Leer en voz alta</string>
+    <string name="entry_menu_stop_reading">Dejar de leer</string>
+    <string name="entry_menu_delete">Eliminar</string>
+    <string name="entry_menu_description">Más acciones</string>
+    <string name="entry_no_voice">Este teléfono aún no tiene ninguna voz para %1$s. Puedes añadirla en Ajustes de Android › Síntesis de voz.</string>
+    <string name="entry_delete_title">¿Eliminar esta entrada?</string>
+    <string name="entry_delete_body">Las palabras y la grabación se borran de este teléfono. Esto no se puede deshacer.</string>
+    <string name="entry_delete_confirm">Eliminar</string>
+    <string name="entry_delete_keep">Conservarla</string>
+    <string name="entry_photo_description">Foto adjunta a esta entrada</string>
+    <string name="entry_feel_label">¿Qué sentiste de verdad?</string>
+    <string name="entry_filed_label">Lo que anotó tu Gemelo ✦</string>
+    <string name="entry_filed_mood">Ánimo</string>
+    <string name="entry_valence_value">%1$s · %2$s</string>
+    <string name="entry_valence_positive">positivo</string>
+    <string name="entry_valence_calm_positive">positivo y sereno</string>
+    <string name="entry_valence_flat">plano</string>
+    <string name="entry_valence_negative">negativo</string>
+    <string name="entry_filed_people">Personas</string>
+    <string name="entry_filed_people_separator">", "</string>
+    <string name="entry_filed_slept">Sueño</string>
+    <string name="entry_filed_slept_value">%1$.1f horas</string>
+    <string name="entry_filed_hrv">VFC</string>
+    <string name="entry_filed_hrv_value">%1$.0f ms esta mañana</string>
+    <string name="entry_filed_pulse">Pulso en reposo</string>
+    <string name="entry_filed_pulse_value">%1$.0f lpm</string>
+    <string name="entry_filed_steps">Pasos</string>
+    <plurals name="entry_filed_steps_value">
+        <item quantity="one">%1$,d hoy</item>
+        <item quantity="many">%1$,d hoy</item>
+        <item quantity="other">%1$,d hoy</item>
+    </plurals>
+    <string name="entry_filed_pace">Ritmo</string>
+    <string name="entry_filed_pace_value">%1$d ppm</string>
+    <string name="entry_filed_voice">Voz</string>
+    <string name="entry_filed_voice_value">%1$.1f palabras/s habladas</string>
+    <string name="entry_filed_tone">Tono</string>
+    <string name="entry_filed_tone_value">%1$.0f Hz</string>
+    <string name="entry_filed_tone_value_range">%1$.0f Hz · rango de %2$.0f Hz</string>
+    <string name="entry_filed_pauses">Pausas</string>
+    <string name="entry_filed_pauses_value">%1$.0f %% en silencio</string>
+    <plurals name="entry_filed_pauses_value_long">
+        <item quantity="one">%1$.0f %% en silencio · %2$d larga</item>
+        <item quantity="many">%1$.0f %% en silencio · %2$d largas</item>
+        <item quantity="other">%1$.0f %% en silencio · %2$d largas</item>
+    </plurals>
+    <string name="entry_filed_when">Cuándo</string>
+    <string name="entry_filed_when_small_hours">de madrugada</string>
+    <string name="entry_filed_when_morning">mañana</string>
+    <string name="entry_filed_when_afternoon">tarde</string>
+    <string name="entry_filed_when_evening">anochecer</string>
+    <string name="entry_filed_when_late_night">noche cerrada</string>
+    <string name="entry_action_edit">Editar</string>
+    <string name="entry_action_ask">"✦  Preguntar"</string>
+    <string name="entry_action_share_description">Compartir esta entrada</string>
+    <string name="entry_edit_title">Editar transcripción</string>
+    <string name="entry_edit_save">Guardar</string>
+    <string name="entry_edit_cancel">Cancelar</string>
+    <string name="entry_audio_play">Reproducir</string>
+    <string name="entry_audio_pause">Pausa</string>
+    <string name="entry_untranscribed_title">Tu grabación está guardada</string>
+    <string name="entry_untranscribed_body">El servicio de voz de este teléfono no la convirtió en palabras. El audio está aquí y se puede reproducir; puedes volver a intentarlo o escribirla tú.</string>
+    <string name="entry_untranscribed_running">Leyendo la grabación… puede tardar un momento.</string>
+    <string name="entry_untranscribed_transcribing">Transcribiendo</string>
+    <string name="entry_untranscribed_retry">Volver a transcribir</string>
+    <string name="entry_untranscribed_ignored_file">El reconocedor de este teléfono no puede leer una grabación guardada: intentó escuchar en directo y no se usó nada. Escribirla es la forma de conservar estas palabras.</string>
+    <string name="entry_no_model">Tu teléfono aún no puede transcribir %1$s en el dispositivo. Tu grabación está guardada y podrás transcribirla más adelante si llega a haber un modelo disponible.</string>
+    <string name="speech_error_old_android">Esta versión de Android no tiene reconocedor de voz en el dispositivo.</string>
+    <string name="speech_error_old_android_fix">DailyVox necesita Android 13 o posterior, la versión en la que llegó el reconocimiento sin conexión. No transcribirá a través de la red en ninguna versión.</string>
+    <string name="speech_error_no_pack">Aún no hay ningún paquete de voz sin conexión instalado para tu idioma.</string>
+    <string name="speech_error_no_pack_fix">El servicio de voz de tu teléfono puede descargarlo ahora. DailyVox sigue sin permiso de internet y no envía nada: el paquete llega a tu teléfono y tu voz nunca sale de él.</string>
+    <string name="speech_error_silent">El reconocedor de voz de este teléfono aceptó la grabación y nunca respondió.</string>
+    <string name="speech_error_silent_fix">Toca para volver a intentarlo. Si sigue pasando, comprueba que el servicio de voz de Android (Ajustes › Aplicaciones › Aplicaciones predeterminadas › Asistente digital, o Reconocimiento y síntesis de voz en la lista de aplicaciones) esté activado y sin restricciones de batería: algunos fabricantes lo traen desactivado.</string>
+    <string name="speech_error_empty">El reconocedor terminó sin devolver ninguna palabra.</string>
+    <string name="speech_error_empty_fix">Toca para volver a intentarlo. Si sigue pasando, el servicio de voz de este teléfono no está transcribiendo: comprueba que Reconocimiento y síntesis de voz esté activado y sin restricciones de batería en Ajustes de Android › Aplicaciones, y que haya un idioma sin conexión instalado en Sistema › Idiomas › Voz.</string>
+    <string name="speech_error_unreachable">No se pudo iniciar el reconocedor de voz en el dispositivo de este teléfono.</string>
+    <string name="speech_error_unreachable_fix">Aparece como disponible, pero no se abre. Comprueba que Reconocimiento y síntesis de voz esté instalado y activado en Ajustes › Aplicaciones.</string>
+    <string name="speech_error_permission">El permiso del micrófono se desactivó.</string>
+    <string name="speech_error_permission_fix">Ajustes de Android › Aplicaciones › DailyVox › Permisos.</string>
+    <string name="speech_error_busy">Otra aplicación está usando el micrófono.</string>
+    <string name="speech_error_busy_fix">Cierra cualquier otra grabación o llamada y vuelve a intentarlo.</string>
+    <string name="speech_error_nothing_heard">No se oyó nada.</string>
+    <string name="speech_error_nothing_heard_fix">Vuelve a tocar y habla un poco más cerca del teléfono.</string>
+    <string name="speech_error_network">El reconocedor de este teléfono quiso usar internet, así que no se grabó nada.</string>
+    <string name="speech_error_network_fix">Descarga el paquete sin conexión de tu idioma y funcionará sin ninguna red. DailyVox no transcribirá a través de la red.</string>
+    <string name="speech_error_other">El reconocedor se detuvo de forma inesperada.</string>
+    <string name="speech_error_other_fix">Toca para volver a intentarlo.</string>
+    <string name="speech_installed_packs">" Este teléfono tiene: %1$s."</string>
+    <string name="speech_download_fix">DailyVox sigue sin permiso de internet y no envía nada: el paquete llega a tu teléfono y tu voz nunca sale de él.%1$s</string>
+    <string name="speech_unavailable">Tu teléfono aún no puede transcribir %1$s en el dispositivo.</string>
+    <string name="speech_unavailable_fix">DailyVox no lo enviará a ningún sitio para suplirlo. Elige otro idioma en Ajustes › Idioma en el que hablas, o escribe la entrada de esta noche.%1$s</string>
+    <string name="share_title_my_sky">Mi cielo</string>
+    <string name="share_title_receipt">Recibo</string>
+    <string name="share_title_year_one">Año uno</string>
+    <string name="share_title_milestone">Hito</string>
+    <string name="share_title_wallpaper">Fondo de pantalla</string>
+    <string name="share_title_gift">Regala una estrella</string>
+    <string name="share_caption_my_sky">Estrellas, sin palabras. El cielo es el único recuerdo del diario que es bonito y privado a la vez.</string>
+    <string name="share_caption_receipt">Todo cuesta cero, desglosado. Convence más que una lista de funciones.</string>
+    <string name="share_caption_year_one">Tu año, calculado solo por este teléfono.</string>
+    <string name="share_caption_milestone">Se acuña una sola vez, en las noches 42, 100 y 365. No se puede comprar ni acelerar: solo llega habiendo hablado esas veces.</string>
+    <string name="share_caption_wallpaper">Tu constelación, a la medida de la pantalla de bloqueo. La superficie que miras cuarenta veces al día, y que nadie más puede leer.</string>
+    <string name="share_caption_gift">Una tarjeta de invitación sin enlace de seguimiento, porque aquí no hay nada que pudiera llevarlo.</string>
+    <string name="share_set_wallpaper">Poner como fondo de pantalla</string>
+    <string name="share_sky_label">MI CIELO · NOCHE %1$d</string>
+    <string name="share_sky_airplane">EN MODO AVIÓN</string>
+    <plurals name="share_sky_stars">
+        <item quantity="one">%1$d estrella.</item>
+        <item quantity="many">%1$d estrellas.</item>
+        <item quantity="other">%1$d estrellas.</item>
+    </plurals>
+    <string name="share_sky_zero_uploads">Cero subidas.</string>
+    <string name="share_sky_body">Todas hechas con mi voz, en mi teléfono.</string>
+    <string name="share_sky_footer">UN CIELO HECHO DE TI · GETDAILYVOX.COM</string>
+    <string name="share_receipt_subtitle">RECIBO DE PRIVACIDAD · %1$s</string>
+    <string name="share_receipt_entries">ENTRADAS HABLADAS</string>
+    <string name="share_receipt_words">PALABRAS GUARDADAS</string>
+    <string name="share_receipt_streak">NOCHES SEGUIDAS</string>
+    <string name="share_receipt_network">LLAMADAS DE RED</string>
+    <string name="share_receipt_bytes">BYTES SUBIDOS</string>
+    <string name="share_receipt_ads">ANUNCIOS MOSTRADOS</string>
+    <string name="share_receipt_accounts">CUENTAS CREADAS</string>
+    <string name="share_receipt_subscription">SUSCRIPCIÓN</string>
+    <string name="share_receipt_free">GRATIS</string>
+    <string name="share_receipt_stayed_home">TUS DATOS NO SALIERON</string>
+    <string name="share_receipt_thanks">GRACIAS POR HABLAR CONTIGO</string>
+    <string name="share_receipt_footer">GETDAILYVOX.COM · CÓDIGO ABIERTO</string>
+    <string name="share_year_label">TU CIELO · AÑO UNO</string>
+    <plurals name="share_year_nights">
+        <item quantity="one">%1$d noche.</item>
+        <item quantity="many">%1$d noches.</item>
+        <item quantity="other">%1$d noches.</item>
+    </plurals>
+    <string name="share_year_one_sky">Un cielo.</string>
+    <string name="share_year_brightest">Estrella más brillante</string>
+    <string name="share_year_brightest_none">aún no</string>
+    <plurals name="share_year_brightest_redacted">
+        <item quantity="one">alguien · %1$d noche</item>
+        <item quantity="many">alguien · %1$d noches</item>
+        <item quantity="other">alguien · %1$d noches</item>
+    </plurals>
+    <plurals name="share_year_brightest_named">
+        <item quantity="one">%1$s · %2$d noche</item>
+        <item quantity="many">%1$s · %2$d noches</item>
+        <item quantity="other">%1$s · %2$d noches</item>
+    </plurals>
+    <string name="share_year_warmest">Mes más cálido</string>
+    <string name="share_year_word">Palabra más dicha</string>
+    <string name="share_year_word_quoted">«%1$s»</string>
+    <string name="share_year_computed">Calculado por</string>
+    <string name="share_year_computed_value">solo este teléfono</string>
+    <string name="share_year_footer">AÑO UNO · 0 LLAMADAS DE RED</string>
+    <plurals name="share_milestone_spoken">
+        <item quantity="one">NOCHE HABLADA</item>
+        <item quantity="many">NOCHES HABLADAS</item>
+        <item quantity="other">NOCHES HABLADAS</item>
+    </plurals>
+    <string name="share_milestone_365">Un año de constancia.</string>
+    <string name="share_milestone_100">Cien noches.</string>
+    <string name="share_milestone_42">Cuarenta y dos noches.</string>
+    <string name="share_milestone_1">Una noche.</string>
+    <plurals name="share_milestone_nights">
+        <item quantity="one">%1$d noche.</item>
+        <item quantity="many">%1$d noches.</item>
+        <item quantity="other">%1$d noches.</item>
+    </plurals>
+    <string name="share_milestone_body">Nadie me lo vendió. Solo seguí hablando.</string>
+    <string name="share_milestone_footer">HECHO EN ESTE TELÉFONO · GETDAILYVOX.COM</string>
+    <plurals name="share_gift_kept">
+        <item quantity="one">Guardé %1$d estrella.</item>
+        <item quantity="many">Guardé %1$d estrellas.</item>
+        <item quantity="other">Guardé %1$d estrellas.</item>
+    </plurals>
+    <string name="share_gift_start">Empieza el tuyo.</string>
+    <string name="share_gift_body_1">Cuarenta y dos segundos cada noche, hablados, no escritos.</string>
+    <string name="share_gift_body_2">Gratis, de código abierto y nunca se conecta a internet.</string>
+    <string name="share_gift_note">SIN RASTREO · NADA QUE ATRIBUIR</string>
+    <string name="share_gift_footer">UN CIELO HECHO DE TI</string>
+    <string name="backup_passphrase_title">Elige una frase de contraseña</string>
+    <string name="backup_passphrase_body">Esta copia se puede restaurar en cualquier teléfono, incluido un iPhone, por cualquiera que conozca esta frase de contraseña. No hay forma de recuperarla: apúntala en un lugar seguro.</string>
+    <string name="backup_passphrase_confirm">Hacer copia</string>
+    <string name="restore_passphrase_title">Frase de contraseña</string>
+    <string name="restore_passphrase_body">Introduce la frase de contraseña con la que se hizo esta copia.</string>
+    <string name="restore_passphrase_confirm">Restaurar</string>
+    <string name="passphrase_field">Frase de contraseña</string>
+    <string name="passphrase_hide">Ocultar</string>
+    <string name="passphrase_show">Mostrar</string>
+    <string name="passphrase_cancel">Cancelar</string>
+    <string name="lock_title">DailyVox está bloqueado</string>
+    <string name="lock_unlock">Desbloquear</string>
+    <string name="applock_prompt_title">Desbloquear DailyVox</string>
+    <string name="applock_prompt_subtitle">Tu diario está bloqueado en este dispositivo</string>
+    <string name="nav_speak">Hablar</string>
+    <string name="nav_journal">Diario</string>
+    <string name="nav_twin">Gemelo</string>
+    <string name="nav_ask">Preguntar</string>
+    <string name="toast_export_empty">Aún no hay nada que exportar.</string>
+    <string name="toast_export_pdf_failed">No se pudo crear el PDF.</string>
+    <string name="toast_import_unreadable">No se pudo leer ese archivo.</string>
+    <string name="toast_import_wrong_passphrase">Esa frase de contraseña no abre esta copia.</string>
+    <string name="toast_import_not_backup">Ese archivo no es una copia de DailyVox.</string>
+    <string name="toast_import_not_export">Eso no parece una exportación de DailyVox.</string>
+    <string name="toast_import_nothing_new">Nada nuevo: esas entradas ya están aquí.</string>
+    <plurals name="toast_import_added">
+        <item quantity="one">Se añadió %1$d entrada.</item>
+        <item quantity="many">Se añadieron %1$d entradas.</item>
+        <item quantity="other">Se añadieron %1$d entradas.</item>
+    </plurals>
+    <string name="toast_write_failed">No se pudo escribir ahí.</string>
+    <string name="toast_export_json_written">Diario guardado como JSON legible.</string>
+    <string name="toast_backup_written">Copia guardada. Necesitarás esa frase de contraseña para restaurarla.</string>
+    <string name="toast_research_written">Archivo de investigación guardado.</string>
+    <string name="ask_title">Pregunta a tu Gemelo</string>
+    <string name="ask_subtitle">respuestas con pruebas · 0 llamadas a la red</string>
+    <string name="ask_intro">Pregunta algo o elige una pregunta de abajo. Cada respuesta sale de tus propias entradas y nombra las que usó. Para todo lo demás, busca en vez de responder: las entradas más cercanas, citadas tal como las dijiste.</string>
+    <string name="ask_intro_not_enough">Unas pocas entradas más y el Gemelo tendrá algo que valga la pena decir. Solo habla a partir de lo que de verdad has dicho.</string>
+    <string name="ask_cite_chip">%1$s · %2$d %%</string>
+    <plurals name="ask_cited">
+        <item quantity="one">%1$d CITADA ✦</item>
+        <item quantity="many">%1$d CITADAS ✦</item>
+        <item quantity="other">%1$d CITADAS ✦</item>
+    </plurals>
+    <string name="ask_read_aloud">Leer en voz alta</string>
+    <string name="ask_read_aloud_stop">Detener</string>
+    <string name="ask_placeholder">Pregunta, o busca lo que dijiste sobre…</string>
+    <string name="insights_title">Análisis</string>
+    <string name="goal_progress">%1$d de %2$d</string>
+    <string name="goal_this_week">esta semana</string>
+    <plurals name="goal_days_left">
+        <item quantity="one">queda %1$d día</item>
+        <item quantity="many">quedan %1$d días</item>
+        <item quantity="other">quedan %1$d días</item>
+    </plurals>
+    <string name="goal_met_note">Esa es tu semana. Todo lo demás es extra.</string>
+    <string name="goal_counting_note">Noches, no entradas: una noche cuenta una sola vez.</string>
+    <string name="insights_last_30">Últimas 30 noches</string>
+    <string name="insights_last_30_note">Las estrellas más brillantes fueron días mejores. Esta noche te espera.</string>
+    <string name="insights_mood_14">Ánimo · últimos 14 días</string>
+    <string name="insights_curve_not_enough">Una curva necesita unos días más.</string>
+    <string name="journal_title">Diario</string>
+    <string name="journal_play_today">Reproducir hoy · %1$d:%2$02d</string>
+    <string name="journal_playing">Reproduciendo · %1$d:%2$02d</string>
+    <string name="journal_play_today_no_audio">Las entradas de hoy no tienen audio guardado.</string>
+    <string name="journal_search_placeholder">Busca en tu diario</string>
+    <string name="journal_search_voice">Buscar por voz</string>
+    <string name="journal_search_voice_unavailable">No hay entrada de voz en este dispositivo.</string>
+    <string name="journal_search_error_dismiss">Cerrar</string>
+    <string name="journal_filter_all">Todas</string>
+    <string name="journal_filter_people">Personas</string>
+    <string name="journal_filter_mood">Ánimo</string>
+    <string name="journal_filter_body">Cuerpo</string>
+    <string name="journal_empty_search_title">Nada coincide</string>
+    <string name="journal_empty_search_body">La búsqueda mira las palabras de tus entradas y las personas que ha anotado tu Gemelo. Prueba con un nombre o con menos palabras.</string>
+    <string name="journal_empty_search_action">Borrar la búsqueda</string>
+    <string name="journal_empty_filter_title">No hay entradas con este filtro</string>
+    <string name="journal_empty_filter_people">Ninguna de tus entradas menciona todavía un nombre que tu Gemelo haya reconocido.</string>
+    <string name="journal_empty_filter_mood">Aquí nada se lee con fuerza en un sentido ni en otro: eso también es una forma de semana.</string>
+    <string name="journal_empty_filter_body">Ninguna entrada tiene todavía contexto corporal.</string>
+    <string name="journal_empty_filter_action">Mostrar todo</string>
+    <string name="journal_empty_title">Tu primera estrella está a un toque</string>
+    <string name="journal_empty_body">Habla cuarenta y dos segundos. Se queda en este teléfono, y el Gemelo empieza desde ahí.</string>
+    <string name="journal_empty_action">Habla esta noche</string>
+    <string name="journal_card_meta">%1$s · %2$s · %3$s</string>
+    <string name="journal_card_typed">ESCRITA</string>
+    <string name="journal_card_not_transcribed">SIN TRANSCRIBIR</string>
+    <plurals name="journal_card_words">
+        <item quantity="one">%1$d PALABRA</item>
+        <item quantity="many">%1$d PALABRAS</item>
+        <item quantity="other">%1$d PALABRAS</item>
+    </plurals>
+    <string name="journal_card_untranscribed">Grabada, pero este teléfono no la transcribió. El audio está guardado: toca para reproducirlo.</string>
+    <string name="journal_card_sleep">%1$.1f H DE SUEÑO</string>
+    <string name="journal_when_tonight">Esta noche · %1$s</string>
+    <string name="journal_when_today">Hoy · %1$s</string>
+    <string name="journal_when_yesterday">Ayer · %1$s</string>
+    <string name="journal_when_day">%1$s · %2$s</string>
+    <string name="journal_twin_noticed">Tu Gemelo notó: %1$s. Pregunta sobre ello.</string>
+    <string name="dial_status_recording">● GRABANDO · LOCAL · 0 B ENVIADOS</string>
+    <string name="dial_status_paused">❙❙ EN PAUSA · LOCAL · 0 B ENVIADOS</string>
+    <string name="dial_ticks_lit">DE 0:42 · %1$d MARCAS ACTIVAS</string>
+    <string name="dial_paused">En pausa. Toca Reanudar y sigue.</string>
+    <string name="dial_listening">Escuchando…</string>
+    <string name="dial_partial">«…%1$s»</string>
+    <string name="dial_filed">%1$s ✦ AÑADIDO A TU CIELO</string>
+    <string name="dial_discard">Descartar</string>
+    <string name="dial_stop_keep">Parar y guardar ✦</string>
+    <string name="dial_pause">Pausa</string>
+    <string name="dial_resume">Reanudar</string>
+    <string name="share_sheet_title">Compartir</string>
+    <string name="share_sheet_intro">Se genera en este teléfono y se entrega a lo que elijas. DailyVox no tiene forma de enviarlo por su cuenta.</string>
+    <string name="share_sheet_render_failed">No se pudo generar la tarjeta.</string>
+    <string name="share_sheet_names">Incluir nombres</string>
+    <string name="share_sheet_names_on">La tarjeta mostrará el nombre de una persona real.</string>
+    <string name="share_sheet_names_off">Desactivado: la tarjeta dice «alguien».</string>
+    <string name="share_sheet_airplane_hint">Activa el modo avión antes de compartir y la tarjeta llevará el sello EN MODO AVIÓN, porque entonces será verdad.</string>
+    <string name="share_sheet_wallpaper">Poner como fondo de pantalla</string>
+    <string name="share_sheet_share_instead">Compartir la imagen</string>
+    <string name="share_sheet_share">Compartir</string>
+    <string name="share_chooser_title">Compartir</string>
+    <plurals name="export_pdf_entries">
+        <item quantity="one">%1$d entrada</item>
+        <item quantity="many">%1$d entradas</item>
+        <item quantity="other">%1$d entradas</item>
+    </plurals>
+    <plurals name="export_pdf_author_entries">
+        <item quantity="one">%1$s · %2$d entrada</item>
+        <item quantity="many">%1$s · %2$d entradas</item>
+        <item quantity="other">%1$s · %2$d entradas</item>
+    </plurals>
+    <string name="export_when">%1$s · %2$s</string>
+    <string name="export_pdf_mood">"  ·  ánimo %1$+.2f"</string>
+    <string name="export_md_title">Diario de DailyVox</string>
+    <plurals name="export_md_summary">
+        <item quantity="one">%1$d entrada, exportada el %2$s.</item>
+        <item quantity="many">%1$d entradas, exportadas el %2$s.</item>
+        <item quantity="other">%1$d entradas, exportadas el %2$s.</item>
+    </plurals>
+    <string name="export_md_valence">valencia %1$+.2f</string>
+    <string name="export_md_sleep">%1$.1f h de sueño</string>
+    <string name="speak_greeting_night">Aún en vela</string>
+    <string name="speak_greeting_morning">Buenos días</string>
+    <string name="speak_greeting_afternoon">Buenas tardes</string>
+    <string name="speak_greeting_evening">Buenas tardes</string>
+    <plurals name="speak_year_count">
+        <item quantity="one">✦ %1$d este año</item>
+        <item quantity="many">✦ %1$d este año</item>
+        <item quantity="other">✦ %1$d este año</item>
+    </plurals>
+    <string name="speak_state_listening">Escuchando.</string>
+    <string name="speak_state_filing">Guardándola.</string>
+    <string name="speak_allow_mic">Permite el micrófono para empezar</string>
+    <string name="speak_tap_to_record">Toca para grabar · 42 segundos</string>
+    <string name="speak_also_on_home">También en tu pantalla de inicio y en Ajustes rápidos</string>
+    <string name="speak_cant_talk">Ahora no puedo hablar</string>
+    <string name="speak_cant_talk_description">Escribir una entrada</string>
+    <string name="speak_error_dismiss">Cerrar</string>
+    <string name="speak_today_label">hoy ✦ · %1$s</string>
+    <string name="speak_today_no_audio">Esta entrada no tiene audio guardado.</string>
+    <string name="speak_today_play_description">Reproducir la entrada de hoy</string>
+    <string name="speak_today_stop_description">Dejar de reproducir la entrada de hoy</string>
+    <string name="speak_privacy_line">Funciona en modo avión. Nada sale de este teléfono.</string>
+    <string name="speak_privacy_calls">0 llamadas</string>
+    <string name="speak_typed_stored">escrita, no grabada · se queda en este teléfono</string>
+    <string name="speak_typed_save">Guardar en hoy</string>
+    <string name="speak_typed_back">Volver a hablar</string>
+    <string name="speak_button_start">Empezar a grabar</string>
+    <string name="speak_button_stop">Detener la grabación</string>
+    <string name="speak_button_processing">Procesando</string>
+    <string name="reflection_spoken_header">%1$s. %2$s.</string>
+    <string name="reflection_spoken_tomorrow">%1$s: %2$s</string>
+    <string name="twin_title">Tu cielo</string>
+    <string name="twin_star_count">%1$d ✦ · %2$s</string>
+    <string name="twin_depth_new">NUEVO</string>
+    <string name="twin_depth_early">JOVEN</string>
+    <string name="twin_depth_forming">CRECIENDO</string>
+    <string name="twin_depth_deep">PROFUNDO</string>
+    <string name="twin_casing_inconsistent">Algunos nombres llegan a tu diario escritos de dos formas (%1$s), así que el Gemelo no puede contarlos como una sola persona. Corregir la transcripción de una entrada le enseña la grafía correcta.</string>
+    <string name="twin_casing_none">Aún no ha aparecido ningún nombre. O no has hablado de nadie, o el reconocedor de voz de este teléfono no escribe los nombres con mayúscula, que es como el Gemelo los reconoce.</string>
+    <plurals name="twin_summary">
+        <item quantity="one">Quién eres: %1$s, %2$s, según %3$d entrada.</item>
+        <item quantity="many">Quién eres: %1$s, %2$s, según %3$d entradas.</item>
+        <item quantity="other">Quién eres: %1$s, %2$s, según %3$d entradas.</item>
+    </plurals>
+    <string name="twin_tone_warm">con calidez y calma</string>
+    <string name="twin_tone_even">con ecuanimidad</string>
+    <string name="twin_tone_measured">con mesura</string>
+    <string name="twin_tone_candid">con franqueza y sin rodeos</string>
+    <string name="twin_length_expansive">con amplitud</string>
+    <string name="twin_length_economical">con brevedad</string>
+    <string name="twin_link_insights">Análisis</string>
+    <string name="twin_link_insights_sub">racha, ánimo, patrones</string>
+    <string name="twin_link_ask">Preguntar</string>
+    <string name="twin_link_ask_sub">respuestas con pruebas</string>
+    <string name="speech_pack_download">Descargar paquete de voz</string>
+    <string name="speech_pack_try_again">Volver a intentarlo</string>
+    <string name="speech_pack_open_settings">Abrir ajustes de voz</string>
+    <string name="speech_pack_requested">Pidiendo el paquete al servicio de voz de tu teléfono…</string>
+    <string name="speech_pack_progress">Descargando el paquete de voz · %1$d %%</string>
+    <string name="speech_pack_scheduled">Tu teléfono descargará el paquete en breve, normalmente con wifi. Graba cuando quieras: las entradas conservan su audio hasta que llegue.</string>
+    <string name="speech_pack_done">Paquete de voz instalado. Tu voz se queda en este teléfono.</string>
+    <string name="speech_pack_failed">El servicio de voz de tu teléfono no quiso descargarlo desde aquí. Puedes instalarlo en Ajustes de Android › Sistema › Idiomas › Voz.</string>
+    <string name="goal_notification_title">Esa es tu semana.</string>
+    <plurals name="goal_notification_met">
+        <item quantity="one">%1$d noche, justo lo que te propusiste.</item>
+        <item quantity="many">%1$d noches, justo lo que te propusiste.</item>
+        <item quantity="other">%1$d noches, justo lo que te propusiste.</item>
+    </plurals>
+    <plurals name="goal_notification_past">
+        <item quantity="one">%1$d noche esta semana, por encima de las %2$d que te propusiste.</item>
+        <item quantity="many">%1$d noches esta semana, por encima de las %2$d que te propusiste.</item>
+        <item quantity="other">%1$d noches esta semana, por encima de las %2$d que te propusiste.</item>
+    </plurals>
+    <string name="goal_channel_name">Objetivo semanal</string>
+    <string name="goal_channel_description">Aparece una sola vez, la semana en que alcanzas tu objetivo.</string>
+    <string name="recording_notification_title">Escuchando</string>
+    <string name="recording_notification_text">%1$d:%2$02d · en el dispositivo · 0 bytes enviados</string>
+    <string name="recording_notification_finish">Terminar</string>
+    <string name="recording_channel_name">Grabación</string>
+    <string name="recording_channel_description">Solo se muestra mientras hay una grabación en curso.</string>
+    <string name="reminder_channel_name">Recordatorio diario</string>
+    <string name="reminder_channel_description">Un aviso para grabar la entrada de esta noche.</string>
+    <string name="tile_subtitle">Toca para hablar</string>
+    <string name="widget_tonight_filed">Esta noche, hecho</string>
+    <string name="widget_tonight_waiting">Esta noche te espera</string>
+    <plurals name="widget_in_your_sky">
+        <item quantity="one">%1$d EN TU CIELO</item>
+        <item quantity="many">%1$d EN TU CIELO</item>
+        <item quantity="other">%1$d EN TU CIELO</item>
+    </plurals>
+    <string name="widget_in_your_sky_placeholder">0 EN TU CIELO</string>
+    <string name="widget_star_description">La estrella de esta noche</string>
+    <string name="widget_mic_description">Hablar</string>
+    <string name="transcribe_missing">Falta la grabación.</string>
+    <string name="transcribe_no_recogniser">Este teléfono no tiene reconocedor en el dispositivo.</string>
+    <string name="transcribe_undecodable">No se pudo decodificar la grabación.</string>
+    <string name="transcribe_empty">La grabación está vacía.</string>
+    <string name="transcribe_timeout">El reconocedor no terminó a tiempo.</string>
+    <string name="transcribe_no_words">El reconocedor no devolvió palabras para esta grabación.</string>
+    <string name="mood_joy">Alegría</string>
+    <string name="mood_sadness">Tristeza</string>
+    <string name="mood_anger">Enfado</string>
+    <string name="mood_fear">Miedo</string>
+    <string name="mood_surprise">Sorpresa</string>
+    <string name="mood_disgust">Asco</string>
+    <string name="mood_neutral">Neutral</string>
+    <string name="recap_description">%1$s, %2$s. %3$s.</string>
+    <string name="share_entry_card_footer">"DAILYVOX  ·  GRABADO EN LOCAL"</string>
+
+    <!-- Story card and one-time share offer (PR #120). Machine draft, unreviewed. -->
+    <string name="sky_story_title">Historia</string>
+    <string name="sky_story_caption">A la medida de las historias de Instagram y los estados de WhatsApp. Tus estrellas y cuántas noches: ninguna de tus palabras.</string>
+    <string name="sky_story_eyebrow">MI CIELO</string>
+    <plurals name="sky_story_headline">
+        <item quantity="one">%d noche cumplida.</item>
+        <item quantity="many">%d noches cumplidas.</item>
+        <item quantity="other">%d noches cumplidas.</item>
+    </plurals>
+    <string name="sky_story_line">Una estrella por cada noche que hablé. Las palabras se quedaron en mi teléfono.</string>
+    <string name="sky_story_footer">DailyVox · %1$s</string>
+    <plurals name="sky_story_description">
+        <item quantity="one">Tu cielo tras %d noche. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+        <item quantity="many">Tu cielo tras %d noches. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+        <item quantity="other">Tu cielo tras %d noches. Solo estrellas y un número, ninguna palabra de tu diario.</item>
+    </plurals>
+    <plurals name="sky_story_share_text">
+        <item quantity="one">Mi cielo tras %1$d noche de DailyVox: %2$s</item>
+        <item quantity="many">Mi cielo tras %1$d noches de DailyVox: %2$s</item>
+        <item quantity="other">Mi cielo tras %1$d noches de DailyVox: %2$s</item>
+    </plurals>
+    <string name="share_offer_7">Siete noches. Tu cielo va tomando forma. ¿Lo compartes?</string>
+    <string name="share_offer_21">Veintiuna noches. Tu cielo se va llenando. ¿Lo compartes?</string>
+    <string name="share_offer_42">Cuarenta y dos noches. Tu cielo ya tiene forma propia. ¿Lo compartes?</string>
+    <string name="share_offer_note">En la tarjeta solo van tus estrellas y el número. Ninguna de tus palabras.</string>
+    <string name="share_offer_share">Compartir</string>
+    <string name="share_offer_not_now">Ahora no</string>
+    <string name="share_offer_not_now_description">Ahora no. No se volverá a ofrecer.</string>
+    <string name="settings_share_offer">Ofrecer compartir los hitos</string>
+    <string name="settings_share_offer_note">Tras las noches 7, 21 y 42, una vez cada una, una tarjeta te ofrece compartir tu cielo. Muestra estrellas y un número, nunca tus palabras. No se envía nada a menos que elijas una app para enviarlo.</string>
+</resources>

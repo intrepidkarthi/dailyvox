@@ -64,12 +64,12 @@ object RecordingLive {
 
         val builder = NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(R.drawable.ic_nav_speak)
-            .setContentTitle("Listening")
+            .setContentTitle(context.getString(R.string.recording_notification_title))
             // The 42 seconds is a SOFT TARGET everywhere else in the product, so
             // this counts past it rather than stopping — a bar that fills and
             // freezes would tell people to stop talking.
             .setContentText(
-                "%d:%02d · on-device · 0 bytes out".format(elapsedSeconds / 60, elapsedSeconds % 60)
+                context.getString(R.string.recording_notification_text, elapsedSeconds / 60, elapsedSeconds % 60)
             )
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -79,7 +79,7 @@ object RecordingLive {
             // a journal, and "Listening" on a locked phone tells the room.
             .setVisibility(NotificationCompat.VISIBILITY_SECRET)
             .setContentIntent(open)
-            .addAction(0, "Finish", finish)
+            .addAction(0, context.getString(R.string.recording_notification_finish), finish)
             .setProgress(42, elapsedSeconds.coerceAtMost(42), false)
 
         runCatching { NotificationManagerCompat.from(context).notify(ID, builder.build()) }
@@ -93,9 +93,11 @@ object RecordingLive {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         if (nm.getNotificationChannel(CHANNEL) == null) {
             nm.createNotificationChannel(
-                NotificationChannel(CHANNEL, "Recording", NotificationManager.IMPORTANCE_LOW)
+                NotificationChannel(
+                    CHANNEL, context.getString(R.string.recording_channel_name), NotificationManager.IMPORTANCE_LOW,
+                )
                     .apply {
-                        description = "Shown only while a recording is in progress."
+                        description = context.getString(R.string.recording_channel_description)
                         setShowBadge(false)
                         lockscreenVisibility = Notification.VISIBILITY_SECRET
                     }

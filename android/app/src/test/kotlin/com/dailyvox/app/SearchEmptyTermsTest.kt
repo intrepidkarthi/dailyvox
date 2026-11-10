@@ -23,8 +23,10 @@ class SearchEmptyTermsTest {
         assertEquals(listOf("b"), Repo.searchResults("meeting at work", journal).map { it.id })
     }
 
-    @Test fun `a Devanagari query is not the whole journal`() {
-        assertTrue(Repo.searchResults("दादी", journal).isEmpty())
+    @Test fun `a Devanagari query finds its entry, not the whole journal`() {
+        // B-9: the engine's Unicode tokenizer reads the script, so the query
+        // finds the entry it names. Before it, the query tokenised to nothing.
+        assertEquals(listOf("c"), Repo.searchResults("दादी", journal).map { it.id })
     }
 
     @Test fun `a query of only stopwords or short words is not the whole journal`() {

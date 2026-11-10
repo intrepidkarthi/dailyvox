@@ -1,5 +1,7 @@
 package com.dailyvox.app.ui
 
+import com.dailyvox.app.R
+
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +28,16 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val reflection: StateFlow<com.dailyvox.app.system.Reflection.Card?> = _reflection
 
     fun dismissReflection() { _reflection.value = null }
+
+    /**
+     * The night (7, 21 or 42) whose Story card is on offer, or null. Set after
+     * the save that makes that night, by [com.dailyvox.app.system.ShareOffer],
+     * and recorded as shown at the same moment so it can never come back.
+     */
+    private val _shareOffer = MutableStateFlow<Int?>(null)
+    val shareOffer: StateFlow<Int?> = _shareOffer
+
+    fun dismissShareOffer() { _shareOffer.value = null }
 
     /**
      * A mood picked (or cleared, with null) on the reflection card. The card
@@ -60,19 +72,41 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     private val body = com.dailyvox.app.body.BodySignals(app)
 
-    fun add(text: String, durationSec: Int, audioPath: String? = null) = viewModelScope.launch {
+    fun add(
+        text: String,
+        durationSec: Int,
+        audioPath: String? = null,
+        /** True for the first star, saved by onboarding: never offers a share. */
+        onboarding: Boolean = false,
+    ) = viewModelScope.launch {
         val prefs = getApplication<Application>()
             .getSharedPreferences("dailyvox", android.content.Context.MODE_PRIVATE)
         val snapshot = if (prefs.getBoolean("body", false)) {
             runCatching { body.read() }.getOrNull()
         } else null
 
-        val saved = repo.add(text, durationSec, audioPath, snapshot)
+        // The tag the recogniser was asked for in the session that produced
+        // these words (B-2). Typed text is classified inside Repo instead.
+        val spoken = com.dailyvox.app.audio.SpeechCapture.lastSessionLanguage(getApplication())
+        val saved = repo.add(text, durationSec, audioPath, snapshot, spokenLanguage = spoken)
+        val table = repo.observeAll().first()
         // Off the saved row and the rest of the table, nothing else. Wrapped so
         // a reflection that cannot be built never looks like a failed save.
         _reflection.value = runCatching {
-            com.dailyvox.app.system.Reflection.of(saved, repo.observeAll().first())
+            com.dailyvox.app.system.Reflection.of(saved, table)
         }.getOrNull()
+        val app = getApplication<Application>()
+        com.dailyvox.app.system.ShareOffer.due(
+            before = table.filter { it.id != saved.id }.map { it.createdAt },
+            savedAt = saved.createdAt,
+            zone = java.time.ZoneId.systemDefault(),
+            shown = com.dailyvox.app.system.ShareOffer.shown(app),
+            enabled = com.dailyvox.app.system.ShareOffer.isEnabled(app),
+            onboarding = onboarding,
+        )?.let { night ->
+            com.dailyvox.app.system.ShareOffer.markShown(app, night)
+            _shareOffer.value = night
+        }
         refreshStats()
         // The widget is the only surface that can go stale without anyone
         // noticing -- it has no lifecycle of its own and its update period is an
@@ -89,8 +123,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
      * Twin was working from the wrong words, and leaving the derived fields
      * alone would fix what the user reads and not what the Twin knows.
      */
-    fun editText(id: String, text: String) = viewModelScope.launch {
-        repo.updateText(id, text)
+    fun editText(id: String, text: String, language: String? = null) = viewModelScope.launch {
+        repo.updateText(id, text, language)
     }
 
     fun setSelfLabel(id: String, label: String?) = viewModelScope.launch {
@@ -107,7 +141,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun exportPdf(context: android.content.Context) = viewModelScope.launch {
         val all = repo.observeAll().first()
         if (all.isEmpty()) {
-            toast(context, "Nothing to export yet.")
+            toast(context, context.getString(R.string.toast_export_empty))
             return@launch
         }
         runCatching {
@@ -115,7 +149,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         }.onSuccess {
             com.dailyvox.app.system.Exporters.share(context, it, "application/pdf")
         }.onFailure {
-            toast(context, "Could not build the PDF.")
+            toast(context, context.getString(R.string.toast_export_pdf_failed))
         }
     }
 
@@ -128,7 +162,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         val bytes = runCatching {
             context.contentResolver.openInputStream(uri)!!.use { it.readBytes() }
         }.getOrNull()
-        if (bytes == null) { toast(context, "Could not read that file."); return@launch }
+        if (bytes == null) { toast(context, context.getString(R.string.toast_import_unreadable)); return@launch }
 
         // Sniff the container rather than trusting the extension. A backup the
         // app cannot read back is not a backup, and .dvx is the format the
@@ -144,22 +178,22 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 com.dailyvox.app.security.Vault.decrypt(bytes, passphrase!!)
             } catch (e: com.dailyvox.app.security.Vault.WrongPassphrase) {
-                toast(context, "That passphrase does not open this backup.")
+                toast(context, context.getString(R.string.toast_import_wrong_passphrase))
                 return@launch
             } catch (e: Exception) {
-                toast(context, "That file is not a DailyVox backup.")
+                toast(context, context.getString(R.string.toast_import_not_backup))
                 return@launch
             }
         } else {
             String(bytes, Charsets.UTF_8)
         }
         val added = runCatching { repo.importJson(text) }.getOrElse {
-            toast(context, "That does not look like a DailyVox export."); return@launch
+            toast(context, context.getString(R.string.toast_import_not_export)); return@launch
         }
         refreshStats()
         com.dailyvox.app.system.StarWidget.refresh(getApplication())
-        toast(context, if (added == 0) "Nothing new — those entries are already here."
-                       else "Added $added entries.")
+        toast(context, if (added == 0) context.getString(R.string.toast_import_nothing_new)
+                       else context.resources.getQuantityString(R.plurals.toast_import_added, added, added))
     }
 
     private fun toast(context: android.content.Context, msg: String) =
@@ -188,6 +222,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         all.forEachIndexed { i, e ->
             append("    {\"date\": ${e.createdAt}, \"seconds\": ${e.durationSec}, ")
             append("\"valence\": ${e.valence}, \"entities\": \"${e.entities}\", ")
+            // Only when known. A reader that does not know the key ignores it;
+            // this app's own import keeps it rather than re-guessing (B-2).
+            e.language?.let { append("\"language\": ${org.json.JSONObject.quote(it)}, ") }
             append("\"text\": ${org.json.JSONObject.quote(e.text)}}")
             if (i < all.size - 1) append(",")
             append("\n")
@@ -209,9 +246,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         toast(
             context,
             when {
-                !ok -> "Could not write there."
-                passphrase.isNullOrEmpty() -> "Journal written as readable JSON."
-                else -> "Backup written. You will need that passphrase to restore it."
+                !ok -> context.getString(R.string.toast_write_failed)
+                passphrase.isNullOrEmpty() -> context.getString(R.string.toast_export_json_written)
+                else -> context.getString(R.string.toast_backup_written)
             },
         )
     }
@@ -231,7 +268,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                     it.write(json.toByteArray(Charsets.UTF_8))
                 }
             }.isSuccess
-            toast(context, if (ok) "Research file written." else "Could not write there.")
+            toast(context, context.getString(if (ok) R.string.toast_research_written else R.string.toast_write_failed))
         }
 
     fun delete(id: String) = viewModelScope.launch {

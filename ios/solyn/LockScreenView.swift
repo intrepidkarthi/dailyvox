@@ -77,9 +77,9 @@ struct LockScreenView: View {
 
     private var biometryIcon: String {
         switch lockManager.biometryTypeName {
-        case "Face ID": return "faceid"
-        case "Touch ID": return "touchid"
-        case "Optic ID": return "opticid"
+        case "Face ID": return "faceid"  // i18n-ignore: identity match on the product name
+        case "Touch ID": return "touchid"  // i18n-ignore: identity match on the product name
+        case "Optic ID": return "opticid"  // i18n-ignore: identity match on the product name
         default: return "key.fill"
         }
     }

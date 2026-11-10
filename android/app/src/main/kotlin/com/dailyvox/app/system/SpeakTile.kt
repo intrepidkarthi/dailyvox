@@ -23,8 +23,8 @@ class SpeakTile : TileService() {
     override fun onStartListening() {
         qsTile?.apply {
             state = Tile.STATE_INACTIVE
-            label = "DailyVox"
-            subtitle = "Tap to speak"
+            label = getString(com.dailyvox.app.R.string.app_name)
+            subtitle = getString(com.dailyvox.app.R.string.tile_subtitle)
             updateTile()
         }
     }
