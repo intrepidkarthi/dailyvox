@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.dailyvox.app.ui.theme.LocalDvPalette
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
@@ -32,9 +33,6 @@ import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.ui.components.MonoLabel
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import com.dailyvox.app.ui.theme.NightBackground
-import com.dailyvox.app.ui.theme.NightText
-import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
 
 /**
@@ -96,6 +94,8 @@ fun OnboardingScreen(
 
 @Composable
 private fun LedgerBeat(onNext: () -> Unit) {
+    val nz = LocalDvPalette.current.night
+    val starGold = LocalDvPalette.current.reward
     Column(
         Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -137,27 +137,27 @@ private fun LedgerBeat(onNext: () -> Unit) {
         // "the site's strongest argument, currently absent from the app".
         // At night the page itself is navy, so the card lifts to the night
         // surface with a gold hairline -- navy on navy made it vanish.
-        val nightPage = MaterialTheme.colorScheme.background == NightBackground
+        val nightPage = LocalDvPalette.current.isNight
         Row(
             Modifier.fillMaxWidth().widthIn(max = 520.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(if (nightPage) MaterialTheme.colorScheme.surface else NightBackground)
-                .then(if (nightPage) Modifier.border(1.dp, StarGold.copy(alpha = 0.28f), RoundedCornerShape(20.dp)) else Modifier)
+                .background(if (nightPage) MaterialTheme.colorScheme.surface else nz.ground)
+                .then(if (nightPage) Modifier.border(1.dp, starGold.copy(alpha = 0.28f), RoundedCornerShape(20.dp)) else Modifier)
                 .padding(16.dp),
             verticalAlignment = Alignment.Top,
         ) {
             Box(
-                Modifier.size(38.dp).clip(CircleShape).background(StarGold.copy(alpha = 0.18f)),
+                Modifier.size(38.dp).clip(CircleShape).background(starGold.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("\u2708", fontSize = 15.sp, color = StarGold)
+                Text("\u2708", fontSize = 15.sp, color = starGold)
             }
             Spacer(Modifier.width(13.dp))
             Column {
                 Text(
                     "Try it in airplane mode",
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
-                    color = NightText,
+                    color = nz.ink,
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
@@ -166,7 +166,7 @@ private fun LedgerBeat(onNext: () -> Unit) {
                     // download is the one step that needs a connection.
                     "Turn the radios off and speak. The transcript, the mood, the star — all of it still happens, on the phone. If your phone needs its offline speech pack first, DailyVox will offer it.",
                     fontSize = 13.sp, lineHeight = 19.sp,
-                    color = NightText.copy(alpha = 0.72f),
+                    color = nz.ink.copy(alpha = 0.72f),
                 )
             }
         }
@@ -184,6 +184,8 @@ private fun LedgerBeat(onNext: () -> Unit) {
 
 @Composable
 private fun InviteBeat(onNext: () -> Unit) {
+    val nz = LocalDvPalette.current.night
+    val starGold = LocalDvPalette.current.reward
     // Continue either way. A journal that refuses to open because you said no
     // to the microphone is punishing caution, and caution is who this is for.
     val mic = com.dailyvox.app.system.rememberMicPermission { onNext() }
@@ -201,14 +203,14 @@ private fun InviteBeat(onNext: () -> Unit) {
         // Gold rings and a drawn waveform: iOS's invite mark, geometric per §8.9.
         Canvas(Modifier.size(140.dp)) {
             val c = center
-            drawCircle(StarGold.copy(alpha = 0.14f * appear), radius = size.minDimension / 2 * (0.7f + 0.3f * appear))
-            drawCircle(StarGold.copy(alpha = 0.22f * appear), radius = size.minDimension * 0.30f)
+            drawCircle(starGold.copy(alpha = 0.14f * appear), radius = size.minDimension / 2 * (0.7f + 0.3f * appear))
+            drawCircle(starGold.copy(alpha = 0.22f * appear), radius = size.minDimension * 0.30f)
             val bars = listOf(0.35f, 0.7f, 1f, 0.6f, 0.85f, 0.45f)
             val gap = size.minDimension * 0.075f
             val x0 = c.x - gap * (bars.size - 1) / 2
             bars.forEachIndexed { i, h ->
                 val half = size.minDimension * 0.13f * h
-                drawLine(StarGold, Offset(x0 + i * gap, c.y - half), Offset(x0 + i * gap, c.y + half),
+                drawLine(starGold, Offset(x0 + i * gap, c.y - half), Offset(x0 + i * gap, c.y + half),
                          strokeWidth = size.minDimension * 0.035f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
             }
         }
@@ -412,6 +414,8 @@ private fun SpeakBeat(
  */
 @Composable
 private fun VoiceStar(level: Float, phase: Phase) {
+    val nz = LocalDvPalette.current.night
+    val starGold = LocalDvPalette.current.reward
     val t = rememberInfiniteTransition(label = "star")
     val breath by t.animateFloat(
         0f, 1f,
@@ -435,7 +439,7 @@ private fun VoiceStar(level: Float, phase: Phase) {
 
         drawCircle(
             brush = Brush.radialGradient(
-                listOf(StarGold.copy(alpha = 0.18f + flare * 0.22f), Color.Transparent),
+                listOf(starGold.copy(alpha = 0.18f + flare * 0.22f), Color.Transparent),
                 center = c, radius = r,
             ),
             radius = r, center = c,
@@ -445,7 +449,7 @@ private fun VoiceStar(level: Float, phase: Phase) {
             repeat(3) { i ->
                 val p = ((breath + i * 0.33f) % 1f)
                 drawCircle(
-                    color = StarGold.copy(alpha = 0.30f * (1f - p)),
+                    color = starGold.copy(alpha = 0.30f * (1f - p)),
                     radius = r * (0.28f + 0.55f * p) * (1f + amp * 0.25f),
                     center = c,
                     style = Stroke(2.dp.toPx()),
@@ -463,11 +467,11 @@ private fun VoiceStar(level: Float, phase: Phase) {
             cubicTo(c.x - s * .35f, c.y - s * .10f, c.x - s * .10f, c.y - s * .35f, c.x, c.y - s)
             close()
         }
-        drawPath(path, StarGold.copy(alpha = 0.55f + flare * 0.45f))
+        drawPath(path, starGold.copy(alpha = 0.55f + flare * 0.45f))
 
         if (flare > 0f) {
             drawCircle(
-                color = StarGold.copy(alpha = 0.5f * (1f - flare)),
+                color = starGold.copy(alpha = 0.5f * (1f - flare)),
                 radius = r * (0.3f + 0.7f * flare),
                 center = c,
                 style = Stroke(2.dp.toPx()),
@@ -480,6 +484,8 @@ private fun VoiceStar(level: Float, phase: Phase) {
 
 @Composable
 private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
+    val nz = LocalDvPalette.current.night
+    val starGold = LocalDvPalette.current.reward
     val context = LocalContext.current
     // Ticked by default, as on iOS, but a choice the user can see and untick.
     // The reminder used to switch itself on and the notification dialog then
@@ -503,9 +509,9 @@ private fun ClaimBeat(transcript: String, onEnter: (remind: Boolean) -> Unit) {
         Spacer(Modifier.height(22.dp))
         // The star, landed: a gold point with a white core in a soft halo.
         Canvas(Modifier.size(110.dp).graphicsLayer { scaleX = 0.6f + 0.4f * appear; scaleY = scaleX; alpha = appear }) {
-            drawCircle(StarGold.copy(alpha = 0.14f))
-            drawCircle(StarGold.copy(alpha = 0.35f), radius = size.minDimension * 0.17f)
-            drawCircle(StarGold, radius = size.minDimension * 0.11f)
+            drawCircle(starGold.copy(alpha = 0.14f))
+            drawCircle(starGold.copy(alpha = 0.35f), radius = size.minDimension * 0.17f)
+            drawCircle(starGold, radius = size.minDimension * 0.11f)
             drawCircle(Color.White, radius = size.minDimension * 0.036f)
         }
         Spacer(Modifier.height(24.dp))

@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.components
 
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,18 +32,32 @@ import com.dailyvox.app.ui.theme.*
  */
 @Composable
 fun DvCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
-    val dark = MaterialTheme.colorScheme.background == NightBackground
+    val pal = LocalDvPalette.current
+    val dark = pal.isNight
     val shape = RoundedCornerShape(22.dp)
+    // Themes that outline their cards (Sticker, High contrast, the calm set)
+    // draw their own line; Default keeps the 5% hairline in day, none at night.
+    val border = pal.cardBorder?.let { Modifier.border(pal.cardBorderWidth, it, shape) }
+        ?: if (dark) Modifier else Modifier.border(1.dp, pal.ink.copy(alpha = 0.05f), shape)
+    // Sticker cards sit on a hard, flat offset shadow instead of a soft one.
+    val hard = LocalThemeId.current == ThemeId.STICKER && decorated(ThemeId.STICKER, pal)
     Column(
         Modifier
             .fillMaxWidth()
-            .then(if (dark) Modifier else Modifier.shadow(
+            .then(if (hard) Modifier.drawBehind {
+                drawRoundRect(
+                    if (dark) Color.Black.copy(alpha = 0.65f) else pal.ink.copy(alpha = 0.9f),
+                    topLeft = androidx.compose.ui.geometry.Offset(3.dp.toPx(), 4.dp.toPx()),
+                    size = size, cornerRadius = androidx.compose.ui.geometry.CornerRadius(22.dp.toPx()),
+                )
+            } else Modifier)
+            .then(if (dark || hard) Modifier else Modifier.shadow(
                 elevation = 6.dp, shape = shape,
-                ambientColor = DayText.copy(alpha = 0.10f), spotColor = DayText.copy(alpha = 0.10f),
+                ambientColor = pal.ink.copy(alpha = 0.10f), spotColor = pal.ink.copy(alpha = 0.10f),
             ))
             .clip(shape)
             .background(MaterialTheme.colorScheme.surface)
-            .then(if (dark) Modifier else Modifier.border(1.dp, DayText.copy(alpha = 0.05f), shape))
+            .then(border)
             .then(modifier)
             .padding(18.dp),
         content = content,
@@ -64,6 +79,7 @@ fun Chip(text: String, tint: Color = MaterialTheme.colorScheme.secondary) {
 }
 
 /** Valence dot. Gold above +0.3, sage above 0, cool blue above -0.3, else coral —
+ *  fixed in every theme ([MoodColors]), never taken from the palette —
  *  the same four thresholds the iOS constellation uses, so a star and its entry
  *  can never disagree about mood. */
 @Composable
@@ -78,11 +94,11 @@ fun ValenceDot(valence: Float?, size: Int = 8) {
 
 fun valenceColor(v: Float?): Color = when {
     // Unread (another language, or no scored word): a quiet grey, never a mood.
-    v == null -> Color(0xFFA8A29A)
-    v > 0.3f -> StarGold
-    v > 0f -> Color(0xFF6B9E7B)
-    v > -0.3f -> Color(0xFF7BA4C7)
-    else -> Color(0xFFC4736B)
+    v == null -> MoodColors.Unread
+    v > 0.3f -> MoodColors.Bright
+    v > 0f -> MoodColors.Warm
+    v > -0.3f -> MoodColors.Cool
+    else -> MoodColors.Low
 }
 
 /** Uppercase mono label — the design's DM Mono data-label role. */
@@ -155,6 +171,7 @@ fun EmptyState(
     ) {
         // The hollow star: the same mark the widget uses for a night not yet
         // spoken, so absence looks identical everywhere in the product.
+        val hollow = LocalDvPalette.current.reward
         androidx.compose.foundation.Canvas(Modifier.size(46.dp)) {
             val r = size.minDimension / 2f
             val path = androidx.compose.ui.graphics.Path().apply {
@@ -165,7 +182,7 @@ fun EmptyState(
                 cubicTo(center.x - r * .35f, center.y - r * .1f, center.x - r * .1f, center.y - r * .35f, center.x, center.y - r)
                 close()
             }
-            drawPath(path, StarGold.copy(alpha = 0.4f),
+            drawPath(path, hollow.copy(alpha = 0.4f),
                      style = androidx.compose.ui.graphics.drawscope.Stroke(1.4.dp.toPx()))
         }
         Spacer(Modifier.height(18.dp))
