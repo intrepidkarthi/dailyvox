@@ -143,9 +143,11 @@ private struct StarBirthLockScreenView: View {
 @available(iOS 16.2, *)
 private func streakLine(_ state: StarBirthActivityAttributes.ContentState) -> String {
     if state.streak <= 1 {
-        return "First star tonight. Your inner sky is forming."
+        return String(localized: "First star tonight. Your inner sky is forming.",
+                      comment: "Star-birth Live Activity on the Lock Screen after the first entry of a run. 'Star' and 'sky' are the app's metaphor for entries, not astrology. About 50 characters.")
     }
-    return "Day \(state.streak) — your constellation is growing."
+    return String(localized: "Day \(String(state.streak)) — your constellation is growing.",
+                  comment: "Star-birth Live Activity on the Lock Screen after an entry. The placeholder is the streak day (2 or more). About 50 characters.")
 }
 
 /// Mirrors Mood.color from the main app, scoped to the strings the app passes in.

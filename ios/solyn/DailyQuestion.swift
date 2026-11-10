@@ -56,6 +56,9 @@ struct QuestionSource: Equatable {
     /// The suggestion, kept separately: a suggested sad still counts against
     /// grounding after the user has cleared the mood.
     var suggestedMood: Mood = .none
+    /// The entry's stored `transcriptLocale`: the language it was spoken in,
+    /// or nil when unknown (then it is read from the text).
+    var language: String? = nil
 }
 
 extension QuestionSource {
@@ -70,7 +73,8 @@ extension QuestionSource {
             else { return nil }
             return QuestionSource(id: id, date: date, text: text,
                                   mood: Mood(rawValue: entry.mood ?? "") ?? .none,
-                                  suggestedMood: Mood(rawValue: entry.suggestedMood ?? "") ?? .none)
+                                  suggestedMood: Mood(rawValue: entry.suggestedMood ?? "") ?? .none,
+                                  language: entry.transcriptLocale)
         }
     }
 }
@@ -199,12 +203,12 @@ enum DailyQuestions {
     /// Priya" is a kindness after a dinner and a wound after a funeral, and the
     /// tagger cannot tell which. When in doubt, the app asks something else.
     static let sensitiveWords: [String] = [
-        "died", "dying", "death", "dead", "funeral", "passed away", "grief", "grieving",
-        "hospital", "ICU", "cancer", "diagnosis", "diagnosed", "surgery", "sick", "ill",
-        "illness", "divorce", "divorced", "breakup", "broke up", "separated", "miscarriage",
-        "abuse", "abused", "assault", "fight", "fought", "argument", "argued", "cheated",
-        "fired", "laid off", "suicide", "depressed", "depression", "panic", "lost", "loss",
-        "miss", "missed", "missing", "ex", "hurt", "hate", "cried", "crying", "scared",
+        "died", "dying", "death", "dead", "funeral", "passed away", "grief", "grieving",  // i18n-ignore: English words matched in transcripts
+        "hospital", "ICU", "cancer", "diagnosis", "diagnosed", "surgery", "sick", "ill",  // i18n-ignore: English words matched in transcripts
+        "illness", "divorce", "divorced", "breakup", "broke up", "separated", "miscarriage",  // i18n-ignore: English words matched in transcripts
+        "abuse", "abused", "assault", "fight", "fought", "argument", "argued", "cheated",  // i18n-ignore: English words matched in transcripts
+        "fired", "laid off", "suicide", "depressed", "depression", "panic", "lost", "loss",  // i18n-ignore: English words matched in transcripts
+        "miss", "missed", "missing", "ex", "hurt", "hate", "cried", "crying", "scared",  // i18n-ignore: English words matched in transcripts
     ]
 
     /// Never a person or a place, whatever the tagger thinks.
@@ -321,8 +325,9 @@ enum DailyQuestions {
         for entry in recent {
             // `sensitiveWords` is English. An entry it cannot read cannot be
             // shown to be gentle, so it is never asked about — a Spanish
-            // entry about a funeral would otherwise pass every check.
-            guard EntryLanguage.isEnglish(entry.text) else { continue }
+            // entry about a funeral would otherwise pass every check. The
+            // entry's own language decides (LanguageGate: mood and names).
+            guard FeatureLanguage.readsGroundedQuestion(entry.text, stored: entry.language) else { continue }
             let reading = read(entry.text)
             guard isGentle(entry, reading: reading) else { continue }
             // The engine's names come out of a Set, in an order that changes
