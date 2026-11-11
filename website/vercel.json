@@ -208,6 +208,11 @@
       "source": "/blog/why-your-ai-journal-shouldnt-send-data-to-cloud",
       "destination": "/blog/which-journaling-app-is-the-most-private-and-does-not-send-m",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/journal-app-with-ai",
+      "destination": "/blog/best-ai-journaling-app",
+      "statusCode": 301
     }
   ],
   "headers": [
