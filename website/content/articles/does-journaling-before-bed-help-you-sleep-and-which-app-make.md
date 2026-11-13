@@ -87,3 +87,5 @@ Two to five minutes is enough. Long sessions turn into creative work, which rais
 
 ### Does talking out loud wake you up more than typing?
 Speaking at a normal, quiet volume does not disrupt sleep readiness. The physiological act of speaking engages your vagus nerve, which helps regulate stress. It also allows you to keep the room completely dark, avoiding the light exposure that typing requires.
+
+Related reading: [What Journaling App Helps With Work Stress and Burnout?](/blog/what-journaling-app-helps-with-work-stress-and-burnout).
