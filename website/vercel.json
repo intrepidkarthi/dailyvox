@@ -213,6 +213,11 @@
       "source": "/blog/journal-app-with-ai",
       "destination": "/blog/best-ai-journaling-app",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/digital-twin-vs-chatgpt-memory",
+      "destination": "/blog/how-digital-twin-learns-personality",
+      "statusCode": 301
     }
   ],
   "headers": [
