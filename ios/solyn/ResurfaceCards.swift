@@ -94,13 +94,13 @@ struct PastLineCard: View {
                 Text(item.label)
                     .font(.dv(.caption, design: .rounded, weight: .bold))
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.dv(.caption2, weight: .semibold))
                     .foregroundColor(theme.secondaryTextColor)
             }
             .foregroundColor(theme.goldText)
 
-            Text(verbatim: "\u{201C}\(item.excerpt)\u{201D}")
+            Text(verbatim: LocaleFormat.quoted(item.excerpt))
                 .font(.dv(.callout))
                 .lineSpacing(3)
                 .foregroundColor(theme.textColor.opacity(0.9))
@@ -191,14 +191,14 @@ struct WeeklyRecapCard: View {
 
     private func quote(_ line: Resurfaced) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(verbatim: "\u{201C}\(line.excerpt)\u{201D}")
+            Text(verbatim: LocaleFormat.quoted(line.excerpt))
                 .font(.dv(.callout))
                 .lineSpacing(3)
                 .foregroundColor(theme.textColor.opacity(0.9))
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.dv(.caption2, weight: .semibold))
                 .foregroundColor(theme.secondaryTextColor)
         }

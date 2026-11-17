@@ -25,10 +25,10 @@ enum Destination: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .speak: return "Speak"
-        case .journal: return "Journal"
-        case .twin: return "Twin"
-        case .ask: return "Ask"
+        case .speak: return String(localized: "Speak", comment: "Tab bar: the recording tab. One short word; four tabs share the bar, about 8 characters.")
+        case .journal: return String(localized: "Journal", comment: "Tab bar: the list of entries. One short word; four tabs share the bar, about 8 characters.")
+        case .twin: return String(localized: "Twin", comment: "Tab bar: the Digital Twin tab. 'Twin' is the product name of the feature; keep it unless the reviewer objects. About 8 characters.")
+        case .ask: return String(localized: "Ask", comment: "Tab bar: ask your Twin a question. One short word, about 8 characters.")
         }
     }
 

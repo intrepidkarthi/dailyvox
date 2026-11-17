@@ -33,6 +33,10 @@ struct TwinChatMessage: Identifiable {
     let timestamp = Date()
     /// Journal entries this answer cited ("From your journal" chips).
     var citations: [TwinChatEvidence] = []
+    /// Whether each citation shows its match percentage. Only English is
+    /// searched by meaning; elsewhere the score is a word-overlap number and
+    /// Search hides it too.
+    var showsMatch: Bool = true
 }
 
 // MARK: - Twin Chat View
@@ -207,6 +211,16 @@ struct TwinChatView: View {
                 .foregroundColor(themeManager.secondaryTextColor)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
+
+            // Said up front, once, to someone who speaks a language Ask cannot
+            // read yet, so the calm line under a question is not a surprise.
+            if !AskLanguage.understands(speaking: SpeechTranscriber.speakerLocale) {
+                Text(AskLanguage.unsupportedMessage)
+                    .font(.dv(.footnote))
+                    .foregroundColor(themeManager.secondaryTextColor)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
         }
         .padding(.vertical, 24)
     }
@@ -236,7 +250,7 @@ struct TwinChatView: View {
                     )
 
                 if !message.citations.isEmpty {
-                    citationRow(for: message.citations)
+                    citationRow(for: message.citations, showsMatch: message.showsMatch)
                 }
 
                 // Read-aloud, on the Twin's replies only — there is no reason to speak the
@@ -323,7 +337,7 @@ struct TwinChatView: View {
 
     // MARK: - Citations
 
-    private func citationRow(for citations: [TwinChatEvidence]) -> some View {
+    private func citationRow(for citations: [TwinChatEvidence], showsMatch: Bool) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("FROM YOUR ENTRIES")
                 .font(.dv(size: 9.5, weight: .semibold, design: .monospaced))
@@ -351,7 +365,9 @@ struct TwinChatView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "book.closed.fill")
                                     .font(.dv(.caption2))
-                                Text("\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%")
+                                Text(showsMatch
+                                     ? "\(citation.date, format: .dateTime.month(.abbreviated).day()) · \(Int(citation.score * 100))%"
+                                     : "\(citation.date, format: .dateTime.month(.abbreviated).day())")
                                     .font(.dv(.caption2))
                             }
                             .foregroundColor(themeManager.accentColor)
@@ -415,7 +431,7 @@ struct TwinChatView: View {
 
     private var questionChips: some View {
         VStack(spacing: 8) {
-            if !brain.isActive && availableQuestions.isEmpty {
+            if offersQuestionBank && !brain.isActive && availableQuestions.isEmpty {
                 Text("You've asked all the questions! Tap any to ask again.")
                     .font(.dv(.caption))
                     .foregroundColor(themeManager.secondaryTextColor)
@@ -450,7 +466,7 @@ struct TwinChatView: View {
                         }
                     }
 
-                    ForEach(displayedQuestions) { question in
+                    ForEach(offersQuestionBank ? displayedQuestions : []) { question in
                         Button {
                             askQuestion(question)
                         } label: {
@@ -493,6 +509,13 @@ struct TwinChatView: View {
 
     // MARK: - Logic
 
+    /// The ten template questions, and their answers, are English. Someone
+    /// who speaks another language gets their own questions answered from
+    /// their entries, and no row of English chips.
+    private var offersQuestionBank: Bool {
+        (LanguageGate.baseCode(SpeechTranscriber.speakerLocale.language.languageCode?.identifier) ?? "en") == "en"
+    }
+
     private var availableQuestions: [TwinQuestion] {
         TwinQuestion.allCases.filter { !askedQuestions.contains($0) }
     }
@@ -511,11 +534,9 @@ struct TwinChatView: View {
         // answer with its citation chips, which is the whole claim this screen
         // makes — an empty invitation demonstrates nothing.
         if ScreenshotScene.current == .ask, messages.isEmpty {
-            // A question worth photographing: it has to be one the Twin can
-            // only answer from THIS journal, so the reply demonstrates the
-            // claim ("answers with receipts") instead of sounding like any
-            // chatbot. "My mornings" produced a shrug; this produces citations.
-            send(text: "What do I keep avoiding saying out loud?")
+            // A question worth photographing ("My mornings" produced a shrug;
+            // the canned one produces citations). See `ScreenshotScene.cannedAsk`.
+            send(text: ScreenshotScene.cannedAsk)
             return
         }
         guard let seedQuestion, messages.isEmpty else { return }
@@ -556,14 +577,29 @@ struct TwinChatView: View {
         guard !isThinking else { return }
         messages.append(TwinChatMessage(text: text, isUser: true))
         latestFollowUps = []
+
+        // A question in a language the Twin cannot read gets a calm line, not
+        // an answer composed from words it could not read (plan D7, B-11).
+        let language = AskLanguage.language(of: text, speaking: SpeechTranscriber.speakerLocale)
+        guard LanguageGate.supports(.askTwin, languageCode: language) else {
+            withAnimation(.easeIn(duration: 0.2)) {
+                messages.append(TwinChatMessage(text: AskLanguage.unsupportedMessage, isUser: false))
+            }
+            return
+        }
         isThinking = true
 
         Task {
             var turn: TwinChatTurn?
 
             #if canImport(FoundationModels)
-            if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat {
-                turn = await brainPipeline.ask(text)
+            // The brain only where the system model also speaks the question's
+            // language; otherwise the retrieval path below answers, exactly as
+            // on a device with no model. English skips the check: it is the
+            // language the brain has always been asked in.
+            if #available(iOS 26.0, *), let brainPipeline = pipeline as? FoundationTwinChat,
+               language == "en" || FoundationTwinChat.supportsLanguage(of: Locale(identifier: language)) {
+                turn = await brainPipeline.ask(text, language: language)
             }
             #endif
 
@@ -576,14 +612,16 @@ struct TwinChatView: View {
                     question: text,
                     evidence: evidence,
                     twin: DigitalTwinEngine.shared,
-                    profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+                    profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile),
+                    language: language)
             }
 
             isThinking = false
             withAnimation(.easeIn(duration: 0.2)) {
                 messages.append(TwinChatMessage(text: turn?.answer ?? "",
                                                 isUser: false,
-                                                citations: turn?.citations ?? []))
+                                                citations: turn?.citations ?? [],
+                                                showsMatch: language == "en"))
             }
             latestFollowUps = turn?.suggestedFollowUps ?? []
         }

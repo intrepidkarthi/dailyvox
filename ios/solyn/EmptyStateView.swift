@@ -72,32 +72,32 @@ extension EmptyStateView {
     static var noEntries: EmptyStateView {
         EmptyStateView(
             icon: "mic.circle",
-            title: "Start Your Journey",
-            subtitle: "Tap the microphone below to record your first voice diary entry"
+            title: String(localized: "Start Your Journey", comment: "Empty state title, centred above a short line. About 25 characters. Shown when there are no entries yet."),
+            subtitle: String(localized: "Tap the microphone below to record your first voice diary entry", comment: "Empty state line under the title, centred. About 70 characters. Under 'Start Your Journey'.")
         )
     }
 
     static var noSearchResults: EmptyStateView {
         EmptyStateView(
             icon: "magnifyingglass",
-            title: "No Results",
-            subtitle: "Try a different search term"
+            title: String(localized: "No Results", comment: "Empty state title, centred above a short line. About 25 characters. Shown when a search finds no entries."),
+            subtitle: String(localized: "Try a different search term", comment: "Empty state line under the title, centred. About 70 characters. Under 'No Results'.")
         )
     }
 
     static var noStarredEntries: EmptyStateView {
         EmptyStateView(
             icon: "star",
-            title: "No Starred Entries",
-            subtitle: "Star your favorite entries to find them quickly"
+            title: String(localized: "No Starred Entries", comment: "Empty state title, centred above a short line. About 25 characters. Shown when the Starred filter has nothing."),
+            subtitle: String(localized: "Star your favorite entries to find them quickly", comment: "Empty state line under the title, centred. About 70 characters. Under 'No Starred Entries'.")
         )
     }
 
     static var noInsights: EmptyStateView {
         EmptyStateView(
             icon: "chart.line.uptrend.xyaxis",
-            title: "Insights Coming Soon",
-            subtitle: "Keep journaling to unlock personalized insights about your writing patterns"
+            title: String(localized: "Insights Coming Soon", comment: "Empty state title, centred above a short line. About 25 characters. Shown when there is not enough writing for insights yet."),
+            subtitle: String(localized: "Keep journaling to unlock personalized insights about your writing patterns", comment: "Empty state line under the title, centred. About 70 characters. Under 'Insights Coming Soon'.")
         )
     }
 }
@@ -124,9 +124,9 @@ struct WelcomeCard: View {
 
             // Features list
             VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(icon: "mic.fill", color: DS.Palette.gold, text: "Just 42 seconds — that's all it takes")
-                FeatureRow(icon: "text.quote", color: DS.Palette.sage, text: "Transcribed and understood on-device")
-                FeatureRow(icon: "lock.fill", color: DS.Palette.forest, text: "100% private, stored locally")
+                FeatureRow(icon: "mic.fill", color: DS.Palette.gold, text: String(localized: "Just 42 seconds — that's all it takes", comment: "Today tab, first-run welcome card: feature row next to a microphone icon. Keep the number 42 as it is: it is the app's ritual length and a soft target, not a cutoff or a minimum. Use the local word for seconds. About 40 characters."))
+                FeatureRow(icon: "text.quote", color: DS.Palette.sage, text: String(localized: "Transcribed and understood on-device", comment: "Today tab, first-run welcome card: feature row next to a quote icon. The privacy claim must stay exact: speech is processed on the iPhone itself. About 40 characters."))
+                FeatureRow(icon: "lock.fill", color: DS.Palette.forest, text: String(localized: "100% private, stored locally", comment: "Today tab, first-run welcome card: feature row next to a lock icon. The privacy claim must stay exact. About 40 characters."))
             }
             .padding(.top, 8)
         }

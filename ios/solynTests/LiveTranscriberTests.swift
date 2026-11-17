@@ -85,26 +85,29 @@ final class LiveTranscriberTests: XCTestCase {
 
     // MARK: - Live valence (§E state ③)
 
-    func testShortTextHasNoValence() {
-        XCTAssertEqual(LiveTranscriber.valence(of: "ok"), 0, accuracy: 0.001,
+    // English always has a reading (LanguageGate `.sentiment`), so these
+    // unwrap: a nil here would mean the gate had silenced English.
+
+    func testShortTextHasNoValence() throws {
+        XCTAssertEqual(try XCTUnwrap(LiveTranscriber.valence(of: "ok")), 0, accuracy: 0.001,
                        "too little to judge — a bar that swung on two words would be noise")
     }
 
-    func testValenceStaysInRange() {
+    func testValenceStaysInRange() throws {
         for sample in [
             "Today was genuinely wonderful, I felt light and grateful all day",
             "Everything went wrong and I am exhausted and angry about it",
             "I went to the shop and bought some bread and then came home again",
         ] {
-            let v = LiveTranscriber.valence(of: sample)
+            let v = try XCTUnwrap(LiveTranscriber.valence(of: sample))
             XCTAssertGreaterThanOrEqual(v, -1)
             XCTAssertLessThanOrEqual(v, 1)
         }
     }
 
-    func testPositiveReadsHigherThanNegative() {
-        let happy = LiveTranscriber.valence(of: "Today was wonderful and I felt grateful and light")
-        let sad = LiveTranscriber.valence(of: "Today was awful and I felt hopeless and heavy")
+    func testPositiveReadsHigherThanNegative() throws {
+        let happy = try XCTUnwrap(LiveTranscriber.valence(of: "Today was wonderful and I felt grateful and light"))
+        let sad = try XCTUnwrap(LiveTranscriber.valence(of: "Today was awful and I felt hopeless and heavy"))
         XCTAssertGreaterThan(happy, sad)
     }
 }

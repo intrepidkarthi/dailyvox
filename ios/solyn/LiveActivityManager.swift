@@ -75,7 +75,7 @@ final class LiveActivityManager {
                                  softTarget: TimeInterval = 42,
                                  phrase: String = "",
                                  caughtName: String? = nil,
-                                 valence: Double = 0,
+                                 valence: Double? = 0,
                                  paused: Bool = false) {
         #if os(iOS)
         guard #available(iOS 16.2, *), let activity = recordingActivity else { return }

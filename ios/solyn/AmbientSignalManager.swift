@@ -153,9 +153,9 @@ struct PhotoSignalService {
         let ranked = labelCounts.sorted { $0.value > $1.value }
         let top = ranked.first?.key ?? "photos"
         let friendly = friendlyScene(top)
-        let label = "Mostly \(friendly)"
+        let label = "Mostly \(friendly)"  // i18n-ignore: stored label, also fed to the Twin engine as English text
         let others = ranked.dropFirst().prefix(2).map { friendlyScene($0.key) }
-        let detail = others.isEmpty ? "\(photoCount) photos today" : "also \(others.joined(separator: ", "))"
+        let detail = others.isEmpty ? "\(photoCount) photos today" : "also \(others.joined(separator: ", "))"  // i18n-ignore: stored label, also fed to the Twin engine as English text
         return (label, detail)
     }
 
@@ -198,7 +198,7 @@ struct MusicSignalService {
         }
         let topMood = genreCounts.sorted { $0.value > $1.value }.first?.key ?? "music"
         let label = moodLabel(topMood)
-        let detail = "\(playedToday.count) tracks today"
+        let detail = "\(playedToday.count) tracks today"  // i18n-ignore: stored label, also fed to the Twin engine as English text
         return AmbientSignal(kind: .music, day: day, label: label, detail: detail)
     }
 
@@ -212,11 +212,11 @@ struct MusicSignalService {
 
     private func moodLabel(_ mood: String) -> String {
         switch mood {
-        case "calm":       return "Reached for calm music"
-        case "intense":    return "Leaned into intense music"
-        case "upbeat":     return "Played upbeat music"
-        case "reflective": return "Reflective listening"
-        default:           return "A varied listening day"
+        case "calm":       return "Reached for calm music"  // i18n-ignore: stored label, also fed to the Twin engine as English text
+        case "intense":    return "Leaned into intense music"  // i18n-ignore: stored label, also fed to the Twin engine as English text
+        case "upbeat":     return "Played upbeat music"  // i18n-ignore: stored label, also fed to the Twin engine as English text
+        case "reflective": return "Reflective listening"  // i18n-ignore: stored label, also fed to the Twin engine as English text
+        default:           return "A varied listening day"  // i18n-ignore: stored label, also fed to the Twin engine as English text
         }
     }
 }

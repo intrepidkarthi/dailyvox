@@ -66,7 +66,7 @@ struct BackupExportView: View {
                             }
                             
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(format.rawValue)
+                                Text(format.title)
                                     .font(.dv(.subheadline))
                                     .foregroundColor(.primary)
                                 Text(format.description)
@@ -458,7 +458,7 @@ struct ImportBackupView: View {
             } catch {
                 DispatchQueue.main.async {
                     isImporting = false
-                    importResult = .error("Failed to import: \(error.localizedDescription)")
+                    importResult = .error(String(localized: "Failed to import: \(error.localizedDescription)", comment: "Import Backup screen: import failed alert message. The placeholder is the system error description, already in the user's language."))
                     showResult = true
                     HapticManager.shared.error()
                 }
@@ -471,7 +471,7 @@ struct ImportBackupView: View {
         
         // Start accessing security-scoped resource
         guard url.startAccessingSecurityScopedResource() else {
-            importResult = .error("Unable to access the selected file.")
+            importResult = .error(String(localized: "Unable to access the selected file.", comment: "Import Backup screen: import failed alert message when iOS will not let the app read the file the user picked. About 40 characters."))
             showResult = true
             isImporting = false
             return
@@ -494,7 +494,7 @@ struct ImportBackupView: View {
             } catch {
                 DispatchQueue.main.async {
                     isImporting = false
-                    importResult = .error("Failed to import: \(error.localizedDescription)")
+                    importResult = .error(String(localized: "Failed to import: \(error.localizedDescription)", comment: "Import Backup screen: import failed alert message. The placeholder is the system error description, already in the user's language."))
                     showResult = true
                     HapticManager.shared.error()
                 }

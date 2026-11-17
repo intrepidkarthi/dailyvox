@@ -48,6 +48,8 @@ struct AddDiaryEntryIntent: AppIntent {
             } else {
                 entry.text = existingText + "\n\n" + (text ?? "")
             }
+            entry.noteLanguage(ofAppended: text ?? "", recognizerLocale: nil,
+                               entryHadText: !existingText.isEmpty)
             entry.updatedAt = Date()
         } else {
             // Create new entry
@@ -58,6 +60,7 @@ struct AddDiaryEntryIntent: AppIntent {
             entry.updatedAt = Date()
             entry.text = text ?? ""
             entry.isStarred = false
+            entry.noteLanguage(ofAppended: text ?? "", recognizerLocale: nil, entryHadText: false)
         }
 
         try context.save()
@@ -151,12 +154,16 @@ struct AskYourTwinIntent: AppIntent {
             return .result(dialog: "Ask me something about your journal.")
         }
 
+        // The frame and the abstention line follow the question's language,
+        // as in the app; quotes stay in the language they were written in.
+        let language = AskLanguage.language(of: trimmed, speaking: SpeechTranscriber.speakerLocale)
         let evidence = await TwinChatEvidenceAdapter().recall(query: trimmed, topK: 3, dateRange: nil)
         let turn = RetrievalAnswerComposer.compose(
             question: trimmed,
             evidence: evidence,
             twin: DigitalTwinEngine.shared,
-            profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile))
+            profile: TwinChatProfile(from: LocalAIEngine.shared.userProfile),
+            language: language)
 
         let answer = turn.answer.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !answer.isEmpty else {
@@ -168,7 +175,9 @@ struct AskYourTwinIntent: AppIntent {
         let count = turn.citations.count
         let receipt = count == 0
             ? ""
-            : (count == 1 ? " From one of your entries." : " From \(count) of your entries.")
+            : " " + (count == 1
+                ? String(localized: "From one of your entries.", comment: "Siri / Shortcuts, Ask Your Twin: spoken after the Twin's answer when it drew on one journal entry. A sentence of its own, read aloud. About 30 characters.")
+                : String(localized: "From \(count) of your entries.", comment: "Siri / Shortcuts, Ask Your Twin: spoken after the Twin's answer; the placeholder is how many journal entries the answer drew on (2 or more). A sentence of its own, read aloud. About 30 characters."))
         return .result(dialog: IntentDialog(stringLiteral: answer + receipt))
     }
 }

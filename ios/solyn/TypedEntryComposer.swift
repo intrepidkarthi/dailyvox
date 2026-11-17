@@ -52,7 +52,7 @@ struct TypedEntryComposerStyle {
 struct TypedEntryComposer: View {
     @Binding var text: String
     var title: String
-    var prompt: String = "How was your day, really?"
+    var prompt: String = String(localized: "How was your day, really?", comment: "Type-instead sheet: the question above the text editor when no other question is passed in. Same as the Today tab's question of the day.")
     /// The privacy line under the editor. It is a parameter because the true
     /// sentence differs: during onboarding nothing has been synced yet, but in
     /// the app iCloud sync may be on, so "only on your phone" would overclaim.

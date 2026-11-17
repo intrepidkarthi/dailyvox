@@ -1,0 +1,43 @@
+DailyVox 1.14.0 (build 49) — notes for review
+
+WHAT CHANGED IN THIS BUILD
+
+The interface is now available in German, Spanish, French, Italian and Portuguese (Brazil) as well as English. It follows the app's language in iOS Settings > DailyVox > Language, or the device language. To review it in another language, change either one.
+
+A new setting, Settings > "Language you speak", chooses the language speech is transcribed in, separately from the interface language. The list shows only languages this device can transcribe on the device, now or after a one-time download from Apple. Automatic, the default, behaves as in 1.13.0.
+
+Features that read English text only show nothing for entries in other languages, rather than a wrong reading: the suggested mood, the reflection under an entry, mood trends, themes, personality reads, and search by meaning. Search in other languages matches words. This is intended, not a defect. Ask your Twin answers in the question's language (English, German, Spanish, French, Italian, Portuguese); quoted entries are shown as they were written.
+
+SHARE YOUR SKY
+
+On the 7th, 21st and 42nd day the user has spoken, Today offers, once each, to share a 9:16 picture of their constellation through the standard share sheet. The picture shows a count of nights and the address getdailyvox.com: no entry text, names or moods. It is drawn on the device and the app uploads nothing. Settings > Sharing > "Offer to share milestones" turns the offer off.
+
+SPEECH IS TRANSCRIBED ON THE DEVICE, ALWAYS
+
+Recognition is on-device only (requiresOnDeviceRecognition). If the device has no on-device model for the chosen language, the recording is kept, no transcript in another language is written, and the app explains how to install the model; the user can type instead. That is intended behaviour, not a defect.
+
+ICLOUD SYNC
+
+Off by default for new installs (Settings > iCloud Sync). When on, entries sync through the user's own private iCloud database via CloudKit; DailyVox has no server. The Settings text says the data is encrypted by Apple and end-to-end only with Advanced Data Protection.
+
+No analytics, no advertising identifiers, no third-party SDKs, no accounts. PrivacyInfo.xcprivacy declares no tracking and no collected data.
+
+HEALTH AND THE "BODY" SHARE CARD (UNCHANGED)
+
+HealthKit data is read only with permission, reviewed by the user before it is kept, and never leaves the device. The Body share card appears only after a snapshot is kept, has its own switch that is off each time the share sheet opens, and never shows heart-rate variability or resting heart rate.
+
+PERMISSIONS USED (ALL OPTIONAL EXCEPT MICROPHONE AND SPEECH)
+
+Microphone: recording entries.
+Speech recognition: on-device transcription only.
+Notifications: the local daily reminder.
+Face ID: optional app lock.
+HealthKit: optional body context, reviewed by the user.
+Motion: optional "at rest / in motion" tag beside an entry.
+Photo library and Apple Music: optional "Your Day" notes (off by default), turned into one-line labels on the device. Photos and audio are never uploaded.
+
+No new permissions or entitlements were added in this build. The microphone and speech purpose strings were reworded and are now shown in the interface language.
+
+TEST ACCOUNT
+
+None required. The app has no accounts and no server. Launch and record.

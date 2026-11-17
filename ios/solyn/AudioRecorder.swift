@@ -48,7 +48,7 @@ final class AudioRecorder: NSObject, ObservableObject {
     /// without reaching across actors on every timer tick.
     private var lastPhrase = ""
     private var lastCaught: String?
-    private var lastValence: Double = 0
+    private var lastValence: Double? = 0
 
     /// True when the SYSTEM paused us — a call, an alarm, Siri — rather than the
     /// user. Kept apart because only a system pause should auto-resume.
@@ -173,7 +173,7 @@ final class AudioRecorder: NSObject, ObservableObject {
             }
         }
         #else
-        throw NSError(domain: "AudioRecorder", code: -1, userInfo: [NSLocalizedDescriptionKey: "Recording is only available on iOS."])
+        throw NSError(domain: "AudioRecorder", code: -1, userInfo: [NSLocalizedDescriptionKey: "Recording is only available on iOS."])  // i18n-ignore: non-iOS build only
         #endif
     }
 
@@ -249,7 +249,7 @@ final class AudioRecorder: NSObject, ObservableObject {
     private static func recordingsDirectory() throws -> URL {
         let fileManager = FileManager.default
         guard let base = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            throw NSError(domain: "AudioRecorder", code: -1, userInfo: [NSLocalizedDescriptionKey: "Cannot access Application Support directory."])
+            throw NSError(domain: "AudioRecorder", code: -1, userInfo: [NSLocalizedDescriptionKey: String(localized: "Cannot access Application Support directory.", comment: "Recording error message, shown if the app cannot reach its own storage folder. Application Support is the iOS folder name; it can stay in English.")])
         }
         let directory = base.appendingPathComponent("Recordings", isDirectory: true)
         if !fileManager.fileExists(atPath: directory.path) {

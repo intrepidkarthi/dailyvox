@@ -14,7 +14,7 @@ import UIKit
 final class PhotoStorageManager {
     static let shared = PhotoStorageManager()
 
-    private let photosDirectoryName = "Photos"
+    private let photosDirectoryName = "Photos"  // i18n-ignore: folder name on disk
 
     private var photosDirectory: URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!

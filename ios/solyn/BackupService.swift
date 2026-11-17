@@ -37,6 +37,10 @@ struct ExportableEntry: Codable, Identifiable {
     /// the mood is a suggestion and not the user's. Optional: older backups
     /// decode unchanged, and their moods were all chosen by hand.
     let suggestedMood: String?
+    /// The language the words are in (BCP-47; "und"/"mul" allowed), as the
+    /// recogniser or the backfill recorded it. Optional: older backups
+    /// decode unchanged and the launch backfill reads their language.
+    let transcriptLocale: String?
 
     init(from entry: DiaryEntry) {
         self.id = entry.id ?? UUID()
@@ -53,6 +57,7 @@ struct ExportableEntry: Codable, Identifiable {
         let intensity = entry.value(forKey: "selfLabelIntensity") as? Int16 ?? 0
         self.selfLabelIntensity = intensity > 0 ? Int(intensity) : nil
         self.suggestedMood = entry.suggestedMood
+        self.transcriptLocale = entry.transcriptLocale
     }
 }
 
@@ -84,7 +89,7 @@ struct BackupData: Codable {
         #if canImport(UIKit)
         self.deviceName = UIDevice.current.name
         #else
-        self.deviceName = Host.current().localizedName ?? "Mac"
+        self.deviceName = Host.current().localizedName ?? "Mac"  // i18n-ignore: macOS build only
         #endif
         self.entryCount = entries.count
         self.entries = entries
@@ -174,7 +179,7 @@ final class BackupService {
         let model = UIDevice.current.model
         let osVersion = "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
         #else
-        let model = "Mac"
+        let model = "Mac"  // i18n-ignore: macOS build only
         let osVersion = ProcessInfo.processInfo.operatingSystemVersionString
         #endif
 
@@ -229,6 +234,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
                 newEntry.suggestedMood = exportedEntry.suggestedMood
+                newEntry.transcriptLocale = exportedEntry.transcriptLocale
 
                 importedCount += 1
             }
@@ -245,13 +251,16 @@ final class BackupService {
     
     /// Export entries to plain text format
     func exportToText(entries: [DiaryEntry]) throws -> URL {
+        let heading = String(localized: "DAILYVOX DIARY EXPORT", comment: "Export file (plain text export): heading at the top of the .txt file, centred between rules of = signs. Upper case. DailyVox is the app name. About 21 characters.")
+        let exportedLine = String(localized: "Exported: \(formattedFullDate(Date()))", comment: "Export file (plain text export): line under the heading; the placeholder is today's date, already written out for the locale.")
+        let totalLine = String(localized: "Total Entries: \(String(entries.count))", comment: "Export file (plain text export): line under the heading; the placeholder is the number of entries in the file. It arrives as digits in a string placeholder, exactly as the English has always printed it (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
         var textContent = """
         ═══════════════════════════════════════════════════════════════
-                              DAILYVOX DIARY EXPORT
+                              \(heading)
         ═══════════════════════════════════════════════════════════════
         
-        Exported: \(formattedFullDate(Date()))
-        Total Entries: \(entries.count)
+        \(exportedLine)
+        \(totalLine)
         
         ═══════════════════════════════════════════════════════════════
         
@@ -264,7 +273,7 @@ final class BackupService {
         
         for entry in sortedEntries {
             let date = entry.date ?? Date()
-            let text = entry.text ?? "(No text)"
+            let text = entry.text ?? String(localized: "(No text)", comment: "Export file (plain text, Markdown and PDF exports): stands in for the body of an entry that has no words. Keep the parentheses.")
             let mood = moodLabel(of: entry)
             let starred = entry.isStarred ? " \u{2726}" : ""
             
@@ -274,7 +283,7 @@ final class BackupService {
             """
             
             if !mood.isEmpty {
-                textContent += "\nMood: \(mood)"
+                textContent += "\n" + String(localized: "Mood: \(mood)", comment: "Export file (plain text and PDF exports): line under an entry's date; the placeholder is the mood name, possibly followed by '(suggested)'.")
             }
             
             textContent += """
@@ -287,9 +296,10 @@ final class BackupService {
             """
         }
         
+        let ending = String(localized: "END OF EXPORT", comment: "Export file (plain text export): closing line at the bottom of the .txt file, centred between rules of = signs. Upper case. About 13 characters.")
         textContent += """
         ═══════════════════════════════════════════════════════════════
-                              END OF EXPORT
+                              \(ending)
         ═══════════════════════════════════════════════════════════════
         """
         
@@ -325,11 +335,14 @@ final class BackupService {
     
     /// Export entries to Markdown format
     func exportToMarkdown(entries: [DiaryEntry]) throws -> URL {
+        let mdTitle = String(localized: "DailyVox Diary Export", comment: "Export file (Markdown export): the document's title, a level-1 heading. DailyVox is the app name. About 21 characters.")
+        let mdExported = String(localized: "Exported:", comment: "Export file (Markdown export): bold label before today's date under the title. Keep the colon.")
+        let mdTotal = String(localized: "Total Entries:", comment: "Export file (Markdown export): bold label before the number of entries under the title. Keep the colon.")
         var mdContent = """
-        # DailyVox Diary Export
+        # \(mdTitle)
         
-        **Exported:** \(formattedFullDate(Date()))  
-        **Total Entries:** \(entries.count)
+        **\(mdExported)** \(formattedFullDate(Date()))  
+        **\(mdTotal)** \(entries.count)
         
         ---
         
@@ -339,16 +352,15 @@ final class BackupService {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
         
+        // The reader's own month heading ("October 2026", "Oktober 2026"),
+        // parsed back by the same formatter to order the months.
+        let monthFormatter = LocaleFormat.formatter(template: LocaleFormat.monthYear)
         let groupedByMonth = Dictionary(grouping: sortedEntries) { entry -> String in
-            let date = entry.date ?? Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMMM yyyy"
-            return formatter.string(from: date)
+            monthFormatter.string(from: entry.date ?? Date())
         }
-        
+
         let sortedMonths = groupedByMonth.keys.sorted { month1, month2 in
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMMM yyyy"
+            let formatter = monthFormatter
             let date1 = formatter.date(from: month1) ?? Date()
             let date2 = formatter.date(from: month2) ?? Date()
             return date1 > date2
@@ -360,17 +372,15 @@ final class BackupService {
             if let monthEntries = groupedByMonth[month] {
                 for entry in monthEntries {
                     let date = entry.date ?? Date()
-                    let text = entry.text ?? "(No text)"
+                    let text = entry.text ?? String(localized: "(No text)", comment: "Export file (plain text, Markdown and PDF exports): stands in for the body of an entry that has no words. Keep the parentheses.")
                     let mood = moodLabel(of: entry)
                     let starred = entry.isStarred ? " \u{2726}" : ""
                     
-                    let dayFormatter = DateFormatter()
-                    dayFormatter.dateFormat = "EEEE, MMMM d"
-                    
-                    mdContent += "### \(dayFormatter.string(from: date))\(starred)\n\n"
+                    let day = LocaleFormat.date(date, template: LocaleFormat.weekdayMonthDay)
+                    mdContent += "### \(day)\(starred)\n\n"
                     
                     if !mood.isEmpty {
-                        mdContent += "**Mood:** \(mood)\n\n"
+                        mdContent += "**" + String(localized: "Mood:", comment: "Export file (Markdown export): bold label before an entry's mood. Keep the colon.") + "** \(mood)\n\n"
                     }
                     
                     mdContent += "\(text)\n\n---\n\n"
@@ -391,13 +401,13 @@ final class BackupService {
     
     /// Export entries to CSV format
     func exportToCSV(entries: [DiaryEntry]) throws -> URL {
-        var csvContent = "Date,Time,Mood,Starred,Word Count,Text\n"
+        var csvContent = "Date,Time,Mood,Starred,Word Count,Text\n"  // i18n-ignore: CSV column names, fixed for spreadsheets
         
         let sortedEntries = entries.sorted { ($0.date ?? Date()) > ($1.date ?? Date()) }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
+        // Machine-readable columns: fixed, whatever the reader's locale or
+        // calendar, so a spreadsheet always parses them.
+        let dateFormatter = LocaleFormat.posix("yyyy-MM-dd")
+        let timeFormatter = LocaleFormat.posix("HH:mm")
         
         for entry in sortedEntries {
             let date = entry.date ?? Date()
@@ -405,7 +415,7 @@ final class BackupService {
             // The raw value, as this column always held; a suggestion says so.
             let raw = entry.mood ?? ""
             let mood = entry.isMoodSuggested ? raw + " (suggested)" : raw
-            let starred = entry.isStarred ? "Yes" : "No"
+            let starred = entry.isStarred ? "Yes" : "No"  // i18n-ignore: CSV value, fixed for spreadsheets
             let wordCount = text.split { $0.isWhitespace || $0.isNewline }.count
             
             // Escape text for CSV
@@ -441,8 +451,8 @@ final class BackupService {
         let metaFont = UIFont.systemFont(ofSize: 12, weight: .regular)
         let bodyFont = UIFont.systemFont(ofSize: 13, weight: .regular)
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, MMMM d, yyyy · h:mm a"
+        let dateFormatter = LocaleFormat.formatter(template: LocaleFormat.weekdayMonthDayYear)
+        let timeFormatter = LocaleFormat.formatter(template: LocaleFormat.time)
 
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
         let fileName = "dailyvox_diary_\(formattedDate()).pdf"
@@ -453,11 +463,11 @@ final class BackupService {
             var cursorY: CGFloat = margin
 
             // Cover heading
-            let title = "DailyVox Diary"
+            let title = String(localized: "DailyVox Diary", comment: "Export file (PDF export): large title at the top of the first page. DailyVox is the app name. About 14 characters.")
             title.draw(at: CGPoint(x: margin, y: cursorY),
                        withAttributes: [.font: titleFont, .foregroundColor: UIColor.label])
             cursorY += 38
-            "Exported \(formattedFullDate(Date())) · \(sortedEntries.count) entries"
+            String(localized: "Exported \(formattedFullDate(Date())) · \(String(sortedEntries.count)) entries", comment: "Export file (PDF export): line under the title on the first page. First placeholder: today's date, already written out for the locale. Second: the number of entries, as digits in a string placeholder (never grouped), so the catalog cannot vary it by count: phrase it so one form reads right for every count.")
                 .draw(at: CGPoint(x: margin, y: cursorY),
                       withAttributes: [.font: metaFont, .foregroundColor: UIColor.secondaryLabel])
             cursorY += 30
@@ -466,8 +476,8 @@ final class BackupService {
                 let date = entry.date ?? Date()
                 let mood = moodLabel(of: entry)
                 let starred = entry.isStarred ? "  ★" : ""
-                let header = dateFormatter.string(from: date) + starred
-                let body = entry.text ?? "(No text)"
+                let header = dateFormatter.string(from: date) + " · " + timeFormatter.string(from: date) + starred
+                let body = entry.text ?? String(localized: "(No text)", comment: "Export file (plain text, Markdown and PDF exports): stands in for the body of an entry that has no words. Keep the parentheses.")
 
                 // Measure the body so we can page-break cleanly
                 let bodyAttrs: [NSAttributedString.Key: Any] = [.font: bodyFont, .foregroundColor: UIColor.label]
@@ -487,7 +497,7 @@ final class BackupService {
                 cursorY += 22
 
                 if !mood.isEmpty {
-                    "Mood: \(mood)".draw(
+                    String(localized: "Mood: \(mood)", comment: "Export file (plain text and PDF exports): line under an entry's date; the placeholder is the mood name, possibly followed by '(suggested)'.").draw(
                         at: CGPoint(x: margin, y: cursorY),
                         withAttributes: [.font: metaFont, .foregroundColor: UIColor.secondaryLabel])
                     cursorY += 16
@@ -575,6 +585,7 @@ final class BackupService {
                 newEntry.setValue(exportedEntry.selfLabelEmotion, forKey: "selfLabelEmotion")
                 newEntry.setValue(Int16(exportedEntry.selfLabelIntensity ?? 0), forKey: "selfLabelIntensity")
                 newEntry.suggestedMood = exportedEntry.suggestedMood
+                newEntry.transcriptLocale = exportedEntry.transcriptLocale
 
                 importedCount += 1
             }
@@ -599,9 +610,8 @@ final class BackupService {
     // MARK: - Helpers
 
     private func formattedDate() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: Date())
+        // A file name: fixed digits in any locale or calendar.
+        LocaleFormat.posix("yyyy-MM-dd").string(from: Date())
     }
     
     private func formattedFullDate(_ date: Date) -> String {
@@ -619,7 +629,9 @@ final class BackupService {
     private func moodLabel(of entry: DiaryEntry) -> String {
         let mood = entry.mood ?? ""
         guard !mood.isEmpty else { return "" }
-        return entry.isMoodSuggested ? "\(mood.capitalized) (suggested)" : mood.capitalized
+        return entry.isMoodSuggested
+            ? String(localized: "\(mood.capitalized) (suggested)", comment: "Export file (plain text, Markdown and PDF exports): a mood the app suggested and the user did not pick. The placeholder is the mood's English name as stored (Happy, Calm…).")
+            : mood.capitalized
     }
 }
 
@@ -634,6 +646,18 @@ enum ExportFormat: String, CaseIterable, Identifiable {
     case encryptedBackup = "Encrypted Backup"
 
     var id: String { rawValue }
+
+    /// What the export screen calls it. The raw value is only an identity.
+    var title: String {
+        switch self {
+        case .json: return String(localized: "JSON Backup", comment: "Export Data screen: name of an export format. JSON is a file format; keep it. About 16 characters.")
+        case .text: return String(localized: "Plain Text", comment: "Export Data screen: name of an export format (.txt file). About 16 characters.")
+        case .markdown: return String(localized: "Markdown", comment: "Export Data screen: name of an export format. Markdown is a file format's name; usually kept as is. About 16 characters.")
+        case .csv: return String(localized: "CSV Spreadsheet", comment: "Export Data screen: name of an export format. CSV is a file format; keep it. About 16 characters.")
+        case .pdf: return String(localized: "PDF Document", comment: "Export Data screen: name of an export format. PDF is a file format; keep it. About 16 characters.")
+        case .encryptedBackup: return String(localized: "Encrypted Backup", comment: "Export Data screen: name of an export format, a password-protected backup file. About 16 characters.")
+        }
+    }
 
     var icon: String {
         switch self {
@@ -659,12 +683,12 @@ enum ExportFormat: String, CaseIterable, Identifiable {
 
     var description: String {
         switch self {
-        case .json: return "Full backup of your entries. Can be imported back."
-        case .text: return "Simple readable format for archiving."
-        case .markdown: return "Formatted text for notes apps."
-        case .csv: return "Spreadsheet format for analysis."
-        case .pdf: return "Beautiful formatted document."
-        case .encryptedBackup: return "Password-protected backup, including your Body Twin's health data — the only export that carries it."
+        case .json: return String(localized: "Full backup of your entries. Can be imported back.", comment: "Export Data screen: line under 'JSON Backup'. About 50 characters.")
+        case .text: return String(localized: "Simple readable format for archiving.", comment: "Export Data screen: line under 'Plain Text'. About 40 characters.")
+        case .markdown: return String(localized: "Formatted text for notes apps.", comment: "Export Data screen: line under 'Markdown'. About 35 characters.")
+        case .csv: return String(localized: "Spreadsheet format for analysis.", comment: "Export Data screen: line under 'CSV Spreadsheet'. About 35 characters.")
+        case .pdf: return String(localized: "Beautiful formatted document.", comment: "Export Data screen: line under 'PDF Document'. About 30 characters.")
+        case .encryptedBackup: return String(localized: "Password-protected backup, including your Body Twin's health data — the only export that carries it.", comment: "Export Data screen: line under 'Encrypted Backup'. Body Twin is the feature's name. The privacy claim must stay exact: this is the only export with health data. About 100 characters.")
         }
     }
 }

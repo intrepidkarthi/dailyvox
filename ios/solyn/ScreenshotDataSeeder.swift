@@ -50,7 +50,7 @@ struct ScreenshotDataSeeder {
         let calendar = Calendar.current
         let now = Date()
 
-        let entries: [(text: String, mood: String, daysAgo: Int, starred: Bool, duration: Double)] = [
+        let english: [(text: String, mood: String, daysAgo: Int, starred: Bool, duration: Double)] = [
             // Recent streak (last 7 days)
             (
                 "Sarah called on the drive home and I ended up saying the thing I've been avoiding out loud for about three weeks — that I'm not actually fine about the move. She didn't try to fix it. She just let me say it. I sat in the car park for ten minutes afterwards feeling lighter than I have in a while. I think I needed to hear myself say it more than I needed her to answer.",
@@ -198,6 +198,11 @@ struct ScreenshotDataSeeder {
             ),
         ]
 
+        // A localized run swaps in that language's journal, and listens in it.
+        let seed = ScreenshotSeed.current
+        let entries = seed.map { $0.entries.map { ($0.text, $0.mood, $0.daysAgo, $0.starred, $0.duration) } } ?? english
+        if let seed { SpeakingLanguage.chosenIdentifier = seed.locale }
+
         // Keep the generated ids so the Twin fold below can attach each entry's
         // entities to the SAME row the timeline shows — otherwise the seeded
         // graph is anchored to entries that, as far as the index knows, do not exist.
@@ -218,6 +223,7 @@ struct ScreenshotDataSeeder {
             diaryEntry.mood = entry.mood
             diaryEntry.isStarred = entry.starred
             diaryEntry.duration = entry.duration
+            diaryEntry.transcriptLocale = seed?.locale ?? "en-US"
         }
 
         do {
@@ -236,7 +242,8 @@ struct ScreenshotDataSeeder {
                 mood: entry.mood,
                 date: entryDate,
                 duration: entry.duration,
-                entryId: id.uuidString
+                entryId: id.uuidString,
+                language: seed?.locale ?? "en-US"
             )
         }
 

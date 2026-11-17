@@ -131,6 +131,12 @@ struct TodayView: View {
     /// relaunch keeps the one you moved to and midnight starts over.
     @AppStorage("dailyQuestionTurn") private var questionTurnStored = ""
 
+    /// The once-only "share your sky?" card at nights 7, 21 and 42, rendered
+    /// at the save that reached the night (see `SkyShareOffer`).
+    @State private var skyOffer: SkyOfferPrompt?
+    /// The Story card, written to a temp file, on its way to the share sheet.
+    @State private var skyShare: SkyShareItems?
+
     @FetchRequest private var todayEntries: FetchedResults<DiaryEntry>
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.date, ascending: true)],
@@ -236,19 +242,29 @@ struct TodayView: View {
                             isSuggestion: entry.isMoodSuggested,
                             onSave: { chooseMood(pickedMood, for: entry) })
         }
+        .sheet(item: $skyShare) { share in
+            ActivityView(items: [share.url, share.text])
+        }
         .sheet(isPresented: $typing) {
             TypedEntryComposer(text: $typedText,
-                               title: "Today",
+                               title: String(localized: "Today",
+                                             comment: "Title of the typed-entry sheet opened from the Speak tab. One word, about 12 characters."),
                                prompt: todaysQuestion.text,
-                               footnote: "Typed, not recorded. Nothing is sent to DailyVox.",
+                               footnote: String(localized: "Typed, not recorded. Nothing is sent to DailyVox.",
+                                                comment: "Typed-entry sheet from the Speak tab: footnote under the text field. About 55 characters."),
                                style: .themed,
                                onSave: saveTypedEntry,
                                onCancel: { typing = false })
         }
         // "Saved" fallbacks (offline / failed transcription) aren't errors —
         // don't greet a successfully kept recording with "Recording Error".
-        // A typed entry has no recording, so it brings its own title.
-        .alert(errorTitle ?? (errorMessage?.contains("saved") == true ? "Recording Saved" : "Recording Error"), isPresented: Binding(
+        // Those sites set `errorTitle` to "Recording Saved" themselves: the
+        // title used to be chosen by searching the message for "saved", which
+        // only works while the message is in English. A typed entry has no
+        // recording, so it brings its own title.
+        .alert(errorTitle ?? String(localized: "Recording Error",
+                                    comment: "Speak tab: alert title when a recording could not be made or transcribed. About 20 characters."),
+               isPresented: Binding(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil; errorTitle = nil } }
         )) {
@@ -501,6 +517,18 @@ struct TodayView: View {
                         // something: the BODY row of an entry's ledger, and the
                         // Body card on the Twin tab.
                             entryCardSection
+                            if let offer = skyOffer {
+                                SkyShareOfferCard(
+                                    night: offer.night,
+                                    image: offer.image,
+                                    imageDescription: offer.description,
+                                    onShare: { shareSky(offer) },
+                                    onDismiss: {
+                                        withAnimation(.easeOut(duration: 0.2)) { skyOffer = nil }
+                                    })
+                                .padding(.top, 12)
+                                .transition(.opacity)
+                            }
                             pastSection
                                 .padding(.top, 12)
                         }
@@ -786,9 +814,9 @@ struct TodayView: View {
 
     private var micCaption: String {
         switch recordingState {
-        case .idle: return "TAP TO RECORD \u{00B7} 42 SECONDS"
-        case .recording: return "TAP TO STOP"
-        case .processing: return "FINDING YOUR WORDS\u{2026}"
+        case .idle: return String(localized: "TAP TO RECORD \u{00B7} 42 SECONDS", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. Before recording. Keep the number 42: it is the app's ritual length and a soft target, not a limit. Use the local word for seconds.")
+        case .recording: return String(localized: "TAP TO STOP", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. While recording.")
+        case .processing: return String(localized: "FINDING YOUR WORDS\u{2026}", comment: "Today tab: small caption under the microphone button. Upper case, monospaced, about 26 characters. While the recording is transcribed. Ends with an ellipsis character.")
         }
     }
 
@@ -796,8 +824,8 @@ struct TodayView: View {
     /// the fact, by night it dares you to check it.
     private var privacyLine: String {
         theme.isNight
-            ? "Airplane mode on? Works exactly the same."
-            : "Transcribed on this phone \u{00B7} 0 network calls, ever"
+            ? String(localized: "Airplane mode on? Works exactly the same.", comment: "Today tab: privacy line on a small card, night theme. A playful dare: the app works offline. 'Airplane mode' is Apple's name for the setting. About 45 characters.")
+            : String(localized: "Transcribed on this phone \u{00B7} 0 network calls, ever", comment: "Today tab: privacy line on a small card, day theme. The privacy claim must stay exact. About 50 characters.")
     }
 
     /// Kept, and deliberately not composed on the idle screen.
@@ -830,15 +858,15 @@ struct TodayView: View {
         let hour = Calendar.current.component(.hour, from: Date())
         let timeGreeting: String
         switch hour {
-        case 5..<12: timeGreeting = "Good morning"
-        case 12..<17: timeGreeting = "Good afternoon"
-        case 17..<21: timeGreeting = "Good evening"
-        default: timeGreeting = "Good night"
+        case 5..<12: timeGreeting = String(localized: "Good morning", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 5:00 to 11:59.")
+        case 12..<17: timeGreeting = String(localized: "Good afternoon", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 12:00 to 16:59.")
+        case 17..<21: timeGreeting = String(localized: "Good evening", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 17:00 to 20:59.")
+        default: timeGreeting = String(localized: "Good night", comment: "Today tab: greeting at the top left, by time of day. About 16 characters. 21:00 to 4:59. A greeting, not a farewell.")
         }
 
         // First-time warmth
         if allEntries.isEmpty {
-            return "Welcome to your sky"
+            return String(localized: "Welcome to your sky", comment: "Today tab: greeting at the top left before the first entry. 'Sky' is the app's metaphor: each entry is a star. About 20 characters.")
         }
         return timeGreeting
     }
@@ -1004,10 +1032,10 @@ struct TodayView: View {
 
     private var processingPhaseMessage: String {
         switch processingPhase {
-        case 0: return "Listening to your words..."
-        case 1: return "Understanding your thoughts..."
-        case 2: return "A new star is forming..."
-        default: return "Listening to your words..."
+        case 0: return String(localized: "Listening to your words...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. First of three.")
+        case 1: return String(localized: "Understanding your thoughts...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. Second of three.")
+        case 2: return String(localized: "A new star is forming...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. Third of three; each entry becomes a star.")
+        default: return String(localized: "Listening to your words...", comment: "Today tab: rotating message while a recording is being transcribed. Ends with three dots. About 30 characters. First of three.")
         }
     }
 
@@ -1138,7 +1166,7 @@ struct TodayView: View {
     /// "TODAY ✦ · 8:43 AM" — the canvas's own meta line for this card.
     private func todayMetaLine(for entry: DiaryEntry) -> String {
         let when = entry.updatedAt ?? entry.date ?? Date()
-        return "TODAY \u{2726} \u{00B7} " + formattedTime(when).uppercased()
+        return String(localized: "TODAY \u{2726} \u{00B7} \(formattedTime(when).uppercased())", comment: "Today tab: meta line on today's entry card, as in 'TODAY ✦ · 8:43 AM'. Upper case, monospaced, about 20 characters. The placeholder is the time, already formatted for the locale.")
     }
 
     private var recordButtonSize: CGFloat { isIPad ? 88 : 72 }
@@ -1240,9 +1268,9 @@ struct TodayView: View {
 
     private var statusText: String {
         switch recordingState {
-        case .idle: return "Tap to record"
-        case .recording: return "Tap to stop"
-        case .processing: return "Almost done..."
+        case .idle: return String(localized: "Tap to record", comment: "Today tab: status under the record button (older layout). About 16 characters. Before recording.")
+        case .recording: return String(localized: "Tap to stop", comment: "Today tab: status under the record button (older layout). About 16 characters. While recording.")
+        case .processing: return String(localized: "Almost done...", comment: "Today tab: status under the record button (older layout). About 16 characters. While transcribing. Ends with three dots.")
         }
     }
 
@@ -1338,17 +1366,20 @@ struct TodayView: View {
                         self.recordingState = .recording
                         HapticManager.shared.recordingStarted()
                     } catch {
-                        self.errorMessage = "Unable to start recording. Please try again."
+                        self.errorMessage = String(localized: "Unable to start recording. Please try again.",
+                                                   comment: "Speak tab: alert message under 'Recording Error' when the microphone could not start.")
                         HapticManager.shared.error()
                     }
                 } else {
-                    self.errorMessage = "DailyVox needs microphone access to record your diary."
+                    self.errorMessage = String(localized: "DailyVox needs microphone access to record your diary.",
+                                               comment: "Speak tab: alert message under 'Recording Error' when microphone permission is denied.")
                     HapticManager.shared.warning()
                 }
             }
         }
         #else
-        errorMessage = "Recording is only available on iOS."
+        errorMessage = String(localized: "Recording is only available on iOS.",
+                              comment: "Speak tab: alert message on a platform without a microphone path (never on iPhone).")
         #endif
     }
 
@@ -1408,8 +1439,10 @@ struct TodayView: View {
             // After the sheet is gone: an alert raised while it is still
             // dismissing is silently dropped.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                errorTitle = "Entry Not Saved"
-                errorMessage = "Couldn\u{2019}t save your entry. What you typed is kept \u{2014} tap \u{201C}I can\u{2019}t talk right now\u{201D} to try again."
+                errorTitle = String(localized: "Entry Not Saved",
+                                    comment: "Speak tab: alert title when a typed entry could not be saved. About 20 characters.")
+                errorMessage = String(localized: "Couldn\u{2019}t save your entry. What you typed is kept \u{2014} tap \u{201C}I can\u{2019}t talk right now\u{201D} to try again.",
+                                      comment: "Speak tab: alert message under 'Entry Not Saved'. The quoted phrase is the label of the typing button on the Speak tab and must match its translation exactly; use the target language's quotation marks.")
             }
             return
         }
@@ -1420,19 +1453,27 @@ struct TodayView: View {
 
     /// Appends a segment of text to the day's entry, saves, and tells
     /// everything downstream. Shared by the transcript and the typed path.
+    ///
+    /// `recognizerLocale` is the locale of the model that transcribed a spoken
+    /// segment; nil for typed words, whose language is read from the text.
     @discardableResult
-    private func commitText(_ segment: String, to entry: DiaryEntry, twinDuration: Double) -> Bool {
+    private func commitText(_ segment: String, to entry: DiaryEntry, twinDuration: Double,
+                            recognizerLocale: Locale? = nil) -> Bool {
         let existingText = entry.text ?? ""
+        let existingLocale = entry.transcriptLocale
         if existingText.isEmpty {
             entry.text = segment
         } else {
             entry.text = existingText + "\n\n" + segment
         }
+        entry.noteLanguage(ofAppended: segment, recognizerLocale: recognizerLocale,
+                           entryHadText: !existingText.isEmpty)
         entry.updatedAt = Date()
         do {
             try viewContext.save()
         } catch {
             entry.text = existingText
+            entry.transcriptLocale = existingLocale
             logger.error("Failed to save entry text: \(error.localizedDescription)")
             return false
         }
@@ -1455,14 +1496,18 @@ struct TodayView: View {
             mood: entry.userMood,
             date: entry.date ?? Date(),
             duration: twinDuration,
-            entryId: entry.id?.uuidString
+            entryId: entry.id?.uuidString,
+            // The recogniser that heard this segment; typed words are read
+            // from their text by the engine.
+            language: recognizerLocale.map(TranscriptLocale.tag(for:))
         )
 
         // Something back for what was just said. The whole day's text, as the
         // detail screen reads it, so a second recording refreshes the
         // reflection rather than answering only its last sentence.
         withAnimation(.spring(response: 0.4)) {
-            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id)
+            reflection = EntryReflection.make(entryText: entry.text ?? "", entryID: entry.id,
+                                              language: entry.transcriptLocale)
             awaitingReflection = false
             // A mood read from the whole day's words, only where there is none
             // or the one there was our own suggestion. The words are already
@@ -1517,6 +1562,35 @@ struct TodayView: View {
             || ProcessInfo.processInfo.arguments.contains("-PilotLabelDemo") {
             withAnimation(.spring(response: 0.4)) { labelTarget = entry }
         }
+
+        offerSkyShareIfDue()
+    }
+
+    /// Nights 7, 21 and 42: offer, once each, to share the sky.
+    ///
+    /// Counted from a fresh fetch rather than `allEntries`, which may not have
+    /// caught up with the save that just happened. `consume` marks the night
+    /// offered as it decides, so the card never comes back — not after Not
+    /// now, not after a relaunch with it still on screen.
+    private func offerSkyShareIfDue() {
+        let request: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
+        guard let all = try? viewContext.fetch(request),
+              let night = SkyShareOffer.consume(dates: all.compactMap(\.date))
+        else { return }
+        let facts = Shareables.facts(from: all)
+        let image = Shareables.render(.story, facts: facts, includeNames: false, airplane: false)
+        withAnimation(.easeOut(duration: 0.25)) {
+            skyOffer = SkyOfferPrompt(night: night, image: image,
+                                      description: Shareables.storyAccessibilityLabel(facts))
+        }
+    }
+
+    /// Writes the card already on screen and hands it, with its one line of
+    /// text, to the system share sheet. The app sends nothing itself.
+    private func shareSky(_ offer: SkyOfferPrompt) {
+        guard let url = Shareables.pngURL(.story, image: offer.image) else { return }
+        skyShare = SkyShareItems(url: url, text: Shareables.storyShareText(nights: offer.night))
+        withAnimation(.easeOut(duration: 0.2)) { skyOffer = nil }
     }
 
     private func saveEntry(audioURL: URL, duration: TimeInterval) {
@@ -1547,20 +1621,26 @@ struct TodayView: View {
         }
 
         #if os(iOS)
-        SpeechTranscriber.shared.transcribe(from: audioURL) { result in
+        SpeechTranscriber.shared.transcribeDetailed(from: audioURL) { result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let textSegment):
-                    commitText(textSegment, to: entry, twinDuration: entry.duration)
+                case .success(let transcription):
+                    commitText(transcription.text, to: entry, twinDuration: entry.duration,
+                               recognizerLocale: transcription.locale)
                 case .failure(let error):
                     // No words, so nothing to reflect on — never a guess.
                     awaitingReflection = false
                     logger.error("Transcription failed: \(error.localizedDescription)")
                     // Show user-friendly message for offline/transcription errors
+                    let saved = String(localized: "Recording Saved",
+                                       comment: "Speak tab: alert title when the recording was kept but has no transcript yet. Not an error. About 20 characters.")
                     if let transcriptionError = error as? SpeechTranscriber.TranscriptionError {
                         self.errorMessage = transcriptionError.errorDescription
+                        if transcriptionError == .onDeviceUnavailable { self.errorTitle = saved }
                     } else {
-                        self.errorMessage = "Transcription failed. Your recording is saved — tap the entry to add text manually."
+                        self.errorMessage = String(localized: "Transcription failed. Your recording is saved — tap the entry to add text manually.",
+                                                   comment: "Speak tab: alert message under 'Recording Saved' when transcription failed but the audio was kept.")
+                        self.errorTitle = saved
                     }
                 }
                 recordingState = .idle
@@ -1574,9 +1654,7 @@ struct TodayView: View {
     // MARK: - Formatting
 
     private var formattedToday: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
-        return formatter.string(from: Date())
+        LocaleFormat.date(Date(), template: LocaleFormat.weekdayMonthDay)
     }
 
     private func formattedTime(_ date: Date) -> String {
@@ -1708,7 +1786,7 @@ struct TodayMoodChip: View {
                     .foregroundColor(theme.textColor.opacity(suggested ? 0.75 : 0.9))
                     .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "chevron.forward")
                         .font(.dv(.caption2, weight: .semibold))
                         .foregroundColor(theme.secondaryTextColor)
                 }

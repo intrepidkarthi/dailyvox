@@ -18,6 +18,12 @@ import NaturalLanguage
 /// Until those readers learn other languages, the rule is that they stay
 /// QUIET outside English. This decides which entries count as English.
 ///
+/// From 1.14 the readers no longer ask this. They ask `FeatureLanguage`, which
+/// reads the entry's stored `transcriptLocale` and the engine's
+/// `LanguageGate` table, and agrees with this on every English entry (the
+/// tests pin both). What is left here is `TranscriptLocale.detect`, which
+/// uses it to decide what language to STORE for typed and backfilled text.
+///
 /// English behaviour must not move, so the bias is deliberate: an entry is
 /// treated as English unless there is real evidence it is not — mostly
 /// non-Latin letters, or a recogniser confident of another language on an

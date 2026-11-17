@@ -460,9 +460,17 @@ struct MediumWidgetView: View {
     /// No guilt copy: an unspoken night is an invitation, not a lapse.
     private var dayLine: String {
         if entry.hasEntry {
-            return entry.streak > 0 ? "Day \(entry.streak) · spoken" : "Spoken tonight"
+            return entry.streak > 0
+                ? String(localized: "Day \(String(entry.streak)) · spoken",
+                         comment: "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). Tonight's entry is in; the number is the streak day (1 or more).")
+                : String(localized: "Spoken tonight",
+                         comment: "Medium Home Screen widget, one line beside the mic, about 24 characters. Tonight's entry is in and there is no streak running.")
         }
-        return entry.streak > 0 ? "Day \(entry.streak + 1) · speak tonight" : "Speak tonight"
+        return entry.streak > 0
+            ? String(localized: "Day \(String(entry.streak + 1)) · speak tonight",
+                     comment: "Medium Home Screen widget, one line beside the mic, about 24 characters (shrinks to 80%). No entry yet tonight; the number is the day the streak reaches if the user speaks tonight (2 or more). An invitation, never guilt.")
+            : String(localized: "Speak tonight",
+                     comment: "Widgets: invitation to record tonight when nothing has been spoken. About 24 characters.")
     }
 }
 
@@ -900,15 +908,15 @@ enum Mood: String, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .none: return "No mood"
-        case .happy: return "Happy"
-        case .calm: return "Calm"
-        case .grateful: return "Grateful"
-        case .excited: return "Excited"
-        case .tired: return "Tired"
-        case .anxious: return "Anxious"
-        case .sad: return "Sad"
-        case .angry: return "Angry"
+        case .none: return String(localized: "No mood", comment: "Mood widget: the entry has no mood. About 12 characters.")
+        case .happy: return String(localized: "Happy", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .calm: return String(localized: "Calm", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .grateful: return String(localized: "Grateful", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .excited: return String(localized: "Excited", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .tired: return String(localized: "Tired", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .anxious: return String(localized: "Anxious", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .sad: return String(localized: "Sad", comment: "Mood name in the mood widget. One word, about 10 characters.")
+        case .angry: return String(localized: "Angry", comment: "Mood name in the mood widget. One word, about 10 characters.")
         }
     }
 

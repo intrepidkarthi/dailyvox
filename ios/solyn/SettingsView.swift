@@ -28,6 +28,7 @@ struct SettingsView: View {
 
     @State private var showPermissionDeniedAlert = false
     @State private var showShareReceipt = false
+    @State private var speakingLanguageLabel = SettingsView.currentSpeakingLanguageLabel()
     /// Which preset row shows as selected.
     ///
     /// This was plain `@State` seeded to "evening" and never read from the
@@ -53,6 +54,8 @@ struct SettingsView: View {
     @AppStorage("authorDescription") private var authorDescription: String = ""
     @AppStorage("iCloudSyncEnabled") private var iCloudSyncEnabled: Bool = true
     @AppStorage("pilotLabelingEnabled") private var pilotLabelingEnabled: Bool = false
+    /// `SkyShareOffer.enabledKey`. On by default.
+    @AppStorage("offerMilestoneShares") private var offerMilestoneShares: Bool = true
     // Read once per Settings visit; generated on first read and fixed after.
     @State private var participantCode: String = ResearchParticipant.code()
     @State private var participantCodeCopied = false
@@ -63,6 +66,15 @@ struct SettingsView: View {
         case yearly = "Yearly"
 
         var id: String { rawValue }
+
+        /// What the picker says. The raw value is only an identity.
+        var title: String {
+            switch self {
+            case .monthly: return String(localized: "Monthly", comment: "Settings > Backup & Export, PDF: export period choice. One word, about 10 characters.")
+            case .quarterly: return String(localized: "Quarterly", comment: "Settings > Backup & Export, PDF: export period choice. One word, about 10 characters.")
+            case .yearly: return String(localized: "Yearly", comment: "Settings > Backup & Export, PDF: export period choice. One word, about 10 characters.")
+            }
+        }
     }
 
     // Storage states
@@ -101,10 +113,12 @@ struct SettingsView: View {
             // user with a "Your name" field as the first thing in Settings.
             appearanceSection
             journalingGoalSection
+            speakingLanguageSection
             vocabularySection
             liveActivitiesSection
             securitySection
             dailyReminderSection
+            sharingSection
             storageSection
             iCloudSection
             healthSection
@@ -179,7 +193,7 @@ struct SettingsView: View {
             } else {
                 Picker("Period", selection: $selectedExportPeriod) {
                     ForEach(ExportPeriod.allCases) { period in
-                        Text(period.rawValue).tag(period)
+                        Text(period.title).tag(period)
                     }
                 }
 
@@ -312,16 +326,16 @@ struct SettingsView: View {
     /// far below it and is read on its own.
     private var privacyFooter: String {
         iCloudSyncEnabled && PersistenceController.isCloudAvailable
-            ? "Your thoughts are yours alone. iCloud Sync is on, so they are copied to your own iCloud account, encrypted with your Apple ID."
-            : "Your thoughts are yours alone. iCloud Sync is off, so nothing leaves this device."
+            ? String(localized: "Your thoughts are yours alone. iCloud Sync is on, so they are copied to your own iCloud account, encrypted with your Apple ID.", comment: "Settings > Privacy & Security: section footer while iCloud Sync is on. 'iCloud Sync' is the name of the setting above; 'Apple ID' is Apple's term in the target language.")
+            : String(localized: "Your thoughts are yours alone. iCloud Sync is off, so nothing leaves this device.", comment: "Settings > Privacy & Security: section footer while iCloud Sync is off. 'iCloud Sync' is the name of the setting above.")
     }
 
     private var dataShieldFooter: String {
-        let base = "Speech is transcribed by this iPhone; no recording and no transcript is ever sent to DailyVox, because there is no DailyVox server to send it to. Permissions used: microphone, speech, notifications."
+        let base = String(localized: "Speech is transcribed by this iPhone; no recording and no transcript is ever sent to DailyVox, because there is no DailyVox server to send it to. Permissions used: microphone, speech, notifications.", comment: "Settings > Data Shield: section footer, first part. A second sentence about iCloud follows after a space. Every privacy claim must stay exact.")
         guard iCloudSyncEnabled && PersistenceController.isCloudAvailable else {
-            return base + " Nothing leaves this device."
+            return base + " " + String(localized: "Nothing leaves this device.", comment: "Settings > Data Shield: section footer, the sentence after the transcription promise while iCloud Sync is off.")
         }
-        return base + " iCloud Sync is ON, so your entries are copied to your own iCloud account \u{2014} Apple's, not ours. Turn it off below and this device stops talking to anything."
+        return base + " " + String(localized: "iCloud Sync is ON, so your entries are copied to your own iCloud account \u{2014} Apple's, not ours. Turn it off below and this device stops talking to anything.", comment: "Settings > Data Shield: section footer, the sentence after the transcription promise while iCloud Sync is on. 'iCloud Sync' is the setting's name; ON is emphasised in upper case.")
     }
 
     private var appearanceSection: some View {
@@ -362,6 +376,36 @@ struct SettingsView: View {
         } footer: {
             Text("Set a weekly journaling target to build a consistent habit.")
         }
+    }
+
+    /// B-6: the language DailyVox listens in, separate from the app's language.
+    private var speakingLanguageSection: some View {
+        Section {
+            NavigationLink {
+                SpeakingLanguageView()
+                    .onDisappear { speakingLanguageLabel = Self.currentSpeakingLanguageLabel() }
+            } label: {
+                HStack {
+                    Text("Language you speak",
+                         comment: "Settings row: opens the picker for the language DailyVox listens in.")
+                    Spacer()
+                    Text(speakingLanguageLabel)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+            }
+        } footer: {
+            Text(SpeakingLanguage.explainerCopy)
+        }
+    }
+
+    /// "Automatic" or the chosen language's name.
+    static func currentSpeakingLanguageLabel() -> String {
+        guard let chosen = SpeakingLanguage.chosenIdentifier else {
+            return String(localized: "Automatic",
+                          comment: "Language you speak: follow the iPhone's own language.")
+        }
+        return SpeakingLanguage.displayName(of: Locale(identifier: chosen))
     }
 
     private var vocabularySection: some View {
@@ -580,9 +624,9 @@ struct SettingsView: View {
             if reminderManager.isEnabled {
                 ReminderPresetRow(
                     icon: "sunrise",
-                    title: "Morning",
-                    time: "7:00 AM",
-                    intent: "Start your day with clarity",
+                    title: String(localized: "reminder.preset.morning", defaultValue: "Morning", comment: "Settings > Daily Reminder: preset name, 7:00. One word, about 10 characters."),
+                    time: LocaleFormat.clockTime(hour: 7, minute: 0),
+                    intent: String(localized: "Start your day with clarity", comment: "Settings > Daily Reminder: line under the Morning preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "morning"
                 ) {
                     customPresetChosen = false
@@ -591,9 +635,9 @@ struct SettingsView: View {
 
                 ReminderPresetRow(
                     icon: "sun.max",
-                    title: "Midday",
-                    time: "12:30 PM",
-                    intent: "Reset and reflect",
+                    title: String(localized: "Midday", comment: "Settings > Daily Reminder: preset name, 12:30. One word, about 10 characters."),
+                    time: LocaleFormat.clockTime(hour: 12, minute: 30),
+                    intent: String(localized: "Reset and reflect", comment: "Settings > Daily Reminder: line under the Midday preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "midday"
                 ) {
                     customPresetChosen = false
@@ -602,9 +646,9 @@ struct SettingsView: View {
 
                 ReminderPresetRow(
                     icon: "moon.stars",
-                    title: "Evening",
-                    time: "8:00 PM",
-                    intent: "Unwind and look back",
+                    title: String(localized: "reminder.preset.evening", defaultValue: "Evening", comment: "Settings > Daily Reminder: preset name, 20:00. One word, about 10 characters."),
+                    time: LocaleFormat.clockTime(hour: 20, minute: 0),
+                    intent: String(localized: "Unwind and look back", comment: "Settings > Daily Reminder: line under the Evening preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "evening"
                 ) {
                     customPresetChosen = false
@@ -613,9 +657,9 @@ struct SettingsView: View {
 
                 ReminderPresetRow(
                     icon: "slider.horizontal.3",
-                    title: "Custom",
+                    title: String(localized: "Custom", comment: "Settings > Daily Reminder: preset that lets the user pick a time. One word, about 10 characters."),
                     time: nil,
-                    intent: "Pick your own time",
+                    intent: String(localized: "Pick your own time", comment: "Settings > Daily Reminder: line under the Custom preset. About 30 characters."),
                     isSelected: selectedReminderPreset == "custom"
                 ) {
                     customPresetChosen = true
@@ -649,6 +693,24 @@ struct SettingsView: View {
             Text("Daily Reminder")
         } footer: {
             Text("DailyVox sends one gentle notification each day at your chosen time.")
+        }
+    }
+
+    private var sharingSection: some View {
+        Section {
+            Toggle(isOn: $offerMilestoneShares) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Offer to share milestones", comment: "Settings toggle: whether Today offers, once each at nights 7, 21 and 42, to share a picture of the sky.")
+                    Text("At nights 7, 21 and 42, once each, Today offers a picture of your sky.", comment: "Settings: explanation under the Offer to share milestones toggle. Keep the numbers 7, 21 and 42.")
+                        .font(.dv(.caption))
+                        .foregroundColor(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        } header: {
+            Text("Sharing", comment: "Settings section header.")
+        } footer: {
+            Text("The picture never includes your words, names or moods. It is made on this iPhone and only goes where you send it from the share sheet.", comment: "Settings footer for the Sharing section.")
         }
     }
 
@@ -722,12 +784,12 @@ struct SettingsView: View {
 
     private var syncStatusText: String {
         if !iCloudSyncEnabled {
-            return "Off — entries stay on this device only"
+            return String(localized: "Off — entries stay on this device only", comment: "Settings > iCloud Sync: status line under the toggle when sync is off. About 40 characters.")
         }
         if PersistenceController.isCloudAvailable {
-            return "Syncing across your devices"
+            return String(localized: "Syncing across your devices", comment: "Settings > iCloud Sync: status line under the toggle when sync is on. About 40 characters.")
         }
-        return "iCloud not available — sign in to enable"
+        return String(localized: "iCloud not available — sign in to enable", comment: "Settings > iCloud Sync: status line when the user is not signed in to iCloud on this iPhone. About 40 characters.")
     }
 
     @ViewBuilder
@@ -773,29 +835,29 @@ struct SettingsView: View {
 
                 if twin.bodyTwin.isActive {
                     HealthSignalToggle(
-                        label: "Sleep",
-                        detail: "Hours of rest the night before",
+                        label: String(localized: "Sleep", comment: "Settings > Health: name of a signal Body Twin can read. One word, about 16 characters."),
+                        detail: String(localized: "Hours of rest the night before", comment: "Settings > Health: line under 'Sleep'. About 36 characters."),
                         icon: "moon.zzz.fill",
                         color: DS.Palette.sage,
                         isOn: $bodyTwinManager.sleepEnabled
                     )
                     HealthSignalToggle(
-                        label: "Heart",
-                        detail: "Morning HRV and resting heart rate",
+                        label: String(localized: "Heart", comment: "Settings > Health: name of a signal Body Twin can read. One word, about 16 characters."),
+                        detail: String(localized: "Morning HRV and resting heart rate", comment: "Settings > Health: line under 'Heart'. HRV is heart rate variability; use the abbreviation Apple Health uses in the target language. About 36 characters."),
                         icon: "heart.fill",
                         color: DS.Palette.terracotta,
                         isOn: heartSignalBinding
                     )
                     HealthSignalToggle(
-                        label: "Steps",
-                        detail: "Steps taken through the day",
+                        label: String(localized: "Steps", comment: "Settings > Health: name of a signal Body Twin can read. One word, about 16 characters."),
+                        detail: String(localized: "Steps taken through the day", comment: "Settings > Health: line under 'Steps'. About 36 characters."),
                         icon: "figure.walk",
                         color: DS.Palette.gold,
                         isOn: $bodyTwinManager.stepsEnabled
                     )
                     HealthSignalToggle(
-                        label: "Mindful Minutes",
-                        detail: "Quiet minutes you set aside",
+                        label: String(localized: "Mindful Minutes", comment: "Settings > Health: name of a signal Body Twin can read; Apple Health's own name for it in the target language. About 16 characters."),
+                        detail: String(localized: "Quiet minutes you set aside", comment: "Settings > Health: line under 'Mindful Minutes'. About 36 characters."),
                         icon: "leaf.fill",
                         color: DS.Palette.forest,
                         isOn: $bodyTwinManager.mindfulEnabled
@@ -836,7 +898,7 @@ struct SettingsView: View {
                     Label("Wipe All Health Snapshots", systemImage: "trash")
                 }
             } header: {
-                Text("Health")
+                Text("Health", comment: "Settings > section header for Apple Health signals. Use Apple's name for Health in the target language. About 12 characters.")
             } footer: {
                 // Honest promise: DECISIONS #1's single sanctioned exit path
                 // (user-initiated encrypted export, user-held key) is named,
@@ -853,11 +915,11 @@ struct SettingsView: View {
 
     private var bodyTwinStatusText: String {
         if isRequestingHealthAccess {
-            return "Asking Health for permission…"
+            return String(localized: "Asking Health for permission…", comment: "Settings > Health: status line under Body Twin while the iOS Health permission sheet is up. About 40 characters.")
         }
         return twin.bodyTwin.isActive
-            ? "Learning what your body felt"
-            : "Off — your Twin learns from your words alone"
+            ? String(localized: "Learning what your body felt", comment: "Settings > Health: status line under Body Twin when it is on. About 40 characters.")
+            : String(localized: "Off — your Twin learns from your words alone", comment: "Settings > Health: status line under Body Twin when it is off. About 40 characters.")
     }
 
     /// One switch for both heart signals — HRV and resting rate travel together.
@@ -927,18 +989,18 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 12) {
                 PrivacyInfoRow(
                     icon: "waveform",
-                    title: "On-Device Transcription",
-                    description: "Voice converted to text using Apple's speech recognition"
+                    title: String(localized: "On-Device Transcription", comment: "Settings > Privacy & Security: row title. About 26 characters."),
+                    description: String(localized: "Voice converted to text using Apple's speech recognition", comment: "Settings > Privacy & Security: line under 'On-Device Transcription'. About 60 characters.")
                 )
                 PrivacyInfoRow(
                     icon: "server.rack",
-                    title: "No Third-Party Servers",
-                    description: "We never send your data to our servers"
+                    title: String(localized: "No Third-Party Servers", comment: "Settings > Privacy & Security: row title. About 26 characters."),
+                    description: String(localized: "We never send your data to our servers", comment: "Settings > Privacy & Security: line under 'No Third-Party Servers'. About 60 characters.")
                 )
                 PrivacyInfoRow(
                     icon: "person.fill.xmark",
-                    title: "No Account Required",
-                    description: "No sign-up, no tracking, no analytics"
+                    title: String(localized: "No Account Required", comment: "Settings > Privacy & Security: row title. About 26 characters."),
+                    description: String(localized: "No sign-up, no tracking, no analytics", comment: "Settings > Privacy & Security: line under 'No Account Required'. About 60 characters.")
                 )
             }
             .padding(.vertical, 8)
@@ -1051,7 +1113,8 @@ struct SettingsView: View {
         do {
             exportURL = try BackupService.shared.exportResearchJSON(entries: Array(entries))
         } catch {
-            exportError = "Research export failed: \(error.localizedDescription)"
+            exportError = String(localized: "Research export failed: \(error.localizedDescription)",
+                                 comment: "Settings > Research pilot: alert message under 'Export error'. The placeholder is iOS's own error description, already in the user's language.")
         }
     }
 
@@ -1118,16 +1181,16 @@ struct SettingsView: View {
                     ProgressView()
                 }
             } else {
-                StorageRow(label: "Audio Recordings", bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
+                StorageRow(label: String(localized: "Audio Recordings", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters."), bytes: audioStorageBytes, icon: "waveform", color: DS.Palette.sage)
                 // Shown only when there is something to report. Photo
                 // attachment is withheld (FeatureFlags.photoAttachments), but
                 // anyone who attached photos before still needs to see what
                 // they are using — hiding a storage figure is not the same as
                 // hiding a button.
                 if photoStorageBytes > 0 || FeatureFlags.photoAttachments {
-                    StorageRow(label: "Photos", bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
+                    StorageRow(label: String(localized: "Photos", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters. Photos attached to entries."), bytes: photoStorageBytes, icon: "photo", color: DS.Palette.terracotta)
                 }
-                StorageRow(label: "Database", bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
+                StorageRow(label: String(localized: "Database", comment: "Settings > Storage: row naming what uses space on the iPhone, with its size on the right. About 20 characters. The entries themselves (text and metadata)."), bytes: databaseStorageBytes, icon: "cylinder", color: DS.Palette.gold)
 
                 HStack {
                     Text("Total")
@@ -1197,13 +1260,13 @@ struct SettingsView: View {
     // MARK: - Storage Deletion
 
     private func deleteAllAudio() {
-        Self.clearDirectory(name: "Recordings")
+        Self.clearDirectory(name: "Recordings")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         calculateStorage()
     }
 
     private func deleteAllPhotos() {
-        Self.clearDirectory(name: "Photos")
+        Self.clearDirectory(name: "Photos")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         calculateStorage()
     }
@@ -1225,8 +1288,8 @@ struct SettingsView: View {
             // still put its words on the lock screen.
             ReminderManager.shared.refresh(in: viewContext)
         }
-        Self.clearDirectory(name: "Recordings")
-        Self.clearDirectory(name: "Photos")
+        Self.clearDirectory(name: "Recordings")  // i18n-ignore: folder name on disk
+        Self.clearDirectory(name: "Photos")  // i18n-ignore: folder name on disk
         HapticManager.shared.entryDeleted()
         WidgetCenter.shared.reloadAllTimelines()
         calculateStorage()
@@ -1243,8 +1306,8 @@ struct SettingsView: View {
     private func calculateStorage() {
         isCalculatingStorage = true
         DispatchQueue.global(qos: .userInitiated).async {
-            let audioBytes = Self.directorySize(name: "Recordings")
-            let photoBytes = Self.directorySize(name: "Photos")
+            let audioBytes = Self.directorySize(name: "Recordings")  // i18n-ignore: folder name on disk
+            let photoBytes = Self.directorySize(name: "Photos")  // i18n-ignore: folder name on disk
             let dbBytes = Self.databaseSize()
 
             DispatchQueue.main.async {
@@ -1397,8 +1460,7 @@ struct SettingsView: View {
     }
 
     private func monthName(_ month: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
+        let formatter = LocaleFormat.formatter(template: LocaleFormat.month)
         var components = DateComponents()
         components.month = month
         if let date = Calendar.current.date(from: components) {
@@ -1420,11 +1482,17 @@ struct SettingsView: View {
         case .monthly:
             let month = selectedMonth ?? currentMonth
             dateRange = .month(year: year, month: month)
-            periodTitle = "\(monthName(month)) \(year)"
+            // The locale's own month-and-year ("October 2026", "Oktober 2026").
+            let start = Calendar.current.date(from: DateComponents(year: year, month: month, day: 1))
+            periodTitle = start.map { LocaleFormat.date($0, template: LocaleFormat.monthYear) }
+                ?? "\(monthName(month)) \(year)"
         case .quarterly:
             let quarter = selectedMonth ?? currentQuarter
             dateRange = .quarter(year: year, quarter: quarter)
-            periodTitle = "Q\(quarter) \(year)"
+            // The locale's own quarter-and-year ("Q4 2026").
+            let start = Calendar.current.date(from: DateComponents(year: year, month: (quarter - 1) * 3 + 1, day: 1))
+            periodTitle = start.map { LocaleFormat.date($0, template: LocaleFormat.quarterYear) }
+                ?? "Q\(quarter) \(year)"
         case .yearly:
             dateRange = .year(year)
             periodTitle = String(year)
@@ -1459,7 +1527,7 @@ struct SettingsView: View {
             }
         }
         #else
-        exportError = "PDF export is available on iOS."
+        exportError = String(localized: "PDF export is available on iOS.", comment: "Settings > Backup & Export: alert message on a platform without PDF export (never on iPhone).")
         #endif
     }
 }
@@ -1516,7 +1584,7 @@ struct ThemeButton: View {
                     }
                 }
                 
-                Text(theme.rawValue)
+                Text(theme.displayName)
                     .font(.dv(.caption2))
                     .foregroundColor(isSelected ? theme.accentColor : .secondary)
             }

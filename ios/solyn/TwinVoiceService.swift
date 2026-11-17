@@ -128,7 +128,7 @@ final class TwinVoiceService: NSObject, ObservableObject {
 
     /// Short sample so a voice can be auditioned in Settings without going back to the chat.
     func preview() {
-        speak("This is how your Twin will sound when it reads a reply back to you.")
+        speak(String(localized: "This is how your Twin will sound when it reads a reply back to you.", comment: "Settings > Twin voice: sample sentence spoken aloud by the chosen system voice when the user taps Hear a sample. Never shown on screen. About 70 characters."))
     }
 
     func stop() {
