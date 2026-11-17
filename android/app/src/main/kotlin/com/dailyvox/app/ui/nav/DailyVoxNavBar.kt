@@ -17,14 +17,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.graphics.Color
+import com.dailyvox.app.ui.theme.LocalDvPalette
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import com.dailyvox.app.ui.theme.Gold
-import com.dailyvox.app.ui.theme.NightBackground
-import com.dailyvox.app.ui.theme.NightSurface
-import com.dailyvox.app.ui.theme.NightText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -65,7 +62,12 @@ fun DailyVoxNavBar(
         with(density) { (target?.first ?: 0f).toDp() }, springSpec, label = "pillX")
     val pillW by androidx.compose.animation.core.animateDpAsState(
         with(density) { (target?.second ?: 0f).toDp() }, springSpec, label = "pillW")
-    val pillColor by animateColorAsState(if (night) Gold else scheme.primary, label = "pillColor")
+    // Under the sky the bar takes the theme's night; on the page, the theme's tab colours.
+    val pal = LocalDvPalette.current
+    val sky = pal.night
+    // A night PAGE already is the night; only a day page under the sky switches zone.
+    val underSky = night && !pal.isNight
+    val pillColor by animateColorAsState(if (underSky) sky.reward else pal.tabActive, label = "pillColor")
     val shape = RoundedCornerShape(24.dp)
 
     // Centred and inset, then the pill wraps the row. Without fillMaxWidth the
@@ -82,7 +84,7 @@ fun DailyVoxNavBar(
             .shadow(14.dp, shape, ambientColor = Color.Black.copy(alpha = 0.12f), spotColor = Color.Black.copy(alpha = 0.12f))
             .clip(shape)
             // Container is WHITE in day and #1C2A42 at night (§3).
-            .background(if (night) NightSurface else scheme.surface)
+            .background(if (underSky) sky.surface else scheme.surface)
             .padding(horizontal = 5.dp, vertical = 5.dp),
     ) {
         if (target != null) Box(
@@ -103,9 +105,9 @@ fun DailyVoxNavBar(
                 val selected = dest == current
                 val labelColor by animateColorAsState(
                     when {
-                        selected && night -> NightBackground
-                        selected -> scheme.onPrimary
-                        night -> NightText.copy(alpha = 0.6f)
+                        selected && underSky -> sky.onReward
+                        selected -> pal.onTabActive
+                        underSky -> sky.ink.copy(alpha = 0.6f)
                         else -> scheme.onSurfaceVariant
                     },
                     label = "navLabel",

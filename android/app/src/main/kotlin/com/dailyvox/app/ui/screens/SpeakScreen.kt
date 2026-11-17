@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.themeHeader
 import com.dailyvox.app.ui.components.SpeechErrorCard
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
@@ -47,8 +48,6 @@ import com.dailyvox.app.ui.components.MonoLabel
 import com.dailyvox.app.ui.components.MoodPicker
 import com.dailyvox.app.ui.components.moodWord
 import com.dailyvox.app.ui.components.PrivateKeyboard
-import com.dailyvox.app.ui.theme.Gold
-import com.dailyvox.app.ui.theme.StarGold
 import kotlinx.coroutines.delay
 
 /**
@@ -98,9 +97,7 @@ fun SpeakScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val goldText = if (MaterialTheme.colorScheme.background ==
-                       com.dailyvox.app.ui.theme.NightBackground)
-        com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
     val capture = remember { SpeechCapture(context) }
     val recorder = remember { AudioRecorder(context) }
     // The Today card's play chip. Same AudioQueue the Journal's "Play today"
@@ -306,6 +303,15 @@ fun SpeakScreen(
         modifier.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // The theme's header: a band and its weather for the seasons and the
+        // banded festivals, a small motif for the rest. Drawn behind the header
+        // only, never behind what the user wrote. Text on a band takes its ink.
+        val pal = com.dailyvox.app.ui.theme.LocalDvPalette.current
+        val onBand = pal.band?.takeIf { com.dailyvox.app.ui.theme.decorated(com.dailyvox.app.ui.theme.LocalThemeId.current, pal) }?.let { pal.onBand }
+        val headInk = onBand ?: MaterialTheme.colorScheme.onBackground
+        val headSoft = onBand?.copy(alpha = 0.82f) ?: MaterialTheme.colorScheme.onSurfaceVariant
+        val headGold = onBand ?: goldText
+        Column(Modifier.fillMaxWidth().themeHeader(bleed = 24.dp)) {
         Spacer(Modifier.height(14.dp))
         // Spec §2.2: greeting + date on the left, streak and star chips on the
         // right. This read "Day 21 · 17% resolved" — a progress figure that
@@ -323,13 +329,13 @@ fun SpeakScreen(
                         else -> "Good evening"
                     },
                     fontSize = 15.sp, fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = headInk,
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
                     java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault())
                         .format(java.util.Date()),
-                    fontSize = 12.5.sp, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.5.sp, color = headSoft,
                 )
             }
             Row(verticalAlignment = Alignment.Top) {
@@ -348,24 +354,25 @@ fun SpeakScreen(
                             com.dailyvox.app.system.Streak.Kind.NEW -> stringResource(R.string.streak_none_yet)
                         },
                         fontSize = 12.5.sp, fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = headInk,
                     )
                     Spacer(Modifier.height(2.dp))
                     Text(
                         "\u2726 $yearCount this year", fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold, color = goldText,
+                        fontWeight = FontWeight.SemiBold, color = headGold,
                     )
                 }
                 Text(
                     "\u22EF",
                     fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = headSoft,
                     modifier = Modifier.clip(RoundedCornerShape(12.dp))
                         .clickable(onClick = onSettings)
                         .defaultMinSize(minWidth = 44.dp, minHeight = 44.dp)
                         .wrapContentSize(),
                 )
             }
+        }
         }
 
         Spacer(Modifier.height(if (tall) 56.dp else 28.dp))
@@ -914,6 +921,8 @@ private fun RecordButton(
     onTap: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
+    val reward = com.dailyvox.app.ui.theme.LocalDvPalette.current.reward
+    val recordDisc = com.dailyvox.app.ui.theme.LocalDvPalette.current.record
     val label = when (state) {
         SpeechCapture.State.RECORDING -> "Stop recording"
         SpeechCapture.State.PROCESSING -> "Processing"
@@ -988,7 +997,7 @@ private fun RecordButton(
                 )
                 val on = state == SpeechCapture.State.RECORDING && i < litTicks
                 drawCircle(
-                    color = if (on) Gold else Gold.copy(alpha = 0.28f),
+                    color = if (on) reward else reward.copy(alpha = 0.28f),
                     radius = 2.25.dp.toPx(),
                     center = p,
                 )
@@ -1000,8 +1009,8 @@ private fun RecordButton(
                 c.x + ((ringR + 6.dp.toPx()) * kotlin.math.cos(oa)).toFloat(),
                 c.y + ((ringR + 6.dp.toPx()) * kotlin.math.sin(oa)).toFloat(),
             )
-            drawCircle(Gold.copy(alpha = 0.35f), radius = 7.dp.toPx(), center = op)
-            drawCircle(Gold, radius = 4.5.dp.toPx(), center = op)
+            drawCircle(reward.copy(alpha = 0.35f), radius = 7.dp.toPx(), center = op)
+            drawCircle(reward, radius = 4.5.dp.toPx(), center = op)
 
             // The disc. Green acts in Day; at night the actor is gold, which is
             // already what colorScheme.primary resolves to.
@@ -1017,7 +1026,7 @@ private fun RecordButton(
             // Lit from above: a lighter crown falling to the base colour, so the
             // disc has the volume of the gold 3D mic in the brand mark rather
             // than reading as a flat sticker.
-            val base = if (state == SpeechCapture.State.RECORDING) scheme.error else scheme.primary
+            val base = if (state == SpeechCapture.State.RECORDING) recordDisc else scheme.primary
             drawCircle(
                 brush = Brush.verticalGradient(
                     listOf(androidx.compose.ui.graphics.lerp(base, Color.White, 0.16f), base),

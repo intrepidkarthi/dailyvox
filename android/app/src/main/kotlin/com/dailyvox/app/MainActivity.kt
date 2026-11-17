@@ -47,10 +47,12 @@ class MainActivity : FragmentActivity() {
         // The window behind the first frame follows the theme the app is about
         // to draw. It was always cream, so the default (Sunset) theme opened
         // after dark on a cream flash before the navy sky arrived.
-        val theme = getSharedPreferences("dailyvox", MODE_PRIVATE).getString("theme", "SUNSET")
+        val prefs = getSharedPreferences("dailyvox", MODE_PRIVATE)
+        val theme = prefs.getString("theme", "SUNSET")
         val night = theme == "DARK" || (theme == "SUNSET" && com.dailyvox.app.system.SolarClock.isAfterSunset())
+        val themeId = com.dailyvox.app.ui.theme.ThemeId.fromKey(prefs.getString("themeId", null))
         window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(
-            (if (night) com.dailyvox.app.ui.theme.NightBackground else com.dailyvox.app.ui.theme.DayBackground).toArgb()))
+            com.dailyvox.app.ui.theme.paletteFor(themeId, night).ground.toArgb()))
         setContent { DailyVoxApp(vm, this) }
     }
 
@@ -126,10 +128,26 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
     // phones opened this on cream, which is the Light theme — technically in the
     // spec, and the reason the app read as beige and lifeless.
     var theme by rememberSaveable { mutableStateOf(ThemeChoice.valueOf(prefs.getString("theme", "SUNSET")!!)) }
+    // The palette is a separate choice from the Day/Night/Sunset mode, stored
+    // under its own key, so every install from before themes reads as Default.
+    var themeId by rememberSaveable {
+        mutableStateOf(com.dailyvox.app.ui.theme.ThemeId.fromKey(prefs.getString("themeId", null)))
+    }
     /** Set by B4's "Ask about this"; consumed by the Ask screen on arrival. */
     var askSeed by rememberSaveable { mutableStateOf<String?>(null) }
-    var current by rememberSaveable { mutableStateOf(Destination.SPEAK) }
-    var overlay by rememberSaveable { mutableStateOf(Overlay.NONE) }
+    // Debug builds only: `--es dv_open settings|appearance|twin|insights|dial` lands straight on a
+    // screen, so screenshots of every theme can be scripted. Release ignores it.
+    val debugOpen = remember {
+        if (com.dailyvox.app.BuildConfig.DEBUG) activity.intent?.getStringExtra("dv_open") else null
+    }
+    var current by rememberSaveable { mutableStateOf(if (debugOpen == "twin") Destination.TWIN else Destination.SPEAK) }
+    var overlay by rememberSaveable {
+        mutableStateOf(when (debugOpen) {
+            "settings", "appearance" -> Overlay.SETTINGS
+            "insights" -> Overlay.INSIGHTS
+            else -> Overlay.NONE
+        })
+    }
     var openEntry by remember { mutableStateOf<Entry?>(null) }
     // Recording takes the whole screen (B2b) — the tab bar would offer an exit
     // that silently discards what is being said.
@@ -271,7 +289,20 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         ThemeChoice.SUNSET -> com.dailyvox.app.system.SolarClock.isAfterSunset()
     }
 
-    DailyVoxTheme(darkTheme = dark) {
+    DailyVoxTheme(darkTheme = dark, themeId = themeId) {
+        // Debug only: the recording dial mid-entry, for theme screenshots.
+        if (debugOpen == "dial") {
+            Box(Modifier.fillMaxSize().background(com.dailyvox.app.ui.theme.LocalDvPalette.current.night.ground)) {
+                com.dailyvox.app.ui.screens.RecordingDial(
+                    elapsed = 28, level = 0.55f,
+                    partial = "Sarah called on the drive home and I finally said it out loud",
+                    lastEntity = "Sarah", paused = false,
+                    onStop = {}, onDiscard = {}, onPause = {}, onResume = {},
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+            return@DailyVoxTheme
+        }
         if (!onboarded) {
             OnboardingScreen(onDone = { text, secs, path, remind ->
                 // The first star is persisted as a REAL entry, exactly as iOS
@@ -400,8 +431,8 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
         // follows the theme like every other screen, the special case is gone
         // and only the real theme drives the system bars.
         val view = androidx.compose.ui.platform.LocalView.current
-        val darkTheme = androidx.compose.material3.MaterialTheme.colorScheme.background ==
-            com.dailyvox.app.ui.theme.NightBackground
+        val palette = com.dailyvox.app.ui.theme.LocalDvPalette.current
+        val darkTheme = palette.isNight
         // The Twin tab is navy under BOTH themes (§8.4), so the surface behind
         // the status bar is dark there even in daylight. Driving the icons off
         // the theme alone painted dark glyphs on the night sky.
@@ -422,7 +453,7 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
             // bands framing the "always night" sky. iOS ignores the top safe
             // area there; this is the same thing.
             containerColor = if (current == com.dailyvox.app.ui.nav.Destination.TWIN && overlay == Overlay.NONE && openEntry == null)
-                com.dailyvox.app.ui.theme.NightBackground
+                palette.night.ground
             else androidx.compose.material3.MaterialTheme.colorScheme.background,
             bottomBar = {
                 if (chromeVisible) DailyVoxNavBar(
@@ -501,6 +532,9 @@ private fun DailyVoxApp(vm: AppViewModel, activity: FragmentActivity) {
                         },
                         theme = theme,
                         onTheme = { theme = it; prefs.edit().putString("theme", it.name).apply() },
+                        themeId = themeId,
+                        onThemeId = { themeId = it; prefs.edit().putString("themeId", it.key).apply() },
+                        startInAppearance = debugOpen == "appearance",
                         onShareReceipt = { shareCard = com.dailyvox.app.system.Shareables.Card.RECEIPT },
                         onExport = { saveJson.launch("dailyvox-journal.json") },
                         onExportMarkdown = { saveMd.launch("dailyvox-journal.md") },

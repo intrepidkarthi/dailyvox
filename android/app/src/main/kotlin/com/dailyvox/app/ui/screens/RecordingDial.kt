@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawDialDecor
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.foundation.border
+import androidx.compose.runtime.getValue
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.dailyvox.app.ui.theme.LocalDvPalette
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -24,10 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.ui.components.MonoLabel
-import com.dailyvox.app.ui.theme.Gold
-import com.dailyvox.app.ui.theme.NightBackground
-import com.dailyvox.app.ui.theme.NightGoldText
-import com.dailyvox.app.ui.theme.NightText
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -58,6 +59,7 @@ fun RecordingDial(
     onResume: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val sky = LocalDvPalette.current.night
     // §8.8. The dial keeps every piece of information — ticks, arc, elapsed —
     // and stops orbiting, breathing and blinking. None of the meaning was in
     // the movement.
@@ -101,7 +103,7 @@ fun RecordingDial(
     Column(
         modifier
             .fillMaxSize()
-            .background(NightBackground)
+            .background(sky.ground)
             .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -113,21 +115,28 @@ fun RecordingDial(
             fontWeight = FontWeight.SemiBold,
             // Paused holds steady. The blink means "live", so a paused dial that
             // kept pulsing would say the mic was still open.
-            color = Gold.copy(alpha = if (paused) 0.55f else blink),
+            color = sky.reward.copy(alpha = if (paused) 0.55f else blink),
         )
 
         Spacer(Modifier.weight(1f))
 
+        val themeId = com.dailyvox.app.ui.theme.LocalThemeId.current
+        val dialPal = LocalDvPalette.current
+        val dialDecor = com.dailyvox.app.ui.theme.decorated(themeId, dialPal)
+        val ripple by com.dailyvox.app.ui.theme.decorPhase(4200)
         Box(contentAlignment = Alignment.Center) {
             Canvas(Modifier.size(288.dp)) {
                 val c = center
                 val r = size.minDimension * 0.452f      // 104/230
 
-                // Breathing radial glow behind everything.
+                // The theme's dial: a die-cut ring, ripples, a bud, a rangoli.
+                if (dialDecor) { drawDialDecor(themeId, dialPal, c, r, if (com.dailyvox.app.ui.theme.hasAnimatedDial(themeId)) ripple else 0f) }
+
+                // Breathing radial glow behind everything. Sticker is flat.
                 val gScale = 1f + 0.18f * glow
-                drawCircle(
+                if (!(dialDecor && themeId == com.dailyvox.app.ui.theme.ThemeId.STICKER)) drawCircle(
                     brush = Brush.radialGradient(
-                        listOf(Gold.copy(alpha = 0.55f - 0.40f * glow), Color.Transparent),
+                        listOf(sky.reward.copy(alpha = 0.55f - 0.40f * glow), Color.Transparent),
                         center = c, radius = r * 0.92f * gScale,
                     ),
                     radius = r * 0.92f * gScale, center = c,
@@ -142,7 +151,7 @@ fun RecordingDial(
                         c.y + (r * sin(a)).toFloat(),
                     )
                     drawCircle(
-                        color = if (i < lit) Gold else NightText.copy(alpha = 0.16f),
+                        color = if (i < lit) sky.reward else sky.ink.copy(alpha = 0.16f),
                         radius = if (i < lit) 3.dp.toPx() else 2.5.dp.toPx(),
                         center = p,
                     )
@@ -153,7 +162,7 @@ fun RecordingDial(
                 // and a bar that freezes would read as "stop talking".
                 if (elapsed > 0) {
                     drawArc(
-                        color = Gold,
+                        color = sky.reward,
                         startAngle = -90f,
                         sweepAngle = 360f * ((elapsed % 42) / 42f),
                         useCenter = false,
@@ -169,13 +178,13 @@ fun RecordingDial(
                     c.x + ((r + 8.dp.toPx()) * cos(aA)).toFloat(),
                     c.y + ((r + 8.dp.toPx()) * sin(aA)).toFloat(),
                 )
-                drawCircle(Gold.copy(alpha = 0.4f), radius = 9.dp.toPx(), center = pA)
-                drawCircle(Gold, radius = 5.dp.toPx(), center = pA)
+                drawCircle(sky.reward.copy(alpha = 0.4f), radius = 9.dp.toPx(), center = pA)
+                drawCircle(sky.reward, radius = 5.dp.toPx(), center = pA)
 
                 val aB = Math.toRadians(orbitB - 90.0)
                 val rB = r - 22.dp.toPx()
                 drawCircle(
-                    NightText.copy(alpha = 0.8f),
+                    sky.ink.copy(alpha = 0.8f),
                     radius = 3.dp.toPx(),
                     center = Offset(
                         c.x + (rB * cos(aB)).toFloat(),
@@ -189,7 +198,7 @@ fun RecordingDial(
                     "%d:%02d".format(elapsed / 60, elapsed % 60),
                     fontSize = 52.sp,
                     fontWeight = FontWeight.ExtraBold, fontFamily = com.dailyvox.app.ui.theme.Nunito, 
-                    color = NightText,
+                    color = sky.ink,
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
@@ -197,7 +206,7 @@ fun RecordingDial(
                     fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                     letterSpacing = 1.4.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = NightText.copy(alpha = 0.55f),
+                    color = sky.ink.copy(alpha = 0.55f),
                 )
             }
         }
@@ -213,7 +222,7 @@ fun RecordingDial(
                 else -> "“…$partial”"
             },
             fontSize = 12.5.sp, lineHeight = 19.sp,
-            color = NightText.copy(alpha = 0.75f),
+            color = sky.ink.copy(alpha = 0.75f),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -226,11 +235,11 @@ fun RecordingDial(
                 fontFamily = com.dailyvox.app.ui.theme.DmMono, fontSize = 10.5.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 0.8.sp,
-                color = NightGoldText.copy(alpha = chipBlink),
+                color = sky.rewardText.copy(alpha = chipBlink),
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Gold.copy(alpha = 0.16f))
-                    .border(1.dp, Gold.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
+                    .background(sky.reward.copy(alpha = 0.16f))
+                    .border(1.dp, sky.reward.copy(alpha = 0.4f), RoundedCornerShape(12.dp))
                     .padding(horizontal = 12.dp, vertical = 7.dp),
             )
         }
@@ -246,7 +255,7 @@ fun RecordingDial(
         ) {
             Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
                 DialAction("Discard", onDiscard) {
-                    Text("✕", fontSize = 15.sp, color = NightText.copy(alpha = 0.7f))
+                    Text("✕", fontSize = 15.sp, color = sky.ink.copy(alpha = 0.7f))
                 }
             }
             Spacer(Modifier.width(20.dp))
@@ -257,23 +266,30 @@ fun RecordingDial(
                 modifier = Modifier.height(96.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
+                // Sticker's stop is a tomato sticker: white die-cut edge, hard shadow.
+                val stickerStop = dialDecor && themeId == com.dailyvox.app.ui.theme.ThemeId.STICKER
                 Box(
                     Modifier
                         .size(76.dp)
+                        .then(if (stickerStop) Modifier.drawBehind {
+                            drawCircle(Color.Black.copy(alpha = 0.55f), size.minDimension / 2f,
+                                       center + Offset(3.dp.toPx(), 4.dp.toPx()))
+                        } else Modifier)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.error)
+                        .background(LocalDvPalette.current.record)
+                        .then(if (stickerStop) Modifier.border(3.dp, Color.White, CircleShape) else Modifier)
                         .clickable(onClick = onStop),
                     contentAlignment = Alignment.Center,
                 ) {
                     Box(
                         Modifier.size(23.dp)
                             .clip(RoundedCornerShape(6.dp))
-                            .background(NightText),
+                            .background(sky.ink),
                     )
                 }
                 Spacer(Modifier.height(6.dp))
                 Text("Stop & keep ✦", fontSize = 10.sp,
-                     fontWeight = FontWeight.ExtraBold, color = NightText)
+                     fontWeight = FontWeight.ExtraBold, color = sky.ink)
             }
             Spacer(Modifier.width(20.dp))
             Box(Modifier.height(96.dp), contentAlignment = Alignment.BottomCenter) {
@@ -293,14 +309,14 @@ fun RecordingDial(
                                 lineTo(size.width * 0.18f, size.height)
                                 close()
                             }
-                            drawPath(p, NightText.copy(alpha = 0.8f))
+                            drawPath(p, sky.ink.copy(alpha = 0.8f))
                         }
                     } else {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             repeat(2) {
                                 Box(Modifier.size(4.dp, 15.dp)
                                     .clip(RoundedCornerShape(1.5.dp))
-                                    .background(NightText.copy(alpha = 0.8f)))
+                                    .background(sky.ink.copy(alpha = 0.8f)))
                             }
                         }
                     }
@@ -312,18 +328,19 @@ fun RecordingDial(
 
 @Composable
 private fun DialAction(label: String, onClick: () -> Unit, glyph: @Composable () -> Unit) {
+    val sky = LocalDvPalette.current.night
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .border(1.5.dp, NightText.copy(alpha = 0.3f), CircleShape)
+                .border(1.5.dp, sky.ink.copy(alpha = 0.3f), CircleShape)
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center,
         ) { glyph() }
         Spacer(Modifier.height(6.dp))
         Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold,
-             color = NightText.copy(alpha = 0.55f))
+             color = sky.ink.copy(alpha = 0.55f))
     }
 }
 
@@ -333,6 +350,7 @@ private fun DialAction(label: String, onClick: () -> Unit, glyph: @Composable ()
  */
 @Composable
 private fun Waveform(level: Float, transition: InfiniteTransition) {
+    val sky = LocalDvPalette.current.night
     val heights = listOf(12, 20, 15, 24, 13, 22, 16, 24, 14, 21, 17, 23, 19, 14)
     val tones = listOf(0, 1, 2, 1, 0, 2, 1, 1, 2, 0, 1, 2, 1, 0)
     Row(
@@ -357,9 +375,9 @@ private fun Waveform(level: Float, transition: InfiniteTransition) {
                     .clip(RoundedCornerShape(2.dp))
                     .background(
                         when (tones[i]) {
-                            0 -> Gold.copy(alpha = 0.6f)
-                            1 -> Gold
-                            else -> NightText.copy(alpha = 0.75f)
+                            0 -> sky.reward.copy(alpha = 0.6f)
+                            1 -> sky.reward
+                            else -> sky.ink.copy(alpha = 0.75f)
                         }
                     )
             )

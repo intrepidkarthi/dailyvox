@@ -1,5 +1,6 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.ui.theme.drawStreakMotif
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -26,10 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.data.toChatEntry
 import com.dailyvox.twin.Insights
-import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.ui.text.font.FontWeight
 import com.dailyvox.app.ui.components.*
-import com.dailyvox.app.ui.theme.StarGold
 import com.dailyvox.app.R
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.ui.res.pluralStringResource
@@ -75,10 +74,10 @@ fun InsightsScreen(
         // The weekly recap lives here every day of the week, and on Today
         // only on recap day.
         recap?.let {
-            val n = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+            val n = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
             com.dailyvox.app.ui.components.RecapCard(
                 it,
-                if (n) com.dailyvox.app.ui.theme.NightGoldText else com.dailyvox.app.ui.theme.DayGoldText,
+                com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText,
                 onOpenEntry,
             )
             Spacer(Modifier.height(12.dp))
@@ -92,9 +91,8 @@ fun InsightsScreen(
         // B6 streak card: giant gold numeral, a 7-day bar strip, and the three
         // totals in DM Mono. The number is the reward, so it is gold — and gold
         // TEXT on cream must use the AA-safe tone, not the accent itself.
-        val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
-        val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                       else com.dailyvox.app.ui.theme.DayGoldText
+        val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+        val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
         val zone = remember { java.time.ZoneId.systemDefault() }
         val today = com.dailyvox.app.system.Streak.localDay(System.currentTimeMillis(), zone)
         val byDay = remember(entries, zone) {
@@ -139,8 +137,17 @@ fun InsightsScreen(
                         },
                         fontSize = 13.sp, fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 3.dp),
+                        modifier = Modifier.padding(bottom = 3.dp).weight(1f, fill = false),
                     )
+                    // The theme's streak mark: a paper boat, a mug, a leaf, a ribbon.
+                    val markTheme = com.dailyvox.app.ui.theme.LocalThemeId.current
+                    if (com.dailyvox.app.ui.theme.hasStreakMotif(markTheme) &&
+                        com.dailyvox.app.ui.theme.decorated(markTheme, com.dailyvox.app.ui.theme.LocalDvPalette.current)) {
+                        Spacer(Modifier.weight(1f))
+                        androidx.compose.foundation.Canvas(Modifier.size(40.dp)) {
+                            drawStreakMotif(markTheme, center, size.width * .8f)
+                        }
+                    }
                 }
             }
             Spacer(Modifier.height(12.dp))
@@ -162,7 +169,7 @@ fun InsightsScreen(
                                 // beside it, and as a rendering fault rather
                                 // than a bad day.
                                 when (e) {
-                                    null -> Gold.copy(alpha = 0.18f)
+                                    null -> com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.18f)
                                     else -> valenceColor(e.valence)
                                         .copy(alpha = 0.5f + ((e.valence ?: 0f) + 1f) / 2f * 0.5f)
                                 }
@@ -229,7 +236,7 @@ fun InsightsScreen(
                     if (filled > 0f) {
                         Box(
                             Modifier.fillMaxHeight().fillMaxWidth(filled)
-                                .background(com.dailyvox.app.ui.theme.Gold)
+                                .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward)
                         )
                     }
                 }
@@ -310,7 +317,7 @@ fun InsightsScreen(
                             Box(
                                 Modifier.size(28.dp)
                                     .clip(RoundedCornerShape(9.dp))
-                                    .background(Gold.copy(alpha = 0.16f)),
+                                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f)),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text("\u2726", fontSize = 13.sp, color = goldText)

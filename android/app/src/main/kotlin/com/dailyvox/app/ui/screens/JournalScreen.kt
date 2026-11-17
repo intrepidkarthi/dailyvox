@@ -22,7 +22,6 @@ import com.dailyvox.app.audio.SpeechCapture
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.data.toChatEntry
 import com.dailyvox.twin.Insights
-import com.dailyvox.app.ui.theme.Gold
 import androidx.compose.foundation.layout.FlowRow
 import com.dailyvox.app.ui.components.*
 import java.text.SimpleDateFormat
@@ -332,7 +331,7 @@ private fun EntryCard(e: Entry, onClick: () -> Unit) {
 /** The design's chip: DM Mono 9.5, radius 10, green tint or gold tint. */
 @Composable
 private fun SpecChip(text: String, gold: Boolean) {
-    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
     Text(
         text,
         fontFamily = com.dailyvox.app.ui.theme.DmMono,
@@ -340,19 +339,19 @@ private fun SpecChip(text: String, gold: Boolean) {
         letterSpacing = 0.6.sp,
         fontWeight = FontWeight.SemiBold,
         color = when {
-            gold && night -> com.dailyvox.app.ui.theme.NightGoldText
-            gold -> com.dailyvox.app.ui.theme.DayGoldText
+            gold && night -> com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
+            gold -> com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
             night -> MaterialTheme.colorScheme.onSurface
-            else -> com.dailyvox.app.ui.theme.DayAction
+            else -> com.dailyvox.app.ui.theme.LocalDvPalette.current.onChip
         },
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .background(
                 when {
-                    gold && night -> Gold.copy(alpha = 0.16f)
-                    gold -> com.dailyvox.app.ui.theme.DayGoldTint
-                    night -> Gold.copy(alpha = 0.10f)
-                    else -> com.dailyvox.app.ui.theme.DayGreenTint
+                    gold && night -> com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f)
+                    gold -> com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardTint
+                    night -> com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.10f)
+                    else -> com.dailyvox.app.ui.theme.LocalDvPalette.current.chip
                 }
             )
             .padding(horizontal = 9.dp, vertical = 5.dp),
@@ -383,13 +382,12 @@ private fun durationLabel(s: Int): String = "%d:%02d".format(s / 60, s % 60)
  */
 @Composable
 private fun TwinNoticedCard(p: Insights.Finding, onAsk: () -> Unit) {
-    val night = MaterialTheme.colorScheme.background == com.dailyvox.app.ui.theme.NightBackground
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
     Row(
         Modifier.fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = if (night) 0.14f else 0.13f))
+            .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = if (night) 0.14f else 0.13f))
             .clickable(onClick = onAsk)
             .padding(15.dp),
         verticalAlignment = Alignment.CenterVertically,

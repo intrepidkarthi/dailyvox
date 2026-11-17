@@ -38,8 +38,11 @@ data class EarlySignalsColors(
             accent = accent,
         )
 
-        /** The Twin tab is always night (§8.4), in both themes. */
-        val night = EarlySignalsColors(NightSurface, NightText, NightTextSecondary, NightGoldText)
+        /** The Twin tab is always night (§8.4), in every mode — in the theme's own night. */
+        val night: EarlySignalsColors
+            @Composable @ReadOnlyComposable get() = LocalDvPalette.current.night.let {
+                EarlySignalsColors(it.surface, it.ink, it.inkSoft, it.rewardText)
+            }
     }
 }
 

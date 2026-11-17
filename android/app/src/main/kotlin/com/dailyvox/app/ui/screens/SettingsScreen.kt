@@ -14,6 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.border
@@ -51,6 +55,10 @@ fun SettingsScreen(
     onLock: (Boolean) -> Unit = {},
     theme: ThemeChoice,
     onTheme: (ThemeChoice) -> Unit,
+    themeId: com.dailyvox.app.ui.theme.ThemeId = com.dailyvox.app.ui.theme.ThemeId.DEFAULT,
+    onThemeId: (com.dailyvox.app.ui.theme.ThemeId) -> Unit = {},
+    /** Debug screenshots only: open with Appearance already showing. */
+    startInAppearance: Boolean = false,
     onExport: () -> Unit,
     onExportPdf: () -> Unit = {},
     onExportMarkdown: () -> Unit = {},
@@ -64,12 +72,22 @@ fun SettingsScreen(
     onShareReceipt: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    var appearance by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(startInAppearance) }
+    if (appearance) {
+        androidx.activity.compose.BackHandler { appearance = false }
+        AppearanceScreen(
+            themeId = themeId, onThemeId = onThemeId,
+            mode = theme, onMode = onTheme,
+            onBack = { appearance = false },
+            modifier = modifier,
+        )
+        return
+    }
     val context = androidx.compose.ui.platform.LocalContext.current
     val scheme = MaterialTheme.colorScheme
-    val night = scheme.background == com.dailyvox.app.ui.theme.NightBackground
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
     val positive = scheme.tertiary
-    val goldText = if (night) com.dailyvox.app.ui.theme.NightGoldText
-                   else com.dailyvox.app.ui.theme.DayGoldText
+    val goldText = com.dailyvox.app.ui.theme.LocalDvPalette.current.rewardText
 
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Spacer(Modifier.height(14.dp))
@@ -119,41 +137,17 @@ fun SettingsScreen(
                 fontWeight = FontWeight.SemiBold, color = goldText,
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.14f))
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.14f))
                     .clickable(onClick = onShareReceipt)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
             )
         }
 
-        // ── THEME ──────────────────────────────────────────────────────────
+        // ── APPEARANCE ─────────────────────────────────────────────────────
+        // One row. The nineteen themes and the Day / Night / Sunset mode live on
+        // their own screen, so Settings stays a list of facts and switches.
         SettingsCard {
-            SectionLabel("THEME", scheme.onSurfaceVariant)
-            Spacer(Modifier.height(11.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(
-                    ThemeChoice.LIGHT to "Day",
-                    ThemeChoice.DARK to "Night",
-                    ThemeChoice.SUNSET to "Sunset",
-                ).forEach { (choice, label) ->
-                    val on = choice == theme
-                    Text(
-                        label, fontSize = 11.sp,
-                        fontWeight = if (on) FontWeight.ExtraBold else FontWeight.Bold,
-                        color = if (on) scheme.onPrimary else scheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clip(RoundedCornerShape(15.dp))
-                            .then(
-                                if (on) Modifier.background(scheme.primary)
-                                else Modifier.border(1.5.dp, scheme.onSurfaceVariant.copy(alpha = 0.25f),
-                                                     RoundedCornerShape(15.dp))
-                            )
-                            .clickable { onTheme(choice) }
-                            .padding(vertical = 10.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally),
-                    )
-                }
-            }
+            AppearanceRow(themeId = themeId, mode = theme, onClick = { appearance = true })
         }
 
         // ── REMINDER ───────────────────────────────────────────────────────
@@ -190,8 +184,8 @@ fun SettingsScreen(
                     fontWeight = FontWeight.SemiBold, color = goldText,
                     modifier = Modifier
                         .clip(RoundedCornerShape(11.dp))
-                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
-                        .border(1.dp, com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.4f),
+                        .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
+                        .border(1.dp, com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.4f),
                                 RoundedCornerShape(11.dp))
                         .clickable { picking = !picking }
                         .padding(horizontal = 10.dp, vertical = 6.dp),
@@ -366,7 +360,7 @@ fun SettingsScreen(
                     letterSpacing = 0.5.sp, fontWeight = FontWeight.SemiBold, color = goldText,
                     modifier = Modifier
                         .clip(RoundedCornerShape(11.dp))
-                        .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                        .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                         .clickable {
                             val cm = context.getSystemService(android.content.ClipboardManager::class.java)
                             cm?.setPrimaryClip(android.content.ClipData.newPlainText("Participant code", code))
@@ -445,7 +439,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.SemiBold, color = goldText,
                             modifier = Modifier
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(com.dailyvox.app.ui.theme.Gold.copy(alpha = 0.16f))
+                                .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward.copy(alpha = 0.16f))
                                 .clickable {
                                     com.dailyvox.app.system.Vocabulary.remove(context, w)
                                     words = com.dailyvox.app.system.Vocabulary.get(context)
@@ -485,10 +479,10 @@ fun SettingsScreen(
             Spacer(Modifier.width(12.dp))
             Text(
                 "Rate \u2726", fontSize = 11.sp, fontWeight = FontWeight.ExtraBold,
-                color = com.dailyvox.app.ui.theme.NightBackground,
+                color = com.dailyvox.app.ui.theme.LocalDvPalette.current.onReward,
                 modifier = Modifier
                     .clip(RoundedCornerShape(13.dp))
-                    .background(com.dailyvox.app.ui.theme.Gold)
+                    .background(com.dailyvox.app.ui.theme.LocalDvPalette.current.reward)
                     // A market:// intent, not the Play in-app review library.
                     // That library is a closed-source Google dependency for a
                     // build that ships zero network permissions and is trying to
@@ -607,9 +601,50 @@ private fun hourLabel(h: Int): String = when {
 
 /** Brand green track, cream thumb — not M3's baseline purple-tinted defaults. */
 @Composable
-private fun dvSwitchColors() = androidx.compose.material3.SwitchDefaults.colors(
-    checkedTrackColor = MaterialTheme.colorScheme.primary,
-    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-    uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-)
+private fun dvSwitchColors(): androidx.compose.material3.SwitchColors {
+    // OFF is neutral grey in every theme: a tinted "off" (pink in Lotus, blue
+    // in Holi) read as half-on. ON is the theme's actor.
+    val night = com.dailyvox.app.ui.theme.LocalDvPalette.current.isNight
+    val offTrack = if (night) androidx.compose.ui.graphics.Color(0xFF3A3F47) else androidx.compose.ui.graphics.Color(0xFFE3E3E3)
+    val offThumb = if (night) androidx.compose.ui.graphics.Color(0xFF9EA3AB) else androidx.compose.ui.graphics.Color(0xFF8A8A8A)
+    return androidx.compose.material3.SwitchDefaults.colors(
+        checkedTrackColor = MaterialTheme.colorScheme.primary,
+        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+        checkedBorderColor = MaterialTheme.colorScheme.primary,
+        uncheckedTrackColor = offTrack,
+        uncheckedThumbColor = offThumb,
+        uncheckedBorderColor = offThumb,
+    )
+}
+
+/** Settings' one line about looks: swatch, theme name, mode. Opens Appearance. */
+@Composable
+private fun AppearanceRow(
+    themeId: com.dailyvox.app.ui.theme.ThemeId,
+    mode: ThemeChoice,
+    onClick: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val summary = "${themeId.label} \u00B7 ${modeLabel(mode)}"
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .clickable(onClick = onClick)
+            .semantics(mergeDescendants = true) {
+                role = Role.Button
+                contentDescription = "Appearance, $summary"
+            }
+            .heightIn(min = 48.dp)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        ThemeSwatch(themeId, size = 18.dp)
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text("Appearance", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = scheme.onSurface)
+            Text(summary, fontSize = 12.5.sp, color = scheme.onSurfaceVariant)
+        }
+        Text("\u203A", fontSize = 20.sp, color = scheme.onSurfaceVariant)
+    }
+}

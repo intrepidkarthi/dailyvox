@@ -5,7 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.CompositionLocalProvider
 
 // Dynamic colour is deliberately absent, not forgotten.
 //
@@ -18,51 +18,47 @@ import androidx.compose.ui.graphics.Color
 // When the opt-in ships it belongs behind a user preference, and it must never
 // reach the sky.
 
-// Day: green acts. Gold is NOT mapped to primary here on purpose — mapping it
-// would let Material hand gold to any component that asks for the action colour,
-// and the grammar says gold is only ever for what the user made.
-private val DayColors = lightColorScheme(
-    primary = DayAction,
-    onPrimary = DayOnAction,
-    secondary = Gold,                    // rewards: stars, streaks, insights
-    onSecondary = DayText,
-    background = DayBackground,
-    onBackground = DayText,
-    surface = DaySurface,
-    onSurface = DayText,
-    surfaceVariant = DayGreenTint,
-    onSurfaceVariant = DayTextSecondary,
-    tertiary = DayPositive,
-    // Recording is the only red in the product, and it means RECORDING rather
-    // than failure — the design draws "Stop & keep" as a red disc.
-    error = Color(0xFFC5533F),
-)
+/** Map a palette onto Material's roles. Green-acts / gold-rewards survives the
+ *  mapping: the actor goes to primary, the reward only to secondary, so Material
+ *  never hands gold to a component that asks for the action colour. Error stays
+ *  the one fixed red: it is read as text ("Delete") and must not drift with a
+ *  theme's paler recording disc. */
+private fun DvPalette.toScheme() =
+    if (isNight) darkColorScheme(
+        primary = action, onPrimary = onAction,
+        secondary = reward, onSecondary = ground,
+        background = ground, onBackground = ink,
+        surface = surface, onSurface = ink,
+        surfaceVariant = chip, onSurfaceVariant = inkSoft,
+        tertiary = positive,
+        error = RecordRed,
+    ) else lightColorScheme(
+        primary = action, onPrimary = onAction,
+        secondary = reward, onSecondary = ink,
+        background = ground, onBackground = ink,
+        surface = surface, onSurface = ink,
+        surfaceVariant = chip, onSurfaceVariant = inkSoft,
+        tertiary = positive,
+        error = RecordRed,
+    )
 
-// Night: gold acts, by the one documented exception in the grammar. Green has
-// no presence on navy, so the actor role moves rather than the rule bending.
-private val NightColors = darkColorScheme(
-    primary = NightAction,
-    onPrimary = NightOnAction,
-    secondary = Gold,
-    onSecondary = NightBackground,
-    background = NightBackground,
-    onBackground = NightText,
-    surface = NightSurface,
-    onSurface = NightText,
-    surfaceVariant = NightSurface,
-    onSurfaceVariant = NightTextSecondary,
-    tertiary = NightPositive,
-    error = Color(0xFFC5533F),
-)
-
+/**
+ * The palette is provided as [LocalDvPalette] and mapped into MaterialTheme, so
+ * screens can use either. Prefer the palette for anything the grammar names
+ * (reward, night zone, record); Material for generic surfaces and text.
+ */
 @Composable
 fun DailyVoxTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    themeId: ThemeId = ThemeId.DEFAULT,
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) NightColors else DayColors,
-        typography = DailyVoxTypography,
-        content = content,
-    )
+    val palette = paletteFor(themeId, darkTheme)
+    CompositionLocalProvider(LocalDvPalette provides palette, LocalThemeId provides themeId) {
+        MaterialTheme(
+            colorScheme = palette.toScheme(),
+            typography = DailyVoxTypography,
+            content = content,
+        )
+    }
 }
