@@ -146,6 +146,11 @@ struct RecordingDialView: View {
 
     private var dial: some View {
         ZStack {
+            // The colour theme's dressing for the dial — Sticker's die-cut
+            // ring, Monsoon's ripples, Spring's buds, Diwali's rangoli dots.
+            // Behind the instrument, never over its numbers.
+            DialDecoration(style: ThemeManager.shared.appliedThemeID.decor.dial)
+
             // §8.8: under reduced motion the dial still SHOWS everything — the
             // ticks, the arc, the elapsed time — it just stops orbiting and
             // breathing. The information was never in the movement.
@@ -281,6 +286,13 @@ struct RecordingDialView: View {
             VStack(spacing: 6) {
                 Button(action: onStop) {
                     ZStack {
+                        // Sticker: the stop button is a tomato sticker — white
+                        // die-cut edge and a hard shadow.
+                        if ThemeManager.shared.appliedThemeID.decor.card == .sticker {
+                            Circle().fill(Color.black.opacity(0.6))
+                                .frame(width: 84, height: 84).offset(x: 3, y: 4)
+                            Circle().fill(Color.white).frame(width: 84, height: 84)
+                        }
                         Circle()
                             .fill(DS.Palette.coral)
                             .frame(width: 76, height: 76)

@@ -48,7 +48,11 @@ enum DS {
     /// Token NAMES are unchanged from the sage palette on purpose. Twenty files
     /// read them, and renaming would have meant twenty diffs where the real
     /// change is a set of hex values.
-    enum Palette {
+    /// The original palette, fixed. For things that must not move with the
+    /// theme: mood colours (a record of how someone felt), and the images and
+    /// documents that leave the app — share cards and PDF exports — which keep
+    /// the brand look until they get a theme pass of their own.
+    enum Brand {
         // Day — cream paper, forest ink.
         static let ink        = Color(red: 0.118, green: 0.165, blue: 0.149)   // #1E2A26
         static let inkSoft    = Color(red: 0.361, green: 0.416, blue: 0.392)   // #5C6A64
@@ -85,6 +89,34 @@ enum DS {
         static let tintGold   = Color(red: 0.953, green: 0.906, blue: 0.804)   // #F3E7CD
         static let tintTerra  = Color(red: 0.953, green: 0.910, blue: 0.863)
         static let tintCoral  = Color(red: 0.973, green: 0.898, blue: 0.875)
+    }
+
+    /// The palette IN FORCE: the same role names as always, resolved through
+    /// the selected theme (`ThemePalette`). The comment block above `Brand`
+    /// still describes the grammar every theme keeps.
+    enum Palette {
+        static var ink: Color { Color(hex: ThemeRuntime.palette.ink) }
+        static var inkSoft: Color { Color(hex: ThemeRuntime.palette.inkSoft) }
+        static var inkMute: Color { Color(hex: ThemeRuntime.palette.inkMute) }
+        static var ivory: Color { Color(hex: ThemeRuntime.palette.ivory) }
+        static var ivory2: Color { Color(hex: ThemeRuntime.palette.ivory2) }
+        static var sage: Color { Color(hex: ThemeRuntime.palette.sage) }
+        static var sageDeep: Color { Color(hex: ThemeRuntime.palette.sageDeep) }
+        static var forest: Color { Color(hex: ThemeRuntime.palette.forest) }
+        static var sagePositive: Color { Color(hex: ThemeRuntime.palette.sagePositive) }
+        static var gold: Color { Color(hex: ThemeRuntime.palette.gold) }
+        static var goldDay: Color { Color(hex: ThemeRuntime.palette.goldDay) }
+        static var goldNight: Color { Color(hex: ThemeRuntime.palette.goldNight) }
+        static var navy: Color { Color(hex: ThemeRuntime.palette.navy) }
+        static var navySurface: Color { Color(hex: ThemeRuntime.palette.navySurface) }
+        static var navyText: Color { Color(hex: ThemeRuntime.palette.navyText) }
+        static var starBlue: Color { Color(hex: ThemeRuntime.palette.starBlue) }
+        static var terracotta: Color { Color(hex: ThemeRuntime.palette.terracotta) }
+        static var coral: Color { Color(hex: ThemeRuntime.palette.coral) }
+        static var tintSage: Color { Color(hex: ThemeRuntime.palette.tintSage) }
+        static var tintGold: Color { Color(hex: ThemeRuntime.palette.tintGold) }
+        static var tintTerra: Color { Color(hex: ThemeRuntime.palette.tintTerra) }
+        static var tintCoral: Color { Color(hex: ThemeRuntime.palette.tintCoral) }
     }
 }
 

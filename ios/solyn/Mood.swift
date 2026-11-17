@@ -56,15 +56,15 @@ enum Mood: String, CaseIterable, Identifiable {
     /// coral that means "recording", the one alarm colour the palette has.
     var color: Color {
         switch self {
-        case .none:     return DS.Palette.inkMute
-        case .happy:    return DS.Palette.gold
-        case .excited:  return DS.Palette.terracotta
-        case .grateful: return DS.Palette.sagePositive
-        case .calm:     return DS.Palette.forest
-        case .tired:    return DS.Palette.inkSoft
-        case .anxious:  return DS.Palette.starBlue
-        case .sad:      return DS.Palette.navySurface
-        case .angry:    return DS.Palette.coral
+        case .none:     return DS.Brand.inkMute
+        case .happy:    return DS.Brand.gold
+        case .excited:  return DS.Brand.terracotta
+        case .grateful: return DS.Brand.sagePositive
+        case .calm:     return DS.Brand.forest
+        case .tired:    return DS.Brand.inkSoft
+        case .anxious:  return DS.Brand.starBlue
+        case .sad:      return DS.Brand.navySurface
+        case .angry:    return DS.Brand.coral
         }
     }
 

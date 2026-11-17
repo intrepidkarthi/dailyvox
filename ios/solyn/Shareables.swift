@@ -282,7 +282,7 @@ enum Shareables {
     /// visibly new — the field is denser than last night and the bright one has
     /// moved. The only text is a count and a duration.
     private static func drawTonight(_ c: CGContext, _ s: CGSize, _ f: [Fact], _ airplane: Bool) {
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
         scatter(c, s, count: 300, rng: &rng, topInset: 140, bottomInset: 260)
 
@@ -305,7 +305,7 @@ enum Shareables {
             let p = place(fact.date)
             let age = SkyEncoding.age(fact.date, in: skySpan)
             let r: CGFloat = 4 + CGFloat(1 - age) * 3
-            c.setFillColor(UIColor(DS.Palette.navyText)
+            c.setFillColor(UIColor(DS.Brand.navyText)
                 .withAlphaComponent(0.20 + 0.35 * (1 - age)).cgColor)
             c.fillEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: r * 2, height: r * 2))
         }
@@ -319,15 +319,15 @@ enum Shareables {
         let tonight = place(newest.date)
         for step in stride(from: 5, through: 1, by: -1) {
             let r = CGFloat(step) * 17
-            c.setFillColor(UIColor(DS.Palette.gold)
+            c.setFillColor(UIColor(DS.Brand.gold)
                 .withAlphaComponent(0.05 * (1.15 - CGFloat(step) / 6)).cgColor)
             c.fillEllipse(in: CGRect(x: tonight.x - r, y: tonight.y - r,
                                      width: r * 2, height: r * 2))
         }
-        star(c, at: tonight, r: 30, colour: UIColor(DS.Palette.gold))
+        star(c, at: tonight, r: 30, colour: UIColor(DS.Brand.gold))
 
         text(c, "TONIGHT", at: CGPoint(x: s.width / 2, y: 128),
-             font: mono(26), colour: UIColor(DS.Palette.goldNight), align: .center)
+             font: mono(26), colour: UIColor(DS.Brand.goldNight), align: .center)
 
         // `text(at:)` positions the TOP of the line, not its baseline. The
         // count was drawn at 120pt with 60pt of room before its caption, so
@@ -337,10 +337,10 @@ enum Shareables {
         let countFont = display(120)
         let countTop = s.height - 330
         text(c, "\(nightCount)", at: CGPoint(x: s.width / 2, y: countTop),
-             font: countFont, colour: UIColor(DS.Palette.navyText), align: .center)
+             font: countFont, colour: UIColor(DS.Brand.navyText), align: .center)
         text(c, nightCount == 1 ? "NIGHT KEPT" : "NIGHTS KEPT",
              at: CGPoint(x: s.width / 2, y: countTop + countFont.lineHeight + 14),
-             font: mono(24), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.55),
+             font: mono(24), colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.55),
              align: .center)
 
         footer(c, s, airplane ? "IN AIRPLANE MODE \u{00B7} 0 BYTES OUT" : "A SKY MADE OF YOU")
@@ -352,7 +352,7 @@ enum Shareables {
     /// label, no mood, regardless of the redaction toggle. People post art, not
     /// diaries. There is nothing here to redact, which is the entire idea.
     private static func drawMySky(_ c: CGContext, _ s: CGSize, _ f: [Fact], _ airplane: Bool) {
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
         scatter(c, s, count: 140, rng: &rng, topInset: 120, bottomInset: 300)
 
@@ -361,20 +361,20 @@ enum Shareables {
         constellation(c, centre: centre, s: s, count: min(4, max(f.count, 1)), spread: 0.23)
 
         text(c, "MY SKY · NIGHT \(nights(f))", at: CGPoint(x: 84, y: 96),
-             font: mono(20), colour: UIColor(DS.Palette.goldNight))
+             font: mono(20), colour: UIColor(DS.Brand.goldNight))
 
         if airplane {
             text(c, "ON AIRPLANE MODE", at: CGPoint(x: s.width - 84, y: 96),
-                 font: mono(20), colour: UIColor(DS.Palette.goldNight), align: .right)
+                 font: mono(20), colour: UIColor(DS.Brand.goldNight), align: .right)
         }
 
         text(c, "\(f.count) stars.", at: CGPoint(x: 84, y: s.height - 300),
-             font: display(58), colour: UIColor(DS.Palette.navyText))
+             font: display(58), colour: UIColor(DS.Brand.navyText))
         text(c, "Zero uploads.", at: CGPoint(x: 84, y: s.height - 228),
-             font: display(58), colour: UIColor(DS.Palette.navyText))
+             font: display(58), colour: UIColor(DS.Brand.navyText))
         text(c, "Every one made from my voice, on my phone.",
              at: CGPoint(x: 84, y: s.height - 156),
-             font: body(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6))
+             font: body(26), colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.6))
 
         footer(c, s, "A SKY MADE OF YOU · GETDAILYVOX.COM")
     }
@@ -382,15 +382,15 @@ enum Shareables {
     // MARK: - F2 · Privacy receipt
 
     private static func drawReceipt(_ c: CGContext, _ s: CGSize, _ f: [Fact]) {
-        fill(c, s, UIColor(DS.Palette.navyText))
-        let ink = UIColor(DS.Palette.ink)
+        fill(c, s, UIColor(DS.Brand.navyText))
+        let ink = UIColor(DS.Brand.ink)
 
         text(c, "DAILYVOX", at: CGPoint(x: s.width / 2, y: 104),
              font: mono(30), colour: ink, align: .center)
         let df = DateFormatter(); df.dateFormat = "MMMM d, yyyy"; df.locale = Locale(identifier: "en_US_POSIX")
         text(c, "PRIVACY RECEIPT · \(df.string(from: Date()).uppercased())",
              at: CGPoint(x: s.width / 2, y: 156), font: mono(20),
-             colour: UIColor(DS.Palette.inkSoft), align: .center)
+             colour: UIColor(DS.Brand.inkSoft), align: .center)
         dotted(c, s, y: 214)
 
         let words = f.reduce(0) { $0 + $1.text.split(whereSeparator: \.isWhitespace).count }
@@ -425,29 +425,29 @@ enum Shareables {
         y += 62
         text(c, syncing ? "YOUR DATA STAYED YOURS" : "YOUR DATA STAYED HOME",
              at: CGPoint(x: 96, y: y),
-             font: mono(28), colour: UIColor(DS.Palette.goldDay))
-        star(c, at: CGPoint(x: s.width - 118, y: y + 14), r: 20, colour: UIColor(DS.Palette.gold))
+             font: mono(28), colour: UIColor(DS.Brand.goldDay))
+        star(c, at: CGPoint(x: s.width - 118, y: y + 14), r: 20, colour: UIColor(DS.Brand.gold))
         dotted(c, s, y: y + 58)
 
         text(c, "THANK YOU FOR TALKING TO YOURSELF", at: CGPoint(x: s.width / 2, y: y + 108),
-             font: mono(22), colour: UIColor(DS.Palette.inkSoft), align: .center)
+             font: mono(22), colour: UIColor(DS.Brand.inkSoft), align: .center)
         text(c, "GETDAILYVOX.COM · OPEN SOURCE", at: CGPoint(x: s.width / 2, y: y + 150),
-             font: mono(22), colour: UIColor(DS.Palette.inkSoft), align: .center)
+             font: mono(22), colour: UIColor(DS.Brand.inkSoft), align: .center)
     }
 
     // MARK: - F3 · Year One
 
     private static func drawYearOne(_ c: CGContext, _ s: CGSize, _ f: [Fact], _ includeNames: Bool) {
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(f.count) &* 7919)
         scatter(c, s, count: 70, rng: &rng, topInset: 0, bottomInset: 0)
 
         text(c, "YOUR SKY · YEAR ONE", at: CGPoint(x: 84, y: 108),
-             font: mono(22), colour: UIColor(DS.Palette.goldNight))
+             font: mono(22), colour: UIColor(DS.Brand.goldNight))
         text(c, "\(nights(f)) nights.", at: CGPoint(x: 84, y: 200),
-             font: display(66), colour: UIColor(DS.Palette.navyText))
+             font: display(66), colour: UIColor(DS.Brand.navyText))
         text(c, "One sky.", at: CGPoint(x: 84, y: 276),
-             font: display(66), colour: UIColor(DS.Palette.navyText))
+             font: display(66), colour: UIColor(DS.Brand.navyText))
 
         let counts = f.flatMap(\.people).reduce(into: [String: Int]()) { $0[$1, default: 0] += 1 }
         let brightest = counts.max { $0.value < $1.value }
@@ -468,10 +468,10 @@ enum Shareables {
         var y: CGFloat = 430
         for (k, v) in rows {
             text(c, k, at: CGPoint(x: 84, y: y), font: body(26),
-                 colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6))
+                 colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.6))
             text(c, v, at: CGPoint(x: s.width - 84, y: y), font: displayBody(26),
-                 colour: UIColor(DS.Palette.navyText), align: .right)
-            c.setStrokeColor(UIColor(DS.Palette.navyText).withAlphaComponent(0.1).cgColor)
+                 colour: UIColor(DS.Brand.navyText), align: .right)
+            c.setStrokeColor(UIColor(DS.Brand.navyText).withAlphaComponent(0.1).cgColor)
             c.setLineWidth(2)
             c.move(to: CGPoint(x: 84, y: y + 44)); c.addLine(to: CGPoint(x: s.width - 84, y: y + 44))
             c.strokePath()
@@ -487,32 +487,32 @@ enum Shareables {
 
     private static func drawMilestone(_ c: CGContext, _ s: CGSize, _ f: [Fact]) {
         let night = milestoneReached(f) ?? 42
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(night) &* 7919)
         scatter(c, s, count: 110, rng: &rng, topInset: 0, bottomInset: 0)
 
         let centre = CGPoint(x: s.width / 2, y: s.height * 0.40)
         for (r, w) in [(CGFloat(230), CGFloat(3)), (265, 2), (300, 1.5)] {
-            c.setStrokeColor(UIColor(DS.Palette.gold).withAlphaComponent(0.35).cgColor)
+            c.setStrokeColor(UIColor(DS.Brand.gold).withAlphaComponent(0.35).cgColor)
             c.setLineWidth(w)
             c.strokeEllipse(in: CGRect(x: centre.x - r, y: centre.y - r, width: r * 2, height: r * 2))
         }
-        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.11).cgColor)
+        c.setFillColor(UIColor(DS.Brand.gold).withAlphaComponent(0.11).cgColor)
         c.fillEllipse(in: CGRect(x: centre.x - 196, y: centre.y - 196, width: 392, height: 392))
 
         text(c, "\(night)", at: CGPoint(x: centre.x, y: centre.y - 74),
-             font: display(150), colour: UIColor(DS.Palette.gold), align: .center)
+             font: display(150), colour: UIColor(DS.Brand.gold), align: .center)
         text(c, night == 1 ? "NIGHT SPOKEN" : "NIGHTS SPOKEN",
              at: CGPoint(x: centre.x, y: centre.y + 110),
-             font: mono(24), colour: UIColor(DS.Palette.goldNight), align: .center)
+             font: mono(24), colour: UIColor(DS.Brand.goldNight), align: .center)
 
         // Derived from the figure on the seal, never a fallback string: an
         // Android probe rendered a seal reading 1 under "Forty-two nights."
         text(c, milestoneHeadline(night), at: CGPoint(x: s.width / 2, y: s.height - 268),
-             font: display(52), colour: UIColor(DS.Palette.navyText), align: .center)
+             font: display(52), colour: UIColor(DS.Brand.navyText), align: .center)
         text(c, "Nobody sold me this. I just kept talking.",
              at: CGPoint(x: s.width / 2, y: s.height - 196),
-             font: body(26), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6),
+             font: body(26), colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.6),
              align: .center)
 
         footer(c, s, "MINTED ON THIS PHONE · GETDAILYVOX.COM")
@@ -528,7 +528,7 @@ enum Shareables {
         // A 1080x1920 field with a 280px constellation in the middle of it read
         // as an empty wallpaper — which is what it was. The sky now fills the
         // frame: a denser star field, wider arms, and a caption you can read.
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 42))
         scatter(c, s, count: 520, rng: &rng, topInset: 0, bottomInset: 0)
 
@@ -541,7 +541,7 @@ enum Shareables {
 
         let caption = "\(nights(f)) NIGHTS \u{00B7} A SKY MADE OF YOU"
         text(c, caption, at: CGPoint(x: s.width / 2, y: s.height - 150),
-             font: mono(30), colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.5),
+             font: mono(30), colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.5),
              align: .center)
     }
 
@@ -565,7 +565,7 @@ enum Shareables {
     /// anyone would post this is the sentence about themselves, so that is what
     /// gets the display face and the count drops to a ledger row.
     private static func drawBody(_ c: CGContext, _ s: CGSize, _ f: [Fact], include: Bool) {
-        fill(c, s, UIColor(DS.Palette.navy))
+        fill(c, s, UIColor(DS.Brand.navy))
         var rng = Seeded(seed: UInt64(f.first?.date.timeIntervalSince1970 ?? 7))
         scatter(c, s, count: 150, rng: &rng, topInset: 80, bottomInset: 300)
 
@@ -574,7 +574,7 @@ enum Shareables {
         let short = measured.filter { ($0.sleepHours ?? 0) < 7 }
 
         text(c, "HOW YOU SLEPT \u{00B7} HOW YOU WROTE", at: CGPoint(x: 84, y: 130),
-             font: mono(22), colour: UIColor(DS.Palette.goldNight))
+             font: mono(22), colour: UIColor(DS.Brand.goldNight))
 
         // Both sides need a real sample before a comparison means anything, and
         // a gap smaller than a tenth is not a difference — it is the scorer's
@@ -596,9 +596,9 @@ enum Shareables {
             headline = ["\(measured.count) nights", "your body kept."]
         }
         text(c, headline[0], at: CGPoint(x: 84, y: 250), font: display(66),
-             colour: UIColor(DS.Palette.navyText))
+             colour: UIColor(DS.Brand.navyText))
         text(c, headline[1], at: CGPoint(x: 84, y: 330), font: display(66),
-             colour: UIColor(DS.Palette.navyText))
+             colour: UIColor(DS.Brand.navyText))
 
         // The ledger is built first and then anchored ABOVE the footer, so a
         // card with two rows and a card with five both sit on the same baseline
@@ -626,9 +626,9 @@ enum Shareables {
         var y = s.height - 230 - rowHeight * CGFloat(rows.count - 1)
         for (label, value, gold) in rows {
             text(c, label, at: CGPoint(x: 84, y: y), font: body(27),
-                 colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.62))
+                 colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.62))
             text(c, value, at: CGPoint(x: s.width - 84, y: y), font: body(27),
-                 colour: UIColor(gold ? DS.Palette.goldNight : DS.Palette.navyText),
+                 colour: UIColor(gold ? DS.Brand.goldNight : DS.Brand.navyText),
                  align: .right)
             dotted(c, s, y: y + 34)
             y += rowHeight
@@ -645,16 +645,16 @@ enum Shareables {
     // MARK: - F · gift a star
 
     private static func drawGift(_ c: CGContext, _ s: CGSize, _ f: [Fact]) {
-        fill(c, s, UIColor(DS.Palette.navySurface))
+        fill(c, s, UIColor(DS.Brand.navySurface))
         let cx = s.width / 2
-        star(c, at: CGPoint(x: cx, y: 300), r: 74, colour: UIColor(DS.Palette.gold))
+        star(c, at: CGPoint(x: cx, y: 300), r: 74, colour: UIColor(DS.Brand.gold))
 
         text(c, "I kept \(f.count) stars.", at: CGPoint(x: cx, y: 450),
-             font: display(60), colour: UIColor(DS.Palette.navyText), align: .center)
+             font: display(60), colour: UIColor(DS.Brand.navyText), align: .center)
         text(c, "Start yours.", at: CGPoint(x: cx, y: 526),
-             font: display(60), colour: UIColor(DS.Palette.navyText), align: .center)
+             font: display(60), colour: UIColor(DS.Brand.navyText), align: .center)
 
-        let soft = UIColor(DS.Palette.navyText).withAlphaComponent(0.6)
+        let soft = UIColor(DS.Brand.navyText).withAlphaComponent(0.6)
         text(c, "Forty-two seconds a night, spoken not typed.",
              at: CGPoint(x: cx, y: 626), font: body(27), colour: soft, align: .center)
         text(c, "Free, open source, and it never goes online.",
@@ -665,9 +665,9 @@ enum Shareables {
         // phone home to attribute anything.
         text(c, "NO TRACKING LINK · NOTHING TO ATTRIBUTE",
              at: CGPoint(x: cx, y: s.height - 320), font: mono(21),
-             colour: UIColor(DS.Palette.goldNight), align: .center)
+             colour: UIColor(DS.Brand.goldNight), align: .center)
         text(c, "getdailyvox.com", at: CGPoint(x: cx, y: s.height - 246),
-             font: display(34), colour: UIColor(DS.Palette.navyText), align: .center)
+             font: display(34), colour: UIColor(DS.Brand.navyText), align: .center)
 
         footer(c, s, "A SKY MADE OF YOU")
     }
@@ -693,7 +693,7 @@ enum Shareables {
                                 rng: inout Seeded, topInset: CGFloat, bottomInset: CGFloat) {
         for _ in 0..<count {
             let a = 0.07 + Double(rng.next()) * 0.28
-            c.setFillColor(UIColor(DS.Palette.navyText).withAlphaComponent(a).cgColor)
+            c.setFillColor(UIColor(DS.Brand.navyText).withAlphaComponent(a).cgColor)
             let x = rng.next() * s.width
             let y = topInset + rng.next() * (s.height - topInset - bottomInset)
             let r = 1 + rng.next() * 2.2
@@ -703,7 +703,7 @@ enum Shareables {
 
     private static func orbits(_ c: CGContext, centre: CGPoint, radii: [CGFloat]) {
         c.saveGState()
-        c.setStrokeColor(UIColor(DS.Palette.navyText).withAlphaComponent(0.13).cgColor)
+        c.setStrokeColor(UIColor(DS.Brand.navyText).withAlphaComponent(0.13).cgColor)
         c.setLineWidth(2)
         c.setLineDash(phase: 0, lengths: [3, 18])
         for r in radii {
@@ -734,35 +734,35 @@ enum Shareables {
 
             // Floor the alpha: past the eighth arm the old formula went
             // negative and the strokes vanished.
-            c.setStrokeColor(UIColor(DS.Palette.gold)
+            c.setStrokeColor(UIColor(DS.Brand.gold)
                 .withAlphaComponent(max(0.18, 0.48 - Double(i) * 0.035)).cgColor)
             c.setLineWidth(3)
             c.move(to: centre)
             c.addQuadCurve(to: p, control: ctrl)
             c.strokePath()
 
-            let node = i == 1 ? UIColor(DS.Palette.starBlue) : UIColor(DS.Palette.navyText)
+            let node = i == 1 ? UIColor(DS.Brand.starBlue) : UIColor(DS.Brand.navyText)
             c.setFillColor(node.cgColor)
             let nr = max(7, 17 - CGFloat(i) * 1.1)
             c.fillEllipse(in: CGRect(x: p.x - nr, y: p.y - nr, width: nr * 2, height: nr * 2))
         }
-        c.setFillColor(UIColor(DS.Palette.gold).withAlphaComponent(0.24).cgColor)
+        c.setFillColor(UIColor(DS.Brand.gold).withAlphaComponent(0.24).cgColor)
         c.fillEllipse(in: CGRect(x: centre.x - 46, y: centre.y - 46, width: 92, height: 92))
-        c.setFillColor(UIColor(DS.Palette.gold).cgColor)
+        c.setFillColor(UIColor(DS.Brand.gold).cgColor)
         c.fillEllipse(in: CGRect(x: centre.x - 26, y: centre.y - 26, width: 52, height: 52))
     }
 
     private static func footer(_ c: CGContext, _ s: CGSize, _ claim: String) {
         text(c, "DailyVox", at: CGPoint(x: 84, y: s.height - 78),
-             font: display(30), colour: UIColor(DS.Palette.navyText))
-        star(c, at: CGPoint(x: 232, y: s.height - 62), r: 13, colour: UIColor(DS.Palette.gold))
+             font: display(30), colour: UIColor(DS.Brand.navyText))
+        star(c, at: CGPoint(x: 232, y: s.height - 62), r: 13, colour: UIColor(DS.Brand.gold))
         text(c, claim, at: CGPoint(x: s.width - 84, y: s.height - 72), font: mono(19),
-             colour: UIColor(DS.Palette.navyText).withAlphaComponent(0.6), align: .right)
+             colour: UIColor(DS.Brand.navyText).withAlphaComponent(0.6), align: .right)
     }
 
     private static func dotted(_ c: CGContext, _ s: CGSize, y: CGFloat) {
         c.saveGState()
-        c.setStrokeColor(UIColor(DS.Palette.inkMute).cgColor)
+        c.setStrokeColor(UIColor(DS.Brand.inkMute).cgColor)
         c.setLineWidth(3)
         c.setLineDash(phase: 0, lengths: [4, 10])
         c.move(to: CGPoint(x: 96, y: y)); c.addLine(to: CGPoint(x: s.width - 96, y: y))

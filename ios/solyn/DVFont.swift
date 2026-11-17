@@ -136,8 +136,16 @@ enum DVFont {
     }
 
     /// Nunito — display, screen titles, big numbers, buttons, nav, chips.
+    /// Extra `wght` on every Nunito face. The Sticker theme sets it to 100 so
+    /// its headings read as chunky sticker lettering without a new font file
+    /// (Nunito runs to 1000). Set by `ThemeManager`; 0 everywhere else,
+    /// including the widgets.
+    static var nunitoWeightBoost: CGFloat = 0
+
     static func nunito(_ size: CGFloat, _ weight: Font.Weight = .bold) -> UIFont {
-        scaled(varied(Face.nunito, size: size, axes: [wghtAxis: axisWeight(weight)]), base: size)
+        let boost = nunitoWeightBoost
+        return scaled(varied(Face.nunito, size: size,
+                             axes: [wghtAxis: min(1000, axisWeight(weight) + boost)]), base: size)
     }
 
     /// Inter — body and UI. `opsz` is pinned to the point size so small text

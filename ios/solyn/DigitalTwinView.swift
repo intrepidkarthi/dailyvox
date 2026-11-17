@@ -722,11 +722,11 @@ struct DigitalTwinView: View {
 
     private var orbColor: Color {
         let valence = twin.emotionalSignature.baselineValence
-        if valence > 0.3 { return DS.Palette.forest }
-        if valence > 0.1 { return DS.Palette.sage }
-        if valence > -0.1 { return DS.Palette.terracotta }
-        if valence > -0.3 { return DS.Palette.gold }
-        return DS.Palette.coral
+        if valence > 0.3 { return DS.Brand.forest }
+        if valence > 0.1 { return DS.Brand.sage }
+        if valence > -0.1 { return DS.Brand.terracotta }
+        if valence > -0.3 { return DS.Brand.gold }
+        return DS.Brand.coral
     }
 
     // MARK: - Maturity Badge
@@ -1470,11 +1470,11 @@ struct DigitalTwinView: View {
     // MARK: - Helpers
 
     private func sentimentColor(_ sentiment: Double) -> Color {
-        if sentiment > 0.3 { return DS.Palette.forest }
-        if sentiment > 0.1 { return DS.Palette.sage }
-        if sentiment > -0.1 { return DS.Palette.inkMute }
-        if sentiment > -0.3 { return DS.Palette.gold }
-        return DS.Palette.coral
+        if sentiment > 0.3 { return DS.Brand.forest }
+        if sentiment > 0.1 { return DS.Brand.sage }
+        if sentiment > -0.1 { return DS.Brand.inkMute }
+        if sentiment > -0.3 { return DS.Brand.gold }
+        return DS.Brand.coral
     }
 
     private func sentimentLabel(_ sentiment: Double) -> String {

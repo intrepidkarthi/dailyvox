@@ -17,25 +17,48 @@ import SwiftUI
 /// app — `ivory`/`light` land on `.day`, `dark` on `.night`, `system` on the
 /// closest thing we now have to it, which is Sunset.
 enum AppTheme: String, CaseIterable, Identifiable {
+    /// Follows the phone's own light/dark setting. "Auto" rather than the old
+    /// "system" raw value, which still decodes to Sunset as it always has.
+    case auto = "Auto"
     case day = "Day"
     case night = "Night"
     case sunset = "Sunset"
 
     var id: String { rawValue }
 
-    /// Only the three current cases are offered in Settings.
-    static var allCases: [AppTheme] { [.day, .night, .sunset] }
+    static var allCases: [AppTheme] { [.auto, .day, .night, .sunset] }
 
     static func decode(_ raw: String) -> AppTheme {
         switch raw {
+        case "Auto": return .auto
         case "Day", "Ivory", "Light": return .day
         case "Night", "Dark": return .night
         default: return .sunset
         }
     }
 
+    /// What the mode control says. Stored values stay Day/Night.
+    var label: String {
+        switch self {
+        case .auto: return "Auto"
+        case .day: return "Light"
+        case .night: return "Dark"
+        case .sunset: return "Sunset"
+        }
+    }
+
+    var explanation: String {
+        switch self {
+        case .auto: return "Follows your iPhone's light and dark setting."
+        case .day: return "Always light."
+        case .night: return "Always dark."
+        case .sunset: return "Light by day, dark after sunset where you are."
+        }
+    }
+
     var icon: String {
         switch self {
+        case .auto: return "iphone"
         case .day: return "sun.max"
         case .night: return "moon.stars"
         case .sunset: return "circle.lefthalf.filled"
@@ -46,13 +69,17 @@ enum AppTheme: String, CaseIterable, Identifiable {
     /// the evening arrives, not on next launch.
     var isNight: Bool {
         switch self {
+        case .auto: return ThemeManager.shared.systemIsDark
         case .day: return false
         case .night: return true
         case .sunset: return SolarClock.isAfterSunset()
         }
     }
 
-    var colorScheme: ColorScheme? { isNight ? .dark : .light }
+    /// Auto hands the decision back to the system.
+    var colorScheme: ColorScheme? {
+        self == .auto ? nil : (isNight ? .dark : .light)
+    }
 
     /// GREEN ACTS. Gold is never returned here — see DS.Palette.
     var accentColor: Color { isNight ? DS.Palette.gold : DS.Palette.sage }
@@ -207,6 +234,13 @@ final class ThemeManager: ObservableObject {
 
     private let defaults = UserDefaults.standard
     private let themeKey = "selectedTheme"
+    /// The colour theme, separate from Day/Night/Sunset. A new key, so nobody's
+    /// stored appearance is reinterpreted: everyone upgrading lands on Default
+    /// with the appearance they already had.
+    private let colourThemeKey = "selectedColourTheme"
+    /// Mirrored into the App Group so the widgets can follow the theme once
+    /// they get their theme pass. Nothing reads it there yet.
+    private let sharedDefaults = UserDefaults(suiteName: "group.com.dailyvox.app")
 
     @Published var selectedTheme: AppTheme {
         didSet {
@@ -214,9 +248,48 @@ final class ThemeManager: ObservableObject {
         }
     }
 
+    /// What the picker shows as chosen.
+    @Published var themeID: ThemeID {
+        didSet {
+            defaults.set(themeID.rawValue, forKey: colourThemeKey)
+            sharedDefaults?.set(themeID.rawValue, forKey: colourThemeKey)
+        }
+    }
+
+    /// What the app is actually drawn in. It catches up with `themeID` when
+    /// Settings closes: `DS.Palette` is read in hundreds of places that SwiftUI
+    /// does not know depend on it, so the root view is rebuilt on this value
+    /// (`.id` in `solynApp`) — and rebuilding while the Settings sheet is up
+    /// would close it under the user's finger.
+    @Published private(set) var appliedThemeID: ThemeID {
+        didSet { DVFont.nunitoWeightBoost = appliedThemeID == .sticker ? 100 : 0 }
+    }
+
+    /// The phone's own light/dark setting, for Auto. Kept current by
+    /// `SystemAppearanceReader` at the app root, so flipping the system switch
+    /// with the app open re-themes it.
+    @Published var systemIsDark: Bool = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+
+    /// What the root view is rebuilt on. High contrast's night set is a
+    /// different palette rather than the sky colours, so for it a change of
+    /// light/dark is a change of palette too.
+    var rebuildKey: String {
+        appliedThemeID == .highContrast ? "\(appliedThemeID.rawValue)-\(isNight)" : appliedThemeID.rawValue
+    }
+
     private init() {
         let saved = defaults.string(forKey: themeKey) ?? AppTheme.sunset.rawValue
         self.selectedTheme = AppTheme.decode(saved)
+        let colour = ThemeID(rawValue: defaults.string(forKey: colourThemeKey) ?? "") ?? .standard
+        self.themeID = colour
+        self.appliedThemeID = colour
+        DVFont.nunitoWeightBoost = colour == .sticker ? 100 : 0
+    }
+
+    /// Called as Settings goes away.
+    func applyPendingTheme() {
+        guard appliedThemeID != themeID else { return }
+        appliedThemeID = themeID
     }
 
     /// Every screen asks this rather than reading the case, so Sunset works
@@ -274,6 +347,17 @@ struct WarmBackground: View {
         ZStack {
             themeManager.backgroundColor
 
+            // High contrast is flat by definition: no tinted wash under text.
+            if ThemeManager.shared.appliedThemeID != .highContrast {
+                blooms
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private var blooms: some View {
+        Group {
             // One warm bloom, placed where the light would come from. Night gets
             // gold at low alpha (the sky glowing), day gets a paper warmth.
             RadialGradient(

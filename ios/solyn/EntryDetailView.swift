@@ -59,6 +59,7 @@ struct EntryDetailView: View {
                     headerCard
                         .padding(.horizontal)
                         .padding(.top, 8)
+                        .background(alignment: .bottom) { entryBandRule }
 
                     // Audio, in ONE surface however many recordings a day holds.
                     //
@@ -226,6 +227,14 @@ struct EntryDetailView: View {
                 .tracking(1.2)
                 .foregroundColor(theme.secondaryTextColor)
 
+            // Monsoon marks a kept entry with a raindrop.
+            if entryDecor.ambient == .rain && !theme.isNight {
+                Image(systemName: "drop.fill")
+                    .font(.dv(size: 10, weight: .semibold))
+                    .foregroundColor(Color(hex: 0x5E8FB0))
+                    .accessibilityHidden(true)
+            }
+
             Spacer(minLength: 0)
 
             // Mood stays: it is the one thing here you can still change.
@@ -252,6 +261,21 @@ struct EntryDetailView: View {
             .frame(minHeight: 44)
             .accessibilityLabel(moodAccessibilityLabel)
             .accessibilityHint(Text("Double-tap to change."))
+        }
+    }
+
+    private var entryDecor: ThemeDecor { ThemeManager.shared.appliedThemeID.decor }
+
+    /// A theme with a header band carries a short strip of it under the
+    /// entry's header line: the same band as Today, kept clear of the words.
+    @ViewBuilder
+    private var entryBandRule: some View {
+        if let band = entryDecor.band, !theme.isNight {
+            Capsule().fill(Color(hex: band))
+                .frame(height: 5)
+                .padding(.horizontal)
+                .offset(y: 4)
+                .accessibilityHidden(true)
         }
     }
 

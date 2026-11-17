@@ -199,9 +199,16 @@ struct StatsView: View {
     private func streakCard(_ streakStatus: Streak.Status) -> some View {
         VStack(spacing: 16) {
             HStack {
-                Image(systemName: "flame.fill")
-                    .font(.dv(.title2))
-                    .foregroundColor(DS.Palette.terracotta)
+                // The colour theme's streak mark (paper boat, mug, leaf,
+                // ribbon…) where it has one; the flame otherwise.
+                let decor = ThemeManager.shared.appliedThemeID.decor
+                if decor.streak != .none && !ThemeManager.shared.isNight {
+                    StreakMark(mark: decor.streak, colors: decor.motifColors.map { Color(hex: $0) })
+                } else {
+                    Image(systemName: "flame.fill")
+                        .font(.dv(.title2))
+                        .foregroundColor(DS.Palette.terracotta)
+                }
                 Text("Writing Streak")
                     .font(.dv(.headline, design: .rounded))
                 Spacer()
