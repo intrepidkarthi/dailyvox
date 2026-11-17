@@ -45,8 +45,8 @@ android {
         // not evidence the number is free — check the Play Console release
         // list, or `./gradlew :app:bundleRelease` will happily produce a
         // duplicate Play refuses on upload.
-        versionCode = 7
-        versionName = "1.2.1"
+        versionCode = 9
+        versionName = "1.3"
 
         // Demo journal entries, for store screenshots ONLY.
         //
@@ -69,6 +69,14 @@ android {
             "boolean",
             "SEED_DEMO_DATA",
             (project.hasProperty("seedDemo")).toString(),
+        )
+        // Which language the demo journal is seeded in, for the localized store
+        // screenshots: -PseedDemoLang=de (es, fr, it, pt-BR). Empty is English.
+        // Only read where SEED_DEMO_DATA is, so it can never seed anything alone.
+        buildConfigField(
+            "String",
+            "SEED_DEMO_LANG",
+            "\"" + (project.findProperty("seedDemoLang") as String? ?: "").replace("\"", "") + "\"",
         )
     }
 
@@ -97,6 +105,7 @@ android {
             // Belt and braces with the DEBUG guard at the call site: -PseedDemo
             // on a release build must not be a way to ship the demo journal.
             buildConfigField("boolean", "SEED_DEMO_DATA", "false")
+            buildConfigField("String", "SEED_DEMO_LANG", "\"\"")
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release")
@@ -108,7 +117,33 @@ android {
     }
     kotlin { jvmToolchain(21) }
     buildFeatures { compose = true; buildConfig = true }
+    // Per-app language (plan B-15): AGP writes the locale_config Android 13+
+    // reads for Settings › Apps › DailyVox › Language, from the values-*
+    // folders that exist. res/resources.properties names the language of the
+    // unqualified values/ folder (en-US). Adding a translation is then just a
+    // new values-xx folder; the list cannot drift from what actually ships.
+    androidResources { generateLocaleConfig = true }
+    // Every language ships in the base APK. By default Play splits an app
+    // bundle by language and installs only the device's system languages; a
+    // language picked later in the per-app setting above arrives only if the
+    // app asks Play for it through Play Core's SplitInstallManager. DailyVox
+    // has no Play Core and no INTERNET permission, and adds neither for this:
+    // without the split off, a Spanish speaker on an English phone who picks
+    // Español would get English. The strings are a few hundred KB.
+    bundle { language { enableSplit = false } }
+    // Robolectric tests read strings.xml (B-15 pins the English copy).
+    testOptions { unitTests.isIncludeAndroidResources = true }
+    // B-15: user-facing copy lives in strings.xml. These two catch a literal
+    // creeping back into a layout or a setText call. Warnings, not errors:
+    // Compose Text("...") is invisible to both, so the real yardstick is
+    // tools/count-literals.py, and a warning here is a prompt to look.
+    lint {
+        warning += setOf("HardcodedText", "SetTextI18n")
+    }
     ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+    // Robolectric tests read real string resources (the Story card's copy
+    // is all plurals, and its privacy test checks the real words).
+    testOptions { unitTests.isIncludeAndroidResources = true }
 }
 
 dependencies {

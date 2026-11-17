@@ -166,8 +166,10 @@ object Reminders {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         if (nm.getNotificationChannel(CHANNEL) == null) {
             nm.createNotificationChannel(
-                NotificationChannel(CHANNEL, "Daily reminder", NotificationManager.IMPORTANCE_DEFAULT)
-                    .apply { description = "A nudge to record tonight's entry." }
+                NotificationChannel(
+                    CHANNEL, context.getString(com.dailyvox.app.R.string.reminder_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ).apply { description = context.getString(com.dailyvox.app.R.string.reminder_channel_description) }
             )
         }
     }

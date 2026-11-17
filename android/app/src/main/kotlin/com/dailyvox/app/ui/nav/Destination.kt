@@ -1,5 +1,8 @@
 package com.dailyvox.app.ui.nav
 
+import androidx.annotation.StringRes
+import com.dailyvox.app.R
+
 /**
  * Four destinations: Speak · Journal · Twin · Ask — FINAL-SPEC §3.
  *
@@ -9,9 +12,9 @@ package com.dailyvox.app.ui.nav
  * promoted it to the bar to fix discoverability; the segment control solves
  * that without spending a slot.
  */
-enum class Destination(val label: String, val route: String) {
-    SPEAK("Speak", "speak"),
-    JOURNAL("Journal", "journal"),
-    TWIN("Twin", "twin"),
-    ASK("Ask", "ask"),
+enum class Destination(@StringRes val label: Int, val route: String) {
+    SPEAK(R.string.nav_speak, "speak"),
+    JOURNAL(R.string.nav_journal, "journal"),
+    TWIN(R.string.nav_twin, "twin"),
+    ASK(R.string.nav_ask, "ask"),
 }

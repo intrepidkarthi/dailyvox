@@ -51,6 +51,13 @@ class AudioRecorder(private val context: Context) {
         } finally { current = null }
     }
 
+    /**
+     * The loudest sample since the last call, 0..1 (MediaRecorder's
+     * getMaxAmplitude, which resets on every read). The recording's own proof
+     * that the room was heard, for the phone whose recogniser hears nothing.
+     */
+    fun peak(): Float = runCatching { (recorder?.maxAmplitude ?: 0) / 32767f }.getOrDefault(0f)
+
     /** Hold the file open but stop writing to it. API 24+; minSdk here is 26. */
     fun pause() { runCatching { recorder?.pause() } }
 

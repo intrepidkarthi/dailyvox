@@ -130,7 +130,7 @@ fun DailyVoxNavBar(
                     // and iOS ships it that way. Nunito, heavier when active
                     // (ContentView.swift).
                     Text(
-                        dest.label,
+                        androidx.compose.ui.res.stringResource(dest.label),
                         fontFamily = com.dailyvox.app.ui.theme.Nunito,
                         fontSize = 13.sp,
                         color = labelColor,

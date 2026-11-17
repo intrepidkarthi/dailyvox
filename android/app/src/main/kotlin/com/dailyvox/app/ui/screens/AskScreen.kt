@@ -1,5 +1,9 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -30,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dailyvox.app.data.Entry
 import com.dailyvox.app.data.toChatEntry
+import com.dailyvox.app.data.toSearchEntry
 import com.dailyvox.app.data.Repo
 import com.dailyvox.app.ui.components.DvCard
 import com.dailyvox.app.ui.components.MonoLabel
@@ -40,10 +45,11 @@ import com.dailyvox.twin.RetrievalAnswerComposer
 import com.dailyvox.twin.TwinChatEvidence
 import com.dailyvox.twin.TwinFacts
 import com.dailyvox.twin.TwinQuestion
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 /**
  * Ask Your Twin — the Android read of iOS's TwinChatView, feature for feature.
@@ -90,6 +96,9 @@ fun AskScreen(
     // The aggregate is derived from the whole journal, so it is recomputed only
     // when the journal changes rather than on every keystroke.
     val facts = remember(entries) { askFacts(entries) }
+    // The app's own language (per-app language setting included), the last
+    // word on what language a question is in.
+    val appLanguage = androidx.compose.ui.platform.LocalConfiguration.current.locales[0].toLanguageTag()
     val bank = remember(facts) { TwinQuestion.available(facts) }
 
     var messages by remember { mutableStateOf(listOf<Msg>()) }
@@ -132,13 +141,25 @@ fun AskScreen(
         // fitted threshold it returns nothing and the composer says the Twin
         // does not know, rather than answering "should I buy a house in Tokyo"
         // out of an entry that happens to contain the word "house".
-        val hits = Retrieval.retrieve(question, entries.map { it.toChatEntry() })
+        // Searched as the Journal searches (B-9): each entry in its stored
+        // language, Unicode tokens, quiet on languages word search cannot read.
+        // The question's language, decided first: it tells retrieval which
+        // function words to ignore ("wann", "habe", "ich" are not search
+        // terms), and picks the language of the answer's frame and abstention
+        // line (quotes stay in the language they were written in). The
+        // person's language (spoken, else the app's) unless the platform
+        // classifier is sure of another one (TextLanguage.question).
+        val person = com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context) ?: appLanguage
+        val language = withContext(Dispatchers.IO) {
+            com.dailyvox.app.system.TextLanguage.question(context, question, person)
+        }
+        val hits = Retrieval.retrieve(question, entries.map { it.toSearchEntry() }, language = language)
             .mapNotNull { hit ->
                 entries.firstOrNull { it.id == hit.entryId }?.let { e ->
                     TwinChatEvidence(e.id, e.createdAt, e.text, hit.score)
                 }
             }
-        val turn = RetrievalAnswerComposer.compose(question, hits, facts)
+        val turn = RetrievalAnswerComposer.compose(question, hits, facts, language)
         seq += 1
         push(Msg(seq, turn.answer, isUser = false,
                  citations = turn.citations, followUps = turn.suggestedFollowUps))
@@ -157,8 +178,8 @@ fun AskScreen(
             Spacer(Modifier.height(12.dp))
             // One "0 calls" claim, under the title as iOS has it. The trailing
             // "0 CALLS" beside the title said the same thing twice.
-            ScreenTitle("Ask your Twin")
-            MonoLabel("answers with receipts · 0 network calls")
+            ScreenTitle(stringResource(R.string.ask_title))
+            MonoLabel(stringResource(R.string.ask_subtitle))
             Spacer(Modifier.height(14.dp))
         }
 
@@ -173,13 +194,8 @@ fun AskScreen(
                         // The one sentence the old "what it can answer" card was
                         // for: templates compute, free text quotes. Said once,
                         // here, instead of a card that sat under every thread.
-                        if (facts.hasEnoughData)
-                            "Ask something, or pick one below. Every answer comes from your " +
-                                "own entries and names the ones it used. Anything else, it " +
-                                "finds rather than answers: the closest entries, quoted as you said them."
-                        else
-                            "A few more entries and the Twin will have something worth saying. " +
-                                "It only speaks from what you have actually said.",
+                        if (facts.hasEnoughData) stringResource(R.string.ask_intro)
+                        else stringResource(R.string.ask_intro_not_enough),
                         fontSize = 15.sp, lineHeight = 23.sp, color = scheme.onSurfaceVariant,
                     )
                 }
@@ -214,19 +230,22 @@ fun AskScreen(
                                 m.citations.forEach { c ->
                                     val entry = entries.firstOrNull { it.id == c.entryId }
                                     CiteChip(
-                                        SimpleDateFormat("MMM d", Locale.getDefault())
-                                            .format(Date(c.date)).uppercase() +
-                                            " · %d%%".format((c.score * 100).toInt()),
+                                        stringResource(
+                                            R.string.ask_cite_chip,
+                                            com.dailyvox.app.system.LocaleFormat.upper(com.dailyvox.app.system.LocaleFormat.dateFormat("MMM d", "MMMd")
+                                                .format(Date(c.date))),
+                                            (c.score * 100).toInt(),
+                                        ),
                                         onClick = { entry?.let(onOpenEntry) },
                                     )
                                 }
-                                CiteChip("${m.citations.size} CITED ✦", solid = true)
+                                CiteChip(pluralStringResource(R.plurals.ask_cited, m.citations.size, m.citations.size), solid = true)
                             }
                         }
 
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            if (speakingId == m.id) "Stop" else "Read aloud",
+                            stringResource(if (speakingId == m.id) R.string.ask_read_aloud_stop else R.string.ask_read_aloud),
                             fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
                             color = scheme.primary,
                             modifier = Modifier
@@ -266,7 +285,12 @@ fun AskScreen(
         // questions only, so the set changes as the conversation grows rather
         // than repeating what was just answered.
         val remaining = bank.filter { it !in asked }.take(3)
-        if (remaining.isNotEmpty()) {
+        // The bank's questions and their template answers are English-only, so only English speakers get the row.
+        val speaksEnglish = com.dailyvox.twin.LanguageGate.baseCode(
+            com.dailyvox.app.audio.SpeechCapture.speakingLanguage(context)
+                ?: appLanguage
+        ) == "en"
+        if (speaksEnglish && remaining.isNotEmpty()) {
             FlowRow(
                 Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -307,7 +331,7 @@ fun AskScreen(
                 modifier = Modifier.weight(1f).padding(vertical = 12.dp),
                 decorationBox = { inner ->
                     if (typed.isEmpty()) {
-                        Text("Ask, or find what you said about…", fontSize = 14.sp,
+                        Text(stringResource(R.string.ask_placeholder), fontSize = 14.sp,
                              color = scheme.onSurfaceVariant)
                     }
                     inner()
@@ -396,20 +420,17 @@ private fun CiteChip(text: String, solid: Boolean = false, onClick: (() -> Unit)
 }
 
 /**
- * The Twin's aggregate, from the entries the lexicon actually read.
+ * The Twin's aggregate, over every entry, each read in its own language (B-5).
  *
- * The engine's ChatEntry has no "unread" valence yet, so an unread entry would
- * reach TwinFacts as 0 and a Hindi journal would be called "remarkably
- * balanced", its most frequent mood "Even". Nearly every canned answer leans on
- * valence (mood, happiest when, triggers, people's tone, personality's
- * "dominant mood", best time), so the facts are built from read entries only,
- * as Insights and the Journal's "noticed" line already are. A journal the
- * lexicon cannot read then has too few data points and the Twin says it needs
- * more rather than inventing a mood. Free-text retrieval still searches every
- * entry. English entries with a scored word reach the engine exactly as before.
- *
- * Engine follow-up (multilingual plan B-5): ChatEntry.valence: Float?, so
- * people/topic/style facts can count every entry while mood facts skip nulls.
+ * 1.2.1 built this from read entries only, because the engine had no "unread"
+ * valence and an unread entry reached it as 0: a Hindi journal was "remarkably
+ * balanced". The engine now carries ChatEntry.valence as nullable and gates
+ * every fact itself: mood facts skip unread valences, style and personality
+ * read only languages the gate lists for TRAITS (English), and people come
+ * only from entries whose names can be read ([toChatEntry]). So every entry
+ * counts toward "enough entries", and a mood or style question the journal
+ * cannot back is answered with the engine's "I can only read ... in English
+ * for now", never with a reading made from zeros.
  */
 internal fun askFacts(entries: List<Entry>): TwinFacts =
-    TwinFacts.from(entries.filter { it.valence != null }.map { it.toChatEntry() })
+    TwinFacts.from(entries.map { it.toChatEntry() })

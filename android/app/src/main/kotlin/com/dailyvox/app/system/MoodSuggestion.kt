@@ -1,5 +1,7 @@
 package com.dailyvox.app.system
 
+import com.dailyvox.twin.LanguageFeature
+import com.dailyvox.twin.LanguageGate
 import com.dailyvox.twin.Sentiment
 
 /**
@@ -88,14 +90,30 @@ object MoodSuggestion {
      * the participant's label, and the study measures the text model against
      * those labels. So while study labelling is on, the app suggests nothing.
      */
-    fun offered(text: String, table: Map<String, Float>, studyLabelling: Boolean): String? =
-        if (studyLabelling) null else from(text, table)
+    fun offered(
+        text: String,
+        table: Map<String, Float>,
+        studyLabelling: Boolean,
+        language: String? = null,
+        detect: (() -> String?)? = null,
+    ): String? = if (studyLabelling) null else from(text, table, language, detect)
 
-    fun from(text: String, table: Map<String, Float>): String? {
+    /**
+     * [language] is the entry's stored column (null: unknown, read as 1.2.1
+     * read it); [detect] the TextClassifier, for callers off the main thread.
+     */
+    fun from(
+        text: String,
+        table: Map<String, Float>,
+        language: String? = null,
+        detect: (() -> String?)? = null,
+    ): String? {
         // The lexicon and every word list here are English. On another language
         // they do not fail, they misread: VADER's false friends gave "joy" on
-        // sad Spanish and Italian entries. No suggestion beats a wrong one.
-        if (!EnglishText.likely(text)) return null
+        // sad Spanish and Italian entries. No suggestion beats a wrong one. The
+        // engine's gate lists MOOD for English only.
+        val reading = ReadingLanguage.of(language, text, detect)
+        if (!LanguageGate.supportsRecorded(LanguageFeature.MOOD, reading)) return null
         val sign = lean(Sentiment.valence(text, table), words(text))
         if (sign == 0) return null
 

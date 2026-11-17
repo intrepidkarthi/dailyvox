@@ -76,6 +76,20 @@ data class Entry(
     val hrvMs: Float? = null,
     val restingHrBpm: Float? = null,
     val stepsToday: Int? = null,
+
+    /**
+     * The language the words are in, as a BCP-47 tag, or null for unknown
+     * (plan B-2). Spoken entries take the tag the recogniser was ASKED for --
+     * the pack that produced the words, not the phone's locale. Typed and
+     * imported text is classified on the phone by the platform TextClassifier
+     * ([com.dailyvox.app.system.TextLanguage]), and stays null when it is not
+     * confident.
+     *
+     * Null is a real answer and every reader must treat it as "unknown", never
+     * as English: entries written before 1.3 have none, and are not guessed at
+     * behind the user's back.
+     */
+    val language: String? = null,
 ) {
     /**
      * Words actually spoken. `text.split(" ").size` returns **1** for an empty
@@ -158,6 +172,10 @@ interface EntryDao {
 }
 
 /**
+ * Version 6 adds `language` (plan B-2). Nullable and not backfilled: an entry
+ * from before 1.3 has no record of what the recogniser was asked for, and a
+ * guess written into the column would be indistinguishable from a fact.
+ *
  * Version 5 makes valence nullable (MIGRATION_4_5 rebuilds the table, which is
  * the only way SQLite drops a NOT NULL). Existing rows keep their number; the
  * ones the lexicon never actually read are cleared once at launch.
@@ -176,7 +194,7 @@ interface EntryDao {
  * existing install crashed on launch. Bumping the number is only half the fix —
  * see MIGRATION_1_2, because the other half is not deleting anyone's diary.
  */
-@Database(entities = [Entry::class], version = 5, exportSchema = true)
+@Database(entities = [Entry::class], version = 6, exportSchema = true)
 abstract class DailyVoxDb : RoomDatabase() {
     abstract fun entries(): EntryDao
 }
@@ -186,18 +204,45 @@ abstract class DailyVoxDb : RoomDatabase() {
  * know what the app persists, so every screen that asks the Twin something
  * converts here rather than handing over its own type.
  */
-internal fun Entry.toChatEntry() = com.dailyvox.twin.ChatEntry(
+internal fun Entry.toChatEntry(): com.dailyvox.twin.ChatEntry {
+    // The language the engine's gate reads this entry in (B-5): the stored
+    // column, or for an entry from before 1.3, English when the text reads as
+    // English and quiet when it does not -- the same split 1.2.1 made with its
+    // valence filter, now made by the engine for every feature at once.
+    val reading = com.dailyvox.app.system.ReadingLanguage.of(this)
+    return com.dailyvox.twin.ChatEntry(
+        id = id,
+        createdAt = createdAt,
+        text = text,
+        // Null stays null: the engine leaves an unread entry out of every
+        // mood figure instead of averaging it in as an "even" 0.
+        valence = valence,
+        // People only where names can be read. A German entry saved before
+        // the gate existed can still carry every capitalised noun as a
+        // "person"; the Twin's people and the "X lifts you" finding must not
+        // count them.
+        entities = com.dailyvox.app.system.ReadingLanguage.people(this),
+        sleepHours = sleepHours,
+        hourOfDay = hourOfDay,
+        dayOfWeek = dayOfWeek,
+        stepsToday = stepsToday,
+        speakingRate = speakingRate,
+        language = reading,
+    )
+}
+
+/**
+ * The row as word search reads it (B-9): the STORED language only, so the
+ * engine tokenises each entry with its own stopwords and leaves out a language
+ * its word search cannot read. An entry with no stored language is searched
+ * as English tokens, exactly as before, so nothing a user could find in 1.2.1
+ * drops out of search because the app now knows less than it guesses.
+ */
+internal fun Entry.toSearchEntry() = com.dailyvox.twin.ChatEntry(
     id = id,
     createdAt = createdAt,
     text = text,
-    // The engine's ChatEntry has no "unread" valence yet, so an unread entry
-    // reaches it as 0. App surfaces leave nulls out; the engine-side gate for
-    // Insights / TwinFacts is the multilingual plan's B-5.
-    valence = valence ?: 0f,
+    valence = valence,
     entities = entityList,
-    sleepHours = sleepHours,
-    hourOfDay = hourOfDay,
-    dayOfWeek = dayOfWeek,
-    stepsToday = stepsToday,
-    speakingRate = speakingRate,
+    language = language,
 )

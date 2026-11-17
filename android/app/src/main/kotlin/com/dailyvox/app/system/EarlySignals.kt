@@ -1,6 +1,9 @@
 package com.dailyvox.app.system
 
 import com.dailyvox.app.data.Entry
+import com.dailyvox.twin.LanguageFeature
+import com.dailyvox.twin.LanguageGate
+import com.dailyvox.twin.Retrieval
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
@@ -164,7 +167,9 @@ object EarlySignals {
     internal fun recurring(entries: List<Entry>): List<Recurring> {
         val spoken = entries.filter { it.text.isNotBlank() }
 
-        val names = spoken.flatMap { it.entityList }.distinct()
+        // People only from entries whose names can be read (German, caseless
+        // scripts: no), the same gate the engine's detector uses.
+        val names = spoken.flatMap { ReadingLanguage.people(it) }.distinct()
             .map { name -> Recurring(name, spoken.count { Reflection.nameIn(name, it.text) }, true) }
             .filter { it.entries >= MIN_RECURRING_ENTRIES }
             .sortedWith(compareByDescending<Recurring> { it.entries }.thenBy { it.word })
@@ -173,11 +178,21 @@ object EarlySignals {
         // key -> (entries it is in, every form it was written in)
         val seen = LinkedHashMap<String, Pair<MutableSet<Int>, MutableList<String>>>()
         spoken.forEachIndexed { i, e ->
+            // Glue is language-specific (B-5). [STOP] is English; another
+            // language's function words come from the engine's own lists, the
+            // ones its word search drops. A language with no list (and an
+            // entry from before 1.3 that does not read as English) has its
+            // words left out rather than "para" or "que" shown as what comes
+            // back. English is read exactly as before.
+            val reading = ReadingLanguage.of(e)
+            if (!LanguageGate.supportsRecorded(LanguageFeature.SEARCH_LEXICAL, reading)) return@forEachIndexed
+            val english = (LanguageGate.baseCode(reading) ?: "en") == "en"
             WORD.findAll(e.text).forEach { m ->
                 val form = m.value.removeSuffix("'s").removeSuffix("’s").trimEnd('\'', '’')
                 if (form.codePoints().anyMatch { unspaced(it) }) return@forEach
                 val key = form.lowercase(Locale.ROOT)
                 if (key.length < MIN_WORD_LETTERS || key in STOP || key in nameKeys) return@forEach
+                if (!english && Retrieval.words(form, reading).isEmpty()) return@forEach
                 val slot = seen.getOrPut(key) { mutableSetOf<Int>() to mutableListOf() }
                 slot.first += i
                 slot.second += form

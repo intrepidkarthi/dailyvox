@@ -13,8 +13,31 @@ import java.util.UUID
 
 class Repo private constructor(private val db: DailyVoxDb, private val appContext: Context) {
 
-    private fun suggest(text: String): String? = MoodSuggestion.offered(
-        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext))
+    private fun suggest(text: String, language: String?, detect: () -> String?): String? = MoodSuggestion.offered(
+        text, Lexicon.table, com.dailyvox.app.system.DailyQuestion.isPilot(appContext), language, detect)
+
+    /**
+     * Everything the app derives from an entry's words, read in the language
+     * the engine's gate is told the words are in (B-5). [language] is what
+     * the column will hold; when it is null, the on-device TextClassifier is
+     * the fallback ([ReadingLanguage]) -- asked at most once, only for text
+     * that does not already read as English, and never written to the column.
+     */
+    private class Derived(val valence: Float?, val entities: List<String>, val suggestion: String?)
+
+    private fun derive(text: String, language: String?, corpus: List<String>): Derived {
+        var asked = false
+        var answer: String? = null
+        val detect = { if (!asked) { asked = true; answer = detectLanguage(text) }; answer }
+        val reading = com.dailyvox.app.system.ReadingLanguage.of(language, text, detect)
+        return Derived(
+            valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table, reading),
+            // German capitalises every noun and a caseless script has no
+            // capitals: the engine's detector is quiet for both.
+            entities = com.dailyvox.twin.NameDetector.detect(text, corpus = corpus, language = reading),
+            suggestion = suggest(text, reading) { null },
+        )
+    }
 
     fun observeAll(): Flow<List<Entry>> = db.entries().observeAll()
     /**
@@ -29,18 +52,26 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
     fun allBlocking(): List<Entry> = db.entries().allBlocking()
     suspend fun byId(id: String) = db.entries().byId(id)
 
-    /** Re-analyses the corrected text so the Twin learns from the fix, not the flub. */
-    suspend fun updateText(id: String, text: String) {
+    /**
+     * Re-analyses the corrected text so the Twin learns from the fix, not the flub.
+     *
+     * [language] is the recogniser tag when the text came from transcribing
+     * the saved audio later. Otherwise a spoken entry keeps the language it was
+     * recorded in (a corrected word is still that language), and a typed one
+     * is classified again, because the user may have rewritten it entirely.
+     */
+    suspend fun updateText(id: String, text: String, language: String? = null) = withContext(Dispatchers.IO) {
         db.entries().byId(id)?.let {
-            val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
+            val lang = language
+                ?: if (isTyped(it.audioPath, it.durationSec)) detectLanguage(text) else it.language
+            val derived = derive(text, lang, corpus = listOf(text))
             db.entries().upsert(
                 it.copy(
                     text = text,
-                    valence = valence,
-                    entities = com.dailyvox.twin.NameDetector
-                        .detect(text, corpus = listOf(text))
-                        .joinToString(","),
-                    suggestedMood = resuggest(it, suggest(text)),
+                    valence = derived.valence,
+                    language = lang,
+                    entities = derived.entities.joinToString(","),
+                    suggestedMood = resuggest(it, derived.suggestion),
                 )
             )
         }
@@ -75,8 +106,12 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         for (i in 0 until arr.length()) {
             val o = arr.getJSONObject(i)
             val text = o.optString("text")
+            val language = com.dailyvox.app.system.TextLanguage.validTag(o.optString("language", ""))
             val at = o.optLong("date", 0L)
             if (text.isBlank() || at == 0L || (at to text) in existing) continue
+            // The file's own tag when it has one (this app's export, or iOS's
+            // once it writes one); otherwise classify the text.
+            val lang = language ?: detectLanguage(text)
             db.entries().upsert(
                 Entry(
                     id = UUID.randomUUID().toString(),
@@ -86,8 +121,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
                     // Recompute rather than trust the file: a valence written by
                     // iOS came from a different lexicon, and mixing two scales in
                     // one mood curve would make the chart quietly meaningless.
-                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table),
+                    // Read in the entry's language, like a new entry (B-5).
+                    valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table, lang),
                     entities = o.optString("entities", ""),
+                    language = lang,
                 )
             )
             added++
@@ -101,10 +138,11 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         durationSec: Int,
         audioPath: String? = null,
         body: com.dailyvox.app.body.BodySignals.Snapshot? = null,
+        /** The tag the recogniser was asked for, for a spoken entry. Ignored for typed text. */
+        spokenLanguage: String? = null,
     ) = withContext(Dispatchers.IO) {
-        val entities = com.dailyvox.twin.NameDetector.detect(
-            text, corpus = db.entries().allOnce().map { it.text },
-        )
+        val language = entryLanguage(audioPath, durationSec, spokenLanguage) { detectLanguage(text) }
+        val derived = derive(text, language, corpus = db.entries().allOnce().map { it.text })
         val now = System.currentTimeMillis()
         val cal = java.util.Calendar.getInstance().apply { timeInMillis = now }
 
@@ -124,14 +162,13 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             }
             ?.takeIf { it.available }
 
-        val valence = com.dailyvox.app.system.Valence.of(text, Lexicon.table)
         val entry = Entry(
             id = UUID.randomUUID().toString(),
             text = text,
             createdAt = now,
             durationSec = durationSec,
-            valence = valence,
-            entities = entities.joinToString(","),
+            valence = derived.valence,
+            entities = derived.entities.joinToString(","),
             audioPath = audioPath,
             speakingRate = prosody?.speakingRate?.toFloat(),
             pitchMean = prosody?.pitchMean?.toFloat(),
@@ -148,11 +185,11 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             hrvMs = body?.morningHrvMs?.toFloat(),
             restingHrBpm = body?.restingHrBpm?.toFloat(),
             stepsToday = body?.stepsToday,
-        ).let {
+            language = language,
             // A suggestion only, in its own column. selfLabel stays null until
             // the user picks one; nothing at save time can choose for them.
-            it.copy(suggestedMood = suggest(text))
-        }
+            suggestedMood = derived.suggestion,
+        )
         db.entries().upsert(entry)
         // Returned so the Speak screen can reflect on exactly what was saved.
         entry
@@ -169,7 +206,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         val all = db.entries().allOnce()
         if (all.isEmpty()) return@withContext 0
         val volume = (all.size / 200f).coerceAtMost(1f)
-        val breadth = (all.flatMap { it.entityList }.toSet().size / 40f).coerceAtMost(1f)
+        val breadth = (all.flatMap { com.dailyvox.app.system.ReadingLanguage.people(it) }.toSet().size / 40f).coerceAtMost(1f)
         ((0.6f * volume + 0.4f * breadth) * 100).toInt().coerceIn(0, 100)
     }
 
@@ -186,7 +223,9 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
      *
      * Two locks, because one was clearly not enough. `BuildConfig.DEBUG` means
      * R8 removes the whole branch from any release build; SEED_DEMO_DATA means
-     * even a debug build needs `-PseedDemo` to ask for it.
+     * even a debug build needs `-PseedDemo` to ask for it. `-PseedDemoLang=de`
+     * (es, fr, it, pt-BR) seeds the same journal in that language, for the
+     * localized store screenshots.
      */
     suspend fun seedIfEmpty(context: Context) {
         Lexicon.ensureLoaded(context)
@@ -194,7 +233,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         clearUnreadValence(context)
         if (!BuildConfig.DEBUG || !BuildConfig.SEED_DEMO_DATA) return
         if (db.entries().count() > 0) return
-        DummyData.entries().forEach { db.entries().upsert(it) }
+        DummyData.entries(BuildConfig.SEED_DEMO_LANG).forEach { db.entries().upsert(it) }
     }
 
     /**
@@ -235,6 +274,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         prefs.edit().putBoolean(VALENCE_CLEARED, true).apply()
     }
 
+    /** Typed or imported text: the platform classifier, on this phone, or null. */
+    private fun detectLanguage(text: String): String? =
+        com.dailyvox.app.system.TextLanguage.detect(appContext, text)
+
     companion object {
 
         private const val PURGED = "demo_data_purged"
@@ -254,10 +297,16 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
          *
          * The scoring itself lives in the engine so the two surfaces cannot
          * drift into ranking the same journal differently.
+         *
+         * B-9: the engine's tokenizer is Unicode-aware (letters plus combining
+         * marks, NFC, locale-aware lower-casing), so "mamá" stays "mamá" and a
+         * Devanagari query matches Devanagari entries. Each entry is tokenised
+         * in its own stored language ([toSearchEntry]); the query in English
+         * rules, which only decide the stopwords.
          */
         fun rank(q: String, all: List<Entry>): List<Pair<Entry, Float>> {
             val byId = all.associateBy { it.id }
-            return com.dailyvox.twin.Retrieval.rank(q, all.map { it.toChatEntry() })
+            return com.dailyvox.twin.Retrieval.rank(q, all.map { it.toSearchEntry() })
                 .mapNotNull { hit -> byId[hit.entryId]?.let { it to hit.score } }
         }
 
@@ -267,12 +316,10 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
          * What the Journal shows for a typed query (a blank box never gets here;
          * the view model shows the whole journal for that).
          *
-         * A query with no content words used to return EVERY entry. The engine's
-         * tokenizer keeps only [a-z0-9'], so a Devanagari or Tamil query -- or
-         * "mamá" cut to "mam" -- tokenised to nothing and the "results" were the
-         * whole journal, which reads as "everything matched". An empty term set
-         * is now no results, which is the truth until the tokenizer reads the
-         * script (plan B-9).
+         * A query with no content words used to return EVERY entry: the old
+         * [a-z0-9'] tokenizer cut a Devanagari query to nothing. The engine's
+         * tokenizer now reads the script (B-9), and a query that still has no
+         * content words ("the", "à") is no results, never the whole journal.
          */
         internal fun searchResults(q: String, all: List<Entry>): List<Entry> {
             if (rankWords(q).isEmpty()) return emptyList()
@@ -381,15 +428,43 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
         internal fun unreadValence(all: List<Entry>, table: Map<String, Float>): List<Entry> =
             all.mapNotNull { e ->
                 val clearValence = e.valence != null &&
-                    com.dailyvox.app.system.Valence.of(e.text, table) == null
+                    com.dailyvox.app.system.Valence.of(e.text, table, e.language) == null
                 val clearSuggestion = e.selfLabel == null && e.suggestedMood != null &&
-                    !com.dailyvox.app.system.EnglishText.likely(e.text)
+                    !com.dailyvox.app.system.ReadingLanguage.reads(com.dailyvox.twin.LanguageFeature.MOOD, e)
                 if (!clearValence && !clearSuggestion) null
                 else e.copy(
                     valence = if (clearValence) null else e.valence,
                     suggestedMood = if (clearSuggestion) null else e.suggestedMood,
                 )
             }
+
+        /** The app's rule for "typed": no audio and no duration, as the Journal labels it. */
+        internal fun isTyped(audioPath: String?, durationSec: Int): Boolean =
+            audioPath.isNullOrBlank() && durationSec == 0
+
+        /**
+         * B-2: where an entry's language comes from. Spoken, the recogniser's
+         * tag (null if none was asked for -- the platform picked, and we do not
+         * know what). Typed, the on-device classifier. Never the phone's
+         * locale: that is the language of the menus, not of the entry.
+         */
+        internal fun entryLanguage(
+            audioPath: String?,
+            durationSec: Int,
+            spokenLanguage: String?,
+            classify: () -> String?,
+        ): String? = if (isTyped(audioPath, durationSec)) classify() else spokenLanguage
+
+        /**
+         * The language column (B-2). Nullable and never backfilled, like
+         * suggestedMood: entries from before 1.3 have no record of what the
+         * recogniser was asked for, so they say "unknown" rather than guess.
+         */
+        val MIGRATION_5_6 = object : androidx.room.migration.Migration(5, 6) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                addColumnIfMissing(db, "language TEXT")
+            }
+        }
 
         /** Body context. Nullable, so pre-Health-Connect entries stay honest
          *  about having none rather than reporting zero steps and no pulse. */
@@ -424,7 +499,7 @@ class Repo private constructor(private val db: DailyVoxDb, private val appContex
             Lexicon.ensureLoaded(context)
             INSTANCE ?: Repo(
                 Room.databaseBuilder(context.applicationContext, DailyVoxDb::class.java, "dailyvox.db")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                     // NO fallbackToDestructiveMigration. On a journal app that
                     // reads as "if the schema confuses us, delete their diary".
                     // Every future schema change needs a real migration here;

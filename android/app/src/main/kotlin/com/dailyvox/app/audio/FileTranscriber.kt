@@ -1,5 +1,7 @@
 package com.dailyvox.app.audio
 
+import com.dailyvox.app.R
+
 import android.content.Context
 import android.media.AudioFormat
 import android.os.Bundle
@@ -13,7 +15,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
-import java.util.Locale
 import kotlin.coroutines.resume
 
 /**
@@ -60,25 +61,32 @@ object FileTranscriber {
     private const val PIPE_BUFFER_BYTES = 64 * 1024
     private const val TIMEOUT_MS = 60_000L
 
-    suspend fun transcribe(context: Context, audio: File, language: String?): Result =
+    /**
+     * [language] is required (B-8). It used to default to the phone's locale,
+     * so an entry spoken in Hindi on a phone set to English went to the English
+     * model. The caller resolves it with [SpeechCapture.fileTag] -- the entry's
+     * own language first -- and, when that is null, says no model can hear it
+     * rather than calling here at all.
+     */
+    suspend fun transcribe(context: Context, audio: File, language: String): Result =
         withContext(Dispatchers.IO) {
-            if (!audio.exists()) return@withContext Result.Failed("The recording is missing.")
+            if (!audio.exists()) return@withContext Result.Failed(context.getString(R.string.transcribe_missing))
             if (!SpeechRecognizer.isOnDeviceRecognitionAvailable(context)) {
-                return@withContext Result.Failed("This phone has no on-device recogniser.")
+                return@withContext Result.Failed(context.getString(R.string.transcribe_no_recogniser))
             }
             val (pcm, sampleRate) = AudioDecoder.toPcm(audio)
-                ?: return@withContext Result.Failed("The recording could not be decoded.")
-            if (pcm.isEmpty()) return@withContext Result.Failed("The recording is empty.")
+                ?: return@withContext Result.Failed(context.getString(R.string.transcribe_undecodable))
+            if (pcm.isEmpty()) return@withContext Result.Failed(context.getString(R.string.transcribe_empty))
 
             withTimeoutOrNull(TIMEOUT_MS) { run(context, pcm, sampleRate, language) }
-                ?: Result.Failed("The recogniser did not finish in time.")
+                ?: Result.Failed(context.getString(R.string.transcribe_timeout))
         }
 
     private suspend fun run(
         context: Context,
         pcm: ShortArray,
         sampleRate: Int,
-        language: String?,
+        language: String,
     ): Result {
         val pipe = ParcelFileDescriptor.createPipe()
         val read = pipe[0]
@@ -137,7 +145,7 @@ object FileTranscriber {
                 Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                     putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                     putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
-                    putExtra(RecognizerIntent.EXTRA_LANGUAGE, language ?: Locale.getDefault().toLanguageTag())
+                    putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
                     // The whole point: read this, not the microphone.
                     putExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE, read)
                     putExtra(RecognizerIntent.EXTRA_AUDIO_SOURCE_CHANNEL_COUNT, 1)
@@ -155,7 +163,7 @@ object FileTranscriber {
         val consumed = written.get() > PIPE_BUFFER_BYTES
         return when {
             !consumed -> Result.IgnoredTheFile
-            text.isNullOrBlank() -> Result.Failed("The recogniser returned no words for this recording.")
+            text.isNullOrBlank() -> Result.Failed(context.getString(R.string.transcribe_no_words))
             else -> Result.Text(text)
         }
     }

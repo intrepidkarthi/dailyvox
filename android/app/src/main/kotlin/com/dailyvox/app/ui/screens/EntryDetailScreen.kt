@@ -1,5 +1,8 @@
 package com.dailyvox.app.ui.screens
 
+import com.dailyvox.app.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +24,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -50,6 +54,8 @@ fun EntryDetailScreen(
     onPhoto: (String?) -> Unit = {},
     /** B4: correct what the recogniser heard. Transcription is good, not right. */
     onEdit: (String) -> Unit = {},
+    /** Transcribed later from the saved audio: the text, and the recogniser tag it was heard with. */
+    onTranscribed: (String, String) -> Unit = { text, _ -> onEdit(text) },
     /** B4: open the Twin with this entry as the question. */
     onAsk: (String) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -62,10 +68,10 @@ fun EntryDetailScreen(
     // question makes the answer echo the entry back instead of relating it to
     // everything around it.
     val askSeed = remember(entry.id) {
-        val on = SimpleDateFormat("MMMM d", Locale.getDefault()).format(Date(entry.createdAt))
-        val who = entry.entityList.firstOrNull()
-        if (who != null) "What do my entries say about $who, around $on?"
-        else "What was going on for me around $on?"
+        val on = com.dailyvox.app.system.LocaleFormat.dateFormat("MMMM d", "MMMMd").format(Date(entry.createdAt))
+        val who = com.dailyvox.app.system.ReadingLanguage.people(entry).firstOrNull()
+        if (who != null) context.getString(R.string.entry_ask_seed_person, who, on)
+        else context.getString(R.string.entry_ask_seed, on)
     }
     val speaker = remember { com.dailyvox.app.system.Speaker(context) }
     var speaking by remember { mutableStateOf(false) }
@@ -95,7 +101,8 @@ fun EntryDetailScreen(
         Spacer(Modifier.height(8.dp))
         var menu by remember { mutableStateOf(false) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("‹", fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground,
+            Text(com.dailyvox.app.ui.components.backGlyph(), fontSize = 30.sp, style = androidx.compose.material3.LocalTextStyle.current.merge(com.dailyvox.app.ui.components.Directional.GlyphStyle),
+                 color = MaterialTheme.colorScheme.onBackground,
                  modifier = Modifier
                      .clip(CircleShape)
                      .clickable(onClick = onBack)
@@ -103,10 +110,17 @@ fun EntryDetailScreen(
                      .wrapContentSize())
             Spacer(Modifier.width(6.dp))
             Column(Modifier.weight(1f)) {
-                Text(SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(Date(entry.createdAt)),
+                Text(com.dailyvox.app.system.LocaleFormat.dateFormat("EEEE d MMMM", "EEEEdMMMM").format(Date(entry.createdAt)),
                      fontSize = 21.sp, fontWeight = FontWeight.ExtraBold, fontFamily = Nunito,
                      color = MaterialTheme.colorScheme.onBackground)
-                MonoLabel("${SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(entry.createdAt))} · ${if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) "typed" else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}"} · ${if (entry.isUntranscribed) "not transcribed" else "${entry.wordCount} words"}")
+                MonoLabel(stringResource(
+                    R.string.entry_header_meta,
+                    com.dailyvox.app.system.LocaleFormat.dateFormat("h:mm a", "jmm").format(Date(entry.createdAt)),
+                    if (entry.audioPath.isNullOrBlank() && entry.durationSec == 0) stringResource(R.string.entry_header_typed)
+                    else "${entry.durationSec / 60}:${"%02d".format(entry.durationSec % 60)}",
+                    if (entry.isUntranscribed) stringResource(R.string.entry_header_untranscribed)
+                    else pluralStringResource(R.plurals.entry_header_words, entry.wordCount, entry.wordCount),
+                ))
             }
             // Read aloud and Delete live here rather than in the action row.
             // Neither is what you came to the entry to do, and Delete sitting at
@@ -116,11 +130,32 @@ fun EntryDetailScreen(
                 DotsButton(onClick = { menu = true })
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     DropdownMenuItem(
-                        text = { Text(if (speaking) "Stop reading" else "Read aloud") },
-                        onClick = { menu = false; speaker.toggle(entry.text); speaking = !speaking },
+                        text = { Text(if (speaking) stringResource(R.string.entry_menu_stop_reading) else stringResource(R.string.entry_menu_read_aloud)) },
+                        onClick = {
+                            menu = false
+                            // In the entry's own language (B-13). No voice for it
+                            // on this phone: say so, rather than read Hindi words
+                            // with an English voice.
+                            when (speaker.toggle(entry.text, entry.language)) {
+                                com.dailyvox.app.system.Speaker.Outcome.SPEAKING -> speaking = true
+                                com.dailyvox.app.system.Speaker.Outcome.STOPPED -> speaking = false
+                                com.dailyvox.app.system.Speaker.Outcome.NO_VOICE -> {
+                                    speaking = false
+                                    android.widget.Toast.makeText(
+                                        context,
+                                        context.getString(
+                                            R.string.entry_no_voice,
+                                            com.dailyvox.app.audio.LanguageTags.languageName(entry.language ?: ""),
+                                        ),
+                                        android.widget.Toast.LENGTH_LONG,
+                                    ).show()
+                                }
+                                com.dailyvox.app.system.Speaker.Outcome.NOT_READY -> Unit
+                            }
+                        },
                     )
                     DropdownMenuItem(
-                        text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
+                        text = { Text(stringResource(R.string.entry_menu_delete), color = MaterialTheme.colorScheme.error) },
                         onClick = { menu = false; confirmDelete = true },
                     )
                 }
@@ -129,15 +164,15 @@ fun EntryDetailScreen(
                 // it from -- so it asks once.
                 if (confirmDelete) androidx.compose.material3.AlertDialog(
                     onDismissRequest = { confirmDelete = false },
-                    title = { Text("Delete this entry?", fontFamily = Nunito, fontWeight = FontWeight.ExtraBold) },
-                    text = { Text("The words and the recording are removed from this phone. This cannot be undone.") },
+                    title = { Text(stringResource(R.string.entry_delete_title), fontFamily = Nunito, fontWeight = FontWeight.ExtraBold) },
+                    text = { Text(stringResource(R.string.entry_delete_body)) },
                     confirmButton = {
                         androidx.compose.material3.TextButton(onClick = { confirmDelete = false; onDelete() }) {
-                            Text("Delete", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold)
+                            Text(stringResource(R.string.entry_delete_confirm), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold)
                         }
                     },
                     dismissButton = {
-                        androidx.compose.material3.TextButton(onClick = { confirmDelete = false }) { Text("Keep it") }
+                        androidx.compose.material3.TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.entry_delete_keep)) }
                     },
                 )
             }
@@ -158,7 +193,7 @@ fun EntryDetailScreen(
             bmp?.let {
                 androidx.compose.foundation.Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = "Photo attached to this entry",
+                    contentDescription = stringResource(R.string.entry_photo_description),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                     modifier = Modifier.fillMaxWidth().height(180.dp)
                         .clip(RoundedCornerShape(20.dp)),
@@ -174,13 +209,13 @@ fun EntryDetailScreen(
         val goldTone = if (night) com.dailyvox.app.ui.theme.NightGoldText
                        else com.dailyvox.app.ui.theme.DayGoldText
         if (entry.isUntranscribed) {
-            UntranscribedBlock(entry, onEdit)
+            UntranscribedBlock(entry, onTranscribed)
             Spacer(Modifier.height(6.dp))
         }
         val marked = remember(entry.text, entry.entities) {
             buildAnnotatedString {
                 var rest = entry.text
-                val names = entry.entityList.sortedByDescending { it.length }
+                val names = com.dailyvox.app.system.ReadingLanguage.people(entry).sortedByDescending { it.length }
                 if (names.isEmpty()) { append(rest); return@buildAnnotatedString }
                 var idx = 0
                 while (idx < rest.length) {
@@ -207,7 +242,7 @@ fun EntryDetailScreen(
              color = MaterialTheme.colorScheme.onSurface)
 
         Spacer(Modifier.height(16.dp))
-        MonoLabel("How did this actually feel?")
+        MonoLabel(stringResource(R.string.entry_feel_label))
         Spacer(Modifier.height(8.dp))
         // The self-label. Deliberately optional and never prefilled: seeding it
         // with the detector's guess would contaminate the only column in the
@@ -221,38 +256,44 @@ fun EntryDetailScreen(
                    suggested = entry.suggestedMood.takeUnless { studyLabelling }, onPick = onSelfLabel)
 
         Spacer(Modifier.height(22.dp))
-        MonoLabel("What your Twin filed ✦")
+        MonoLabel(stringResource(R.string.entry_filed_label))
         Spacer(Modifier.height(8.dp))
         DvCard {
             // No row for an entry the lexicon could not read: "flat" would be a guess.
-            entry.valence?.let { FiledRow("Mood", valenceLabel(it), valenceColor(it)) }
-            if (entry.entityList.isNotEmpty()) {
+            // Read in the entry's language (B-5): a stored number the gate
+            // cannot vouch for is not shown either.
+            com.dailyvox.app.system.ReadingLanguage.valence(entry)?.let { FiledRow(stringResource(R.string.entry_filed_mood), valenceLabel(it), valenceColor(it)) }
+            // People only where names can be read (B-5), the same rule as the
+            // Journal's People filter: a German row from before 1.3 can still
+            // carry capitalised nouns in its entities column.
+            val people = com.dailyvox.app.system.ReadingLanguage.people(entry)
+            if (people.isNotEmpty()) {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("People", entry.entityList.joinToString(", "), MaterialTheme.colorScheme.secondary)
+                FiledRow(stringResource(R.string.entry_filed_people), people.joinToString(stringResource(R.string.entry_filed_people_separator)), MaterialTheme.colorScheme.secondary)
             }
             // Each body field is independently optional, so each gets its own
             // row. Collapsing them would mean a phone with a pedometer and no
             // wearable shows nothing at all.
             entry.sleepHours?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Slept", "%.1f hours".format(it), MaterialTheme.colorScheme.tertiary)
+                FiledRow(stringResource(R.string.entry_filed_slept), stringResource(R.string.entry_filed_slept_value, it), MaterialTheme.colorScheme.tertiary)
             }
             entry.hrvMs?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("HRV", "%.0f ms this morning".format(it), MaterialTheme.colorScheme.tertiary)
+                FiledRow(stringResource(R.string.entry_filed_hrv), stringResource(R.string.entry_filed_hrv_value, it), MaterialTheme.colorScheme.tertiary)
             }
             entry.restingHrBpm?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Resting pulse", "%.0f bpm".format(it), MaterialTheme.colorScheme.tertiary)
+                FiledRow(stringResource(R.string.entry_filed_pulse), stringResource(R.string.entry_filed_pulse_value, it), MaterialTheme.colorScheme.tertiary)
             }
             entry.stepsToday?.takeIf { it > 0 }?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Steps", "%,d today".format(it), MaterialTheme.colorScheme.tertiary)
+                FiledRow(stringResource(R.string.entry_filed_steps), pluralStringResource(R.plurals.entry_filed_steps_value, it, it), MaterialTheme.colorScheme.tertiary)
             }
             // Pace is a property of speech; a typed entry has none.
             if (entry.durationSec > 0) {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Pace", "${(entry.wordCount * 60 / entry.durationSec)} wpm",
+                FiledRow(stringResource(R.string.entry_filed_pace), stringResource(R.string.entry_filed_pace_value, entry.wordCount * 60 / entry.durationSec),
                          MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
@@ -261,38 +302,39 @@ fun EntryDetailScreen(
             // a monotone at zero hertz".
             entry.speakingRate?.let {
                 Spacer(Modifier.height(10.dp))
-                FiledRow("Voice", "%.1f words/sec spoken".format(it),
+                FiledRow(stringResource(R.string.entry_filed_voice), stringResource(R.string.entry_filed_voice_value, it),
                          MaterialTheme.colorScheme.onSurfaceVariant)
             }
             entry.pitchMean?.takeIf { it > 0f }?.let {
                 Spacer(Modifier.height(10.dp))
                 FiledRow(
-                    "Tone",
-                    "%.0f Hz%s".format(it, entry.pitchVariability
-                        ?.takeIf { v -> v > 0f }
-                        ?.let { v -> " · %.0f Hz range".format(v) } ?: ""),
+                    stringResource(R.string.entry_filed_tone),
+                    entry.pitchVariability?.takeIf { v -> v > 0f }
+                        ?.let { v -> stringResource(R.string.entry_filed_tone_value_range, it, v) }
+                        ?: stringResource(R.string.entry_filed_tone_value, it),
                     MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             entry.pauseRatio?.let { p ->
                 Spacer(Modifier.height(10.dp))
                 FiledRow(
-                    "Pauses",
-                    "%.0f%% quiet%s".format(p * 100,
-                        entry.longPauseCount?.takeIf { it > 0 }?.let { " · $it long" } ?: ""),
+                    stringResource(R.string.entry_filed_pauses),
+                    entry.longPauseCount?.takeIf { it > 0 }
+                        ?.let { pluralStringResource(R.plurals.entry_filed_pauses_value_long, it, p * 100, it) }
+                        ?: stringResource(R.string.entry_filed_pauses_value, p * 100),
                     MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             entry.hourOfDay?.let { h ->
                 Spacer(Modifier.height(10.dp))
                 FiledRow(
-                    "When",
+                    stringResource(R.string.entry_filed_when),
                     when {
-                        h < 5 -> "the small hours"
-                        h < 12 -> "morning"
-                        h < 17 -> "afternoon"
-                        h < 22 -> "evening"
-                        else -> "late night"
+                        h < 5 -> stringResource(R.string.entry_filed_when_small_hours)
+                        h < 12 -> stringResource(R.string.entry_filed_when_morning)
+                        h < 17 -> stringResource(R.string.entry_filed_when_afternoon)
+                        h < 22 -> stringResource(R.string.entry_filed_when_evening)
+                        else -> stringResource(R.string.entry_filed_when_late_night)
                     },
                     MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -308,27 +350,30 @@ fun EntryDetailScreen(
         // Photo attachments are OUT OF SCOPE for v1 (FINAL-SPEC §9), so there is
         // no button for them. The column, the storage and the picker are all
         // still here and working, and any photo an early build saved renders above.
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp),
+        //
+        // The two labels have to fit in every language: each shrinks a little
+        // before it would clip, and only then wraps to a second line, with the
+        // row growing to match. English fits at full size and looks as before.
+        Row(Modifier.height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
             val shape = RoundedCornerShape(18.dp)
+            val shareDescription = stringResource(R.string.entry_action_share_description)
             Box(
-                Modifier.weight(1f).height(52.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = 52.dp).fillMaxHeight().clip(shape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable { editing = true },
                 contentAlignment = Alignment.Center,
             ) {
-                Text("Edit", fontFamily = Nunito, fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                     color = MaterialTheme.colorScheme.onSurface)
+                FittedLabel(stringResource(R.string.entry_action_edit), MaterialTheme.colorScheme.onSurface)
             }
             Box(
-                Modifier.weight(1f).height(52.dp).clip(shape)
+                Modifier.weight(1f).heightIn(min = 52.dp).fillMaxHeight().clip(shape)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable { onAsk(askSeed) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text("\u2726  Ask about this", fontFamily = Nunito, fontSize = 17.sp,
-                     fontWeight = FontWeight.Bold, maxLines = 1,
-                     color = MaterialTheme.colorScheme.onPrimary)
+                FittedLabel(stringResource(R.string.entry_action_ask), MaterialTheme.colorScheme.onPrimary)
             }
             Box(
                 Modifier.size(52.dp).clip(CircleShape)
@@ -337,7 +382,7 @@ fun EntryDetailScreen(
                         val card = com.dailyvox.app.system.ShareCard.render(context, entry)
                         com.dailyvox.app.system.Exporters.share(context, card, "image/png")
                     }
-                    .semantics { contentDescription = "Share this entry" },
+                    .semantics { contentDescription = shareDescription },
                 contentAlignment = Alignment.Center,
             ) {
                 ShareGlyph(goldTone)
@@ -371,7 +416,7 @@ private fun EntryTextEditor(
     var draft by remember { mutableStateOf(initial) }
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Edit transcript") },
+        title = { Text(stringResource(R.string.entry_edit_title)) },
         text = {
             androidx.compose.material3.OutlinedTextField(
                 value = draft,
@@ -385,10 +430,10 @@ private fun EntryTextEditor(
             androidx.compose.material3.TextButton(
                 onClick = { onSave(draft.trim()) },
                 enabled = draft.isNotBlank() && draft.trim() != initial,
-            ) { Text("Save") }
+            ) { Text(stringResource(R.string.entry_edit_save)) }
         },
         dismissButton = {
-            androidx.compose.material3.TextButton(onClick = onCancel) { Text("Cancel") }
+            androidx.compose.material3.TextButton(onClick = onCancel) { Text(stringResource(R.string.entry_edit_cancel)) }
         },
     )
 }
@@ -431,6 +476,8 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
     val total = playback.durationMs.takeIf { it > 0 } ?: fallbackMs.coerceAtLeast(1)
     val progress = (pos.toFloat() / total).coerceIn(0f, 1f)
     val night = com.dailyvox.app.ui.theme.NightText
+    val playDescription = stringResource(R.string.entry_audio_play)
+    val pauseDescription = stringResource(R.string.entry_audio_pause)
 
     Row(
         Modifier.fillMaxWidth()
@@ -446,7 +493,7 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
                     playback.toggle(path) { playing = false; pos = 0 }
                     playing = playback.isPlaying
                 }
-                .semantics { contentDescription = if (playing) "Pause" else "Play" },
+                .semantics { contentDescription = if (playing) pauseDescription else playDescription },
             contentAlignment = Alignment.Center,
         ) {
             // Drawn, not a text glyph: ▶ and ‖ render at different weights and
@@ -518,9 +565,10 @@ private fun AudioBar(path: String, seed: String, fallbackMs: Int) {
 @Composable
 private fun DotsButton(onClick: () -> Unit) {
     val ink = MaterialTheme.colorScheme.onBackground
+    val moreDescription = stringResource(R.string.entry_menu_description)
     Box(
         Modifier.size(48.dp).clip(CircleShape).clickable(onClick = onClick)
-            .semantics { contentDescription = "More actions" },
+            .semantics { contentDescription = moreDescription },
         contentAlignment = Alignment.Center,
     ) {
         androidx.compose.foundation.Canvas(Modifier.size(4.dp, 18.dp)) {
@@ -572,7 +620,7 @@ private fun ShareGlyph(color: androidx.compose.ui.graphics.Color) {
  * entry is IN, not an event that just happened, and it is still true tomorrow.
  */
 @Composable
-private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
+private fun UntranscribedBlock(entry: Entry, onTranscribed: (String, String) -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember(entry.id) { mutableStateOf<TranscribeState>(TranscribeState.Idle) }
@@ -584,7 +632,7 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
             .padding(18.dp),
     ) {
         Text(
-            "Your recording is saved",
+            stringResource(R.string.entry_untranscribed_title),
             fontFamily = Nunito, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -592,10 +640,8 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
         Text(
             when (val s = state) {
                 is TranscribeState.Failed -> s.reason
-                TranscribeState.Running -> "Reading the recording\u2026 this can take a moment."
-                else -> "This phone's speech service didn't turn it into words. " +
-                    "The audio is here and can be played, and you can try again " +
-                    "or write it out yourself."
+                TranscribeState.Running -> stringResource(R.string.entry_untranscribed_running)
+                else -> stringResource(R.string.entry_untranscribed_body)
             },
             fontSize = 15.sp, lineHeight = 22.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -608,29 +654,34 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(Modifier.width(12.dp))
-                Text("Transcribing", fontSize = 15.sp,
+                Text(stringResource(R.string.entry_untranscribed_transcribing), fontSize = 15.sp,
                      color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         } else {
             FilledTonalButton(
                 onClick = {
                     val f = entry.audioPath?.let { java.io.File(it) } ?: return@FilledTonalButton
+                    // The language the entry was spoken in, matched to an
+                    // installed pack. None means no model here can hear it:
+                    // say so, never hand Hindi audio to the English model.
+                    val tag = com.dailyvox.app.audio.SpeechCapture.fileTag(context, entry.language)
+                    if (tag == null) {
+                        state = TranscribeState.Failed(noModelCopy(context, entry.language ?: com.dailyvox.app.audio.SpeechCapture.wanted(context).toLanguageTag()))
+                        return@FilledTonalButton
+                    }
                     state = TranscribeState.Running
                     scope.launch {
                         state = when (val r = com.dailyvox.app.audio.FileTranscriber
-                            .transcribe(context, f, null)) {
+                            .transcribe(context, f, tag)) {
                             is com.dailyvox.app.audio.FileTranscriber.Result.Text -> {
-                                onTranscribed(r.value); TranscribeState.Idle
+                                onTranscribed(r.value, tag); TranscribeState.Idle
                             }
                             // Named, not swallowed. A recogniser that ignored the
                             // file was listening to the ROOM, and saving that as
                             // somebody's diary entry is the worst outcome here.
                             com.dailyvox.app.audio.FileTranscriber.Result.IgnoredTheFile ->
                                 TranscribeState.Failed(
-                                    "This phone's recogniser can't read a saved " +
-                                    "recording \u2014 it tried to listen live instead, " +
-                                    "so nothing was used. Writing it out is the way " +
-                                    "to keep these words."
+                                    context.getString(R.string.entry_untranscribed_ignored_file)
                                 )
                             is com.dailyvox.app.audio.FileTranscriber.Result.Failed ->
                                 TranscribeState.Failed(r.reason)
@@ -638,10 +689,14 @@ private fun UntranscribedBlock(entry: Entry, onTranscribed: (String) -> Unit) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("Try transcribing again") }
+            ) { Text(stringResource(R.string.entry_untranscribed_retry)) }
         }
     }
 }
+
+/** Plan section 3: the recording is safe, and nothing guesses in another language. */
+internal fun noModelCopy(context: android.content.Context, tag: String): String =
+    context.getString(R.string.entry_no_model, com.dailyvox.app.audio.LanguageTags.languageName(tag))
 
 private sealed interface TranscribeState {
     data object Idle : TranscribeState
@@ -657,13 +712,41 @@ private fun FiledRow(label: String, value: String, tint: androidx.compose.ui.gra
     }
 }
 
+@Composable
 private fun valenceLabel(v: Float): String {
     val sign = if (v >= 0) "+" else ""
     val word = when {
-        v > 0.3f -> "positive"
-        v > 0f -> "calm-positive"
-        v > -0.3f -> "flat"
-        else -> "negative"
+        v > 0.3f -> stringResource(R.string.entry_valence_positive)
+        v > 0f -> stringResource(R.string.entry_valence_calm_positive)
+        v > -0.3f -> stringResource(R.string.entry_valence_flat)
+        else -> stringResource(R.string.entry_valence_negative)
     }
-    return "$sign${"%.2f".format(v)} · $word"
+    return stringResource(R.string.entry_valence_value, "$sign${"%.2f".format(v)}", word)
 }
+
+/**
+ * A button label that fits its box in any language. It starts at the design's
+ * 17sp on one line; if that would clip, it steps down to [MIN_LABEL_SP], and if
+ * it still does not fit it wraps onto a second line. The text is drawn only once
+ * its size is settled, so the steps never flash.
+ */
+@Composable
+private fun FittedLabel(text: String, color: androidx.compose.ui.graphics.Color) {
+    var size by remember(text) { mutableStateOf(17f) }
+    var settled by remember(text) { mutableStateOf(false) }
+    val wrap = size <= MIN_LABEL_SP
+    Text(
+        text,
+        fontFamily = Nunito, fontSize = size.sp, fontWeight = FontWeight.Bold,
+        lineHeight = (size + 3f).sp, color = color,
+        maxLines = if (wrap) 2 else 1, softWrap = wrap,
+        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        onTextLayout = { layout ->
+            if (!wrap && layout.didOverflowWidth) size -= 1f else settled = true
+        },
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+            .drawWithContent { if (settled) drawContent() },
+    )
+}
+
+private const val MIN_LABEL_SP = 14f

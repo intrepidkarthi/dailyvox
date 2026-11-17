@@ -158,13 +158,14 @@ class StarWidget : AppWidgetProvider() {
             views.setTextViewText(
                 R.id.widget_label,
                 styled(context, if (wide) label else
-                    if (spokenTonight) "Tonight is filed" else "Tonight is waiting",
+                    context.getString(if (spokenTonight) R.string.widget_tonight_filed else R.string.widget_tonight_waiting),
                     R.font.nunito_variable),
             )
             views.setTextViewText(
                 R.id.widget_count,
                 styled(context,
-                       if (wide) "${entries.size} IN YOUR SKY" else "${entries.size}",
+                       if (wide) context.resources.getQuantityString(R.plurals.widget_in_your_sky, entries.size, entries.size)
+                       else "${entries.size}",
                        R.font.dm_mono_medium),
             )
 
