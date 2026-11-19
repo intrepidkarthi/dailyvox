@@ -71,6 +71,8 @@ Third, check for open source code. Proprietary apps require blind trust. Open-so
 
 Related reading: [AI Journaling in 2026: The Shift to On-Device, the Rise of Digital Twins](/blog/ai-journaling-2026).
 
+Related reading: [Which Journal Apps Let You Export All Your Entries?](/blog/which-journal-apps-let-me-export-all-my-entries-if-i-stop-us).
+
 ## Frequently Asked Questions
 
 ### Does Apple Journal encrypt entries on the device?
