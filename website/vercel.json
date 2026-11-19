@@ -218,6 +218,11 @@
       "source": "/blog/digital-twin-vs-chatgpt-memory",
       "destination": "/blog/how-digital-twin-learns-personality",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/journaling-prompts-for-anxiety",
+      "destination": "/blog/what-journaling-app-helps-with-anxiety-and-mood-tracking",
+      "statusCode": 301
     }
   ],
   "headers": [
