@@ -223,6 +223,11 @@
       "source": "/blog/journaling-prompts-for-anxiety",
       "destination": "/blog/what-journaling-app-helps-with-anxiety-and-mood-tracking",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/how-to-journal-when-you-hate-writing",
+      "destination": "/blog/best-journal-app-for-people-who-hate-writing",
+      "statusCode": 301
     }
   ],
   "headers": [
