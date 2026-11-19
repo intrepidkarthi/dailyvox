@@ -90,6 +90,8 @@ You trade infinite cloud compute for absolute privacy and zero latency. For a pe
 
 Related reading: [DailyVox Is on Android, and It Cannot Reach the Internet](/blog/dailyvox-on-android).
 
+Related reading: [Best Voice Journal App for Android That Works Offline](/blog/what-is-the-best-voice-journal-app-for-android-that-works-of).
+
 ## Frequently Asked Questions
 
 ### How can I verify that an app actually works offline?
