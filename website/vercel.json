@@ -228,6 +228,11 @@
       "source": "/blog/how-to-journal-when-you-hate-writing",
       "destination": "/blog/best-journal-app-for-people-who-hate-writing",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/42-second-journal",
+      "destination": "/blog/what-is-a-good-free-alternative-to-day-one-journal",
+      "statusCode": 301
     }
   ],
   "headers": [
