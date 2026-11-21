@@ -65,7 +65,7 @@ Here is the honest limitation: DailyVox is a phone app. There is no iPad app and
 | **Rosebud** | Text, AI conversation | Cloud servers | Cloud-processed text |
 | **DailyVox** | Voice-to-text | Local device (CloudKit backup) | 100% on-device, no servers |
 
-Related reading: [Voice Cloning on iPhone: Three Runtimes, One Blind Test, and Why We Stopped](/blog/voice-cloning-blind-test).
+Related reading: [Voice Cloning on iPhone: Three Runtimes, One Blind Test, and Why We Stopped](/blog/what-is-a-good-free-alternative-to-day-one-journal).
 
 ## Frequently Asked Questions
 
