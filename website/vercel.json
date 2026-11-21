@@ -233,6 +233,11 @@
       "source": "/blog/42-second-journal",
       "destination": "/blog/what-is-a-good-free-alternative-to-day-one-journal",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/voice-cloning-blind-test",
+      "destination": "/blog/what-is-a-good-free-alternative-to-day-one-journal",
+      "statusCode": 301
     }
   ],
   "headers": [
