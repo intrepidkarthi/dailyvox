@@ -70,6 +70,8 @@ Typing requires fine motor control and visual focus. When your nervous system is
 
 ---
 
+Related reading: [How to Keep a Journal When You Don't Have Time to Write](/blog/how-can-i-keep-a-journal-when-i-don-t-have-time-to-write).
+
 ## Frequently Asked Questions
 
 ### Can my therapist read my journaling app entries directly?
