@@ -73,6 +73,8 @@ Two days before your appointment, review your logs. Extract the high-level summa
 
 ***
 
+Related reading: [Apps That Answer Questions About Your Past Entries](/blog/is-there-a-journal-app-that-answers-questions-about-my-own-p).
+
 ## Frequently Asked Questions
 
 ### What format do doctors prefer for health journals?
